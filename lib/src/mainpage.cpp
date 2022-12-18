@@ -46,6 +46,7 @@
  * - … has a permissive license.
  * - … has basic support for accessibility.
  * - … is developed with unit tests.
+ * - … links only to Qt and LittleCMS, so being Tier 1.
  * <!-- (ColorDialog’s screen color picker feature depends on Qt’s internals.)
  * - … uses only the public API of Qt and LittleCMS, and no private
  *     features of these libraries.
@@ -61,10 +62,6 @@
  *   that are not within the previously mentioned namespace.)
  * - Resources within the <a href="https://doc.qt.io/qt-5/resources.html">Qt
  *   resource system</a> are within the folder <tt>:/PerceptualColor/</tt>.
- *
- * This library relies internally on LittleCMS for all the color management.
- * Anyway, you can uses this library without knowing about the internals of
- * LittleCMS.
  *
  * @sa @ref build
  *
