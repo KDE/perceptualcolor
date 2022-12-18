@@ -12,10 +12,10 @@
 #include "multicolor.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
+#include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qglobal.h>
-#include <optional>
 #include <qobject.h>
 #include <qobjectdefs.h>
 #include <qpointer.h>
@@ -213,7 +213,7 @@ public:
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializeScreenColorPicker();
     [[nodiscard]] QString translateColorModel(cmsColorSpaceSignature model);
-    [[nodiscard]] static QString translateViaQColorDialog(const char* sourceText);
+    [[nodiscard]] static QString translateViaQColorDialog(const char *sourceText);
 
 public Q_SLOTS:
     void readChromaHueDiagramValue();

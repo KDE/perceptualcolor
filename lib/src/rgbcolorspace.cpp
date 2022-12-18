@@ -959,9 +959,9 @@ QRgb RgbColorSpace::toQRgbOrTransparent(const cmsCIELab &lab) const
         qPow(lab.L - roundtripLab.L, 2) //
         + qPow(lab.a - roundtripLab.a, 2) //
         + qPow(lab.b - roundtripLab.b, 2);
-    constexpr auto cielabDeviationLimitSquare =
+    constexpr auto cielabDeviationLimitSquare = //
         RgbColorSpacePrivate::cielabDeviationLimit //
-            * RgbColorSpacePrivate::cielabDeviationLimit;
+        * RgbColorSpacePrivate::cielabDeviationLimit;
     const bool actualDeviationIsOkay = //
         actualDeviationSquare <= cielabDeviationLimitSquare;
 
@@ -1054,7 +1054,7 @@ QMap<cmsUInt32Number, QString> RgbColorSpacePrivate::getIntentList()
     const cmsUInt32Number intentCount = //
         cmsGetSupportedIntents(0, nullptr, nullptr);
     cmsUInt32Number *codeArray = new cmsUInt32Number[intentCount];
-    char **descriptionArray = new char*[intentCount];
+    char **descriptionArray = new char *[intentCount];
     cmsGetSupportedIntents(intentCount, codeArray, descriptionArray);
     for (cmsUInt32Number i = 0; i < intentCount; ++i) {
         result.insert(codeArray[i], QString::fromUtf8(descriptionArray[i]));

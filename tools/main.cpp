@@ -69,8 +69,6 @@ static bool triggerWarning()
 }
 */
 
-
-
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
 {

@@ -28,7 +28,6 @@
 #include "rgbcolorspace.h"
 #include <PerceptualColor/rgbcolorspacefactory.h>
 #include <lcms2.h>
-#include <qgridlayout.h>
 #include <memory>
 #include <optional>
 #include <qaction.h>
@@ -42,6 +41,7 @@
 #include <qdebug.h>
 #include <qdialogbuttonbox.h>
 #include <qformlayout.h>
+#include <qgridlayout.h>
 #include <qgroupbox.h>
 #include <qguiapplication.h>
 #include <qicon.h>
@@ -229,9 +229,10 @@ void ColorDialogPrivate::retranslateUi()
         profileClass = tr("Display profile");
         break;
     case cmsSigAbstractClass: // Image effect profile (Abstract profile)
-        // This ICC profile class is called "abstract profile" in the
-        // official standard. However, the name is misleading. The actual
-        // function of these ICC profiles is to apply image effects.
+                              // This ICC profile class is called "abstract
+                              // profile" in the official standard. However,
+                              // the name is misleading. The actual function of
+                              // these ICC profiles is to apply image effects.
     case cmsSigColorSpaceClass: // Color space conversion profile
     case cmsSigInputClass: // Input profile
     case cmsSigLinkClass: // Device link profile
@@ -612,7 +613,7 @@ void ColorDialogPrivate::retranslateUi()
         m_oklchSpinBox->setSectionConfigurations(oklchSections);
     }
 
-    if(m_screenColorPickerButton) {
+    if (m_screenColorPickerButton) {
         /*: @action:button Same text as in QColorDialog */
         m_screenColorPickerButton->setText(tr("&Pick Screen Color"));
     }
@@ -1173,7 +1174,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_tabWidget->addTab(m_paletteWrapperWidget, QString());
     m_tabWidget->addTab(m_hueFirstWrapperWidget, QString());
     m_tabWidget->addTab(m_lightnessFirstWrapperWidget, QString());
-    if(m_screenColorPickerWidget) {
+    if (m_screenColorPickerWidget) {
         m_tabWidget->addTab(m_screenColorPickerWidget, QString());
     }
 
@@ -1437,7 +1438,7 @@ void ColorDialogPrivate::readHlcNumericValues()
 /** @brief Translates a given text in the context of QColorDialog.
  *
  * @param sourceText The text to be translated. */
-QString ColorDialogPrivate::translateViaQColorDialog(const char* sourceText)
+QString ColorDialogPrivate::translateViaQColorDialog(const char *sourceText)
 {
     return QColorDialog::tr(sourceText);
 }
@@ -1469,27 +1470,24 @@ QString ColorDialogPrivate::translateViaQColorDialog(const char* sourceText)
  * exclusively used on Wayland, and not on X. */
 void ColorDialogPrivate::initializeScreenColorPicker()
 {
-    if(m_screenColorPickerSupportAvailable.value_or(true) == false) {
+    if (m_screenColorPickerSupportAvailable.value_or(true) == false) {
         // On the current system we know yet we have no support for
         // screen color picker:
         return;
     }
 
-    auto m_screenColorPickerHelperDialog = new QColorDialog( //
-        // Must necessarily have a parent widget; otherwise functionality
-        // does not work.
+    auto m_screenColorPickerHelperDialog = new QColorDialog(
+        // Without parent widget, screen picking does not work.
         q_pointer);
     m_screenColorPickerHelperDialog->setOptions( //
         QColorDialog::DontUseNativeDialog | QColorDialog::NoButtons);
     auto temp = m_screenColorPickerHelperDialog->findChildren<QPushButton *>();
     QPushButton *m_screenColorPickerHelperButton = nullptr;
-    for (const auto &button : temp)
-    {
+    for (const auto &button : temp) {
         // Going through translateViaQColorDialog() to avoid that the
         // string will be included in our own translation file; instead
         // intentionally fallback to Qt provided translation.
-        if (button->text() == translateViaQColorDialog("&Pick Screen Color"))
-        {
+        if (button->text() == translateViaQColorDialog("&Pick Screen Color")) {
             m_screenColorPickerHelperButton = button;
             break;
         }
@@ -1497,7 +1495,7 @@ void ColorDialogPrivate::initializeScreenColorPicker()
     // Store application-wide (static class variable) if screen color picker
     // is supported:
     m_screenColorPickerSupportAvailable = m_screenColorPickerHelperButton;
-    if(m_screenColorPickerHelperButton == nullptr) {
+    if (m_screenColorPickerHelperButton == nullptr) {
         delete m_screenColorPickerHelperDialog;
         m_screenColorPickerHelperDialog = nullptr;
         return;
@@ -1506,13 +1504,12 @@ void ColorDialogPrivate::initializeScreenColorPicker()
     m_screenColorPickerWidget = new QWidget;
     m_screenColorPickerButton = new QPushButton;
     QIcon myIcon;
-    QStringList candidates{ //
+    QStringList candidates{
         QStringLiteral("color-picker"), //
         QStringLiteral("gtk-color-picker"), //
         QStringLiteral("tool_color_picker") //
     };
-    for (auto const &name : candidates)
-    {
+    for (auto const &name : candidates) {
         myIcon = QIcon::fromTheme(name);
         if (!myIcon.isNull()) {
             m_screenColorPickerButton->setIcon(myIcon);
@@ -1525,19 +1522,18 @@ void ColorDialogPrivate::initializeScreenColorPicker()
     connect(m_screenColorPickerHelperDialog, //
             &QColorDialog::currentColorChanged, //
             q_pointer,
-            &ColorDialog::setCurrentColor
-    );
-    connect(m_screenColorPickerButton,
-            &QPushButton::clicked,
-            this,
-            [m_screenColorPickerHelperDialog, m_screenColorPickerHelperButton, this]() {
-                // Set current color to make sure this very same
-                // color will be restored if the user pressed ESC.
-                m_screenColorPickerHelperDialog->setCurrentColor( //
-                    q_pointer->currentColor());
-                m_screenColorPickerHelperButton->click();
-            }
-    );
+            &ColorDialog::setCurrentColor);
+    connect( //
+        m_screenColorPickerButton,
+        &QPushButton::clicked,
+        this,
+        [m_screenColorPickerHelperDialog, m_screenColorPickerHelperButton, this]() {
+            // Set current color to make sure this very same
+            // color will be restored if the user pressed ESC.
+            m_screenColorPickerHelperDialog->setCurrentColor( //
+                q_pointer->currentColor());
+            m_screenColorPickerHelperButton->click();
+        });
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.
