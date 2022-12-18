@@ -6,7 +6,3 @@ SPDX-License-Identifier: MIT
 # PerceptualColor
 
 This library provides various Qt GUI components for choosing colors, with focus on an intuitive and perceptually uniform presentation.
-
-[Public API documentation](https://sommerluk.github.io/perceptualcolor/doc/publicapi/html/index.html)
-
-[Internal documentation](https://sommerluk.github.io/perceptualcolor/doc/publicapiandinternals/html/index.html)
