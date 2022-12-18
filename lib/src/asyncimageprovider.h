@@ -4,7 +4,7 @@
 #ifndef ASYNCIMAGEPROVIDER_H
 #define ASYNCIMAGEPROVIDER_H
 
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include "asyncimageproviderbase.h"
 #include "asyncimagerenderthread.h"
 #include <optional>

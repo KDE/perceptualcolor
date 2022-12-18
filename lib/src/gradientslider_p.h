@@ -5,9 +5,9 @@
 #define GRADIENTSLIDER_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "PerceptualColor/gradientslider.h"
+// #include "perceptualcolor-0/gradientslider.h"
 
-#include "PerceptualColor/lchadouble.h"
+#include "perceptualcolor-0/lchadouble.h"
 #include "asyncimageprovider.h"
 #include "constpropagatingrawpointer.h"
 #include "gradientimageparameters.h"

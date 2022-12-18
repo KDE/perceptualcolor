@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "colorwheelimage.h"
 
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>

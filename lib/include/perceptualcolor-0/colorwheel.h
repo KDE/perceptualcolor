@@ -4,9 +4,9 @@
 #ifndef COLORWHEEL_H
 #define COLORWHEEL_H
 
-#include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/abstractdiagram.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/importexport.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qobjectdefs.h>
@@ -28,7 +28,7 @@ class RgbColorSpace;
 
 /** @brief A color wheel widget.
  *
- * @headerfile colorwheel.h <PerceptualColor/colorwheel.h>
+ * @headerfile colorwheel.h <perceptualcolor-0/colorwheel.h>
  *
  * This widget allows the user to choose the hue (as defined in the LCH
  * color space).

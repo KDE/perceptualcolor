@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 
 #include <qdebug.h>
 #include <qglobal.h>

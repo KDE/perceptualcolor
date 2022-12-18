@@ -1,22 +1,22 @@
 ﻿// SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: MIT
 
-#include "PerceptualColor/chromahuediagram.h"
-#include "PerceptualColor/colordialog.h"
-#include "PerceptualColor/colorpatch.h"
-#include "PerceptualColor/colorwheel.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/gradientslider.h"
-#include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/multispinbox.h"
-#include "PerceptualColor/multispinboxsectionconfiguration.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
-#include "PerceptualColor/wheelcolorpicker.h"
+#include "perceptualcolor-0/chromahuediagram.h"
+#include "perceptualcolor-0/colordialog.h"
+#include "perceptualcolor-0/colorpatch.h"
+#include "perceptualcolor-0/colorwheel.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/gradientslider.h"
+#include "perceptualcolor-0/lchdouble.h"
+#include "perceptualcolor-0/multispinbox.h"
+#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/wheelcolorpicker.h"
 #include "chromalightnessdiagram.h"
 #include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
-#include <PerceptualColor/settranslation.h>
+#include "perceptualcolor-0/settranslation.h"
 #include <QtCore/qsharedpointer.h>
 #include <helper.h>
 #include <qaction.h>

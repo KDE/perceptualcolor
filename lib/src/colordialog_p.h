@@ -5,7 +5,7 @@
 #define COLORDIALOG_P_H
 
 // Include the header of the public class of this private implementation.
-#include "PerceptualColor/colordialog.h"
+#include "perceptualcolor-0/colordialog.h"
 
 #include "constpropagatingrawpointer.h"
 #include "languagechangeeventfilter.h"

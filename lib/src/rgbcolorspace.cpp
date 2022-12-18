@@ -7,8 +7,8 @@
 // Second, the private implementation.
 #include "rgbcolorspace_p.h" // IWYU pragma: associated
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconstants.h"
 #include "helperconversion.h"

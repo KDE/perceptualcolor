@@ -3,13 +3,13 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/chromahuediagram.h"
+#include "perceptualcolor-0/chromahuediagram.h"
 // Second, the private implementation.
 #include "chromahuediagram_p.h" // IWYU pragma: keep
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include "polarpointf.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>

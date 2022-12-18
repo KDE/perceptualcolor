@@ -5,8 +5,8 @@
 // First the interface, which forces the header to be self-contained.
 #include "gradientimageparameters.h"
 
-#include "PerceptualColor/lchadouble.h"
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchadouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "asyncimagerendercallback.h"
 #include "helper.h"
 #include "helperqttypes.h"

@@ -3,14 +3,14 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/wheelcolorpicker.h"
+#include "perceptualcolor-0/wheelcolorpicker.h"
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h" // IWYU pragma: keep
 
-#include "PerceptualColor/colorwheel.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/colorwheel.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include "chromalightnessdiagram.h"
 #include "rgbcolorspace.h"
 #include <QtCore/qsharedpointer.h>

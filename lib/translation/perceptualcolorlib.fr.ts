@@ -307,7 +307,7 @@
         <translation>&amp;Sélectionner une couleur à l’écran</translation>
     </message>
     <message>
-        <location filename="../src/colordialog.cpp" line="1355"/>
+        <location filename="../src/colordialog.cpp" line="880"/>
         <source>Select color</source>
         <extracomment>@title:window Default window title. Same text as in QColorDialog</extracomment>
         <translation>Sélectionner une couleur</translation>

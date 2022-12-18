@@ -10,9 +10,9 @@
 # in the source code file by the actual value in CMake:
 configure_file(
     # Input:
-    include/PerceptualColor/version.in.hpp
+    include/perceptualcolor-0/version.in.hpp
     # Output:
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/PerceptualColor/version.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/perceptualcolor-0/version.h
 )
 # TODO Also configure rpm.spec and Doxygen files with this version information.
 
@@ -64,22 +64,22 @@ set(library_SRC
 # Set the headers for our library. This list only contains the headers
 # that are _not_ within the source directory.
 set(lib_PUBLICHEADERS
-    include/PerceptualColor/abstractdiagram.h
-    include/PerceptualColor/chromahuediagram.h
-    include/PerceptualColor/colordialog.h
-    include/PerceptualColor/colorpatch.h
-    include/PerceptualColor/colorwheel.h
-    include/PerceptualColor/constpropagatinguniquepointer.h
-    include/PerceptualColor/gradientslider.h
-    include/PerceptualColor/importexport.h
-    include/PerceptualColor/lchadouble.h
-    include/PerceptualColor/lchdouble.h
-    include/PerceptualColor/multispinbox.h
-    include/PerceptualColor/multispinboxsectionconfiguration.h
-    include/PerceptualColor/rgbcolorspacefactory.h
-    include/PerceptualColor/settranslation.h
-    include/PerceptualColor/wheelcolorpicker.h
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/PerceptualColor/version.h
+    include/perceptualcolor-0/abstractdiagram.h
+    include/perceptualcolor-0/chromahuediagram.h
+    include/perceptualcolor-0/colordialog.h
+    include/perceptualcolor-0/colorpatch.h
+    include/perceptualcolor-0/colorwheel.h
+    include/perceptualcolor-0/constpropagatinguniquepointer.h
+    include/perceptualcolor-0/gradientslider.h
+    include/perceptualcolor-0/importexport.h
+    include/perceptualcolor-0/lchadouble.h
+    include/perceptualcolor-0/lchdouble.h
+    include/perceptualcolor-0/multispinbox.h
+    include/perceptualcolor-0/multispinboxsectionconfiguration.h
+    include/perceptualcolor-0/rgbcolorspacefactory.h
+    include/perceptualcolor-0/settranslation.h
+    include/perceptualcolor-0/wheelcolorpicker.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/perceptualcolor-0/version.h
 )
 # TODO Also explicitly list all private headers to get more stable CMake
 #      and make sure these files pop up in IDEs.
@@ -260,15 +260,15 @@ target_link_libraries(
     PRIVATE ${LCMS2_LIBRARIES})
 install(
     DIRECTORY
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/PerceptualColor")
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
 install(
     TARGETS ${LIBRARY_NAME}
     EXPORT "${LIBRARY_NAME}"
-    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/PerceptualColor")
+    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
 install(EXPORT ${LIBRARY_NAME}
         FILE ${LIBRARY_NAME}.cmake
-        NAMESPACE PerceptualColor::
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PerceptualColor
+        NAMESPACE "PerceptualColor::"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
@@ -278,12 +278,12 @@ write_basic_package_version_file(
 )
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
   "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PerceptualColor
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 install(FILES
             "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
             "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PerceptualColor
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 
 
@@ -341,5 +341,5 @@ target_link_libraries(
     PRIVATE ${LCMS2_LIBRARIES})
 install(
     DIRECTORY
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/PerceptualColor")
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
 install(TARGETS ${INTERNAL_LIBRARY_NAME})

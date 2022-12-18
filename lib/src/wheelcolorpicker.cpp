@@ -3,14 +3,14 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/wheelcolorpicker.h"
+#include "perceptualcolor-0/wheelcolorpicker.h"
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h" // IWYU pragma: associated
 
-#include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/colorwheel.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/abstractdiagram.h"
+#include "perceptualcolor-0/colorwheel.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
 #include "cielchvalues.h"

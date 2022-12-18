@@ -4,7 +4,7 @@
 #ifndef SETTRANSLATION_H
 #define SETTRANSLATION_H
 
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/importexport.h"
 
 #include <qstringlist.h>
 

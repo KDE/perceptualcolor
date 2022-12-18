@@ -3,11 +3,11 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/colorpatch.h"
+#include "perceptualcolor-0/colorpatch.h"
 // Second, the private implementation.
 #include "colorpatch_p.h" // IWYU pragma: associated
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
 #include "helper.h"
 #include <memory>
 #include <qbrush.h>

@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
 
 #include <memory>
 #include <qglobal.h>

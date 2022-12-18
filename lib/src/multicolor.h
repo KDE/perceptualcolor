@@ -4,7 +4,7 @@
 #ifndef MULTICOLOR_H
 #define MULTICOLOR_H
 
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include <optional>
 #include <qcolor.h>
 #include <qdebug.h>

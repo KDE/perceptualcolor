@@ -4,7 +4,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/importexport.h"
 
 #include <qglobal.h>
 #include <qversionnumber.h>

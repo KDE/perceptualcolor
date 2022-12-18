@@ -10,9 +10,9 @@
 #include <qsize.h>
 #include <qstring.h>
 
-#include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/abstractdiagram.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
 
 class QKeyEvent;
 class QMouseEvent;

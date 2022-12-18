@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "cielchvalues.h"
 
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "rgbcolorspace.h"
 #include <QtCore/qsharedpointer.h>
 #include <math.h>

@@ -211,7 +211,7 @@
         <translation>Tomar un color de la &amp;pantalla</translation>
     </message>
     <message>
-        <location filename="../src/colordialog.cpp" line="1355"/>
+        <location filename="../src/colordialog.cpp" line="880"/>
         <source>Select color</source>
         <extracomment>@title:window Default window title. Same text as in QColorDialog</extracomment>
         <translation>Selecciona color</translation>

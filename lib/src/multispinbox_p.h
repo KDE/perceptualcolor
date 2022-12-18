@@ -5,9 +5,9 @@
 #define MULTISPINBOX_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "PerceptualColor/multispinbox.h"
+// #include "perceptualcolor-0/multispinbox.h"
 
-#include "PerceptualColor/multispinboxsectionconfiguration.h"
+#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
 #include "constpropagatingrawpointer.h"
 #include "helperqttypes.h"
 #include <qaccessiblewidget.h>

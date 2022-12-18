@@ -4,10 +4,10 @@
 #ifndef GRADIENTSLIDER_H
 #define GRADIENTSLIDER_H
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/importexport.h"
-#include <PerceptualColor/abstractdiagram.h>
-#include <PerceptualColor/lchadouble.h>
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/importexport.h"
+#include "perceptualcolor-0/abstractdiagram.h"
+#include "perceptualcolor-0/lchadouble.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qmetatype.h>
@@ -31,7 +31,7 @@ class RgbColorSpace;
 
 /** @brief A slider who’s groove displays an LCH color gradient.
  *
- * @headerfile gradientslider.h <PerceptualColor/gradientslider.h>
+ * @headerfile gradientslider.h <perceptualcolor-0/gradientslider.h>
  *
  * @image html GradientSlider.png "GradientSlider" width=200
  *

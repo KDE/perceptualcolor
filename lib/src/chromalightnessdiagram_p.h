@@ -7,7 +7,7 @@
 // Include the header of the public class of this private implementation.
 // #include "chromalightnessdiagram.h"
 
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "asyncimageprovider.h"
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"

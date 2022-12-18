@@ -3,10 +3,10 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/settranslation.h"
+#include "perceptualcolor-0/settranslation.h"
 
-#include "PerceptualColor/colordialog.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/colordialog.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include <qcoreapplication.h>
 #include <qlocale.h>
 #include <qobject.h>

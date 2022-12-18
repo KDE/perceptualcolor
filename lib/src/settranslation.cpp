@@ -3,7 +3,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/settranslation.h"
+#include "perceptualcolor-0/settranslation.h"
 
 #include "initializetranslation.h"
 #include <optional>

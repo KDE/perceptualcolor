@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 // Own header
-#include "PerceptualColor/version.h"
+#include "perceptualcolor-0/version.h"
 
 #include <limits>
 

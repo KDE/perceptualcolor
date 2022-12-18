@@ -3,13 +3,13 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/chromahuediagram.h"
+#include "perceptualcolor-0/chromahuediagram.h"
 // Second, the private implementation.
 #include "chromahuediagram_p.h" // IWYU pragma: associated
 
-#include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/abstractdiagram.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "cielchvalues.h"

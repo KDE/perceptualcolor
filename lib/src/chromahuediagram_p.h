@@ -5,9 +5,9 @@
 #define CHROMAHUEDIAGRAM_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "PerceptualColor/chromahuediagram.h"
+// #include "perceptualcolor-0/chromahuediagram.h"
 
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "colorwheelimage.h"

@@ -4,8 +4,8 @@
 #ifndef MULTISPINBOXSECTIONCONFIGURATION_H
 #define MULTISPINBOXSECTIONCONFIGURATION_H
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/importexport.h"
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qmetatype.h>
@@ -26,7 +26,7 @@ namespace PerceptualColor
 /** @brief The configuration of a single section
  * within a @ref MultiSpinBox.
  *
- * @headerfile multispinboxsectionconfiguration.h <PerceptualColor/multispinboxsectionconfiguration.h>
+ * @headerfile multispinboxsectionconfiguration.h <perceptualcolor-0/multispinboxsectionconfiguration.h>
  *
  * For a specific section within a @ref MultiSpinBox, this configuration
  * contains various settings.

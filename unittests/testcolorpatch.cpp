@@ -3,11 +3,11 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/colorpatch.h"
+#include "perceptualcolor-0/colorpatch.h"
 // Second, the private implementation.
 #include "colorpatch_p.h" // IWYU pragma: keep
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
 #include <QtCore/qglobal.h>
 #include <memory>
 #include <qcolor.h>

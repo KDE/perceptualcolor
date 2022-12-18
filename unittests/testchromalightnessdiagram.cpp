@@ -7,9 +7,9 @@
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/lchdouble.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include "helper.h"
 #include "helpermath.h"
 #include <QtCore/qsharedpointer.h>

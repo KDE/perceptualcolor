@@ -4,9 +4,9 @@
 #ifndef COLORPATCH_H
 #define COLORPATCH_H
 
-#include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/abstractdiagram.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/importexport.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qobjectdefs.h>
@@ -23,7 +23,7 @@ class ColorPatchPrivate;
 
 /** @brief A color display widget.
  *
- * @headerfile colorpatch.h <PerceptualColor/colorpatch.h>
+ * @headerfile colorpatch.h <perceptualcolor-0/colorpatch.h>
  *
  * This widget simply displays a color. Useful for showing a given
  * color. The instantiation and usage is simple. Example:

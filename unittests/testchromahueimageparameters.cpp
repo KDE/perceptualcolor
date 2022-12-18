@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "chromahueimageparameters.h"
 
-#include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/lchdouble.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include "asyncimagerendercallback.h"
 #include "helpermath.h"
 #include <qbenchmark.h>

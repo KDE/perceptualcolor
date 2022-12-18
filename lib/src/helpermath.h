@@ -4,7 +4,7 @@
 #ifndef HELPERMATH_H
 #define HELPERMATH_H
 
-#include "PerceptualColor/lchdouble.h"
+#include "perceptualcolor-0/lchdouble.h"
 #include <cmath>
 #include <lcms2.h>
 #include <limits>

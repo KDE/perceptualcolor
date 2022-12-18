@@ -4,7 +4,7 @@
 #ifndef RGBCOLORSPACEFACTORY_H
 #define RGBCOLORSPACEFACTORY_H
 
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/importexport.h"
 #include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -15,7 +15,7 @@ class RgbColorSpace;
 
 /** @brief Factory for color space objects.
  *
- * @headerfile rgbcolorspacefactory.h <PerceptualColor/rgbcolorspacefactory.h>
+ * @headerfile rgbcolorspacefactory.h <perceptualcolor-0/rgbcolorspacefactory.h>
  *
  * These color space objects are needed in the constructors of various classes
  * of this library.

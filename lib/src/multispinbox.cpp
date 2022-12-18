@@ -3,12 +3,12 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/multispinbox.h"
+#include "perceptualcolor-0/multispinbox.h"
 // Second, the private implementation.
 #include "multispinbox_p.h" // IWYU pragma: associated
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/multispinboxsectionconfiguration.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
 #include "constpropagatingrawpointer.h"
 #include "extendeddoublevalidator.h"
 #include "helpermath.h"

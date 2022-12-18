@@ -5,7 +5,7 @@
 #define ABSTRACTDIAGRAM_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "PerceptualColor/abstractdiagram.h"
+// #include "perceptualcolor-0/abstractdiagram.h"
 
 #include <qglobal.h>
 

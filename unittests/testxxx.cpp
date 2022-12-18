@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/xxx.h"
+#include "perceptualcolor-0/xxx.h"
 // Second, the private implementation.
 #include "xxx_p.h" // IWYU pragma: keep
 

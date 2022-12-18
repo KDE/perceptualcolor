@@ -5,7 +5,7 @@
 #define COLORPATCH_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "PerceptualColor/colorpatch.h"
+// #include "perceptualcolor-0/colorpatch.h"
 
 #include "constpropagatingrawpointer.h"
 #include <qcolor.h>

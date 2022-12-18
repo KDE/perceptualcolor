@@ -4,7 +4,7 @@
 #ifndef LCHDOUBLE_H
 #define LCHDOUBLE_H
 
-#include "PerceptualColor/importexport.h"
+#include "perceptualcolor-0/importexport.h"
 #include <qdebug.h>
 #include <qmetatype.h>
 
@@ -12,7 +12,7 @@ namespace PerceptualColor
 {
 /** @brief A LCH color.
  *
- * @headerfile lchdouble.h <PerceptualColor/lchdouble.h>
+ * @headerfile lchdouble.h <perceptualcolor-0/lchdouble.h>
  *
  * Storage of floating point LCH values with <tt>double</tt> precision.
  *

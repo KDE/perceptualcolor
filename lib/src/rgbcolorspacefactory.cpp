@@ -3,7 +3,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/rgbcolorspacefactory.h"
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 
 #include "rgbcolorspace.h"
 #include <qdir.h>

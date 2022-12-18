@@ -3,19 +3,19 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/colordialog.h"
+#include "perceptualcolor-0/colordialog.h"
 // Second, the private implementation.
 #include "colordialog_p.h" // IWYU pragma: associated
 
-#include "PerceptualColor/chromahuediagram.h"
-#include "PerceptualColor/colorpatch.h"
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/gradientslider.h"
-#include "PerceptualColor/lchadouble.h"
-#include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/multispinbox.h"
-#include "PerceptualColor/multispinboxsectionconfiguration.h"
-#include "PerceptualColor/wheelcolorpicker.h"
+#include "perceptualcolor-0/chromahuediagram.h"
+#include "perceptualcolor-0/colorpatch.h"
+#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "perceptualcolor-0/gradientslider.h"
+#include "perceptualcolor-0/lchadouble.h"
+#include "perceptualcolor-0/lchdouble.h"
+#include "perceptualcolor-0/multispinbox.h"
+#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
+#include "perceptualcolor-0/wheelcolorpicker.h"
 #include "cielchvalues.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconstants.h"
@@ -26,7 +26,7 @@
 #include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
-#include <PerceptualColor/rgbcolorspacefactory.h>
+#include "perceptualcolor-0/rgbcolorspacefactory.h"
 #include <lcms2.h>
 #include <memory>
 #include <optional>
