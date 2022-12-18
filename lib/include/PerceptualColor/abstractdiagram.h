@@ -1,0 +1,101 @@
+﻿// SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
+// SPDX-License-Identifier: MIT
+
+#ifndef ABSTRACTDIAGRAM_H
+#define ABSTRACTDIAGRAM_H
+
+#include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/importexport.h"
+#include <qcolor.h>
+#include <qglobal.h>
+#include <qimage.h>
+#include <qobjectdefs.h>
+#include <qsize.h>
+#include <qstring.h>
+#include <qwidget.h>
+class QHideEvent;
+class QObject;
+class QShowEvent;
+
+namespace PerceptualColor
+{
+class AbstractDiagramPrivate;
+
+/** @brief Base class for LCH diagrams.
+ *
+ * @headerfile abstractdiagram.h <PerceptualColor/abstractdiagram.h>
+ *
+ * Provides some elements that are common for all LCH diagrams in this
+ * library.
+ *
+ * @internal
+ *
+ * @note Qt provides some possibilities to declare that a certain widget
+ * has a fixed ration between width and height. You can reimplement
+ * <tt>QWidget::hasHeightForWidth()</tt> (indicates that the widget’s preferred
+ * height depends on its width) and <tt>QWidget::heightForWidth()</tt>
+ * (returns the preferred height for this widget, given the width <tt>w</tt>).
+ * However, Qt’s layout management makes only very limited use of this
+ * information. It is ignored, when the surrounding window is resized by
+ * grabbing the window border with the mouse. It is however considered when
+ * the surrounding window is resized by grabbing a <tt>QSizeGrip</tt>
+ * widget. This behavior is inconsistent and would be surprising for the
+ * user. Furthermore, if the widget is yet touching the border of the
+ * screen, then the policy cannot be honored anyway; but it causes
+ * flickering. Another possibility is QSizePolicy::setHeightForWidth or
+ * QSizePolicy::setWidthForHeight which seem both to be “only supported for
+ * QGraphicsLayout’s subclasses”. Therefore, it’s better not to use at all
+ * these features; that’s the only way to provide a consistent and good
+ * user experience.
+ *
+ * @todo Circular diagrams should be right-aligned on RTL layouts.
+ *
+ * @todo Touchscreen support: Magnify the handle circle, when diagram is
+ * used on a touch device?  */
+class PERCEPTUALCOLOR_IMPORTEXPORT AbstractDiagram : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Q_INVOKABLE AbstractDiagram(QWidget *parent = nullptr);
+    /** @brief Default destructor */
+    virtual ~AbstractDiagram() noexcept override;
+
+protected:
+    virtual void actualVisibilityToggledEvent();
+    void callUpdate();
+    [[nodiscard]] QColor focusIndicatorColor() const;
+    [[nodiscard]] int gradientMinimumLength() const;
+    [[nodiscard]] int gradientThickness() const;
+    virtual void hideEvent(QHideEvent *event) override;
+    [[nodiscard]] bool isActuallyVisible() const;
+    [[nodiscard]] int maximumPhysicalSquareSize() const;
+    [[nodiscard]] qreal maximumWidgetSquareSize() const;
+    [[nodiscard]] QSize physicalPixelSize() const;
+    [[nodiscard]] QColor handleColorFromBackgroundLightness(qreal lightness) const;
+    [[nodiscard]] int handleOutlineThickness() const;
+    [[nodiscard]] qreal handleRadius() const;
+    virtual void showEvent(QShowEvent *event) override;
+    [[nodiscard]] int spaceForFocusIndicator() const;
+    [[nodiscard]] QImage transparencyBackground() const;
+
+private:
+    Q_DISABLE_COPY(AbstractDiagram)
+
+    /** @internal
+     *
+     * @brief Declare the private implementation as friend class.
+     *
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class AbstractDiagramPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<AbstractDiagramPrivate> d_pointer;
+
+    /** @internal @brief Only for unit tests. */
+    friend class TestAbstractDiagram;
+};
+
+} // namespace PerceptualColor
+
+#endif // ABSTRACTDIAGRAM_H

@@ -1,0 +1,11 @@
+<!DOCTYPE RCC>
+<!--
+SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
+SPDX-License-Identifier: MIT
+-->
+<RCC version="1.0">
+    <qresource>
+        <file>testbed/ascii-abcd.txt</file>
+        <file>testbed/Compact-ICC-Profiles/Compact-ICC-Profiles/profiles/WideGamutCompat-v4.icc</file>
+    </qresource>
+</RCC>

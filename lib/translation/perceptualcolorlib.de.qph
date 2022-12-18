@@ -1,0 +1,68 @@
+<!DOCTYPE QPH>
+<QPH sourcelanguage="en_US" language="de">
+<phrase>
+    <source>hue</source>
+    <target>Farbton</target>
+</phrase>
+<phrase>
+    <source>lightness</source>
+    <target>Helligkeit</target>
+    <definition>This is different from “brightness”/“value”, and should therefore get a translation different from it.</definition>
+</phrase>
+<phrase>
+    <source>chroma</source>
+    <target>Buntheit</target>
+</phrase>
+<phrase>
+    <source>color space</source>
+    <target>Farbraum</target>
+    <definition>(1) Colors a device-dependant color model can actually output on specific device. (2) Colors that a device-independant color model can potentially encode.</definition>
+</phrase>
+<phrase>
+    <source>saturation</source>
+    <target>Sättigung</target>
+</phrase>
+<phrase>
+    <source>value</source>
+    <target>Strahlkraft</target>
+    <definition>“value“ and “brightness” as in HSV/HSB are identical. They are different from “lightness” and should therefore get a translation different from “lightness”.</definition>
+</phrase>
+<phrase>
+    <source>brightness</source>
+    <target>Strahlkraft</target>
+    <definition>“value“ and “brightness” as in HSV/HSB are identical. They are different from “lightness” and should therefore get a translation different from “lightness”.</definition>
+</phrase>
+<phrase>
+    <source>RGB</source>
+    <target>RGB</target>
+    <definition>color spaces based on Red, Green, Blue. Examples are sRGB, Adobe RGB, Display-P3.</definition>
+</phrase>
+<phrase>
+    <source>HSV</source>
+    <target>HSV</target>
+    <definition>HSV and HSB are different names for the same color space, which is based on the three components Hue, Saturation, Value/Brightness.</definition>
+</phrase>
+<phrase>
+    <source>HSB</source>
+    <target>HSB</target>
+    <definition>HSV and HSB are different names for the same color space, which is based on the three components Hue, Saturation, Value/Brightness.</definition>
+</phrase>
+<phrase>
+    <source>opacity</source>
+    <target>Deckkraft</target>
+    <definition>An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.</definition>
+</phrase>
+<phrase>
+    <source>color model</source>
+    <target>Farbmodell</target>
+    <definition>Device-dependent color models are  RGB, CMYK… Device-independent color models are CIEXYZ, LMS…</definition>
+</phrase>
+<phrase>
+    <source>HSL</source>
+    <target>HSL</target>
+</phrase>
+<phrase>
+    <source>named color</source>
+    <target>benannte Farben</target>
+</phrase>
+</QPH>

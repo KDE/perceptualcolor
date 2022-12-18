@@ -1,0 +1,16 @@
+﻿# SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
+# SPDX-License-Identifier: MIT
+
+# If the pattern starts with “/”, then the pattern is relative to
+# the directory level of this particular .gitignore file itself:
+/.clang-format
+/.kdev4/
+/build/*
+/Doxyfile
+/doc/publicapi
+/doc/publicapiandinternals
+
+# Otherwise the pattern may also match at any level below
+# the .gitignore level:
+.directory
+*.kdev4
