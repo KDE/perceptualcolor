@@ -129,7 +129,6 @@ cmakelint --spaces=4 2> /dev/null
 PUBLIC_HEADERS="src/include"
 CODE_WITHOUT_UNIT_TESTS="src tests utils"
 ALL_CODE="src autotests/* tests utils"
-NON_PUBLIC_CODE="src/* autotests/* tests utils"
 UNIT_TESTS="autotests/*"
 
 # Search for files that do not start with a byte-order-mark (BOM).
@@ -173,7 +172,7 @@ grep \
 grep \
     --recursive --exclude-dir={testbed,include} \
     --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
-    $NON_PUBLIC_CODE \
+    $ALL_CODE \
          | sed 's/^/Internal files may not use PERCEPTUALCOLOR_IMPORTEXPORT macro: /'
 
 # Do not use constexpr in public headers as when we change the value
