@@ -1457,8 +1457,8 @@ QString ColorDialogPrivate::translateViaQColorDialog(const char *sourceText)
  * @todo This function hijacks QColorDialog’s screen picker, but this relies
  * on internals of Qt and could therefore theoretically fail in later
  * Qt versions. On the other hand, making a cross-platform implementation
- * ourself would also be a lot of work. However, if we could solve this,
- * we could claim again at @ref mainpage that we do not use internal APIs.
+ * ourself would also be a lot of work. However, if we could solve this, we
+ * could claim again at @ref index "main page" that we do not use internal APIs.
  * There is a <a href="https://bugreports.qt.io/browse/QTBUG-109440">request
  * to add a public API to Qt</a> for this.
  *
