@@ -19,20 +19,20 @@ PARALLEL_PROCESSES="6"
 ################# Doxygen #################
 # This section will generate up-to-date screenshots and 
 # new Doxygen documentation.
-mkdir --parents doc
-mkdir --parents doc/screenshots
+mkdir --parents docs
+mkdir --parents docs/pics
 # Make sure old data is deleted. This is important because otherwise,
 # old documentation for classes that do not exist anymore, or old
 # screenshots that are not used anymore, would stay in the directory
 # and occupy space:
-rm --recursive --force doc/screenshots/*
-rm --recursive --force doc/publicapi
-rm --recursive --force doc/publicapiandinternals
-# Run generatescreenshots within doc/screenshots working
+rm --recursive --force docs/screenshots/*
+rm --recursive --force docs/publicapi
+rm --recursive --force docs/publicapiandinternals
+# Run generatescreenshots within docs/pics working
 # directory, but within a sub-shell (therefore the parenthesis),
 # so that after this we go back to the original working directory.
 ( \
-cd doc/screenshots \
+cd docs/pics \
     && ../../build/tools/perceptualcolorgeneratescreenshots \
     && for FILE in *; do cp ../../Doxyfile.external.license "$FILE.license"; done
 )
