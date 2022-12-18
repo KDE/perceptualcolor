@@ -460,27 +460,32 @@ set(CMAKE_AUTOUIC TRUE)
 ################# Subdirectories #################
 set(CLANG_FORMAT_PATTERNS)
 
-add_subdirectory(lib)
+add_subdirectory(src)
 list(APPEND CLANG_FORMAT_PATTERNS
-    lib/*.h # The .in.hpp file is intentionally missing in this pattern.
-    lib/*.cpp)
+    src/*.h # The .in.hpp file is intentionally missing in this pattern.
+    src/*.cpp)
 
 # Use unit tests only when building this project itself, and
 # not when it is included within another project:
 if("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     include(CTest)
     if(BUILD_TESTING)
-        add_subdirectory(unittests)
+        add_subdirectory(autotests)
     endif()
 endif()
 list(APPEND CLANG_FORMAT_PATTERNS
-    unittests/*.h
-    unittests/*.cpp)
+    autotests/*.h
+    autotests/*.cpp)
 
-add_subdirectory(tools)
+add_subdirectory(tests)
 list(APPEND CLANG_FORMAT_PATTERNS
-    tools/*.h
-    tools/*.cpp)
+    tests/*.h
+    tests/*.cpp)
+
+add_subdirectory(utils)
+list(APPEND CLANG_FORMAT_PATTERNS
+    utils/*.h
+    utils/*.cpp)
 
 
 

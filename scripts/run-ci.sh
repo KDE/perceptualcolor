@@ -12,7 +12,7 @@
 # The “.” command will execute the given script within the context of
 # the current script, which is necessary in order to preserve the
 # environment variables that are set by the given script.
-. run-export-environment.sh
+. scripts/run-export-environment.sh
 
 # Deleting completely the old build makes sure that the new build
 # will be done with the default settings that are used here.
@@ -82,7 +82,7 @@ done
 
 
 ################# Doxygen #################
-./run-doxygen.sh
+./scripts/run-doxygen.sh
 
 
 
@@ -126,11 +126,11 @@ cmakelint --spaces=4 2> /dev/null
 
 
 ################# Static code check #################
-PUBLIC_HEADERS="lib/include"
-CODE_WITHOUT_UNIT_TESTS="lib/include lib/src tools"
-ALL_CODE="lib/include lib/src unittests/* tools"
-NON_PUBLIC_CODE="lib/src unittests/* tools"
-UNIT_TESTS="unittests"
+PUBLIC_HEADERS="src/include"
+CODE_WITHOUT_UNIT_TESTS="src tests utils"
+ALL_CODE="src autotests/* tests utils"
+NON_PUBLIC_CODE="src/* autotests/* tests utils"
+UNIT_TESTS="autotests/*"
 
 # Search for files that do not start with a byte-order-mark (BOM).
 # We do this because Microsoft’s compiler does require a BOM at the start
@@ -140,7 +140,7 @@ grep \
     --files-without-match $'\xEF\xBB\xBF' \
     $ALL_CODE \
     | grep \
-        --perl-regexp "\.(license|txt|icc|qrc)$" \
+        --perl-regexp "\.(license|txt|icc|qrc|qph|ts|cmake\.in)$" \
         --invert-match \
     | sed 's/^/Missing byte-order-mark: /'
 
@@ -150,7 +150,7 @@ grep \
 grep \
     --recursive --exclude-dir=testbed \
     --files-without-match $'@internal' \
-    lib/src/*.h \
+    src/*.h \
          | sed 's/^/Missing “@internal” statement in non-public header: /'
 
 # The public header files should not use “final” because it cannot be removed
@@ -171,7 +171,7 @@ grep \
 
 # All non-public code should not use the PERCEPTUALCOLOR_IMPORTEXPORT macro.
 grep \
-    --recursive --exclude-dir=testbed \
+    --recursive --exclude-dir={testbed,include} \
     --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
     $NON_PUBLIC_CODE \
          | sed 's/^/Internal files may not use PERCEPTUALCOLOR_IMPORTEXPORT macro: /'

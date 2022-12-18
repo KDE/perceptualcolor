@@ -23,43 +23,43 @@ configure_file(
 ################# Setup source code #################
 # Set the sources for our library
 set(library_SRC
-    src/abstractdiagram.cpp
-    src/asyncimageproviderbase.cpp
-    src/asyncimagerendercallback.cpp
-    src/asyncimagerenderthread.cpp
-    src/chromahuediagram.cpp
-    src/chromahueimageparameters.cpp
-    src/chromalightnessdiagram.cpp
-    src/chromalightnessimageparameters.cpp
-    src/colordialog.cpp
-    src/colorpatch.cpp
-    src/colorwheel.cpp
-    src/colorwheelimage.cpp
-    src/extendeddoublevalidator.cpp
-    src/gradientimageparameters.cpp
-    src/gradientslider.cpp
-    src/helper.cpp
-    src/helperconstants.cpp
-    src/helperconversion.cpp
-    src/initializetranslation.cpp
-    src/interlacingpass.cpp
-    src/iohandlerfactory.cpp
-    src/languagechangeeventfilter.cpp
-    src/lchadouble.cpp
-    src/lchdouble.cpp
-    src/multicolor.cpp
-    src/multispinbox.cpp
-    src/multispinboxsectionconfiguration.cpp
-    src/palettewidget.cpp
-    src/polarpointf.cpp
-    src/refreshiconengine.cpp
-    src/rgbcolorspace.cpp
-    src/rgbcolorspacefactory.cpp
-    src/rgbdouble.cpp
-    src/settranslation.cpp
-    src/staticasserts.cpp
-    src/version.cpp
-    src/wheelcolorpicker.cpp
+    abstractdiagram.cpp
+    asyncimageproviderbase.cpp
+    asyncimagerendercallback.cpp
+    asyncimagerenderthread.cpp
+    chromahuediagram.cpp
+    chromahueimageparameters.cpp
+    chromalightnessdiagram.cpp
+    chromalightnessimageparameters.cpp
+    colordialog.cpp
+    colorpatch.cpp
+    colorwheel.cpp
+    colorwheelimage.cpp
+    extendeddoublevalidator.cpp
+    gradientimageparameters.cpp
+    gradientslider.cpp
+    helper.cpp
+    helperconstants.cpp
+    helperconversion.cpp
+    initializetranslation.cpp
+    interlacingpass.cpp
+    iohandlerfactory.cpp
+    languagechangeeventfilter.cpp
+    lchadouble.cpp
+    lchdouble.cpp
+    multicolor.cpp
+    multispinbox.cpp
+    multispinboxsectionconfiguration.cpp
+    palettewidget.cpp
+    polarpointf.cpp
+    refreshiconengine.cpp
+    rgbcolorspace.cpp
+    rgbcolorspacefactory.cpp
+    rgbdouble.cpp
+    settranslation.cpp
+    staticasserts.cpp
+    version.cpp
+    wheelcolorpicker.cpp
 )
 # Set the headers for our library. This list only contains the headers
 # that are _not_ within the source directory.
@@ -98,7 +98,7 @@ qt_create_translation(
     # Output variable where to store the list of generated .qm files:
     qm_file_list
     # C++ code:
-    ${library_SRC} ${lib_PUBLICHEADERS} # TODO What about src/*.h?
+    ${library_SRC} ${lib_PUBLICHEADERS} # TODO What about _private_ headers?
     # .ts files:
     "translation/perceptualcolorlib.de.ts"
     "translation/perceptualcolorlib.es.ts"
@@ -239,7 +239,7 @@ target_include_directories(
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/include/>
         $<INSTALL_INTERFACE:include/>
     PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/"
         "${LCMS2_INCLUDE_DIRS}")
 # target_link_libraries, despite its name, does not only mean “link”, but
 # actually rather “use”. It uses transitive dependencies:
@@ -325,7 +325,7 @@ set_target_properties(
 target_include_directories(
     ${INTERNAL_LIBRARY_NAME}
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/include>
         # No $<INSTALL_INTERFACE:xxx> because this target is only meant to

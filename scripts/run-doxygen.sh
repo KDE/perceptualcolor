@@ -25,7 +25,7 @@ mkdir --parents docs/pics
 # old documentation for classes that do not exist anymore, or old
 # screenshots that are not used anymore, would stay in the directory
 # and occupy space:
-rm --recursive --force docs/screenshots/*
+rm --recursive --force docs/pics/*
 rm --recursive --force docs/publicapi
 rm --recursive --force docs/publicapiandinternals
 # Run generatescreenshots within docs/pics working
@@ -33,7 +33,7 @@ rm --recursive --force docs/publicapiandinternals
 # so that after this we go back to the original working directory.
 ( \
 cd docs/pics \
-    && ../../build/tools/perceptualcolorgeneratescreenshots \
+    && ../../build/utils/perceptualcolorgeneratescreenshots \
     && for FILE in *; do cp ../../Doxyfile.external.license "$FILE.license"; done
 )
 # We are not interested in the normal Doxygen output, but only in the errors.

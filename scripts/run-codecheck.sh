@@ -12,7 +12,7 @@
 # The “.” command will execute the given script within the context of
 # the current script, which is necessary in order to preserve the
 # environment variables that are set by the given script.
-. run-export-environment.sh
+. scripts/run-export-environment.sh
 
 
 
