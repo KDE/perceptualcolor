@@ -634,6 +634,298 @@ void ColorDialogPrivate::retranslateUi()
     // the call is not necessary, as mentioned earlier.
 }
 
+/** @brief Basic initialization.
+ *
+ * @param colorSpace The color space within which this widget should operate.
+ * Can be created with @ref RgbColorSpaceFactory.
+ *
+ * Code that is shared between the various overloaded constructors.
+ *
+ * @todo The RTL layout is broken for @ref PaletteWidget. Thought a stretch
+ * is added in the layout, the @ref PaletteWidget stays left-aligned
+ * instead of right-aligned if there is too much space. Why doesn’t this
+ * right-align? For @ref m_wheelColorPicker and @ref m_chromaHueDiagram
+ * the same code works fine! */
+void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+{
+    // Do not show the “?” button in the window title. This button is displayed
+    // by default on widgets that inherit from QDialog. But we do not want the
+    // button because we do not provide What’s-This-help anyway, so having
+    // the button would be confusing.
+    q_pointer->setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+
+    // initialize color space
+    m_rgbColorSpace = colorSpace;
+
+    // create the graphical selectors
+    m_paletteWidget = new PaletteWidget(m_rgbColorSpace);
+    QHBoxLayout *paletteInnerLayout = new QHBoxLayout();
+    paletteInnerLayout->addWidget(m_paletteWidget);
+    paletteInnerLayout->addStretch();
+    QVBoxLayout *paletteOuterLayout = new QVBoxLayout();
+    paletteOuterLayout->addLayout(paletteInnerLayout);
+    paletteOuterLayout->addStretch();
+    m_paletteWrapperWidget = new QWidget();
+    m_paletteWrapperWidget->setLayout(paletteOuterLayout);
+
+    m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
+    m_hueFirstWrapperWidget = new QWidget;
+    QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
+    tempHueFirstLayout->addWidget(m_wheelColorPicker);
+    m_hueFirstWrapperWidget->setLayout(tempHueFirstLayout);
+
+    m_lchLightnessSelector = new GradientSlider(m_rgbColorSpace);
+    LchaDouble black;
+    black.l = 0;
+    black.c = 0;
+    black.h = 0;
+    black.a = 1;
+    LchaDouble white;
+    white.l = 100;
+    white.c = 0;
+    white.h = 0;
+    white.a = 1;
+    m_lchLightnessSelector->setColors(black, white);
+    m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
+    QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
+    tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
+    tempLightnesFirstLayout->addWidget(m_chromaHueDiagram);
+    m_lightnessFirstWrapperWidget = new QWidget();
+    m_lightnessFirstWrapperWidget->setLayout(tempLightnesFirstLayout);
+
+    initializeScreenColorPicker();
+
+    m_tabWidget = new QTabWidget;
+    m_tabWidget->addTab(m_paletteWrapperWidget, QString());
+    m_tabWidget->addTab(m_hueFirstWrapperWidget, QString());
+    m_tabWidget->addTab(m_lightnessFirstWrapperWidget, QString());
+    if (m_screenColorPickerWidget) {
+        m_tabWidget->addTab(m_screenColorPickerWidget, QString());
+    }
+
+    // Create the ColorPatch
+    m_colorPatch = new ColorPatch();
+    m_colorPatch->setMinimumSize(m_colorPatch->minimumSizeHint() * 1.5);
+
+    // Create widget for the numerical values
+    m_numericalWidget = initializeNumericPage();
+
+    // Create layout for graphical and numerical widgets
+    m_selectorLayout = new QHBoxLayout();
+    m_selectorLayout->addWidget(m_tabWidget);
+    m_selectorLayout->addWidget(m_numericalWidget);
+
+    // Create widgets for alpha value
+    QHBoxLayout *m_alphaLayout = new QHBoxLayout();
+    m_alphaGradientSlider = new GradientSlider(m_rgbColorSpace, //
+                                               Qt::Orientation::Horizontal);
+    m_alphaGradientSlider->setSingleStep(singleStepAlpha);
+    m_alphaGradientSlider->setPageStep(pageStepAlpha);
+    m_alphaSpinBox = new QDoubleSpinBox();
+    m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
+    m_alphaSpinBox->setMinimum(0);
+    m_alphaSpinBox->setMaximum(100);
+    // The suffix is set in retranslateUi.
+    m_alphaSpinBox->setDecimals(decimals);
+    m_alphaSpinBox->setSingleStep(singleStepAlpha * 100);
+    // m_alphaSpinBox is of type QDoubleSpinBox which does not allow to
+    // configure the pageStep.
+    m_alphaLabel = new QLabel();
+    m_alphaLabel->setBuddy(m_alphaSpinBox);
+    m_alphaLayout->addWidget(m_alphaLabel);
+    m_alphaLayout->addWidget(m_alphaGradientSlider);
+    m_alphaLayout->addWidget(m_alphaSpinBox);
+
+    // Create the default buttons
+    // We use standard buttons, because these standard buttons are
+    // created by Qt and have automatically the correct icons and so on
+    // (as designated in the current platform and widget style).
+    // Though we use standard buttons, (later) we set the text manually to
+    // get full control over the translation. Otherwise, loading a
+    // different translation files than the user’s QLocale::system()
+    // default locale would not update the standard button texts.
+    m_buttonBox = new QDialogButtonBox();
+    // NOTE We start with the OK button, and not with the Cancel button.
+    // This is because apparently, the first button becomes the default
+    // one (though Qt documentation says differently). If Cancel would
+    // be the first, it would become the default button, which is not
+    // what we want. (Even QPushButton::setDefault() will not change this
+    // afterwards.)
+    m_buttonOK = m_buttonBox->addButton(QDialogButtonBox::Ok);
+    // Must be explicitly marked as default button to prevent
+    // m_screenColorPickerHelperDialog from interfering:
+    m_buttonOK->setDefault(true);
+    m_buttonCancel = m_buttonBox->addButton(QDialogButtonBox::Cancel);
+    // The Qt documentation at
+    // https://doc.qt.io/qt-5/qcoreapplication.html#installTranslator
+    // says that Qt::LanguageChange events are only send to top-level
+    // widgets. However, our experience is that also the QDialogButtonBox
+    // receives Qt::LanguageChange events and reacts on it by updating
+    // the user-visible string of all standard buttons. We do not want
+    // to use custom buttons because of the advantages of standard
+    // buttons that are described above. On the other hand, we do not
+    // want Qt to change our string because we use our own translation
+    // here.
+    m_buttonBox->installEventFilter(&m_languageChangeEventFilter);
+    m_buttonOK->installEventFilter(&m_languageChangeEventFilter);
+    m_buttonCancel->installEventFilter(&m_languageChangeEventFilter);
+    connect(m_buttonBox, // sender
+            &QDialogButtonBox::accepted, // signal
+            q_pointer, // receiver
+            &PerceptualColor::ColorDialog::accept); // slot
+    connect(m_buttonBox, // sender
+            &QDialogButtonBox::rejected, // signal
+            q_pointer, // receiver
+            &PerceptualColor::ColorDialog::reject); // slot
+
+    // Create the main layout
+    QVBoxLayout *tempMainLayout = new QVBoxLayout();
+    tempMainLayout->addWidget(m_colorPatch);
+    tempMainLayout->addLayout(m_selectorLayout);
+    tempMainLayout->addLayout(m_alphaLayout);
+    tempMainLayout->addWidget(m_buttonBox);
+    q_pointer->setLayout(tempMainLayout);
+
+    // initialize signal-slot-connections
+    connect(m_paletteWidget, // sender
+            &PaletteWidget::currentColorChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readPaletteWidget // slot
+    );
+    connect(m_rgbSpinBox, // sender
+            &MultiSpinBox::sectionValuesChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readRgbNumericValues // slot
+    );
+    connect(m_rgbLineEdit, // sender
+            &QLineEdit::textChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readRgbHexValues // slot
+    );
+    connect(m_rgbLineEdit, // sender
+            &QLineEdit::editingFinished, // signal
+            this, // receiver
+            &ColorDialogPrivate::updateRgbHexButBlockSignals // slot
+    );
+    connect(m_hslSpinBox, // sender
+            &MultiSpinBox::sectionValuesChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readHslNumericValues // slot
+    );
+    connect(m_hwbSpinBox, // sender
+            &MultiSpinBox::sectionValuesChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readHwbNumericValues // slot
+    );
+    connect(m_hsvSpinBox, // sender
+            &MultiSpinBox::sectionValuesChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readHsvNumericValues // slot
+    );
+    connect(m_ciehlcSpinBox, // sender
+            &MultiSpinBox::sectionValuesChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readHlcNumericValues // slot
+    );
+    connect(m_ciehlcSpinBox, // sender
+            &MultiSpinBox::editingFinished, // signal
+            this, // receiver
+            &ColorDialogPrivate::updateHlcButBlockSignals // slot
+    );
+    connect(m_lchLightnessSelector, // sender
+            &GradientSlider::valueChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readLightnessValue // slot
+    );
+    connect(m_wheelColorPicker, // sender
+            &WheelColorPicker::currentColorChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readWheelColorPickerValues // slot
+    );
+    connect(m_chromaHueDiagram, // sender
+            &ChromaHueDiagram::currentColorChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readChromaHueDiagramValue // slot
+    );
+    connect(m_alphaGradientSlider, // sender
+            &GradientSlider::valueChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::updateColorPatch // slot
+    );
+    connect(m_alphaGradientSlider, // sender
+            &GradientSlider::valueChanged, // signal
+            this, // receiver
+            [this](const qreal newFraction) { // lambda
+                const QSignalBlocker blocker(m_alphaSpinBox);
+                m_alphaSpinBox->setValue(newFraction * 100);
+            });
+    connect(m_alphaSpinBox, // sender
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged), // signal
+            this, // receiver
+            [this](const double newValue) { // lambda
+                // m_alphaGradientSlider has range [0, 1], while the signal
+                // has range [0, 100]. This has to be adapted:
+                m_alphaGradientSlider->setValue(newValue / 100);
+            });
+
+    // Initialize the options
+    q_pointer->setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
+
+    // We are setting the translated default window title here instead
+    // of setting it within retranslateUi(). This is because also QColorDialog
+    // does not update the window title on LanguageChange events (probably
+    // to avoid confusion, because it’s difficult to tell exactly if the
+    // library user did or did not explicitly change the window title.
+    /*: @title:window Default window title. Same text as in QColorDialog */
+    q_pointer->setWindowTitle(tr("Select color"));
+
+    // Enable size grip
+    // As this dialog can indeed be resized, the size grip should
+    // be enabled. So, users can see the little triangle at the
+    // right bottom of the dialog (or the left bottom on a
+    // right-to-left layout). So, the user will be aware
+    // that he can indeed resize this dialog, which is
+    // important as the users are used to the default
+    // platform dialog, which often do not allow resizing. Therefore,
+    // by default, QDialog::isSizeGripEnabled() should be true.
+    // NOTE: Some widget styles like Oxygen or Breeze leave the size grip
+    // widget invisible; nevertheless it reacts on mouse events. Other
+    // widget styles indeed show the size grip widget, like Fusion or
+    // QtCurve.
+    q_pointer->setSizeGripEnabled(true);
+
+    // Refresh button for the HLC spin box
+    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
+    myIconEngine->setReferenceWidget(m_ciehlcSpinBox);
+    // myIcon takes ownership of myIconEngine, therefore we won’t
+    // delete myIconEngine manually.
+    QIcon myIcon = QIcon(myIconEngine);
+    QAction *myAction = new QAction(
+        // Icon:
+        myIcon,
+        // Text:
+        QString(),
+        // The q_pointer’s object is still not fully initialized at this point,
+        // but it’s base class constructor has fully run; this should be enough
+        // to use functionality based on QWidget. So: Parent object:
+        q_pointer);
+    m_ciehlcSpinBox->addActionButton(myAction, //
+                                     QLineEdit::ActionPosition::TrailingPosition);
+    connect(myAction, // sender
+            &QAction::triggered, // signal
+            this, // receiver
+            &ColorDialogPrivate::updateHlcButBlockSignals // slot
+    );
+
+    initializeTranslation(QCoreApplication::instance(),
+                          // An empty std::optional means: If in initialization
+                          // had been done yet, repeat this initialization.
+                          // If not, do a new initialization now with default
+                          // values.
+                          std::optional<QStringList>());
+    retranslateUi();
+}
+
 /** @brief Constructor
  *
  *  @param parent pointer to the parent widget, if any
@@ -1107,298 +1399,6 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
             .arg(rgbInteger.value(2), 2, 16, QChar::fromLatin1('0'))
             .toUpper(); // Convert to upper case
     m_rgbLineEdit->setText(hexString);
-}
-
-/** @brief Basic initialization.
- *
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
- *
- * Code that is shared between the various overloaded constructors.
- *
- * @todo The RTL layout is broken for @ref PaletteWidget. Thought a stretch
- * is added in the layout, the @ref PaletteWidget stays left-aligned
- * instead of right-aligned if there is too much space. Why doesn’t this
- * right-align? For @ref m_wheelColorPicker and @ref m_chromaHueDiagram
- * the same code works fine! */
-void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
-{
-    // Do not show the “?” button in the window title. This button is displayed
-    // by default on widgets that inherit from QDialog. But we do not want the
-    // button because we do not provide What’s-This-help anyway, so having
-    // the button would be confusing.
-    q_pointer->setWindowFlag(Qt::WindowContextHelpButtonHint, false);
-
-    // initialize color space
-    m_rgbColorSpace = colorSpace;
-
-    // create the graphical selectors
-    m_paletteWidget = new PaletteWidget(m_rgbColorSpace);
-    QHBoxLayout *paletteInnerLayout = new QHBoxLayout();
-    paletteInnerLayout->addWidget(m_paletteWidget);
-    paletteInnerLayout->addStretch();
-    QVBoxLayout *paletteOuterLayout = new QVBoxLayout();
-    paletteOuterLayout->addLayout(paletteInnerLayout);
-    paletteOuterLayout->addStretch();
-    m_paletteWrapperWidget = new QWidget();
-    m_paletteWrapperWidget->setLayout(paletteOuterLayout);
-
-    m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
-    m_hueFirstWrapperWidget = new QWidget;
-    QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
-    tempHueFirstLayout->addWidget(m_wheelColorPicker);
-    m_hueFirstWrapperWidget->setLayout(tempHueFirstLayout);
-
-    m_lchLightnessSelector = new GradientSlider(m_rgbColorSpace);
-    LchaDouble black;
-    black.l = 0;
-    black.c = 0;
-    black.h = 0;
-    black.a = 1;
-    LchaDouble white;
-    white.l = 100;
-    white.c = 0;
-    white.h = 0;
-    white.a = 1;
-    m_lchLightnessSelector->setColors(black, white);
-    m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
-    QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
-    tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
-    tempLightnesFirstLayout->addWidget(m_chromaHueDiagram);
-    m_lightnessFirstWrapperWidget = new QWidget();
-    m_lightnessFirstWrapperWidget->setLayout(tempLightnesFirstLayout);
-
-    initializeScreenColorPicker();
-
-    m_tabWidget = new QTabWidget;
-    m_tabWidget->addTab(m_paletteWrapperWidget, QString());
-    m_tabWidget->addTab(m_hueFirstWrapperWidget, QString());
-    m_tabWidget->addTab(m_lightnessFirstWrapperWidget, QString());
-    if (m_screenColorPickerWidget) {
-        m_tabWidget->addTab(m_screenColorPickerWidget, QString());
-    }
-
-    // Create the ColorPatch
-    m_colorPatch = new ColorPatch();
-    m_colorPatch->setMinimumSize(m_colorPatch->minimumSizeHint() * 1.5);
-
-    // Create widget for the numerical values
-    m_numericalWidget = initializeNumericPage();
-
-    // Create layout for graphical and numerical widgets
-    m_selectorLayout = new QHBoxLayout();
-    m_selectorLayout->addWidget(m_tabWidget);
-    m_selectorLayout->addWidget(m_numericalWidget);
-
-    // Create widgets for alpha value
-    QHBoxLayout *m_alphaLayout = new QHBoxLayout();
-    m_alphaGradientSlider = new GradientSlider(m_rgbColorSpace, //
-                                               Qt::Orientation::Horizontal);
-    m_alphaGradientSlider->setSingleStep(singleStepAlpha);
-    m_alphaGradientSlider->setPageStep(pageStepAlpha);
-    m_alphaSpinBox = new QDoubleSpinBox();
-    m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
-    m_alphaSpinBox->setMinimum(0);
-    m_alphaSpinBox->setMaximum(100);
-    // The suffix is set in retranslateUi.
-    m_alphaSpinBox->setDecimals(decimals);
-    m_alphaSpinBox->setSingleStep(singleStepAlpha * 100);
-    // m_alphaSpinBox is of type QDoubleSpinBox which does not allow to
-    // configure the pageStep.
-    m_alphaLabel = new QLabel();
-    m_alphaLabel->setBuddy(m_alphaSpinBox);
-    m_alphaLayout->addWidget(m_alphaLabel);
-    m_alphaLayout->addWidget(m_alphaGradientSlider);
-    m_alphaLayout->addWidget(m_alphaSpinBox);
-
-    // Create the default buttons
-    // We use standard buttons, because these standard buttons are
-    // created by Qt and have automatically the correct icons and so on
-    // (as designated in the current platform and widget style).
-    // Though we use standard buttons, (later) we set the text manually to
-    // get full control over the translation. Otherwise, loading a
-    // different translation files than the user’s QLocale::system()
-    // default locale would not update the standard button texts.
-    m_buttonBox = new QDialogButtonBox();
-    // NOTE We start with the OK button, and not with the Cancel button.
-    // This is because apparently, the first button becomes the default
-    // one (though Qt documentation says differently). If Cancel would
-    // be the first, it would become the default button, which is not
-    // what we want. (Even QPushButton::setDefault() will not change this
-    // afterwards.)
-    m_buttonOK = m_buttonBox->addButton(QDialogButtonBox::Ok);
-    // Must be explicitly marked as default button to prevent
-    // m_screenColorPickerHelperDialog from interfering:
-    m_buttonOK->setDefault(true);
-    m_buttonCancel = m_buttonBox->addButton(QDialogButtonBox::Cancel);
-    // The Qt documentation at
-    // https://doc.qt.io/qt-5/qcoreapplication.html#installTranslator
-    // says that Qt::LanguageChange events are only send to top-level
-    // widgets. However, our experience is that also the QDialogButtonBox
-    // receives Qt::LanguageChange events and reacts on it by updating
-    // the user-visible string of all standard buttons. We do not want
-    // to use custom buttons because of the advantages of standard
-    // buttons that are described above. On the other hand, we do not
-    // want Qt to change our string because we use our own translation
-    // here.
-    m_buttonBox->installEventFilter(&m_languageChangeEventFilter);
-    m_buttonOK->installEventFilter(&m_languageChangeEventFilter);
-    m_buttonCancel->installEventFilter(&m_languageChangeEventFilter);
-    connect(m_buttonBox, // sender
-            &QDialogButtonBox::accepted, // signal
-            q_pointer, // receiver
-            &PerceptualColor::ColorDialog::accept); // slot
-    connect(m_buttonBox, // sender
-            &QDialogButtonBox::rejected, // signal
-            q_pointer, // receiver
-            &PerceptualColor::ColorDialog::reject); // slot
-
-    // Create the main layout
-    QVBoxLayout *tempMainLayout = new QVBoxLayout();
-    tempMainLayout->addWidget(m_colorPatch);
-    tempMainLayout->addLayout(m_selectorLayout);
-    tempMainLayout->addLayout(m_alphaLayout);
-    tempMainLayout->addWidget(m_buttonBox);
-    q_pointer->setLayout(tempMainLayout);
-
-    // initialize signal-slot-connections
-    connect(m_paletteWidget, // sender
-            &PaletteWidget::currentColorChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readPaletteWidget // slot
-    );
-    connect(m_rgbSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readRgbNumericValues // slot
-    );
-    connect(m_rgbLineEdit, // sender
-            &QLineEdit::textChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readRgbHexValues // slot
-    );
-    connect(m_rgbLineEdit, // sender
-            &QLineEdit::editingFinished, // signal
-            this, // receiver
-            &ColorDialogPrivate::updateRgbHexButBlockSignals // slot
-    );
-    connect(m_hslSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readHslNumericValues // slot
-    );
-    connect(m_hwbSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readHwbNumericValues // slot
-    );
-    connect(m_hsvSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readHsvNumericValues // slot
-    );
-    connect(m_ciehlcSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readHlcNumericValues // slot
-    );
-    connect(m_ciehlcSpinBox, // sender
-            &MultiSpinBox::editingFinished, // signal
-            this, // receiver
-            &ColorDialogPrivate::updateHlcButBlockSignals // slot
-    );
-    connect(m_lchLightnessSelector, // sender
-            &GradientSlider::valueChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readLightnessValue // slot
-    );
-    connect(m_wheelColorPicker, // sender
-            &WheelColorPicker::currentColorChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readWheelColorPickerValues // slot
-    );
-    connect(m_chromaHueDiagram, // sender
-            &ChromaHueDiagram::currentColorChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::readChromaHueDiagramValue // slot
-    );
-    connect(m_alphaGradientSlider, // sender
-            &GradientSlider::valueChanged, // signal
-            this, // receiver
-            &ColorDialogPrivate::updateColorPatch // slot
-    );
-    connect(m_alphaGradientSlider, // sender
-            &GradientSlider::valueChanged, // signal
-            this, // receiver
-            [this](const qreal newFraction) { // lambda
-                const QSignalBlocker blocker(m_alphaSpinBox);
-                m_alphaSpinBox->setValue(newFraction * 100);
-            });
-    connect(m_alphaSpinBox, // sender
-            QOverload<double>::of(&QDoubleSpinBox::valueChanged), // signal
-            this, // receiver
-            [this](const double newValue) { // lambda
-                // m_alphaGradientSlider has range [0, 1], while the signal
-                // has range [0, 100]. This has to be adapted:
-                m_alphaGradientSlider->setValue(newValue / 100);
-            });
-
-    // Initialize the options
-    q_pointer->setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
-
-    // We are setting the translated default window title here instead
-    // of setting it within retranslateUi(). This is because also QColorDialog
-    // does not update the window title on LanguageChange events (probably
-    // to avoid confusion, because it’s difficult to tell exactly if the
-    // library user did or did not explicitly change the window title.
-    /*: @title:window Default window title. Same text as in QColorDialog */
-    q_pointer->setWindowTitle(tr("Select color"));
-
-    // Enable size grip
-    // As this dialog can indeed be resized, the size grip should
-    // be enabled. So, users can see the little triangle at the
-    // right bottom of the dialog (or the left bottom on a
-    // right-to-left layout). So, the user will be aware
-    // that he can indeed resize this dialog, which is
-    // important as the users are used to the default
-    // platform dialog, which often do not allow resizing. Therefore,
-    // by default, QDialog::isSizeGripEnabled() should be true.
-    // NOTE: Some widget styles like Oxygen or Breeze leave the size grip
-    // widget invisible; nevertheless it reacts on mouse events. Other
-    // widget styles indeed show the size grip widget, like Fusion or
-    // QtCurve.
-    q_pointer->setSizeGripEnabled(true);
-
-    // Refresh button for the HLC spin box
-    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
-    myIconEngine->setReferenceWidget(m_ciehlcSpinBox);
-    // myIcon takes ownership of myIconEngine, therefore we won’t
-    // delete myIconEngine manually.
-    QIcon myIcon = QIcon(myIconEngine);
-    QAction *myAction = new QAction(
-        // Icon:
-        myIcon,
-        // Text:
-        QString(),
-        // The q_pointer’s object is still not fully initialized at this point,
-        // but it’s base class constructor has fully run; this should be enough
-        // to use functionality based on QWidget. So: Parent object:
-        q_pointer);
-    m_ciehlcSpinBox->addActionButton(myAction, //
-                                     QLineEdit::ActionPosition::TrailingPosition);
-    connect(myAction, // sender
-            &QAction::triggered, // signal
-            this, // receiver
-            &ColorDialogPrivate::updateHlcButBlockSignals // slot
-    );
-
-    initializeTranslation(QCoreApplication::instance(),
-                          // An empty std::optional means: If in initialization
-                          // had been done yet, repeat this initialization.
-                          // If not, do a new initialization now with default
-                          // values.
-                          std::optional<QStringList>());
-    retranslateUi();
 }
 
 /** @brief Updates the HLC spin box to @ref m_currentOpaqueColor.
