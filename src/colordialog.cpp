@@ -1484,12 +1484,12 @@ void ColorDialogPrivate::initializeScreenColorPicker()
     auto temp = m_screenColorPickerHelperDialog->findChildren<QPushButton *>();
     QPushButton *m_screenColorPickerHelperButton = nullptr;
     for (const auto &button : temp) {
+        button->setDefault(false); // Prevent interfering with our dialog.
         // Going through translateViaQColorDialog() to avoid that the
         // string will be included in our own translation file; instead
         // intentionally fallback to Qt provided translation.
         if (button->text() == translateViaQColorDialog("&Pick Screen Color")) {
             m_screenColorPickerHelperButton = button;
-            break;
         }
     }
     // Store application-wide (static class variable) if screen color picker
