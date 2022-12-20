@@ -1,9 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: MIT
 
-#include "perceptualcolor-0/colordialog.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
-#include "perceptualcolor-0/version.h"
+#include "colordialog.h"
+#include "rgbcolorspacefactory.h"
+#include "version.h"
 #include "asyncimageprovider.h"
 #include "chromalightnessimageparameters.h"
 #include "helper.h"

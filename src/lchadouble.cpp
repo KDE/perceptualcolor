@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 // Own header
-#include "perceptualcolor-0/lchadouble.h"
+#include "lchadouble.h"
 
 #include <type_traits>
 

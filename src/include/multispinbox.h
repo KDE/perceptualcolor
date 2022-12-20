@@ -4,8 +4,8 @@
 #ifndef MULTISPINBOX_H
 #define MULTISPINBOX_H
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/importexport.h"
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
 #include <qabstractspinbox.h>
 #include <qglobal.h>
 #include <qlineedit.h>
@@ -35,8 +35,6 @@ namespace PerceptualColor
 
 /** @brief A spin box that can hold multiple sections (each with its own
  * value) at the same time.
- *
- * @headerfile multispinbox.h <perceptualcolor-0/multispinbox.h>
  *
  * This widget is similar to <tt>QDateTimeEdit</tt> which also provides
  * multiple sections (day, month, year…) within a single spin box.

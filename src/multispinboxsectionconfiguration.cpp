@@ -3,11 +3,11 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
+#include "multispinboxsectionconfiguration.h"
 // Second, the private implementation.
 #include "multispinboxsectionconfiguration_p.h" // IWYU pragma: associated
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
 #include <memory>
 #include <qglobal.h>

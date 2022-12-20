@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "gradientimageparameters.h"
 
-#include "perceptualcolor-0/lchadouble.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "lchadouble.h"
+#include "rgbcolorspacefactory.h"
 #include "asyncimagerenderthread.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>

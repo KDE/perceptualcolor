@@ -4,7 +4,7 @@
 // Own header
 #include "multicolor.h"
 
-#include "perceptualcolor-0/lchdouble.h"
+#include "lchdouble.h"
 #include "helperconversion.h"
 #include "helperqttypes.h"
 #include "rgbcolorspace.h"

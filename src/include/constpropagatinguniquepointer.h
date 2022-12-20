@@ -4,7 +4,7 @@
 #ifndef CONSTPROPAGATINGUNIQUEPOINTER_H
 #define CONSTPROPAGATINGUNIQUEPOINTER_H
 
-#include "perceptualcolor-0/importexport.h"
+#include "importexport.h"
 
 #include <memory>
 
@@ -13,8 +13,6 @@ namespace PerceptualColor
 /** @internal
  *
  * @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
- *
- * @headerfile constpropagatinguniquepointer.h <perceptualcolor-0/constpropagatinguniquepointer.h>
  *
  * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
  * C++ pointers), within <tt>const</tt> functions you can do non-const

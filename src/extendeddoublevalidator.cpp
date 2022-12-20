@@ -7,7 +7,7 @@
 // Second, the private implementation.
 #include "extendeddoublevalidator_p.h" // IWYU pragma: associated
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "constpropagatinguniquepointer.h"
 #include <memory>
 #include <qstringbuilder.h>
 class QObject;

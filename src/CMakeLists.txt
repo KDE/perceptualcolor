@@ -10,9 +10,9 @@
 # in the source code file by the actual value in CMake:
 configure_file(
     # Input:
-    include/perceptualcolor-0/version.in.hpp
+    include/version.in.hpp
     # Output:
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/perceptualcolor-0/version.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/version.h
 )
 # TODO Also configure rpm.spec and Doxygen files with this version information.
 
@@ -64,22 +64,22 @@ set(library_SRC
 # Set the headers for our library. This list only contains the headers
 # that are _not_ within the source directory.
 set(lib_PUBLICHEADERS
-    include/perceptualcolor-0/abstractdiagram.h
-    include/perceptualcolor-0/chromahuediagram.h
-    include/perceptualcolor-0/colordialog.h
-    include/perceptualcolor-0/colorpatch.h
-    include/perceptualcolor-0/colorwheel.h
-    include/perceptualcolor-0/constpropagatinguniquepointer.h
-    include/perceptualcolor-0/gradientslider.h
-    include/perceptualcolor-0/importexport.h
-    include/perceptualcolor-0/lchadouble.h
-    include/perceptualcolor-0/lchdouble.h
-    include/perceptualcolor-0/multispinbox.h
-    include/perceptualcolor-0/multispinboxsectionconfiguration.h
-    include/perceptualcolor-0/rgbcolorspacefactory.h
-    include/perceptualcolor-0/settranslation.h
-    include/perceptualcolor-0/wheelcolorpicker.h
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/perceptualcolor-0/version.h
+    include/abstractdiagram.h
+    include/chromahuediagram.h
+    include/colordialog.h
+    include/colorpatch.h
+    include/colorwheel.h
+    include/constpropagatinguniquepointer.h
+    include/gradientslider.h
+    include/importexport.h
+    include/lchadouble.h
+    include/lchdouble.h
+    include/multispinbox.h
+    include/multispinboxsectionconfiguration.h
+    include/rgbcolorspacefactory.h
+    include/settranslation.h
+    include/wheelcolorpicker.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/version.h
 )
 # TODO Also explicitly list all private headers to get more stable CMake
 #      and make sure these files pop up in IDEs.
@@ -235,9 +235,10 @@ set_target_properties(
 target_include_directories(
     ${LIBRARY_NAME}
     PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/include/>
-        $<INSTALL_INTERFACE:include/>
+        $<INSTALL_INTERFACE:include/${LIBRARY_NAME}/>
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/"
         "${LCMS2_INCLUDE_DIRS}")

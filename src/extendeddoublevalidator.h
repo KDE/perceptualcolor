@@ -4,7 +4,7 @@
 #ifndef EXTENDEDDOUBLEVALIDATOR_H
 #define EXTENDEDDOUBLEVALIDATOR_H
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "constpropagatinguniquepointer.h"
 #include <qglobal.h>
 #include <qobjectdefs.h>
 #include <qstring.h>

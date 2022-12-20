@@ -3,7 +3,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "perceptualcolor-0/abstractdiagram.h"
+#include "abstractdiagram.h"
 // Second, the private implementation.
 #include "abstractdiagram_p.h" // IWYU pragma: associated
 

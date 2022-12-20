@@ -5,7 +5,7 @@
 #define COLORWHEEL_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "perceptualcolor-0/colorwheel.h"
+// #include "colorwheel.h"
 
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"

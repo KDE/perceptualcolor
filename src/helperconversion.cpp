@@ -4,7 +4,7 @@
 // Own header
 #include "helperconversion.h"
 
-#include "perceptualcolor-0/lchdouble.h"
+#include "lchdouble.h"
 #include <cmath>
 #include <qgenericmatrix.h>
 

@@ -4,8 +4,8 @@
 #ifndef RGBCOLORSPACE_H
 #define RGBCOLORSPACE_H
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/lchdouble.h"
+#include "constpropagatinguniquepointer.h"
+#include "lchdouble.h"
 #include "rgbdouble.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>

@@ -7,8 +7,8 @@
 // Second, the private implementation.
 #include "palettewidget_p.h" // IWYU pragma: keep
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "constpropagatinguniquepointer.h"
+#include "rgbcolorspacefactory.h"
 #include "helperqttypes.h"
 #include <QtCore/qsharedpointer.h>
 #include <memory>

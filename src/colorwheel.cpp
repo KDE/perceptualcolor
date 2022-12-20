@@ -3,12 +3,12 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "perceptualcolor-0/colorwheel.h"
+#include "colorwheel.h"
 // Second, the private implementation.
 #include "colorwheel_p.h" // IWYU pragma: associated
 
-#include "perceptualcolor-0/abstractdiagram.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
 #include "cielchvalues.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"

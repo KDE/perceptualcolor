@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "helperconversion.h"
 
-#include "perceptualcolor-0/lchdouble.h"
+#include "lchdouble.h"
 #include "helpermath.h"
 #include <algorithm>
 #include <cmath>

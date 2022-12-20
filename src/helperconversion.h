@@ -4,7 +4,7 @@
 #ifndef HELPERCONVERSION_H
 #define HELPERCONVERSION_H
 
-#include "perceptualcolor-0/lchdouble.h"
+#include "lchdouble.h"
 #include <lcms2.h>
 #include <qgenericmatrix.h>
 

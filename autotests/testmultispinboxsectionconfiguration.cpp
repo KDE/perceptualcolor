@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
+#include "multispinboxsectionconfiguration.h"
 // Second, the private implementation.
 #include "multispinboxsectionconfiguration_p.h" // IWYU pragma: keep
 

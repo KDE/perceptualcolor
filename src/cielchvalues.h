@@ -4,7 +4,7 @@
 #ifndef CIELCHVALUES_H
 #define CIELCHVALUES_H
 
-#include "perceptualcolor-0/lchdouble.h"
+#include "lchdouble.h"
 
 namespace PerceptualColor
 {

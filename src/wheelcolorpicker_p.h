@@ -5,7 +5,7 @@
 #define WHEELCOLORPICKER_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "perceptualcolor-0/wheelcolorpicker.h"
+// #include "wheelcolorpicker.h"
 
 #include "constpropagatingrawpointer.h"
 #include <QtCore/qsharedpointer.h>

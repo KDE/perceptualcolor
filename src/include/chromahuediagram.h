@@ -10,10 +10,10 @@
 #include <qsize.h>
 #include <qstring.h>
 
-#include "perceptualcolor-0/abstractdiagram.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/importexport.h"
-#include "perceptualcolor-0/lchdouble.h"
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
+#include "lchdouble.h"
 
 class QKeyEvent;
 class QMouseEvent;
@@ -35,8 +35,6 @@ class RgbColorSpace;
 namespace PerceptualColor
 {
 /** @brief A widget for selecting chroma and hue in LCH color space
- *
- * @headerfile chromahuediagram.h <perceptualcolor-0/chromahuediagram.h>
  *
  * This widget displays the plan of chroma and hue
  * (that means a diagram of the radial and the angle of the

@@ -4,10 +4,10 @@
 #ifndef WHEELCOLORPICKER_H
 #define WHEELCOLORPICKER_H
 
-#include "perceptualcolor-0/abstractdiagram.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/importexport.h"
-#include "perceptualcolor-0/lchdouble.h"
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
+#include "lchdouble.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qobjectdefs.h>
@@ -24,8 +24,6 @@ class RgbColorSpace;
 class WheelColorPickerPrivate;
 
 /** @brief Complete wheel-based color picker widget
- *
- * @headerfile wheelcolorpicker.h <perceptualcolor-0/wheelcolorpicker.h>
  *
  * It is composed of a @ref ColorWheel and, in the middle of the wheel,
  * a chroma-lightness diagram.

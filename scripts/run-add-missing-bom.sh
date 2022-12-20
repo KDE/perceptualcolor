@@ -13,4 +13,4 @@
 # (Unfortunately, this touches all files, even those that don’t need a change.
 # Therefore, after calling this script, the next “make” call will rebuild
 # everything.
-nice --adjustment 19 sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/perceptualcolor-0/* autotests/*.cpp tests/* utils/*
+nice --adjustment 19 sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/* autotests/*.cpp tests/* utils/*

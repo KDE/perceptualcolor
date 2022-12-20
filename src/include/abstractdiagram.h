@@ -4,8 +4,8 @@
 #ifndef ABSTRACTDIAGRAM_H
 #define ABSTRACTDIAGRAM_H
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/importexport.h"
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
@@ -22,8 +22,6 @@ namespace PerceptualColor
 class AbstractDiagramPrivate;
 
 /** @brief Base class for LCH diagrams.
- *
- * @headerfile abstractdiagram.h <perceptualcolor-0/abstractdiagram.h>
  *
  * Provides some elements that are common for all LCH diagrams in this
  * library.

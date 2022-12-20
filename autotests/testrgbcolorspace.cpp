@@ -7,9 +7,9 @@
 // Second, the private implementation.
 #include "rgbcolorspace_p.h" // IWYU pragma: keep
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/lchdouble.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "constpropagatinguniquepointer.h"
+#include "lchdouble.h"
+#include "rgbcolorspacefactory.h"
 #include "cielchvalues.h"
 #include "helpermath.h"
 #include <QtCore/qsharedpointer.h>

@@ -3,19 +3,19 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "perceptualcolor-0/colordialog.h"
+#include "colordialog.h"
 // Second, the private implementation.
 #include "colordialog_p.h" // IWYU pragma: associated
 
-#include "perceptualcolor-0/chromahuediagram.h"
-#include "perceptualcolor-0/colorpatch.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/gradientslider.h"
-#include "perceptualcolor-0/lchadouble.h"
-#include "perceptualcolor-0/lchdouble.h"
-#include "perceptualcolor-0/multispinbox.h"
-#include "perceptualcolor-0/multispinboxsectionconfiguration.h"
-#include "perceptualcolor-0/wheelcolorpicker.h"
+#include "chromahuediagram.h"
+#include "colorpatch.h"
+#include "constpropagatinguniquepointer.h"
+#include "gradientslider.h"
+#include "lchadouble.h"
+#include "lchdouble.h"
+#include "multispinbox.h"
+#include "multispinboxsectionconfiguration.h"
+#include "wheelcolorpicker.h"
 #include "cielchvalues.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconstants.h"
@@ -26,7 +26,7 @@
 #include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "rgbcolorspacefactory.h"
 #include <lcms2.h>
 #include <memory>
 #include <optional>

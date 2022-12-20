@@ -4,8 +4,8 @@
 #ifndef PALETTEWIDGET_H
 #define PALETTEWIDGET_H
 
-#include "perceptualcolor-0/abstractdiagram.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
 #include <QtCore/qsharedpointer.h>
 #include <qcolor.h>
 #include <qglobal.h>

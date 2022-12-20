@@ -3,13 +3,13 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "perceptualcolor-0/gradientslider.h"
+#include "gradientslider.h"
 // Second, the private implementation.
 #include "gradientslider_p.h" // IWYU pragma: keep
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/lchadouble.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "constpropagatinguniquepointer.h"
+#include "lchadouble.h"
+#include "rgbcolorspacefactory.h"
 #include "gradientimageparameters.h"
 #include <QtCore/qsharedpointer.h>
 #include <memory>

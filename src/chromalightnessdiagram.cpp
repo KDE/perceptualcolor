@@ -7,9 +7,9 @@
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h" // IWYU pragma: associated
 
-#include "perceptualcolor-0/abstractdiagram.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/lchdouble.h"
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
+#include "lchdouble.h"
 #include "cielchvalues.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconstants.h"

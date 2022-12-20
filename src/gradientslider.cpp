@@ -3,13 +3,13 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "perceptualcolor-0/gradientslider.h"
+#include "gradientslider.h"
 // Second, the private implementation.
 #include "gradientslider_p.h" // IWYU pragma: associated
 
-#include "perceptualcolor-0/abstractdiagram.h"
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/lchadouble.h"
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
+#include "lchadouble.h"
 #include "constpropagatingrawpointer.h"
 #include "gradientimageparameters.h"
 #include "helperconstants.h"

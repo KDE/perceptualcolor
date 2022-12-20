@@ -4,8 +4,8 @@
 #ifndef COLORDIALOG_H
 #define COLORDIALOG_H
 
-#include "perceptualcolor-0/constpropagatinguniquepointer.h"
-#include "perceptualcolor-0/importexport.h"
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
 #include <QtCore/qsharedpointer.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
@@ -26,8 +26,6 @@ class ColorDialogPrivate;
 class RgbColorSpace;
 
 /** @brief A perceptually uniform color picker dialog
- *
- * @headerfile colordialog.h <perceptualcolor-0/colordialog.h>
  *
  * The color dialog’s function is to allow users to choose colors intuitively.
  * For example, you might use this in a drawing program to allow the user to

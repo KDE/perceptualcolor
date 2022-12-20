@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "multicolor.h"
 
-#include "perceptualcolor-0/lchdouble.h"
-#include "perceptualcolor-0/rgbcolorspacefactory.h"
+#include "lchdouble.h"
+#include "rgbcolorspacefactory.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qlist.h>

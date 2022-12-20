@@ -4,15 +4,13 @@
 #ifndef LCHADOUBLE_H
 #define LCHADOUBLE_H
 
-#include "perceptualcolor-0/importexport.h"
+#include "importexport.h"
 #include <qdebug.h>
 #include <qmetatype.h>
 
 namespace PerceptualColor
 {
 /** @brief A LCH color with alpha channel.
- *
- * @headerfile lchadouble.h <perceptualcolor-0/lchadouble.h>
  *
  * Storage of floating point LCH values with <tt>double</tt> precision.
  *

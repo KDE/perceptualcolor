@@ -4,7 +4,7 @@
 #ifndef GRADIENTIMAGEPARAMETERS_H
 #define GRADIENTIMAGEPARAMETERS_H
 
-#include "perceptualcolor-0/lchadouble.h"
+#include "lchadouble.h"
 #include <qglobal.h>
 #include <qimage.h>
 #include <qmetatype.h>

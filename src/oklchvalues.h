@@ -4,7 +4,7 @@
 #ifndef OKLCHVALUES_H
 #define OKLCHVALUES_H
 
-#include "perceptualcolor-0/lchdouble.h"
+#include "lchdouble.h"
 
 namespace PerceptualColor
 {
