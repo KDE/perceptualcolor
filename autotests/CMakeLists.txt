@@ -104,7 +104,6 @@ if(BUILD_TESTING)
             add_dependencies(
                 buildtests
                 "${test_target_name}")
-            install(TARGETS "${test_target_name}")
         endforeach()
     endfunction()
 

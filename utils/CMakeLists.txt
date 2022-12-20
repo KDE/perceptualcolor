@@ -18,4 +18,3 @@ target_link_libraries(
     # for executables, since you  can’t link against an executable.
     # Therefore using PRIVAT:
     PRIVATE "perceptualcolorinternal-${MAJOR_VERSION}")
-install(TARGETS perceptualcolorgeneratescreenshots)

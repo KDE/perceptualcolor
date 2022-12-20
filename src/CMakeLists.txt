@@ -340,7 +340,3 @@ target_link_libraries(
     # to keep it, for future binary compatibility.
     PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::Concurrent
     PRIVATE ${LCMS2_LIBRARIES})
-install(
-    DIRECTORY
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
-install(TARGETS ${INTERNAL_LIBRARY_NAME})
