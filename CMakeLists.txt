@@ -492,15 +492,13 @@ list(APPEND CLANG_FORMAT_PATTERNS
 
 
 ################# Clang format #################
-list(APPEND CMAKE_MODULE_PATH
-    ${ECM_MODULE_DIR})
 find_package(
     ECM
-    REQUIRED)
-# TODO This should not be an absolute path like this:
-#      include(KDEClangFormat)
-#      But using a relative path apparently does not work! Why?
-include(/usr/share/ECM/kde-modules/KDEClangFormat.cmake)
+    REQUIRED
+    NO_MODULE)
+list(APPEND CMAKE_MODULE_PATH
+    ${ECM_MODULE_PATH})
+include(KDEClangFormat)
 file(
     # TODO Is it possible to get rid of GLOB_RECURSE?
     GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES # Name of the output variable.
