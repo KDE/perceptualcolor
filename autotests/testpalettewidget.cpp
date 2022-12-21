@@ -8,8 +8,8 @@
 #include "palettewidget_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
-#include "rgbcolorspacefactory.h"
 #include "helperqttypes.h"
+#include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
 #include <memory>
 #include <qbytearray.h>

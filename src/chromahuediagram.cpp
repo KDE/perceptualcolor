@@ -8,16 +8,16 @@
 #include "chromahuediagram_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "constpropagatinguniquepointer.h"
-#include "lchdouble.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "cielchvalues.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
+#include "lchdouble.h"
 #include "polarpointf.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>

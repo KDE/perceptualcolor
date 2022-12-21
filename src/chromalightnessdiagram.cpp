@@ -8,11 +8,11 @@
 #include "chromalightnessdiagram_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "constpropagatinguniquepointer.h"
-#include "lchdouble.h"
 #include "cielchvalues.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
+#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <memory>
 #include <optional>

@@ -8,18 +8,18 @@
 #include "colordialog_p.h" // IWYU pragma: keep
 
 #include "chromahuediagram.h"
+#include "colorpatch.h"
 #include "constpropagatinguniquepointer.h"
 #include "gradientslider.h"
-#include "lchdouble.h"
-#include "multispinbox.h"
-#include "rgbcolorspacefactory.h"
-#include "wheelcolorpicker.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
+#include "lchdouble.h"
 #include "multicolor.h"
+#include "multispinbox.h"
 #include "rgbcolorspace.h"
-#include "colorpatch.h"
+#include "rgbcolorspacefactory.h"
 #include "settranslation.h"
+#include "wheelcolorpicker.h"
 #include <QtCore/qsharedpointer.h>
 #include <memory>
 #include <qapplication.h>

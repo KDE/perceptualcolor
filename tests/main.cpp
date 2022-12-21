@@ -1,11 +1,9 @@
 ﻿// SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: MIT
 
-#include "colordialog.h"
-#include "rgbcolorspacefactory.h"
-#include "version.h"
 #include "asyncimageprovider.h"
 #include "chromalightnessimageparameters.h"
+#include "colordialog.h"
 #include "helper.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
@@ -14,6 +12,8 @@
 #include "oklchvalues.h"
 #include "polarpointf.h"
 #include "rgbcolorspace.h"
+#include "rgbcolorspacefactory.h"
+#include "version.h"
 #include <QtCore/qsharedpointer.h>
 #include <helpermath.h>
 #include <qapplication.h>

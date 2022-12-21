@@ -4,9 +4,9 @@
 // Own header
 #include "multicolor.h"
 
-#include "lchdouble.h"
 #include "helperconversion.h"
 #include "helperqttypes.h"
+#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include "rgbdouble.h"
 #include <QtCore/qsharedpointer.h>

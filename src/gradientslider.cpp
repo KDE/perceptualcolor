@@ -8,11 +8,11 @@
 #include "gradientslider_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "constpropagatinguniquepointer.h"
-#include "lchadouble.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "gradientimageparameters.h"
 #include "helperconstants.h"
+#include "lchadouble.h"
 #include <helper.h>
 #include <memory>
 #include <qevent.h>

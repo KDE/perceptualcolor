@@ -7,15 +7,15 @@
 // Second, the private implementation.
 #include "rgbcolorspace_p.h" // IWYU pragma: associated
 
-#include "constpropagatinguniquepointer.h"
-#include "lchdouble.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "helpermath.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
 #include "iohandlerfactory.h"
+#include "lchdouble.h"
 #include "polarpointf.h"
 #include "rgbdouble.h"
 #include <bits/types/struct_tm.h>

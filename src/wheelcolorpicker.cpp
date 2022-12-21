@@ -8,15 +8,15 @@
 #include "wheelcolorpicker_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "colorwheel.h"
-#include "constpropagatinguniquepointer.h"
-#include "lchdouble.h"
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
 #include "cielchvalues.h"
+#include "colorwheel.h"
 #include "colorwheel_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
+#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <math.h>
 #include <memory>

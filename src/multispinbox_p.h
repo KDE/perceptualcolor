@@ -7,9 +7,9 @@
 // Include the header of the public class of this private implementation.
 // #include "multispinbox.h"
 
-#include "multispinboxsectionconfiguration.h"
 #include "constpropagatingrawpointer.h"
 #include "helperqttypes.h"
+#include "multispinboxsectionconfiguration.h"
 #include <qaccessiblewidget.h>
 #include <qglobal.h>
 #include <qlist.h>

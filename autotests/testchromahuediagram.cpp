@@ -9,8 +9,8 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "lchdouble.h"
-#include "rgbcolorspacefactory.h"
 #include "polarpointf.h"
+#include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <memory>

@@ -8,10 +8,10 @@
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
-#include "lchdouble.h"
-#include "rgbcolorspacefactory.h"
 #include "helper.h"
 #include "helpermath.h"
+#include "lchdouble.h"
+#include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
 #include <cmath>
 #include <limits>

@@ -5,10 +5,10 @@
 // this forces the header to be self-contained.
 #include "chromahueimageparameters.h"
 
-#include "lchdouble.h"
-#include "rgbcolorspacefactory.h"
 #include "asyncimagerendercallback.h"
 #include "helpermath.h"
+#include "lchdouble.h"
+#include "rgbcolorspacefactory.h"
 #include <qbenchmark.h>
 #include <qcolor.h>
 #include <qglobal.h>

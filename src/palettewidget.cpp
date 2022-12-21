@@ -8,11 +8,11 @@
 #include "palettewidget_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "constpropagatinguniquepointer.h"
-#include "lchdouble.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
+#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <memory>
 #include <optional>

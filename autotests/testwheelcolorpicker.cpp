@@ -7,12 +7,12 @@
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h" // IWYU pragma: keep
 
+#include "chromalightnessdiagram.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
 #include "lchdouble.h"
-#include "rgbcolorspacefactory.h"
-#include "chromalightnessdiagram.h"
 #include "rgbcolorspace.h"
+#include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
 #include <memory>
 #include <qobject.h>

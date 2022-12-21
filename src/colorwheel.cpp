@@ -8,10 +8,10 @@
 #include "colorwheel_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "constpropagatinguniquepointer.h"
 #include "cielchvalues.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "helperconstants.h"
 #include "helpermath.h"

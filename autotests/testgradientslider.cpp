@@ -8,9 +8,9 @@
 #include "gradientslider_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
+#include "gradientimageparameters.h"
 #include "lchadouble.h"
 #include "rgbcolorspacefactory.h"
-#include "gradientimageparameters.h"
 #include <QtCore/qsharedpointer.h>
 #include <memory>
 #include <qglobal.h>

@@ -7,10 +7,10 @@
 // Include the header of the public class of this private implementation.
 // #include "gradientslider.h"
 
-#include "lchadouble.h"
 #include "asyncimageprovider.h"
 #include "constpropagatingrawpointer.h"
 #include "gradientimageparameters.h"
+#include "lchadouble.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qnamespace.h>

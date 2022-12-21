@@ -7,10 +7,10 @@
 // Include the header of the public class of this private implementation.
 // #include "chromalightnessdiagram.h"
 
-#include "lchdouble.h"
 #include "asyncimageprovider.h"
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"
+#include "lchdouble.h"
 #include <QtCore/qsharedpointer.h>
 #include <cmath>
 #include <functional>

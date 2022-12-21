@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "helperconversion.h"
 
-#include "lchdouble.h"
 #include "helpermath.h"
+#include "lchdouble.h"
 #include <algorithm>
 #include <cmath>
 #include <lcms2.h>

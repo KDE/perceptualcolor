@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "chromahuediagram.h"
+#include "chromalightnessdiagram.h"
 #include "colordialog.h"
 #include "colorpatch.h"
 #include "colorwheel.h"
@@ -10,13 +11,12 @@
 #include "lchdouble.h"
 #include "multispinbox.h"
 #include "multispinboxsectionconfiguration.h"
-#include "rgbcolorspacefactory.h"
-#include "wheelcolorpicker.h"
-#include "chromalightnessdiagram.h"
 #include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
+#include "rgbcolorspacefactory.h"
 #include "settranslation.h"
+#include "wheelcolorpicker.h"
 #include <QtCore/qsharedpointer.h>
 #include <helper.h>
 #include <qaction.h>

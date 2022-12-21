@@ -7,11 +7,11 @@
 // Second, the private implementation.
 #include "multispinbox_p.h" // IWYU pragma: associated
 
-#include "constpropagatinguniquepointer.h"
-#include "multispinboxsectionconfiguration.h"
 #include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
 #include "extendeddoublevalidator.h"
 #include "helpermath.h"
+#include "multispinboxsectionconfiguration.h"
 #include <QtCore/qglobal.h>
 #include <math.h>
 #include <memory>

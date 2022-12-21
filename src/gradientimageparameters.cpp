@@ -5,11 +5,11 @@
 // First the interface, which forces the header to be self-contained.
 #include "gradientimageparameters.h"
 
-#include "lchadouble.h"
-#include "lchdouble.h"
 #include "asyncimagerendercallback.h"
 #include "helper.h"
 #include "helperqttypes.h"
+#include "lchadouble.h"
+#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <cmath>
 #include <qbrush.h>

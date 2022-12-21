@@ -5,9 +5,9 @@
 // this forces the header to be self-contained.
 #include "chromalightnessimageparameters.h"
 
-#include "rgbcolorspacefactory.h"
 #include "asyncimageprovider.h"
 #include "helper.h"
+#include "rgbcolorspacefactory.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>

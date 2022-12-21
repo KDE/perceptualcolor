@@ -8,25 +8,25 @@
 #include "colordialog_p.h" // IWYU pragma: associated
 
 #include "chromahuediagram.h"
+#include "cielchvalues.h"
 #include "colorpatch.h"
+#include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "gradientslider.h"
-#include "lchadouble.h"
-#include "lchdouble.h"
-#include "multispinbox.h"
-#include "multispinboxsectionconfiguration.h"
-#include "wheelcolorpicker.h"
-#include "cielchvalues.h"
-#include "constpropagatingrawpointer.h"
 #include "helperconstants.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
+#include "lchadouble.h"
+#include "lchdouble.h"
 #include "multicolor.h"
+#include "multispinbox.h"
+#include "multispinboxsectionconfiguration.h"
 #include "oklchvalues.h"
 #include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
+#include "wheelcolorpicker.h"
 #include <lcms2.h>
 #include <memory>
 #include <optional>

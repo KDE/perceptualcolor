@@ -4,9 +4,9 @@
 #ifndef GRADIENTSLIDER_H
 #define GRADIENTSLIDER_H
 
+#include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
-#include "abstractdiagram.h"
 #include "lchadouble.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>

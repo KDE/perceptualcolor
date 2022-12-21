@@ -7,11 +7,11 @@
 // Include the header of the public class of this private implementation.
 // #include "chromahuediagram.h"
 
-#include "lchdouble.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
+#include "lchdouble.h"
 #include "lcms2.h"
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
