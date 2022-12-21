@@ -325,13 +325,13 @@
 <context>
     <name>PerceptualColor::RgbColorSpace</name>
     <message>
-        <location filename="../rgbcolorspace.cpp" line="96"/>
+        <location filename="../rgbcolorspace.cpp" line="100"/>
         <source>LittleCMS</source>
         <extracomment>@item Manufacturer information for the built-in sRGB color.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../rgbcolorspace.cpp" line="99"/>
+        <location filename="../rgbcolorspace.cpp" line="103"/>
         <source>sRGB color space</source>
         <extracomment>@item Name of the built-in sRGB color space.</extracomment>
         <translation type="unfinished"></translation>

@@ -18,7 +18,6 @@
 #include "lchdouble.h"
 #include "polarpointf.h"
 #include "rgbdouble.h"
-#include <bits/types/struct_tm.h>
 #include <limits>
 #include <memory>
 #include <optional>
@@ -32,6 +31,11 @@
 #include <qrgba64.h>
 #include <qstringlist.h>
 #include <qstringliteral.h>
+
+// Include the type “tm” as defined in the C standard (time.h), as LittleCMS
+// expects, preventing IWYU < 0.19 to produce false-positives.
+#include <time.h> // IWYU pragma: keep
+// IWYU pragma: no_include <bits/types/struct_tm.h>
 
 namespace PerceptualColor
 {

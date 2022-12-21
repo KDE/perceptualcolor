@@ -1,53 +1,53 @@
 ﻿// SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: MIT
 
-#include "asyncimageprovider.h"
-#include "chromalightnessimageparameters.h"
-#include "colordialog.h"
-#include "helper.h"
-#include "helperconstants.h"
-#include "helperconversion.h"
-#include "initializetranslation.h"
-#include "multicolor.h"
-#include "oklchvalues.h"
-#include "polarpointf.h"
-#include "rgbcolorspace.h"
-#include "rgbcolorspacefactory.h"
-#include "version.h"
-#include <QtCore/qsharedpointer.h>
-#include <helpermath.h>
-#include <qapplication.h>
-#include <qcolor.h>
-#include <qcolordialog.h>
-#include <qcommonstyle.h>
-#include <qcoreapplication.h>
-#include <qcoreevent.h>
-#include <qdebug.h>
-#include <qfileinfo.h>
-#include <qgenericmatrix.h>
-#include <qglobal.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qlibraryinfo.h>
-#include <qlocale.h>
-#include <qmath.h>
-#include <qnamespace.h>
-#include <qobject.h>
-#include <qpixmap.h>
-#include <qpointer.h>
-#include <qrect.h>
-#include <qscopedpointer.h>
-#include <qsize.h>
-#include <qsizepolicy.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qstringliteral.h>
-#include <qstyle.h>
-#include <qstylefactory.h>
-#include <qthread.h>
-#include <qtimer.h>
-#include <qtranslator.h>
-#include <utility>
+#include "asyncimageprovider.h" // IWYU pragma: keep
+#include "chromalightnessimageparameters.h" // IWYU pragma: keep
+#include "colordialog.h" // IWYU pragma: keep
+#include "helper.h" // IWYU pragma: keep
+#include "helperconstants.h" // IWYU pragma: keep
+#include "helperconversion.h" // IWYU pragma: keep
+#include "initializetranslation.h" // IWYU pragma: keep
+#include "multicolor.h" // IWYU pragma: keep
+#include "oklchvalues.h" // IWYU pragma: keep
+#include "polarpointf.h" // IWYU pragma: keep
+#include "rgbcolorspace.h" // IWYU pragma: keep
+#include "rgbcolorspacefactory.h" // IWYU pragma: keep
+#include "version.h" // IWYU pragma: keep
+#include <QtCore/qsharedpointer.h> // IWYU pragma: keep
+#include <helpermath.h> // IWYU pragma: keep
+#include <qapplication.h> // IWYU pragma: keep
+#include <qcolor.h> // IWYU pragma: keep
+#include <qcolordialog.h> // IWYU pragma: keep
+#include <qcommonstyle.h> // IWYU pragma: keep
+#include <qcoreapplication.h> // IWYU pragma: keep
+#include <qcoreevent.h> // IWYU pragma: keep
+#include <qdebug.h> // IWYU pragma: keep
+#include <qfileinfo.h> // IWYU pragma: keep
+#include <qgenericmatrix.h> // IWYU pragma: keep
+#include <qglobal.h> // IWYU pragma: keep
+#include <qlabel.h> // IWYU pragma: keep
+#include <qlayout.h> // IWYU pragma: keep
+#include <qlibraryinfo.h> // IWYU pragma: keep
+#include <qlocale.h> // IWYU pragma: keep
+#include <qmath.h> // IWYU pragma: keep
+#include <qnamespace.h> // IWYU pragma: keep
+#include <qobject.h> // IWYU pragma: keep
+#include <qpixmap.h> // IWYU pragma: keep
+#include <qpointer.h> // IWYU pragma: keep
+#include <qrect.h> // IWYU pragma: keep
+#include <qscopedpointer.h> // IWYU pragma: keep
+#include <qsize.h> // IWYU pragma: keep
+#include <qsizepolicy.h> // IWYU pragma: keep
+#include <qstring.h> // IWYU pragma: keep
+#include <qstringlist.h> // IWYU pragma: keep
+#include <qstringliteral.h> // IWYU pragma: keep
+#include <qstyle.h> // IWYU pragma: keep
+#include <qstylefactory.h> // IWYU pragma: keep
+#include <qthread.h> // IWYU pragma: keep
+#include <qtimer.h> // IWYU pragma: keep
+#include <qtranslator.h> // IWYU pragma: keep
+#include <utility> // IWYU pragma: keep
 
 // TODO Drop this executable in favor of KColorChooser?
 
