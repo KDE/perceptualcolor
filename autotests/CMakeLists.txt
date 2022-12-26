@@ -48,7 +48,7 @@ if(BUILD_TESTING)
     # regardless of the actual needs of the individual unit test.
     function(add_unit_tests)
         foreach(test_name IN LISTS ARGV)
-            set(test_target_name "perceptualcolor${test_name}")
+            set(test_target_name "${test_name}")
             add_executable("${test_target_name}")
             set(test_sources "${test_name}.cpp")
             if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.qrc")

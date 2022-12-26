@@ -33,7 +33,7 @@ rm --recursive --force docs/publicapiandinternals
 # so that after this we go back to the original working directory.
 ( \
 cd docs/pics \
-    && ../../build/utils/perceptualcolorgeneratescreenshots \
+    && ../../build/utils/generatescreenshots \
     && for FILE in *; do cp ../../Doxyfile.external.license "$FILE.license"; done
 )
 # We are not interested in the normal Doxygen output, but only in the errors.
