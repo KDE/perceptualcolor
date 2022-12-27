@@ -421,7 +421,19 @@ find_package(
     LCMS2
     REQUIRED)
 find_package(
-    Qt5
+    ECM 5.82 # Version 5.82 required for QtVersionOption
+    REQUIRED
+    NO_MODULE)
+list(APPEND CMAKE_MODULE_PATH
+     ${ECM_MODULE_PATH})
+include(QtVersionOption) # Provides ${QT_MAJOR_VERSION}
+message(
+    STATUS
+    "Building against Qt${QT_MAJOR_VERSION}.\n"
+    "   Run cmake again with “-DBUILD_WITH_QT6=ON” to build with Qt6\n"
+    "   or “-DBUILD_WITH_QT6=OFF” to build with Qt5.")
+find_package(
+    Qt${QT_MAJOR_VERSION}
     COMPONENTS Core Gui Widgets LinguistTools Test Concurrent
     REQUIRED)
 # Instruct CMake to run moc automatically when needed.
@@ -492,12 +504,6 @@ list(APPEND CLANG_FORMAT_PATTERNS
 
 
 ################# Clang format #################
-find_package(
-    ECM
-    REQUIRED
-    NO_MODULE)
-list(APPEND CMAKE_MODULE_PATH
-    ${ECM_MODULE_PATH})
 include(KDEClangFormat)
 file(
     # TODO Is it possible to get rid of GLOB_RECURSE?
