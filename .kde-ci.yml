@@ -10,3 +10,22 @@ Dependencies:
 
 #Options:
     #require-passing-tests-on: [ 'Linux' ]
+
+#Options:
+  #in-source-build: False
+  #use-ccache: False
+  #cmake-options: ''
+  #test-before-installing: False
+  #run-tests: True
+  #tests-load-sensitive: False
+  #per-test-timeout: 60
+  #setup-x-environment: True
+  #setup-dbus-session: True
+  #force-inject-asan: False
+  #ctest-arguments: ''
+  #require-passing-tests-on: []
+  #run-cppcheck: True
+  #cppcheck-arguments: '--enable=warning,style,performance'
+  #cppcheck-ignore-files: []
+  #run-gcovr: True
+  #gcovr-arguments: ''
