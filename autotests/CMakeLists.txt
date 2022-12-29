@@ -60,7 +60,7 @@ if(BUILD_TESTING)
                 )
             endif()
             # target_sources should normally always use PRIVATE. Details:
-            # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
+            # crascit.com/enhanced-source-file-handling-with-target_sources
             target_sources(
                 ${test_target_name}
                 PRIVATE ${test_sources})

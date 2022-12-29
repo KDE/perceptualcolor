@@ -1,8 +1,27 @@
 # SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
 # SPDX-License-Identifier: MIT
 
+# NOTE Documentation: https://docs.gitlab.com/ee/ci/yaml/gitlab_ci_yaml.html
+
 sast:
   stage: test
+
+variables:
+  DEBIAN_FRONTEND: "noninteractive"
+
+custom_ci:
+  stage: build
+  image: debian:testing
+  before_script:
+    - apt-get update
+    - apt-get install --yes --no-install-recommends git pip
+    - pip install cmakelint
+  script:
+    - ./.gitlab-ci.sh
+  rules:
+    - when: always
+      allow_failure: true
+
 include:
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/android-qt6.yml
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/android.yml

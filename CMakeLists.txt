@@ -425,7 +425,7 @@ find_package(
     REQUIRED
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
-     ${ECM_MODULE_PATH})
+    ${ECM_MODULE_PATH})
 include(QtVersionOption) # Provides ${QT_MAJOR_VERSION}
 message(
     STATUS

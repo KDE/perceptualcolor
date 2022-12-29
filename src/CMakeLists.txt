@@ -189,7 +189,7 @@ qt_add_resources(
 # named “perceptualcolorstatic-0”.
 #
 # There is also a solution that is more comfortable for the library user:
-# https://alexreinking.com/blog/building-a-dual-shared-and-static-library-with-cmake.html
+#alexreinking.com/blog/building-a-dual-shared-and-static-library-with-cmake.html
 # However, this solution is quite complex to implement.
 #
 # If static libraries would be supported, we would have to make sure that
@@ -273,18 +273,19 @@ install(EXPORT ${LIBRARY_NAME}
 )
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
-  VERSION "${FULL_VERSION}"
-  COMPATIBILITY AnyNewerVersion
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
+    VERSION "${FULL_VERSION}"
+    COMPATIBILITY AnyNewerVersion
 )
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
-install(FILES
-            "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
-            "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
+install(
+    FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 
 
