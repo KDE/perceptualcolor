@@ -33,23 +33,10 @@ rm --recursive --force docs/publicapiandinternals
 # so that after this we go back to the original working directory.
 ( \
 cd docs/pics \
-    && ../../build/utils/generatescreenshots \
+    && nice --adjustment 19 ../../build/utils/generatescreenshots \
     && for FILE in *; do cp ../../Doxyfile.external.license "$FILE.license"; done
 )
-# We are not interested in the normal Doxygen output, but only in the errors.
-# We have to filter the errors, because Doxygen produces errors where it
-# should not (https://github.com/doxygen/doxygen/issues/7411 errors on
-# missing documentation of return value for functions that return “void”).
-# Therefore, first we redirect Doxygen’s stderr to stdout (the pipe) to
-# be able to filter it with grep. And we redirect stdout to /dev/null
-# (without changing where stderr is going):
-nice --adjustment 19 doxygen Doxyfile.internal 2>&1 >/dev/null \
-    | grep \
-        --invert-match \
-        --perl-regexp "warning: return type of member .* is not documented" \
-           | sed 's/^/Doxygen “public API and internals”: /'
-nice --adjustment 19 doxygen Doxyfile.external 2>&1 >/dev/null \
-    | grep \
-        --invert-match \
-        --perl-regexp "warning: return type of member .* is not documented" \
-           | sed 's/^/Doxygen “public API”: /'
+nice --adjustment 19 doxygen Doxyfile.internal \
+    | sed 's/^/Doxygen “public API and internals”: /'
+nice --adjustment 19 doxygen Doxyfile.external \
+    | sed 's/^/Doxygen “public API”: /'
