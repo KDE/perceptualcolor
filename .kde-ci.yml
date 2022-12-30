@@ -20,7 +20,7 @@ Options:
   #setup-dbus-session: True
   #force-inject-asan: False
   #ctest-arguments: ''
-  require-passing-tests-on: [All]
+  require-passing-tests-on: ['@all']
   #run-cppcheck: True
   #cppcheck-arguments: '--enable=warning,style,performance'
   #cppcheck-ignore-files: []
