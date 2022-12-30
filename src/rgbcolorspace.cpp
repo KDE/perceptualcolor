@@ -1006,7 +1006,9 @@ PerceptualColor::RgbDouble RgbColorSpace::toRgbDoubleUnbound(const PerceptualCol
     return rgb;
 }
 
-/** @brief Calculation of @ref RgbColorSpace::profileMaximumCielchChroma */
+/** @brief Calculation of @ref RgbColorSpace::profileMaximumCielchChroma
+ *
+ * @returns Calculation of @ref RgbColorSpace::profileMaximumCielchChroma */
 double RgbColorSpacePrivate::detectMaximumCielchChroma() const
 {
     // Make sure chromaDetectionPrecision is big enough to make a difference
@@ -1025,7 +1027,9 @@ double RgbColorSpacePrivate::detectMaximumCielchChroma() const
     return result * chromaDetectionIncrementFactor + cielabDeviationLimit;
 }
 
-/** @brief Calculation of @ref RgbColorSpace::profileMaximumOklchChroma */
+/** @brief Calculation of @ref RgbColorSpace::profileMaximumOklchChroma
+ *
+ * @returns Calculation of @ref RgbColorSpace::profileMaximumOklchChroma */
 double RgbColorSpacePrivate::detectMaximumOklchChroma() const
 {
     // Make sure chromaDetectionPrecision is big enough to make a difference

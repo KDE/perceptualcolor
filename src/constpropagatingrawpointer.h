@@ -108,6 +108,8 @@ public:
 
     /** @brief Cast to a normal raw pointer that points to a const object.
      *
+     * @returns Cast to a normal raw pointer that points to a const object.
+     *
      * @sa @ref operator T *() */
     // We could provide a const overload to operator T*() instead of
     // providing this function with a strange name. But overloading

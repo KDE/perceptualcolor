@@ -86,7 +86,8 @@ public:
      * @param other the object to copy */
     MultiColor(const MultiColor &other) = default;
     /** @brief Default copy assignment operator
-     * @param other the object to copy */
+     * @param other the object to copy
+     * @returns The default implementation’s return value. */
     MultiColor &operator=(const MultiColor &other) = default;
     // NOTE About move constructor and move assignment operator:
     // Declaring them with “= default” will create a compiler-generated

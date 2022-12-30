@@ -1437,7 +1437,8 @@ void ColorDialogPrivate::readHlcNumericValues()
 
 /** @brief Translates a given text in the context of QColorDialog.
  *
- * @param sourceText The text to be translated. */
+ * @param sourceText The text to be translated.
+ * @returns The translation. */
 QString ColorDialogPrivate::translateViaQColorDialog(const char *sourceText)
 {
     return QColorDialog::tr(sourceText);

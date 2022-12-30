@@ -73,6 +73,8 @@ public:
 
     /** @brief Default assignment operator
      *
+     * @returns The default implementation’s return value.
+     *
      * @param other the object to assign */
     // Clazy, our static code checker, complains about the next line of code
     // as follows:
@@ -86,6 +88,8 @@ public:
     PolarPointF &operator=(const PolarPointF &other) = default; // clazy:exclude=function-args-by-value
 
     /** @brief Default move assignment operator
+     *
+     * @returns The default implementation’s return value.
      *
      * @param other the object to move-assign */
     PolarPointF &operator=(PolarPointF &&other) noexcept = default;

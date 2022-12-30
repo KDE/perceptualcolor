@@ -101,6 +101,9 @@ void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const
 /** @brief The border between the widget outer top, right and bottom
  * border and the diagram itself.
  *
+ * @returns The border between the widget outer top, right and bottom
+ * border and the diagram itself.
+ *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
  * completely even when a pixel on the border of the diagram is
@@ -118,6 +121,9 @@ int ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
 }
 
 /** @brief The left border between the widget outer left border and the
+ * diagram itself.
+ *
+ * @returns The left border between the widget outer left border and the
  * diagram itself.
  *
  * The diagram is not painted on the whole extend of the widget.

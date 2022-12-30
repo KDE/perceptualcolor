@@ -460,6 +460,9 @@ void GradientSlider::setOrientation(Qt::Orientation newOrientation)
 /** @brief The rounded length of the widget
  * measured in <em>physical pixels</em>.
  *
+ * @returns The rounded length of the widget
+ * measured in <em>physical pixels</em>.
+ *
  * This is a convenience function to access
  * @ref GradientSlider::physicalPixelSize(). The length is the
  * size of the widget in the direction of the gradient.
@@ -475,6 +478,9 @@ int GradientSliderPrivate::physicalPixelLength() const
 }
 
 /** @brief The rounded thickness of the widget
+ * measured in <em>physical pixels</em>.
+ *
+ * @returns The rounded thickness of the widget
  * measured in <em>physical pixels</em>.
  *
  * This is a convenience function to access

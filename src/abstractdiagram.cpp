@@ -258,6 +258,8 @@ QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness) cons
  * Changes can be observed with
  * @ref AbstractDiagram::actualVisibilityToggledEvent.
  *
+ * @returns If this widget is actually visible.
+ *
  * @internal
  *
  * This information is based on the last @ref AbstractDiagram::showEvent

@@ -836,6 +836,8 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
  * accordingly. Apart from that, it calls the implementation in the parent
  * class.
  *
+ * @returns The base class’s return value.
+ *
  * @param event the event to be handled. */
 bool MultiSpinBox::event(QEvent *event)
 {

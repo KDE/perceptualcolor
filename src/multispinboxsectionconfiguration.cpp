@@ -39,6 +39,8 @@ MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(const MultiSp
 
 /** @brief Copy assignment operator
  *
+ * @returns By convention, always returns <tt>*this</tt>.
+ *
  * @param other the object to be copied */
 MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(const MultiSpinBoxSectionConfiguration &other)
 {
@@ -66,6 +68,8 @@ MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxS
 
 /** @brief Move assignment operator
  *
+ * @returns By convention, always returns <tt>*this</tt>.
+ *
  * @param other the object to move-assign */
 MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(MultiSpinBoxSectionConfiguration &&other) noexcept
 {
@@ -84,6 +88,8 @@ MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(Mu
 /** @brief The number of digits after the decimal point.
  *
  * This value can also be <tt>0</tt> to get integer-like behavior.
+ *
+ * @returns The property value.
  *
  * @sa @ref setDecimals */
 int MultiSpinBoxSectionConfiguration::decimals() const
@@ -123,6 +129,8 @@ void MultiSpinBoxSectionConfiguration::setDecimals(int newDecimals)
  * |   720 |                 360 |                  0 |
  * |   725 |                 360 |                  5 |
  *
+ * @returns The property value.
+ *
  * @sa @ref setWrapping */
 bool MultiSpinBoxSectionConfiguration::isWrapping() const
 {
@@ -138,6 +146,8 @@ void MultiSpinBoxSectionConfiguration::setWrapping(bool newIsWrapping)
 }
 
 /** @brief The maximum possible value of the section.
+ *
+ * @returns The property value.
  *
  * @sa @ref setMaximum */
 double MultiSpinBoxSectionConfiguration::maximum() const
@@ -158,6 +168,8 @@ void MultiSpinBoxSectionConfiguration::setMaximum(double newMaximum)
 
 /** @brief The minimum possible value of the section.
  *
+ * @returns The property value.
+ *
  * @sa @ref setMinimum */
 double MultiSpinBoxSectionConfiguration::minimum() const
 {
@@ -177,6 +189,8 @@ void MultiSpinBoxSectionConfiguration::setMinimum(double newMinimum)
 
 /** @brief A prefix to be displayed before the value.
  *
+ * @returns The property value.
+ *
  * @sa @ref setPrefix */
 QString MultiSpinBoxSectionConfiguration::prefix() const
 {
@@ -191,13 +205,15 @@ void MultiSpinBoxSectionConfiguration::setPrefix(const QString &newPrefix)
     d_pointer->m_prefix = newPrefix;
 }
 
-/** @brief The smaller of two natural steps.
+/** @brief A smaller of two natural steps.
  *
  * Valid range: >= 0
  *
  * When the user uses the arrows to change the spin box’s value
  * the value will be incremented/decremented by the amount of the
  * @ref singleStep.
+ *
+ * @returns The property value.
  *
  * @sa @ref setSingleStep */
 double MultiSpinBoxSectionConfiguration::singleStep() const
@@ -213,7 +229,9 @@ void MultiSpinBoxSectionConfiguration::setSingleStep(double newSingleStep)
     d_pointer->m_singleStep = qMax<double>(0, newSingleStep);
 }
 
-/** @brief A suffix to be displayed behind the value.
+/** @brief The suffix to be displayed behind the value.
+ *
+ * @returns The property value.
  *
  * @sa @ref setSuffix */
 QString MultiSpinBoxSectionConfiguration::suffix() const
