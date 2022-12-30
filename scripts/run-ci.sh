@@ -53,7 +53,7 @@ done
 ( \
 mkdir --parents build \
     && cd build \
-    && nice --adjustment 19 cmake --build . --parallel $PARALLEL_PROCESSES > /dev/null \
+    && nice --adjustment 19 cmake --build . --parallel $PARALLEL_PROCESSES -- --keep-going > /dev/null \
 )
 
 
