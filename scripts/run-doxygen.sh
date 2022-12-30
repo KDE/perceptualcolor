@@ -36,7 +36,8 @@ cd docs/pics \
     && nice --adjustment 19 ../../build/utils/generatescreenshots \
     && for FILE in *; do cp ../../Doxyfile.external.license "$FILE.license"; done
 )
-nice --adjustment 19 doxygen Doxyfile.internal \
+# We redirect Doxygen’s stderr to stdout (the pipe) to be able to filter it
+nice --adjustment 19 doxygen Doxyfile.internal 2>&1 \
     | sed 's/^/Doxygen “public API and internals”: /'
-nice --adjustment 19 doxygen Doxyfile.external \
+nice --adjustment 19 doxygen Doxyfile.external 2>&1 \
     | sed 's/^/Doxygen “public API”: /'
