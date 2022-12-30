@@ -14,8 +14,12 @@ custom_ci:
   image: debian:testing
   before_script:
     - apt-get update
-    - apt-get install --yes --no-install-recommends git pip
+    - apt-get install --yes --no-install-recommends pip doxygen graphviz
+    - echo "pip version:" && pip --version
+    - echo "doxygen version:" && doxygen --version
+    - echo "graphviz dot version:" && dot -V
     - pip install cmakelint
+    - echo "cmakelint version:" && cmakelint --version
   script:
     - ./.gitlab-ci.sh
   rules:
