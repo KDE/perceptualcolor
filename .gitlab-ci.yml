@@ -12,6 +12,7 @@ variables:
 custom_ci:
   stage: build
   image: debian:testing
+  interruptible: true
   before_script:
     - apt-get update
     - apt-get install --yes --no-install-recommends pip doxygen graphviz
