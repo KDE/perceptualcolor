@@ -26,6 +26,19 @@ custom_ci:
     - when: always
       allow_failure: true
 
+reuse_everything:
+  # The default reuse-lint.yml template currently excludes translation files
+  # from checking. This target however checks really everything.
+  image:
+    name: fsfe/reuse:latest
+    entrypoint: [""]
+  stage: build
+  tags:
+    - Linux
+  interruptible: true
+  script:
+    - reuse lint
+
 include:
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/android-qt6.yml
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/android.yml
