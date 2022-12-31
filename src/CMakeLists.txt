@@ -313,7 +313,7 @@ target_sources(
         ${library_SRC}
         ${lib_PUBLICHEADERS})
 target_compile_definitions(
-    ${LIBRARY_NAME}
+    ${INTERNAL_LIBRARY_NAME}
     PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
 # Setting the symbol visibility to “visible”. Following GCC documentation,
 # indeed the option for “visible” is called “default” (Sounds strange, but
