@@ -27,22 +27,29 @@ class QCoreApplication;
  *
  * @todo Provide an own documentation page for initialization and localization.
  *
- * @todo Investigate automatic initialization. We need an
- * @ref initializeTranslation() function, but having to call the
- * initialization manually is cumbersome. It would be more comfortable if the
- * initialization would happen automatically. How could this work? With <tt>
- * <a href="https://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
- * Q_COREAPP_STARTUP_FUNCTION</a></tt> this function can be called
- * automatically when QCoreApplication starts – but only for
- * <em>dynamic</em> libraries, and not for <em>static</em> libraries – and
- * <a href="https://stackoverflow.com/questions/43333151">
- * there seems to be no workaround</a>. Apparently,
+ * @todo Investigate automatic initialization. We definitely
+ * need to call the @ref PerceptualColor::initializeTranslation()
+ * function, but having to call it manually might be
+ * cumbersome. It would be more comfortable if the initialization
+ * would happen automatically. Apparently, if we want to support both, SHARED
  * <a href="https://www.volkerkrause.eu/2018/10/13/kf5-static-builds.html">
- * for static libraries we have to</a>
- * - either <a href="https://phabricator.kde.org/D13816">request the library user
- *   to call the function manually</a>
- * - or <a href="https://github.com/KDE/kitinerary/commit/72326ed62b7d32965821f2008368783830a76049">
- *   call it in our library code whenever our code is about to do
+ * and STATIC libraries, we have to</a>
+ * - either <a href="https://phabricator.kde.org/D13816">request the library
+ *   user to call manually</a> @ref PerceptualColor::initializeTranslation()
+ *   on both, STATIC and SHARED libraries.
+ * - or use <tt><a href=
+ *   "https://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
+ *   Q_COREAPP_STARTUP_FUNCTION</a></tt> to call
+ *   @ref PerceptualColor::initializeTranslation() on SHARED
+ *   libraries automatically when QCoreApplication starts (works
+ *   only for SHARED libraries, and not for STATIC libraries, and
+ *   and <a href="https://stackoverflow.com/questions/43333151"> there
+ *   seems to be no workaround</a>) and request the library user to
+ *   call @ref PerceptualColor::initializeTranslation() manually</a>
+ *   only on STATIC libraries.
+ * - or make @ref PerceptualColor::initializeTranslation() private and call it
+ *   <a href="https://github.com/KDE/kitinerary/commit/72326ed">
+ *   in our library code whenever our code is about to do
  *   something that requires previous initialization</a>. To not call it
  *   too often or call it within functions that are executed often, it
  *   might be better to call it in the constructor of <em>all</em> our
@@ -58,21 +65,19 @@ class QCoreApplication;
  *   Q_COREAPP_STARTUP_FUNCTION</a></tt> completely, which would give use
  *   uniform behavior between static and dynamic builds and makes
  *   bug-tracking easier.
- * - or use the solution that <a href="https://stackoverflow.com/a/1420261">
+ * - or make @ref PerceptualColor::initializeTranslation() private and
+ *   use the solution that <a href="https://stackoverflow.com/a/1420261">
  *   instantiates a special class as global variable in every translation
  *   unit</a>, and this class makes sure that the initialization
  *   happens also for static libraries. But wouldn’t this mean that
- *   @ref PerceptualColor::initializeTranslation is called at program
+ *   @ref PerceptualColor::initializeTranslation() is called at program
  *   startup, while still no QApplication object is available, and
- *   therefore our @ref PerceptualColor::initializeTranslation
+ *   therefore our @ref PerceptualColor::initializeTranslation()
  *   function will crash? And anyway, when the QApplication object is
  *   destroyed and re-created, this pattern will not help. (Might
  *   https://doc.qt.io/qt-5/qglobalstatic.html#Q_GLOBAL_STATIC help?) See
  *   also https://isocpp.org/wiki/faq/ctors#static-init-order for useful
  *   information about static initialization.
- *
- * @todo Provide support for building a static library. This is the only
- * way to test if everything in the initialization actually works fine.
  *
  * @todo Do not reload translations in one thread while another thread
  * uses tr(). But how to make this sure, also because the library user

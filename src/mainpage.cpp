@@ -510,15 +510,6 @@
  *
  * @internal
  *
- * @todo Provide detailed build instructions.
- *
- * @todo Add support for building a static library. This is important
- * for Windows builds. It requires to run the unit tests (or at least
- * some of them) against both, the static and the dynamic library,
- * because <tt>Q_COREAPP_STARTUP_FUNCTION</tt> behaves differently on
- * static and dynamic libraries. The need for initialization has to
- * be documented also on the mainpage.
- *
  * @todo Provide a CMake find module for this library and install it. */
 
 /** @internal

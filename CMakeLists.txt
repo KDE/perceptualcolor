@@ -445,6 +445,24 @@ set(CMAKE_AUTOUIC TRUE)
 
 
 
+################# Build STATIC or SHARED library #################
+# Either a STATIC or a SHARED library is build, simply depending
+# on BUILD_SHARED_LIBS.
+#
+# A more sophisticated handling of STATIC vs. SHARED is possible,
+# but complex, and will therefore not be used here:
+#alexreinking.com/blog/building-a-dual-shared-and-static-library-with-cmake.html
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+message(
+    STATUS
+    "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}.\n"
+    "   You can control this with “-DBUILD_SHARED_LIBS=ON” (dynamic library)\n"
+    "   or “-DBUILD_SHARED_LIBS=OFF” (static library).")
+
+
+
+
+
 ################# More targets? #################
 # TODO https://gitlab.com/ubports/core/cmake-extras/ provides (among others)
 # – DoxygenBuilder: Creates Doxygen API doc generation targets. But:

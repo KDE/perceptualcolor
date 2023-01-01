@@ -169,47 +169,13 @@ qt_add_resources(
 
 
 
-################# Build static library #################
-# NOTICE Currently, we have no CMake code to build a static library.
-# CMake’s BUILD_SHARED_LIBS is not set by default, but we ignore this
-# and build nevertheless a shared library.
-#
-# One day we could provide support for static libraries. It could even
-# be packaged. On Linux, it goes to the default library directory, just
-# like the shared libraries. And in RPM, it does to “%package devel”.
-#
-# Than, we would have to respect BUILD_SHARED_LIBS which would change our
-# default build type from SHARED to STATIC. Or we could use
-# option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-# to get our old default. Anyway, we could use add_library() without
-# specifying neither STATIC nor SHARED, and BUILD_SHARED_LIBS will be
-# respected.
-#
-# Alternatively, we could simply add  a new, additional target
-# named “perceptualcolorstatic-0”.
-#
-# There is also a solution that is more comfortable for the library user:
-#alexreinking.com/blog/building-a-dual-shared-and-static-library-with-cmake.html
-# However, this solution is quite complex to implement.
-#
-# If static libraries would be supported, we would have to make sure that
-# build-in resources like the translation files are loaded correctly also
-# on static libraries. That is not self-evident! The Qt resource system needs
-# some special initialization on static libraries. The unit test
-# “testinitialize” should give us the information we need, but this unit test
-# obviously has to be compiled against the static library to test
-# it actually for the static library. It might be worth, to compile and run
-# not only “testinitialize” but all unit tests.
-
-
-
-
-
 ################# Build shared library #################
 # For the library name, we follow the KDE policy:
 # https://community.kde.org/Policies/New_KDE_Library_API_Policy#Library_Naming
 set(LIBRARY_NAME "perceptualcolor-${MAJOR_VERSION}")
-add_library(${LIBRARY_NAME} SHARED)
+# Add library. If it will build as STATIC or as SHARED library is not
+# hardcoded, so add_library() it use BUILD_SHARED_LIBS to decide.
+add_library(${LIBRARY_NAME})
 # The headers have to be added here explicitly because otherwise Qt’s MOC
 # would not find them because they are not in the same directory as the
 # corresponding .cpp files
@@ -263,6 +229,9 @@ install(
     DIRECTORY
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
 install(
+    # On Linux, both STAIC and SHARED libraries go to the default library
+    # directory. And in RPM, SHARED libraries are part of a normal package,
+    # while STATIC libraries go to “%package devel”.
     TARGETS ${LIBRARY_NAME}
     EXPORT "${LIBRARY_NAME}"
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
@@ -304,7 +273,9 @@ install(
 # compiling, but the resulting library has a bigger file size. Therefore,
 # this is not a good option.)
 set(INTERNAL_LIBRARY_NAME "perceptualcolorinternal-${MAJOR_VERSION}")
-add_library(${INTERNAL_LIBRARY_NAME} SHARED)
+# Add library. If it will build as STATIC or as SHARED library is not
+# hardcoded, so add_library() it use BUILD_SHARED_LIBS to decide.
+add_library(${INTERNAL_LIBRARY_NAME})
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(
