@@ -430,8 +430,8 @@ include(QtVersionOption) # Provides ${QT_MAJOR_VERSION}
 message(
     STATUS
     "Building against Qt${QT_MAJOR_VERSION}.\n"
-    "   Run cmake again with “-DBUILD_WITH_QT6=ON” to build with Qt6\n"
-    "   or “-DBUILD_WITH_QT6=OFF” to build with Qt5.")
+    "   You can control this with “-DBUILD_WITH_QT6=ON” (build with Qt6)\n"
+    "   or “-DBUILD_WITH_QT6=OFF” (build with Qt5).")
 find_package(
     Qt${QT_MAJOR_VERSION}
     COMPONENTS Core Gui Widgets LinguistTools Test Concurrent
