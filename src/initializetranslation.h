@@ -36,7 +36,8 @@ class QCoreApplication;
  * and STATIC libraries, we have to</a>
  * - either <a href="https://phabricator.kde.org/D13816">request the library
  *   user to call manually</a> @ref PerceptualColor::initializeTranslation()
- *   on both, STATIC and SHARED libraries.
+ *   on both, STATIC and SHARED libraries. This gives us uniform behavior
+ *   between STATIC and SHARED builds and makes bug-tracking easier.
  * - or use <tt><a href=
  *   "https://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
  *   Q_COREAPP_STARTUP_FUNCTION</a></tt> to call
@@ -52,19 +53,12 @@ class QCoreApplication;
  *   in our library code whenever our code is about to do
  *   something that requires previous initialization</a>. To not call it
  *   too often or call it within functions that are executed often, it
- *   might be better to call it in the constructor of <em>all</em> our
- *   classes that need previous initialization. This would be more
- *   comfortable for the library user, and the overhead should be
- *   minimal (at least at subsequent calls the function should memorize
- *   via a static variable that the initialization has happened yet and
- *   return immediately). The disadvantage is that we have to pay attention
+ *   might be better to call it in the constructor of <em>all</em> our classes
+ *   that need previous initialization. This approach would be more comfortable
+ *   for the library user. The disadvantage is that we have to pay attention
  *   to never use <tt>tr()</tt> without calling the initialization first, and
  *   forgetting about this might introduce subtile and difficult-to-discover
- *   bugs that only happen on static builds. (Or we could drop <tt>
- *   <a href="https://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
- *   Q_COREAPP_STARTUP_FUNCTION</a></tt> completely, which would give use
- *   uniform behavior between static and dynamic builds and makes
- *   bug-tracking easier.
+ *   bugs.
  * - or make @ref PerceptualColor::initializeTranslation() private and
  *   use the solution that <a href="https://stackoverflow.com/a/1420261">
  *   instantiates a special class as global variable in every translation

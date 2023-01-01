@@ -92,7 +92,7 @@ namespace PerceptualColor
  *        value; otherwise there last initialization is simply repeated.
  *
  * @post The translation is initialized, even if a previous initialization
- * had been destroyed be deleting the previous QCoreApplication object. */
+ * had been destroyed by deleting the previous QCoreApplication object. */
 void initializeTranslation(QCoreApplication *instance, std::optional<QStringList> newUiLanguages)
 {
     // Mutex protection
