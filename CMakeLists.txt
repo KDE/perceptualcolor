@@ -56,6 +56,9 @@ if(iwyu_path)
 else()
     message(CHECK_FAIL "Not found.")
 endif()
+message(
+    STATUS
+    "CMAKE_CXX_INCLUDE_WHAT_YOU_USE: ${CMAKE_CXX_INCLUDE_WHAT_YOU_USE}")
 
 message(CHECK_START "Checking for clang-tidy")
 find_program(
@@ -71,6 +74,9 @@ if(clang_tidy_path)
 else()
     message(CHECK_FAIL "Not found.")
 endif()
+message(
+    STATUS
+    "CMAKE_CXX_CLANG_TIDY: ${CMAKE_CXX_CLANG_TIDY}")
 
 message(CHECK_START "Checking for cppcheck")
 find_program(
@@ -86,6 +92,9 @@ if(cppcheck_path)
 else()
     message(CHECK_FAIL "Not found.")
 endif()
+message(
+    STATUS
+    "CMAKE_CXX_CPPCHECK: ${CMAKE_CXX_CPPCHECK}")
 
 # We set a default build type when the user did not specify a build type.
 # Reason: An empty build type does not provide any compiler flags at all,
@@ -127,24 +136,30 @@ set(CMAKE_CXX_EXTENSIONS FALSE) # Try to disable compiler-specific extensions.
 # (abbreviation IPO, also called LTO/link-time optimization)
 # then this choice is respected. Otherwise, we enable it if
 # CMake can provide IPO support, and disable it if not.
+message(
+    CHECK_START
+    "Checking for IPO/LTO "
+        "(inter-procedural optimization/link-time optimization)")
+check_ipo_supported(
+    RESULT has_ipo_support
+    OUTPUT output) # The variable “output” can be ignored.
+if(has_ipo_support)
+    message(CHECK_PASS "Found.")
+else()
+    message(CHECK_FAIL "Not found.")
+endif()
 if(NOT DEFINED CMAKE_INTERPROCEDURAL_OPTIMIZATION)
     # Check for IPO/LTO (inter-procedural optimization/link-time optimization).
     # Use it if available.
-    message(
-        CHECK_START
-        "Checking for IPO/LTO "
-            "(inter-procedural optimization/link-time optimization)")
-    check_ipo_supported(
-        RESULT has_ipo_support
-        OUTPUT output) # The variable “output” can be ignored.
     if(has_ipo_support)
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-        message(CHECK_PASS "Found.")
     else()
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-        message(CHECK_FAIL "Not found.")
     endif()
 endif()
+message(
+    STATUS
+    "CMAKE_INTERPROCEDURAL_OPTIMIZATION: ${CMAKE_INTERPROCEDURAL_OPTIMIZATION}")
 
 
 
@@ -261,6 +276,9 @@ option(
 # TODO Starting with CMake 3.19, this option could be replaced with
 # a CMake preset, which might be more convenient? Anyway, currently we
 # require only CMake 3.16 just as Qt 6 does…
+message(
+    STATUS
+    "ADDITIONAL_WARNINGS: ${ADDITIONAL_WARNINGS}")
 if(
     ADDITIONAL_WARNINGS
     AND
