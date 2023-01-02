@@ -46,8 +46,29 @@
 
 using namespace PerceptualColor;
 
+// Force a font for a widget and all direct or indirect children widgets.
+//
+// The given font is set on the widget and all its direct or indirect
+// children which are subclasses of <tt>QWidget</tt>. If the widget is
+// a <tt>nullptr</tt>, nothing happens.
+//
+// Use case: QApplication::setFont() occasionally does not work on all
+// child widgets, so a special enforcement is needed.
+void forceFont(QWidget *widget, const QFont &font = qApp->font())
+{
+    if (widget == nullptr) {
+        return;
+    }
+    widget->setFont(font);
+    for (auto child : widget->children())
+    {
+        forceFont(qobject_cast<QWidget *>(child), font);
+    }
+}
+
 static void screenshot(QWidget *widget, const QString &comment = QString())
 {
+    forceFont(widget);
     // Get fully qualified class name
     QString className = QString::fromUtf8(widget->metaObject()->className());
     // Strip all the qualifiers
@@ -72,6 +93,7 @@ static void screenshot(QWidget *widget, const QString &comment = QString())
 // your system!
 static void screenshotDelayed(QWidget *widget, const QString &comment = QString())
 {
+    forceFont(widget); // Deliberately call this (also) _before_ show().
     widget->show(); // Necessary to receive and process events like paintEvent()
     delayedEventProcessing<>();
     screenshot(widget, comment);
@@ -84,8 +106,6 @@ static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QStr
     // dummy message handler that does not print messages
 }
 
-// Sets many settings that have visual effects on hard-coded values.
-//
 // This function tries to set as many settings as possible to hard-coded
 // values: The widget style, the translation, the icon set and many more.
 // This makes it more likely to get the same screenshots on different
@@ -163,7 +183,10 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
         // TODO It might even be possible to bundle a font as Qt resource
         //      to become completely independent from the fonts that are
         //      installed on the system.
-        QFont myFont = QFont(QStringLiteral("Noto Sans"), //
+        const QStringList preferredFontFamilies = { //
+            QStringLiteral("Noto Sans"), //
+            QStringLiteral("Noto Sans Symbols2")};
+        QFont myFont = QFont(preferredFontFamilies.first(), //
                              10, //
                              QFont::Weight::Normal, //
                              QFont::Style::StyleNormal);
@@ -174,10 +197,16 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
         // identical results also on different systems.
         myFont.setStyleHint(QFont::SansSerif, //
                             QFont::StyleStrategy::PreferDefault);
-        myFont.setFamilies( //
-            QStringList() //
-            << QStringLiteral("Noto Sans") //
-            << QStringLiteral("Noto Sans Symbols2"));
+        myFont.setFamilies(preferredFontFamilies);
+        // It seems QFont::exactMatch() and QFontInfo::exactMatch() do not
+        // work reliable on the X Window System, because this systems does
+        // not provide the required functionality. Workaround: Compare
+        // the actually used family (available via QFontInfo) with the
+        // originally requested family (available via QFont):
+        if (QFontInfo(myFont).family() != myFont.family())
+        {
+            qWarning() << "Could not load font“" << myFont.family() << "”correctly.";
+        }
         app->setFont(myFont);
     }
 

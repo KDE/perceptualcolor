@@ -45,9 +45,7 @@ include(CheckIPOSupported)
 message(CHECK_START "Checking for iwyu (include-what-you-use)")
 find_program(
     iwyu_path
-    NAMES
-        "include-what-you-use"
-        "iwyu")
+    NAMES "iwyu" "include-what-you-use")
 if(iwyu_path)
     message(
         CHECK_PASS

@@ -12,16 +12,13 @@
 # The “.” command will execute the given script within the context of
 # the current script, which is necessary in order to preserve the
 # environment variables that are set by the given script.
-. scripts/run-export-environment.sh
+. scripts/export-environment.sh
 
 
 
 
 
 ################# Run static code analysis #################
-
-# Running “make” with the argument “--jobs” without specifying the number
-# of parallel jobs means that the number of jobs is maximum.
 
 # There are various applications available that do style checking, like
 # kwstyle (from Kitware) or cpplint (Google coding style). However,
@@ -53,27 +50,10 @@ mkdir --parents build \
         .. \
         > /dev/null \
     && nice --adjustment 19 \
-        make \
-            --jobs $PARALLEL_PROCESSES \
-            $TARGETS_WITHOUT_DUPLICATE_COMPILE \
+        make --jobs $PARALLEL_PROCESSES --keep-going \
         > /dev/null \
     && echo "clazy, clang-tidy, iwyu finished." \
     \
-    && cd .. \
-    && rm --recursive --force build/* \
-    && cd build \
-    \
-    && echo "LWYU (link what you use) started." \
-    && cmake \
-        -DADDITIONAL_WARNINGS=FALSE \
-        -DCMAKE_LINK_WHAT_YOU_USE=TRUE \
-        .. \
-        > /dev/null \
-    && nice --adjustment 19 \
-        make --jobs 1 all 2>&1 \
-        | grep --invert-match --perl-regexp "^\[ *[0-9]*\%\] [^L]" \
-        | grep --invert-match --perl-regexp "^Scanning" \
-    && echo "LWYU (link what you use) finished." \
     && cd .. \
     && rm --recursive --force build/* \
     \

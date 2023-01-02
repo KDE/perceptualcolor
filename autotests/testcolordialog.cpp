@@ -681,13 +681,13 @@ private Q_SLOTS:
         QMetaProperty referenceClassProperty = //
             referenceClass.property(referenceClassIndex);
         // cppcheck-suppress unreadVariable // false positive
-        QByteArray message =
-            QByteArrayLiteral("Test if property \"")
-            + QByteArray(referenceClassProperty.name())
-            + QByteArrayLiteral("\" of class \"")
-            + QByteArray(referenceClass.className())
-            + QByteArrayLiteral("\" is also available in \"")
-            + QByteArray(testClass.className())
+        QByteArray message = //
+            QByteArrayLiteral("Test if property \"") //
+            + QByteArray(referenceClassProperty.name()) //
+            + QByteArrayLiteral("\" of class \"") //
+            + QByteArray(referenceClass.className()) //
+            + QByteArrayLiteral("\" is also available in \"") //
+            + QByteArray(testClass.className()) //
             + QByteArrayLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
@@ -804,13 +804,13 @@ private Q_SLOTS:
         QMetaMethod referenceClassMethod = //
             referenceClass.method(referenceClassIndex);
         // cppcheck-suppress unreadVariable // false positive
-        QByteArray message =
-            QByteArrayLiteral("Test if method \"")
-            + QByteArray(referenceClassMethod.methodSignature())
-            + QByteArrayLiteral("\" of class \"")
-            + QByteArray(referenceClass.className())
-            + QByteArrayLiteral("\" is also available in \"")
-            + QByteArray(testClass.className())
+        QByteArray message = //
+            QByteArrayLiteral("Test if method \"") //
+            + QByteArray(referenceClassMethod.methodSignature()) //
+            + QByteArrayLiteral("\" of class \"") //
+            + QByteArray(referenceClass.className()) //
+            + QByteArrayLiteral("\" is also available in \"") //
+            + QByteArray(testClass.className()) //
             + QByteArrayLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaMethod testClassMethod = testClass.method(testClassIndex);

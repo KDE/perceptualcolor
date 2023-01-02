@@ -7,15 +7,21 @@
 
 
 
-################# CI: Continuous integration #################
-ulimit -Sv 2000000
+################# Documentation #################
+# This script provides some environment variables. It can be called in other
+# scripts like this:
+# . scripts/run-export-environment.sh
+# The “.” command will execute it within the context of the calling script,
+# which is necessary in order to preserve the environment variables.
 
-# Define the number of parallel processes to be used.
-# NOTE LWYU is not affected because unfortunately it is necessary
-# to run it with only 1 process to be sure that error messages
-# are printed at the correct position below the linker command
-# that indicates the affected file.
-PARALLEL_PROCESSES="8"
+
+
+
+
+################# CI: Continuous integration #################
+# Define the number of parallel processes to be used (maximum
+# CPU threads available on the current system).
+PARALLEL_PROCESSES=`nproc --all`
 
 # Define which checks we want to run. We run at level 2 (highest possible
 # number of warnings). Specific checks can be disabled. Example:

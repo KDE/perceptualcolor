@@ -10,23 +10,62 @@
 
 errorcount=0
 
-if ./.gitlab-ci-staticcodecheck.sh 2>&1 | grep '^'; then
-    # there was some output"
-    ((errorcount++))
-fi
+scripts/static-codecheck.sh &> artifact_staticcodecheck
+[ -s artifact_staticcodecheck ] || ((errorcount++))
 
 echo cmakelint started.
-cmakelint --spaces=4 `find -name "CMakeLists.txt"` || ((errorcount++))
+cmakelint --spaces=4 `find -name "CMakeLists.txt"` > artifact_cmakelint
 echo cmakelint finished.
+[ -s artifact_cmakelint ] || ((errorcount++))
 
+# Doxygen run. We let Doxygen update the config files, so that no
+# warnings for deprecated options will ever be issued. This seems
+# useful, because it is likely to have different Doxygen versions
+# on the developer’s system and the CI system.
+mkdir --parents doxyconf
+rm --recursive --force doxyconf/*
 echo Doxygen “public API and internals” started.
-doxygen Doxyfile.internal || ((errorcount++))
+cp Doxyfile.internal doxyconf/internaldoc
+doxygen -u doxyconf/internaldoc
+doxygen doxyconf/internaldoc 2>artifact_doxygen_temp
 echo Doxygen “public API and internals” finished.
 echo Doxygen “public API” started.
-doxygen Doxyfile.external || ((errorcount++))
+cp Doxyfile.external doxyconf/externaldoc
+doxygen -u doxyconf/externaldoc
+doxygen doxyconf/externaldoc 2>>artifact_doxygen_temp
 echo Doxygen “public API” finished.
+sort --unique artifact_doxygen_temp  > artifact_doxygen
+rm artifact_doxygen_temp
+rm --recursive --force doxyconf
+[ -s artifact_doxygen ] || ((errorcount++))
+
+echo Build with warnings started.
+# The “.” command will execute the given script within the context of
+# the current script, which is necessary in order to preserve the
+# environment variables that are set by the given script.
+. scripts/export-environment.sh
+echo Number of available CPU threads: $PARALLEL_PROCESSES
+mkdir --parents build
+rm --recursive --force build/*
+cd build
+cmake \
+    -DCMAKE_CXX_COMPILER=clazy \
+    -DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy \
+    -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
+        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
+    -DADDITIONAL_WARNINGS=TRUE \
+    ..
+cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings
+cd ..
+[ -s artifact_warnings ] || ((errorcount++))
+echo Build with warnings finished
+
+scripts/automatic-integration.sh
+git diff > artifact_automatic_integration_diff
+[ -s artifact_automatic_integration_diff ] || ((errorcount++))
 
 echo Terminating continuous integration with exit code $errorcount.
-# NOTE The exit code of the last command is always available with $?
+
+# NOTE The exit code of the last command is available with $? in the shell.
 
 exit $errorcount

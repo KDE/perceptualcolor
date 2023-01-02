@@ -9,6 +9,7 @@
 /Doxyfile
 /docs/publicapi/
 /docs/publicapiandinternals/
+/artifact_*
 
 # Otherwise the pattern may also match at any level below
 # the .gitignore level:

@@ -11,7 +11,7 @@ Dependencies:
 Options:
   #in-source-build: False
   use-ccache: False
-  cmake-options: '-DADDITIONAL_WARNINGS=TRUE'
+  cmake-options: '-DADDITIONAL_WARNINGS=ON'
   #test-before-installing: False
   run-tests: True
   #tests-load-sensitive: False
