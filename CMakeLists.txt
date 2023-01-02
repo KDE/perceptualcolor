@@ -427,6 +427,12 @@ find_package(
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
 include(QtVersionOption) # Provides ${QT_MAJOR_VERSION}
+# CheckAtomic: “Sometimes linking against libatomic is required for atomic ops,
+#               if the platform doesn’t support lock-free atomics.”
+#              “Check if the compiler supports std:atomic out of the box or if
+#               libatomic is needed for atomic support. If it is needed
+#               libatomicis added to ``CMAKE_REQUIRED_LIBRARIES``.”
+include(CheckAtomic)
 message(
     STATUS
     "Building against Qt${QT_MAJOR_VERSION}.\n"
