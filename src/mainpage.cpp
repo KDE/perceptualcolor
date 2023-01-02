@@ -44,6 +44,7 @@
  * - … has support for both, pointer device (mouse, touchpad…) <em>and</em>
  *     keyboard navigation, in the widgets.
  * - … has a permissive license.
+ * - … can be built as either a static or a shared/dynamic library.
  * - … has basic support for accessibility.
  * - … is developed with unit tests.
  * - … links only to Qt and LittleCMS, so being Tier 1.
