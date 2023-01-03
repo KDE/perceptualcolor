@@ -683,11 +683,11 @@ private Q_SLOTS:
             referenceClass.property(referenceClassIndex);
         QByteArray message =
             QByteArrayLiteral("Test if property \"")
-            + referenceClassProperty.name()
+            + QByteArray(referenceClassProperty.name())
             + QByteArrayLiteral("\" of class \"")
-            + referenceClass.className()
+            + QByteArray(referenceClass.className())
             + QByteArrayLiteral("\" is also available in \"")
-            + testClass.className()
+            + QByteArray(testClass.className())
             + QByteArrayLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
@@ -805,11 +805,11 @@ private Q_SLOTS:
             referenceClass.method(referenceClassIndex);
         QByteArray message =
             QByteArrayLiteral("Test if method \"")
-            + referenceClassMethod.methodSignature()
+            + QByteArray(referenceClassMethod.methodSignature())
             + QByteArrayLiteral("\" of class \"")
-            + referenceClass.className()
+            + QByteArray(referenceClass.className())
             + QByteArrayLiteral("\" is also available in \"")
-            + testClass.className()
+            + QByteArray(testClass.className())
             + QByteArrayLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaMethod testClassMethod = testClass.method(testClassIndex);
