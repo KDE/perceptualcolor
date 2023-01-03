@@ -29,7 +29,7 @@ class TestChromaLightnessImageParameters : public QObject
     Q_OBJECT
 
 public:
-    TestChromaLightnessImageParameters(QObject *parent = nullptr)
+    explicit TestChromaLightnessImageParameters(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

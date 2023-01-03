@@ -61,7 +61,7 @@ public:
      * <a href="https://doc.qt.io/qt-6/qvariant.html"> QVariant</a></tt>. */
     using pointerToRenderFunction = std::function<void(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)>;
 
-    AsyncImageRenderThread(const pointerToRenderFunction &renderFunction, QObject *parent = nullptr);
+    explicit AsyncImageRenderThread(const pointerToRenderFunction &renderFunction, QObject *parent = nullptr);
     virtual ~AsyncImageRenderThread() override;
 
     virtual void deliverInterlacingPass(const QImage &image, const QVariant &parameters, const AsyncImageRenderCallback::InterlacingState state) override;

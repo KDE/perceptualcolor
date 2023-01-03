@@ -40,7 +40,7 @@ class TestVersion : public QObject
     Q_OBJECT
 
 public:
-    TestVersion(QObject *parent = nullptr)
+    explicit TestVersion(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

@@ -21,7 +21,7 @@ class ReceiverMockup : public QWidget
 {
     Q_OBJECT
 public:
-    ReceiverMockup(QWidget *parent = nullptr)
+    explicit ReceiverMockup(QWidget *parent = nullptr)
         : QWidget(parent){};
     bool languageChangeEventDetected = false;
 
@@ -39,7 +39,7 @@ class TestLanguageChangeEventFilter : public QObject
     Q_OBJECT
 
 public:
-    TestLanguageChangeEventFilter(QObject *parent = nullptr)
+    explicit TestLanguageChangeEventFilter(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

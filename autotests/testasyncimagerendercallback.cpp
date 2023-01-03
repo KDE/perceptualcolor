@@ -39,7 +39,7 @@ class TestAsyncImageRenderCallback : public QObject
     Q_OBJECT
 
 public:
-    TestAsyncImageRenderCallback(QObject *parent = nullptr)
+    explicit TestAsyncImageRenderCallback(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

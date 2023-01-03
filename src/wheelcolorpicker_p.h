@@ -34,7 +34,7 @@ class WheelColorPickerPrivate final : public QObject
 
 public:
     // Constructors and destructors
-    WheelColorPickerPrivate(WheelColorPicker *backLink);
+    explicit WheelColorPickerPrivate(WheelColorPicker *backLink);
     /** @brief Default destructor */
     virtual ~WheelColorPickerPrivate() noexcept override = default;
 

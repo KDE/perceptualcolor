@@ -36,7 +36,7 @@ class TestColorWheel : public QObject
     Q_OBJECT
 
 public:
-    TestColorWheel(QObject *parent = nullptr)
+    explicit TestColorWheel(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

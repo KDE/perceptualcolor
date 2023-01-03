@@ -19,7 +19,7 @@ class TestInterlacingPass : public QObject
     Q_OBJECT
 
 public:
-    TestInterlacingPass(QObject *parent = nullptr)
+    explicit TestInterlacingPass(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

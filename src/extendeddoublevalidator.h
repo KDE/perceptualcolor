@@ -44,7 +44,7 @@ class ExtendedDoubleValidator : public QDoubleValidator
     Q_PROPERTY(QString suffix READ suffix WRITE setSuffix NOTIFY suffixChanged)
 
 public:
-    Q_INVOKABLE ExtendedDoubleValidator(QObject *parent = nullptr);
+    Q_INVOKABLE explicit ExtendedDoubleValidator(QObject *parent = nullptr);
     virtual ~ExtendedDoubleValidator() noexcept override;
     /** @brief Getter for property @ref prefix
      *  @returns the property @ref prefix */

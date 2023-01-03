@@ -41,7 +41,7 @@ class TestHelperConstants : public QObject
     Q_OBJECT
 
 public:
-    TestHelperConstants(QObject *parent = nullptr)
+    explicit TestHelperConstants(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

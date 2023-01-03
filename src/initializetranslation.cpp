@@ -111,14 +111,14 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
         qWarning() //
             << __func__ //
             << "must not be called without a QCoreApplication object.";
-        throw;
+        throw 0;
     }
     if (QThread::currentThread() != QCoreApplication::instance()->thread()) {
         qWarning() //
             << __func__ //
             << "must not be called by any other thread "
                "except the QCoreApplication thread.";
-        throw;
+        throw 0;
     }
 
     // Static variables

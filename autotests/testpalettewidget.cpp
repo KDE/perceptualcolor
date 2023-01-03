@@ -42,7 +42,7 @@ class TestPaletteWidget : public QObject
     Q_OBJECT
 
 public:
-    TestPaletteWidget(QObject *parent = nullptr)
+    explicit TestPaletteWidget(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -55,7 +55,7 @@ private:
         QTest::addColumn<QString>("styleName");
         // non-const to allow using reference variables in the range-based loop
         QStringList styleNameList = QStyleFactory::keys();
-        for (QString &currentStyleName : styleNameList) {
+        for (const QString &currentStyleName : styleNameList) {
             QTest::newRow(currentStyleName.toUtf8().constData()) << currentStyleName;
         }
     }

@@ -36,7 +36,7 @@ class TestHelper : public QObject
     Q_OBJECT
 
 public:
-    TestHelper(QObject *parent = nullptr)
+    explicit TestHelper(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

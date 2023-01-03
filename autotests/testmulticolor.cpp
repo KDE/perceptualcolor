@@ -26,7 +26,7 @@ class TestMultiColor : public QObject
     Q_OBJECT
 
 public:
-    TestMultiColor(QObject *parent = nullptr)
+    explicit TestMultiColor(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -142,6 +142,7 @@ private Q_SLOTS:
         MultiColor myMulticolor2 = MultiColor::fromRgb( //
             RgbColorSpaceFactory::createSrgb(),
             QList<double>{7, 8, 9});
+        Q_UNUSED(myMulticolor2);
         myMulticolor2 = myMulticolor1;
         QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
         QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);

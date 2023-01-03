@@ -36,7 +36,7 @@ class TestRefreshIconEngine : public QObject
     Q_OBJECT
 
 public:
-    TestRefreshIconEngine(QObject *parent = nullptr)
+    explicit TestRefreshIconEngine(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

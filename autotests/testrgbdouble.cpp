@@ -58,7 +58,7 @@ class TestRgbDouble : public QObject
     Q_OBJECT
 
 public:
-    TestRgbDouble(QObject *parent = nullptr)
+    explicit TestRgbDouble(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

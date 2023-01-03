@@ -24,7 +24,7 @@ class TestMultiSpinBoxSectionConfiguration : public QObject
     Q_OBJECT
 
 public:
-    TestMultiSpinBoxSectionConfiguration(QObject *parent = nullptr)
+    explicit TestMultiSpinBoxSectionConfiguration(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

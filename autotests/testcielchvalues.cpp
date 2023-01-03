@@ -23,7 +23,7 @@ class TestCielchValues : public QObject
     Q_OBJECT
 
 public:
-    TestCielchValues(QObject *parent = nullptr)
+    explicit TestCielchValues(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -64,10 +64,7 @@ private Q_SLOTS:
         auto temp = RgbColorSpace::createSrgb();
         LchDouble color;
         qreal presicion = 0.1;
-        const auto srgbMaximumChroma = temp->profileMaximumCielchChroma();
-        color.c = srgbMaximumChroma;
         qreal hue = 0;
-        color.c = srgbMaximumChroma - 1;
         bool inGamutValueFound = false;
 
         // Test if versatile is small enough

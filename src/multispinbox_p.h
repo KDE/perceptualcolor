@@ -33,7 +33,7 @@ class MultiSpinBoxPrivate final : public QObject
     Q_OBJECT
 
 public:
-    MultiSpinBoxPrivate(MultiSpinBox *backLink);
+    explicit MultiSpinBoxPrivate(MultiSpinBox *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -122,7 +122,7 @@ private:
 class AccessibleMultiSpinBox : public QAccessibleWidget
 {
 public:
-    AccessibleMultiSpinBox(MultiSpinBox *w);
+    explicit AccessibleMultiSpinBox(MultiSpinBox *w);
     virtual ~AccessibleMultiSpinBox() override;
     [[nodiscard]] static QAccessibleInterface *factory(const QString &classname, QObject *object);
 };

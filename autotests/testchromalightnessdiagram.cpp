@@ -40,7 +40,7 @@ class TestChromaLightnessDiagram : public QObject
     Q_OBJECT
 
 public:
-    TestChromaLightnessDiagram(QObject *parent = nullptr)
+    explicit TestChromaLightnessDiagram(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

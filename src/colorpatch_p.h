@@ -26,7 +26,7 @@ class ColorPatchPrivate final
 {
 public:
     /** @brief Constructor */
-    ColorPatchPrivate(ColorPatch *backLink);
+    explicit ColorPatchPrivate(ColorPatch *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because

@@ -49,7 +49,7 @@ class TestConstPropagatingRawPointer : public QObject
     Q_OBJECT
 
 public:
-    TestConstPropagatingRawPointer(QObject *parent = nullptr)
+    explicit TestConstPropagatingRawPointer(QObject *parent = nullptr)
         : QObject(parent)
         , pointerToQRectF(new QRectF)
         , pointerToTestDelete(new QRectF)

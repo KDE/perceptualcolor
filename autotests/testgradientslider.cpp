@@ -35,7 +35,7 @@ class TestGradientSlider : public QObject
     Q_OBJECT
 
 public:
-    TestGradientSlider(QObject *parent = nullptr)
+    explicit TestGradientSlider(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

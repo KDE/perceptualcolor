@@ -20,7 +20,7 @@ class TestHelperQtTypes : public QObject
     Q_OBJECT
 
 public:
-    TestHelperQtTypes(QObject *parent = nullptr)
+    explicit TestHelperQtTypes(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

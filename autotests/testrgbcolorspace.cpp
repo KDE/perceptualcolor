@@ -45,7 +45,7 @@ class TestRgbColorSpace : public QObject
     Q_OBJECT
 
 public:
-    TestRgbColorSpace(QObject *parent = nullptr)
+    explicit TestRgbColorSpace(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

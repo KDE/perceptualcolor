@@ -66,7 +66,7 @@ class TestChromaHueImageParameters : public QObject
     Q_OBJECT
 
 public:
-    TestChromaHueImageParameters(QObject *parent = nullptr)
+    explicit TestChromaHueImageParameters(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

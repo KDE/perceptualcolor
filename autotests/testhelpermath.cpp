@@ -22,7 +22,7 @@ class TestHelperMath : public QObject
     Q_OBJECT
 
 public:
-    TestHelperMath(QObject *parent = nullptr)
+    explicit TestHelperMath(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

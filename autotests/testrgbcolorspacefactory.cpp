@@ -51,7 +51,7 @@ class TestRgbColorSpaceFactory : public QObject
     Q_OBJECT
 
 public:
-    TestRgbColorSpaceFactory(QObject *parent = nullptr)
+    explicit TestRgbColorSpaceFactory(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

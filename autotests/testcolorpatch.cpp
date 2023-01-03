@@ -40,7 +40,7 @@ class TestColorPatch : public QObject
     Q_OBJECT
 
 public:
-    TestColorPatch(QObject *parent = nullptr)
+    explicit TestColorPatch(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

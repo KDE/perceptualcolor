@@ -157,7 +157,7 @@ class TestMultiSpinBox : public QObject
     Q_OBJECT
 
 public:
-    TestMultiSpinBox(QObject *parent = nullptr)
+    explicit TestMultiSpinBox(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

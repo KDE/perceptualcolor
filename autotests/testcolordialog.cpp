@@ -67,7 +67,7 @@ public Q_SLOTS:
 
 public:
     // A constructor that is clazy-conform
-    TestColorDialogSnippetClass(QWidget *parent = nullptr)
+    explicit TestColorDialogSnippetClass(QWidget *parent = nullptr)
         : QWidget(parent)
     {
     }
@@ -148,7 +148,7 @@ class TestColorDialog : public QObject
     Q_OBJECT
 
 public:
-    TestColorDialog(QObject *parent = nullptr)
+    explicit TestColorDialog(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -681,14 +681,14 @@ private Q_SLOTS:
             referenceClass.indexOfProperty(propertyName.constData());
         QMetaProperty referenceClassProperty = //
             referenceClass.property(referenceClassIndex);
-        QByteArray message;
-        message += "Test if property \"";
-        message += referenceClassProperty.name();
-        message += "\" of class \"";
-        message += referenceClass.className();
-        message += "\" is also available in \"";
-        message += testClass.className();
-        message += "\".";
+        QByteArray message =
+            QByteArrayLiteral("Test if property \"")
+            + referenceClassProperty.name()
+            + QByteArrayLiteral("\" of class \"")
+            + referenceClass.className()
+            + QByteArrayLiteral("\" is also available in \"")
+            + testClass.className()
+            + QByteArrayLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
         if (referenceClassProperty.hasNotifySignal()) {
@@ -803,14 +803,14 @@ private Q_SLOTS:
         int testClassIndex = testClass.indexOfMethod(methodSignature.data());
         QMetaMethod referenceClassMethod = //
             referenceClass.method(referenceClassIndex);
-        QByteArray message;
-        message += "Test if method \"";
-        message += referenceClassMethod.methodSignature();
-        message += "\" of class \"";
-        message += referenceClass.className();
-        message += "\" is also available in \"";
-        message += testClass.className();
-        message += "\".";
+        QByteArray message =
+            QByteArrayLiteral("Test if method \"")
+            + referenceClassMethod.methodSignature()
+            + QByteArrayLiteral("\" of class \"")
+            + referenceClass.className()
+            + QByteArrayLiteral("\" is also available in \"")
+            + testClass.className()
+            + QByteArrayLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaMethod testClassMethod = testClass.method(testClassIndex);
         QCOMPARE(testClassMethod.access(), //

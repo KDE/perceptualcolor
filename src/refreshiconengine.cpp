@@ -282,8 +282,8 @@ QIconEngine *RefreshIconEngine::clone() const
  * @param other The other object that shall be copied to this one. */
 RefreshIconEngine::RefreshIconEngine(const RefreshIconEngine &other)
     : QIconEngine(other)
+    , m_referenceWidget(other.m_referenceWidget)
 {
-    m_referenceWidget = other.m_referenceWidget;
 }
 
 } // namespace PerceptualColor

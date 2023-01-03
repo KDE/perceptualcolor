@@ -31,7 +31,7 @@ class TestWheelColorPicker : public QObject
     Q_OBJECT
 
 public:
-    TestWheelColorPicker(QObject *parent = nullptr)
+    explicit TestWheelColorPicker(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

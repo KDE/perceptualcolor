@@ -24,7 +24,7 @@ class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
 {
     Q_OBJECT
 public:
-    TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
+    explicit TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
         : AbstractDiagram(parent)
     {
         // This constructor exists only to satisfy Clazy code checker, which
@@ -63,7 +63,7 @@ class TestAbstractDiagram : public QObject
     Q_OBJECT
 
 public:
-    TestAbstractDiagram(QObject *parent = nullptr)
+    explicit TestAbstractDiagram(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

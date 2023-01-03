@@ -32,7 +32,7 @@ class TestHelperConversion : public QObject
     Q_OBJECT
 
 public:
-    TestHelperConversion(QObject *parent = nullptr)
+    explicit TestHelperConversion(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

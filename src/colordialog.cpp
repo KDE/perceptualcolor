@@ -1960,7 +1960,7 @@ void ColorDialogPrivate::applyLayoutDimensions()
     default:
         // We should never reach this point, because we treat all possible
         // enum values in the switch statement.
-        throw;
+        throw 0;
     }
 
     if (collapsedLayout) {

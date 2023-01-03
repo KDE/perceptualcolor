@@ -23,7 +23,7 @@ class TestColorWheelSnippetClass : public QWidget
     Q_OBJECT
 public:
     // A constructor that is clazy-conform
-    TestColorWheelSnippetClass(QWidget *parent = nullptr)
+    explicit TestColorWheelSnippetClass(QWidget *parent = nullptr)
         : QWidget(parent)
     {
     }
@@ -56,7 +56,7 @@ class TestColorWheelImage : public QObject
     Q_OBJECT
 
 public:
-    TestColorWheelImage(QObject *parent = nullptr)
+    explicit TestColorWheelImage(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

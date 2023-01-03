@@ -25,7 +25,7 @@ class TestInitializeTranslation : public QObject
     Q_OBJECT
 
 public:
-    TestInitializeTranslation(QObject *parent = nullptr)
+    explicit TestInitializeTranslation(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

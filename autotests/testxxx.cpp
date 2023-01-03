@@ -16,7 +16,7 @@ class TestXXX : public QObject
     Q_OBJECT
 
 public:
-    TestXXX(QObject *parent = nullptr)
+    explicit TestXXX(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

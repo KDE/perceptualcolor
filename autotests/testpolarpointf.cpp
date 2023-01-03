@@ -23,7 +23,7 @@ class TestPolarPointF : public QObject
     Q_OBJECT
 
 public:
-    TestPolarPointF(QObject *parent = nullptr)
+    explicit TestPolarPointF(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

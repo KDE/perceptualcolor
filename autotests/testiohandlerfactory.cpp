@@ -25,7 +25,7 @@ class TestIOHandlerFactory : public QObject
     Q_OBJECT
 
 public:
-    TestIOHandlerFactory(QObject *parent = nullptr)
+    explicit TestIOHandlerFactory(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

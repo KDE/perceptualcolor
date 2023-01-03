@@ -33,7 +33,7 @@ class RgbColorSpace;
 class ChromaLightnessDiagramPrivate final
 {
 public:
-    ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink);
+    explicit ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because

@@ -29,7 +29,7 @@ class TestConstPropagatingUniquePointer : public QObject
     Q_OBJECT
 
 public:
-    TestConstPropagatingUniquePointer(QObject *parent = nullptr)
+    explicit TestConstPropagatingUniquePointer(QObject *parent = nullptr)
         : QObject(parent)
         , pointerToQRectF(new QRectF)
     {

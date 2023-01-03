@@ -24,7 +24,7 @@ class TestGradientSnippetClass : public QWidget
     Q_OBJECT
 public:
     // A constructor that is clazy-conform
-    TestGradientSnippetClass(QWidget *parent = nullptr)
+    explicit TestGradientSnippetClass(QWidget *parent = nullptr)
         : QWidget(parent)
     {
     }
@@ -72,7 +72,7 @@ class TestGradientImageParameters : public QObject
     Q_OBJECT
 
 public:
-    TestGradientImageParameters(QObject *parent = nullptr)
+    explicit TestGradientImageParameters(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

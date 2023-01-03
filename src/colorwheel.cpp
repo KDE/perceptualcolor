@@ -43,9 +43,6 @@ ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     // other operations rely on a working color space.
     d_pointer->m_rgbColorSpace = colorSpace;
 
-    // Initialization
-    d_pointer->m_hue = CielchValues::neutralHue;
-
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
     // either not accepted at all or accepted always for the hole rectangular
@@ -77,6 +74,8 @@ ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<
     : m_wheelImage(colorSpace)
     , q_pointer(backLink)
 {
+    // Initialization
+    m_hue = CielchValues::neutralHue;
 }
 
 /** @brief Convert widget pixel positions to wheel coordinate points.

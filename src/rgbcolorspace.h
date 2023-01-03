@@ -312,7 +312,7 @@ private:
      *
      * @param parent The widget’s parent widget. This parameter will be
      * passed to the base class’s constructor. */
-    RgbColorSpace(QObject *parent = nullptr);
+    explicit RgbColorSpace(QObject *parent = nullptr);
 
     /** @internal
      *

@@ -17,7 +17,7 @@ class TestAsyncImageProviderBase : public QObject
     Q_OBJECT
 
 public:
-    TestAsyncImageProviderBase(QObject *parent = nullptr)
+    explicit TestAsyncImageProviderBase(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

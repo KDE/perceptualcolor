@@ -20,7 +20,7 @@ class TestExtendedDoubleValidator : public QObject
     Q_OBJECT
 
 public:
-    TestExtendedDoubleValidator(QObject *parent = nullptr)
+    explicit TestExtendedDoubleValidator(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

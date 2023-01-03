@@ -52,7 +52,7 @@ class TestChromaHueDiagram : public QObject
     Q_OBJECT
 
 public:
-    TestChromaHueDiagram(QObject *parent = nullptr)
+    explicit TestChromaHueDiagram(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -106,10 +106,10 @@ private Q_SLOTS:
         referenceColorLch.h = 180;
         myDiagram.setCurrentColor(referenceColorLch);
         if (myDiagram.currentColor().h != 180) {
-            throw;
+            throw 0;
         }
         if (myDiagram.currentColor().c != 0) {
-            throw;
+            throw 0;
         }
         LchDouble referenceColorChromaLch;
         referenceColorChromaLch.l = 50;

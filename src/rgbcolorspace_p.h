@@ -29,7 +29,7 @@ class RgbColorSpace;
 class RgbColorSpacePrivate final
 {
 public:
-    RgbColorSpacePrivate(RgbColorSpace *backLink);
+    explicit RgbColorSpacePrivate(RgbColorSpace *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -39,7 +39,7 @@ public:
     // Data members:
     /** @brief The darkest in-gamut point on the L* axis.
      * @sa whitepointL */
-    qreal m_blackpointL;
+    qreal m_blackpointL = 0;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileAbsoluteFilePath */
     QString m_profileAbsoluteFilePath;
@@ -60,10 +60,10 @@ public:
     qint64 m_profileFileSize = -1;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileHasClut */
-    bool m_profileHasClut;
+    bool m_profileHasClut = false;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileHasMatrixShaper */
-    bool m_profileHasMatrixShaper;
+    bool m_profileHasMatrixShaper = false;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileIccVersion */
     QVersionNumber m_profileIccVersion;
@@ -93,7 +93,7 @@ public:
     cmsHTRANSFORM m_transformRgbToLabHandle = nullptr;
     /** @brief The lightest in-gamut point on the L* axis.
      * @sa blackpointL() */
-    qreal m_whitepointL;
+    qreal m_whitepointL = 100;
 
     // Functions:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);

@@ -18,7 +18,7 @@ class TestOklchValues : public QObject
     Q_OBJECT
 
 public:
-    TestOklchValues(QObject *parent = nullptr)
+    explicit TestOklchValues(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

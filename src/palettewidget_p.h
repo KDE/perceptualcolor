@@ -34,7 +34,7 @@ class PaletteWidgetPrivate final : public QObject
     Q_OBJECT
 
 public:
-    PaletteWidgetPrivate(PaletteWidget *backLink);
+    explicit PaletteWidgetPrivate(PaletteWidget *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because

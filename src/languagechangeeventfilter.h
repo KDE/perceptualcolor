@@ -27,7 +27,7 @@ class LanguageChangeEventFilter : public QObject
     Q_OBJECT
 
 public:
-    LanguageChangeEventFilter(QObject *parent = nullptr);
+    explicit LanguageChangeEventFilter(QObject *parent = nullptr);
     virtual ~LanguageChangeEventFilter() override;
     [[nodiscard]] virtual bool eventFilter(QObject *watched, QEvent *event) override;
 

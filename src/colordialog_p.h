@@ -49,7 +49,7 @@ class ColorDialogPrivate final : public QObject
 {
     Q_OBJECT
 public:
-    ColorDialogPrivate(ColorDialog *backLink);
+    explicit ColorDialogPrivate(ColorDialog *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because

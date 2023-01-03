@@ -27,7 +27,7 @@ class RgbColorSpace;
 class GradientSliderPrivate final
 {
 public:
-    GradientSliderPrivate(GradientSlider *backLink);
+    explicit GradientSliderPrivate(GradientSlider *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because

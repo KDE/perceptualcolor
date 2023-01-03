@@ -21,7 +21,7 @@ class TestAsyncImageRenderThread : public QObject
     Q_OBJECT
 
 public:
-    TestAsyncImageRenderThread(QObject *parent = nullptr)
+    explicit TestAsyncImageRenderThread(QObject *parent = nullptr)
         : QObject(parent)
     {
     }

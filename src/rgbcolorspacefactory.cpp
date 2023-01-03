@@ -175,7 +175,7 @@ QStringList RgbColorSpaceFactory::colorProfileDirectories()
     baseDirectoryList.append(QStringLiteral(u"/usr/share/"));
     // Custom search directory:
     baseDirectoryList.append(QStringLiteral(u"/var/lib/"));
-    for (QString &path : baseDirectoryList) {
+    for (const QString &path : baseDirectoryList) {
         if (!path.isEmpty()) {
             candidates.append(path + QStringLiteral(u"/color/icc/"));
             candidates.append(path + QStringLiteral(u"/icc/"));

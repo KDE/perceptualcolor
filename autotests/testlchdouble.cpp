@@ -32,7 +32,7 @@ class TestLchDouble : public QObject
     Q_OBJECT
 
 public:
-    TestLchDouble(QObject *parent = nullptr)
+    explicit TestLchDouble(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
