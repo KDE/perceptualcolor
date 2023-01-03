@@ -728,7 +728,6 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     }
 
     i += 1;
-    qreal maximumJ;
     // After the initial search for the nearest-neighbor-point, we must
     // continue to search the perimeter of wider squares until we reach an
     // offset of “nearestPointTillNowDistance”. However, the search points
@@ -736,7 +735,7 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     // stop when they reach a pixel that is farther away from the original
     // point than the current "nearest-neighbor-point" candidate."
     for (; i < nearestPointTillNowDistance; ++i) {
-        maximumJ = qSqrt(nearestPointTillNowDistanceSquare - i * i);
+        qreal maximumJ = qSqrt(nearestPointTillNowDistanceSquare - i * i);
         for (j = 0; j < maximumJ; ++j) {
             for (QPoint &temp : searchPointOffsets(i, j)) {
                 searchPoint = point + temp;

@@ -162,8 +162,6 @@ QSize MultiSpinBox::sizeHint() const
     QList<MultiSpinBoxSectionConfiguration> myConfiguration = d_pointer->m_sectionConfigurations;
     const int height = lineEdit()->sizeHint().height();
     int width = 0;
-    QString textOfMinimumValue;
-    QString textOfMaximumValue;
     QString completeString;
 
     // Get the text for all the sections
@@ -173,12 +171,12 @@ QSize MultiSpinBox::sizeHint() const
         // For each section, test if the minimum value or the maximum
         // takes more space (width). Choose the one that takes more place
         // (width).
-        textOfMinimumValue = locale().toString( //
+        const QString textOfMinimumValue = locale().toString( //
             myConfiguration.at(i).minimum(), // value
             'f', // format
             myConfiguration.at(i).decimals() // precision
         );
-        textOfMaximumValue = locale().toString( //
+        const QString textOfMaximumValue = locale().toString( //
             myConfiguration.at(i).maximum(), // value
             'f', // format
             myConfiguration.at(i).decimals() // precision
