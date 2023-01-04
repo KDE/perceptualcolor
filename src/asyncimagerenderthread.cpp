@@ -122,6 +122,7 @@ void AsyncImageRenderThread::run()
         // as fast as possible if indicated.
         m_renderFunction(parameters, *this);
 
+        // cppcheck-suppress identicalConditionAfterEarlyExit // false positive
         if (m_loopAbort) {
             return;
         }

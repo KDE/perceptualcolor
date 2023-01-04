@@ -209,6 +209,7 @@ QStringList RgbColorSpaceFactory::colorProfileDirectories()
     // Prepare the return value:
     QFileInfo info; // QFileInfo isn’t only about files, but also directories!
     QStringList result;
+    // cppcheck-suppress knownEmptyContainer // false positive
     for (QString &path : candidates) {
         // cleanPath() has redundant separators removed.
         info = QFileInfo(QDir::cleanPath(path));

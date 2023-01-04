@@ -5,7 +5,7 @@
 
 variables:
   DEBIAN_FRONTEND: "noninteractive"
-custom_ci:
+codecheck_custom:
   stage: build
   image: debian:testing
   interruptible: true

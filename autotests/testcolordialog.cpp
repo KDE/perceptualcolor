@@ -680,6 +680,7 @@ private Q_SLOTS:
             referenceClass.indexOfProperty(propertyName.constData());
         QMetaProperty referenceClassProperty = //
             referenceClass.property(referenceClassIndex);
+        // cppcheck-suppress unreadVariable // false positive
         QByteArray message =
             QByteArrayLiteral("Test if property \"")
             + QByteArray(referenceClassProperty.name())
@@ -802,6 +803,7 @@ private Q_SLOTS:
         int testClassIndex = testClass.indexOfMethod(methodSignature.data());
         QMetaMethod referenceClassMethod = //
             referenceClass.method(referenceClassIndex);
+        // cppcheck-suppress unreadVariable // false positive
         QByteArray message =
             QByteArrayLiteral("Test if method \"")
             + QByteArray(referenceClassMethod.methodSignature())
