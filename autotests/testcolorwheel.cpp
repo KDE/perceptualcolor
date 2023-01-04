@@ -81,7 +81,7 @@ private Q_SLOTS:
         myWindow.setLayout(myLayout);
 
         // It is necessary to show the widget and make it active
-        // to make focus and widget events working within unit tests:
+        // to make focus and widget events working within unit tests.
         myWindow.show();
         QApplication::setActiveWindow(&myWindow);
 

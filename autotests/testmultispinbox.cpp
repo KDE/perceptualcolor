@@ -716,7 +716,7 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 
         // It is necessary to show the widget and make it active
-        // to make focus and widget events working within unit tests:
+        // to make focus and widget events working within unit tests.
         parentWidget->show();
         QApplication::setActiveWindow(parentWidget.data());
 
