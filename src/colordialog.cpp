@@ -1471,6 +1471,14 @@ QString ColorDialogPrivate::translateViaQColorDialog(const char *sourceText)
  * exclusively used on Wayland, and not on X. */
 void ColorDialogPrivate::initializeScreenColorPicker()
 {
+    // TODO xxx Current implementation of screen picker has problems with
+    // default key (Return key) to react. This seems to be a side-effect
+    // of instantiating QColorDialog, though we use yet
+    // m_buttonOK->setDefault(true);
+    // to solve part of the problem. However, using the current implementation
+    // makes some unit tests to fail on invent.kde.org while they continue
+    // to run fine locally.
+    return;
     if (m_screenColorPickerSupportAvailable.value_or(true) == false) {
         // On the current system we know yet we have no support for
         // screen color picker:
