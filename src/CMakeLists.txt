@@ -169,7 +169,7 @@ qt_add_resources(
 
 
 
-################# Build shared library #################
+################# Build library #################
 # For the library name, we follow the KDE policy:
 # https://community.kde.org/Policies/New_KDE_Library_API_Policy#Library_Naming
 set(LIBRARY_NAME "perceptualcolor-${MAJOR_VERSION}")
@@ -261,7 +261,7 @@ install(
 
 
 
-################# Build internal shared library #################
+################# Build internal library #################
 # The following library is like the normal library, with the
 # following difference: It exports all symbols (also private ones), and it
 # does not install. This is used for the unit testing, because exporting all
