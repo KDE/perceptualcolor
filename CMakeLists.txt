@@ -23,6 +23,9 @@ project(
     DESCRIPTION "Perceptual color components"
     LANGUAGES CXX
 )
+message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
@@ -249,15 +252,6 @@ add_compile_definitions(
 # MSVC uses “/utf-8” which sets both, the input and the narrow execution
 # character set. However, currently we try to get away with the default
 # settings provided by CMake.
-
-
-
-
-
-################# Information #################
-message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
-message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
-message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
 
 
 
