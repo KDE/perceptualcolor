@@ -12,8 +12,11 @@
 # run in a compatibility mode that makes sure we get the exact same result
 # as if actually CMake in the indicated version would have been invoked.
 #
-# Qt 6.0 requires at least CMake version 3.16, as explained by
-# https://doc.qt.io/archives/qt-6.0/cmake-get-started.html so we do the same:
+# Qt 6.0 requires at least CMake version 3.16.
+# https://doc.qt.io/archives/qt-6.0/cmake-get-started.html
+# Qt 6.2 LTS requires at least CMake version 3.16 for the Qt shared library
+# and CMake version 3.21.1 for Qt static library.
+# https://doc.qt.io/archives/qt-6.2/cmake-get-started.html
 cmake_minimum_required(VERSION 3.16.0)
 message(STATUS "CMAKE_VERSION: ${CMAKE_VERSION}")
 
@@ -106,6 +109,7 @@ message(
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
+message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 
 
