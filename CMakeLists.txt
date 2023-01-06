@@ -254,6 +254,15 @@ add_compile_definitions(
 
 
 
+################# Information #################
+message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
+
+
+
+
+
 ################# Warnings #################
 # Available compiler flags for warnings might change incompatibly from
 # version to version, which could let the build fail. Also, newer compiler
