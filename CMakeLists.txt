@@ -15,6 +15,7 @@
 # Qt 6.0 requires at least CMake version 3.16, as explained by
 # https://doc.qt.io/archives/qt-6.0/cmake-get-started.html so we do the same:
 cmake_minimum_required(VERSION 3.16.0)
+message(STATUS "CMAKE_VERSION: ${CMAKE_VERSION}")
 
 # Project setup. We need only a C++ (CXX) compiler, and no C compiler.
 # Therefore, we set LANGUAGES explicitly.
