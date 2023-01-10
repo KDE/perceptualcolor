@@ -211,7 +211,7 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
                     // "en" are also tried.
                     QLocale(newUiLanguages.value().value(i)),
                     // First part of the filename
-                    QStringLiteral("perceptualcolorlib"),
+                    QStringLiteral("localization"),
                     // Separator after the first part of the filename
                     // (Intentionally NOT "_" or "-" to avoid confusion
                     // with the separators in BCP47 codes

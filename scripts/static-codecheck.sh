@@ -31,7 +31,7 @@ grep \
     --files-without-match $'\xEF\xBB\xBF' \
     $ALL_CODE \
     | grep \
-        --perl-regexp "\.(license|txt|icc|qrc|qph|ts|cmake\.in)$" \
+        --perl-regexp "\.(license|txt|icc|qrc|qph|ts|cmake\.in|sh)$" \
         --invert-match \
     | sed 's/^/Missing byte-order-mark: /'
 

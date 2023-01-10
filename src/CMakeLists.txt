@@ -88,34 +88,28 @@ set(lib_PUBLICHEADERS
 
 
 
-################# Setup translations #################
-# qt_create_translation() does two quite different things:
-# 1. It updates the .ts files according to the C++ code.
-# 2. For each .ts file, it generates a .qm files in the current build directory.
-# TODO qt_create_translation() is deprecated in Qt 6. When passing to Qt6,
-#      we could also fix the problem with template.ts updates…
-qt_create_translation(
-    # Output variable where to store the list of generated .qm files:
-    qm_file_list
-    # C++ code:
-    ${library_SRC} ${lib_PUBLICHEADERS} # TODO What about _private_ headers?
-    # .ts files:
-    "translation/perceptualcolorlib.de.ts"
-    "translation/perceptualcolorlib.es.ts"
-    "translation/perceptualcolorlib.fr.ts"
-    # template.ts is the file that can be used as template to start new (empty)
-    # translations. Additionally to the .ts files with actual translations,
-    # we also put template.ts here, because otherwise it would not be updated.
-    # However, this will also generate a template.qm file, which is useless
-    # and waste of space (though the file itself is extremly small).
-    # Unfortunately there is no workaround: We have to pass it actually to
-    # the qt_add_resource (be means of being part of the qrc_file list)
-    # because otherwise it would never get updated. On the other hand,
-    # as the file is extremly small, the practical impact is minimal.
-    translation/template.ts
+################# Translation #################
+include(ECMPoQmTools)
+# NOTE ECMPoQmTools provides also ecm_install_po_files_as_qm to conveniently
+# generate and install qm files as individual files, and ecm_create_qm_loader
+# to conveniently load the translations automatically. However, currently
+# we compile the translation into the library binary itself. First, this
+# avoids that translations can ever be lost. Second, ecm_create_qm_loader
+# does not work on static libraries.
+get_filename_component(absolute_poqm_directory "../poqm" ABSOLUTE)
+file(
+    # TODO Is it possible to get rid of GLOB_RECURSE?
+    GLOB_RECURSE po_file_list # Name of the output variable.
+    LIST_DIRECTORIES FALSE
+    # CMake will add logic to the main build system check target to
+    # rerun the flagged GLOB commands at build time:
+    CONFIGURE_DEPENDS
+    # Examples of recursive globing include:
+    # /dir/*.py  - match all python files in /dir and subdirectories(!)
+    "${absolute_poqm_directory}/*/perceptualcolor-0_qt.po"
 )
-
-# Generate a .qrc file (list of resources to include)
+# Generate a .qrc file (list of .qm files to include) and the targets
+# that will produce the individual .qm files.
 set(qrc_file "${CMAKE_CURRENT_BINARY_DIR}/resourcelist.qrc")
 file(
     WRITE
@@ -125,15 +119,13 @@ file(
     "<!DOCTYPE RCC>\n"
     "<RCC version=\"1.0\">\n"
     "    <qresource prefix=\"PerceptualColor/i18n\">\n")
-foreach(qm_file IN LISTS qm_file_list)
-    # The variable qm_file contains an absolute path. It has to be converted
-    # to a relative path: relative to the given directory.
-    file(
-        RELATIVE_PATH
-        qm_file                     # output variable
-        ${CMAKE_CURRENT_BINARY_DIR} # directory
-        ${qm_file}                  # original file path
-    )
+foreach(po_file_original ${po_file_list})
+    get_filename_component(po_dir ${po_file_original} DIRECTORY)
+    get_filename_component(lang ${po_dir} NAME)
+    ecm_process_po_files_as_qm(
+        ${lang}
+        ALL # Add this target to the ALL target.
+        PO_FILES ${po_file_original})
     # The attributes threshold="100" compress-algo="none" will prevent these
     # files from being compressed. This is because there were discussions
     # that QTranslator does not load compressed resourced, but only
@@ -142,9 +134,11 @@ foreach(qm_file IN LISTS qm_file_list)
     # disable the compression.
     file(
         APPEND ${qrc_file}
-        "        "
-        "<file threshold=\"100\" compress-algo=\"none\">"
-        "${qm_file}"
+        "        <file "
+        "threshold=\"100\" "
+        "compress-algo=\"none\" "
+        "alias=\"localization.${lang}.qm\">"
+        "${lang}/perceptualcolor-0_qt.qm"
         "</file>\n")
 endforeach()
 file(
@@ -154,15 +148,16 @@ file(
     # Content to append:
     "    </qresource>\n"
     "</RCC>\n")
-
 # Add all resources from the .qrt file to our C++ sources
 # so they will get compiled in.
 qt_add_resources(
     library_SRC # existing source list
     ${qrc_file} # File with list of Qt resource to be added
-    # TODO Starting with Qt6, it will no longer be necessary to have a
+    # NOTE Starting with Qt6, it will no longer be necessary to have a
     # .qrc file, but the list of files can be passed in the very same
-    # qt_add_resources() command.
+    # qt_add_resources() command. Problem: The attributes
+    # threshold="100" compress-algo="none" (see explication above)
+    # cannot be specified than.
 )
 
 
