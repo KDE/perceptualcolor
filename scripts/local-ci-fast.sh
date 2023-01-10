@@ -26,13 +26,6 @@
 
 
 
-################# Automatic integration #################
-scripts/automatic-integration.sh
-
-
-
-
-
 ################# Build from scratch #################
 
 # Deleting completely the old build makes sure that the new build
@@ -68,13 +61,6 @@ mkdir --parents build \
     && cd build \
     && nice --adjustment 19 cmake --build . --parallel $PARALLEL_PROCESSES > /dev/null \
 )
-
-
-
-
-
-################# Update screenshots #################
-scripts/update-screenshots.sh
 
 
 
