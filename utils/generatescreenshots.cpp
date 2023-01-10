@@ -182,9 +182,8 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
         // TODO It might even be possible to bundle a font as Qt resource
         //      to become completely independent from the fonts that are
         //      installed on the system.
-        const QStringList preferredFontFamilies = { //
-            QStringLiteral("Noto Sans"), //
-            QStringLiteral("Noto Sans Symbols2")};
+        const QStringList preferredFontFamilies = //
+            {QStringLiteral("Noto Sans"), QStringLiteral("Noto Sans Symbols2")};
         QFont myFont = QFont(preferredFontFamilies.first(), //
                              10, //
                              QFont::Weight::Normal, //
@@ -202,9 +201,8 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
         // not provide the required functionality. Workaround: Compare
         // the actually used family (available via QFontInfo) with the
         // originally requested family (available via QFont):
-        if (QFontInfo(myFont).family() != myFont.family())
-        {
-            qWarning() << "Could not load font“" << myFont.family() << "”correctly.";
+        if (QFontInfo(myFont).family() != myFont.family()) {
+            qWarning() << "Could not load font“" << myFont.family() << "”.";
         }
         app->setFont(myFont);
     }
