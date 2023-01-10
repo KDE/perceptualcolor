@@ -1378,7 +1378,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     const auto rgbFloat = m_currentOpaqueColor.rgb;
     QList<int> rgbInteger;
     rgbInteger.reserve(rgbFloat.count());
-    for (auto value : rgbFloat) {
+    for (auto value : std::as_const(rgbFloat)) {
         rgbInteger.append(qBound(0, qRound(value), 255));
     }
 
@@ -1490,9 +1490,9 @@ void ColorDialogPrivate::initializeScreenColorPicker()
         q_pointer);
     m_screenColorPickerHelperDialog->setOptions( //
         QColorDialog::DontUseNativeDialog | QColorDialog::NoButtons);
-    auto temp = m_screenColorPickerHelperDialog->findChildren<QPushButton *>();
+    const auto temp = m_screenColorPickerHelperDialog->findChildren<QPushButton *>();
     QPushButton *m_screenColorPickerHelperButton = nullptr;
-    for (const auto &button : temp) {
+    for (const auto &button : std::as_const(temp)) {
         button->setDefault(false); // Prevent interfering with our dialog.
         // Going through translateViaQColorDialog() to avoid that the
         // string will be included in our own translation file; instead
@@ -1513,12 +1513,12 @@ void ColorDialogPrivate::initializeScreenColorPicker()
     m_screenColorPickerWidget = new QWidget;
     m_screenColorPickerButton = new QPushButton;
     QIcon myIcon;
-    QStringList candidates{
+    const QStringList candidates{
         QStringLiteral("color-picker"), //
         QStringLiteral("gtk-color-picker"), //
         QStringLiteral("tool_color_picker") //
     };
-    for (auto const &name : candidates) {
+    for (auto const &name : std::as_const(candidates)) {
         myIcon = QIcon::fromTheme(name);
         if (!myIcon.isNull()) {
             m_screenColorPickerButton->setIcon(myIcon);

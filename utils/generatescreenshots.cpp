@@ -60,8 +60,7 @@ void forceFont(QWidget *widget, const QFont &font = qApp->font())
         return;
     }
     widget->setFont(font);
-    for (auto child : widget->children())
-    {
+    for (auto child : std::as_const(widget->children())) {
         forceFont(qobject_cast<QWidget *>(child), font);
     }
 }

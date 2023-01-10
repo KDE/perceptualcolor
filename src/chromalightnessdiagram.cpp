@@ -697,7 +697,7 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
          ++i //
     ) {
         for (j = 0; (j <= i) && (!nearestPointTillNow.has_value()); ++j) {
-            for (QPoint &temp : searchPointOffsets(i, j)) {
+            for (const QPoint &temp : searchPointOffsets(i, j)) {
                 // TODO A possible optimization might be to not always use all
                 // eight search points. Imagine you have an original point
                 // that is outside the image, at its left side. The search
@@ -711,7 +711,7 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
                     if (doesPointExist(searchPoint)) {
                         nearestPointTillNow = searchPoint;
                         nearestPointTillNowDistanceSquare = //
-                            temp.rx() * temp.rx() + temp.ry() * temp.ry();
+                            temp.x() * temp.x() + temp.y() * temp.y();
                         nearestPointTillNowDistance = qSqrt( //
                             nearestPointTillNowDistanceSquare);
                         break;
@@ -737,13 +737,13 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     for (; i < nearestPointTillNowDistance; ++i) {
         qreal maximumJ = qSqrt(nearestPointTillNowDistanceSquare - i * i);
         for (j = 0; j < maximumJ; ++j) {
-            for (QPoint &temp : searchPointOffsets(i, j)) {
+            for (const QPoint &temp : searchPointOffsets(i, j)) {
                 searchPoint = point + temp;
                 if (searchRectangle.contains(searchPoint)) {
                     if (doesPointExist(searchPoint)) {
                         nearestPointTillNow = searchPoint;
                         nearestPointTillNowDistanceSquare = //
-                            temp.rx() * temp.rx() + temp.ry() * temp.ry();
+                            temp.x() * temp.x() + temp.y() * temp.y();
                         nearestPointTillNowDistance = qSqrt( //
                             nearestPointTillNowDistanceSquare);
                         maximumJ = qSqrt( //

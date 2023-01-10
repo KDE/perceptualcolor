@@ -175,7 +175,7 @@ QStringList RgbColorSpaceFactory::colorProfileDirectories()
     baseDirectoryList.append(QStringLiteral(u"/usr/share/"));
     // Custom search directory:
     baseDirectoryList.append(QStringLiteral(u"/var/lib/"));
-    for (const QString &path : baseDirectoryList) {
+    for (const QString &path : std::as_const(baseDirectoryList)) {
         if (!path.isEmpty()) {
             candidates.append(path + QStringLiteral(u"/color/icc/"));
             candidates.append(path + QStringLiteral(u"/icc/"));
@@ -210,7 +210,7 @@ QStringList RgbColorSpaceFactory::colorProfileDirectories()
     QFileInfo info; // QFileInfo isn’t only about files, but also directories!
     QStringList result;
     // cppcheck-suppress knownEmptyContainer // false positive
-    for (QString &path : candidates) {
+    for (const QString &path : std::as_const(candidates)) {
         // cleanPath() has redundant separators removed.
         info = QFileInfo(QDir::cleanPath(path));
         if (info.isDir()) {

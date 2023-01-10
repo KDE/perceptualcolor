@@ -53,9 +53,7 @@ private:
     void provideStyleNamesAsData()
     {
         QTest::addColumn<QString>("styleName");
-        // non-const to allow using reference variables in the range-based loop
-        QStringList styleNameList = QStyleFactory::keys();
-        for (const QString &currentStyleName : styleNameList) {
+        for (const QString &currentStyleName : QStyleFactory::keys()) {
             QTest::newRow(currentStyleName.toUtf8().constData()) << currentStyleName;
         }
     }
