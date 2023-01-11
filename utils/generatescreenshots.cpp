@@ -68,6 +68,9 @@ void forceFont(QWidget *widget, const QFont &font = qApp->font())
 static void screenshot(QWidget *widget, const QString &comment = QString())
 {
     forceFont(widget);
+    // Set an acceptable widget size (important
+    // standalone-widgets without layout management):
+    widget->resize(widget->sizeHint());
     // Get fully qualified class name
     QString className = QString::fromUtf8(widget->metaObject()->className());
     // Strip all the qualifiers
@@ -94,7 +97,7 @@ static void screenshotDelayed(QWidget *widget, const QString &comment = QString(
 {
     forceFont(widget); // Deliberately call this (also) _before_ show().
     widget->show(); // Necessary to receive and process events like paintEvent()
-    delayedEventProcessing<>();
+    delayedEventProcessing();
     screenshot(widget, comment);
     widget->hide();
 }
@@ -384,7 +387,7 @@ int main(int argc, char *argv[])
     {
         GradientSlider m_gradientSlider(m_colorSpace);
         m_gradientSlider.setOrientation(Qt::Horizontal);
-        screenshot(&m_gradientSlider);
+        screenshotDelayed(&m_gradientSlider);
     }
 
     {

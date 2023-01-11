@@ -567,7 +567,7 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     d_pointer->m_gradientImageParameters.setGradientThickness(
         // Normally, this should not change, but maybe on Hight-DPI
         // devices there are some differences.
-        d_pointer->physicalPixelLength());
+        d_pointer->physicalPixelThickness());
     d_pointer->m_gradientImage.setImageParameters( //
         d_pointer->m_gradientImageParameters);
     d_pointer->m_gradientImage.refreshAsync();
