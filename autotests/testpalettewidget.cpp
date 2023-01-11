@@ -31,6 +31,7 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
+#include <type_traits>
 #include <utility>
 
 namespace PerceptualColor
@@ -53,7 +54,8 @@ private:
     void provideStyleNamesAsData()
     {
         QTest::addColumn<QString>("styleName");
-        for (const QString &currentStyleName : QStyleFactory::keys()) {
+        const auto container = QStyleFactory::keys();
+        for (const QString &currentStyleName : std::as_const(container)) {
             QTest::newRow(currentStyleName.toUtf8().constData()) << currentStyleName;
         }
     }

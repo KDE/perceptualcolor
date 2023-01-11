@@ -64,6 +64,7 @@
 #include <qvalidator.h>
 #include <qversionnumber.h>
 #include <qwidget.h>
+#include <type_traits>
 #include <utility>
 
 namespace PerceptualColor

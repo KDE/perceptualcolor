@@ -13,6 +13,8 @@
 #include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <type_traits>
+#include <utility>
 
 namespace PerceptualColor
 {

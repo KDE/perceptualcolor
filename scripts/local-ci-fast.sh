@@ -74,10 +74,16 @@ mkdir --parents build \
 # and occupy space:
 rm --recursive --force docs/publicapi
 rm --recursive --force docs/publicapiandinternals
+# The “.” command will execute the given script within the context of
+# the current script, which is necessary in order to preserve the
+# environment variables that are set by the given script.
+. scripts/export-environment.sh
 # We redirect Doxygen’s stderr to stdout (the pipe) to be able to filter it
-nice --adjustment 19 doxygen Doxyfile.internal 2>&1 \
+nice --adjustment 19 doxygen Doxyfile.internal 2>&1 >/dev/null \
+    | grep --perl-regexp "$DOXYFILTER" --invert-match \
     | sed 's/^/Doxygen “public API and internals”: /'
-nice --adjustment 19 doxygen Doxyfile.external 2>&1 \
+nice --adjustment 19 doxygen Doxyfile.external 2>&1  >/dev/null \
+    | grep --perl-regexp "$DOXYFILTER" --invert-match \
     | sed 's/^/Doxygen “public API”: /'
 
 

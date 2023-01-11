@@ -51,10 +51,7 @@ namespace PerceptualColor
  * @param instance A pointer to the <tt>QCoreApplication</tt> instance for
  * which the initialization will be done.
  * @param newUiLanguages List of translations, ordered by priority,
- * most important ones first, like in <tt>QLocale::uiLanguages()</tt>.
- *
- * @returns void <!-- http://github.com/doxygen/doxygen/issues/7411 actually
- * isn’t fixed. --> */
+ * most important ones first, like in <tt>QLocale::uiLanguages()</tt>. */
 void setTranslation(QCoreApplication *instance, const QStringList &newUiLanguages)
 {
     // Check of pre-conditions

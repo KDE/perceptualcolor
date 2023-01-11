@@ -38,15 +38,15 @@ class QCoreApplication;
  *   user to call manually</a> @ref PerceptualColor::initializeTranslation()
  *   on both, STATIC and SHARED libraries. This gives us uniform behavior
  *   between STATIC and SHARED builds and makes bug-tracking easier.
- * - or use <tt><a href=
- *   "https://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
+ * - or use <tt>
+ *   <a href="http://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
  *   Q_COREAPP_STARTUP_FUNCTION</a></tt> to call
  *   @ref PerceptualColor::initializeTranslation() on SHARED
  *   libraries automatically when QCoreApplication starts (works
  *   only for SHARED libraries, and not for STATIC libraries, and
  *   and <a href="https://stackoverflow.com/questions/43333151"> there
  *   seems to be no workaround</a>) and request the library user to
- *   call @ref PerceptualColor::initializeTranslation() manually</a>
+ *   call @ref PerceptualColor::initializeTranslation() manually
  *   only on STATIC libraries.
  * - or make @ref PerceptualColor::initializeTranslation() private and call it
  *   <a href="https://github.com/KDE/kitinerary/commit/72326ed">

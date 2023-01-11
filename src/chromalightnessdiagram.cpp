@@ -29,6 +29,8 @@
 #include <qrgb.h>
 #include <qsizepolicy.h>
 #include <qwidget.h>
+#include <type_traits>
+#include <utility>
 
 namespace PerceptualColor
 {
@@ -697,7 +699,8 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
          ++i //
     ) {
         for (j = 0; (j <= i) && (!nearestPointTillNow.has_value()); ++j) {
-            for (const QPoint &temp : searchPointOffsets(i, j)) {
+            const auto container = searchPointOffsets(i, j);
+            for (const QPoint &temp : std::as_const(container)) {
                 // TODO A possible optimization might be to not always use all
                 // eight search points. Imagine you have an original point
                 // that is outside the image, at its left side. The search
@@ -737,7 +740,8 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     for (; i < nearestPointTillNowDistance; ++i) {
         qreal maximumJ = qSqrt(nearestPointTillNowDistanceSquare - i * i);
         for (j = 0; j < maximumJ; ++j) {
-            for (const QPoint &temp : searchPointOffsets(i, j)) {
+            const auto container = searchPointOffsets(i, j);
+            for (const QPoint &temp : std::as_const(container)) {
                 searchPoint = point + temp;
                 if (searchRectangle.contains(searchPoint)) {
                     if (doesPointExist(searchPoint)) {

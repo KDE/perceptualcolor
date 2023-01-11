@@ -23,7 +23,9 @@
 #include <qapplication.h>
 #include <qcolor.h>
 #include <qcoreapplication.h>
+#include <qdebug.h>
 #include <qfont.h>
+#include <qfontinfo.h>
 #include <qglobal.h>
 #include <qicon.h>
 #include <qlineedit.h>
@@ -43,6 +45,8 @@
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <stdlib.h>
+#include <type_traits>
+#include <utility>
 
 using namespace PerceptualColor;
 
@@ -54,7 +58,7 @@ using namespace PerceptualColor;
 //
 // Use case: QApplication::setFont() occasionally does not work on all
 // child widgets, so a special enforcement is needed.
-void forceFont(QWidget *widget, const QFont &font = qApp->font())
+static void forceFont(QWidget *widget, const QFont &font = qApp->font())
 {
     if (widget == nullptr) {
         return;
@@ -146,7 +150,7 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
         // The following colors are missing in Fusion’s standard palette:
         // They appear in Qt’s documentation of QPalette::ColorRole,
         // but do not appear when passing Fusion’s standard palette to
-        // qDebug(). Therefore, we set them explicitly to the default values
+        // qDebug. Therefore, we set them explicitly to the default values
         // that are mentioned in the documentation of QPalette::ColorRole.
         tempPalette.setColor(QPalette::Link, Qt::blue);
         tempPalette.setColor(QPalette::Link, Qt::magenta);
