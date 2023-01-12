@@ -26,41 +26,17 @@
 
 
 
-################# Build from scratch #################
-
-# Deleting completely the old build makes sure that the new build
-# will be done with the default settings that are used here.
-# Furthermore, it makes sure that the translations are updated,
-# which only happens when CMake is run again.
-
-# -DCMAKE_AUTOGEN_PARALLEL=$PARALLEL_PROCESSES would speed up MOC
-# but unfortunately breaks the Qt Linguist, so we don’t do it.
-(
-while true; do
-    read -p "Delete existing build and build from scratch with additional warnings? (yes/NO) " yn
-    case $yn in
-        yes ) mkdir --parents build \
-                && rm --recursive --force build/* \
-                && cd build \
-                && cmake -DADDITIONAL_WARNINGS=TRUE .. > /dev/null
-            exit;;
-        * ) exit;;
-    esac
-done
-)
-
-
-
-
-
-################# Build the project #################
-# Run within a sub-shell (therefore the parenthesis),
-# so that after this we go back to the original working directory.
-( \
-mkdir --parents build \
-    && cd build \
-    && nice --adjustment 19 cmake --build . --parallel $PARALLEL_PROCESSES > /dev/null \
-)
+################# CMakeLists.txt linter #################
+# “2> /dev/null” throws away stderr, at which cmakelint only outputs
+# the count of errors. However, stdout is preserved, which is the really
+# interesting part, at which cmakelint outputs detailed errors.
+echo cmakelint started.
+cmakelint --spaces=4 `find -name "CMakeLists.txt"`
+echo cmakelint finished.
+#
+# An alternative linter for CMake is available at
+# https://github.com/cheshirekow/cmake_format
+# but our current linter works fine, so no need to change.
 
 
 
@@ -113,24 +89,48 @@ fi
 
 
 
-################# CMakeLists.txt linter #################
-# “2> /dev/null” throws away stderr, at which cmakelint only outputs
-# the count of errors. However, stdout is preserved, which is the really
-# interesting part, at which cmakelint outputs detailed errors.
-echo cmakelint started.
-cmakelint --spaces=4 `find -name "CMakeLists.txt"`
-echo cmakelint finished.
-#
-# An alternative linter for CMake is available at
-# https://github.com/cheshirekow/cmake_format
-# but our current linter works fine, so no need to change.
-
-
-
-
-
 ################# Static code check #################
 scripts/static-codecheck.sh
+
+
+
+
+
+################# Build from scratch #################
+
+# Deleting completely the old build makes sure that the new build
+# will be done with the default settings that are used here.
+# Furthermore, it makes sure that the translations are updated,
+# which only happens when CMake is run again.
+
+# -DCMAKE_AUTOGEN_PARALLEL=$PARALLEL_PROCESSES would speed up MOC
+# but unfortunately breaks the Qt Linguist, so we don’t do it.
+(
+while true; do
+    read -p "Delete existing build and build from scratch with additional warnings? (yes/NO) " yn
+    case $yn in
+        yes ) mkdir --parents build \
+                && rm --recursive --force build/* \
+                && cd build \
+                && cmake -DADDITIONAL_WARNINGS=TRUE .. > /dev/null
+            exit;;
+        * ) exit;;
+    esac
+done
+)
+
+
+
+
+
+################# Build the project #################
+# Run within a sub-shell (therefore the parenthesis),
+# so that after this we go back to the original working directory.
+( \
+mkdir --parents build \
+    && cd build \
+    && nice --adjustment 19 cmake --build . --parallel $PARALLEL_PROCESSES > /dev/null \
+)
 
 
 
