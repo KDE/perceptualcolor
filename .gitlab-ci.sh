@@ -31,14 +31,16 @@ rm --recursive --force doxyconf/*
 echo Doxygen “public API and internals” started.
 cp Doxyfile.internal doxyconf/internaldoc
 doxygen -u doxyconf/internaldoc
-doxygen doxyconf/internaldoc 2>&1 >/dev/null \
+# Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
+doxygen doxyconf/internaldoc 2>&1 \
     | grep --perl-regexp "$DOXYFILTER" --invert-match \
     > artifact_doxygen_temp
 echo Doxygen “public API and internals” finished.
 echo Doxygen “public API” started.
 cp Doxyfile.external doxyconf/externaldoc
 doxygen -u doxyconf/externaldoc
-doxygen doxyconf/internaldoc 2>&1 >/dev/null \
+# Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
+doxygen doxyconf/internaldoc 2>&1 \
     | grep --perl-regexp "$DOXYFILTER" --invert-match \
     >> artifact_doxygen_temp
 echo Doxygen “public API” finished.

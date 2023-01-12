@@ -78,11 +78,11 @@ rm --recursive --force docs/publicapiandinternals
 # the current script, which is necessary in order to preserve the
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
-# We redirect Doxygen’s stderr to stdout (the pipe) to be able to filter it
-nice --adjustment 19 doxygen Doxyfile.internal 2>&1 >/dev/null \
+# Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
+nice --adjustment 19 doxygen Doxyfile.internal 2>&1 \
     | grep --perl-regexp "$DOXYFILTER" --invert-match \
     | sed 's/^/Doxygen “public API and internals”: /'
-nice --adjustment 19 doxygen Doxyfile.external 2>&1  >/dev/null \
+nice --adjustment 19 doxygen Doxyfile.external 2>&1 \
     | grep --perl-regexp "$DOXYFILTER" --invert-match \
     | sed 's/^/Doxygen “public API”: /'
 
