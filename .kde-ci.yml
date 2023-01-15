@@ -24,5 +24,8 @@ Options:
   run-cppcheck: True
   cppcheck-arguments: '--enable=all --suppress=unusedFunction --inline-suppr --language=c++ --std=c++17'
   cppcheck-ignore-files: []
-  #run-gcovr: True # TODO xxx Make this actually work!
+  #run-gcovr: True
+  # TODO KDE‘s CI sets BUILD_COVERAGE as CMake argument. Make it actually work!?
   #gcovr-arguments: ''
+  # TODO KDE’s CI also sets ECM_ENABLE_SANITIZERS but we do not recognize it
+  # in our CMake file.
