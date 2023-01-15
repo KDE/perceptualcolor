@@ -81,8 +81,3 @@ use-chrono-in-qtimer"
 # All paths that match this regular expression will be ignored. This is
 # necessary to prevent Clazy from generating errors for Qt headers.
 export CLAZY_IGNORE_DIRS="(.*/qt5/QtGui/.*)|(.*/qt5/QtCore/.*)|(.*/qt5/QtWidgets/.*)"
-
-# Doxygen produces sometimes false-positive warnings.
-# See https://github.com/doxygen/doxygen/issues/9787
-# These warnings can be filtered with this regular expression:
-export DOXYFILTER="return type of .*\bsetTranslation is not documented"

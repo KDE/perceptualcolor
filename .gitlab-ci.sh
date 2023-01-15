@@ -24,25 +24,17 @@ echo cmakelint finished.
 # on the developer’s system and the CI system.
 mkdir --parents doxyconf
 rm --recursive --force doxyconf/*
-# The “.” command will execute the given script within the context of
-# the current script, which is necessary in order to preserve the
-# environment variables that are set by the given script.
-. scripts/export-environment.sh
 echo Doxygen “public API and internals” started.
 cp Doxyfile.internal doxyconf/internaldoc
 doxygen -u doxyconf/internaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-doxygen doxyconf/internaldoc 2>&1 \
-    | grep --perl-regexp "$DOXYFILTER" --invert-match \
-    > artifact_doxygen_temp
+doxygen doxyconf/internaldoc 2>&1 > artifact_doxygen_temp
 echo Doxygen “public API and internals” finished.
 echo Doxygen “public API” started.
 cp Doxyfile.external doxyconf/externaldoc
 doxygen -u doxyconf/externaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-doxygen doxyconf/internaldoc 2>&1 \
-    | grep --perl-regexp "$DOXYFILTER" --invert-match \
-    >> artifact_doxygen_temp
+doxygen doxyconf/internaldoc 2>&1 >> artifact_doxygen_temp
 echo Doxygen “public API” finished.
 sort --unique artifact_doxygen_temp  > artifact_doxygen
 rm artifact_doxygen_temp
