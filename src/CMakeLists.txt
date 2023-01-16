@@ -56,6 +56,7 @@ set(library_SRC
     rgbcolorspace.cpp
     rgbcolorspacefactory.cpp
     rgbdouble.cpp
+    screencolorpicker.cpp
     settranslation.cpp
     staticasserts.cpp
     version.cpp
@@ -218,7 +219,7 @@ target_link_libraries(
     # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure
     # that we will not need it in the future either. Otherwise, it’s better
     # to keep it, for future binary compatibility.
-    PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::Concurrent
+    PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent
     PRIVATE ${LCMS2_LIBRARIES})
 install(
     DIRECTORY
@@ -305,5 +306,5 @@ target_link_libraries(
     # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure
     # that we will not need it in the future either. Otherwise, it’s better
     # to keep it, for future binary compatibility.
-    PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::Concurrent
+    PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent
     PRIVATE ${LCMS2_LIBRARIES})

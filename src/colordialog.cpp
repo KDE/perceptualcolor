@@ -26,6 +26,7 @@
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
+#include "screencolorpicker.h"
 #include "wheelcolorpicker.h"
 #include <lcms2.h>
 #include <memory>
@@ -753,9 +754,6 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // what we want. (Even QPushButton::setDefault() will not change this
     // afterwards.)
     m_buttonOK = m_buttonBox->addButton(QDialogButtonBox::Ok);
-    // Must be explicitly marked as default button to prevent
-    // m_screenColorPickerHelperDialog from interfering:
-    m_buttonOK->setDefault(true);
     m_buttonCancel = m_buttonBox->addButton(QDialogButtonBox::Cancel);
     // The Qt documentation at
     // https://doc.qt.io/qt-5/qcoreapplication.html#installTranslator
@@ -1436,106 +1434,50 @@ void ColorDialogPrivate::readHlcNumericValues()
         m_ciehlcSpinBox);
 }
 
-/** @brief Translates a given text in the context of QColorDialog.
- *
- * @param sourceText The text to be translated.
- * @returns The translation. */
-QString ColorDialogPrivate::translateViaQColorDialog(const char *sourceText)
-{
-    return QColorDialog::tr(sourceText);
-}
-
 /** @brief Try to initialize the screen color picker feature.
  *
- * @post If the initialization succeds, @ref m_screenColorPickerButton and
- * @ref m_screenColorPickerWidget are created. Otherwise (either because
- * the hijacking fails or because Qt does not support screen picker on
- * this platform), both stay <tt>nullptr</tt>.
- *
- * @todo This does only restore QColor exactly, but could potentially produce
- * rounding errors for our MultiColor, if the MultiColor has not created
- * from a QColor but from other color formats.
- *
- * @todo This function hijacks QColorDialog’s screen picker, but this relies
- * on internals of Qt and could therefore theoretically fail in later
- * Qt versions. On the other hand, making a cross-platform implementation
- * ourself would also be a lot of work. However, if we could solve this, we
- * could claim again at @ref index "main page" that we do not use internal APIs.
- * There is a <a href="https://bugreports.qt.io/browse/QTBUG-109440">request
- * to add a public API to Qt</a> for this.
- *
- * @todo At least Qt 5.15 has problems to capture the correct color on
- * multimonitor setups for screens that are not the top-left screen, using
- * the  X Window system. This seems to be the same problem as for KMag? The new
- * <a href="https://code.qt.io/cgit/qt/qtbase.git/commit/?h=6.5&id=b646c7b76c">
- * XDG Desktop Portal support</a> in Qt 6.5 won’t help either because it is
- * exclusively used on Wayland, and not on X. */
+ * @post If supported, @ref m_screenColorPickerButton and
+ * @ref m_screenColorPickerWidget are created. Otherwise, both
+ * stay <tt>nullptr</tt>. */
 void ColorDialogPrivate::initializeScreenColorPicker()
 {
-    if (m_screenColorPickerSupportAvailable.value_or(true) == false) {
-        // On the current system we know yet we have no support for
-        // screen color picker:
+    auto screenPicker = new ScreenColorPicker(q_pointer);
+    if (!screenPicker->isAvailable()) {
         return;
     }
-
-    auto m_screenColorPickerHelperDialog = new QColorDialog(
-        // Without parent widget, screen picking does not work.
-        q_pointer);
-    m_screenColorPickerHelperDialog->setOptions( //
-        QColorDialog::DontUseNativeDialog | QColorDialog::NoButtons);
-    const auto temp = m_screenColorPickerHelperDialog->findChildren<QPushButton *>();
-    QPushButton *m_screenColorPickerHelperButton = nullptr;
-    for (const auto &button : std::as_const(temp)) {
-        button->setDefault(false); // Prevent interfering with our dialog.
-        // Going through translateViaQColorDialog() to avoid that the
-        // string will be included in our own translation file; instead
-        // intentionally fallback to Qt provided translation.
-        if (button->text() == translateViaQColorDialog("&Pick Screen Color")) {
-            m_screenColorPickerHelperButton = button;
-        }
-    }
-    // Store application-wide (static class variable) if screen color picker
-    // is supported:
-    m_screenColorPickerSupportAvailable = m_screenColorPickerHelperButton;
-    if (m_screenColorPickerHelperButton == nullptr) {
-        delete m_screenColorPickerHelperDialog;
-        m_screenColorPickerHelperDialog = nullptr;
-        return;
-    }
-
     m_screenColorPickerWidget = new QWidget;
     m_screenColorPickerButton = new QPushButton;
-    QIcon myIcon;
     const QStringList candidates{
         QStringLiteral("color-picker"), //
         QStringLiteral("gtk-color-picker"), //
         QStringLiteral("tool_color_picker") //
     };
     for (auto const &name : std::as_const(candidates)) {
-        myIcon = QIcon::fromTheme(name);
+        QIcon myIcon = QIcon::fromTheme(name);
         if (!myIcon.isNull()) {
             m_screenColorPickerButton->setIcon(myIcon);
             break;
         }
     }
+    screenPicker->setParent(m_screenColorPickerButton); // For better support
+    connect(m_screenColorPickerButton,
+            &QPushButton::clicked,
+            screenPicker,
+            // Default capture by reference, but screenPicker by value
+            [&, screenPicker]() {
+                // TODO Restore QColor exactly, but could potentially produce
+                // rounding errors: If original MultiColor was derived form
+                // LCH, it is not garanteed that the new MultiColor derived
+                // from this QColor will not have rounding errors for LCH.
+                screenPicker->startPicking(q_pointer->currentColor());
+            });
+    connect(screenPicker, //
+            &ScreenColorPicker::newColor, //
+            q_pointer, //
+            &ColorDialog::setCurrentColor);
     QGridLayout *tempLayout = new QGridLayout();
     tempLayout->addWidget(m_screenColorPickerButton, 0, 0, Qt::AlignCenter);
     m_screenColorPickerWidget->setLayout(tempLayout);
-    connect(m_screenColorPickerHelperDialog, //
-            &QColorDialog::currentColorChanged, //
-            q_pointer,
-            &ColorDialog::setCurrentColor);
-    connect( //
-        m_screenColorPickerButton,
-        &QPushButton::clicked,
-        this,
-        [m_screenColorPickerHelperDialog, m_screenColorPickerHelperButton, this]() {
-            // Set current color to make sure this very same
-            // color will be restored if the user pressed ESC.
-            m_screenColorPickerHelperDialog->setCurrentColor( //
-                q_pointer->currentColor());
-            m_screenColorPickerHelperButton->click();
-        });
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.

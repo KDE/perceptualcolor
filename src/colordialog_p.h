@@ -12,7 +12,6 @@
 #include "multicolor.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
-#include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -182,9 +181,6 @@ public:
     /** @brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
     QPointer<QPushButton> m_screenColorPickerButton;
-    /** @brief Indicates if on the system <em>we are currently running on</em>
-     * we have support for screen color picker functionality. */
-    static inline std::optional<bool> m_screenColorPickerSupportAvailable = std::nullopt;
     /** @brief Widget that holds the @ref m_screenColorPickerButton. */
     QPointer<QWidget> m_screenColorPickerWidget;
     /** @brief A row with two columns within a table in Qt’s rich text
@@ -213,7 +209,6 @@ public:
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializeScreenColorPicker();
     [[nodiscard]] QString translateColorModel(cmsColorSpaceSignature model);
-    [[nodiscard]] static QString translateViaQColorDialog(const char *sourceText);
 
 public Q_SLOTS:
     void readChromaHueDiagramValue();
