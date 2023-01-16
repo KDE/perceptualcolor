@@ -1,5 +1,5 @@
-#!/bin/bash
-# NOTE #!/bin/bash -fxv would print all executed commands.
+#!/bin/bash -fxv
+# NOTE #!/bin/bash -fxv prints all executed commands.
 
 # SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
 # SPDX-License-Identifier: MIT
