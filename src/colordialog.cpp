@@ -1868,10 +1868,9 @@ void ColorDialog::setVisible(bool visible)
     QDialog::setVisible(visible);
     // HACK If there is a QColorDialog as helper widget for the
     // screen color picker feature, QDialog::setVisible() sometimes
-    // changes or deletes the default button; however, this has only
-    // been observed running the unit tests on KDE’s CI system running,
-    // but not when running the unit tests locally. Anyway, it’s a good
-    // idea to prevent problems:
+    // changes which is default button; however, this has only been
+    // observed running the unit tests on KDE’s CI system running, but
+    // not when running the unit tests locally. Force correct default button:
     d_pointer->m_buttonOK->setDefault(true);
 }
 
