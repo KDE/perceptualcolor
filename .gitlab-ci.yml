@@ -24,10 +24,10 @@ codecheck_custom:
     - echo "cmakelint version:" && cmakelint --version
     # The following commands only make sense when a graphical shell is needed
     # (like for generatescreenshots)…
-    #- export DISPLAY=':90'
-    #- Xvfb :90 -ac -screen 0 1600x1200x24+32 &
-    #- sleep 5s
-    #- openbox &
+    - export DISPLAY=':90'
+    - Xvfb :90 -ac -screen 0 1600x1200x24+32 &
+    - sleep 5s
+    - openbox &
   script:
     - ./.gitlab-ci.sh
   rules:

@@ -18,12 +18,4 @@ and with
 scripts/automatic-integration.sh
 ```
 
-you can to some adjustments automatically.
-
-Please run also
-
-```shell
-scripts/update-screenshots.sh
-```shell
-
-before each merge request to update the screenshots. This is currently not enforced by the CI, but nevertheless important.
+you can do some adjustments automatically.
