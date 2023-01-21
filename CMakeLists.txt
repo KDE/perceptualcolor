@@ -40,8 +40,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 # non-Linux systems.
 include(GNUInstallDirs)
 
-include(CheckIPOSupported)
-
 message(CHECK_START "Checking for iwyu (include-what-you-use)")
 find_program(
     iwyu_path
@@ -138,10 +136,7 @@ set(CMAKE_CXX_EXTENSIONS FALSE) # Try to disable compiler-specific extensions.
 
 
 ################# Inter-procedural optimization #################
-# If the user has explicitly set a value for CMAKE_INTERPROCEDURAL_OPTIMIZATION
-# (abbreviation IPO, also called LTO/link-time optimization)
-# then this choice is respected. Otherwise, we enable it if
-# CMake can provide IPO support, and disable it if not.
+include(CheckIPOSupported)
 message(
     CHECK_START
     "Checking for IPO/LTO "
@@ -153,15 +148,6 @@ if(has_ipo_support)
     message(CHECK_PASS "Found.")
 else()
     message(CHECK_FAIL "Not found.")
-endif()
-if(NOT DEFINED CMAKE_INTERPROCEDURAL_OPTIMIZATION)
-    # Check for IPO/LTO (inter-procedural optimization/link-time optimization).
-    # Use it if available.
-    if(has_ipo_support)
-        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-    else()
-        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-    endif()
 endif()
 message(
     STATUS
