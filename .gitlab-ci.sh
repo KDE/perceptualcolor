@@ -10,13 +10,13 @@
 
 errorcount=0
 
-scripts/static-codecheck.sh &> artifact_staticcodecheck
-[ -s artifact_staticcodecheck ] || ((errorcount++))
+scripts/static-codecheck.sh &> artifact_staticcodecheck.txt
+[ -s artifact_staticcodecheck.txt ] || ((errorcount++))
 
 echo cmakelint started.
-cmakelint --spaces=4 `find -name "CMakeLists.txt"` > artifact_cmakelint
+cmakelint --spaces=4 `find -name "CMakeLists.txt"` > artifact_cmakelint.txt
 echo cmakelint finished.
-[ -s artifact_cmakelint ] || ((errorcount++))
+[ -s artifact_cmakelint.txt ] || ((errorcount++))
 
 # Doxygen run. We let Doxygen update the config files, so that no
 # warnings for deprecated options will ever be issued. This seems
@@ -36,7 +36,7 @@ doxygen -u doxyconf/externaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
 doxygen doxyconf/internaldoc 2>&1 >> artifact_doxygen_temp
 echo Doxygen “public API” finished.
-sort --unique artifact_doxygen_temp  > artifact_doxygen
+sort --unique artifact_doxygen_temp  > artifact_doxygen.txt
 rm artifact_doxygen_temp
 rm --recursive --force doxyconf
 [ -s artifact_doxygen ] || ((errorcount++))
@@ -58,9 +58,9 @@ cmake \
     -DADDITIONAL_WARNINGS=TRUE \
     -DBUILD_WITH_QT6=OFF \
     ..
-cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt5
+cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt5.txt
 cd ..
-[ -s artifact_warnings ] || ((errorcount++))
+[ -s ./artifact_warnings_qt5.txt ] || ((errorcount++))
 echo Build with warnings against Qt5 finished
 
 echo Build with warnings against Qt6 started.
@@ -80,14 +80,14 @@ cmake \
     -DADDITIONAL_WARNINGS=TRUE \
     -DBUILD_WITH_QT6=ON \
     ..
-cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt6
+cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt6.txt
 cd ..
-[ -s artifact_warnings ] || ((errorcount++))
+[ -s ../artifact_warnings_qt6.txt ] || ((errorcount++))
 echo Build with warnings against Qt6 finished
 
 scripts/automatic-integration.sh
-git diff > artifact_automatic_integration_diff
-[ -s artifact_automatic_integration_diff ] || ((errorcount++))
+git diff > artifact_automatic_integration_diff.txt
+[ -s artifact_automatic_integration_diff.txt ] || ((errorcount++))
 
 echo Terminating continuous integration with exit code $errorcount.
 
