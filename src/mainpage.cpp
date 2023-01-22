@@ -67,12 +67,11 @@
  * @sa @ref build
  *
  * @copyright We follow the <a href="https://reuse.software/">“Reuse”
- * specification</a>. The code (and also this documentation itself)
- * are published under MIT License. The CMake files are licensed under
- * BSD-2-Clause. The file <tt>cmake/Modules/FindLCMS2.cmake</tt>
- * is licensed under BSD-3-Clause license. Some parts of the testbed
- * (which is compiled into the unit tests only) might have different licenses.
- * The <tt>LICENSES</tt> subfolder contains copies of the licence texts.
+ * specification</a>. The source code of the library itself (and also this
+ * documentation itself) are published under MIT License. The CMake files are
+ * licensed under BSD-2-Clause and BSD-3-Clause. Other parts like autotests
+ * or utils (which are <em>not</em> installed by CMake but only for internal
+ * purposes) might include compiled-in resources that have different licenses.
  *
  * @internal
  *
