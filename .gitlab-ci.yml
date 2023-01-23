@@ -11,19 +11,17 @@ codecheck_custom:
   interruptible: true
   before_script:
     - apt-get update
-    # TODO Can the following list be reduced, for example remove either
-    # Qt5 or Qt6 and stick with only one of them?
-    # TODO Switch from debian:testing to KDE’s docker images (OpenSuse) which
-    # seem to have yet development tools, so no need to install so many
-    # additional packages, which should speed up things.
-    - apt-get install --yes --no-install-recommends pip doxygen graphviz cmake make cppcheck iwyu clazy pkgconf qtbase5-dev qtbase5-dev-tools qttools5-dev qttools5-dev-tools clang clazy iwyu liblcms2-dev liblcms2-2 clang-tidy clang-format cmake git qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools qt6-l10n-tools qt6-qmltooling-plugins qt6-tools-dev qt6-tools-dev-tools qt6-translations-l10n qt6-wayland qt6-wayland-dev qt6-wayland-dev-tools qt6-xdgdesktopportal-platformtheme qml-qt6 linguist-qt6 extra-cmake-modules xvfb openbox fonts-noto-core
+    # TODO Can the following list be reduced, for example remove Qt5 or
+    # non-used components?
+    - apt-get install --yes --no-install-recommends pip doxygen graphviz cmake make cppcheck iwyu clazy pkgconf qtbase5-dev qtbase5-dev-tools qttools5-dev qttools5-dev-tools clang clazy iwyu liblcms2-dev liblcms2-2 clang-tidy clang-format cmake git qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools qt6-l10n-tools qt6-qmltooling-plugins qt6-tools-dev qt6-tools-dev-tools qt6-translations-l10n qt6-wayland qt6-wayland-dev qt6-wayland-dev-tools qt6-xdgdesktopportal-platformtheme qml-qt6 linguist-qt6 extra-cmake-modules
     - echo "pip version:" && pip --version
     - echo "doxygen version:" && doxygen --version
     - echo "graphviz dot version:" && dot -V
     - pip install cmakelint
     - echo "cmakelint version:" && cmakelint --version
     # The following commands only make sense when a graphical shell is needed
-    # (like for generatescreenshots)…
+    # for generatescreenshots…
+    #- apt-get install --yes --no-install-recommends xvfb openbox fonts-noto-core
     #- export DISPLAY=':90'
     #- Xvfb :90 -ac -screen 0 1600x1200x24+32 &
     #- sleep 5s
