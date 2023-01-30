@@ -88,13 +88,15 @@ bool ScreenColorPicker::queryPortalSupport()
     if (reply.type() != QDBusMessage::MessageType::ReplyMessage) {
         return false;
     }
-    const qulonglong portalVersion = reply //
+    constexpr quint8 minimumSupportedPortalVersion = 2;
+    const qulonglong actualPortalVersion = reply //
                                          .arguments() //
                                          .value(0) //
                                          .value<QDBusVariant>() //
                                          .variant() //
                                          .toULongLong();
-    if (portalVersion < 2) { // required for screen color picker support
+    if ( actualPortalVersion < minimumSupportedPortalVersion) {
+        // No screen color picker support available
         return false;
     }
     return true;
