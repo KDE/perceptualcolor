@@ -191,10 +191,22 @@ void ScreenColorPicker::startPicking(const QColor &previousColor)
         // consistent behaviour for all possible backends.
         return;
     }
+
+    // The “Portal” implementation has priority over the “QColorDialog”
+    // implementation, because
+    // 1. “Portal” works reliably also on multi-monitor setups.
+    //    QColorDialog doesn’t: https://bugreports.qt.io/browse/QTBUG-94748
+    //    In Qt 6.5, QColorDialog starts to use “Portal” too, see
+    //    https://bugreports.qt.io/browse/QTBUG-81538 but only for Wayland,
+    //    and not for X11. We, however, also want it for X11.
+    // 2. The “QColorDialog” implementation is a hack because it relies on
+    //    Qt’s internals, which could change in future versions and break
+    //    our implementation, so we should avoid it if we can.
     if (hasPortalSupport()) {
         pickWithPortal();
         return;
     }
+
     initializeQColorDialogSupport();
     if (m_qColorDialogScreenButton) {
         m_qColorDialog->setCurrentColor(previousColor);
