@@ -38,7 +38,6 @@
 #include <qscopedpointer.h>
 #include <qstring.h>
 #include <qstringbuilder.h>
-#include <qstringlist.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstylefactory.h>
@@ -47,6 +46,12 @@
 #include <stdlib.h>
 #include <type_traits>
 #include <utility>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#else
+#include <qstringlist.h>
+#endif
 
 using namespace PerceptualColor;
 

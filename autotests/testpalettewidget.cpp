@@ -19,11 +19,9 @@
 #include <qlist.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpoint.h>
 #include <qsize.h>
 #include <qstring.h>
-#include <qstringlist.h>
 #include <qstyle.h>
 #include <qstylefactory.h>
 #include <qstyleoption.h>
@@ -33,6 +31,13 @@
 #include <qtestkeyboard.h>
 #include <type_traits>
 #include <utility>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstringlist.h>
+#endif
 
 namespace PerceptualColor
 {

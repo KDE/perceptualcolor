@@ -14,11 +14,16 @@
 #include <qglobal.h>
 #include <qlist.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpoint.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyleoption.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 namespace PerceptualColor
 {

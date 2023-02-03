@@ -80,7 +80,10 @@ QValidator::State ExtendedDoubleValidator::validate(QString &input, int &pos) co
     if (!d_pointer->m_prefix.isEmpty()) {
         if (myInput.startsWith(d_pointer->m_prefix)) {
             myInput.remove(0, d_pointer->m_prefix.size());
-            myPos -= d_pointer->m_prefix.size();
+            // In Qt6, QString::size() returns a qsizetype aka “long long int”.
+            // HACK We do a simple static_cast because a so long QString isn’t
+            // useful anyway.
+            myPos -= static_cast<int>(d_pointer->m_prefix.size());
         } else {
             return QValidator::State::Invalid;
         }

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "screencolorpicker.h"
+#include "helperqttypes.h"
 #include <qcolordialog.h>
 #include <qdbusargument.h>
 #include <qdbusconnection.h>
@@ -12,7 +13,6 @@
 #include <qglobal.h>
 #include <qguiapplication.h>
 #include <qlist.h>
-#include <qmetatype.h>
 #include <qobjectdefs.h>
 #include <qpushbutton.h>
 #include <qstring.h>
@@ -22,6 +22,12 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qmap.h>
+#else
+#include <qmetatype.h>
+#endif
 
 namespace PerceptualColor
 {
@@ -90,12 +96,12 @@ bool ScreenColorPicker::queryPortalSupport()
     }
     constexpr quint8 minimumSupportedPortalVersion = 2;
     const qulonglong actualPortalVersion = reply //
-                                         .arguments() //
-                                         .value(0) //
-                                         .value<QDBusVariant>() //
-                                         .variant() //
-                                         .toULongLong();
-    if ( actualPortalVersion < minimumSupportedPortalVersion) {
+                                               .arguments() //
+                                               .value(0) //
+                                               .value<QDBusVariant>() //
+                                               .variant() //
+                                               .toULongLong();
+    if (actualPortalVersion < minimumSupportedPortalVersion) {
         // No screen color picker support available
         return false;
     }
@@ -289,12 +295,12 @@ void ScreenColorPicker::getPortalResponse(uint exitCode, const QVariantMap &resp
     const QDBusArgument responseColor = responseArguments //
                                             .value(QStringLiteral("color")) //
                                             .value<QDBusArgument>();
-    QList<double> rgb;
+    QList<QColorFloatType> rgb;
     responseColor.beginStructure();
     while (!responseColor.atEnd()) {
         double temp;
         responseColor >> temp;
-        rgb.append(temp);
+        rgb.append(static_cast<QColorFloatType>(temp));
     }
     responseColor.endStructure();
     if (rgb.count() == 3) {

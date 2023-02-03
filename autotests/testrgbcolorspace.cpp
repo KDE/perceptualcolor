@@ -24,19 +24,25 @@
 #include <qlist.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qrgb.h>
 #include <qrgba64.h>
 #include <qscopedpointer.h>
-#include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qtemporarydir.h>
 #include <qtemporaryfile.h>
 #include <qtest.h>
 #include <qtestcase.h>
-#include <qvector.h>
 #include <qversionnumber.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qstring.h>
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#include <qvector.h>
+#endif
 
 namespace PerceptualColor
 {

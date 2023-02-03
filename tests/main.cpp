@@ -20,6 +20,7 @@
 #include <qcolor.h> // IWYU pragma: keep
 #include <qcolordialog.h> // IWYU pragma: keep
 #include <qcommonstyle.h> // IWYU pragma: keep
+#include <qcontainerfwd.h> // IWYU pragma: keep
 #include <qcoreapplication.h> // IWYU pragma: keep
 #include <qcoreevent.h> // IWYU pragma: keep
 #include <qdebug.h> // IWYU pragma: keep
@@ -29,6 +30,7 @@
 #include <qlabel.h> // IWYU pragma: keep
 #include <qlayout.h> // IWYU pragma: keep
 #include <qlibraryinfo.h> // IWYU pragma: keep
+#include <qlist.h> // IWYU pragma: keep
 #include <qlocale.h> // IWYU pragma: keep
 #include <qmath.h> // IWYU pragma: keep
 #include <qnamespace.h> // IWYU pragma: keep

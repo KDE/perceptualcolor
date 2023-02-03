@@ -12,10 +12,15 @@
 #include <qmutex.h>
 #include <qpointer.h>
 #include <qstring.h>
-#include <qstringlist.h>
 #include <qstringliteral.h>
 #include <qthread.h>
 #include <qtranslator.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qlist.h>
+#else
+#include <qstringlist.h>
+#endif
 
 /** @internal @file
  *

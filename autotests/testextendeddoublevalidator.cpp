@@ -5,13 +5,19 @@
 // this forces the header to be self-contained.
 #include "extendeddoublevalidator.h"
 
+#include <qglobal.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qvalidator.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 namespace PerceptualColor
 {

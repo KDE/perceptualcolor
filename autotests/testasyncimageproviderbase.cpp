@@ -5,10 +5,16 @@
 // this forces the header to be self-contained.
 #include "asyncimageproviderbase.h"
 
+#include <qglobal.h>
 #include <qobject.h>
+#include <qtest.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
 #include <qobjectdefs.h>
 #include <qstring.h>
-#include <qtest.h>
+#endif
 
 namespace PerceptualColor
 {

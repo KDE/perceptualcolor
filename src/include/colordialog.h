@@ -13,11 +13,16 @@
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
-#include <qobjectdefs.h>
 #include <qstring.h>
 class QEvent;
-class QObject;
 class QWidget;
+class QObject;
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 namespace PerceptualColor
 {

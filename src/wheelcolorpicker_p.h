@@ -11,11 +11,16 @@
 #include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qsize.h>
-#include <qstring.h>
 class QWidget;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 namespace PerceptualColor
 {

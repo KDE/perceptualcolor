@@ -7,14 +7,20 @@
 #include <optional>
 #include <qcolor.h>
 #include <qglobal.h>
-#include <qmetatype.h>
-#include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qstring.h>
 #include <qwidget.h>
 class QColorDialog;
-class QObject;
 class QPushButton;
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#include <qtmetamacros.h>
+#else
+#include <qmetatype.h>
+#include <qobjectdefs.h>
+class QObject;
+#endif
 
 namespace PerceptualColor
 {

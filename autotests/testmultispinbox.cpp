@@ -21,7 +21,6 @@
 #include <qlocale.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qscopedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
@@ -34,6 +33,12 @@
 #include <qtestkeyboard.h>
 #include <qvariant.h>
 #include <qwidget.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 static void snippet02()
 {

@@ -6,10 +6,15 @@
 
 #include "constpropagatinguniquepointer.h"
 #include <qglobal.h>
-#include <qobjectdefs.h>
 #include <qstring.h>
 #include <qvalidator.h>
 class QObject;
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 namespace PerceptualColor
 {

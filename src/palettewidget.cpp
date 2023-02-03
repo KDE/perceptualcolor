@@ -29,12 +29,17 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include <qsizepolicy.h>
-#include <qstringlist.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qtransform.h>
-#include <qvector.h>
 #include <qwidget.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#else
+#include <qstringlist.h>
+#include <qvector.h>
+#endif
 
 namespace PerceptualColor
 {

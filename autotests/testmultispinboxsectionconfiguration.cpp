@@ -7,15 +7,21 @@
 // Second, the private implementation.
 #include "multispinboxsectionconfiguration_p.h" // IWYU pragma: keep
 
+#include <qglobal.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qspinbox.h>
-#include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qvariant.h>
 #include <utility>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 namespace PerceptualColor
 {

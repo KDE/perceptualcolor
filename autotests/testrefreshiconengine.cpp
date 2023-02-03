@@ -13,7 +13,6 @@
 #include <qlist.h>
 #include <qmetatype.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpainter.h>
 #include <qpoint.h>
 #include <qrect.h>
@@ -25,6 +24,12 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qwidget.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 Q_DECLARE_METATYPE(QIcon::Mode)
 Q_DECLARE_METATYPE(QIcon::State)

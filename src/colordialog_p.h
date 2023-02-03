@@ -16,7 +16,6 @@
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qstring.h>
 #include <qstringliteral.h>
@@ -29,6 +28,12 @@ class QLineEdit;
 class QPushButton;
 class QTabWidget;
 class QWidget;
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 namespace PerceptualColor
 {

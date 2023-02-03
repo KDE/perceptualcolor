@@ -13,11 +13,16 @@
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qrgb.h>
 #include <qstring.h>
 #include <qversionnumber.h>
 class QRgba64;
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#endif
 
 Q_DECLARE_METATYPE(cmsColorSpaceSignature)
 Q_DECLARE_METATYPE(cmsProfileClassSignature)

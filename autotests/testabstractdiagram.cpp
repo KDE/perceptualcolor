@@ -12,12 +12,18 @@
 #include <qimage.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpainter.h>
 #include <qsize.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
+
 class QWidget;
 
 class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram

@@ -72,6 +72,32 @@ static_assert( //
 static_assert( //
     std::is_same_v<QListSizeType, decltype(std::declval<QList<int>>().lastIndexOf(0))>);
 
+/** @internal
+ *
+ * The type that <tt>QString</tt> uses for length.
+ *
+ * This type might vary between Qt5 and Qt6.
+ *
+ * @sa @ref QStringSize */
+using QStringLength = decltype(std::declval<QString>().length());
+static_assert( //
+    std::is_same_v<QStringLength, decltype(std::declval<QString>().length())>);
+static_assert( //
+    std::is_same_v<QStringLength, decltype(std::declval<QString>().size())>);
+
+/** @internal
+ *
+ * The type that <tt>QString</tt> uses for size.
+ *
+ * This type might vary between Qt5 and Qt6.
+ *
+ * @sa @ref QStringLength */
+using QStringSize = decltype(std::declval<QString>().size());
+static_assert( //
+    std::is_same_v<QStringLength, decltype(std::declval<QString>().length())>);
+static_assert( //
+    std::is_same_v<QStringLength, decltype(std::declval<QString>().size())>);
+
 } // namespace PerceptualColor
 
 #endif // HELPERQTTYPES_H

@@ -36,16 +36,13 @@
 #include <qmetaobject.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpair.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qscopedpointer.h>
 #include <qsignalspy.h>
 #include <qspinbox.h>
-#include <qstring.h>
 #include <qstringbuilder.h>
-#include <qstringlist.h>
 #include <qstringliteral.h>
 #include <qtabwidget.h>
 #include <qtemporaryfile.h>
@@ -53,8 +50,20 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
-#include <qvector.h>
 #include <qwidget.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#include <qobjectdefs.h>
+#include <qstring.h>
+#include <qtmetamacros.h>
+#include <utility>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#include <qstringlist.h>
+#include <qvector.h>
+#endif
 
 class TestColorDialogSnippetClass : public QWidget
 {

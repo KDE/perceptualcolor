@@ -19,14 +19,19 @@
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpoint.h>
 #include <qscopedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 static void snippet01()
 {

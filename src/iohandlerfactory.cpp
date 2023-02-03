@@ -15,6 +15,10 @@
 #include <qiodevice.h>
 #include <qstringliteral.h>
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qiodevicebase.h>
+#endif
+
 namespace PerceptualColor
 {
 /** @internal

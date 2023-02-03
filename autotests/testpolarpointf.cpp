@@ -9,12 +9,18 @@
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
 #include <qpoint.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qvariant.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qstring.h>
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 namespace PerceptualColor
 {

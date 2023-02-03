@@ -5,9 +5,15 @@
 #define RGBCOLORSPACEFACTORY_H
 
 #include "importexport.h"
+#include <qglobal.h>
 #include <qsharedpointer.h>
 #include <qstring.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#else
 #include <qstringlist.h>
+#endif
 
 namespace PerceptualColor
 {

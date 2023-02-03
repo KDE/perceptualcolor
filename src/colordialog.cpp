@@ -59,7 +59,6 @@
 #include <qsizepolicy.h>
 #include <qspinbox.h>
 #include <qstringbuilder.h>
-#include <qstringlist.h>
 #include <qstringliteral.h>
 #include <qtabwidget.h>
 #include <qvalidator.h>
@@ -67,6 +66,13 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#include <qobjectdefs.h>
+#else
+#include <qstringlist.h>
+#endif
 
 namespace PerceptualColor
 {

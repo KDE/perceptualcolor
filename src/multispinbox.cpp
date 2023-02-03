@@ -33,6 +33,11 @@
 #include <qwidget.h>
 class QAction;
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qobjectdefs.h>
+#else
+#endif
+
 namespace PerceptualColor
 {
 /** @brief Test if a cursor position is at the current value.
@@ -898,7 +903,7 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
 
     // Calculate in which section the cursor is
     int sectionOfTheNewCursorPosition;
-    int reference = 0;
+    QStringLength reference = 0;
     for (sectionOfTheNewCursorPosition = 0; //
          sectionOfTheNewCursorPosition < m_sectionConfigurations.count() - 1; //
          ++sectionOfTheNewCursorPosition //

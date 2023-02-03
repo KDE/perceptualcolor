@@ -7,7 +7,15 @@
 // Second, the private implementation.
 #include "xxx_p.h" // IWYU pragma: keep
 
-#include <QtTest>
+#include <qtest.h>
+#include <qtestcase.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 namespace PerceptualColor
 {

@@ -7,21 +7,12 @@
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
 #include <qdebug.h>
-#include <qglobal.h>
 #include <qmetatype.h>
 #include <qstring.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include "multispinboxsectionconfiguration_p.h"
-#else
 namespace PerceptualColor
 {
 class MultiSpinBoxSectionConfigurationPrivate;
-}
-#endif
-
-namespace PerceptualColor
-{
 
 /** @brief The configuration of a single section
  * within a @ref MultiSpinBox.

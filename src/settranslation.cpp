@@ -12,6 +12,10 @@
 #include <qglobal.h>
 #include <qthread.h>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <qlist.h>
+#endif
+
 /** @file
  *
  * Provides the @ref PerceptualColor::setTranslation() function. */

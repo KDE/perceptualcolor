@@ -11,13 +11,19 @@
 #include <cmath>
 #include <lcms2.h>
 #include <qgenericmatrix.h>
+#include <qglobal.h>
 #include <qmetatype.h>
 #include <qobject.h>
-#include <qobjectdefs.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 using OklabMatrix = QGenericMatrix<1, 3, double>;
 

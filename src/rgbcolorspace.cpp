@@ -29,8 +29,14 @@
 #include <qmath.h>
 #include <qnamespace.h>
 #include <qrgba64.h>
-#include <qstringlist.h>
 #include <qstringliteral.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
+#include <qlist.h>
+#else
+#include <qstringlist.h>
+#endif
 
 // Include the type “tm” as defined in the C standard (time.h), as LittleCMS
 // expects, preventing IWYU < 0.19 to produce false-positives.
@@ -1020,7 +1026,8 @@ double RgbColorSpacePrivate::detectMaximumCielchChroma() const
     double result = 0;
     double hue = 0;
     while (hue < 360) {
-        const auto color = QColor::fromHsvF(hue / 360., 1, 1).rgba64();
+        const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
+        const auto color = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
         result = qMax(result, q_pointer->toCielchDouble(color).c);
         hue += chromaDetectionPrecision;
     }
@@ -1040,7 +1047,8 @@ double RgbColorSpacePrivate::detectMaximumOklchChroma() const
     double chromaSquare = 0;
     double hue = 0;
     while (hue < 360) {
-        const auto rgbColor = QColor::fromHsvF(hue / 360., 1, 1).rgba64();
+        const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
+        const auto rgbColor = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
         const auto labColor = q_pointer->toCielab(rgbColor);
         const auto oklab = fromCmscielabD50ToOklab(labColor);
         chromaSquare = qMax(chromaSquare, oklab.a * oklab.a + oklab.b * oklab.b);

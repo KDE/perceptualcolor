@@ -9,11 +9,16 @@
 #include <functional>
 #include <qglobal.h>
 #include <qmutex.h>
-#include <qobjectdefs.h>
-#include <qstring.h>
 #include <qthread.h>
 #include <qvariant.h>
 #include <qwaitcondition.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+#endif
 
 class QImage;
 class QObject;

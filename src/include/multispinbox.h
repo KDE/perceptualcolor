@@ -10,28 +10,30 @@
 #include <qglobal.h>
 #include <qlineedit.h>
 #include <qlist.h>
-#include <qobjectdefs.h>
 #include <qsize.h>
-#include <qstring.h>
 class QAction;
 class QEvent;
 class QFocusEvent;
-class QObject;
 class QWidget;
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include "multispinbox_p.h"
-#include "multispinboxsectionconfiguration_p.h"
+// Including multispinboxsectionconfiguration.h is necessary on Qt6,
+// otherwise moc will fail. (IWYU does not detect this dependency.)
+#include "multispinboxsectionconfiguration.h" // IWYU pragma: keep
+#include <qtmetamacros.h>
 #else
+#include <qobjectdefs.h>
+#include <qstring.h>
 namespace PerceptualColor
 {
-class MultiSpinBoxPrivate;
 class MultiSpinBoxSectionConfiguration;
 }
+class QObject;
 #endif
 
 namespace PerceptualColor
 {
+class MultiSpinBoxPrivate;
 
 /** @brief A spin box that can hold multiple sections (each with its own
  * value) at the same time.

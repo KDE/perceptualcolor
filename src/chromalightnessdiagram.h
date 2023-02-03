@@ -4,19 +4,23 @@
 #ifndef CHROMALIGHTNESSDIAGRAM_H
 #define CHROMALIGHTNESSDIAGRAM_H
 
-#include <QtCore/qsharedpointer.h>
-#include <qglobal.h>
-#include <qobjectdefs.h>
-#include <qsize.h>
-#include <qstring.h>
-
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "lchdouble.h"
+#include <QtCore/qsharedpointer.h>
+#include <qglobal.h>
+#include <qsize.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#else
+#include <qobjectdefs.h>
+#include <qstring.h>
+class QObject;
+#endif
 
 class QKeyEvent;
 class QMouseEvent;
-class QObject;
 class QPaintEvent;
 class QResizeEvent;
 class QWidget;
