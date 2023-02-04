@@ -45,7 +45,7 @@ class ScreenColorPicker : public QWidget
     Q_OBJECT
 
 public:
-    ScreenColorPicker(QWidget *parent);
+    explicit ScreenColorPicker(QWidget *parent);
     virtual ~ScreenColorPicker() override;
     [[nodiscard]] bool isAvailable();
 
