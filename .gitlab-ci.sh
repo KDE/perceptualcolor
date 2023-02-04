@@ -28,13 +28,13 @@ echo Doxygen “public API and internals” started.
 cp Doxyfile.internal doxyconf/internaldoc
 doxygen -u doxyconf/internaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-doxygen doxyconf/internaldoc 2>&1 > artifact_doxygen_temp
+doxygen doxyconf/internaldoc > artifact_doxygen_temp 2>&1
 echo Doxygen “public API and internals” finished.
 echo Doxygen “public API” started.
 cp Doxyfile.external doxyconf/externaldoc
 doxygen -u doxyconf/externaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-doxygen doxyconf/internaldoc 2>&1 >> artifact_doxygen_temp
+doxygen doxyconf/internaldoc >> artifact_doxygen_temp 2>&1
 echo Doxygen “public API” finished.
 sort --unique artifact_doxygen_temp  > artifact_doxygen.txt
 rm artifact_doxygen_temp
