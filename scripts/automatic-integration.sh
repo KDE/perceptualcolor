@@ -40,6 +40,6 @@ sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/* au
 ( \
 mkdir --parents build \
     && cd build \
-    && cmake .. \
+    && cmake -DBUILD_WITH_QT6=ON .. \
     && cmake --build . --parallel $PARALLEL_PROCESSES --target clang-format
 )

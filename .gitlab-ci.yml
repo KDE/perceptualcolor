@@ -3,31 +3,27 @@
 
 # NOTE Documentation: https://docs.gitlab.com/ee/ci/yaml/gitlab_ci_yaml.html
 
+
+
+
+
 variables:
+  # Accept default answer for all questions during Debian/Ubuntu
+  # package management:
   DEBIAN_FRONTEND: "noninteractive"
-codecheck_custom:
+
+
+
+
+
+codecheck: &codecheck
   stage: build
-  image: debian:testing
+  image: ubuntu:22.04
+  tags:
+    - Linux
   interruptible: true
-  before_script:
-    - apt-get update
-    # TODO Can the following list be reduced, for example remove Qt5 or
-    # non-used components?
-    - apt-get install --yes --no-install-recommends pip doxygen graphviz cmake make cppcheck iwyu clazy pkgconf qtbase5-dev qtbase5-dev-tools qttools5-dev qttools5-dev-tools clang clazy iwyu liblcms2-dev liblcms2-2 clang-tidy clang-format cmake git qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools qt6-l10n-tools qt6-qmltooling-plugins qt6-tools-dev qt6-tools-dev-tools qt6-translations-l10n qt6-wayland qt6-wayland-dev qt6-wayland-dev-tools qt6-xdgdesktopportal-platformtheme qml-qt6 linguist-qt6 extra-cmake-modules
-    - echo "pip version:" && pip --version
-    - echo "doxygen version:" && doxygen --version
-    - echo "graphviz dot version:" && dot -V
-    - pip install cmakelint
-    - echo "cmakelint version:" && cmakelint --version
-    # The following commands only make sense when a graphical shell is needed
-    # for generatescreenshots…
-    #- apt-get install --yes --no-install-recommends xvfb openbox fonts-noto-core
-    #- export DISPLAY=':90'
-    #- Xvfb :90 -ac -screen 0 1600x1200x24+32 &
-    #- sleep 5s
-    #- openbox &
   script:
-    - ./.gitlab-ci.sh
+    - exit # Dummy value
   rules:
     - when: always
       allow_failure: true
@@ -37,7 +33,49 @@ codecheck_custom:
     paths:
       - artifact_*
 
+
+
+
+
+codecheck_automatic_integration:
+  <<: *codecheck
+  before_script:
+    - apt-get update --assume-yes
+    - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git
+    # TODO xxx Get generatescreenshots working in the CI
+    # The following commands only make sense when a graphical shell is needed
+    # for generatescreenshots…
+    #- apt-get install --assume-yes --no-install-recommends xvfb openbox fonts-noto-core
+    #- export DISPLAY=':90'
+    #- Xvfb :90 -ac -screen 0 1600x1200x24+32 &
+    #- sleep 5s
+    #- openbox &
+  script:
+    - ./.codecheck-automatic-integration.sh
+
+
+
+
+
+codecheck_cmakelint:
+  <<: *codecheck
+  before_script:
+    - apt-get update --assume-yes
+    - apt-get install --assume-yes --no-install-recommends python3-pip
+    - echo "pip version:" && pip --version
+    - pip install cmakelint
+    - echo "cmakelint version:" && cmakelint --version
+  script:
+    - ./.codecheck-cmakelint.sh
+
+
+
+
+
 codecheck_cppcheck:
+  # Like the cppcheck that invent.kde.org provides, but exit status depends
+  # on if issues have been found or not. And it runs always, and not only
+  # when C++ code has changed.
   stage: build
   image: kdeorg/ci-suse-qt515:latest
   tags:
@@ -64,6 +102,57 @@ codecheck_cppcheck:
       - cppcheck.json
     reports:
       codequality: cppcheck.json
+
+
+
+
+
+codecheck_doxygen:
+  <<: *codecheck
+  before_script:
+    - apt-get update --assume-yes
+    - apt-get install --assume-yes --no-install-recommends doxygen graphviz
+    - echo "doxygen version:" && doxygen --version
+    - echo "graphviz dot version:" && dot -V
+  script:
+    - ./.codecheck-doxygen.sh
+
+
+
+
+
+codecheck_qt5:
+  <<: *codecheck
+  before_script:
+    - apt-get update --assume-yes
+    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qtbase5-dev qtbase5-dev-tools qttools5-dev
+  script:
+    - ./.codecheck-qt5.sh
+
+
+
+
+
+codecheck_qt6:
+  <<: *codecheck
+  before_script:
+    - apt-get update --assume-yes
+    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
+  script:
+    - ./.codecheck-qt6.sh
+
+
+
+
+
+codecheck_static:
+  <<: *codecheck
+  script:
+    - ./.codecheck-static.sh
+
+
+
+
 
 include:
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/android-qt6.yml

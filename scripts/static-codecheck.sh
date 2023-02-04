@@ -187,17 +187,17 @@ grep \
     $ALL_CODE \
          | sed 's/^/Use exclusively ARGB32_Premultiplied or RGB32 or RGB16 as QImage formats: /'
 
-# -> QLatin1String dates from the pre-Unicode epoch. It should not be used
-#    anymore at all, yet to avoid confusion. Though the Clazy codecheck
-#    suggests to use QLatin1String() instead of an empty QStringLiteral
-#    because of a slight performance gain, this might not compensate
-#    for the less readable code. Alternatively, QString() might be
+# -> QLatin1String and QLatin1Char dates from the pre-Unicode epoch. It should
+#    not be used anymore at all, yet to avoid confusion. Though the Clazy
+#    codecheck suggests to use QLatin1String() instead of an empty
+#    QStringLiteral because of a slight performance gain, this might not
+#    compensate for the less readable code. Alternatively, QString() might be
 #    used to avoid Clazy warnings.
 grep \
     --recursive --exclude-dir=testbed \
-    --fixed-strings "QLatin1String" \
+    --fixed-strings "QLatin1" \
     $ALL_CODE \
-         | sed 's/^/QLatin1String: Empty → QString(). Non-empty → QStringLiteral.: /'
+         | sed 's/^/QLatin1String or QLatin1Char: If emtpy, use substitute by QString(), otherwise by QStringLiteral.: /'
 
 # When using Doxygen snippets, don’t do this within a namespace. As they are
 # meant for documentation, they should always contain fully-qualified

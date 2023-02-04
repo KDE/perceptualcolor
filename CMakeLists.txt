@@ -450,7 +450,7 @@ message(
     "   or “-DBUILD_WITH_QT6=OFF” (build with Qt5).")
 find_package(
     Qt${QT_MAJOR_VERSION}
-    COMPONENTS Core Gui Widgets DBus LinguistTools Test Concurrent
+    COMPONENTS Core Gui Widgets DBus Test Concurrent
     REQUIRED)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC TRUE)
