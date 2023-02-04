@@ -47,9 +47,19 @@ codecheck_cppcheck:
     - git clone https://invent.kde.org/sysadmin/ci-utilities
   script:
     - python3 -u ci-utilities/run-cppcheck.py --project $CI_PROJECT_NAME --branch $CI_COMMIT_REF_NAME
+    - if [ "$(cat cppcheck.json)" == "[]" ]; then
+    -     echo "cppcheck did not find any issues."
+    -     exit 0
+    - else
+    -     echo "cppcheck found issues."
+    -     exit 1
+    - fi
+  rules:
+    - when: always
+      allow_failure: true
   artifacts:
     expire_in: 20 weeks
-    when: on_success
+    when: always
     paths:
       - cppcheck.json
     reports:
