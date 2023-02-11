@@ -39,7 +39,6 @@ set(library_SRC
     gradientimageparameters.cpp
     gradientslider.cpp
     helper.cpp
-    helperconstants.cpp
     helperconversion.cpp
     initializetranslation.cpp
     interlacingpass.cpp

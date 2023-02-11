@@ -379,7 +379,7 @@ void ColorDialogPrivate::retranslateUi()
             "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\">"
             "%2"
             "</table>");
-        m_rgbGroupBox->setToolTip(richTextMarker()
+        m_rgbGroupBox->setToolTip(richTextMarker
                                   + tableString.arg(
                                       /*: @info:intext Title of info text about
                                       current color space (will be followed by
@@ -450,14 +450,14 @@ void ColorDialogPrivate::retranslateUi()
     m_buttonCancel->setText(tr("&Cancel"));
     /*: @info:tooltip Help text for RGB spinbox. */
     m_rgbSpinBox->setToolTip( //
-        richTextMarker()
+        richTextMarker
         + tr("<p>Red: 0⁠–⁠255</p>"
              "<p>Green: 0⁠–⁠255</p>"
              "<p>Blue: 0⁠–⁠255</p>"));
 
     /*: @info:tooltip Help text for hexadecimal code. */
     m_rgbLineEdit->setToolTip( //
-        richTextMarker()
+        richTextMarker
         + tr("<p>Hexadecimal color code, as used in HTML: #RRGGBB</p>"
              "<p>RR: two-digit code for red: 00⁠–⁠FF</p>"
              "<p>GG: two-digit code for green: 00⁠–⁠FF</p>"
@@ -470,7 +470,7 @@ void ColorDialogPrivate::retranslateUi()
     Lightness: 0 means always black; 255 means always white. This is
     different from “brightness” and should therefore get a different
     translation. */
-    m_hslSpinBox->setToolTip(richTextMarker()
+    m_hslSpinBox->setToolTip(richTextMarker
                              + tr("<p>Hue: 0°⁠–⁠360°</p>"
                                   "<p>HSL-Saturation: 0%⁠–⁠100%</p>"
                                   "<p>Lightness: 0%⁠–⁠100%</p>"));
@@ -484,7 +484,7 @@ void ColorDialogPrivate::retranslateUi()
     + 0% black = white. 0% white + 100% black = black. 50% white + 50% black
     = gray. 50% white + 0% black = tint. 25% white + 25% black = tone.
     0% white + 50% black = shade. */
-    m_hwbSpinBox->setToolTip(richTextMarker()
+    m_hwbSpinBox->setToolTip(richTextMarker
                              + tr("<p>Hue: 0°⁠–⁠360°</p>"
                                   "<p>Whiteness: 0%⁠–⁠100%</p>"
                                   "<p>Blackness: 0%⁠–⁠100%</p>"));
@@ -497,7 +497,7 @@ void ColorDialogPrivate::retranslateUi()
     translation. Brightness/value: 0 means always black; 255 means something
     between white and the most colorful color. This is different from
     “lightness” and should therefore get a different translation. */
-    m_hsvSpinBox->setToolTip(richTextMarker()
+    m_hsvSpinBox->setToolTip(richTextMarker
                              + tr("<p>Hue: 0°⁠–⁠360°</p>"
                                   "<p>HSV/HSB-Saturation: 0%⁠–⁠100%</p>"
                                   "<p>Brightness/Value: 0%⁠–⁠100%</p>"));
@@ -511,7 +511,7 @@ void ColorDialogPrivate::retranslateUi()
 
     /*: @info:tooltip Help text for CIEHLC. “lightness” is different from
     “brightness”/“value” and should therefore get a different translation. */
-    m_ciehlcSpinBox->setToolTip(richTextMarker()
+    m_ciehlcSpinBox->setToolTip(richTextMarker
                                 + tr("<p>Hue: 0°⁠–⁠360°</p>"
                                      "<p>Lightness: 0%⁠–⁠100%</p>"
                                      "<p>Chroma: 0⁠–⁠%L1</p>")
@@ -520,7 +520,7 @@ void ColorDialogPrivate::retranslateUi()
     constexpr double maxOklchChroma = OklchValues::maximumChroma;
     /*: @info:tooltip Help text for Oklch. “lightness” is different from
     “brightness”/“value” and should therefore get a different translation. */
-    m_oklchSpinBox->setToolTip(richTextMarker()
+    m_oklchSpinBox->setToolTip(richTextMarker
                                + tr("<p>Lightness: %L1⁠–⁠%L2</p>"
                                     "<p>Chroma: %L3⁠–⁠%L4</p>"
                                     "<p>Hue: 0°⁠–⁠360°</p>")

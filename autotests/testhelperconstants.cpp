@@ -30,10 +30,10 @@ static bool snippet01()
     QScopedPointer<QWidget> myWidget2(new QWidget());
     //! [richTextMarkerExample]
     myWidget1->setToolTip( // Make sure rich text is treated as such:
-        PerceptualColor::richTextMarker() + myRichText);
+        PerceptualColor::richTextMarker + myRichText);
 
     myWidget2->setToolTip( // Make sure plain text is treated as such:
-        PerceptualColor::richTextMarker() + myPlainText.toHtmlEscaped());
+        PerceptualColor::richTextMarker + myPlainText.toHtmlEscaped());
     //! [richTextMarkerExample]
     return Qt::mightBeRichText(myWidget1->toolTip()) //
         && Qt::mightBeRichText(myWidget2->toolTip());
@@ -95,7 +95,7 @@ private Q_SLOTS:
 
     void testRichTextMarkerIsRecognized()
     {
-        const QString myMarker = richTextMarker();
+        const QString myMarker = richTextMarker;
         QVERIFY(myMarker.count() > 0);
         QVERIFY(Qt::mightBeRichText(myMarker));
 
@@ -117,7 +117,7 @@ private Q_SLOTS:
         QCOMPARE(myDocument.toRawText(), // Assertion
                  QStringLiteral(u"This is a test."));
         // Now, test if the rich text marker is actually invisible:
-        myDocument.setHtml(richTextMarker() + myRichText);
+        myDocument.setHtml(richTextMarker + myRichText);
         QCOMPARE(myDocument.toRawText(), QStringLiteral(u"This is a test."));
     }
 };
