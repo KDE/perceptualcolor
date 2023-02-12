@@ -48,6 +48,13 @@ namespace PerceptualColor
  * provide a <tt>std::unique_ptr</tt> but acts as a wrapper template around
  * smart pointers in general. It lacks however the dereference operator.
  *
+ * @note This class could be replaced in the future by <tt>
+ * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
+ * std::experimental::propagate_const</a></tt> if this one ever becomes
+ * part of the C++ standard. (Experimental features however are optional
+ * for compilers, so not all of them implement them. Furthermore, they
+ * can still change. Therefore, we cannot use experimental features here.)
+ *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
  * implementation? Or remove propagate_const header from this library? */

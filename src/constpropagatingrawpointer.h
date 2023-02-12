@@ -42,7 +42,14 @@ namespace PerceptualColor
  * @note There exist very sophisticated implementations like
  * https://github.com/jbcoe/propagate_const but we use nevertheless
  * our own light-wise implementation because this seems to be enough
- * for our limited use case. */
+ * for our limited use case.
+ *
+ * @note This class could be replaced in the future by <tt>
+ * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
+ * std::experimental::propagate_const</a></tt> if this one ever becomes
+ * part of the C++ standard. (Experimental features however are optional
+ * for compilers, so not all of them implement them. Furthermore, they
+ * can still change. Therefore, we cannot use experimental features here.) */
 template<typename T>
 class ConstPropagatingRawPointer final
 {

@@ -125,7 +125,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * execution of this function and it is closed again at the end of
  * this function. The created object does not need the file anymore,
  * because all necessary information has already been loaded into
- * memory. Accepted are RGB-based ICC profiles up to version 4.
+ * memory. Accepted are most RGB-based ICC profiles up to version 4.
  *
  * @returns A shared pointer to a newly created color space object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.

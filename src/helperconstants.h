@@ -195,9 +195,7 @@ constexpr int pageStepLightness = 10 * singleStepLightness;
  * rich text.
  *
  * Usage example:
- * @snippet testhelperconstants.cpp richTextMarkerExample
- *
- * @returns Invisible marker for rich text */
+ * @snippet testhelperconstants.cpp richTextMarkerExample */
 inline const QString richTextMarker = QStringLiteral(u"<a/>");
 
 } // namespace PerceptualColor

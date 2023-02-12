@@ -271,6 +271,10 @@
  *
  * @todo Test also on Windows. (Does it work well with VisualStudio?)
  *
+ * @todo Test also Big-Endian compatibility using s390x Linux via Qemu?
+ * KDE Invent does not support this out-of-the-box, but with a custom
+ * script?
+ *
  * @todo Test opaque RGB color space object with a non-export-all version
  * of this library to make sure it actually works for third-party developers.
  *
