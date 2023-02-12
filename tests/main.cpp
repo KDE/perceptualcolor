@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 #include "asyncimageprovider.h" // IWYU pragma: keep
