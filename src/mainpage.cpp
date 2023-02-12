@@ -21,6 +21,7 @@
  * How to get started? @ref PerceptualColor::ColorDialog provides a
  * perceptual replacement for QColorDialog:
  * @snippet testcolordialog.cpp ColorDialog Get color
+ * @ref exampleproject "Complete example project"
  *
  * @image html ColorDialog.png "ColorDialog" width=500
  * @image html ColorDialogTab1.png "ColorDialog" width=500
@@ -456,31 +457,18 @@
  * checking with LanguageTool */
 
 /** @page build Build instructions and requirements
- * The library depends at runtime on (and therefore you has to link against)
- * these shared/dynamic libraries:
  *
+ * Requirements:
  * - LittleCMS 2 (minimum version: 2.0)
- * - Qt 5 (minimum version: 5.15). At runtime, the modules Core, Gui, Widgets
- *   and Concurrent are required.
- *
- * Furthermore, only build time, the following additional software is
- * required:
- * - Qt modules: Test and Linguist
+ * - Qt 5 (minimum version: 5.15). Components: Core, Gui, Widgets,
+ *   DBus, Concurrent, Test. <!-- Qt 5.15 has an API that is close
+ *   to Qt 6. It introduces some new functions we are using to avoid
+ *   deprecated older functions. -->
  * - CMake
  * - ECM (Extra CMake Modules from KDE)
- *
- * <!-- Qt 5.15 has an API that is close to Qt 6. It introduces some
- * new functions we are using to avoid deprecated older functions. -->
- *
- * Please make sure that you comply with the licences of these libraries.
- *
- * There is also a LittleCMS plugin called <em>fast_float plug-in</em> that
- * you can include into the source code of your application and load it
- * in your main function before using this library. This can make
- * color management faster. (Note that this plugin has a different license
- * than LittleCMS itself.)
- *
- * This library requires minimum C++17.
+ * - C++17
+ * - Both, the input character set and the execution character set, have
+ *   to be UTF8. (See @ref compilercharacterset for more details.)
  * <!--
  *      Qt 5.6 (which is the minimum Qt version required
  *      by this library) only requires C++03. Only starting
@@ -500,23 +488,23 @@
  *      requirements that we do not have to raise soon, and that are a
  *      good base for LTS.
  * -->
+ * - Optional: There is also a LittleCMS plugin called
+ *   <em>fast_float plug-in</em> that you can include into the
+ *   source code of your application and load it in your main function
+ *   before using this library. This can make color management faster.
+ *   (Note that this plugin has a different license than LittleCMS itself.)
  *
- * To compile this library, both the input character set and the execution
- * character set have to be UTF8. (See @ref compilercharacterset for more
- * details.)
+ * Please make sure that you comply with the licences of used libraries.
  *
- * To prepare the build, run cmake. Then, you have various <tt>make</tt> targets
- * available.
- *
- * To build the library:
- * <br/><tt>make</tt>
+ * To prepare the build, run cmake. Then, to build and install the library:
+ * @code{.unparsed}
+ * make && sudo make install
+ * @endcode
  *
  * To do unit testing:
- * <br/><tt>make build_test test</tt>
- *
- * @internal
- *
- * @todo Provide a CMake find module for this library and install it. */
+ * @code{.unparsed}
+ * make build_test test
+ * @endcode */
 
 /** @internal
  *
@@ -761,6 +749,16 @@
  * colors. For internal transformation, usually <tt>qreal</tt>
  * is used for each channel, giving a better precision and reducing rounding
  * errors. */
+
+/** @page exampleproject Example project
+ * This is a minimal, but complete example project showing how to use
+ * this library.
+ *
+ * CMakeLists.txt:
+ * @include examples/CMakeLists.txt
+ *
+ * example.cpp:
+ * @include examples/example.cpp */
 
 /** @page hidpisupport High DPI support
  * This library supports High DPI out of the box. You do not need to do

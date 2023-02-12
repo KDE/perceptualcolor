@@ -28,7 +28,7 @@
 # Unfortunately, this following command changes the modification date of all
 # files, even those that have yet a BOM and don’t need a change. Therefore,
 # after calling this script, the next “make” call will rebuild everything.
-sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/* autotests/*.cpp tests/* utils/*
+sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/* autotests/*.cpp tests/* utils/* examples/*.h examples.cpp
 
 
 

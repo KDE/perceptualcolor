@@ -32,6 +32,7 @@ cmake \
     -DBUILD_WITH_QT6=OFF \
     ..
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt5.txt
+make install
 cd ..
 [ -s ./artifact_warnings_qt5.txt ] && ((errorcount++))
 echo "Dynamic codecheck against Qt5 finished."

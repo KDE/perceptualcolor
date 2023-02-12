@@ -533,6 +533,12 @@ list(APPEND CLANG_FORMAT_PATTERNS
     utils/*.h
     utils/*.cpp)
 
+# Intentionally not using add_subdirectory(examples) because
+# it is a standalone CMakeLists example.
+list(APPEND CLANG_FORMAT_PATTERNS
+    examples/*.h
+    examples/*.cpp)
+
 
 
 

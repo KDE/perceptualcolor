@@ -19,8 +19,8 @@
 
 ################# Static code check #################
 PUBLIC_HEADERS="src/include"
-CODE_WITHOUT_UNIT_TESTS="src tests utils"
-ALL_CODE="src autotests/* tests utils"
+CODE_WITHOUT_UNIT_TESTS="src tests utils examples"
+ALL_CODE="src autotests/* tests utils examples"
 UNIT_TESTS="autotests/*"
 
 # Search for files that do not start with a byte-order-mark (BOM).

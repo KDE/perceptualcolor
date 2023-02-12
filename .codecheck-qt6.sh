@@ -32,6 +32,18 @@ cmake \
     -DBUILD_WITH_QT6=ON \
     ..
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt6.txt
+make install
+cd ..
+mkdir --parents buildexamples
+rm --recursive --force buildexamples/*
+cd buildexamples
+cmake \
+    -DCMAKE_CXX_COMPILER=clazy \
+    -DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy \
+    -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
+        -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
+    ../examples
+cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_warnings_qt6.txt
 cd ..
 [ -s ./artifact_warnings_qt6.txt ] && ((errorcount++))
 echo "Dynamic codecheck against Qt6 finished."
