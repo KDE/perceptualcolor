@@ -123,7 +123,6 @@ static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QStr
 // computers with different settings.
 static void initializeHardCodeWidgetAppearance(QApplication *app)
 {
-    QStyle *style = nullptr;
     // We prefer the Fusion style because he is the most cross-platform
     // style, so generating the screenshots does not depend on the
     // current system. Furthermore, it has support for fraction
@@ -133,14 +132,15 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
     // "Breeze", "dsemilight", "dsemidark", "dlight", "ddark", "kvantum-dark",
     // "kvantum", "cleanlooks", "gtk2", "cde", "motif", "plastique", "Oxygen",
     // "QtCurve", "Windows", "Fusion"
-    if (style == nullptr) {
-        style = QStyleFactory::create(QStringLiteral("Fusion"));
-    }
-    if (style == nullptr) {
-        style = QStyleFactory::create(QStringLiteral("Breeze"));
-    }
-    if (style == nullptr) {
-        style = QStyleFactory::create(QStringLiteral("Oxygen"));
+    const QStringList styleNames{QStringLiteral("Fusion"), //
+                                 QStringLiteral("Breeze"), //
+                                 QStringLiteral("Oxygen")};
+    QStyle *style = nullptr;
+    for (const QString &styleName : styleNames) {
+        style = QStyleFactory::create(styleName);
+        if (style != nullptr) {
+            break;
+        }
     }
     QApplication::setStyle(style); // This call is safe even if style==nullptr.
 
