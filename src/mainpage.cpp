@@ -1,5 +1,5 @@
 ﻿// SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 // This file contains the following documentation:
 // – @mainpage
@@ -68,10 +68,12 @@
  *
  * @copyright We follow the <a href="https://reuse.software/">“Reuse”
  * specification</a>. The source code of the library itself (and also this
- * documentation itself) are published under MIT License. The CMake files are
- * licensed under BSD-2-Clause and BSD-3-Clause. Other parts like autotests
- * or utils (which are <em>not</em> installed by CMake but only for internal
- * purposes) might include compiled-in resources that have different licenses.
+ * documentation itself) are dual-licensed. You can use it (at your option)
+ * either under BSD-2-Clause or MIT. Deviating from this, some CMake files
+ * are exclusively BSD-3-Clause. <br/> Other parts of the codebase (which will
+ * <em>not</em> be installed by CMake, examples include <em>autotests</em>
+ * and <em>utils</em>) might have different licenses and/or include
+ * compiled-in resources that have different licenses.
  *
  * @internal
  *

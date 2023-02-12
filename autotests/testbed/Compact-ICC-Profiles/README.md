@@ -1,6 +1,6 @@
 <!--
 SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
-SPDX-License-Identifier: CC0-1.0
+SPDX-License-Identifier: BSD-2-Clause OR MIT
 -->
 
 # Compact-ICC-Profiles
