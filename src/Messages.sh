@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# SPDX-FileCopyrightText: 2020-2023 Lukas Sommer <sommerluk@gmail.com>
+# SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 
