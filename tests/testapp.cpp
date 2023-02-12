@@ -51,8 +51,6 @@
 #include <qtranslator.h> // IWYU pragma: keep
 #include <utility> // IWYU pragma: keep
 
-// TODO Drop this executable in favor of KColorChooser?
-
 /* // This if for testing if actually we get warnings as expected:
 #include <qglobal.h>
 #include <qstring.h>
@@ -74,8 +72,8 @@ static bool triggerWarning()
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
 {
-    // Prepare configuration before instantiating the application object
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Prepare configuration before instantiating the application object
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 
