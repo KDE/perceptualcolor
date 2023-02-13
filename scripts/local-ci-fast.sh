@@ -15,6 +15,15 @@
 
 
 
+# -e exits on error,
+# -u errors on undefined variables,
+# and -o (for option) pipefail exits on command pipe failures
+set -euo pipefail
+
+
+
+
+
 ################# Configure #################
 
 # The “.” command will execute the given script within the context of
