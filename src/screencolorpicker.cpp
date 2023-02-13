@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 #include "screencolorpicker.h"
-#include "helperqttypes.h"
+#include <qcolor.h>
 #include <qcolordialog.h>
 #include <qdbusargument.h>
 #include <qdbusconnection.h>
@@ -168,7 +168,12 @@ void ScreenColorPicker::initializeQColorDialogSupport()
         connect(m_qColorDialog, //
                 &QColorDialog::currentColorChanged, //
                 this, //
-                &ScreenColorPicker::newColor);
+                [this](const QColor &color) {
+                    const auto red = static_cast<double>(color.redF());
+                    const auto green = static_cast<double>(color.greenF());
+                    const auto blue = static_cast<double>(color.blueF());
+                    Q_EMIT newColor(red, green, blue);
+                });
     } else {
         delete m_qColorDialog;
         m_qColorDialog = nullptr;
@@ -183,10 +188,18 @@ void ScreenColorPicker::initializeQColorDialogSupport()
  * @post If supported on the current platform, the screen color picking is
  * started. Results can be obtained via @ref newColor.
  *
- * @param previousColor On some platforms, the signal @ref newColor is
+ * @param previousColorRed On some platforms, the signal @ref newColor is
  * emitted with this color if the user cancels the color picking with
- * the ESC key. */
-void ScreenColorPicker::startPicking(const QColor &previousColor)
+ * the ESC key. Range: <tt>[0, 255]</tt>
+ * @param previousColorGreen See above.
+ * @param previousColorBlue See above. */
+// Using quint8 to make clear what is the maximum range and maximum precision
+// that can be expected. Indeed, QColorDialog uses QColor which allows for
+// more precision. However, it seems to not use it: When ESC is pressed,
+// previous value is restored only with this precision. So we use quint8
+// to make clear which precision will actually be provided of the underlying
+// implementation.
+void ScreenColorPicker::startPicking(quint8 previousColorRed, quint8 previousColorGreen, quint8 previousColorBlue)
 {
     if (!parent()) {
         // This class derives (currently) from QWidget, and QWidget guarantees
@@ -215,6 +228,9 @@ void ScreenColorPicker::startPicking(const QColor &previousColor)
 
     initializeQColorDialogSupport();
     if (m_qColorDialogScreenButton) {
+        const auto previousColor = QColor(previousColorRed, //
+                                          previousColorGreen, //
+                                          previousColorBlue);
         m_qColorDialog->setCurrentColor(previousColor);
         m_qColorDialogScreenButton->click();
     }
@@ -295,16 +311,16 @@ void ScreenColorPicker::getPortalResponse(uint exitCode, const QVariantMap &resp
     const QDBusArgument responseColor = responseArguments //
                                             .value(QStringLiteral("color")) //
                                             .value<QDBusArgument>();
-    QList<QColorFloatType> rgb;
+    QList<double> rgb;
     responseColor.beginStructure();
     while (!responseColor.atEnd()) {
         double temp;
         responseColor >> temp;
-        rgb.append(static_cast<QColorFloatType>(temp));
+        rgb.append(temp);
     }
     responseColor.endStructure();
     if (rgb.count() == 3) {
-        Q_EMIT newColor(QColor::fromRgbF(rgb.at(0), rgb.at(1), rgb.at(2)));
+        Q_EMIT newColor(rgb.at(0), rgb.at(1), rgb.at(2));
     }
 }
 

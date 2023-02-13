@@ -5,7 +5,6 @@
 #define SCREENCOLORPICKER
 
 #include <optional>
-#include <qcolor.h>
 #include <qglobal.h>
 #include <qpointer.h>
 #include <qstring.h>
@@ -50,7 +49,7 @@ public:
     [[nodiscard]] bool isAvailable();
 
 public Q_SLOTS:
-    void startPicking(const QColor &previousColor);
+    void startPicking(quint8 previousColorRed, quint8 previousColorGreen, quint8 previousColorBlue);
 
 Q_SIGNALS:
     /** @brief A new color.
@@ -62,8 +61,22 @@ Q_SIGNALS:
      * cancels with the ESC key, a new signal is emitted with the old color
      * passed originally to @ref startPicking.
      *
-     * @param color The new color. */
-    void newColor(const QColor &color);
+     * @param red The <em>red</em> component of the new color.
+     *            Range: <tt>[0, 255]</tt>
+     * @param green Same for green.
+     * @param blue Same for blue.
+     *
+     * @internal
+     *
+     * @note This signal uses integers with the range <tt>[0, 255]</tt> as
+     * return values because this is the maximum precision of the underlying
+     * implementation: The QColorDialog implementation rounds on this
+     * precision when the user pushes the ESC key, even if the previous
+     * value was more exact. */
+    // Choosing thre “double” values as return type, as it makes clear
+    // what data type returns and as “Portal” actually provides
+    // double-precision in its return values.
+    void newColor(double red, double green, double blue);
 
 private:
     void pickWithPortal();

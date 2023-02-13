@@ -14,6 +14,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "gradientslider.h"
 #include "helperconstants.h"
+#include "helperconversion.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
 #include "lchadouble.h"
@@ -1471,16 +1472,23 @@ void ColorDialogPrivate::initializeScreenColorPicker()
             screenPicker,
             // Default capture by reference, but screenPicker by value
             [&, screenPicker]() {
+                const auto myColor = q_pointer->currentColor();
                 // TODO Restore QColor exactly, but could potentially produce
                 // rounding errors: If original MultiColor was derived form
-                // LCH, it is not garanteed that the new MultiColor derived
+                // LCH, it is not guaranteed that the new MultiColor derived
                 // from this QColor will not have rounding errors for LCH.
-                screenPicker->startPicking(q_pointer->currentColor());
+                screenPicker->startPicking( //
+                    fromFloatingToEightBit(myColor.redF()), //
+                    fromFloatingToEightBit(myColor.greenF()), //
+                    fromFloatingToEightBit(myColor.blueF()));
             });
     connect(screenPicker, //
             &ScreenColorPicker::newColor, //
             q_pointer, //
-            &ColorDialog::setCurrentColor);
+            [this](const double red, const double green, const double blue) {
+                const auto color = qColorFromRgbDouble(red, green, blue);
+                q_pointer->setCurrentColor(color);
+            });
     QGridLayout *tempLayout = new QGridLayout();
     tempLayout->addWidget(m_screenColorPickerButton, 0, 0, Qt::AlignCenter);
     m_screenColorPickerWidget->setLayout(tempLayout);

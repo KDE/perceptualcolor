@@ -4,9 +4,13 @@
 #ifndef HELPERCONVERSION_H
 #define HELPERCONVERSION_H
 
+#include "helperqttypes.h"
 #include "lchdouble.h"
 #include <lcms2.h>
+#include <qcolor.h>
 #include <qgenericmatrix.h>
+#include <qglobal.h>
+#include <type_traits>
 
 /** @internal
  *
@@ -19,7 +23,41 @@ namespace PerceptualColor
 
 [[nodiscard]] cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50);
 
+/** @brief Converts from <tt>[0, 1]</tt> to <tt>[0, 255]</tt>.
+ *
+ * @param original A value on a scale <tt>[0, 1]</tt>.
+ *
+ * @returns Value converted to the scale <tt>[0, 255]</tt>, applying correct
+ * rounding. Out-of-range values are bound to the valid range. */
+template<typename T>
+[[nodiscard]] constexpr quint8 fromFloatingToEightBit(const T &original)
+{
+    static_assert( //
+        std::is_floating_point<T>::value, //
+        "Template fromFloatingToEightBit() only works with floating point types");
+    const int rounded = qRound(original * 255);
+    const auto bounded = qBound<int>(0, rounded, 255);
+    return static_cast<quint8>(bounded);
+}
+
 [[nodiscard]] QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value);
+
+/** @brief Like <tt>QColor::fromRgbF</tt> but for all floating point types.
+ *
+ * @param red Red component. Range: <tt>[0, 1]</tt>
+ * @param green See above.
+ * @param blue See above.
+ * @returns A corresponding <tt>QColor</tt> object. */
+template<typename T>
+[[nodiscard]] QColor qColorFromRgbDouble(T red, T green, T blue)
+{
+    static_assert( //
+        std::is_floating_point<T>::value, //
+        "Template fromFloatingToEightBit() only works with floating point types");
+    return QColor::fromRgbF(static_cast<QColorFloatType>(red), //
+                            static_cast<QColorFloatType>(green), //
+                            static_cast<QColorFloatType>(blue));
+}
 
 [[nodiscard]] cmsCIELab toCmsCieLab(const cmsCIELCh &value);
 
