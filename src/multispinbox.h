@@ -206,7 +206,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
     Q_PROPERTY(QList<double> sectionValues READ sectionValues WRITE setSectionValues NOTIFY sectionValuesChanged USER true)
 
 public:
-    Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
+    Q_INVOKABLE explicit MultiSpinBox(QWidget *parent = nullptr);
     /** @brief Default destructor */
     virtual ~MultiSpinBox() noexcept override;
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);

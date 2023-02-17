@@ -60,7 +60,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT AbstractDiagram : public QWidget
     Q_OBJECT
 
 public:
-    Q_INVOKABLE AbstractDiagram(QWidget *parent = nullptr);
+    Q_INVOKABLE explicit AbstractDiagram(QWidget *parent = nullptr);
     /** @brief Default destructor */
     virtual ~AbstractDiagram() noexcept override;
 

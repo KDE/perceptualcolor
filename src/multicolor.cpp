@@ -27,7 +27,7 @@ static_assert(std::is_standard_layout_v<MultiColor>);
 
 static_assert(std::is_default_constructible_v<MultiColor>);
 // static_assert(std::is_trivially_default_constructible_v<MultiColor>);
-static_assert(std::is_nothrow_default_constructible_v<MultiColor>);
+// static_assert(std::is_nothrow_default_constructible_v<MultiColor>);
 
 static_assert(std::is_copy_constructible_v<MultiColor>);
 // static_assert(std::is_trivially_copy_constructible_v<MultiColor>);
@@ -36,6 +36,11 @@ static_assert(std::is_copy_constructible_v<MultiColor>);
 // static_assert(std::is_move_constructible_v<MultiColor>);
 // static_assert(std::is_trivially_move_constructible_v<MultiColor>);
 // static_assert(std::is_nothrow_move_constructible_v<MultiColor>);
+
+MultiColor::MultiColor()
+    : cielch{0, 0, 0}
+{
+}
 
 /** @brief Fills the Lab-based color formats based on the RGB-based color
  * formats.

@@ -84,7 +84,8 @@ ChromaHueDiagram::~ChromaHueDiagram() noexcept
  * @param colorSpace The color space within which this widget
  *                   should operate. */
 ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
-    : m_wheelImage(colorSpace)
+    : m_currentColor{0, 0, 0} // dummy value
+    , m_wheelImage(colorSpace)
     , q_pointer(backLink)
 {
 }

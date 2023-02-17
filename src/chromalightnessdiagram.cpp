@@ -49,7 +49,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
     d_pointer->m_rgbColorSpace = colorSpace;
 
     // Initialization
-    d_pointer->m_currentColor = CielchValues::srgbVersatileInitialColor;
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     d_pointer->m_chromaLightnessImageParameters.imageSizePhysical = //
@@ -75,7 +74,8 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink)
-    : q_pointer(backLink)
+    : m_currentColor(CielchValues::srgbVersatileInitialColor)
+    , q_pointer(backLink)
 {
 }
 

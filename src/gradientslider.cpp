@@ -63,7 +63,9 @@ GradientSlider::~GradientSlider() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink)
-    : q_pointer(backLink)
+    : m_firstColor{0, 0, 0, 0} // dummy value
+    , m_secondColor{0, 0, 0, 0} // dummy value
+    , q_pointer(backLink)
 {
 }
 
@@ -87,16 +89,8 @@ void GradientSliderPrivate::initialize(const QSharedPointer<RgbColorSpace> &colo
     q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_gradientImageParameters.rgbColorSpace = colorSpace;
     setOrientationWithoutSignalAndForceNewSizePolicy(orientation);
-    LchaDouble first;
-    first.l = 75;
-    first.c = 65;
-    first.h = 90;
-    first.a = 1;
-    LchaDouble second;
-    second.l = 50;
-    second.c = 75;
-    second.h = 45;
-    second.a = 1;
+    constexpr LchaDouble first{75, 65, 90, 1};
+    constexpr LchaDouble second{50, 75, 45, 1};
     q_pointer->setColors(first, second);
 
     // Connections

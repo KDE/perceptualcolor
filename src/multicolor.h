@@ -81,7 +81,7 @@ public:
      *
      * @warning As the data members are uninitialized, this implies that the
      * count of <tt>QList</tt> items is not correct! */
-    MultiColor() = default;
+    MultiColor();
     /** @brief Default copy constructor
      * @param other the object to copy */
     MultiColor(const MultiColor &other) = default;
