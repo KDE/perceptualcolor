@@ -10,9 +10,9 @@
 # in the source code file by the actual value in CMake:
 configure_file(
     # Input:
-    include/version.in.hpp
+    version.in.hpp
     # Output:
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/version.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
 )
 # TODO Also configure rpm.spec and Doxygen files with this version information.
 
@@ -61,25 +61,25 @@ set(library_SRC
     version.cpp
     wheelcolorpicker.cpp
 )
-# Set the headers for our library. This list only contains the headers
-# that are _not_ within the source directory.
+# NOTE Keep the following list synchronized
+# between scripts/static-codecheck.sh and src/CMakeLists.txt
 set(lib_PUBLICHEADERS
-    include/abstractdiagram.h
-    include/chromahuediagram.h
-    include/colordialog.h
-    include/colorpatch.h
-    include/colorwheel.h
-    include/constpropagatinguniquepointer.h
-    include/gradientslider.h
-    include/importexport.h
-    include/lchadouble.h
-    include/lchdouble.h
-    include/multispinbox.h
-    include/multispinboxsectionconfiguration.h
-    include/rgbcolorspacefactory.h
-    include/settranslation.h
-    include/wheelcolorpicker.h
-    ${CMAKE_CURRENT_BINARY_DIR}/generated/include/version.h
+    abstractdiagram.h
+    chromahuediagram.h
+    colordialog.h
+    colorpatch.h
+    colorwheel.h
+    constpropagatinguniquepointer.h
+    gradientslider.h
+    importexport.h
+    lchadouble.h
+    lchdouble.h
+    multispinbox.h
+    multispinboxsectionconfiguration.h
+    rgbcolorspacefactory.h
+    settranslation.h
+    wheelcolorpicker.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
 )
 # TODO Also explicitly list all private headers to get more stable CMake
 #      and make sure these files pop up in IDEs.
@@ -197,8 +197,7 @@ target_include_directories(
     ${LIBRARY_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/include/>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/>
         $<INSTALL_INTERFACE:include/${LIBRARY_NAME}/>
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/"
@@ -294,8 +293,7 @@ target_include_directories(
     ${INTERNAL_LIBRARY_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/>
         # No $<INSTALL_INTERFACE:xxx> because this target is only meant to
         # be build as part of this project, and not by external projects.
     PRIVATE

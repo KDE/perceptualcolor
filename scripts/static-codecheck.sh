@@ -18,10 +18,31 @@
 
 
 ################# Static code check #################
-PUBLIC_HEADERS="src/include"
-CODE_WITHOUT_UNIT_TESTS="src tests utils examples"
-ALL_CODE="src autotests/* tests utils examples"
+# NOTE Keep the following list synchronized
+# between scripts/static-codecheck.sh and src/CMakeLists.txt
+PUBLIC_HEADERS="
+    src/abstractdiagram.h
+    src/chromahuediagram.h
+    src/colordialog.h
+    src/colorpatch.h
+    src/colorwheel.h
+    src/constpropagatinguniquepointer.h
+    src/gradientslider.h
+    src/importexport.h
+    src/lchadouble.h
+    src/lchdouble.h
+    src/multispinbox.h
+    src/multispinboxsectionconfiguration.h
+    src/rgbcolorspacefactory.h
+    src/settranslation.h
+    src/wheelcolorpicker.h
+    src/version.in.hpp
+    "
+CODE_WITHOUT_UNIT_TESTS="src/* tests utils examples"
 UNIT_TESTS="autotests/*"
+ALL_CODE="$CODE_WITHOUT_UNIT_TESTS $UNIT_TESTS"
+
+EXCLUDE_PUBLIC_HEADER_FROM_GREP="--exclude=$(echo $PUBLIC_HEADERS | sed 's/ / --exclude=/g')"
 
 # Search for files that do not start with a byte-order-mark (BOM).
 # We do this because Microsoft’s compiler does require a BOM at the start
@@ -40,6 +61,7 @@ grep \
 # the header file would not be in src/
 grep \
     --recursive --exclude-dir=testbed \
+    $EXCLUDE_PUBLIC_HEADER_FROM_GREP \
     --files-without-match $'@internal' \
     src/*.h \
          | sed 's/^/Missing “@internal” statement in non-public header: /'
@@ -63,6 +85,7 @@ grep \
 # All non-public code should not use the PERCEPTUALCOLOR_IMPORTEXPORT macro.
 grep \
     --recursive --exclude-dir={testbed,include} \
+    $EXCLUDE_PUBLIC_HEADER_FROM_GREP \
     --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
     $ALL_CODE \
          | sed 's/^/Internal files may not use PERCEPTUALCOLOR_IMPORTEXPORT macro: /'
