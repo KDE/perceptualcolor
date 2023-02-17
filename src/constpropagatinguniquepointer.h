@@ -73,7 +73,7 @@ public:
     /** @brief Constructor
      *
      * @param pointerToObject Object to which to point */
-    explicit ConstPropagatingUniquePointer(typename std::unique_ptr<T>::element_type *pointerToObject)
+    explicit ConstPropagatingUniquePointer(T *pointerToObject)
         : std::unique_ptr<T>(pointerToObject)
     {
     }
@@ -87,32 +87,36 @@ public:
     /** @brief Non-const pointer operator
      *
      * @returns Non-const pointer operator */
-    [[nodiscard]] typename std::unique_ptr<T>::element_type *operator->()
+    [[nodiscard]] T *operator->()
     {
+        // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
         return std::unique_ptr<T>::operator->();
     }
 
     /** @brief Const pointer operator
      *
      * @returns Const pointer */
-    [[nodiscard]] const typename std::unique_ptr<T>::element_type *operator->() const
+    [[nodiscard]] const T *operator->() const
     {
+        // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
         return std::unique_ptr<T>::operator->();
     }
 
     /** @brief Non-const dereference operator
      *
      * @returns Non-const dereference operator */
-    [[nodiscard]] typename std::unique_ptr<T>::element_type &operator*()
+    [[nodiscard]] T &operator*()
     {
+        // cppcheck-suppress returnTempReference // false positive
         return std::unique_ptr<T>::operator*();
     }
 
     /** @brief Const dereference operator
      *
      * @returns Const dereference operator */
-    [[nodiscard]] const typename std::unique_ptr<T>::element_type &operator*() const
+    [[nodiscard]] const T &operator*() const
     {
+        // cppcheck-suppress returnTempReference // false positive
         return std::unique_ptr<T>::operator*();
     }
 };

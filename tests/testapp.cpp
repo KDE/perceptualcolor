@@ -4,6 +4,7 @@
 #include "asyncimageprovider.h" // IWYU pragma: keep
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
+#include "constpropagatinguniquepointer.h" // IWYU pragma: keep
 #include "helper.h" // IWYU pragma: keep
 #include "helperconstants.h" // IWYU pragma: keep
 #include "helperconversion.h" // IWYU pragma: keep
@@ -68,6 +69,26 @@ static bool triggerWarning()
     return true;
 }
 */
+
+class Testpointerclass
+{
+public:
+    void doConst() const
+    {
+        // *value = QColor();
+        // temp.setBlue(1);
+        // value->setBlue(1);
+    }
+    void doNonconst()
+    {
+        *value = QColor();
+        auto temp = *value;
+        temp.setBlue(1);
+    }
+
+private:
+    PerceptualColor::ConstPropagatingUniquePointer<QColor> value;
+};
 
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
