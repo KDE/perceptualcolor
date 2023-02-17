@@ -14,7 +14,6 @@
 #include "helperconstants.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
-#include <memory>
 #include <optional>
 #include <qcolor.h>
 #include <qevent.h>

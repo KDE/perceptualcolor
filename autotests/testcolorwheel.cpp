@@ -11,7 +11,6 @@
 #include "helpermath.h"
 #include "rgbcolorspace.h"
 #include <QtCore/qsharedpointer.h>
-#include <memory>
 #include <qapplication.h>
 #include <qboxlayout.h>
 #include <qglobal.h>

@@ -21,7 +21,6 @@
 #include "settranslation.h"
 #include "wheelcolorpicker.h"
 #include <QtCore/qsharedpointer.h>
-#include <memory>
 #include <qapplication.h>
 #include <qbenchmark.h>
 #include <qbytearray.h>

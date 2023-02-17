@@ -5,7 +5,6 @@
 // this forces the header to be self-contained.
 #include "constpropagatinguniquepointer.h"
 
-#include <memory>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qrect.h>

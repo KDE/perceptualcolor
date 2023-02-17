@@ -14,7 +14,6 @@
 #include "helperconstants.h"
 #include "lchadouble.h"
 #include <helper.h>
-#include <memory>
 #include <qevent.h>
 #include <qguiapplication.h>
 #include <qimage.h>

@@ -12,7 +12,6 @@
 #include "lchadouble.h"
 #include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
-#include <memory>
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>

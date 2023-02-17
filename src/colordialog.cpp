@@ -30,7 +30,6 @@
 #include "screencolorpicker.h"
 #include "wheelcolorpicker.h"
 #include <lcms2.h>
-#include <memory>
 #include <optional>
 #include <qaction.h>
 #include <qapplication.h>

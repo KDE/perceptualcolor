@@ -8,7 +8,6 @@
 #include "abstractdiagram_p.h" // IWYU pragma: associated
 
 #include "helper.h"
-#include <memory>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>

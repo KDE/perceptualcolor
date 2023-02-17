@@ -21,7 +21,6 @@
 #include "polarpointf.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
-#include <memory>
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qevent.h>

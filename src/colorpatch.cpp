@@ -9,7 +9,6 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
-#include <memory>
 #include <qbrush.h>
 #include <qevent.h>
 #include <qfont.h>

@@ -19,7 +19,6 @@
 #include "polarpointf.h"
 #include "rgbdouble.h"
 #include <limits>
-#include <memory>
 #include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>

@@ -19,7 +19,6 @@
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <math.h>
-#include <memory>
 #include <qapplication.h>
 #include <qmath.h>
 #include <qobject.h>

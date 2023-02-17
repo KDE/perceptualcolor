@@ -14,7 +14,6 @@
 #include "multispinboxsectionconfiguration.h"
 #include <QtCore/qglobal.h>
 #include <math.h>
-#include <memory>
 #include <qaccessible.h>
 #include <qaccessiblewidget.h>
 #include <qcoreevent.h>

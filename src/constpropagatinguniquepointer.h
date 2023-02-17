@@ -5,8 +5,7 @@
 #define CONSTPROPAGATINGUNIQUEPOINTER_H
 
 #include "importexport.h"
-
-#include <memory>
+#include <memory> // for std::unique_ptr
 
 namespace PerceptualColor
 {

@@ -14,7 +14,6 @@
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
-#include <memory>
 #include <optional>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>

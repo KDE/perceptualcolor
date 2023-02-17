@@ -9,7 +9,6 @@
 
 #include "constpropagatinguniquepointer.h"
 #include <QtCore/qglobal.h>
-#include <memory>
 #include <qcolor.h>
 #include <qnamespace.h>
 #include <qobject.h>

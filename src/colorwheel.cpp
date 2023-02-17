@@ -17,7 +17,6 @@
 #include "helpermath.h"
 #include "polarpointf.h"
 #include <math.h>
-#include <memory>
 #include <qevent.h>
 #include <qimage.h>
 #include <qnamespace.h>

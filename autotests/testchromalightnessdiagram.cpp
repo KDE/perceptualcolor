@@ -15,7 +15,6 @@
 #include <QtCore/qsharedpointer.h>
 #include <cmath>
 #include <limits>
-#include <memory>
 #include <qglobal.h>
 #include <qlist.h>
 #include <qnamespace.h>

@@ -8,7 +8,6 @@
 #include "extendeddoublevalidator_p.h" // IWYU pragma: associated
 
 #include "constpropagatinguniquepointer.h"
-#include <memory>
 #include <qstringbuilder.h>
 class QObject;
 

@@ -13,7 +13,6 @@
 #include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
-#include <memory>
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qglobal.h>

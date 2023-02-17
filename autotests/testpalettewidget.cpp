@@ -11,7 +11,6 @@
 #include "helperqttypes.h"
 #include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
-#include <memory>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qcolordialog.h>

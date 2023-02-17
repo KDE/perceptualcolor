@@ -15,7 +15,6 @@
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <math.h>
-#include <memory>
 #include <qcolor.h>
 #include <qdatetime.h>
 #include <qdir.h>

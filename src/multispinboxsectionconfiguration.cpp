@@ -9,7 +9,6 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
-#include <memory>
 #include <qglobal.h>
 
 namespace PerceptualColor

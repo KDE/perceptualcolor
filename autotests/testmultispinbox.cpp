@@ -9,7 +9,6 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "multispinboxsectionconfiguration.h"
-#include <memory>
 #include <qabstractspinbox.h>
 #include <qaction.h>
 #include <qapplication.h>

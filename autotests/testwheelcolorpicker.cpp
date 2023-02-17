@@ -14,7 +14,6 @@
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
-#include <memory>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
