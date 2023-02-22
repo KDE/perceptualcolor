@@ -10,10 +10,6 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(KDEInstallDirs)
 
 find_package(
-    Qt6
-    CONFIG
-    REQUIRED COMPONENTS Core Gui Widgets DBus Concurrent)
-find_package(
     "perceptualcolor-0"
     REQUIRED)
 
