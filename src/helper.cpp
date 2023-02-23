@@ -6,11 +6,19 @@
 
 #include <qcolor.h>
 #include <qevent.h>
+#include <qnamespace.h>
 #include <qpainter.h>
 #include <qpoint.h>
+#include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qwidget.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qlist.h>
+#else
+#include <qstringlist.h>
+#endif
 
 namespace PerceptualColor
 {
@@ -124,6 +132,43 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
     opt.initFrom(widget);
     QPainter p(widget);
     widget->style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, widget);
+}
+
+/** @brief Provides prefix and suffix of a value from a given format string.
+ *
+ * A typical use case: You want to put a percent value into a spinbox. The
+ * simple approach would be:
+ * @snippet testhelper.cpp percentTraditional
+ * It could be improved like this:
+ * @snippet testhelper.cpp percentImproved
+ * However, some languages like Turkish put the percent sign <em>before</em>
+ * the value, which is not possible with the above code. This function allows
+ * to do this feature easily in a fail-safe way:
+ * @snippet testhelper.cpp percentFullyInternationalized
+ *
+ * @param formatString The translated value string, which should contain
+ * exactly <em>one</em> place marker as described in <tt>QString::arg()</tt>
+ * like <tt>%1</tt> or <tt>%L1</tt>. This place marker represents the value.
+ * Example: “Prefix%1Suffix”. Prefix and suffix may be empty.
+ * @param fallbackPrefix English fallback prefix.
+ * @param fallbackSuffix English fallback suffix.
+ *
+ * @returns At <tt>QPair::first</tt> the prefix of the first place marker,
+ * and at <tt>QPair::second</tt> the suffix. If <tt>formatString</tt> does
+ * not contain any place markers (for example because of a broken translation),
+ * the English <tt>fallbackPrefix</tt> and <tt>fallbackSuffix</tt> are used
+ * instead. */
+[[nodiscard]] QPair<QString, QString> valuePrefixSuffix(const QString &formatString, const QString &fallbackPrefix, const QString &fallbackSuffix)
+{
+    static const QString separator = //
+        QStringLiteral("Just a string unlikely to occur in translations.");
+    const auto temp = formatString //
+                          .arg(separator) //
+                          .split(separator, Qt::KeepEmptyParts);
+    if (temp.count() == 2) {
+        return QPair<QString, QString>(temp.value(0), temp.value(1));
+    }
+    return QPair<QString, QString>(fallbackPrefix, fallbackSuffix);
 }
 
 } // namespace PerceptualColor

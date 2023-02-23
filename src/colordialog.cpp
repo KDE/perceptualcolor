@@ -13,6 +13,7 @@
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "gradientslider.h"
+#include "helper.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "helperqttypes.h"
@@ -51,6 +52,7 @@
 #include <qlist.h>
 #include <qlocale.h>
 #include <qobject.h>
+#include <qpair.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qregularexpression.h>
@@ -177,18 +179,13 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  * uic-generated code</a>. */
 void ColorDialogPrivate::retranslateUi()
 {
-    // There is a function QLocale::percent() that gives us a string with
-    // the percent sign for the current locale. However, we are using
-    // QObject::tr() instead. This is more flexible and allows the translators
-    // to stick to local typographic conventions. For the English string,
-    // we do not use a space before the % sign, because (at difference to
-    // ISO standards), most style guides for English typography do recommend
-    // to not use a space.
-    /*: @item Suffix of a percentage value in a spinbox. Range: 0%–100%. */
-    const QString suffixOfPercentageInSpinbox = tr("%");
+    /*: @item/plain Percentage value in a spinbox. Range: 0%–100%. */
+    const QPair<QString, QString> percentageInSpinbox = //
+        valuePrefixSuffix(tr("%1%"), QString(), QStringLiteral("%"));
 
-    /*: @item Suffix of an arc-degree value in a spinbox. Range: 0°–360°. */
-    const QString suffixOfArcDegreeInSpinbox = tr("°");
+    /*: @item/plain Arc-degree value in a spinbox. Range: 0°–360°. */
+    const QPair<QString, QString> arcDegreeInSpinbox = //
+        valuePrefixSuffix(tr("%1°"), QString(), QStringLiteral("°"));
 
     QStringList profileInfo;
     const QString name = //
@@ -492,7 +489,8 @@ void ColorDialogPrivate::retranslateUi()
                                   "<p>HSV/HSB-Saturation: 0%⁠–⁠100%</p>"
                                   "<p>Brightness/Value: 0%⁠–⁠100%</p>"));
 
-    m_alphaSpinBox->setSuffix(suffixOfPercentageInSpinbox);
+    m_alphaSpinBox->setPrefix(percentageInSpinbox.first);
+    m_alphaSpinBox->setSuffix(percentageInSpinbox.second);
 
     /*: @label:slider Accessible name for lightness slider. This is different
     from “brightness”/“value” and should therefore get a different
@@ -536,12 +534,14 @@ void ColorDialogPrivate::retranslateUi()
             << hslSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
+        hslSections[0].setPrefix(arcDegreeInSpinbox.first);
         hslSections[0].setSuffix( //
-            suffixOfArcDegreeInSpinbox + m_multispinboxSectionSeparator);
+            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
+        hslSections[1].setPrefix(percentageInSpinbox.first);
         hslSections[1].setSuffix( //
-            suffixOfPercentageInSpinbox + m_multispinboxSectionSeparator);
-        hslSections[2].setSuffix( //
-            suffixOfPercentageInSpinbox);
+            percentageInSpinbox.second + m_multispinboxSectionSeparator);
+        hslSections[2].setPrefix(percentageInSpinbox.first);
+        hslSections[2].setSuffix(percentageInSpinbox.second);
         m_hslSpinBox->setSectionConfigurations(hslSections);
     }
 
@@ -554,12 +554,15 @@ void ColorDialogPrivate::retranslateUi()
             << hwbSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
+        hwbSections[0].setPrefix(arcDegreeInSpinbox.first);
         hwbSections[0].setSuffix( //
-            suffixOfArcDegreeInSpinbox + m_multispinboxSectionSeparator);
+            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
+        hwbSections[1].setPrefix(percentageInSpinbox.first);
         hwbSections[1].setSuffix( //
-            suffixOfPercentageInSpinbox + m_multispinboxSectionSeparator);
+            percentageInSpinbox.second + m_multispinboxSectionSeparator);
+        hwbSections[2].setPrefix(percentageInSpinbox.first);
         hwbSections[2].setSuffix( //
-            suffixOfPercentageInSpinbox);
+            percentageInSpinbox.second);
         m_hwbSpinBox->setSectionConfigurations(hwbSections);
     }
 
@@ -572,12 +575,14 @@ void ColorDialogPrivate::retranslateUi()
             << hsvSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
+        hsvSections[0].setPrefix(arcDegreeInSpinbox.first);
         hsvSections[0].setSuffix( //
-            suffixOfArcDegreeInSpinbox + m_multispinboxSectionSeparator);
+            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
+        hsvSections[1].setPrefix(percentageInSpinbox.first);
         hsvSections[1].setSuffix( //
-            suffixOfPercentageInSpinbox + m_multispinboxSectionSeparator);
-        hsvSections[2].setSuffix( //
-            suffixOfPercentageInSpinbox);
+            percentageInSpinbox.second + m_multispinboxSectionSeparator);
+        hsvSections[2].setPrefix(percentageInSpinbox.first);
+        hsvSections[2].setSuffix(percentageInSpinbox.second);
         m_hsvSpinBox->setSectionConfigurations(hsvSections);
     }
 
@@ -590,10 +595,12 @@ void ColorDialogPrivate::retranslateUi()
             << ciehlcSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
+        ciehlcSections[0].setPrefix(arcDegreeInSpinbox.first);
         ciehlcSections[0].setSuffix( //
-            suffixOfArcDegreeInSpinbox + m_multispinboxSectionSeparator);
+            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
+        ciehlcSections[1].setPrefix(percentageInSpinbox.first);
         ciehlcSections[1].setSuffix( //
-            suffixOfPercentageInSpinbox + m_multispinboxSectionSeparator);
+            percentageInSpinbox.second + m_multispinboxSectionSeparator);
         m_ciehlcSpinBox->setSectionConfigurations(ciehlcSections);
     }
 
@@ -606,8 +613,8 @@ void ColorDialogPrivate::retranslateUi()
             << oklchSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        oklchSections[2].setSuffix( //
-            suffixOfArcDegreeInSpinbox);
+        oklchSections[2].setPrefix(arcDegreeInSpinbox.first);
+        oklchSections[2].setSuffix(arcDegreeInSpinbox.second);
         m_oklchSpinBox->setSectionConfigurations(oklchSections);
     }
 

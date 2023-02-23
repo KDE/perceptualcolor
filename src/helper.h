@@ -7,6 +7,8 @@
 #include <qcoreapplication.h>
 #include <qglobal.h>
 #include <qimage.h>
+#include <qpair.h>
+#include <qstring.h>
 #include <qthread.h>
 
 class QWheelEvent;
@@ -81,6 +83,8 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
         QCoreApplication::processEvents();
     }
 }
+
+[[nodiscard]] QPair<QString, QString> valuePrefixSuffix(const QString &formatString, const QString &fallbackPrefix, const QString &fallbackSuffix);
 
 } // namespace PerceptualColor
 

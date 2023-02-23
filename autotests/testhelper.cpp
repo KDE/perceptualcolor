@@ -8,10 +8,13 @@
 #include <qevent.h>
 #include <qglobal.h>
 #include <qimage.h>
+#include <qlocale.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qpair.h>
 #include <qpoint.h>
 #include <qsize.h>
+#include <qspinbox.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
@@ -31,6 +34,34 @@ static void snippet01()
     const bool result = PerceptualColor::isIn(test, 1, 2, 8);
     //! [isInUsage]
     Q_UNUSED(result)
+}
+
+static void snippet02()
+{
+    //! [percentTraditional]
+    QSpinBox box1;
+    box1.setSuffix(QStringLiteral("%"));
+    //! [percentTraditional]
+    //! [percentImproved]
+    QSpinBox box2;
+    QLocale locale;
+    box2.setSuffix(locale.percent());
+    //! [percentImproved]
+    //! [percentFullyInternationalized]
+    QSpinBox box3;
+    const QPair<QString, QString> temp = PerceptualColor::valuePrefixSuffix( //
+        QObject::tr("%1%"), // “%1” represents the value.
+        QString(),
+        QStringLiteral("%"));
+    box3.setPrefix(temp.first);
+    box3.setSuffix(temp.second);
+    //! [percentFullyInternationalized]
+    if (box3.prefix() != QString()) {
+        throw 0;
+    }
+    if (box3.suffix() != QStringLiteral("%")) {
+        throw 0;
+    }
 }
 
 namespace PerceptualColor
@@ -93,6 +124,11 @@ private Q_SLOTS:
     void testSnippet01()
     {
         snippet01();
+    }
+
+    void testSnippet02()
+    {
+        snippet02();
     }
 
     void testIsIn()
