@@ -190,16 +190,6 @@ void ColorDialogPrivate::retranslateUi()
     /*: @item Suffix of an arc-degree value in a spinbox. Range: 0°–360°. */
     const QString suffixOfArcDegreeInSpinbox = tr("°");
 
-    // LittleCMS gives access to the following data fields in profiles:
-    // description, manufacturer, model, copyright. Each field might also
-    // be empty. The most interesting field is “description”. We use it
-    // as title for the group box that contains the RGB based input widgets.
-    // Also the fields “manufacturer” and “model” might be
-    // interesting. If one of those three fields is not empty, we will
-    // provide a tool-tip that contains the description, manufacturer and
-    // model data fields. Otherwise, no tool-tip is used.
-    // The “copyright” field is not really interesting for the user; we do
-    // not use it here.
     QStringList profileInfo;
     const QString name = //
         m_rgbColorSpace->profileName().toHtmlEscaped();
