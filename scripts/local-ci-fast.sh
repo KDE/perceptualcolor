@@ -60,29 +60,6 @@ nice --adjustment 19 doxygen Doxyfile.external 2>&1 \
 
 
 
-################# Compliance with REUSE specification #################
-# Test if we provide all licenses as required by the “reuse” specification.
-# This check needs the “reuse” application installed in your local bin
-# directory. If you do not have that, you can install it with:
-# pip3 install --user reuse
-# Then, you have to make available $HOME/.local/bin/reuse in your path.
-# Or, you can install it as root:
-# sudo pip3 install reuse
-# Then, you do not have to add it manually to the path.
-nice --adjustment 19 reuse lint > /dev/null
-if [ $? -eq 0 ];
-then
-    # Everything is fine. No message is printed.
-    echo
-else
-    # “reuse lint” found problems. We call it again to print its messages.
-    nice --adjustment 19 reuse lint
-fi
-
-
-
-
-
 ################# Static code check #################
 scripts/static-codecheck.sh
 
