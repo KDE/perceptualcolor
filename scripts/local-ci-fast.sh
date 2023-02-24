@@ -15,15 +15,6 @@
 
 
 
-# -e exits on error,
-# -u errors on undefined variables,
-# and -o (for option) pipefail exits on command pipe failures
-set -euo pipefail
-
-
-
-
-
 ################# Configure #################
 
 # The “.” command will execute the given script within the context of
@@ -126,22 +117,14 @@ done
 
 
 
-################# Build the project #################
+################# Build the project and run Unit Tests #################
 # Run within a sub-shell (therefore the parenthesis),
 # so that after this we go back to the original working directory.
 ( \
 mkdir --parents build \
     && cd build \
     && nice --adjustment 19 cmake --build . --parallel $PARALLEL_PROCESSES > /dev/null \
-)
-
-
-
-
-
-################# Unit tests #################
-(\
-cd build && nice --adjustment 19 ctest --parallel $PARALLEL_PROCESSES --verbose \
+    && nice --adjustment 19 ctest --parallel $PARALLEL_PROCESSES --verbose \
     | grep --invert-match --perl-regexp "^\d+: PASS   : " \
     | grep --invert-match --perl-regexp "^\d+: Test command: " \
     | grep --invert-match --perl-regexp "^\d+: Test timeout computed to be: " \
