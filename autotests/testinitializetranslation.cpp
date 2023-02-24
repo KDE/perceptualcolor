@@ -66,30 +66,30 @@ private Q_SLOTS:
     {
         auto m_srgbBuildinColorSpace = RgbColorSpaceFactory::createSrgb();
 
-        QLocale::setDefault(QLocale(QStringLiteral("de")));
+        QLocale::setDefault(QLocale(QStringLiteral("nl")));
         PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                                QLocale().uiLanguages());
         PerceptualColor::ColorDialog test1(m_srgbBuildinColorSpace);
-        // Test if the window title is translated to German.
-        QCOMPARE(test1.windowTitle(), QStringLiteral("Farbauswahl"));
+        // Test if the window title is translated.
+        QCOMPARE(test1.windowTitle(), QStringLiteral("Kleur selecteren"));
 
         // Try another language
         QLocale::setDefault(QLocale(QStringLiteral("es")));
         PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                                QLocale().uiLanguages());
         PerceptualColor::ColorDialog test2(m_srgbBuildinColorSpace);
-        // Test if the window title is translated to German.
-        QCOMPARE(test2.windowTitle(), QStringLiteral("Selecciona color"));
+        // Test if the window title is translated.
+        QCOMPARE(test2.windowTitle(), QStringLiteral("Seleccionar color"));
 
         // try if capital language codes work
-        QLocale::setDefault(QLocale(QStringLiteral("FR")));
+        QLocale::setDefault(QLocale(QStringLiteral("CA")));
         PerceptualColor::initializeTranslation( //
             QCoreApplication::instance(), //
-            QStringList(QStringLiteral("FR")));
+            QStringList(QStringLiteral("CA")));
         PerceptualColor::ColorDialog test3(m_srgbBuildinColorSpace);
-        // Test if the window title is translated to German.
+        // Test if the window title is translated.
         QCOMPARE(test3.windowTitle(), //
-                 QStringLiteral("Sélectionner une couleur"));
+                 QStringLiteral("Selecció de color"));
 
         // Test if removing all translations works
         QLocale::setDefault(QLocale(QString()));

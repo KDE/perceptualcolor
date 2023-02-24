@@ -2221,22 +2221,22 @@ private Q_SLOTS:
         // we want to be sure and therefore test three translations.
 
         initializeTranslation(QCoreApplication::instance(), //
-                              QLocale(QLocale::German).uiLanguages());
+                              QLocale(QLocale::Dutch).uiLanguages());
         {
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
         QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->tabText(0), //
-                 QStringLiteral("Gru&ndfarben"));
+                 QStringLiteral("&Basiskleuren"));
 
         initializeTranslation(QCoreApplication::instance(), //
-                              QLocale(QLocale::French).uiLanguages());
+                              QLocale(QLocale::Catalan).uiLanguages());
         {
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
         QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->tabText(0), //
-                 QStringLiteral("Couleurs de &base"));
+                 QStringLiteral("Colors &bàsics"));
 
         initializeTranslation(QCoreApplication::instance(), //
                               QLocale(QLocale::Spanish).uiLanguages());
@@ -2269,22 +2269,22 @@ private Q_SLOTS:
         // here we test if the implementation actually prevents this problem.
 
         initializeTranslation(QCoreApplication::instance(), //
-                              QLocale(QLocale::German).uiLanguages());
+                              QLocale(QLocale::Dutch).uiLanguages());
         {
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
         QCOMPARE(m_perceptualDialog->d_pointer->m_buttonCancel->text(), //
-                 QStringLiteral("&Abbrechen"));
+                 QStringLiteral("&Annuleren"));
 
         initializeTranslation(QCoreApplication::instance(), //
-                              QLocale(QLocale::French).uiLanguages());
+                              QLocale(QLocale::Catalan).uiLanguages());
         {
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
         QCOMPARE(m_perceptualDialog->d_pointer->m_buttonCancel->text(), //
-                 QStringLiteral("&Annuler"));
+                 QStringLiteral("&Cancel·la"));
 
         initializeTranslation(QCoreApplication::instance(), //
                               QLocale(QLocale::Spanish).uiLanguages());
