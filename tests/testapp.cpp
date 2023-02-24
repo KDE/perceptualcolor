@@ -102,9 +102,13 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // QLocale::setDefault(QLocale::Bengali);
-    QLocale::setDefault(QLocale(QLocale::German, QLocale::Country::Germany));
+    // QLocale::setDefault(QLocale(QLocale::German, QLocale::Country::Germany));
+    // QLocale::setDefault(QLocale(QLocale::Georgian));
     // QLocale::setDefault(QLocale::English);
     // QLocale::setDefault(QLocale::French);
+    // QLocale::setDefault(QLocale::Spanish);
+    QLocale::setDefault(QLocale::Ukrainian);
+    QLocale::setDefault(QLocale::Turkish);
 
     PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                            QLocale().uiLanguages());
