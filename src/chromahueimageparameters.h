@@ -63,23 +63,7 @@ class RgbColorSpace;
  * apply the antialiased circle only to the copy. This would of course
  * require more memory. On the other hand: When calling
  * @ref AsyncImageRenderThread::deliverInterlacingPass() a signal will
- * be emitted, which will create a copy anyway…
- *
- * @todo Make <tt>generatescreenshots.cpp</tt> work again:
- *
- * To provide information about the state of the asynchronous processing
- * that are necessary for <tt>generatescreenshots.cpp</tt> to get the
- * full-quality image screenshot, there might be two options:
- * - Change the name of all test classes to <em>one</em> single name: “Test”.
- *   This would unify all the friend declarations of all our classes. So
- *   <tt>generatescreenshots.cpp</tt> could also define a class named “Test”
- *   to get the necessary access…
- * - Add an API for example to @ref AsyncImageProvider that gives information
- *   about the current state of the rendering (empty, low-quality,
- *   full-quality), which would give <tt>generatescreenshots.cpp</tt>
- *   the possibility to wait until the full-quality image is available.
- *   This API could be available in <tt>libperceptualcolorinternal</tt> only,
- *   controlled by conditional compiling using <tt>\#if</tt>. */
+ * be emitted, which will create a copy anyway… */
 struct ChromaHueImageParameters final {
 public:
     /** @brief The border size, measured in physical pixels. */

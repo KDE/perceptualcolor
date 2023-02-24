@@ -14,6 +14,25 @@
 set -euo pipefail
 errorcount=0
 
+echo "Build generatescreenshots."
+# The “.” command will execute the given script within the context of
+# the current script, which is necessary in order to preserve the
+# environment variables that are set by the given script.
+. scripts/export-environment.sh
+echo Number of available CPU threads: $PARALLEL_PROCESSES
+mkdir --parents build
+# rm --recursive --force build/*
+cd build
+cmake -DBUILD_WITH_QT6=ON ..
+cmake --build . --target generatescreenshots --parallel $PARALLEL_PROCESSES
+cd ..
+echo "Build generatescreenshots finished."
+
+echo "Run generatescreenshots."
+scripts/update-screenshots.sh
+echo "Run generatescreenshots finished."
+
+echo "Run Doxygen."
 # Doxygen run. We let Doxygen update the config files, so that no
 # warnings for deprecated options will ever be issued. This seems
 # useful, because it is likely to have different Doxygen versions
@@ -36,6 +55,7 @@ sort --unique artifact_doxygen_temp  > artifact_doxygen.txt
 rm artifact_doxygen_temp
 rm --recursive --force doxyconf
 [ -s artifact_doxygen ] && ((errorcount++))
+echo "Run Doxygen finished."
 
 echo Terminating continuous integration with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.

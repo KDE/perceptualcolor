@@ -42,14 +42,6 @@ codecheck_automatic_integration:
   before_script:
     - apt-get update --assume-yes
     - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git
-    # TODO xxx Get generatescreenshots working in the CI
-    # The following commands only make sense when a graphical shell is needed
-    # for generatescreenshots…
-    #- apt-get install --assume-yes --no-install-recommends xvfb openbox fonts-noto-core
-    #- export DISPLAY=':90'
-    #- Xvfb :90 -ac -screen 0 1600x1200x24+32 &
-    #- sleep 5s
-    #- openbox &
   script:
     - ./.codecheck-automatic-integration.sh
 
@@ -111,9 +103,16 @@ codecheck_doxygen:
   <<: *codecheck
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends doxygen graphviz
+    - apt-get install --assume-yes --no-install-recommends doxygen graphviz cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
     - echo "doxygen version:" && doxygen --version
     - echo "graphviz dot version:" && dot -V
+    # The following commands make a graphical shell available
+    # (necessary for generatescreenshots).
+    - apt-get install --assume-yes --no-install-recommends xvfb openbox fonts-noto-core
+    - export DISPLAY=':90'
+    - Xvfb :90 -ac -screen 0 1600x1200x24+32 &
+    - sleep 5s
+    - openbox &
   script:
     - ./.codecheck-doxygen.sh
 
