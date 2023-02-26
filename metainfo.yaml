@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+# SPDX-License-Identifier: BSD-2-Clause OR MIT
+
+# Configuration file for automatic Doxygen runs with KApiDox
+
+description: GUI components for choosing colors, with focus on an intuitive and perceptually uniform presentation.
+fancyname: Perceptual Color
+#group: frameworks
+#subgroup: tier 1
+type: functional
+platforms:
+    - name: Linux
+    - name: FreeBSD
+    #- name: Windows
+    #- name: MacOSX
+    #- name: Android
+    #- name: All
+public_lib: true
+release: false
+libraries:
+    - cmake: "perceptualcolor-0"
+cmakename: "perceptualcolor-0"
+public_lib: true  # if not defined, the library is ignored
+public_source_dirs:
+    - src
+public_doc_dir: docs
+public_example_dirs:
+    - examples
