@@ -537,10 +537,12 @@ void ColorDialogPrivate::retranslateUi()
         hslSections[0].setPrefix(arcDegreeInSpinbox.first);
         hslSections[0].setSuffix( //
             arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        hslSections[1].setPrefix(percentageInSpinbox.first);
+        hslSections[1].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         hslSections[1].setSuffix( //
             percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        hslSections[2].setPrefix(percentageInSpinbox.first);
+        hslSections[2].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         hslSections[2].setSuffix(percentageInSpinbox.second);
         m_hslSpinBox->setSectionConfigurations(hslSections);
     }
@@ -557,10 +559,12 @@ void ColorDialogPrivate::retranslateUi()
         hwbSections[0].setPrefix(arcDegreeInSpinbox.first);
         hwbSections[0].setSuffix( //
             arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        hwbSections[1].setPrefix(percentageInSpinbox.first);
+        hwbSections[1].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         hwbSections[1].setSuffix( //
             percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        hwbSections[2].setPrefix(percentageInSpinbox.first);
+        hwbSections[2].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         hwbSections[2].setSuffix( //
             percentageInSpinbox.second);
         m_hwbSpinBox->setSectionConfigurations(hwbSections);
@@ -578,10 +582,12 @@ void ColorDialogPrivate::retranslateUi()
         hsvSections[0].setPrefix(arcDegreeInSpinbox.first);
         hsvSections[0].setSuffix( //
             arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        hsvSections[1].setPrefix(percentageInSpinbox.first);
+        hsvSections[1].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         hsvSections[1].setSuffix( //
             percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        hsvSections[2].setPrefix(percentageInSpinbox.first);
+        hsvSections[2].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         hsvSections[2].setSuffix(percentageInSpinbox.second);
         m_hsvSpinBox->setSectionConfigurations(hsvSections);
     }
@@ -598,9 +604,12 @@ void ColorDialogPrivate::retranslateUi()
         ciehlcSections[0].setPrefix(arcDegreeInSpinbox.first);
         ciehlcSections[0].setSuffix( //
             arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        ciehlcSections[1].setPrefix(percentageInSpinbox.first);
+        ciehlcSections[1].setPrefix( //
+            m_multispinboxSectionSeparator + percentageInSpinbox.first);
         ciehlcSections[1].setSuffix( //
             percentageInSpinbox.second + m_multispinboxSectionSeparator);
+        ciehlcSections[2].setPrefix(m_multispinboxSectionSeparator);
+        ciehlcSections[2].setSuffix(QString());
         m_ciehlcSpinBox->setSectionConfigurations(ciehlcSections);
     }
 
@@ -613,7 +622,12 @@ void ColorDialogPrivate::retranslateUi()
             << oklchSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        oklchSections[2].setPrefix(arcDegreeInSpinbox.first);
+        oklchSections[0].setPrefix(QString());
+        oklchSections[0].setSuffix(m_multispinboxSectionSeparator);
+        oklchSections[1].setPrefix(m_multispinboxSectionSeparator);
+        oklchSections[1].setSuffix(m_multispinboxSectionSeparator);
+        oklchSections[2].setPrefix( //
+            m_multispinboxSectionSeparator + arcDegreeInSpinbox.first);
         oklchSections[2].setSuffix(arcDegreeInSpinbox.second);
         m_oklchSpinBox->setSectionConfigurations(oklchSections);
     }
@@ -1495,154 +1509,192 @@ void ColorDialogPrivate::initializeScreenColorPicker()
  * widgets as child widgets. */
 QWidget *ColorDialogPrivate::initializeNumericPage()
 {
-    // Setup
-    MultiSpinBoxSectionConfiguration mySection;
-    mySection.setDecimals(decimals);
-
     // Create RGB MultiSpinBox
-    m_rgbSpinBox = new MultiSpinBox();
-    QList<MultiSpinBoxSectionConfiguration> rgbSections;
-    mySection.setMinimum(0);
-    mySection.setMaximum(255);
-    mySection.setSuffix(m_multispinboxSectionSeparator);
-    rgbSections.append(mySection);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    rgbSections.append(mySection);
-    mySection.setSuffix(QString());
-    rgbSections.append(mySection);
-    m_rgbSpinBox->setSectionConfigurations(rgbSections);
+    {
+        m_rgbSpinBox = new MultiSpinBox();
+        QList<MultiSpinBoxSectionConfiguration> rgbSections;
+        MultiSpinBoxSectionConfiguration mySection;
+        mySection.setDecimals(decimals);
+        mySection.setMinimum(0);
+        mySection.setMaximum(255);
+        // R
+        mySection.setPrefix(QString());
+        mySection.setSuffix(m_multispinboxSectionSeparator);
+        rgbSections.append(mySection);
+        // G
+        mySection.setPrefix(m_multispinboxSectionSeparator);
+        mySection.setSuffix(m_multispinboxSectionSeparator);
+        rgbSections.append(mySection);
+        // B
+        mySection.setPrefix(m_multispinboxSectionSeparator);
+        mySection.setSuffix(QString());
+        rgbSections.append(mySection);
+        // Not setting prefix/suffix here. This will be done in retranslateUi()…
+        m_rgbSpinBox->setSectionConfigurations(rgbSections);
+    }
 
     // Create widget for the hex style color representation
-    m_rgbLineEdit = new QLineEdit();
-    m_rgbLineEdit->setMaxLength(7);
-    QRegularExpression tempRegularExpression( //
-        QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
-    QRegularExpressionValidator *validator = new QRegularExpressionValidator( //
-        tempRegularExpression, //
-        q_pointer);
-    m_rgbLineEdit->setValidator(validator);
+    {
+        m_rgbLineEdit = new QLineEdit();
+        m_rgbLineEdit->setMaxLength(7);
+        QRegularExpression tempRegularExpression( //
+            QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
+        QRegularExpressionValidator *validator = new QRegularExpressionValidator( //
+            tempRegularExpression, //
+            q_pointer);
+        m_rgbLineEdit->setValidator(validator);
+    }
 
     // Create HSL spin box
-    m_hslSpinBox = new MultiSpinBox();
-    QList<MultiSpinBoxSectionConfiguration> hslSections;
-    mySection.setPrefix(QString());
-    mySection.setMinimum(0);
-    mySection.setMaximum(360);
-    mySection.setWrapping(true);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hslSections.append(mySection);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setMaximum(100);
-    mySection.setWrapping(false);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hslSections.append(mySection);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hslSections.append(mySection);
-    m_hslSpinBox->setSectionConfigurations(hslSections);
+    {
+        m_hslSpinBox = new MultiSpinBox();
+        QList<MultiSpinBoxSectionConfiguration> hslSections;
+        MultiSpinBoxSectionConfiguration mySection;
+        mySection.setDecimals(decimals);
+        // H
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setWrapping(true);
+        hslSections.append(mySection);
+        // S
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        hslSections.append(mySection);
+        // L
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        hslSections.append(mySection);
+        // Not setting prefix/suffix here. This will be done in retranslateUi()…
+        m_hslSpinBox->setSectionConfigurations(hslSections);
+    }
 
     // Create HWB spin box
-    m_hwbSpinBox = new MultiSpinBox();
-    QList<MultiSpinBoxSectionConfiguration> hwbSections;
-    mySection.setPrefix(QString());
-    mySection.setMinimum(0);
-    mySection.setMaximum(360);
-    mySection.setWrapping(true);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hwbSections.append(mySection);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setMaximum(100);
-    mySection.setWrapping(false);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hwbSections.append(mySection);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hwbSections.append(mySection);
-    m_hwbSpinBox->setSectionConfigurations(hwbSections);
+    {
+        m_hwbSpinBox = new MultiSpinBox();
+        QList<MultiSpinBoxSectionConfiguration> hwbSections;
+        MultiSpinBoxSectionConfiguration mySection;
+        mySection.setDecimals(decimals);
+        // H
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setWrapping(true);
+        hwbSections.append(mySection);
+        // W
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        hwbSections.append(mySection);
+        // B
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        hwbSections.append(mySection);
+        // Not setting prefix/suffix here. This will be done in retranslateUi()…
+        m_hwbSpinBox->setSectionConfigurations(hwbSections);
+    }
 
     // Create HSV spin box
-    m_hsvSpinBox = new MultiSpinBox();
-    QList<MultiSpinBoxSectionConfiguration> hsvSections;
-    mySection.setPrefix(QString());
-    mySection.setMinimum(0);
-    mySection.setMaximum(360);
-    mySection.setWrapping(true);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hsvSections.append(mySection);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setMaximum(100);
-    mySection.setWrapping(false);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hsvSections.append(mySection);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    hsvSections.append(mySection);
-    m_hsvSpinBox->setSectionConfigurations(hsvSections);
+    {
+        m_hsvSpinBox = new MultiSpinBox();
+        QList<MultiSpinBoxSectionConfiguration> hsvSections;
+        MultiSpinBoxSectionConfiguration mySection;
+        mySection.setDecimals(decimals);
+        // H
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setWrapping(true);
+        hsvSections.append(mySection);
+        // S
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        hsvSections.append(mySection);
+        // V
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        hsvSections.append(mySection);
+        // Not setting prefix/suffix here. This will be done in retranslateUi()…
+        m_hsvSpinBox->setSectionConfigurations(hsvSections);
+    }
 
     // Create RGB layout
-    QFormLayout *tempRgbFormLayout = new QFormLayout();
-    m_rgbSpinBoxLabel = new QLabel();
-    m_rgbSpinBoxLabel->setBuddy(m_rgbSpinBox);
-    tempRgbFormLayout->addRow(m_rgbSpinBoxLabel, m_rgbSpinBox);
-    m_rgbLineEditLabel = new QLabel();
-    m_rgbLineEditLabel->setBuddy(m_rgbLineEdit);
-    tempRgbFormLayout->addRow(m_rgbLineEditLabel, m_rgbLineEdit);
-    m_hslSpinBoxLabel = new QLabel();
-    m_hslSpinBoxLabel->setBuddy(m_hslSpinBox);
-    tempRgbFormLayout->addRow(m_hslSpinBoxLabel, m_hslSpinBox);
-    m_hwbSpinBoxLabel = new QLabel();
-    m_hwbSpinBoxLabel->setBuddy(m_hwbSpinBox);
-    tempRgbFormLayout->addRow(m_hwbSpinBoxLabel, m_hwbSpinBox);
-    m_hsvSpinBoxLabel = new QLabel();
-    m_hsvSpinBoxLabel->setBuddy(m_hsvSpinBox);
-    tempRgbFormLayout->addRow(m_hsvSpinBoxLabel, m_hsvSpinBox);
-    m_rgbGroupBox = new QGroupBox();
-    m_rgbGroupBox->setLayout(tempRgbFormLayout);
-    m_rgbGroupBox->setTitle(m_rgbColorSpace->profileName());
+    {
+        QFormLayout *tempRgbFormLayout = new QFormLayout();
+        m_rgbSpinBoxLabel = new QLabel();
+        m_rgbSpinBoxLabel->setBuddy(m_rgbSpinBox);
+        tempRgbFormLayout->addRow(m_rgbSpinBoxLabel, m_rgbSpinBox);
+        m_rgbLineEditLabel = new QLabel();
+        m_rgbLineEditLabel->setBuddy(m_rgbLineEdit);
+        tempRgbFormLayout->addRow(m_rgbLineEditLabel, m_rgbLineEdit);
+        m_hslSpinBoxLabel = new QLabel();
+        m_hslSpinBoxLabel->setBuddy(m_hslSpinBox);
+        tempRgbFormLayout->addRow(m_hslSpinBoxLabel, m_hslSpinBox);
+        m_hwbSpinBoxLabel = new QLabel();
+        m_hwbSpinBoxLabel->setBuddy(m_hwbSpinBox);
+        tempRgbFormLayout->addRow(m_hwbSpinBoxLabel, m_hwbSpinBox);
+        m_hsvSpinBoxLabel = new QLabel();
+        m_hsvSpinBoxLabel->setBuddy(m_hsvSpinBox);
+        tempRgbFormLayout->addRow(m_hsvSpinBoxLabel, m_hsvSpinBox);
+        m_rgbGroupBox = new QGroupBox();
+        m_rgbGroupBox->setLayout(tempRgbFormLayout);
+        m_rgbGroupBox->setTitle(m_rgbColorSpace->profileName());
+    }
 
     // Create widget for the CIEHLC color representation
-    QList<MultiSpinBoxSectionConfiguration> ciehlcSections;
-    m_ciehlcSpinBox = new MultiSpinBox;
-    mySection.setMinimum(0);
-    mySection.setMaximum(360);
-    mySection.setPrefix(QString());
-    mySection.setWrapping(true);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    ciehlcSections.append(mySection);
-    mySection.setMaximum(100);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setWrapping(false);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    ciehlcSections.append(mySection);
-    mySection.setMaximum(CielchValues::maximumChroma);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setSuffix(QString());
-    mySection.setWrapping(false);
-    ciehlcSections.append(mySection);
-    m_ciehlcSpinBox->setSectionConfigurations(ciehlcSections);
+    {
+        QList<MultiSpinBoxSectionConfiguration> ciehlcSections;
+        m_ciehlcSpinBox = new MultiSpinBox;
+        MultiSpinBoxSectionConfiguration mySection;
+        mySection.setDecimals(decimals);
+        // H
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setWrapping(true);
+        ciehlcSections.append(mySection);
+        // L
+        mySection.setMinimum(0);
+        mySection.setMaximum(100);
+        mySection.setWrapping(false);
+        ciehlcSections.append(mySection);
+        // C
+        mySection.setMinimum(0);
+        mySection.setMaximum(CielchValues::maximumChroma);
+        mySection.setWrapping(false);
+        ciehlcSections.append(mySection);
+        // Not setting prefix/suffix here. This will be done in retranslateUi()…
+        m_ciehlcSpinBox->setSectionConfigurations(ciehlcSections);
+    }
 
     // Create widget for the Oklch color representation
-    QList<MultiSpinBoxSectionConfiguration> oklchSections;
-    m_oklchSpinBox = new MultiSpinBox;
-    m_oklchSpinBox->setEnabled(false);
-    mySection.setMinimum(0); // xxx
-    mySection.setMaximum(1);
-    mySection.setPrefix(QString());
-    mySection.setWrapping(false);
-    mySection.setDecimals(okdecimals);
-    mySection.setSuffix(m_multispinboxSectionSeparator);
-    oklchSections.append(mySection);
-    mySection.setMaximum(OklchValues::maximumChroma);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setSuffix(m_multispinboxSectionSeparator);
-    mySection.setWrapping(false);
-    mySection.setDecimals(okdecimals);
-    oklchSections.append(mySection);
-    mySection.setMinimum(0);
-    mySection.setMaximum(360);
-    mySection.setPrefix(m_multispinboxSectionSeparator);
-    mySection.setWrapping(true);
-    // Not setting the suffix here. This will be done in retranslateUi()…
-    mySection.setDecimals(0);
-    oklchSections.append(mySection);
-    m_oklchSpinBox->setSectionConfigurations(oklchSections);
+    {
+        QList<MultiSpinBoxSectionConfiguration> oklchSections;
+        MultiSpinBoxSectionConfiguration mySection;
+        m_oklchSpinBox = new MultiSpinBox;
+        m_oklchSpinBox->setEnabled(false);
+        // L
+        mySection.setMinimum(0);
+        mySection.setMaximum(1);
+        mySection.setWrapping(false);
+        mySection.setDecimals(okdecimals);
+        oklchSections.append(mySection);
+        // C
+        mySection.setMinimum(0);
+        mySection.setMaximum(OklchValues::maximumChroma);
+        mySection.setWrapping(false);
+        mySection.setDecimals(okdecimals);
+        oklchSections.append(mySection);
+        // H
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setWrapping(true);
+        mySection.setDecimals(decimals);
+        oklchSections.append(mySection);
+        // Not setting the suffix here. This will be done in retranslateUi()…
+        m_oklchSpinBox->setSectionConfigurations(oklchSections);
+    }
 
     // Create a global widget
     QWidget *tempWidget = new QWidget;

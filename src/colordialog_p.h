@@ -143,8 +143,11 @@ public:
      * @sa @ref ColorDialog::open() */
     QByteArray m_memberToBeDisconnected;
     /** @brief String that is used as separator between two sections
+     * within a @ref MultiSpinBox.
+     *
+     * This string is introduced <em>twice</em> between two sections
      * within a @ref MultiSpinBox. */
-    const QString m_multispinboxSectionSeparator = QStringLiteral(u" ");
+    static inline const QString m_multispinboxSectionSeparator = QStringLiteral(u" ");
     /** @brief Pointer to the widget that holds the numeric color
      *         representation. */
     QPointer<QWidget> m_numericalWidget;
