@@ -14,24 +14,9 @@
 set -euo pipefail
 errorcount=0
 
-echo "Build generatescreenshots."
-# The “.” command will execute the given script within the context of
-# the current script, which is necessary in order to preserve the
-# environment variables that are set by the given script.
-. scripts/export-environment.sh
-echo Number of available CPU threads: $PARALLEL_PROCESSES
-mkdir --parents build
-# rm --recursive --force build/*
-cd build
-cmake -DBUILD_WITH_QT6=ON ..
-cmake --build . --target generatescreenshots --parallel $PARALLEL_PROCESSES
-cd ..
-echo "Build generatescreenshots finished."
-
-echo "Run generatescreenshots."
+# Run generatescreenshots. This makes sure that Doxygen documentation
+# builds correctly also after a re-run of generatescreenshots.
 scripts/update-screenshots.sh
-echo "Run generatescreenshots finished."
-
 echo "Run Doxygen."
 # Doxygen run. We let Doxygen update the config files, so that no
 # warnings for deprecated options will ever be issued. This seems

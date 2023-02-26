@@ -7,6 +7,15 @@
 
 
 
+# -e exits on error,
+# -u errors on undefined variables,
+# and -o (for option) pipefail exits on command pipe failures
+set -euo pipefail
+
+
+
+
+
 ################# Configure #################
 # The “.” command will execute the given script within the context of
 # the current script, which is necessary in order to preserve the
@@ -28,7 +37,7 @@
 # Unfortunately, this following command changes the modification date of all
 # files, even those that have yet a BOM and don’t need a change. Therefore,
 # after calling this script, the next “make” call will rebuild everything.
-sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/* autotests/*.cpp tests/* utils/* examples/*.h examples.cpp
+sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/*.hpp autotests/*.cpp tests/* utils/* examples/example.cpp
 
 
 
@@ -37,9 +46,8 @@ sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/include/* au
 ################# Clang format #################
 # Run within a sub-shell (therefore the parenthesis),
 # so that after this we go back to the original working directory.
-( \
-mkdir --parents build \
-    && cd build \
-    && cmake -DBUILD_WITH_QT6=ON .. \
-    && cmake --build . --parallel $PARALLEL_PROCESSES --target clang-format
-)
+mkdir --parents build
+cd build
+cmake -DBUILD_WITH_QT6=ON ..
+cmake --build . --parallel $PARALLEL_PROCESSES --target clang-format
+cd ..

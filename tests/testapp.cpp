@@ -26,6 +26,7 @@
 #include <qcoreevent.h> // IWYU pragma: keep
 #include <qdebug.h> // IWYU pragma: keep
 #include <qfileinfo.h> // IWYU pragma: keep
+#include <qfontdatabase.h> // IWYU pragma: keep
 #include <qgenericmatrix.h> // IWYU pragma: keep
 #include <qglobal.h> // IWYU pragma: keep
 #include <qlabel.h> // IWYU pragma: keep
@@ -107,8 +108,8 @@ int main(int argc, char *argv[])
     // QLocale::setDefault(QLocale::English);
     // QLocale::setDefault(QLocale::French);
     // QLocale::setDefault(QLocale::Spanish);
-    QLocale::setDefault(QLocale::Ukrainian);
-    QLocale::setDefault(QLocale::Turkish);
+    // QLocale::setDefault(QLocale::Ukrainian);
+    // QLocale::setDefault(QLocale::Turkish);
 
     PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                            QLocale().uiLanguages());

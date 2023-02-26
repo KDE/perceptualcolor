@@ -16,15 +16,19 @@
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include "settranslation.h"
+#include "version.h"
 #include "wheelcolorpicker.h"
 #include <QtCore/qsharedpointer.h>
+#include <cstdlib>
 #include <helper.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcolor.h>
+#include <qcommandlineparser.h>
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qfont.h>
+#include <qfontdatabase.h>
 #include <qfontinfo.h>
 #include <qglobal.h>
 #include <qicon.h>
@@ -42,8 +46,8 @@
 #include <qstyle.h>
 #include <qstylefactory.h>
 #include <qtabwidget.h>
+#include <qversionnumber.h>
 #include <qwidget.h>
-#include <stdlib.h>
 #include <type_traits>
 #include <utility>
 
@@ -121,7 +125,7 @@ static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QStr
 // values: The widget style, the translation, the icon set and many more.
 // This makes it more likely to get the same screenshots on different
 // computers with different settings.
-static void initializeHardCodeWidgetAppearance(QApplication *app)
+static void initWidgetAppearance(QApplication *app)
 {
     // We prefer the Fusion style because he is the most cross-platform
     // style, so generating the screenshots does not depend on the
@@ -190,35 +194,6 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
     }
     qInstallMessageHandler(nullptr); // Do not suppress warnings anymore
 
-    { // Try to be as explicit as possible about the fonts.
-        // TODO It might even be possible to bundle a font as Qt resource
-        //      to become completely independent from the fonts that are
-        //      installed on the system.
-        const QStringList preferredFontFamilies = //
-            {QStringLiteral("Noto Sans"), QStringLiteral("Noto Sans Symbols2")};
-        QFont myFont = QFont(preferredFontFamilies.first(), //
-                             10, //
-                             QFont::Weight::Normal, //
-                             QFont::Style::StyleNormal);
-        // NOTE The font size is defined in “point”, whatever “point” is.
-        // Actually, the size of a “point” depends on the scale factor,
-        // which is set elsewhere yet. So, when the scale factor is
-        // correct, than using a fixed “point” size should give us
-        // identical results also on different systems.
-        myFont.setStyleHint(QFont::SansSerif, //
-                            QFont::StyleStrategy::PreferDefault);
-        myFont.setFamilies(preferredFontFamilies);
-        // It seems QFont::exactMatch() and QFontInfo::exactMatch() do not
-        // work reliable on the X Window System, because this systems does
-        // not provide the required functionality. Workaround: Compare
-        // the actually used family (available via QFontInfo) with the
-        // originally requested family (available via QFont):
-        if (QFontInfo(myFont).family() != myFont.family()) {
-            qWarning() << "Could not load font“" << myFont.family() << "”.";
-        }
-        app->setFont(myFont);
-    }
-
     // Other initializations
     app->setApplicationName(QStringLiteral("Perceptual color picker"));
     app->setLayoutDirection(Qt::LeftToRight);
@@ -227,55 +202,55 @@ static void initializeHardCodeWidgetAppearance(QApplication *app)
                                     QLocale(QLocale::English).uiLanguages());
 }
 
-// Creates a set of screenshots of the library and saves these
-// screenshots as .png files in the working directory.
-int main(int argc, char *argv[])
+// We try to be as explicit as possible about the fonts.
+// std::exit() is called if one of the fontfiles couldn’t be loaded.
+static void initFonts(QApplication *app, const QStringList &fontfiles)
 {
-    // Adjust the scale factor before constructing our real QApplication
-    // object:
-    {
-        // See https://doc.qt.io/qt-6/highdpi.html for documentation
-        // about QT_SCALE_FACTOR. In short: For testing purpose, it
-        // can be used to adjust the current system-default scale
-        // factor. This affects both, widget painting and font
-        // rendering (font DPI).
-        //
-        // We choose a small factor, because the actual default size
-        // of dialog and top-level widgets in Qt is: smaller or
-        // than ⅔ of the screen. This affects our color dialog, which
-        // allows small sizes, but recommends bigger ones. As the
-        // screen size of the computer running this program is not
-        // known in advance, we try to minimize the effects be choosing
-        // the smallest possible scale factor, which is 1. (Values
-        // smaller than 1 are working: They break the layout.)
-        constexpr qreal screenshotScaleFactor = 1;
-        // Create a temporary QApplication object within this block scope.
-        // Necessary to get the system’s scale factor.
-        QApplication app(argc, argv);
-        const qreal systemScaleFactor = QWidget().devicePixelRatioF();
-        bool conversionOkay;
-        double qtScaleFactor = //
-            qEnvironmentVariable("QT_SCALE_FACTOR").toDouble(&conversionOkay);
-        if (!conversionOkay) {
-            qtScaleFactor = 1;
+    // NOTE It would even be possible to bundle a font as Qt resource
+    // to become completely independent from the fonts that are
+    // installed on the system: https://stackoverflow.com/a/30973961
+
+    QStringList fontFamilies;
+    for (const QString &fontfile : std::as_const(fontfiles)) {
+        const int id = QFontDatabase::addApplicationFont(fontfile);
+        if (id == -1) {
+            qWarning() << "Font file could not be loaded:" << fontfile;
+            std::exit(-1);
         }
-        qtScaleFactor = //
-            qtScaleFactor / systemScaleFactor * screenshotScaleFactor;
-        // Set QT_SCALE_FACTOR to a corrected factor. This will only
-        // take effect when the current QApplication object has been
-        // destroyed and a new one has been created.
-        qputenv("QT_SCALE_FACTOR", QString::number(qtScaleFactor).toUtf8());
+        fontFamilies.append(QFontDatabase::applicationFontFamilies(id));
     }
+    fontFamilies.append(QStringLiteral("Noto Sans")); // Fallback
+    fontFamilies.append(QStringLiteral("Noto Sans Symbols2")); // Fallback
+    // NOTE The font size is defined in “point”, whatever “point” is.
+    // Actually, the size of a “point” depends on the scale factor,
+    // which is set elsewhere yet. So, when the scale factor is
+    // correct, than using a fixed “point” size should give us
+    // identical results also on different systems.
+    QFont myFont = QFont(fontFamilies.first(), //
+                         10, //
+                         QFont::Weight::Normal, //
+                         QFont::Style::StyleNormal);
+    // Anti-alias might be different on different systems. Disabling it
+    // entirely would look too ugly, but we disable subpixel antialias to make
+    // the results between different systems at least smaller.
+    constexpr auto styleStrategy = static_cast<QFont::StyleStrategy>( //
+        QFont::PreferAntialias | QFont::NoSubpixelAntialias);
+    myFont.setStyleStrategy(styleStrategy);
+    myFont.setStyleHint(QFont::SansSerif, styleStrategy);
+    myFont.setFamilies(fontFamilies);
+    // It seems QFont::exactMatch() and QFontInfo::exactMatch() do not
+    // work reliable on the X Window System, because this systems does
+    // not provide the required functionality. Workaround: Compare
+    // the actually used family (available via QFontInfo) with the
+    // originally requested family (available via QFont):
+    if (QFontInfo(myFont).family() != myFont.family()) {
+        qWarning() << "Could not load font correctly:" << myFont.family();
+    }
+    app->setFont(myFont);
+}
 
-    // Prepare configuration before instantiating the application object
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-
-    // Instantiate the application object
-    QApplication app(argc, argv);
-    initializeHardCodeWidgetAppearance(&app);
-
+static void makeScreenshots()
+{
     // Variables
     QSharedPointer<RgbColorSpace> m_colorSpace = //
         RgbColorSpaceFactory::createSrgb();
@@ -460,6 +435,80 @@ int main(int argc, char *argv[])
         m_paletteWidget.setCurrentColor(defaultColorRgb);
         screenshot(&m_paletteWidget);
     }
+}
 
+// Creates a set of screenshots of the library and saves these
+// screenshots as .png files in the working directory.
+int main(int argc, char *argv[])
+{
+    // Adjust the scale factor before constructing our real QApplication
+    // object:
+    {
+        // See https://doc.qt.io/qt-6/highdpi.html for documentation
+        // about QT_SCALE_FACTOR. In short: For testing purpose, it
+        // can be used to adjust the current system-default scale
+        // factor. This affects both, widget painting and font
+        // rendering (font DPI).
+        //
+        // We choose a small factor, because the actual default size
+        // of dialog and top-level widgets in Qt is: smaller or
+        // than ⅔ of the screen. This affects our color dialog, which
+        // allows small sizes, but recommends bigger ones. As the
+        // screen size of the computer running this program is not
+        // known in advance, we try to minimize the effects be choosing
+        // the smallest possible scale factor, which is 1. (Values
+        // smaller than 1 are working: They break the layout.)
+        constexpr qreal screenshotScaleFactor = 1;
+        // Create a temporary QApplication object within this block scope.
+        // Necessary to get the system’s scale factor.
+        QApplication app(argc, argv);
+        const qreal systemScaleFactor = QWidget().devicePixelRatioF();
+        bool conversionOkay;
+        double qtScaleFactor = //
+            qEnvironmentVariable("QT_SCALE_FACTOR").toDouble(&conversionOkay);
+        if (!conversionOkay) {
+            qtScaleFactor = 1;
+        }
+        qtScaleFactor = //
+            qtScaleFactor / systemScaleFactor * screenshotScaleFactor;
+        // Set QT_SCALE_FACTOR to a corrected factor. This will only
+        // take effect when the current QApplication object has been
+        // destroyed and a new one has been created.
+        qputenv("QT_SCALE_FACTOR", QString::number(qtScaleFactor).toUtf8());
+    }
+
+    // Prepare configuration before instantiating the application object
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
+
+    // Instantiate the application object
+    QApplication app(argc, argv);
+    app.setApplicationName(QStringLiteral("generatescreenshots"));
+    app.setApplicationVersion(perceptualColorRunTimeVersion().toString());
+    QCommandLineParser parser;
+    const QString description = QStringLiteral( //
+        "Generate screenshots of PerceptualColor widgets for documentation.\n"
+        "\n"
+        "The generated screenshots are similar also when this application\n"
+        "is used on different operation systems. The used QStyle() and\n"
+        "color schema and scaling factor are hard-coded. However, fonts\n"
+        "render slightly different on different systems. You can explicitly\n"
+        "specify the font files to use; this might reduce the differences,\n"
+        "but will not eliminate them entirely.");
+    parser.setApplicationDescription(description);
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument( //
+        QStringLiteral("fontfiles"), //
+        QStringLiteral("Zero or more font files (preferred fonts first)."));
+    parser.process(app);
+    initWidgetAppearance(&app);
+    initFonts(&app, parser.positionalArguments());
+
+    // Do the actual work
+    makeScreenshots();
+
+    // Return
     return EXIT_SUCCESS;
 }
