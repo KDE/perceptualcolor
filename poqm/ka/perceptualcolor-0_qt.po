@@ -36,16 +36,14 @@ msgstr "RGB"
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
-msgstr ""
+msgstr "%1%"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
 #: colordialog.cpp:188
-#, fuzzy, qt-format
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "°"
+#, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1°"
-msgstr "°"
+msgstr "%1°"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:196
