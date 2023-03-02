@@ -18,7 +18,7 @@ namespace PerceptualColor
  * is created.
  *
  * Example:
- * @snippet testLchaDouble.cpp Use LchaDouble
+ * @snippet testlchadouble.cpp Use LchaDouble
  *
  * More details about the valid range: @ref lchrange
  *

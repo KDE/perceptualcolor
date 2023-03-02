@@ -55,7 +55,7 @@ class RgbColorSpace;
  * Just as with QColorDialog, the static functions provide a modal color
  * dialog. The static getColor() function shows the dialog, and allows
  * the user to specify a color:
- *d
+ *
  * @snippet testcolordialog.cpp ColorDialog Get color
  *
  * The function can also be used to let
