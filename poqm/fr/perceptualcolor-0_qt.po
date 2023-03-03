@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
-"PO-Revision-Date: 2023-02-28 18:44+0100\n"
+"PO-Revision-Date: 2023-03-01 06:57+0100\n"
 "Last-Translator: Xavier BESNARD <xavier.besnard]neuf.fr>\n"
 "Language-Team: fr\n"
 "Language: fr\n"
@@ -133,7 +133,7 @@ msgstr "Matrices"
 #: colordialog.cpp:325
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color lookup tables"
-msgstr ""
+msgstr "Tables de recherche de couleurs"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The color model of the PCS (profile connection space) which is used internally by this profile.
 #: colordialog.cpp:336
