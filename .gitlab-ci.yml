@@ -43,7 +43,7 @@ codecheck_automatic_integration:
     - apt-get update --assume-yes
     - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git
   script:
-    - ./.codecheck-automatic-integration.sh
+    - scripts/ci-automatic-integration.sh
 
 
 
@@ -58,7 +58,7 @@ codecheck_cmakelint:
     - pip install cmakelint
     - echo "cmakelint version:" && cmakelint --version
   script:
-    - ./.codecheck-cmakelint.sh
+    - scripts/ci-cmakelint.sh
 
 
 
@@ -114,7 +114,7 @@ codecheck_doxygen:
     - sleep 5s
     - openbox &
   script:
-    - ./.codecheck-doxygen.sh
+    - scripts/ci-doxygen.sh
 
 
 
@@ -126,7 +126,7 @@ codecheck_qt5:
     - apt-get update --assume-yes
     - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qtbase5-dev qtbase5-dev-tools qttools5-dev
   script:
-    - ./.codecheck-qt5.sh
+    - scripts/ci-qt5build.sh
 
 
 
@@ -138,7 +138,7 @@ codecheck_qt6:
     - apt-get update --assume-yes
     - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
   script:
-    - ./.codecheck-qt6.sh
+    - scripts/ci-qt6build.sh
 
 
 
@@ -147,7 +147,7 @@ codecheck_qt6:
 codecheck_static:
   <<: *codecheck
   script:
-    - ./.codecheck-static.sh
+    - scripts/ci-staticcodecheck.sh
 
 
 
