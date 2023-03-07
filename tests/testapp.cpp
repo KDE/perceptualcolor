@@ -157,6 +157,7 @@ int main(int argc, char *argv[])
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("cde")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Cleanlooks")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("IaOra"))); // https://store.kde.org/p/1183616
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("motif")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastik"))); // From https://github.com/MartinF99/PlastikStyle (Qt5 + Qt6)
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastique")));
