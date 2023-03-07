@@ -158,11 +158,12 @@ int main(int argc, char *argv[])
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("cde")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Cleanlooks")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("motif")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastik"))); // From https://github.com/MartinF99/PlastikStyle (Qt5 + Qt6)
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastique")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Oxygen")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Breeze")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Windows")));
-    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("chameleon"))); // From dde-qt5integration (deepin desktop environment)
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("chameleon"))); // From package dde-qt5integration (deepin desktop environment)
 
     // QScopedPointer<QStyle> tempStyle(QStyleFactory::create(QStringLiteral("Fusion")));
     // qDebug() << tempStyle->standardPalette();
