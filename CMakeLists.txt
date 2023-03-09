@@ -543,6 +543,50 @@ list(APPEND CLANG_FORMAT_PATTERNS
 
 
 
+################# Generate API documentation in QCH format #################
+option(
+    BUILD_QCH                                            # Name
+    "Generate API documentation files in the QCH format" # Help text
+    FALSE)
+message(
+    STATUS
+    "BUILD_QCH: ${BUILD_QCH}")
+# For the library name, we follow the KDE policy:
+# https://community.kde.org/Policies/New_KDE_Library_API_Policy#Library_Naming
+set(LIBRARY_NAME "perceptualcolor-${MAJOR_VERSION}") # as in src/CMakeLists.txt
+set(QCH_TARGET "${LIBRARY_NAME}_QCH")
+if(BUILD_QCH)
+    include(FeatureSummary)
+    include(ECMAddQch)
+    ecm_add_qch(
+        "${QCH_TARGET}" # target name
+        NAME "${PROJECT_NAME}"
+        VERSION "${FULL_VERSION}"
+        ORG_DOMAIN "org.kde.perceptualcolor"
+        SOURCE_DIRS "src"
+        MD_MAINPAGE "README.md"
+        IMAGE_DIRS "docs/pics"
+        EXAMPLE_DIRS "src" "autotests" "examples"
+        TAGFILE_INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}/share/docs/tags"
+        QCH_INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}/share/docs/qch"
+        COMPONENT Devel
+        VERBOSE
+    )
+    ecm_install_qch_export(
+        TARGETS "${LIBRARY_NAME}_QCH"
+        FILE "${LIBRARY_NAME}_QCHTargets.cmake"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}"
+        COMPONENT Devel
+    )
+    message(
+        STATUS
+        "Target “${QCH_TARGET}” creates QCH files (builds only manually).")
+endif()
+
+
+
+
+
 ################# Clang format #################
 include(KDEClangFormat)
 file(
