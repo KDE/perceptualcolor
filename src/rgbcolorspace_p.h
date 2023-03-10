@@ -38,7 +38,12 @@ public:
 
     // Data members:
     /** @brief The darkest in-gamut point on the L* axis.
-     * @sa whitepointL */
+     * @sa whitepointL
+     *
+     * @internal
+     *
+     * @todo Use cmsDetectBlackPoint? But “our” “blackpoint” is always on
+     * the grey axis, but the real blackpoint not? Document this? */
     qreal m_blackpointL = 0;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileAbsoluteFilePath */

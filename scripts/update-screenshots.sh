@@ -94,5 +94,5 @@ echo "Run generatescreenshots."
 ../../build/utils/generatescreenshots ../../.screenshotfont.ttf
 echo "Run generatescreenshots finished."
 echo "Run license generator."
-for FILE in *; do cp ../../Doxyfile.external.license "$FILE.license"; done
+for FILE in *; do cp ../../docs/Doxyfile.external.license "$FILE.license"; done
 echo "Run license generator finished."

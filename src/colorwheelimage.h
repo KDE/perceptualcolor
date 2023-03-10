@@ -54,7 +54,8 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @todo Port this class to @ref AsyncImageProvider. */
+ * @todo Port this class to @ref AsyncImageProvider, and do so with
+ * interlacing support. */
 class ColorWheelImage final
 {
 public:

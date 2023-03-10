@@ -25,13 +25,13 @@ echo "Run Doxygen."
 mkdir --parents doxyconf
 rm --recursive --force doxyconf/*
 echo Doxygen “public API and internals” started.
-cp Doxyfile.internal doxyconf/internaldoc
+cp docs/Doxyfile.internal doxyconf/internaldoc
 doxygen -u doxyconf/internaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
 doxygen doxyconf/internaldoc > artifact_doxygen_temp 2>&1
 echo Doxygen “public API and internals” finished.
 echo Doxygen “public API” started.
-cp Doxyfile.external doxyconf/externaldoc
+cp docs/Doxyfile.external doxyconf/externaldoc
 doxygen -u doxyconf/externaldoc
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
 doxygen doxyconf/internaldoc >> artifact_doxygen_temp 2>&1

@@ -44,6 +44,9 @@ ALL_CODE="$CODE_WITHOUT_UNIT_TESTS $UNIT_TESTS"
 
 EXCLUDE_PUBLIC_HEADER_FROM_GREP="--exclude=$(echo $PUBLIC_HEADERS | sed 's/ / --exclude=/g')"
 
+# TODO Test for qDebug() which should not be used never in production
+# code. Exception: Unit tests.
+
 # Search for files that do not start with a byte-order-mark (BOM).
 # We do this because Microsoft’s compiler does require a BOM at the start
 # of the file in order to interpret it as UTF-8.

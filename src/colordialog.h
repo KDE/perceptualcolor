@@ -338,7 +338,14 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * @sa @ref DialogLayoutDimensions
      * @sa READ @ref layoutDimensions() const
      * @sa WRITE @ref setLayoutDimensions()
-     * @sa NOTIFY @ref layoutDimensionsChanged */
+     * @sa NOTIFY @ref layoutDimensionsChanged
+     *
+     * @internal
+     *
+     * @todo Remove this property? Instead, implement a truly convertible
+     * layout: Show/hide the widget for numbers depending on dialog size,
+     * and maybe even re-arrange even more of the widgets with varying
+     * sizes. */
     Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
 
     /** @brief Various options that affect the look and feel of the dialog

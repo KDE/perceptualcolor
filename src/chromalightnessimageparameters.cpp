@@ -54,6 +54,8 @@ bool ChromaLightnessImageParameters::operator!=(const ChromaLightnessImageParame
  *        image parameters.
  * @param callbackObject Pointer to the object for the callbacks.
  *
+ * @todo Interlacing support.
+ *
  * @todo Could we get better performance? Even online tools like
  * https://bottosson.github.io/misc/colorpicker/#ff2a00 or
  * https://oklch.evilmartians.io/#65.4,0.136,146.7,100 get quite good

@@ -214,6 +214,11 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createFromFile(con
  *
  * @internal
  *
+ * @todo LUT profiles should be detected and refused, as the actual diagram
+ * results are currently bad. (LUT profiles for RGB are not common among
+ * the usual standard profile files. But they might be more common among
+ * individually calibrated monitors?)
+ *
  * @todo This function is used in @ref RgbColorSpace::createSrgb()
  * and @ref RgbColorSpace::createFromFile(), but some of the initialization
  * is changed afterwards (file name, file size, profile name, maximum chroma).

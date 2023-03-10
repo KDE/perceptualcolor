@@ -74,6 +74,10 @@
  *   <a href="https://community.kde.org/Policies/Frameworks_Coding_Style">
  *   Frameworks Coding Style</a>. This can be done automatically with
  *   clang-format.
+ * - Comments within the code should have this form: <tt>// comment</tt>
+ *   <br/> This allows to comment out quickly large parts of the code for
+ *   testing purposes.
+ * - Comments for Doxygen should have this form: <tt>/⁠** Comment *⁠/</tt>
  *
  * @section codingstylecmake CMake
  *
@@ -307,6 +311,49 @@
  *
  * This is a TODO list that contains general ideas or issues of this
  * library.
+ *
+ * @todo Use words as hints for color ranges? Muted/dull colors have a low
+ * chroma value. The dark ones (getrübte/gebrochene Farben) are created by
+ * adding black (and possibly a bit of white) and include warm tones (the
+ * browns) and cool tones (the olives). The light ones are called Pastel
+ * colors and are created by adding white (and possibly a bit of
+ * black) and include warm tones (like baby pink) and cool
+ * tones (like baby blue). Warm colors are located at a color angle of
+ * about 45°, cool colors at about 225°. Could we mark this in the diagrams?
+ * Cold and warm could be marked by a text outside the color wheel at the
+ * given position. The other ones seem to be more complicated: These specific
+ * color terms do not have a translation in all languages. (For “muted colors”,
+ * there is no good German translation, and for “getrübte Farben”, there is
+ * no good English translation.
+ *
+ * @todo A design question: Following KDE’s HIG, if the command requires
+ * additional user interaction to complete, at the end its label there
+ * should be an elipsis sfs (…). Currently, this only seems to apply
+ * to @ref PerceptualColor::ColorDialogPrivate::m_screenColorPickerButton.
+ *
+ * @todo https://invent.kde.org/plasma/kdeplasma-addons/-/merge_requests/249
+ * allows the user to drag and drop an image file. The image’s average color
+ * is calculated and set as current color of Plasma’s color picker widget.
+ * Furthermore, it seems that Plasma’s color picker widget also accepts
+ * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
+ * Would this make sense also for our library?
+ *
+ * @todo ITUR profile: Minimum widget size must be smaller! On high sizes, the
+ * inner focus indicator of color wheel too narrow to hue circle.
+ * On RGB 255 0 0 no value indicator is visible. The high-chroma values
+ * are empty in the diagram!
+ *
+ * @todo Touch friendly: @ref PerceptualColor::ColorPatch,
+ * @ref PerceptualColor::GradientSlider etc. at least
+ * as thick as (normal) buttons. Qt6 replaces QTouchDevice by
+ * QInputDevice::devices()…
+ *
+ * @todo For all diagram images: No abort during first interlacing pass. (See
+ * @ref PerceptualColor::AsyncImageProvider for details.)
+ *
+ * @todo All scripts (both, local and CI scripts) should break and stop
+ * on every error. When implementing this, be beware of side effects
+ * (some local scripts are also called from the CI and so on…).
  *
  * @todo Review @ref PerceptualColor::RgbColorSpace. And change
  * it in order to allow support for Oklab. And maybe Googles

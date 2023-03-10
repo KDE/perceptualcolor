@@ -43,6 +43,12 @@ class RgbColorSpacePrivate;
  * this range are considered out-of-gamut, even if the profile itself
  * would accept them.
  *
+ * @todo Unit tests for @ref RgbColorSpace, especially the to…() functions.
+ *
+ * @todo Unit tests for @ref profileMaximumCielchChroma and
+ *       @ref profileMaximumOklchChroma with all profiles that are available
+ *       in the testbed.
+ *
  * @todo Allow also other perceptual color spaces instead of CIELAB:
  *       This might be Oklab or Google’s HCT, CAM16 or DIN99. Attention:
  *       The range of valid values for Oklab is identical for L

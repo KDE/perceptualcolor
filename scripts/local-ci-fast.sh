@@ -51,9 +51,9 @@ echo cmakelint finished.
 rm --recursive --force docs/publicapi
 rm --recursive --force docs/publicapiandinternals
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-nice --adjustment 19 doxygen Doxyfile.internal 2>&1 \
+nice --adjustment 19 doxygen docs/Doxyfile.internal 2>&1 \
     | sed 's/^/Doxygen “public API and internals”: /'
-nice --adjustment 19 doxygen Doxyfile.external 2>&1 \
+nice --adjustment 19 doxygen docs/Doxyfile.external 2>&1 \
     | sed 's/^/Doxygen “public API”: /'
 
 

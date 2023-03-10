@@ -176,7 +176,25 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  * @note This is the same concept as
  * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
  * Qt Designer, which also provides a function of the same name in
- * uic-generated code</a>. */
+ * uic-generated code</a>.
+ *
+ * @internal
+ *
+ * @todo Add to the Oklch tooltip information about the Oklch illuminant
+ * (or, if this is a fixed illuminant, change the SpinBox label to
+ * something like “Oklch-D??”).
+ *
+ * @todo Add to the color-space tooltip information about available rendering
+ * intents and the RGB profile illuminant? (This would have to be implemented
+ * in @ref RgbColorSpace first.)
+ *
+ * @todo As the tooltip for color-space information is quite big, would
+ * it be better to do what systemsettings does in globaldesign/fonts? They
+ * have a small button with an “i” symbol (for information), which does
+ * nothing when it’s clicked, but when hovering with the mouse, it shows
+ * the tooltip?
+ *
+ * @todo How to make tooltip information available for touch-screen users? */
 void ColorDialogPrivate::retranslateUi()
 {
     /*: @item/plain Percentage value in a spinbox. Range: 0%–100%. */

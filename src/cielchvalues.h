@@ -47,7 +47,12 @@ public:
      *
      * Neutral gray is a good choice for the background, as it is equally
      * distant from black and white, and also quite distant from any
-     * saturated color. */
+     * saturated color.
+     *
+     * @todo Given that this might be used quite often, it could be useful
+     * to provide the corresponding RGB value within @ref RgbColorSpace
+     * as a property, returning a variable that is initialized on first
+     * usage. */
     static constexpr LchDouble neutralGray{neutralLightness, //
                                            neutralChroma, //
                                            neutralHue};

@@ -85,13 +85,14 @@ class RgbColorSpace;
  * Gtk’s color dialog, as well as the achromatic color variants. The
  * variants of pink were created especially for this widget.
  *
- * @todo A design question: Should we draw margins around each individual
- * color patch?
+ * @todo Maybe choose slightly different, but more systematic colors:
+ * Same CIE-LCH or OKLCH hue for all tints and shade of a given color?
  *
- * @todo When hovering over a QLineEdit in Breeze style, there is a graphical
- * effect. It would be nice to have same thing at least for this widget
- * as a whole (yet for consistency, as its design is derived from QLineEdit),
- * and maybe also for each individual color patch. */
+ * @todo A design question: Should we draw margins around each individual
+ * color patch? Maybe rely on @ref ColorPatch somehow?
+ *
+ * @todo A design question: Should the size of the individual color patches
+ * be responsive, adopting the the widget size? */
 class PaletteWidget : public AbstractDiagram
 {
     Q_OBJECT
