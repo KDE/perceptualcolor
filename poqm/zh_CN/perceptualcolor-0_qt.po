@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
-"PO-Revision-Date: 2023-02-24 12:44\n"
+"PO-Revision-Date: 2023-03-11 04:53\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -39,16 +39,14 @@ msgstr "RGB"
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
-msgstr ""
+msgstr "%1%"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
 #: colordialog.cpp:206
-#, fuzzy, qt-format
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "°"
+#, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1°"
-msgstr "°"
+msgstr "%1°"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:214
@@ -349,7 +347,3 @@ msgstr "LittleCMS"
 msgctxt "PerceptualColor::RgbColorSpace|"
 msgid "sRGB color space"
 msgstr "sRGB 色彩空间"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "%"
-#~ msgstr "%"
