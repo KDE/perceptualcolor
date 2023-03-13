@@ -134,7 +134,9 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
     widget->style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, widget);
 }
 
-/** @brief Provides prefix and suffix of a value from a given format string.
+/** @internal
+ *
+ * @brief Provides prefix and suffix of a value from a given format string.
  *
  * A typical use case: You want to put a percent value into a spinbox. The
  * simple approach would be:
@@ -148,8 +150,8 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  *
  * @param formatString The translated value string, which should contain
  * exactly <em>one</em> place marker as described in <tt>QString::arg()</tt>
- * like <tt>%1</tt> or <tt>%L1</tt>. This place marker represents the value.
- * Example: “Prefix%1Suffix”. Prefix and suffix may be empty.
+ * like <tt>&amp;1</tt> or <tt>&amp;L1</tt>. This place marker represents
+ * the value. Example: “Prefix&amp;1Suffix”. Prefix and suffix may be empty.
  * @param fallbackPrefix English fallback prefix.
  * @param fallbackSuffix English fallback suffix.
  *

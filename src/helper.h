@@ -14,18 +14,14 @@
 class QWheelEvent;
 class QWidget;
 
-/** @internal
- *
- * @file
- *
- * General helper elements. */
-
 namespace PerceptualColor
 {
 
 void drawQWidgetStyleSheetAware(QWidget *widget);
 
-/** @brief Convenience function template that tests if a value is in a list.
+/** @internal
+ *
+ * @brief Convenience function template that tests if a value is in a list.
  *
  * @param first The value
  * @param t The list
@@ -45,7 +41,9 @@ bool isIn(First &&first, T &&...t)
 
 [[nodiscard]] QImage transparencyBackground(qreal devicePixelRatioF);
 
-/** @brief Force processing of events in a delayed fashion.
+/** @internal
+ *
+ * @brief Force processing of events in a delayed fashion.
  *
  * When there is no running event loop (like in unit tests or in tools
  * like the screenshot generator), some parts of the asynchronous API

@@ -23,7 +23,9 @@ namespace PerceptualColor
 
 [[nodiscard]] cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50);
 
-/** @brief Converts from <tt>[0, 1]</tt> to <tt>[0, 255]</tt>.
+/** @internal
+ *
+ * @brief Converts from <tt>[0, 1]</tt> to <tt>[0, 255]</tt>.
  *
  * @param original A value on a scale <tt>[0, 1]</tt>.
  *
@@ -42,7 +44,9 @@ template<typename T>
 
 [[nodiscard]] QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value);
 
-/** @brief Like <tt>QColor::fromRgbF</tt> but for all floating point types.
+/** @internal
+ *
+ * @brief Like <tt>QColor::fromRgbF</tt> but for all floating point types.
  *
  * @param red Red component. Range: <tt>[0, 1]</tt>
  * @param green See above.
@@ -67,7 +71,9 @@ template<typename T>
 
 [[nodiscard]] LchDouble toCielchDouble(const cmsCIELab &value);
 
-/** @brief White point D65 for 2°-observer.
+/** @internal
+ *
+ * @brief White point D65 for 2°-observer.
  *
  * According to
  * <a href="https://en.wikipedia.org/w/index.php?title=Illuminant_D65&oldid=1100467073#Definition">

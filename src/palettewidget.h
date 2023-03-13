@@ -43,7 +43,7 @@ class RgbColorSpace;
  * Many other widgets of this library are about the perceptually
  * uniform color space. This one is different. How can we determine
  * the basic colors? The associations people have with individual
- * colors can be culturally determined. But the basic color terms in
+ * colors can be culturally determined. But the <em>basic color terms</em> in
  * almost all languages on earth might follow a universal pattern,
  * as Brent Berlin and Paul Kay suggest in their study
  * <a href="https://en.wikipedia.org/wiki/Basic_Color_Terms:_Their_Universality_and_Evolution">
@@ -81,9 +81,58 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @note The chromatic color variants, with the exception of pink, come from
- * Gtk’s color dialog, as well as the achromatic color variants. The
- * variants of pink were created especially for this widget.
+ * @section whatcolor What exact color to use?
+ *
+ * Currently, we use the colors of the Gtk color picker (except of pink). But
+ * is there a more objective choice? What exactly is a typical “red” or a
+ * typical “green”?
+ *
+ * We have the eleven <em>basic color terms</em> that we want
+ * to use. But doesn’t every human have a slightly different
+ * feeling what a “typical” red or a “typical” blue is? We
+ * need a <em>focal color</em>. A definition according to
+ * <a href="https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095825870">
+ * Oxford Reference</a>:
+ *
+ * > “A colour that is a prototypical instance of a particular colour name,
+ * > such as a shade of red that a majority of viewers consider to be the
+ * > best example of a red colour.”
+ *
+ * A big study about focal colors of speakers of different languages across
+ * the world is the <a href="https://www1.icsi.berkeley.edu/wcs/">World
+ * Color Survery</a> (WCS), who’s data is available online. Unfortunately,
+ * it does not give a direct values for focal colors. Various studies have
+ * however used this data, so we can find for some <em>basic color terms</em>
+ * a focal color, and for some others at least a naming centroid.
+ *
+ * |Basic color term|WCS grid coordinates|Cielab³ L|Cielab³ a|Cielab³ b|
+ * | :--------------| -----------------: | ------: | ------: | ------: |
+ * | white¹         |                 A0 |   96.00 |   -0.06 |    0.06 |
+ * | black¹         |                 J0 |   15.60 |   -0.02 |    0.02 |
+ * | red¹           |                 G1 |   41.22 |   61.40 |   17.92 |
+ * | yellow¹        |                 C9 |   81.35 |    7.28 |  109.12 |
+ * | green¹         |                F17 |   51.57 |  -63.28 |   28.95 |
+ * | blue¹          |                F29 |   51.57 |   -3.41 |  -48.08 |
+ * | brown³         |                 G7 |   41.22 |   17.04 |   45.95 |
+ * | purple³        |                G34 |   41.22 |   33.08 |  -30.50 |
+ * | pink³          |                 E1 |   61.70 |   49.42 |   18.23 |
+ * | orange³        |                 E6 |   61.70|    29.38 |   64.40 |
+ * | gray           |      not available |         |         |         |
+ *
+ * ¹ Focal color as proposed by
+ *   <a href="https://www.pnas.org/doi/10.1073/pnas.0503281102">Focal colors
+ *   are universal after all</a>.
+ *
+ * ² Raw estimation of the naming centroid based on Fig. 4 of
+ *   <a href="https://sites.socsci.uci.edu/~kjameson/ECST/Kay_Cook_WorldColorSurvey.pdf">
+ *   this document</a>. (Fig. 5 would be the better choice, as it gives the
+ *   focal color instead of the naming centroid, but unfortunately contains
+ *   only red, yellow, green and blue, for which we have yet direct data.)
+ *
+ * ³ <a href="https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new.txt">
+ *   Lookup table providing Lab values for WCS grid coordinates</a> and the
+ *   <a href="https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new-README.txt">
+ *   corresponding explanation</a>.
  *
  * @todo Maybe choose slightly different, but more systematic colors:
  * Same CIE-LCH or OKLCH hue for all tints and shade of a given color?

@@ -86,7 +86,9 @@ template<typename T>
     return std::round(value * multiplier) / multiplier;
 }
 
-/** @brief Test if two floating point values are nearly equal.
+/** @internal
+ *
+ * @brief Test if two floating point values are nearly equal.
  *
  * Comparison is done in a relative way, where the
  * exactness is stronger the smaller the numbers are.
@@ -130,7 +132,9 @@ template<typename T>
     return std::abs(a - b) < std::max(actualEpsilon, actualEpsilon * norm);
 }
 
-/** @brief Test if two floating point values are nearly equal, using
+/** @internal
+ *
+ * @brief Test if two floating point values are nearly equal, using
  * a default epsilon.
  *
  * Calls @ref isNearlyEqual(T a, T b, T epsilon) with a default epsilon
@@ -190,7 +194,9 @@ template<typename A, typename B>
     }
 }
 
-/** @brief Normalizes an angle.
+/** @internal
+ *
+ * @brief Normalizes an angle.
  *
  * |      Value      | Normalized Value |
  * | :-------------: | :--------------: |

@@ -912,7 +912,7 @@
  * for more details about integer precision vs floating point precision
  * on drawing operations. */
 
-/** @page namespacepollution Namespace pollution
+/** @page namespacepollution Name⁠space pollution
  *
  * This library avoids namespace pollution and collisions:
  *
