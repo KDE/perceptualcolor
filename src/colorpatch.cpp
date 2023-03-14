@@ -107,10 +107,16 @@ void ColorPatchPrivate::updatePixmap()
 {
     QPixmap temp = QPixmap::fromImage(renderImage());
     temp.setDevicePixelRatio(q_pointer->devicePixelRatioF());
-    m_label->setPixmap(temp);
     // NOTE Kvantum was mistakenly scaling the pixmap (even though
     // QLabel::hasScaledContents() == false) for versions ≤ 1.0.2. This bug
     // has been fixed: https://github.com/tsujan/Kvantum/issues/804.
+    m_label->setPixmap(temp);
+    // There were rendering artefacts under certain QStyle (Breeze, Plastik,
+    // Windows): When selecting in the color dialog a new color with the
+    // screen color picker using “Portal” under 125% scaling, the left and
+    // the top border of the QLabel show a thin line of the previous color.
+    // We can work around this by simply updating the whole widget:
+    m_label->update();
 }
 
 /** @brief Handle resize events.
