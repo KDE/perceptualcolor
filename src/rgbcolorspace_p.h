@@ -28,6 +28,9 @@ class RgbColorSpace;
  *  implementation</em> idiom */
 class RgbColorSpacePrivate final
 {
+private:
+    [[nodiscard]] static QMap<cmsUInt32Number, QString> getIntentList();
+
 public:
     explicit RgbColorSpacePrivate(RgbColorSpace *backLink);
     /** @brief Default destructor
@@ -107,7 +110,6 @@ public:
     [[nodiscard]] static QDateTime getCreationDateTimeFromProfile(cmsHPROFILE profileHandle);
     [[nodiscard]] static QVersionNumber getIccVersionFromProfile(cmsHPROFILE profileHandle);
     [[nodiscard]] static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
-    [[nodiscard]] static QMap<cmsUInt32Number, QString> getIntentList();
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
 
     /** @brief The rendering intents supported by the LittleCMS library.
@@ -133,7 +135,10 @@ public:
      * | Non-ICC | INTENT_PRESERVE_K_ONLY_SATURATION             |   12 |
      * | Non-ICC | INTENT_PRESERVE_K_PLANE_PERCEPTUAL            |   13 |
      * | Non-ICC | INTENT_PRESERVE_K_PLANE_RELATIVE_COLORIMETRIC |   14 |
-     * | Non-ICC | INTENT_PRESERVE_K_PLANE_SATURATION            |   15 | */
+     * | Non-ICC | INTENT_PRESERVE_K_PLANE_SATURATION            |   15 |
+     *
+     * @todo Either actually <em>use</em> this code or <em>remove</em> this
+     * code. */
     static inline const QMap<cmsUInt32Number, QString> intentList = getIntentList();
 
     /** @brief Precision of HSV hue during maximum-chroma detection.

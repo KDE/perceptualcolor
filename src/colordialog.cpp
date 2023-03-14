@@ -185,7 +185,8 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  * something like “Oklch-D??”).
  *
  * @todo Add to the color-space tooltip information about available rendering
- * intents and the RGB profile illuminant? (This would have to be implemented
+ * intents (we have yet RgbColorSpacePrivate::intentList but do not use it
+ * anywhere) and the RGB profile illuminant? (This would have to be implemented
  * in @ref RgbColorSpace first.)
  *
  * @todo As the tooltip for color-space information is quite big, would
