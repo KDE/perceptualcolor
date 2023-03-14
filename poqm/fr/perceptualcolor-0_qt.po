@@ -193,7 +193,7 @@ msgstr "He&xa :"
 #: colordialog.cpp:414
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Basic colors"
-msgstr "&Couleurs de &base"
+msgstr "Couleurs de &base"
 
 #. @title:tab
 #: colordialog.cpp:419
