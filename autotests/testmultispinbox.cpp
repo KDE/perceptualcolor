@@ -8,7 +8,7 @@
 #include "multispinbox_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 #include <qabstractspinbox.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -43,8 +43,8 @@ static void snippet02()
 {
     //! [MultiSpinBox Basic example]
     PerceptualColor::MultiSpinBox *myHsvSpinBox = new PerceptualColor::MultiSpinBox();
-    PerceptualColor::MultiSpinBoxSectionConfiguration myConfiguration;
-    QList<PerceptualColor::MultiSpinBoxSectionConfiguration> hsvConfigurations;
+    PerceptualColor::MultiSpinBoxSection myConfiguration;
+    QList<PerceptualColor::MultiSpinBoxSection> hsvConfigurations;
 
     myConfiguration.setDecimals(1);
 
@@ -82,31 +82,31 @@ class testSnippet02 : public PerceptualColor::MultiSpinBox
     Q_PROPERTY(int sectionCount READ sectionCount NOTIFY sectionCountChanged)
 
 public:
-    void addSection(PerceptualColor::MultiSpinBoxSectionConfiguration newSection);
-    void addSections(QList<PerceptualColor::MultiSpinBoxSectionConfiguration> newSections);
-    void append(PerceptualColor::MultiSpinBoxSectionConfiguration newSection);
-    void append(QList<PerceptualColor::MultiSpinBoxSectionConfiguration> newSections);
+    void addSection(PerceptualColor::MultiSpinBoxSection newSection);
+    void addSections(QList<PerceptualColor::MultiSpinBoxSection> newSections);
+    void append(PerceptualColor::MultiSpinBoxSection newSection);
+    void append(QList<PerceptualColor::MultiSpinBoxSection> newSections);
     QString cleanText(int index) const; // See also “cleanText”
     void clearSections();
     int currentIndex() const;
-    PerceptualColor::MultiSpinBoxSectionConfiguration currentSection() const;
-    PerceptualColor::MultiSpinBoxSectionConfiguration firstSection() const;
-    void insertSection(int index, PerceptualColor::MultiSpinBoxSectionConfiguration newSection);
-    void insertSection(int index, QList<PerceptualColor::MultiSpinBoxSectionConfiguration> newSections);
-    PerceptualColor::MultiSpinBoxSectionConfiguration lastSection() const;
+    PerceptualColor::MultiSpinBoxSection currentSection() const;
+    PerceptualColor::MultiSpinBoxSection firstSection() const;
+    void insertSection(int index, PerceptualColor::MultiSpinBoxSection newSection);
+    void insertSection(int index, QList<PerceptualColor::MultiSpinBoxSection> newSections);
+    PerceptualColor::MultiSpinBoxSection lastSection() const;
     void moveSection(int from, int to);
-    void prependSection(PerceptualColor::MultiSpinBoxSectionConfiguration newSection);
-    void prependSections(QList<PerceptualColor::MultiSpinBoxSectionConfiguration> newSections);
+    void prependSection(PerceptualColor::MultiSpinBoxSection newSection);
+    void prependSections(QList<PerceptualColor::MultiSpinBoxSection> newSections);
     void removeFirstSection();
     void removeLastSection();
     void removeSection(int index);
-    void replaceSection(int index, PerceptualColor::MultiSpinBoxSectionConfiguration newSection);
-    PerceptualColor::MultiSpinBoxSectionConfiguration sectionAt(int index) const;
+    void replaceSection(int index, PerceptualColor::MultiSpinBoxSection newSection);
+    PerceptualColor::MultiSpinBoxSection sectionAt(int index) const;
     int sectionCount() const; // Somewhat redundant with MultiSpinBox::sections().count()
-    QList<PerceptualColor::MultiSpinBoxSectionConfiguration> sectionConfigurations() const;
+    QList<PerceptualColor::MultiSpinBoxSection> sectionConfigurations() const;
     QString sectionText(int index) const; // See also “cleanText”
     void setSelectedSection(int index); // A better name might be “selectSection”
-    void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSectionConfiguration> &newSections);
+    void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSections);
     void swapSections(int i, int j);
 
     // What about these functions? They…
@@ -167,7 +167,7 @@ public:
     }
 
 private:
-    QList<MultiSpinBoxSectionConfiguration> exampleConfigurations;
+    QList<MultiSpinBoxSection> exampleConfigurations;
     static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
@@ -177,7 +177,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         // Called before the first test function is executed
-        MultiSpinBoxSectionConfiguration mySection;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(0);
         mySection.setMinimum(0);
         mySection.setMaximum(360);
@@ -306,10 +306,10 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
 
         // Test if correct sections are stored correctly
-        QList<MultiSpinBoxSectionConfiguration> mySectionList;
-        mySectionList.append(MultiSpinBoxSectionConfiguration());
-        mySectionList.append(MultiSpinBoxSectionConfiguration());
-        mySectionList.append(MultiSpinBoxSectionConfiguration());
+        QList<MultiSpinBoxSection> mySectionList;
+        mySectionList.append(MultiSpinBoxSection());
+        mySectionList.append(MultiSpinBoxSection());
+        mySectionList.append(MultiSpinBoxSection());
         test.setSectionConfigurations(mySectionList);
         test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(2);
         QCOMPARE(test.d_pointer->m_currentIndex, 2);
@@ -318,10 +318,10 @@ private Q_SLOTS:
     void testSetConfiguration()
     {
         // Correct configurations should be applied as-is.
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
-        myConfigurations.append(MultiSpinBoxSectionConfiguration());
-        myConfigurations.append(MultiSpinBoxSectionConfiguration());
-        myConfigurations.append(MultiSpinBoxSectionConfiguration());
+        QList<MultiSpinBoxSection> myConfigurations;
+        myConfigurations.append(MultiSpinBoxSection());
+        myConfigurations.append(MultiSpinBoxSection());
+        myConfigurations.append(MultiSpinBoxSection());
         MultiSpinBox test;
         QCOMPARE(test.sectionConfigurations().count(), 1);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
@@ -330,12 +330,12 @@ private Q_SLOTS:
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
 
         // Empty configurations shall be ignored
-        test.setSectionConfigurations(QList<MultiSpinBoxSectionConfiguration>());
+        test.setSectionConfigurations(QList<MultiSpinBoxSection>());
         QCOMPARE(test.sectionConfigurations().count(), 3);
 
         // Invalid values should be adapted
         myConfigurations.clear();
-        MultiSpinBoxSectionConfiguration myInvalidSection;
+        MultiSpinBoxSection myInvalidSection;
         myInvalidSection.setMinimum(50);
         myInvalidSection.setMaximum(30);
         myConfigurations.append(myInvalidSection);
@@ -398,8 +398,8 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox myMulti;
         // Example configuration with long prefix and suffix to make
         // sure being bigger than the default minimal widget size.
-        QList<MultiSpinBoxSectionConfiguration> config;
-        MultiSpinBoxSectionConfiguration section;
+        QList<MultiSpinBoxSection> config;
+        MultiSpinBoxSection section;
         section.setMinimum(1);
         section.setMaximum(9);
         section.setPrefix(QStringLiteral(u"abcdefghij"));
@@ -452,8 +452,8 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox myMulti;
         // Example configuration with long prefix and suffix to make
         // sure being bigger than the default minimal widget size.
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
-        MultiSpinBoxSectionConfiguration myConfiguration;
+        QList<MultiSpinBoxSection> myConfigurations;
+        MultiSpinBoxSection myConfiguration;
         QList<double> myValues;
 
         myConfiguration.setDecimals(0);
@@ -483,8 +483,8 @@ private Q_SLOTS:
     void testSetCurrentSectionIndexWithoutSelectingText()
     {
         PerceptualColor::MultiSpinBox myMulti;
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
-        MultiSpinBoxSectionConfiguration myConfiguration;
+        QList<MultiSpinBoxSection> myConfigurations;
+        MultiSpinBoxSection myConfiguration;
         QList<double> myValues;
 
         myConfiguration.setMinimum(1);
@@ -523,8 +523,8 @@ private Q_SLOTS:
         myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
 
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
-        MultiSpinBoxSectionConfiguration myConfiguration;
+        QList<MultiSpinBoxSection> myConfigurations;
+        MultiSpinBoxSection myConfiguration;
         QList<double> myValues;
 
         myConfiguration.setMinimum(1);
@@ -554,8 +554,8 @@ private Q_SLOTS:
     void testStepEnabledSimple()
     {
         PerceptualColor::MultiSpinBox myMulti;
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
-        MultiSpinBoxSectionConfiguration myConfiguration;
+        QList<MultiSpinBoxSection> myConfigurations;
+        MultiSpinBoxSection myConfiguration;
         QList<double> myValues;
 
         myConfigurations.clear();
@@ -631,7 +631,7 @@ private Q_SLOTS:
     void testStepEnabledAndSectionIndex()
     {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        QList<MultiSpinBoxSectionConfiguration> specialConfigurations = exampleConfigurations;
+        QList<MultiSpinBoxSection> specialConfigurations = exampleConfigurations;
         QList<double> myValues;
         while (myValues.count() < specialConfigurations.count()) {
             myValues.append(0);
@@ -685,8 +685,8 @@ private Q_SLOTS:
     void testConfiguration()
     {
         PerceptualColor::MultiSpinBox myMulti;
-        QList<MultiSpinBoxSectionConfiguration> config;
-        MultiSpinBoxSectionConfiguration section;
+        QList<MultiSpinBoxSection> config;
+        MultiSpinBoxSection section;
         section.setMinimum(1);
         section.setMaximum(9);
         section.setPrefix(QStringLiteral(u"abc"));
@@ -1045,7 +1045,7 @@ private Q_SLOTS:
     void testUpdateValueFromText2()
     {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        QList<MultiSpinBoxSectionConfiguration> specialConfiguration = exampleConfigurations;
+        QList<MultiSpinBoxSection> specialConfiguration = exampleConfigurations;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         widget->setSectionConfigurations(specialConfiguration);
@@ -1081,7 +1081,7 @@ private Q_SLOTS:
     {
         // Setup
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        QList<MultiSpinBoxSectionConfiguration> specialConfiguration = exampleConfigurations;
+        QList<MultiSpinBoxSection> specialConfiguration = exampleConfigurations;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         widget->setSectionConfigurations(specialConfiguration);
@@ -1127,7 +1127,7 @@ private Q_SLOTS:
     {
         // Setup
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        QList<MultiSpinBoxSectionConfiguration> specialConfiguration = exampleConfigurations;
+        QList<MultiSpinBoxSection> specialConfiguration = exampleConfigurations;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         widget->setSectionConfigurations(specialConfiguration);
@@ -1145,8 +1145,8 @@ private Q_SLOTS:
     {
         // Setup
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        QList<MultiSpinBoxSectionConfiguration> mySectionList;
-        MultiSpinBoxSectionConfiguration mySection;
+        QList<MultiSpinBoxSection> mySectionList;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(1);
         mySection.setMinimum(0);
         mySection.setMaximum(100);
@@ -1219,7 +1219,7 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if QDebug support does not make a crash.
-        qDebug() << MultiSpinBoxSectionConfiguration();
+        qDebug() << MultiSpinBoxSection();
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
     }
@@ -1268,11 +1268,11 @@ private Q_SLOTS:
         QFETCH(double, expectedOnIsWrappigFalse);
         QFETCH(double, expectedOnIsWrappigTrue);
 
-        MultiSpinBoxSectionConfiguration myConfiguration;
+        MultiSpinBoxSection myConfiguration;
         myConfiguration.setMinimum(0);
         myConfiguration.setMaximum(360);
         myConfiguration.setWrapping(false);
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
+        QList<MultiSpinBoxSection> myConfigurations;
         myConfigurations.append(myConfiguration);
         mySpinBox.setSectionConfigurations(myConfigurations);
         QList<double> myValues;
@@ -1313,11 +1313,11 @@ private Q_SLOTS:
         QFETCH(double, expectedOnIsWrappigFalse);
         QFETCH(double, expectedOnIsWrappigTrue);
 
-        MultiSpinBoxSectionConfiguration myConfiguration;
+        MultiSpinBoxSection myConfiguration;
         myConfiguration.setMinimum(-20);
         myConfiguration.setMaximum(340);
         myConfiguration.setWrapping(false);
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
+        QList<MultiSpinBoxSection> myConfigurations;
         myConfigurations.append(myConfiguration);
         mySpinBox.setSectionConfigurations(myConfigurations);
         QList<double> myValues;
@@ -1342,7 +1342,7 @@ private Q_SLOTS:
         // QDoubleSpinBox.
         MultiSpinBox myMulti;
         QDoubleSpinBox myDoubleSpinBox;
-        QList<MultiSpinBoxSectionConfiguration> myConfigurations;
+        QList<MultiSpinBoxSection> myConfigurations;
         QList<double> myValues;
 
         // Section count should be 1 (by default):
@@ -1352,9 +1352,9 @@ private Q_SLOTS:
         QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
 
         // Raise the section count to 3:
-        myConfigurations.append(MultiSpinBoxSectionConfiguration());
-        myConfigurations.append(MultiSpinBoxSectionConfiguration());
-        myConfigurations.append(MultiSpinBoxSectionConfiguration());
+        myConfigurations.append(MultiSpinBoxSection());
+        myConfigurations.append(MultiSpinBoxSection());
+        myConfigurations.append(MultiSpinBoxSection());
         myMulti.setSectionConfigurations(myConfigurations);
         // Control that all the new sections got the default value:
         QCOMPARE(myMulti.sectionValues().at(1), myDoubleSpinBox.value());
@@ -1410,8 +1410,8 @@ private Q_SLOTS:
     {
         // Initialize
         MultiSpinBox myMulti;
-        MultiSpinBoxSectionConfiguration myConfig;
-        QList<MultiSpinBoxSectionConfiguration> myConfigs;
+        MultiSpinBoxSection myConfig;
+        QList<MultiSpinBoxSection> myConfigs;
         myConfigs.append(myConfig);
         myConfigs.append(myConfig);
         myMulti.setSectionConfigurations(myConfigs);
@@ -1450,7 +1450,7 @@ private Q_SLOTS:
         myMulti.setSectionConfigurations(
             // Use only one section to allow to compare easily
             // with QDoubleSpinBox
-            QList<MultiSpinBoxSectionConfiguration>{MultiSpinBoxSectionConfiguration()});
+            QList<MultiSpinBoxSection>{MultiSpinBoxSection()});
         myMulti.show();
         QSignalSpy spyMulti(&myMulti, //
                             &MultiSpinBox::sectionValuesChanged);
@@ -1498,14 +1498,14 @@ private Q_SLOTS:
     {
         // Test the compliance of the behaviour of this class with
         // the behaviour of QDoubleSpinBox
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(0);
         myConfig.setMinimum(5);
         myConfig.setMaximum(360);
         MultiSpinBox myMulti;
         myMulti.setSectionConfigurations(
             // Create on-the-fly a list with only one section
-            QList<MultiSpinBoxSectionConfiguration>{myConfig});
+            QList<MultiSpinBoxSection>{myConfig});
         QDoubleSpinBox myDoubleSpinBox;
         myDoubleSpinBox.setDecimals(0);
         myDoubleSpinBox.setMinimum(5);
@@ -1575,14 +1575,14 @@ private Q_SLOTS:
     {
         // Test the compliance of the behaviour of this class with
         // the behaviour of QDoubleSpinBox
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(0);
         myConfig.setMinimum(4.8);
         myConfig.setMaximum(360.2);
         MultiSpinBox myMulti;
         myMulti.setSectionConfigurations(
             // Create on-the-fly a list with only one section
-            QList<MultiSpinBoxSectionConfiguration>{myConfig});
+            QList<MultiSpinBoxSection>{myConfig});
         QDoubleSpinBox myDoubleSpinBox;
         myDoubleSpinBox.setDecimals(0);
         myDoubleSpinBox.setMinimum(4.8);
@@ -1664,14 +1664,14 @@ private Q_SLOTS:
     {
         // Test the compliance of the behaviour of this class with
         // the behaviour of QDoubleSpinBox
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(0);
         myConfig.setMinimum(4.8);
         myConfig.setMaximum(359.8);
         MultiSpinBox myMulti;
         myMulti.setSectionConfigurations(
             // Create on-the-fly a list with only one section
-            QList<MultiSpinBoxSectionConfiguration>{myConfig});
+            QList<MultiSpinBoxSection>{myConfig});
         QDoubleSpinBox myDoubleSpinBox;
         myDoubleSpinBox.setDecimals(0);
         myDoubleSpinBox.setMinimum(4.8);
@@ -1702,8 +1702,8 @@ private Q_SLOTS:
     {
         // Test the compliance of the behaviour of this class with
         // the behaviour of QDoubleSpinBox
-        QList<MultiSpinBoxSectionConfiguration> myConfigs{// Initialize the list with one single, default section
-                                                          MultiSpinBoxSectionConfiguration()};
+        QList<MultiSpinBoxSection> myConfigs{// Initialize the list with one single, default section
+                                             MultiSpinBoxSection()};
         myConfigs[0].setDecimals(2);
         MultiSpinBox myMulti;
         myMulti.setSectionConfigurations(myConfigs);
@@ -1763,7 +1763,7 @@ private Q_SLOTS:
         QFETCH(double, value);
 
         // Initialization
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(0);
         myConfig.setMinimum(0);
         myConfig.setMaximum(360);
@@ -1771,7 +1771,7 @@ private Q_SLOTS:
         MultiSpinBox mySpinBox;
         mySpinBox.setSectionConfigurations(
             // Create the QList on the fly…
-            QList<MultiSpinBoxSectionConfiguration>{myConfig});
+            QList<MultiSpinBoxSection>{myConfig});
 
         mySpinBox.setSectionValues(
             // Create the QList on the fly…
@@ -1789,7 +1789,7 @@ private Q_SLOTS:
         QVariant test;
         // The next line should produce a compiler error if the
         // type is not declared to Qt’s Meta Object System.
-        test.setValue(MultiSpinBoxSectionConfiguration());
+        test.setValue(MultiSpinBoxSection());
     }
 
     void testMetaTypeDeclarationForPropertySectionValues()

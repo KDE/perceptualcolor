@@ -17,16 +17,16 @@ class QFocusEvent;
 class QWidget;
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-// Including multispinboxsectionconfiguration.h is necessary on Qt6,
+// Including multispinboxsection.h is necessary on Qt6,
 // otherwise moc will fail. (IWYU does not detect this dependency.)
-#include "multispinboxsectionconfiguration.h" // IWYU pragma: keep
+#include "multispinboxsection.h" // IWYU pragma: keep
 #include <qtmetamacros.h>
 #else
 #include <qobjectdefs.h>
 #include <qstring.h>
 namespace PerceptualColor
 {
-class MultiSpinBoxSectionConfiguration;
+class MultiSpinBoxSection;
 }
 class QObject;
 #endif
@@ -47,7 +47,7 @@ class MultiSpinBoxPrivate;
  *
  * This widget works with floating point precision. You can set
  * the number of decimal places for each section individually,
- * via @ref MultiSpinBoxSectionConfiguration::decimals. (This
+ * via @ref MultiSpinBoxSection::decimals. (This
  * value can also be <tt>0</tt> to get integer-like behaviour.)
  *
  * Example code to create a @ref MultiSpinBox for a HSV color value
@@ -63,7 +63,7 @@ class MultiSpinBoxPrivate;
  * - <tt>selectAll()</tt> does not work as expected.
  * - <tt>wrapping()</tt> is ignored. Instead, you can configures
  *   the <em>wrapping</em> individually for each section via
- *   @ref MultiSpinBoxSectionConfiguration::isWrapping.
+ *   @ref MultiSpinBoxSection::isWrapping.
  * - <tt>specialValue()</tt> is not supported.
  *   <!-- Just as in QDateTimeEdit! -->
  * - <tt>hasAcceptableInput()</tt> is not guaranteed to obey to a particular
@@ -99,14 +99,14 @@ class MultiSpinBoxPrivate;
  *   @ref minimumSizeHint and the @ref sizeHint will change, therefore
  *   <tt>updateGeometry</tt> has to be called. It seems better not to
  *   implement this. Alternatively, it could be implemented with a
- *   per-section approach via  @ref MultiSpinBoxSectionConfiguration.
+ *   per-section approach via  @ref MultiSpinBoxSection.
  *
  * @note The interface of this class could theoretically
  * be similar to other Qt classes that offer similar concepts of various
  * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
  * course with consistent naming. But usually you will not modify a single
  * section configuration, but the hole set of configurations. Therefore we do
- * the configuration by @ref MultiSpinBoxSectionConfiguration objects, similar
+ * the configuration by @ref MultiSpinBoxSection objects, similar
  * to <tt>QNetworkConfiguration</tt> objects. Allowing changes to individual
  * sections would require a lot of additional code to make sure that after
  * such a change, the text cursor is set the the appropriate position and
@@ -212,11 +212,11 @@ public:
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual void clear() override;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
-    [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSectionConfiguration> sectionConfigurations() const;
+    [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> sectionConfigurations() const;
     /** @brief Getter for property @ref sectionValues
      *  @returns the property @ref sectionValues */
     [[nodiscard]] QList<double> sectionValues() const;
-    Q_INVOKABLE void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSectionConfiguration> &newSectionConfigurations);
+    Q_INVOKABLE void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations);
     [[nodiscard]] virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
 

@@ -1,11 +1,11 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef MULTISPINBOXSECTIONCONFIGURATION_P_H
-#define MULTISPINBOXSECTIONCONFIGURATION_P_H
+#ifndef MULTISPINBOXSECTION_P_H
+#define MULTISPINBOXSECTION_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "multispinboxsectionconfiguration.h"
+// #include "multispinboxsection.h"
 
 #include <qstring.h>
 
@@ -15,32 +15,32 @@ namespace PerceptualColor
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class MultiSpinBoxSectionConfigurationPrivate final
+class MultiSpinBoxSectionPrivate final
 {
 public:
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::decimals() property */
+     * @ref MultiSpinBoxSection::decimals() property */
     int m_decimals = 2;
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::isWrapping() property */
+     * @ref MultiSpinBoxSection::isWrapping() property */
     bool m_isWrapping = false;
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::maximum() property */
+     * @ref MultiSpinBoxSection::maximum() property */
     double m_maximum = 99.99;
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::minimum() property */
+     * @ref MultiSpinBoxSection::minimum() property */
     double m_minimum = 0;
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::prefix() property */
+     * @ref MultiSpinBoxSection::prefix() property */
     QString m_prefix;
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::singleStep() property */
+     * @ref MultiSpinBoxSection::singleStep() property */
     double m_singleStep = 1;
     /** @brief Internal storage of the
-     * @ref MultiSpinBoxSectionConfiguration::suffix() property */
+     * @ref MultiSpinBoxSection::suffix() property */
     QString m_suffix;
 };
 
 } // namespace PerceptualColor
 
-#endif // MULTISPINBOXSECTIONCONFIGURATION_P_H
+#endif // MULTISPINBOXSECTION_P_H

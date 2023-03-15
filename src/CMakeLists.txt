@@ -48,7 +48,7 @@ set(library_SRC
     lchdouble.cpp
     multicolor.cpp
     multispinbox.cpp
-    multispinboxsectionconfiguration.cpp
+    multispinboxsection.cpp
     palettewidget.cpp
     polarpointf.cpp
     refreshiconengine.cpp
@@ -75,7 +75,7 @@ set(lib_PUBLICHEADERS
     lchadouble.h
     lchdouble.h
     multispinbox.h
-    multispinboxsectionconfiguration.h
+    multispinboxsection.h
     rgbcolorspacefactory.h
     settranslation.h
     wheelcolorpicker.h

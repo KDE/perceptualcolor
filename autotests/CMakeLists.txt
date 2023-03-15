@@ -140,7 +140,7 @@ if(BUILD_TESTING)
         testcielchvalues
         testmulticolor
         testmultispinbox
-        testmultispinboxsectionconfiguration
+        testmultispinboxsection
         testoklchvalues
         testpalettewidget
         testpolarpointf

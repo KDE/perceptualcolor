@@ -22,7 +22,7 @@
 #include "lchdouble.h"
 #include "multicolor.h"
 #include "multispinbox.h"
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 #include "oklchvalues.h"
 #include "palettewidget.h"
 #include "refreshiconengine.h"
@@ -545,7 +545,7 @@ void ColorDialogPrivate::retranslateUi()
     m_alphaLabel->setText(opacityLabel);
 
     // HSL spin box
-    QList<MultiSpinBoxSectionConfiguration> hslSections = //
+    QList<MultiSpinBoxSection> hslSections = //
         m_hslSpinBox->sectionConfigurations();
     if (hslSections.count() != 3) {
         qWarning() //
@@ -567,7 +567,7 @@ void ColorDialogPrivate::retranslateUi()
     }
 
     // HWB spin box
-    QList<MultiSpinBoxSectionConfiguration> hwbSections = //
+    QList<MultiSpinBoxSection> hwbSections = //
         m_hwbSpinBox->sectionConfigurations();
     if (hwbSections.count() != 3) {
         qWarning() //
@@ -590,7 +590,7 @@ void ColorDialogPrivate::retranslateUi()
     }
 
     // HSV spin box
-    QList<MultiSpinBoxSectionConfiguration> hsvSections = //
+    QList<MultiSpinBoxSection> hsvSections = //
         m_hsvSpinBox->sectionConfigurations();
     if (hsvSections.count() != 3) {
         qWarning() //
@@ -612,7 +612,7 @@ void ColorDialogPrivate::retranslateUi()
     }
 
     // CIEHLC spin box
-    QList<MultiSpinBoxSectionConfiguration> ciehlcSections = //
+    QList<MultiSpinBoxSection> ciehlcSections = //
         m_ciehlcSpinBox->sectionConfigurations();
     if (ciehlcSections.count() != 3) {
         qWarning() //
@@ -633,7 +633,7 @@ void ColorDialogPrivate::retranslateUi()
     }
 
     // Oklch spin box
-    QList<MultiSpinBoxSectionConfiguration> oklchSections = //
+    QList<MultiSpinBoxSection> oklchSections = //
         m_oklchSpinBox->sectionConfigurations();
     if (oklchSections.count() != 3) {
         qWarning() //
@@ -1531,8 +1531,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     // Create RGB MultiSpinBox
     {
         m_rgbSpinBox = new MultiSpinBox();
-        QList<MultiSpinBoxSectionConfiguration> rgbSections;
-        MultiSpinBoxSectionConfiguration mySection;
+        QList<MultiSpinBoxSection> rgbSections;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         mySection.setMinimum(0);
         mySection.setMaximum(255);
@@ -1567,8 +1567,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     // Create HSL spin box
     {
         m_hslSpinBox = new MultiSpinBox();
-        QList<MultiSpinBoxSectionConfiguration> hslSections;
-        MultiSpinBoxSectionConfiguration mySection;
+        QList<MultiSpinBoxSection> hslSections;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
         mySection.setMinimum(0);
@@ -1592,8 +1592,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     // Create HWB spin box
     {
         m_hwbSpinBox = new MultiSpinBox();
-        QList<MultiSpinBoxSectionConfiguration> hwbSections;
-        MultiSpinBoxSectionConfiguration mySection;
+        QList<MultiSpinBoxSection> hwbSections;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
         mySection.setMinimum(0);
@@ -1617,8 +1617,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     // Create HSV spin box
     {
         m_hsvSpinBox = new MultiSpinBox();
-        QList<MultiSpinBoxSectionConfiguration> hsvSections;
-        MultiSpinBoxSectionConfiguration mySection;
+        QList<MultiSpinBoxSection> hsvSections;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
         mySection.setMinimum(0);
@@ -1664,9 +1664,9 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
 
     // Create widget for the CIEHLC color representation
     {
-        QList<MultiSpinBoxSectionConfiguration> ciehlcSections;
+        QList<MultiSpinBoxSection> ciehlcSections;
         m_ciehlcSpinBox = new MultiSpinBox;
-        MultiSpinBoxSectionConfiguration mySection;
+        MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
         mySection.setMinimum(0);
@@ -1689,8 +1689,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
 
     // Create widget for the Oklch color representation
     {
-        QList<MultiSpinBoxSectionConfiguration> oklchSections;
-        MultiSpinBoxSectionConfiguration mySection;
+        QList<MultiSpinBoxSection> oklchSections;
+        MultiSpinBoxSection mySection;
         m_oklchSpinBox = new MultiSpinBox;
         m_oklchSpinBox->setEnabled(false);
         // L

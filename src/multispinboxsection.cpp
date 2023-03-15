@@ -3,9 +3,9 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 // Second, the private implementation.
-#include "multispinboxsectionconfiguration_p.h" // IWYU pragma: associated
+#include "multispinboxsection_p.h" // IWYU pragma: associated
 
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
@@ -16,24 +16,24 @@ namespace PerceptualColor
 /** @brief Constructor
  *
  * The object is initialized with default values. */
-MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration()
-    : d_pointer(new MultiSpinBoxSectionConfigurationPrivate())
+MultiSpinBoxSection::MultiSpinBoxSection()
+    : d_pointer(new MultiSpinBoxSectionPrivate())
 {
 }
 
 /** @brief Destructor */
-MultiSpinBoxSectionConfiguration::~MultiSpinBoxSectionConfiguration() noexcept
+MultiSpinBoxSection::~MultiSpinBoxSection() noexcept
 {
 }
 
 /** @brief Copy constructor
  *
  * @param other the object to be copied */
-MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(const MultiSpinBoxSectionConfiguration &other)
+MultiSpinBoxSection::MultiSpinBoxSection(const MultiSpinBoxSection &other)
 {
     d_pointer.reset(
         // Create a copy of the private implementation object
-        new MultiSpinBoxSectionConfigurationPrivate(*other.d_pointer));
+        new MultiSpinBoxSectionPrivate(*other.d_pointer));
 }
 
 /** @brief Copy assignment operator
@@ -41,12 +41,12 @@ MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(const MultiSp
  * @returns By convention, always returns <tt>*this</tt>.
  *
  * @param other the object to be copied */
-MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(const MultiSpinBoxSectionConfiguration &other)
+MultiSpinBoxSection &MultiSpinBoxSection::operator=(const MultiSpinBoxSection &other)
 {
     if (this != &other) { // protect against invalid self-assignment
         d_pointer.reset(
             // Create a copy of the private implementation object
-            new MultiSpinBoxSectionConfigurationPrivate(*other.d_pointer));
+            new MultiSpinBoxSectionPrivate(*other.d_pointer));
     }
 
     return *this; // By convention, always return *this.
@@ -55,7 +55,7 @@ MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(co
 /** @brief Move constructor
  *
  * @param other the object to move */
-MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxSectionConfiguration &&other) noexcept
+MultiSpinBoxSection::MultiSpinBoxSection(MultiSpinBoxSection &&other) noexcept
 {
     // .reset() deletes the old object and resets the pointer to the
     // new one. Unlike the move assignment, it does however not update
@@ -70,7 +70,7 @@ MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxS
  * @returns By convention, always returns <tt>*this</tt>.
  *
  * @param other the object to move-assign */
-MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(MultiSpinBoxSectionConfiguration &&other) noexcept
+MultiSpinBoxSection &MultiSpinBoxSection::operator=(MultiSpinBoxSection &&other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
         // .reset() deletes the old object and resets the pointer to the
@@ -91,7 +91,7 @@ MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(Mu
  * @returns The property value.
  *
  * @sa @ref setDecimals */
-int MultiSpinBoxSectionConfiguration::decimals() const
+int MultiSpinBoxSection::decimals() const
 {
     return d_pointer->m_decimals;
 }
@@ -99,7 +99,7 @@ int MultiSpinBoxSectionConfiguration::decimals() const
 /** @brief Setter for @ref decimals property.
  *
  * @param newDecimals The new decimals values. */
-void MultiSpinBoxSectionConfiguration::setDecimals(int newDecimals)
+void MultiSpinBoxSection::setDecimals(int newDecimals)
 {
     d_pointer->m_decimals = qBound(0, newDecimals, 323);
 }
@@ -131,7 +131,7 @@ void MultiSpinBoxSectionConfiguration::setDecimals(int newDecimals)
  * @returns The property value.
  *
  * @sa @ref setWrapping */
-bool MultiSpinBoxSectionConfiguration::isWrapping() const
+bool MultiSpinBoxSection::isWrapping() const
 {
     return d_pointer->m_isWrapping;
 }
@@ -139,7 +139,7 @@ bool MultiSpinBoxSectionConfiguration::isWrapping() const
 /** @brief Setter for @ref isWrapping property.
  *
  * @param newIsWrapping The new isWrapping value. */
-void MultiSpinBoxSectionConfiguration::setWrapping(bool newIsWrapping)
+void MultiSpinBoxSection::setWrapping(bool newIsWrapping)
 {
     d_pointer->m_isWrapping = newIsWrapping;
 }
@@ -149,7 +149,7 @@ void MultiSpinBoxSectionConfiguration::setWrapping(bool newIsWrapping)
  * @returns The property value.
  *
  * @sa @ref setMaximum */
-double MultiSpinBoxSectionConfiguration::maximum() const
+double MultiSpinBoxSection::maximum() const
 {
     return roundToDigits(d_pointer->m_maximum, d_pointer->m_decimals);
 }
@@ -157,7 +157,7 @@ double MultiSpinBoxSectionConfiguration::maximum() const
 /** @brief Setter for @ref maximum property.
  *
  * @param newMaximum The new maximum value. */
-void MultiSpinBoxSectionConfiguration::setMaximum(double newMaximum)
+void MultiSpinBoxSection::setMaximum(double newMaximum)
 {
     d_pointer->m_maximum = newMaximum;
     if (d_pointer->m_minimum > d_pointer->m_maximum) {
@@ -170,7 +170,7 @@ void MultiSpinBoxSectionConfiguration::setMaximum(double newMaximum)
  * @returns The property value.
  *
  * @sa @ref setMinimum */
-double MultiSpinBoxSectionConfiguration::minimum() const
+double MultiSpinBoxSection::minimum() const
 {
     return roundToDigits(d_pointer->m_minimum, d_pointer->m_decimals);
 }
@@ -178,7 +178,7 @@ double MultiSpinBoxSectionConfiguration::minimum() const
 /** @brief Setter for @ref minimum property.
  *
  * @param newMinimum The new minimum value. */
-void MultiSpinBoxSectionConfiguration::setMinimum(double newMinimum)
+void MultiSpinBoxSection::setMinimum(double newMinimum)
 {
     d_pointer->m_minimum = newMinimum;
     if (d_pointer->m_maximum < d_pointer->m_minimum) {
@@ -191,7 +191,7 @@ void MultiSpinBoxSectionConfiguration::setMinimum(double newMinimum)
  * @returns The property value.
  *
  * @sa @ref setPrefix */
-QString MultiSpinBoxSectionConfiguration::prefix() const
+QString MultiSpinBoxSection::prefix() const
 {
     return d_pointer->m_prefix;
 }
@@ -199,7 +199,7 @@ QString MultiSpinBoxSectionConfiguration::prefix() const
 /** @brief Setter for @ref prefix property.
  *
  * @param newPrefix The new prefix value. */
-void MultiSpinBoxSectionConfiguration::setPrefix(const QString &newPrefix)
+void MultiSpinBoxSection::setPrefix(const QString &newPrefix)
 {
     d_pointer->m_prefix = newPrefix;
 }
@@ -215,7 +215,7 @@ void MultiSpinBoxSectionConfiguration::setPrefix(const QString &newPrefix)
  * @returns The property value.
  *
  * @sa @ref setSingleStep */
-double MultiSpinBoxSectionConfiguration::singleStep() const
+double MultiSpinBoxSection::singleStep() const
 {
     return d_pointer->m_singleStep;
 }
@@ -223,7 +223,7 @@ double MultiSpinBoxSectionConfiguration::singleStep() const
 /** @brief Setter for @ref singleStep property.
  *
  * @param newSingleStep The new single step value. */
-void MultiSpinBoxSectionConfiguration::setSingleStep(double newSingleStep)
+void MultiSpinBoxSection::setSingleStep(double newSingleStep)
 {
     d_pointer->m_singleStep = qMax<double>(0, newSingleStep);
 }
@@ -233,7 +233,7 @@ void MultiSpinBoxSectionConfiguration::setSingleStep(double newSingleStep)
  * @returns The property value.
  *
  * @sa @ref setSuffix */
-QString MultiSpinBoxSectionConfiguration::suffix() const
+QString MultiSpinBoxSection::suffix() const
 {
     return d_pointer->m_suffix;
 }
@@ -241,20 +241,20 @@ QString MultiSpinBoxSectionConfiguration::suffix() const
 /** @brief Setter for @ref suffix property.
  *
  * @param newSuffix The new suffix value. */
-void MultiSpinBoxSectionConfiguration::setSuffix(const QString &newSuffix)
+void MultiSpinBoxSection::setSuffix(const QString &newSuffix)
 {
     d_pointer->m_suffix = newSuffix;
 }
 
 /** @brief Adds QDebug() support for data type
- * @ref PerceptualColor::MultiSpinBoxSectionConfiguration
+ * @ref PerceptualColor::MultiSpinBoxSection
  *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in */
-QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSectionConfiguration &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
 {
-    dbg.nospace() << "\nMultiSpinBoxSectionConfiguration(" // Opening line
+    dbg.nospace() << "\nMultiSpinBoxSection(" // Opening line
                   << "\n    prefix: " << value.prefix() //
                   << "\n    minimum: " << value.minimum() //
                   << "\n    decimals: " << value.decimals() //

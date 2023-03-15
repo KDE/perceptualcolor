@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef MULTISPINBOXSECTIONCONFIGURATION_H
-#define MULTISPINBOXSECTIONCONFIGURATION_H
+#ifndef MULTISPINBOXSECTION_H
+#define MULTISPINBOXSECTION_H
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
@@ -12,7 +12,7 @@
 
 namespace PerceptualColor
 {
-class MultiSpinBoxSectionConfigurationPrivate;
+class MultiSpinBoxSectionPrivate;
 
 /** @brief The configuration of a single section
  * within a @ref MultiSpinBox.
@@ -21,7 +21,7 @@ class MultiSpinBoxSectionConfigurationPrivate;
  * contains various settings.
  *
  * This data type can be passed to QDebug thanks to
- * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSectionConfiguration &value)
+ * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
  *
  * This type is declared as type to Qt’s type system via
  * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
@@ -34,15 +34,15 @@ class MultiSpinBoxSectionConfigurationPrivate;
  * Also Qt itself uses this configuration-object-based approach with its
  * QNetworkConfiguration class (including @ref pimpl and
  * copy-constructors). */
-class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBoxSectionConfiguration
+class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBoxSection
 {
 public:
-    MultiSpinBoxSectionConfiguration();
-    MultiSpinBoxSectionConfiguration(const MultiSpinBoxSectionConfiguration &other);
-    ~MultiSpinBoxSectionConfiguration() noexcept;
-    MultiSpinBoxSectionConfiguration &operator=(const MultiSpinBoxSectionConfiguration &other);
-    MultiSpinBoxSectionConfiguration(MultiSpinBoxSectionConfiguration &&other) noexcept;
-    MultiSpinBoxSectionConfiguration &operator=(MultiSpinBoxSectionConfiguration &&other) noexcept;
+    MultiSpinBoxSection();
+    MultiSpinBoxSection(const MultiSpinBoxSection &other);
+    ~MultiSpinBoxSection() noexcept;
+    MultiSpinBoxSection &operator=(const MultiSpinBoxSection &other);
+    MultiSpinBoxSection(MultiSpinBoxSection &&other) noexcept;
+    MultiSpinBoxSection &operator=(MultiSpinBoxSection &&other) noexcept;
 
     [[nodiscard]] int decimals() const;
     [[nodiscard]] bool isWrapping() const;
@@ -66,12 +66,12 @@ private:
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
-    friend class MultiSpinBoxSectionConfigurationPrivate;
+    friend class MultiSpinBoxSectionPrivate;
     /** @brief Pointer to implementation (pimpl) */
-    ConstPropagatingUniquePointer<MultiSpinBoxSectionConfigurationPrivate> d_pointer;
+    ConstPropagatingUniquePointer<MultiSpinBoxSectionPrivate> d_pointer;
 
     /** @internal @brief Only for unit tests. */
-    friend class TestMultiSpinBoxSectionConfiguration;
+    friend class TestMultiSpinBoxSection;
 
     /** @internal
      * @brief Internal friend declaration.
@@ -83,10 +83,10 @@ private:
     friend class MultiSpinBox;
 };
 
-PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSectionConfiguration &value);
+PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value);
 
 } // namespace PerceptualColor
 
-Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBoxSectionConfiguration)
+Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBoxSection)
 
-#endif // MULTISPINBOXSECTIONCONFIGURATION_H
+#endif // MULTISPINBOXSECTION_H

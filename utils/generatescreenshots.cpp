@@ -10,7 +10,7 @@
 #include "gradientslider.h"
 #include "lchdouble.h"
 #include "multispinbox.h"
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 #include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
@@ -376,8 +376,8 @@ static void makeScreenshots()
 
     {
         MultiSpinBox m_multiSpinBox;
-        PerceptualColor::MultiSpinBoxSectionConfiguration mySection;
-        QList<PerceptualColor::MultiSpinBoxSectionConfiguration> hsvSectionConfigurations;
+        PerceptualColor::MultiSpinBoxSection mySection;
+        QList<PerceptualColor::MultiSpinBoxSection> hsvSectionConfigurations;
         QList<double> values;
         mySection.setDecimals(1);
         mySection.setPrefix(QString());

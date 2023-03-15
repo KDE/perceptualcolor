@@ -11,7 +11,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "extendeddoublevalidator.h"
 #include "helpermath.h"
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 #include <QtCore/qglobal.h>
 #include <math.h>
 #include <qaccessible.h>
@@ -92,7 +92,7 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
 
     // Initialize the configuration (default: only one section).
     // This will also change section values to exactly one element.
-    setSectionConfigurations(QList<MultiSpinBoxSectionConfiguration>{MultiSpinBoxSectionConfiguration()});
+    setSectionConfigurations(QList<MultiSpinBoxSection>{MultiSpinBoxSection()});
     setSectionValues(QList<double>{MultiSpinBoxPrivate::defaultSectionValue});
     d_pointer->m_currentIndex = -1; // This will force
     // setCurrentIndexAndUpdateTextAndSelectValue()
@@ -163,7 +163,7 @@ QSize MultiSpinBox::sizeHint() const
     ensurePolished();
 
     const QFontMetrics myFontMetrics(fontMetrics());
-    QList<MultiSpinBoxSectionConfiguration> myConfiguration = d_pointer->m_sectionConfigurations;
+    QList<MultiSpinBoxSection> myConfiguration = d_pointer->m_sectionConfigurations;
     const int height = lineEdit()->sizeHint().height();
     int width = 0;
     QString completeString;
@@ -430,7 +430,7 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(QListSizeType newIn
  * @returns whether stepping up and down is legal */
 QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 {
-    const MultiSpinBoxSectionConfiguration currentSectionConfiguration = d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex);
+    const MultiSpinBoxSection currentSectionConfiguration = d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex);
     const double currentSectionValue = sectionValues().at(d_pointer->m_currentIndex);
 
     // When wrapping is enabled, step up and step down are always possible.
@@ -459,12 +459,12 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
  *
  * @param newSectionConfigurations Defines the new sections. The new section
  * count in this widget is the section count given in this list. Each section
- * should have valid values: <tt>@ref MultiSpinBoxSectionConfiguration.minimum ≤
- * @ref MultiSpinBoxSectionConfiguration.maximum</tt>. If the @ref sectionValues are
+ * should have valid values: <tt>@ref MultiSpinBoxSection.minimum ≤
+ * @ref MultiSpinBoxSection.maximum</tt>. If the @ref sectionValues are
  * not valid within the new section configurations, they will be fixed.
  *
  * @sa @ref sectionConfigurations() */
-void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSectionConfiguration> &newSectionConfigurations)
+void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations)
 {
     if (newSectionConfigurations.count() < 1) {
         return;
@@ -497,7 +497,7 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
  * @returns the configuration of all sections.
  *
  * @sa @ref setSectionConfigurations() */
-QList<PerceptualColor::MultiSpinBoxSectionConfiguration> MultiSpinBox::sectionConfigurations() const
+QList<PerceptualColor::MultiSpinBoxSection> MultiSpinBox::sectionConfigurations() const
 {
     return d_pointer->m_sectionConfigurations;
 }
@@ -545,7 +545,7 @@ void MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(const QList<dou
 
     // Make sure the new section values are
     // valid (minimum <= value <= maximum):
-    MultiSpinBoxSectionConfiguration myConfig;
+    MultiSpinBoxSection myConfig;
     double rangeWidth;
     qreal temp; // TODO Why qreal and not double?
     for (int i = 0; i < sectionCount; ++i) {
@@ -596,10 +596,10 @@ void MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(const QList<dou
  * exactly as many items as @ref sectionConfigurations.
  *
  * The values will be bound between
- * @ref MultiSpinBoxSectionConfiguration::minimum and
- * @ref MultiSpinBoxSectionConfiguration::maximum. Their precision will be
+ * @ref MultiSpinBoxSection::minimum and
+ * @ref MultiSpinBoxSection::maximum. Their precision will be
  * reduced to as many decimal places as given by
- * @ref MultiSpinBoxSectionConfiguration::decimals.
+ * @ref MultiSpinBoxSection::decimals.
  *
  * @internal
  *
@@ -755,7 +755,7 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
  * > trigger a call to <tt>stepBy(10)</tt>.
  *
  * @param steps Number of steps to be taken. The step size is
- * the @ref MultiSpinBoxSectionConfiguration::singleStep of the current section. */
+ * the @ref MultiSpinBoxSection::singleStep of the current section. */
 void MultiSpinBox::stepBy(int steps)
 {
     const QListSizeType currentIndex = d_pointer->m_currentIndex;

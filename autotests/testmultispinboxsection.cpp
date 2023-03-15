@@ -3,9 +3,9 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 // Second, the private implementation.
-#include "multispinboxsectionconfiguration_p.h" // IWYU pragma: keep
+#include "multispinboxsection_p.h" // IWYU pragma: keep
 
 #include <qglobal.h>
 #include <qobject.h>
@@ -25,20 +25,20 @@
 
 namespace PerceptualColor
 {
-class TestMultiSpinBoxSectionConfiguration : public QObject
+class TestMultiSpinBoxSection : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestMultiSpinBoxSectionConfiguration(QObject *parent = nullptr)
+    explicit TestMultiSpinBoxSection(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
 
 private:
-    MultiSpinBoxSectionConfiguration helperGetUnusualConfig()
+    MultiSpinBoxSection helperGetUnusualConfig()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(1);
         myConfig.setWrapping(true);
         myConfig.setMaximum(3);
@@ -73,7 +73,7 @@ private Q_SLOTS:
     void testDefaultValues()
     {
         // The default values should be the same as for QDoubleSpinBox
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         // Test default values of the configuration object:
@@ -88,7 +88,7 @@ private Q_SLOTS:
 
     void testCopy()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(1);
         myConfig.setWrapping(true);
         myConfig.setMaximum(3);
@@ -98,7 +98,7 @@ private Q_SLOTS:
         myConfig.setSuffix(QStringLiteral("b"));
 
         // Test copy constructor
-        MultiSpinBoxSectionConfiguration copyContructed(myConfig);
+        MultiSpinBoxSection copyContructed(myConfig);
         QCOMPARE(myConfig.decimals(), 1);
         QCOMPARE(myConfig.isWrapping(), true);
         QCOMPARE(myConfig.maximum(), 3);
@@ -108,7 +108,7 @@ private Q_SLOTS:
         QCOMPARE(myConfig.suffix(), QStringLiteral("b"));
 
         // Test copy assignment operator
-        MultiSpinBoxSectionConfiguration copyAssigned;
+        MultiSpinBoxSection copyAssigned;
         copyAssigned.setMaximum(9); // Change arbitrary some value
         copyAssigned = myConfig;
         QCOMPARE(myConfig.decimals(), 1);
@@ -122,7 +122,7 @@ private Q_SLOTS:
 
     void testMoveConstructor()
     {
-        MultiSpinBoxSectionConfiguration testObjectToMove;
+        MultiSpinBoxSection testObjectToMove;
         testObjectToMove.setDecimals(1);
         testObjectToMove.setWrapping(true);
         testObjectToMove.setMaximum(3);
@@ -130,7 +130,7 @@ private Q_SLOTS:
         testObjectToMove.setPrefix(QStringLiteral("a"));
         testObjectToMove.setSingleStep(4);
         testObjectToMove.setSuffix(QStringLiteral("b"));
-        MultiSpinBoxSectionConfiguration myConfig(
+        MultiSpinBoxSection myConfig(
             // Trigger the move constructor
             std::move(testObjectToMove));
         QCOMPARE(myConfig.decimals(), 1);
@@ -144,11 +144,11 @@ private Q_SLOTS:
 
     void testMoveAssignment()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setMaximum(9); // change arbitrarily some value
 
         // Create a test object
-        MultiSpinBoxSectionConfiguration testObjectToMove;
+        MultiSpinBoxSection testObjectToMove;
         testObjectToMove.setDecimals(1);
         testObjectToMove.setWrapping(true);
         testObjectToMove.setMaximum(3);
@@ -171,14 +171,14 @@ private Q_SLOTS:
 
     void testDecimals()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setDecimals(5);
         QCOMPARE(myConfig.decimals(), 5);
     }
 
     void testIsWrapping()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setWrapping(true);
         QCOMPARE(myConfig.isWrapping(), true);
         myConfig.setWrapping(false);
@@ -187,42 +187,42 @@ private Q_SLOTS:
 
     void testMaximum()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setMaximum(5);
         QCOMPARE(myConfig.maximum(), 5);
     }
 
     void testMinimum()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setMinimum(5);
         QCOMPARE(myConfig.minimum(), 5);
     }
 
     void testPrefix()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setPrefix(QStringLiteral("a"));
         QCOMPARE(myConfig.prefix(), QStringLiteral("a"));
     }
 
     void testSingleStep()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setSingleStep(5);
         QCOMPARE(myConfig.singleStep(), 5);
     }
 
     void testSuffix()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         myConfig.setSuffix(QStringLiteral("a"));
         QCOMPARE(myConfig.suffix(), QStringLiteral("a"));
     }
 
     void testComplianceDecimals()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         myConfig.setDecimals(5);
@@ -248,7 +248,7 @@ private Q_SLOTS:
 
     void testComplianceSingleStep()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         myConfig.setSingleStep(5);
@@ -274,7 +274,7 @@ private Q_SLOTS:
 
     void testComplianceMinimumTooBig()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         // Set a minimum that is bigger than the current maximum
@@ -295,7 +295,7 @@ private Q_SLOTS:
 
     void testComplianceMaximumTooSmall()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         // Set a maximum that is smaller than the current minimum
@@ -316,7 +316,7 @@ private Q_SLOTS:
 
     void testComplianceMinimumDecimals()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         // Set a minimum with more decimals than configured.
@@ -355,7 +355,7 @@ private Q_SLOTS:
 
     void testComplianceMaximumDecimals()
     {
-        MultiSpinBoxSectionConfiguration myConfig;
+        MultiSpinBoxSection myConfig;
         QDoubleSpinBox myDoubleSpinBox;
 
         // Set a maximum with more decimals than configured.
@@ -397,13 +397,13 @@ private Q_SLOTS:
         QVariant test;
         // The next line should produce a compiler error if the
         // type is not declared to Qt’s Meta Object System.
-        test.setValue(MultiSpinBoxSectionConfiguration());
+        test.setValue(MultiSpinBoxSection());
     }
 };
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestMultiSpinBoxSectionConfiguration)
+QTEST_MAIN(PerceptualColor::TestMultiSpinBoxSection)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testmultispinboxsectionconfiguration.moc"
+#include "testmultispinboxsection.moc"

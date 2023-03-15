@@ -9,7 +9,7 @@
 
 #include "constpropagatingrawpointer.h"
 #include "helperqttypes.h"
-#include "multispinboxsectionconfiguration.h"
+#include "multispinboxsection.h"
 #include <qaccessiblewidget.h>
 #include <qglobal.h>
 #include <qlist.h>
@@ -65,7 +65,7 @@ public:
      *
      * @sa @ref MultiSpinBox::sectionConfigurations()
      * @sa @ref MultiSpinBox::setSectionConfigurations() */
-    QList<MultiSpinBoxSectionConfiguration> m_sectionConfigurations;
+    QList<MultiSpinBoxSection> m_sectionConfigurations;
     /** @brief Internal storage for
      * property @ref MultiSpinBox::sectionValues. */
     QList<double> m_sectionValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};

@@ -32,7 +32,7 @@ PUBLIC_HEADERS="
     src/lchadouble.h
     src/lchdouble.h
     src/multispinbox.h
-    src/multispinboxsectionconfiguration.h
+    src/multispinboxsection.h
     src/rgbcolorspacefactory.h
     src/settranslation.h
     src/wheelcolorpicker.h
