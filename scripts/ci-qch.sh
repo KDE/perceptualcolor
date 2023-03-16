@@ -31,7 +31,7 @@ cmake --build . --target perceptualcolor-0_QCH --parallel $PARALLEL_PROCESSES 2>
 # Also make an installation to test if everything works fine. Unfortunately,
 # this triggers a complete build of the whole project, but this seems
 # unavoidable.
-make install
+cmake --build . --target install --parallel $PARALLEL_PROCESSES
 cd ..
 [ -s ./artifact_warnings_qch.txt ] && ((errorcount++))
 echo "QCH build finished."
