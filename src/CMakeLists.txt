@@ -47,6 +47,7 @@ set(library_SRC
     lchadouble.cpp
     lchdouble.cpp
     multicolor.cpp
+    multirgb.cpp
     multispinbox.cpp
     multispinboxsection.cpp
     palettewidget.cpp

@@ -5,6 +5,7 @@
 #include "helperconversion.h"
 
 #include "lchdouble.h"
+#include "rgbdouble.h"
 #include <cmath>
 #include <qgenericmatrix.h>
 
@@ -196,6 +197,26 @@ cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50)
                               resultMatrix(1, 0), //
                               resultMatrix(2, 0)};
     return result;
+}
+
+/** @internal
+ *
+ * @brief Converts from @ref RgbDouble to a <tt>QColor</tt> with
+ * <tt>spec()</tt> value <tt>QColor::Rgb</tt>.
+ *
+ * @param color The original color
+ *
+ * @return The same color as <tt>QColor</tt> with
+ * <tt>spec()</tt> value <tt>QColor::Rgb</tt>.
+ * If the original color has out-of-range values,
+ * than these values are silently clipped to the
+ * valid range. */
+QColor fromRgbDoubleToQColor(const RgbDouble &color)
+{
+    return QColor::fromRgbF( //
+        static_cast<QColorFloatType>(qBound<QColorFloatType>(0, color.red, 1)), //
+        static_cast<QColorFloatType>(qBound<QColorFloatType>(0, color.green, 1)), //
+        static_cast<QColorFloatType>(qBound<QColorFloatType>(0, color.blue, 1)));
 }
 
 } // namespace PerceptualColor

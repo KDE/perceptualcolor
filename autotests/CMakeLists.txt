@@ -139,6 +139,7 @@ if(BUILD_TESTING)
         testlchdouble
         testcielchvalues
         testmulticolor
+        testmultirgb
         testmultispinbox
         testmultispinboxsection
         testoklchvalues

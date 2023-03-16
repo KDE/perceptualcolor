@@ -21,6 +21,8 @@
 namespace PerceptualColor
 {
 
+struct RgbDouble;
+
 [[nodiscard]] cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50);
 
 /** @internal
@@ -41,6 +43,8 @@ template<typename T>
     const auto bounded = qBound<int>(0, rounded, 255);
     return static_cast<quint8>(bounded);
 }
+
+QColor fromRgbDoubleToQColor(const RgbDouble &color);
 
 [[nodiscard]] QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value);
 

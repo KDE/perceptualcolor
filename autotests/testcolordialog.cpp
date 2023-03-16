@@ -15,6 +15,7 @@
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "multicolor.h"
+#include "multirgb.h"
 #include "multispinbox.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
@@ -1711,9 +1712,9 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         myDialog->d_pointer->m_currentOpaqueColor = //
-            MultiColor::fromRgbQColor( //
-                myDialog->d_pointer->m_rgbColorSpace, //
-                QColor(1, 2, 3));
+            MultiColor::fromMultiRgb( //
+                myDialog->d_pointer->m_rgbColorSpace,
+                MultiRgb::fromRgbQColor(QColor(1, 2, 3)));
         myDialog->d_pointer->updateColorPatch();
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().red(), 1);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().green(), 2);

@@ -5,8 +5,7 @@
 #define MULTICOLOR_H
 
 #include "lchdouble.h"
-#include <optional>
-#include <qcolor.h>
+#include <multirgb.h>
 #include <qdebug.h>
 #include <qlist.h>
 #include <qsharedpointer.h>
@@ -14,7 +13,6 @@
 namespace PerceptualColor
 {
 class RgbColorSpace;
-struct RgbDouble;
 
 /** @internal
  *
@@ -22,9 +20,10 @@ struct RgbDouble;
  *
  * Unlike <tt>QColor</tt> (which is essentially a C++ <tt>union</tt> of
  * different color formats, so only one of them is actually saved),
- * @ref MultiColor actually stores <em>all</em> available color formats.
+ * @ref MultiColor <em>actually</em> stores <em>all</em> available color
+ * formats.
  *
- * This data type is just an implementation detail of @ref ColorDialog.
+ * This data type is just an (ugly) implementation detail of @ref ColorDialog.
  * For simplicity, data members are accessible directly, without write
  * protection. Usage: Create instances of this class with one of the static
  * factory functions, and assign them to <tt>const</tt> variables. The factory
@@ -34,14 +33,9 @@ struct RgbDouble;
  * Changes to some values of some color formats under certain
  * circumstances do not change the color:
  * - Hue: When the color is on the gray axis.
- * - HSL saturation: When the color is either black (L = 0%) or
- *   white (L = 100%).
- * - HSV/HSB saturation: When the color is black (V/B = 0%).
  *
  * The color conversion of this class provides meaningful values for
  * <em>hue</em> in all color formats, also for colors on the gray axis.
- * It also provides meaningful and predictable <em>HSL-saturation</em> and
- * <em>HSV-saturation</em> values.
  *
  * @note When creating an object from a RGB-based color (HSL, HSV…), the
  * resulting @ref cielch and @ref ciehlc is <em>not</em> guaranteed to be
@@ -67,12 +61,8 @@ struct RgbDouble;
 class MultiColor final
 {
 public:
-    [[nodiscard]] static MultiColor fromHsl(const QSharedPointer<RgbColorSpace> &colorSpace, const QList<double> &color);
-    [[nodiscard]] static MultiColor fromHsv(const QSharedPointer<RgbColorSpace> &colorSpace, const QList<double> &color);
-    [[nodiscard]] static MultiColor fromHwb(const QSharedPointer<RgbColorSpace> &colorSpace, const QList<double> &color);
     [[nodiscard]] static MultiColor fromLch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color);
-    [[nodiscard]] static MultiColor fromRgb(const QSharedPointer<RgbColorSpace> &colorSpace, const QList<double> &color);
-    [[nodiscard]] static MultiColor fromRgbQColor(const QSharedPointer<RgbColorSpace> &colorSpace, const QColor &color);
+    [[nodiscard]] static MultiColor fromMultiRgb(const QSharedPointer<RgbColorSpace> &colorSpace, const MultiRgb &color);
 
     /** @brief Constructor for an uninitialized object.
      *
@@ -118,30 +108,12 @@ public:
      *
      * @sa @ref ciehlc */
     LchDouble cielch;
-    /** @brief HWB representation.
-     *
-     * Range: [0, 360], [0, 100], [0, 100] */
-    QList<double> hwb;
-    /** @brief HSL representation.
-     *
-     * Range: [0, 360], [0, 100], [0, 100] */
-    QList<double> hsl;
-    /** @brief HSV representation.
-     *
-     * Range: [0, 360], [0, 100], [0, 100] */
-    QList<double> hsv;
     /** @brief Oklch representation.
      *
      * @todo xxx Range: [0, 360], [0, 100], [0, 100] */
     QList<double> oklch;
-    /** @brief RGB representation.
-     *
-     * Range: [0, 255] */
-    QList<double> rgb;
-    /** @brief QColor representation.
-     *
-     * <tt>QColor::spec()</tt> is <tt>QColor::Rgb</tt>. */
-    QColor rgbQColor;
+    /** @brief Various RGB-based representation */
+    MultiRgb multiRgb;
 
 private:
     /** @brief The distance threshold for near-to-gray detection.
@@ -163,8 +135,6 @@ private:
     static_assert(colorDifferenceThreshold < 0.5);
 
     void fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<RgbColorSpace> &colorSpace);
-    void fillRgbAndDerivates(QColor color, std::optional<double> hue);
-    static QColor fromRgbDoubleToQColor(const RgbDouble &color);
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiColor &value);
