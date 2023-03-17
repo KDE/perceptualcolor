@@ -1518,8 +1518,13 @@ void ColorDialogPrivate::initializeScreenColorPicker()
             &ScreenColorPicker::newColor, //
             q_pointer, //
             [this](const double red, const double green, const double blue) {
-                const auto color = qColorFromRgbDouble(red, green, blue);
-                q_pointer->setCurrentColor(color);
+                const QList<double> rgb{qBound<double>(0, red * 255, 255), //
+                                        qBound<double>(0, green * 255, 255), //
+                                        qBound<double>(0, blue * 255, 255)};
+                const auto multiColor = MultiColor::fromMultiRgb( //
+                    m_rgbColorSpace,
+                    MultiRgb::fromRgb(rgb));
+                setCurrentOpaqueColor(multiColor, nullptr);
             });
     QGridLayout *tempLayout = new QGridLayout();
     tempLayout->addWidget(m_screenColorPickerButton, 0, 0, Qt::AlignCenter);
