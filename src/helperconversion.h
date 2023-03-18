@@ -44,6 +44,10 @@ template<typename T>
     return static_cast<quint8>(bounded);
 }
 
+[[nodiscard]] QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double> &value);
+
+[[nodiscard]] cmsCIELab fromOklabToCmscielabD50(const cmsCIELab &oklab);
+
 QColor fromRgbDoubleToQColor(const RgbDouble &color);
 
 [[nodiscard]] QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value);

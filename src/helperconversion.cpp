@@ -158,6 +158,71 @@ QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double
 
 /** @internal
  *
+ * @brief Conversion from <a href="https://bottosson.github.io/posts/oklab/">
+ * Oklab color space</a> to
+ * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space">
+ * CIE 1931 XYZ color space</a>.
+ *
+ * @param value The value to be converted
+ *
+ * @note <a href="https://bottosson.github.io/posts/oklab/">
+ * Oklab</a> does not specify which
+ * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_standard_observer">
+ * observer</a> the D65 whitepoint should use. But it states that
+ * <em>“Oklab uses a D65 whitepoint, since this is what sRGB and other
+ * common color spaces use.”</em>. As
+ * <a href="https://en.wikipedia.org/wiki/SRGB">sRGB</a>
+ * uses the <em>CIE 1931 2° Standard Observer</em>, this
+ * might be a good choice.
+ *
+ * @returns the same color in
+ * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space">
+ * CIE 1931 XYZ color space</a>. The XYZ value has
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
+ * “a D65 whitepoint and white as Y=1”</a>. */
+QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double> &value)
+{
+    // Constants
+    // Inverted matrices calculated with
+    // https://matrix.reshish.com/inverCalculation.php
+    // clang-format off
+    constexpr double m1invertedArray[] =
+        {+1.227013851103521026000, -0.55779998065182223830, +0.281256148966467807580,
+         -0.040580178423280593977, +1.11225686961683010490, -0.071676678665601200577,
+         -0.076381284505706892869, -0.42148197841801273055, +1.586163220440794757500};
+    constexpr double m2invertedArray[] =
+        {+0.99999999845051981432, +0.396337792173767856780, +0.215803758060758803390,
+         +1.00000000888176077670, -0.105561342323656349400, -0.063854174771705903402,
+         +1.00000005467241091770, -0.089484182094965759684, -1.291485537864091739900};
+    // clang-format on
+    static const ConversionMatrix m1inverted{m1invertedArray};
+    static const ConversionMatrix m2inverted{m2invertedArray};
+    // NOTE If later we need this matrices also in other places, we could
+    // move it into a nameless namespace within this very same file:
+    // namespace {
+    // // Nameless namespace is better than “static” keyword,
+    // // see https://stackoverflow.com/a/4422554
+    // Q_GLOBAL_STATIC_WITH_ARGS(const ConversionMatrix, m1, (m1array))
+    // }
+
+    // The following algorithm is as described in
+    // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
+    //
+    // Oklab: “The inverse operation, going from Oklab to XYZ is done with
+    // the following steps:”
+    auto lms = m2inverted * value; // NOTE Might contain negative entries
+    // LMS (long, medium, short) is the response of the three types of
+    // cones of the human eye.
+
+    lms(/*row*/ 0, /*column*/ 0) = std::pow(lms(/*row*/ 0, /*column*/ 0), 3);
+    lms(/*row*/ 1, /*column*/ 0) = std::pow(lms(/*row*/ 1, /*column*/ 0), 3);
+    lms(/*row*/ 2, /*column*/ 0) = std::pow(lms(/*row*/ 2, /*column*/ 0), 3);
+
+    return m1inverted * lms;
+}
+
+/** @internal
+ *
  * @brief Conversion from
  * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
  * CIELab D50 color space</a> to
@@ -196,6 +261,43 @@ cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50)
     const cmsCIELab result = {resultMatrix(0, 0), //
                               resultMatrix(1, 0), //
                               resultMatrix(2, 0)};
+    return result;
+}
+
+/** @internal
+ *
+ * @brief Conversion from
+ * <a href="https://bottosson.github.io/posts/oklab/">Oklab color space</a>
+ * to <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
+ * CIELab D50 color space</a>.
+ *
+ * @param oklab The Oklab value to be converted.
+ *
+ * @returns the same color in
+ * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
+ * CIELab D50 color space</a>. */
+cmsCIELab fromOklabToCmscielabD50(const cmsCIELab &oklab)
+{
+    // Constants:
+    // https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html
+    // proposes a “D65 to D50 transformation matrix” for XYZ:
+    // clang-format off
+    constexpr double xyzD65ToXyzD50Array[] =
+        {+1.047886, +0.022919, -0.050216,
+         +0.029582, +0.990484, -0.017079,
+         -0.009252, +0.015073, +0.751678};
+    // clang-format on
+    static const ConversionMatrix xyzD65ToXyzD50{xyzD65ToXyzD50Array};
+    // Implementation
+    const double oklabArray[] = {oklab.L, oklab.a, oklab.b};
+    const QGenericMatrix<1, 3, double> oklabMatrix(oklabArray);
+    const auto xyzD65 = fromOklabToXyzd65(oklabMatrix);
+    const auto xyzD50 = xyzD65ToXyzD50 * xyzD65;
+    const cmsCIEXYZ cmsXyzD50{xyzD50(0, 0), xyzD50(1, 0), xyzD50(2, 0)};
+    cmsCIELab result;
+    cmsXYZ2Lab(cmsD50_XYZ(), // white point (for both, XYZ and also Lab)
+               &result, // output
+               &cmsXyzD50); // input
     return result;
 }
 

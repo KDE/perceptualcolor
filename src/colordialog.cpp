@@ -181,10 +181,6 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  *
  * @internal
  *
- * @todo Add to the Oklch tooltip information about the Oklch illuminant
- * (or, if this is a fixed illuminant, change the SpinBox label to
- * something like “Oklch-D??”).
- *
  * @todo Add to the color-space tooltip information about available rendering
  * intents (we have yet RgbColorSpacePrivate::intentList but do not use it
  * anywhere) and the RGB profile illuminant? (This would have to be implemented
@@ -531,7 +527,8 @@ void ColorDialogPrivate::retranslateUi()
     m_oklchSpinBox->setToolTip(richTextMarker
                                + tr("<p>Lightness: %L1⁠–⁠%L2</p>"
                                     "<p>Chroma: %L3⁠–⁠%L4</p>"
-                                    "<p>Hue: 0°⁠–⁠360°</p>")
+                                    "<p>Hue: 0°⁠–⁠360°</p>"
+                                    "<p>Whitepoint: D65</p>")
                                      .arg(0., 0, 'f', okdecimals)
                                      .arg(1., 0, 'f', okdecimals)
                                      .arg(0., 0, 'f', okdecimals)
