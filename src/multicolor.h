@@ -126,7 +126,7 @@ private:
      * @note It would be nice if this value could be smaller. However, testing
      * with <tt>0.0499</tt> did not work well: For values on the gray axis,
      * when changing the HSV-hue by 1°, in about 50% of the cases the LCH-hue
-     * changes, and in about 50% it did not. The reason is maybe be the low
+     * changes, and in about 50% it did not. The reason is maybe the low
      * 16-bit precision in QColor, which is used for some of the conversions.
      * And for values near to the gray axis, the effect seems to be bigger.
      * Maybe this could be solved by implementing our own conversion algorithms
