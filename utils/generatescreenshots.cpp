@@ -11,11 +11,11 @@
 #include "lchdouble.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
-#include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include "settranslation.h"
+#include "swatchbook.h"
 #include "version.h"
 #include "wheelcolorpicker.h"
 #include <QtCore/qsharedpointer.h>
@@ -431,9 +431,9 @@ static void makeScreenshots()
     }
 
     {
-        PaletteWidget m_paletteWidget(m_colorSpace);
-        m_paletteWidget.setCurrentColor(defaultColorRgb);
-        screenshot(&m_paletteWidget);
+        SwatchBook m_swatchBook(m_colorSpace);
+        m_swatchBook.setCurrentColor(defaultColorRgb);
+        screenshot(&m_swatchBook);
     }
 }
 

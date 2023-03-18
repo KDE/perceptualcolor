@@ -25,11 +25,11 @@
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "oklchvalues.h"
-#include "palettewidget.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include "screencolorpicker.h"
+#include "swatchbook.h"
 #include "wheelcolorpicker.h"
 #include <lcms2.h>
 #include <optional>
@@ -680,8 +680,8 @@ void ColorDialogPrivate::retranslateUi()
  *
  * Code that is shared between the various overloaded constructors.
  *
- * @todo The RTL layout is broken for @ref PaletteWidget. Thought a stretch
- * is added in the layout, the @ref PaletteWidget stays left-aligned
+ * @todo The RTL layout is broken for @ref SwatchBook. Thought a stretch
+ * is added in the layout, the @ref SwatchBook stays left-aligned
  * instead of right-aligned if there is too much space. Why doesn’t this
  * right-align? For @ref m_wheelColorPicker and @ref m_chromaHueDiagram
  * the same code works fine! */
@@ -697,9 +697,9 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_rgbColorSpace = colorSpace;
 
     // create the graphical selectors
-    m_paletteWidget = new PaletteWidget(m_rgbColorSpace);
+    m_swatchBook = new SwatchBook(m_rgbColorSpace);
     QHBoxLayout *paletteInnerLayout = new QHBoxLayout();
-    paletteInnerLayout->addWidget(m_paletteWidget);
+    paletteInnerLayout->addWidget(m_swatchBook);
     paletteInnerLayout->addStretch();
     QVBoxLayout *paletteOuterLayout = new QVBoxLayout();
     paletteOuterLayout->addLayout(paletteInnerLayout);
@@ -823,10 +823,10 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     q_pointer->setLayout(tempMainLayout);
 
     // initialize signal-slot-connections
-    connect(m_paletteWidget, // sender
-            &PaletteWidget::currentColorChanged, // signal
+    connect(m_swatchBook, // sender
+            &SwatchBook::currentColorChanged, // signal
             this, // receiver
-            &ColorDialogPrivate::readPaletteWidget // slot
+            &ColorDialogPrivate::readSwatchBook // slot
     );
     connect(m_rgbSpinBox, // sender
             &MultiSpinBox::sectionValuesChanged, // signal
@@ -1179,8 +1179,8 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::MultiColor
     m_currentOpaqueColor = color;
 
     // Update palette
-    if (m_paletteWidget != ignoreWidget) {
-        m_paletteWidget->setCurrentColor(m_currentOpaqueColor.multiRgb.rgbQColor);
+    if (m_swatchBook != ignoreWidget) {
+        m_swatchBook->setCurrentColor(m_currentOpaqueColor.multiRgb.rgbQColor);
     }
 
     // Update RGB widget
@@ -1333,20 +1333,20 @@ void ColorDialogPrivate::readRgbNumericValues()
 
 /** @brief Reads the color of the palette widget, and (if any)
  * updates the dialog accordingly. */
-void ColorDialogPrivate::readPaletteWidget()
+void ColorDialogPrivate::readSwatchBook()
 {
     if (m_isColorChangeInProgress) {
         // Nothing to do!
         return;
     }
-    const QColor temp = m_paletteWidget->currentColor();
+    const QColor temp = m_swatchBook->currentColor();
     if (!temp.isValid()) {
         // No color is currently selected!
         return;
     }
     const auto myMultiRgb = MultiRgb::fromRgbQColor(temp);
     setCurrentOpaqueColor(MultiColor::fromMultiRgb(m_rgbColorSpace, myMultiRgb), //
-                          m_paletteWidget);
+                          m_swatchBook);
 }
 
 /** @brief Reads the color of the @ref WheelColorPicker in the dialog and
@@ -2051,9 +2051,9 @@ void ColorDialog::changeEvent(QEvent *event)
         d_pointer->retranslateUi();
         // Retranslate all child widgets that actually need to be retranslated:
         {
-            QEvent eventForPaletteWidget(QEvent::LanguageChange);
-            QApplication::sendEvent(d_pointer->m_paletteWidget, //
-                                    &eventForPaletteWidget);
+            QEvent eventForSwatchBook(QEvent::LanguageChange);
+            QApplication::sendEvent(d_pointer->m_swatchBook, //
+                                    &eventForSwatchBook);
         }
         {
             QEvent eventForButtonOk(QEvent::LanguageChange);

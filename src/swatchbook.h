@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PALETTEWIDGET_H
-#define PALETTEWIDGET_H
+#ifndef SWATCHBOOK_H
+#define SWATCHBOOK_H
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
@@ -26,20 +26,19 @@ class QObject;
 
 namespace PerceptualColor
 {
-class PaletteWidgetPrivate;
+class SwatchBookPrivate;
 
 class RgbColorSpace;
 
 /** @internal
  *
- * @brief A palette widget.
+ * @brief Shows the colors of a palette.
  *
- * @image html PaletteWidget.png "PaletteWidget"
+ * @image html SwatchBook.png "SwatchBook"
  *
- * This widget shows a palette of colors. The user can select
- * a color by mouse click or keyboard.
+ * The user can select a color by mouse click or keyboard.
  *
- * This palette shows tints and shades of the basic colors.
+ * This used palette shows tints and shades of the basic colors.
  * Many other widgets of this library are about the perceptually
  * uniform color space. This one is different. How can we determine
  * the basic colors? The associations people have with individual
@@ -66,8 +65,8 @@ class RgbColorSpace;
  * as possible as in the perceptually uniform color space. We start
  * with the chromatic basic colors red, orange, yellow, green,
  * blue, purple, pink (this is the  order they appear on the
- * LCH hue). Then follows brown, which is
- * a special case at its hue is quite the same as for orange — it’s
+ * LCH hue). Then follows brown, which is a special case
+ * at its hue is quite the same as for orange — it’s
  * just the less chromatic part of this hue, but nevertheless
  * perceived by humans as an independent color. For each of these
  * basic colors are provides five variants in the order
@@ -142,7 +141,7 @@ class RgbColorSpace;
  *
  * @todo A design question: Should the size of the individual color patches
  * be responsive, adopting the the widget size? */
-class PaletteWidget : public AbstractDiagram
+class SwatchBook : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -161,8 +160,8 @@ class PaletteWidget : public AbstractDiagram
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
 public:
-    Q_INVOKABLE explicit PaletteWidget(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
-    virtual ~PaletteWidget() noexcept override;
+    Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
+    virtual ~SwatchBook() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     [[nodiscard]] QColor currentColor() const;
@@ -185,21 +184,21 @@ protected:
     virtual void paintEvent(QPaintEvent *event) override;
 
 private:
-    Q_DISABLE_COPY(PaletteWidget)
+    Q_DISABLE_COPY(SwatchBook)
 
     /** @internal
      * @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
-    friend class PaletteWidgetPrivate;
+    friend class SwatchBookPrivate;
     /** @brief Pointer to implementation (pimpl) */
-    ConstPropagatingUniquePointer<PaletteWidgetPrivate> d_pointer;
+    ConstPropagatingUniquePointer<SwatchBookPrivate> d_pointer;
 
     /** @internal @brief Only for unit tests. */
-    friend class TestPaletteWidget;
+    friend class TestSwatchBook;
 };
 
 } // namespace PerceptualColor
 
-#endif // PALETTEWIDGET_H
+#endif // SWATCHBOOK_H

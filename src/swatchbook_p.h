@@ -1,11 +1,11 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PALETTEWIDGET_P_H
-#define PALETTEWIDGET_P_H
+#ifndef SWATCHBOOK_P_H
+#define SWATCHBOOK_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "palettewidget.h"
+// #include "swatchbook.h"
 
 #include "constpropagatingrawpointer.h"
 #include "helperqttypes.h"
@@ -27,24 +27,24 @@
 
 namespace PerceptualColor
 {
-class PaletteWidget;
+class SwatchBook;
 class RgbColorSpace;
 
 /** @internal
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class PaletteWidgetPrivate final : public QObject
+class SwatchBookPrivate final : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PaletteWidgetPrivate(PaletteWidget *backLink);
+    explicit SwatchBookPrivate(SwatchBook *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
-    ~PaletteWidgetPrivate() noexcept override = default;
+    ~SwatchBookPrivate() noexcept override = default;
 
     [[nodiscard]] QSize patchSizeOuter() const;
     [[nodiscard]] QSize patchSizeInner() const;
@@ -81,10 +81,10 @@ public:
      *
      * The value is set by @ref retranslateUi(). */
     QString m_selectionMark;
-    /** @brief Internal storage for property @ref PaletteWidget::currentColor
+    /** @brief Internal storage for property @ref SwatchBook::currentColor
      *
      * QColor automatically initializes with an invalid color, just like it
-     * should be for the property @ref PaletteWidget::currentColor, so no
+     * should be for the property @ref SwatchBook::currentColor, so no
      * need to initialize here explicitly. */
     QColor m_currentColor;
     /** @brief Selected tint/shade.
@@ -97,13 +97,13 @@ public:
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
 
 private:
-    Q_DISABLE_COPY(PaletteWidgetPrivate)
+    Q_DISABLE_COPY(SwatchBookPrivate)
 
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
-    ConstPropagatingRawPointer<PaletteWidget> q_pointer;
+    ConstPropagatingRawPointer<SwatchBook> q_pointer;
 };
 
 } // namespace PerceptualColor
 
-#endif // PALETTEWIDGET_P_H
+#endif // SWATCHBOOK_P_H

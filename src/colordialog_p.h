@@ -41,7 +41,7 @@ class ChromaHueDiagram;
 class ColorPatch;
 class GradientSlider;
 class MultiSpinBox;
-class PaletteWidget;
+class SwatchBook;
 class RgbColorSpace;
 class WheelColorPicker;
 
@@ -156,9 +156,9 @@ public:
     /** @brief Pointer to the label for @ref m_oklchSpinBox. */
     QPointer<QLabel> m_oklchSpinBoxLabel;
     /** @brief Pointer to the palette widget. */
-    QPointer<PerceptualColor::PaletteWidget> m_paletteWidget;
+    QPointer<PerceptualColor::SwatchBook> m_swatchBook;
     /** @brief Pointer to the QWidget wrapper that contains
-     * @ref m_paletteWidget. */
+     * @ref m_swatchBook. */
     QPointer<QWidget> m_paletteWrapperWidget;
     /** @brief Holds the receiver object (if any) to be disconnected
      *  automatically after closing the dialog.
@@ -225,7 +225,7 @@ public Q_SLOTS:
     void readHsvNumericValues();
     void readHwbNumericValues();
     void readLightnessValue();
-    void readPaletteWidget();
+    void readSwatchBook();
     void readRgbHexValues();
     void readRgbNumericValues();
     void readWheelColorPickerValues();

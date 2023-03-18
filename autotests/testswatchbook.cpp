@@ -3,9 +3,9 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "palettewidget.h"
+#include "swatchbook.h"
 // Second, the private implementation.
-#include "palettewidget_p.h" // IWYU pragma: keep
+#include "swatchbook_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
 #include "helperqttypes.h"
@@ -42,12 +42,12 @@ namespace PerceptualColor
 {
 class RgbColorSpace;
 
-class TestPaletteWidget : public QObject
+class TestSwatchBook : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestPaletteWidget(QObject *parent = nullptr)
+    explicit TestSwatchBook(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -87,12 +87,12 @@ private Q_SLOTS:
 
     void testConstructorDestructor()
     {
-        PaletteWidget testObject(m_rgbColorSpace);
+        SwatchBook testObject(m_rgbColorSpace);
     }
 
     void testConstructorDefaultValues()
     {
-        PaletteWidget testObject(m_rgbColorSpace);
+        SwatchBook testObject(m_rgbColorSpace);
         // Verify that initially one of the colors of the palette
         // is actually selected (no -1 as index):
         QVERIFY(testObject.d_pointer->m_selectedBasicColor >= 0);
@@ -104,14 +104,14 @@ private Q_SLOTS:
 
     void testMinimalSizeHint()
     {
-        PaletteWidget testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace);
         QVERIFY2(testWidget.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
         QVERIFY2(testWidget.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
     }
 
     void testSizeHint()
     {
-        PaletteWidget testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace);
         QVERIFY2(testWidget.sizeHint().width() >= testWidget.minimumSizeHint().width(), "sizeHint width is bigger than or equal to minimalSizeHint width.");
         QVERIFY2(testWidget.sizeHint().height() >= testWidget.minimumSizeHint().height(),
                  "sizeHint height is bigger than or equal to minimalSizeHint "
@@ -120,14 +120,14 @@ private Q_SLOTS:
 
     void testCurrentColor()
     {
-        PaletteWidget testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace);
         // Prepare test
         QObject scopeMarker;
         QColor lastSignalColor;
         int signalCount = 0;
         connect( //
             &testWidget,
-            &PaletteWidget::currentColorChanged,
+            &SwatchBook::currentColorChanged,
             &scopeMarker,
             [&lastSignalColor, &signalCount](const QColor &newCurrentColor) {
                 lastSignalColor = newCurrentColor;
@@ -177,7 +177,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            PaletteWidget testWidget(m_rgbColorSpace);
+            SwatchBook testWidget(m_rgbColorSpace);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
             QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
@@ -198,7 +198,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            PaletteWidget testWidget(m_rgbColorSpace);
+            SwatchBook testWidget(m_rgbColorSpace);
             testWidget.setStyle(style);
             QVERIFY(!testWidget.d_pointer->patchSizeInner().isEmpty());
             QVERIFY(!testWidget.d_pointer->patchSizeOuter().isEmpty());
@@ -214,14 +214,14 @@ private Q_SLOTS:
 
     void testRetranslateUI()
     {
-        PaletteWidget testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace);
         // Test that function call does not crash:
         testWidget.d_pointer->retranslateUi();
     }
 
     void testInitStyleOptions()
     {
-        PaletteWidget testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace);
 
         // Test that function call does not crash with regular object:
         QStyleOptionFrame temp;
@@ -243,7 +243,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            PaletteWidget testWidget(m_rgbColorSpace);
+            SwatchBook testWidget(m_rgbColorSpace);
             testWidget.setStyle(style);
             QStyleOptionFrame temp;
             testWidget.d_pointer->initStyleOption(&temp);
@@ -255,7 +255,7 @@ private Q_SLOTS:
 
     void testKeyboard()
     {
-        PaletteWidget testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace);
         const QListSizeType count = //
             qMax(testWidget.d_pointer->m_paletteColors.count(), //
                  testWidget.d_pointer->m_paletteColors.at(0).count())
@@ -357,7 +357,7 @@ private Q_SLOTS:
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestPaletteWidget)
+QTEST_MAIN(PerceptualColor::TestSwatchBook)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testpalettewidget.moc"
+#include "testswatchbook.moc"

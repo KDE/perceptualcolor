@@ -143,7 +143,7 @@ if(BUILD_TESTING)
         testmultispinbox
         testmultispinboxsection
         testoklchvalues
-        testpalettewidget
+        testswatchbook
         testpolarpointf
         testrefreshiconengine
         testrgbcolorspace

@@ -3,9 +3,9 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "palettewidget.h"
+#include "swatchbook.h"
 // Second, the private implementation.
-#include "palettewidget_p.h" // IWYU pragma: associated
+#include "swatchbook_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
 #include "constpropagatingrawpointer.h"
@@ -55,7 +55,7 @@ namespace PerceptualColor
  * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
  * Qt Designer, which also provides a function of the same name in
  * uic-generated code</a>. */
-void PaletteWidgetPrivate::retranslateUi()
+void SwatchBookPrivate::retranslateUi()
 {
     // Which symbol is appropriate as selection mark? This might depend on
     // culture and language. For more information, see also
@@ -107,9 +107,9 @@ void PaletteWidgetPrivate::retranslateUi()
  * Can be created with @ref RgbColorSpaceFactory.
  *
  * @param parent The parent of the widget, if any */
-PaletteWidget::PaletteWidget(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new PaletteWidgetPrivate(this))
+    , d_pointer(new SwatchBookPrivate(this))
 {
     d_pointer->m_rgbColorSpace = colorSpace;
 
@@ -199,7 +199,7 @@ PaletteWidget::PaletteWidget(const QSharedPointer<PerceptualColor::RgbColorSpace
 }
 
 /** @brief Destructor */
-PaletteWidget::~PaletteWidget() noexcept
+SwatchBook::~SwatchBook() noexcept
 {
 }
 
@@ -207,7 +207,7 @@ PaletteWidget::~PaletteWidget() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
-PaletteWidgetPrivate::PaletteWidgetPrivate(PaletteWidget *backLink)
+SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink)
     : q_pointer(backLink)
 {
 }
@@ -219,7 +219,7 @@ PaletteWidgetPrivate::PaletteWidgetPrivate(PaletteWidget *backLink)
  * @returns Recommended size for the widget.
  *
  * @sa @ref minimumSizeHint() */
-QSize PaletteWidget::sizeHint() const
+QSize SwatchBook::sizeHint() const
 {
     return minimumSizeHint();
 }
@@ -231,7 +231,7 @@ QSize PaletteWidget::sizeHint() const
  * @returns Recommended minimum size for the widget.
  *
  * @sa @ref sizeHint() */
-QSize PaletteWidget::minimumSizeHint() const
+QSize SwatchBook::minimumSizeHint() const
 {
     ensurePolished();
 
@@ -263,7 +263,7 @@ QSize PaletteWidget::minimumSizeHint() const
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QColor PaletteWidget::currentColor() const
+QColor SwatchBook::currentColor() const
 {
     return d_pointer->m_currentColor;
 }
@@ -271,7 +271,7 @@ QColor PaletteWidget::currentColor() const
 /** @brief Setter for the @ref currentColor property.
  *
  * @param newCurrentColor the new color */
-void PaletteWidget::setCurrentColor(const QColor &newCurrentColor)
+void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 {
     // Convert to RGB:
     QColor temp = newCurrentColor;
@@ -339,8 +339,8 @@ void PaletteWidget::setCurrentColor(const QColor &newCurrentColor)
  * @param newCurrentRow Index of the row (tint/shade).
  *
  * @post The given color is selected. The selection mark is visible.
- * @ref PaletteWidget::currentColor has the value of this color. */
-void PaletteWidgetPrivate::selectColorFromPalette(QListSizeType newCurrentBasicColor, QListSizeType newCurrentRow)
+ * @ref SwatchBook::currentColor has the value of this color. */
+void SwatchBookPrivate::selectColorFromPalette(QListSizeType newCurrentBasicColor, QListSizeType newCurrentRow)
 {
     // As we assume there are no duplicates in the palette, it’s safe
     // to let setCurrentColor do all the work: It will select the
@@ -357,7 +357,7 @@ void PaletteWidgetPrivate::selectColorFromPalette(QListSizeType newCurrentBasicC
  *
  * @sa @ref verticalPatchSpacing
  */
-int PaletteWidgetPrivate::horizontalPatchSpacing() const
+int SwatchBookPrivate::horizontalPatchSpacing() const
 {
     int temp = q_pointer->style()->pixelMetric( //
         QStyle::PM_LayoutHorizontalSpacing,
@@ -392,7 +392,7 @@ int PaletteWidgetPrivate::horizontalPatchSpacing() const
  * device-independent pixel. The value is typically smaller than
  * @ref horizontalPatchSpacing(), to symbolize that the binding
  * between patches is vertically stronger than horizontally. */
-int PaletteWidgetPrivate::verticalPatchSpacing() const
+int SwatchBookPrivate::verticalPatchSpacing() const
 {
     return qMax(horizontalPatchSpacing() / 3, // ⅓ looks nice
                 1 // minimal useful value for a line visible as all scales
@@ -408,7 +408,7 @@ int PaletteWidgetPrivate::verticalPatchSpacing() const
  * @param option The object that will be initialized
  *
  * @note The value in QStyleOptionFrame::rect is not initialized. */
-void PaletteWidgetPrivate::initStyleOption(QStyleOptionFrame *option) const
+void SwatchBookPrivate::initStyleOption(QStyleOptionFrame *option) const
 {
     if (option == nullptr) {
         return;
@@ -433,7 +433,7 @@ void PaletteWidgetPrivate::initStyleOption(QStyleOptionFrame *option) const
  *
  * @returns The pixel position of the top-left pixel of the content area
  * which can be used for the color patches. */
-QPoint PaletteWidgetPrivate::offset(const QStyleOptionFrame &styleOptionFrame) const
+QPoint SwatchBookPrivate::offset(const QStyleOptionFrame &styleOptionFrame) const
 {
     const QPoint innerMarginOffset = QPoint( //
         q_pointer->style()->pixelMetric(QStyle::PM_LayoutLeftMargin),
@@ -464,7 +464,7 @@ QPoint PaletteWidgetPrivate::offset(const QStyleOptionFrame &styleOptionFrame) c
  * Reimplemented from base class.
  *
  * @param event The corresponding mouse event */
-void PaletteWidget::mousePressEvent(QMouseEvent *event)
+void SwatchBook::mousePressEvent(QMouseEvent *event)
 {
     // NOTE We will not actively ignore the event, even if we didn’t actually
     // react on it. Therefore, Breeze and other styles cannot move
@@ -532,7 +532,7 @@ void PaletteWidget::mousePressEvent(QMouseEvent *event)
  * pixel.
  *
  * @sa @ref patchSizeInner */
-QSize PaletteWidgetPrivate::patchSizeOuter() const
+QSize SwatchBookPrivate::patchSizeOuter() const
 {
     q_pointer->ensurePolished();
     const QSize mySize = patchSizeInner();
@@ -552,7 +552,7 @@ QSize PaletteWidgetPrivate::patchSizeOuter() const
  *
  * @returns Size of the inner space of a color patch, measured in
  * device-independent pixel. */
-QSize PaletteWidgetPrivate::patchSizeInner() const
+QSize SwatchBookPrivate::patchSizeInner() const
 {
     const int temp = q_pointer->style()->pixelMetric( //
         QStyle::PM_ButtonIconSize,
@@ -566,7 +566,7 @@ QSize PaletteWidgetPrivate::patchSizeInner() const
  * Reimplemented from base class.
  *
  * @param event the paint event */
-void PaletteWidget::paintEvent(QPaintEvent *event)
+void SwatchBook::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
@@ -732,7 +732,7 @@ void PaletteWidget::paintEvent(QPaintEvent *event)
  * Other key events are forwarded to the base class.
  *
  * @param event the event */
-void PaletteWidget::keyPressEvent(QKeyEvent *event)
+void SwatchBook::keyPressEvent(QKeyEvent *event)
 {
     QListSizeType basicColorShift = 0;
     QListSizeType rowShift = 0;
@@ -812,7 +812,7 @@ void PaletteWidget::keyPressEvent(QKeyEvent *event)
  * Reimplemented from base class.
  *
  * @param event The event. */
-void PaletteWidget::changeEvent(QEvent *event)
+void SwatchBook::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange) {
         // From QCoreApplication documentation:

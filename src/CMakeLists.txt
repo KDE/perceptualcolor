@@ -50,7 +50,7 @@ set(library_SRC
     multirgb.cpp
     multispinbox.cpp
     multispinboxsection.cpp
-    palettewidget.cpp
+    swatchbook.cpp
     polarpointf.cpp
     refreshiconengine.cpp
     rgbcolorspace.cpp
