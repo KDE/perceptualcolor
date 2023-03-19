@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <optional>
+#include <qgenericmatrix.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
@@ -480,6 +482,55 @@ private Q_SLOTS:
         QCOMPARE(normalizedAngleDegree(720.), 0);
         QCOMPARE(normalizedAngleDegree(-1.), 359);
         QCOMPARE(normalizedAngleDegree(-1.3), 358.7);
+    }
+
+    void testCreateSquareMatrix3()
+    {
+        // clang-format off
+        const auto temp = createSquareMatrix3(
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9);
+        // clang-format on
+        QCOMPARE(temp(0, 0), 1);
+        QCOMPARE(temp(0, 1), 2);
+        QCOMPARE(temp(0, 2), 3);
+        QCOMPARE(temp(1, 0), 4);
+        QCOMPARE(temp(1, 1), 5);
+        QCOMPARE(temp(1, 2), 6);
+        QCOMPARE(temp(2, 0), 7);
+        QCOMPARE(temp(2, 1), 8);
+        QCOMPARE(temp(2, 2), 9);
+    }
+
+    void testInverseMatrixFromNonInvertible()
+    {
+        // clang-format off
+        const auto temp = createSquareMatrix3(
+            1, 2, 3, //
+            4, 5, 6, //
+            7, 8, 9);
+        // clang-format on
+        const auto inverse = inverseMatrix(temp);
+        QVERIFY(!inverse.has_value());
+    }
+
+    void testInverseMatrixFromInvertible()
+    {
+        // clang-format off
+        const auto temp = createSquareMatrix3(
+            1, 2, 1, //
+            0, 1, 3, //
+            -1, 0, 1);
+        // clang-format on
+        const auto actualInverse = inverseMatrix(temp);
+        // clang-format off
+        const auto expectedInverse = createSquareMatrix3(
+            -0.25, 0.5, -1.25,
+            0.75, -0.5, 0.75,
+            -0.25, 0.5, -0.25);
+        // clang-format on
+        QCOMPARE(actualInverse, expectedInverse);
     }
 };
 

@@ -4,17 +4,11 @@
 #ifndef HELPERMATH_H
 #define HELPERMATH_H
 
-#include "lchdouble.h"
 #include <cmath>
-#include <lcms2.h>
 #include <limits>
-#include <qcolor.h>
-#include <qcoreapplication.h>
+#include <optional>
+#include <qgenericmatrix.h>
 #include <qglobal.h>
-#include <qimage.h>
-#include <qlist.h>
-#include <qstring.h>
-#include <qthread.h>
 #include <stdlib.h>
 #include <type_traits>
 
@@ -26,6 +20,17 @@
 
 namespace PerceptualColor
 {
+
+/** @brief A vector with 4 elements (double precision). */
+using Quartet = QGenericMatrix<1, 4, double>;
+/** @brief A 3×3 matrix (double precision). */
+using SquareMatrix3 = QGenericMatrix<3, 3, double>;
+/** @brief A vector with 3 elements (double precision). */
+using Trio = QGenericMatrix<1, 3, double>;
+
+SquareMatrix3 createSquareMatrix3(double r0c0, double r0c1, double r0c2, double r1c0, double r1c1, double r1c2, double r2c0, double r2c1, double r2c2);
+
+std::optional<SquareMatrix3> inverseMatrix(const SquareMatrix3 &matrix);
 
 /** @internal
  *
@@ -63,27 +68,6 @@ template<typename T>
                   "Template isOdd() only works with integer types.");
     constexpr T two = 2;
     return static_cast<bool>(number % two);
-}
-
-/** @internal
- *
- * @brief Round floating point numbers to a certain number of digits
- *
- * @tparam T a floating point type
- * @param value the value that will be rounded
- * @param precision the number of decimal places to which rounding takes place
- * @returns the rounded value */
-template<typename T>
-[[nodiscard]] constexpr T roundToDigits(T value, int precision)
-{
-    static_assert( //
-        std::is_floating_point<T>::value, //
-        "Template roundToDigits() only works with floating point types");
-    const T multiplier = std::pow(
-        // Make sure that pow returns a T:
-        static_cast<T>(10),
-        precision);
-    return std::round(value * multiplier) / multiplier;
 }
 
 /** @internal
@@ -223,6 +207,27 @@ T normalizedAngleDegree(T value)
         temp += max;
     }
     return temp;
+}
+
+/** @internal
+ *
+ * @brief Round floating point numbers to a certain number of digits
+ *
+ * @tparam T a floating point type
+ * @param value the value that will be rounded
+ * @param precision the number of decimal places to which rounding takes place
+ * @returns the rounded value */
+template<typename T>
+[[nodiscard]] constexpr T roundToDigits(T value, int precision)
+{
+    static_assert( //
+        std::is_floating_point<T>::value, //
+        "Template roundToDigits() only works with floating point types");
+    const T multiplier = std::pow(
+        // Make sure that pow returns a T:
+        static_cast<T>(10),
+        precision);
+    return std::round(value * multiplier) / multiplier;
 }
 
 } // namespace PerceptualColor

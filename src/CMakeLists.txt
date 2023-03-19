@@ -40,6 +40,7 @@ set(library_SRC
     gradientslider.cpp
     helper.cpp
     helperconversion.cpp
+    helpermath.cpp
     initializetranslation.cpp
     interlacingpass.cpp
     iohandlerfactory.cpp
