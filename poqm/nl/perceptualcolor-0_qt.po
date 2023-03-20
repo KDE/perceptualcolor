@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-02-27 10:46+0100\n"
+"PO-Revision-Date: 2023-03-19 13:37+0100\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:95
@@ -341,9 +341,6 @@ msgstr "sRGB kleurruimte"
 
 #. @item Used to indicate the selected color in the palette. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
 #: swatchbook.cpp:82
-#, fuzzy
-#| msgctxt "PerceptualColor::PaletteWidgetPrivate|"
-#| msgid "✓"
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
