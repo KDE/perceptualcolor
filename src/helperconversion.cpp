@@ -4,21 +4,71 @@
 // Own header
 #include "helperconversion.h"
 
+#include "helpermath.h"
 #include "lchdouble.h"
 #include "rgbdouble.h"
+#include <array>
 #include <cmath>
+#include <optional>
 #include <qgenericmatrix.h>
-
-namespace
-{
-// Nameless namespace is better than “static” keyword,
-// see https://stackoverflow.com/a/4422554
-
-using ConversionMatrix = QGenericMatrix<3, 3, double>;
-}
+#include <qglobal.h>
 
 namespace PerceptualColor
 {
+
+// Doxygen doesn’t handle correctly the Q_GLOBAL_STATIC_WITH_ARGS macro, so
+// we instruct Doxygen with the @cond command to ignore  this part of the code.
+
+/// @cond
+
+// clang-format off
+
+// https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
+Q_GLOBAL_STATIC_WITH_ARGS(
+    const SquareMatrix3,
+    m1,
+    (std::array<double, 9>{{
+        +0.8189330101, +0.3618667424, -0.1288597137,
+        +0.0329845436, +0.9293118715, +0.0361456387,
+        +0.0482003018, +0.2643662691, +0.6338517070}}.data()))
+
+// https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
+Q_GLOBAL_STATIC_WITH_ARGS(
+    const SquareMatrix3,
+    m2,
+    (std::array<double, 9>{{
+        +0.2104542553, +0.7936177850, -0.0040720468,
+        +1.9779984951, -2.4285922050, +0.4505937099,
+        +0.0259040371, +0.7827717662, -0.8086757660}}.data()))
+
+// https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html
+Q_GLOBAL_STATIC_WITH_ARGS(
+    const SquareMatrix3,
+    xyzD65ToXyzD50,
+    (std::array<double, 9>{{
+        +1.047886, +0.022919, -0.050216,
+        +0.029582, +0.990484, -0.017079,
+        -0.009252, +0.015073, +0.751678}}.data()))
+
+// clang-format on
+
+Q_GLOBAL_STATIC_WITH_ARGS( //
+    const SquareMatrix3,
+    m1inverse,
+    (inverseMatrix(*m1).value_or(SquareMatrix3())))
+
+Q_GLOBAL_STATIC_WITH_ARGS( //
+    const SquareMatrix3,
+    m2inverse,
+    (inverseMatrix(*m2).value_or(SquareMatrix3())))
+
+Q_GLOBAL_STATIC_WITH_ARGS( //
+    const SquareMatrix3,
+    xyzD50ToXyzD65,
+    (inverseMatrix(*xyzD65ToXyzD50).value_or(SquareMatrix3())))
+
+/// @endcond
+
 /** @internal
  *
  * @brief Type conversion.
@@ -101,33 +151,12 @@ cmsCIELab toCmsCieLab(const cmsCIELCh &value)
  * Oklab color space</a>. */
 QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value)
 {
-    // Constants
-    // clang-format off
-    constexpr double m1array[] =
-        {+0.8189330101, +0.3618667424, -0.1288597137,
-         +0.0329845436, +0.9293118715, +0.0361456387,
-         +0.0482003018, +0.2643662691, +0.6338517070};
-    constexpr double m2array[] =
-        {+0.2104542553, +0.7936177850, -0.0040720468,
-         +1.9779984951, -2.4285922050, +0.4505937099,
-         +0.0259040371, +0.7827717662, -0.8086757660};
-    // clang-format on
-    static const ConversionMatrix m1{m1array};
-    static const ConversionMatrix m2{m2array};
-    // NOTE If later we need this matrices also in other places, we could
-    // move it into a nameless namespace within this very same file:
-    // namespace {
-    // // Nameless namespace is better than “static” keyword,
-    // // see https://stackoverflow.com/a/4422554
-    // Q_GLOBAL_STATIC_WITH_ARGS(const ConversionMatrix, m1, (m1array))
-    // }
-
     // The following algorithm is as described in
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
     //
     // Oklab: “First the XYZ coordinates are converted to an approximate
     // cone responses:”
-    auto lms = m1 * value; // NOTE Might contain negative entries
+    auto lms = (*m1) * value; // NOTE Might contain negative entries
     // LMS (long, medium, short) is the response of the three types of
     // cones of the human eye.
 
@@ -153,7 +182,7 @@ QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double
     lms(/*row*/ 2, /*column*/ 0) = std::cbrt(lms(/*row*/ 2, /*column*/ 0));
 
     // Oklab: “Finally, this is transformed into the Lab-coordinates:”
-    return m2 * lms;
+    return (*m2) * lms;
 }
 
 /** @internal
@@ -182,35 +211,12 @@ QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double
  * “a D65 whitepoint and white as Y=1”</a>. */
 QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double> &value)
 {
-    // Constants
-    // Inverted matrices calculated with
-    // https://matrix.reshish.com/inverCalculation.php
-    // clang-format off
-    constexpr double m1invertedArray[] =
-        {+1.227013851103521026000, -0.55779998065182223830, +0.281256148966467807580,
-         -0.040580178423280593977, +1.11225686961683010490, -0.071676678665601200577,
-         -0.076381284505706892869, -0.42148197841801273055, +1.586163220440794757500};
-    constexpr double m2invertedArray[] =
-        {+0.99999999845051981432, +0.396337792173767856780, +0.215803758060758803390,
-         +1.00000000888176077670, -0.105561342323656349400, -0.063854174771705903402,
-         +1.00000005467241091770, -0.089484182094965759684, -1.291485537864091739900};
-    // clang-format on
-    static const ConversionMatrix m1inverted{m1invertedArray};
-    static const ConversionMatrix m2inverted{m2invertedArray};
-    // NOTE If later we need this matrices also in other places, we could
-    // move it into a nameless namespace within this very same file:
-    // namespace {
-    // // Nameless namespace is better than “static” keyword,
-    // // see https://stackoverflow.com/a/4422554
-    // Q_GLOBAL_STATIC_WITH_ARGS(const ConversionMatrix, m1, (m1array))
-    // }
-
     // The following algorithm is as described in
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
     //
     // Oklab: “The inverse operation, going from Oklab to XYZ is done with
     // the following steps:”
-    auto lms = m2inverted * value; // NOTE Might contain negative entries
+    auto lms = (*m2inverse) * value; // NOTE Might contain negative entries
     // LMS (long, medium, short) is the response of the three types of
     // cones of the human eye.
 
@@ -218,7 +224,7 @@ QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double
     lms(/*row*/ 1, /*column*/ 0) = std::pow(lms(/*row*/ 1, /*column*/ 0), 3);
     lms(/*row*/ 2, /*column*/ 0) = std::pow(lms(/*row*/ 2, /*column*/ 0), 3);
 
-    return m1inverted * lms;
+    return (*m1inverse) * lms;
 }
 
 /** @internal
@@ -234,30 +240,14 @@ QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double
  * <a href="https://bottosson.github.io/posts/oklab/">Oklab color space</a>. */
 cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50)
 {
-    // Constants:
-    // https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html
-    // proposes a “D65 to D50 transformation matrix” for XYZ:
-    //  1.047886  0.022919 -0.050216
-    //  0.029582  0.990484 -0.017079
-    // -0.009252  0.015073  0.751678
-    // To do the inverse operation, we use the inverse of this matrix,
-    // (calculated with https://matrix.reshish.com/inverCalculation.php):
-    // clang-format off
-    constexpr double xyzD50ToXyzD65Array[] =
-        {+0.955512609517083167880, -0.023073214184644801330, +0.063308961782106566635,
-         -0.028324949364887475422, +1.009942432477107357000, +0.021054814890111626368,
-         +0.012328875695482643347, -0.020535835374141285089, +1.330713916450354270600};
-    // clang-format on
-    static const ConversionMatrix xyzD50ToXyzD65{xyzD50ToXyzD65Array};
-
-    // Implementation:
     cmsCIEXYZ xyzD50;
     cmsLab2XYZ(cmsD50_XYZ(), // white point (for both, XYZ and also Lab)
                &xyzD50, // output
                &cielabD50); // input
     const double xyzD50Array[]{xyzD50.X, xyzD50.Y, xyzD50.Z};
     const QGenericMatrix<1, 3, double> xyzD50Matrix(xyzD50Array);
-    const auto resultMatrix = fromXyzd65ToOklab(xyzD50ToXyzD65 * xyzD50Matrix);
+    const auto resultMatrix = fromXyzd65ToOklab( //
+        (*xyzD50ToXyzD65) * xyzD50Matrix);
     const cmsCIELab result = {resultMatrix(0, 0), //
                               resultMatrix(1, 0), //
                               resultMatrix(2, 0)};
@@ -278,21 +268,10 @@ cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50)
  * CIELab D50 color space</a>. */
 cmsCIELab fromOklabToCmscielabD50(const cmsCIELab &oklab)
 {
-    // Constants:
-    // https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html
-    // proposes a “D65 to D50 transformation matrix” for XYZ:
-    // clang-format off
-    constexpr double xyzD65ToXyzD50Array[] =
-        {+1.047886, +0.022919, -0.050216,
-         +0.029582, +0.990484, -0.017079,
-         -0.009252, +0.015073, +0.751678};
-    // clang-format on
-    static const ConversionMatrix xyzD65ToXyzD50{xyzD65ToXyzD50Array};
-    // Implementation
     const double oklabArray[] = {oklab.L, oklab.a, oklab.b};
     const QGenericMatrix<1, 3, double> oklabMatrix(oklabArray);
     const auto xyzD65 = fromOklabToXyzd65(oklabMatrix);
-    const auto xyzD50 = xyzD65ToXyzD50 * xyzD65;
+    const auto xyzD50 = (*xyzD65ToXyzD50) * xyzD65;
     const cmsCIEXYZ cmsXyzD50{xyzD50(0, 0), xyzD50(1, 0), xyzD50(2, 0)};
     cmsCIELab result;
     cmsXYZ2Lab(cmsD50_XYZ(), // white point (for both, XYZ and also Lab)
