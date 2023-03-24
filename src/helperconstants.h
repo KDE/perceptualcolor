@@ -116,6 +116,19 @@ constexpr int singleStepLightness = 1;
 
 /** @internal
  *
+ * @brief Amount of single step for Ok lightness, a, b, chroma (but
+ * <em>not</em> hue).
+ *
+ * Measured in Ok units.
+ *
+ * The smaller of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value. */
+constexpr double singleStepOklabc = 0.01;
+
+/** @internal
+ *
  * @brief Amount of page step for alpha.
  *
  * Measured for an alpha range from 0 (transparent) to 1 (opaque).

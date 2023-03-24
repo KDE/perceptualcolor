@@ -866,6 +866,16 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::updateHlcButBlockSignals // slot
     );
+    connect(m_oklchSpinBox, // sender
+            &MultiSpinBox::sectionValuesChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readOklchNumericValues // slot
+    );
+    connect(m_oklchSpinBox, // sender
+            &MultiSpinBox::editingFinished, // signal
+            this, // receiver
+            &ColorDialogPrivate::updateOklchButBlockSignals // slot
+    );
     connect(m_lchLightnessSelector, // sender
             &GradientSlider::valueChanged, // signal
             this, // receiver
@@ -928,27 +938,21 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // QtCurve.
     q_pointer->setSizeGripEnabled(true);
 
-    // Refresh button for the HLC spin box
-    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
-    myIconEngine->setReferenceWidget(m_ciehlcD50SpinBox);
-    // myIcon takes ownership of myIconEngine, therefore we won’t
-    // delete myIconEngine manually.
-    QIcon myIcon = QIcon(myIconEngine);
-    QAction *myAction = new QAction(
-        // Icon:
-        myIcon,
-        // Text:
-        QString(),
-        // The q_pointer’s object is still not fully initialized at this point,
-        // but it’s base class constructor has fully run; this should be enough
-        // to use functionality based on QWidget. So: Parent object:
-        q_pointer);
-    m_ciehlcD50SpinBox->addActionButton(myAction, //
-                                        QLineEdit::ActionPosition::TrailingPosition);
-    connect(myAction, // sender
+    // Refresh button for some spin boxes
+    // The q_pointer’s object is still not fully initialized at this point,
+    // but it’s base class constructor has fully run; this should be enough
+    // to use functionality based on QWidget, so we can use it as parent.
+    QAction *ciehlcD50Action = addRefreshAction(m_ciehlcD50SpinBox, q_pointer);
+    connect(ciehlcD50Action, // sender
             &QAction::triggered, // signal
             this, // receiver
             &ColorDialogPrivate::updateHlcButBlockSignals // slot
+    );
+    QAction *oklchAction = addRefreshAction(m_oklchSpinBox, q_pointer);
+    connect(oklchAction, // sender
+            &QAction::triggered, // signal
+            this, // receiver
+            &ColorDialogPrivate::updateOklchButBlockSignals // slot
     );
 
     initializeTranslation(QCoreApplication::instance(),
@@ -958,6 +962,25 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
                           // values.
                           std::optional<QStringList>());
     retranslateUi();
+}
+
+/** @brief Adds a refresh action (with icon, but without text).
+ *
+ * @param spinbox The spinbox to which the action is added.
+ * @param parent The parent for the action.
+ *
+ * @returns A pointer to the action. */
+QAction *ColorDialogPrivate::addRefreshAction(MultiSpinBox *spinbox, QWidget *parent)
+{
+    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
+    myIconEngine->setReferenceWidget(spinbox);
+    // myIcon takes ownership of myIconEngine, therefore we won’t
+    // delete myIconEngine manually.
+    QIcon myIcon = QIcon(myIconEngine);
+    QAction *myAction = new QAction(myIcon, QString(), parent);
+    spinbox->addActionButton(myAction, //
+                             QLineEdit::ActionPosition::TrailingPosition);
+    return myAction;
 }
 
 /** @brief Constructor
@@ -1358,6 +1381,7 @@ void ColorDialogPrivate::readWheelColorPickerValues()
     setCurrentOpaqueColor( //
         MultiColor::fromCielchD50(m_rgbColorSpace, //
                                   m_wheelColorPicker->currentColor()),
+
         m_wheelColorPicker);
 }
 
@@ -1372,6 +1396,7 @@ void ColorDialogPrivate::readChromaHueDiagramValue()
     setCurrentOpaqueColor( //
         MultiColor::fromCielchD50(m_rgbColorSpace, //
                                   m_chromaHueDiagram->currentColor()),
+
         m_chromaHueDiagram);
 }
 
@@ -1448,6 +1473,16 @@ void ColorDialogPrivate::updateHlcButBlockSignals()
     m_ciehlcD50SpinBox->setSectionValues(m_currentOpaqueColor.ciehlcD50);
 }
 
+/** @brief Updates the Oklch spin box to @ref m_currentOpaqueColor.
+ *
+ * @post The @ref m_oklchSpinBox gets the value of @ref m_currentOpaqueColor.
+ * During this operation, all signals of @ref m_oklchSpinBox are blocked. */
+void ColorDialogPrivate::updateOklchButBlockSignals()
+{
+    QSignalBlocker mySignalBlocker(m_oklchSpinBox);
+    m_oklchSpinBox->setSectionValues(m_currentOpaqueColor.oklch);
+}
+
 /** @brief If no @ref m_isColorChangeInProgress, reads the HLC numbers
  * in the dialog and updates the dialog accordingly. */
 void ColorDialogPrivate::readHlcNumericValues()
@@ -1470,6 +1505,39 @@ void ColorDialogPrivate::readHlcNumericValues()
             myColor),
         // widget that will ignored during updating:
         m_ciehlcD50SpinBox);
+}
+
+/** @brief If no @ref m_isColorChangeInProgress, reads the Oklch numbers
+ * in the dialog and updates the dialog accordingly. */
+void ColorDialogPrivate::readOklchNumericValues()
+{
+    if (m_isColorChangeInProgress) {
+        // Nothing to do!
+        return;
+    }
+    // Get final color (in necessary moving the original color into gamut).
+    // TODO xxx This code moves into gamut based on the Cielch-D50 instead of
+    // the Oklch gamut. This leads to wrong results, because Oklch hue is not
+    // guaranteed to be respected. Use actually Oklch to move into gamut!
+    LchDouble originalOklch;
+    originalOklch.l = m_oklchSpinBox->sectionValues().value(0);
+    originalOklch.c = m_oklchSpinBox->sectionValues().value(1);
+    originalOklch.h = m_oklchSpinBox->sectionValues().value(2);
+    const auto originalColor = MultiColor::fromOklch(m_rgbColorSpace, originalOklch);
+    const auto originalCielchD50 = originalColor.cielchD50;
+    // TODO Would it be better to adapt all 3 axis instead of only
+    // adapting C and L?
+    const auto inGamutCielch = m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(originalCielchD50);
+
+    const bool originalIsIsGamut = (originalCielchD50.l == inGamutCielch.l) //
+        && (originalCielchD50.c == inGamutCielch.c) && (originalCielchD50.h == inGamutCielch.h);
+    const MultiColor finalColor = originalIsIsGamut //
+        ? originalColor //
+        : MultiColor::fromCielchD50(m_rgbColorSpace, inGamutCielch);
+
+    setCurrentOpaqueColor(finalColor,
+                          // widget that will ignored during updating:
+                          m_oklchSpinBox);
 }
 
 /** @brief Try to initialize the screen color picker feature.
@@ -1699,22 +1767,24 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         QList<MultiSpinBoxSection> oklchSections;
         MultiSpinBoxSection mySection;
         m_oklchSpinBox = new MultiSpinBox;
-        m_oklchSpinBox->setEnabled(false);
         // L
         mySection.setMinimum(0);
         mySection.setMaximum(1);
+        mySection.setSingleStep(singleStepOklabc);
         mySection.setWrapping(false);
         mySection.setDecimals(okdecimals);
         oklchSections.append(mySection);
         // C
         mySection.setMinimum(0);
         mySection.setMaximum(OklchValues::maximumChroma);
+        mySection.setSingleStep(singleStepOklabc);
         mySection.setWrapping(false);
         mySection.setDecimals(okdecimals);
         oklchSections.append(mySection);
         // H
         mySection.setMinimum(0);
         mySection.setMaximum(360);
+        mySection.setSingleStep(1);
         mySection.setWrapping(true);
         mySection.setDecimals(decimals);
         oklchSections.append(mySection);
@@ -1732,7 +1802,6 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     m_ciehlcD50SpinBoxLabel->setBuddy(m_ciehlcD50SpinBox);
     cielabFormLayout->addRow(m_ciehlcD50SpinBoxLabel, m_ciehlcD50SpinBox);
     m_oklchSpinBoxLabel = new QLabel();
-    m_oklchSpinBoxLabel->setEnabled(false);
     m_oklchSpinBoxLabel->setBuddy(m_oklchSpinBoxLabel);
     cielabFormLayout->addRow(m_oklchSpinBoxLabel, m_oklchSpinBox);
     tempMainLayout->addLayout(cielabFormLayout);

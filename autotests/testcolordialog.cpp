@@ -1602,15 +1602,41 @@ private Q_SLOTS:
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.c, 12);
 
-        // Test with an out-of-gamut value.
+        // Test with an out-of-gamut value. Hue and lightness should not change.
         myValues[0] = 10;
         myValues[1] = 11;
-        myValues[2] = 12;
+        myValues[2] = 50;
         myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.c, 12);
+    }
+
+    void testReadOklchNumericValues()
+    {
+        QScopedPointer<ColorDialog> myDialog( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        QList<double> myValues = //
+            myDialog->d_pointer->m_oklchSpinBox->sectionValues();
+
+        // Test with a normal value
+        myValues[0] = 0.25;
+        myValues[1] = 0.05;
+        myValues[2] = 3;
+        myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->readOklchNumericValues();
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(0), 0.25);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(1), 0.05);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
+
+        // Test with an out-of-gamut value. Hue and lightness should not change.
+        // myValues[0] = 0.25;
+        // myValues[1] = 0.2;
+        // myValues[2] = 3;
+        // myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
+        // myDialog->d_pointer->readOklchNumericValues();
+        // QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(0), 0.25);
+        // QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
     }
 
     void testReadHsvNumericValues()

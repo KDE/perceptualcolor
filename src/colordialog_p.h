@@ -19,6 +19,7 @@
 #include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+class QAction;
 class QDialogButtonBox;
 class QDoubleSpinBox;
 class QGroupBox;
@@ -202,16 +203,17 @@ public:
     /** @brief Pointer to the @ref WheelColorPicker widget. */
     QPointer<WheelColorPicker> m_wheelColorPicker;
 
-    /** @brief Number of decimals to use in the spin boxes.
+    /** @brief Number of decimals to for most values.
      *
      * @sa @ref okdecimals */
     static constexpr quint8 decimals = 0;
-    /** @brief Number of decimals to use in the spin boxes for the Oklab and
-     * Oklch values L, C, a, b (but not for h).
+    /** @brief Number of decimals to use for the Oklab/Oklch values
+     * L, C, a, b (but not for h!).
      *
      * @sa @ref decimals */
     static constexpr quint8 okdecimals = decimals + 2;
 
+    static QAction *addRefreshAction(MultiSpinBox *spinbox, QWidget *parent);
     void applyLayoutDimensions();
     void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     [[nodiscard]] QWidget *initializeNumericPage();
@@ -225,14 +227,16 @@ public Q_SLOTS:
     void readHsvNumericValues();
     void readHwbNumericValues();
     void readLightnessValue();
-    void readSwatchBook();
+    void readOklchNumericValues();
     void readRgbHexValues();
     void readRgbNumericValues();
+    void readSwatchBook();
     void readWheelColorPickerValues();
     void retranslateUi();
     void setCurrentOpaqueColor(const PerceptualColor::MultiColor &color, QWidget *const ignoreWidget);
     void updateColorPatch();
     void updateHlcButBlockSignals();
+    void updateOklchButBlockSignals();
     void updateRgbHexButBlockSignals();
 
 private:
