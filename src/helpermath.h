@@ -22,11 +22,31 @@
 namespace PerceptualColor
 {
 
-/** @brief A vector with 4 elements (double precision). */
+/** @brief A vector with 4 elements (double precision).
+ *
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use for <em>queued</em> signal-slot connections),
+ * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object. */
 using Quartet = QGenericMatrix<1, 4, double>;
-/** @brief A 3×3 matrix (double precision). */
+
+/** @brief A 3×3 matrix (double precision).
+ *
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use for <em>queued</em> signal-slot connections),
+ * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object. */
 using SquareMatrix3 = QGenericMatrix<3, 3, double>;
-/** @brief A vector with 3 elements (double precision). */
+
+/** @brief A vector with 3 elements (double precision).
+ *
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use for <em>queued</em> signal-slot connections),
+ * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object. */
 using Trio = QGenericMatrix<1, 3, double>;
 
 SquareMatrix3 createSquareMatrix3(double r0c0, double r0c1, double r0c2, double r1c0, double r1c1, double r1c2, double r2c0, double r2c1, double r2c2);
