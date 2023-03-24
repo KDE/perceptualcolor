@@ -165,6 +165,69 @@ MultiColor MultiColor::fromCielchD50(const QSharedPointer<RgbColorSpace> &colorS
  * constructed from the given color.
  *
  * @param colorSpace The color space in which the object is created.
+ * @param color Original color
+ * @returns A @ref MultiColor object representing this color.
+ * @note The original color will neither be normalised nor moved into gamut.
+ * If it’s an out-of-gamut color, the resulting RGB-based representations will
+ * nevertheless be in-gamut and therefore be an incorrect color. */
+MultiColor MultiColor::fromOklch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color)
+{
+    MultiColor result;
+
+    result.oklch = QList<double>({color.l, color.c, color.h});
+
+    const auto cmsOklch = toCmsLch(color);
+    const auto cmsOklab = toCmsLab(cmsOklch);
+    const auto cmsCielabD50 = fromOklabToCmscielabD50(cmsOklab);
+    result.cielchD50 = toLchDouble(cmsCielabD50);
+
+    result.ciehlcD50 = QList<double>({result.cielchD50.h, result.cielchD50.l, result.cielchD50.c});
+
+    // TODO xxx Missing support of Oklch to prevent arbitrary hue changes
+    // near the gray axis, like we prevent it yet for cielch vs RGB.
+
+    std::optional<double> hue;
+    if (result.cielchD50.c < colorDifferenceThreshold) {
+        // If we are very close to the cylindrical axis, a big numeric
+        // difference in the hue is a very small difference in color. On the
+        // cylindrical axis itself the hue is completely meaningless. However,
+        // a hue value that is jumping during conversion from LCH/HLC to HSL
+        // (because the conversion can have rounding errors and because the
+        // gray axis of LCH and RGB is not necessarily exactly identical)
+        // is confusing. Therefore, for values that are near to the cylindrical
+        // axis, we snap them exactly to the axis, and then use the hue
+        // that corresponds to the same color, but with slightly higher
+        // chroma/saturation.
+        LchDouble saturatedCielchD50 = result.cielchD50;
+        // Avoid black and white, as for these values, non-zero chroma is
+        // out-of-gamut and therefore would not produce a meaningful result.
+        saturatedCielchD50.l = qBound(colorDifferenceThreshold, //
+                                      result.cielchD50.l, //
+                                      100 - colorDifferenceThreshold);
+        // Use a more saturated value:
+        saturatedCielchD50.c = colorDifferenceThreshold;
+        const RgbDouble saturatedRgbDouble = colorSpace->fromCielchD50ToRgbDoubleUnbound( //
+            saturatedCielchD50);
+        // TODO xxx The hue shouldn’t be calculated like here by QColor::hueF()
+        // but rather using our own MultiRgb. Reasons:
+        // 1. Consistency!
+        // 2. If in the future MultiRgb becomes more accurate, this code
+        //    would also benefit from this.
+        hue = fromRgbDoubleToQColor(saturatedRgbDouble).hueF() * 360;
+    }
+    const RgbDouble temp = colorSpace->fromCielchD50ToRgbDoubleUnbound(toLchDouble(cmsCielabD50));
+    const QList<double> newRgbList({temp.red * 255, //
+                                    temp.green * 255, //
+                                    temp.blue * 255});
+    result.multiRgb = MultiRgb::fromRgb(newRgbList, hue);
+
+    return result;
+}
+
+/** @brief Static convenience function that returns a @ref MultiColor
+ * constructed from the given color.
+ *
+ * @param colorSpace The color space in which the object is created.
  * @param color Original color.
  * @returns A @ref MultiColor object representing this color. */
 MultiColor MultiColor::fromMultiRgb(const QSharedPointer<RgbColorSpace> &colorSpace, const MultiRgb &color)

@@ -64,6 +64,7 @@ class MultiColor final
 public:
     [[nodiscard]] static MultiColor fromCielchD50(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color);
     [[nodiscard]] static MultiColor fromMultiRgb(const QSharedPointer<RgbColorSpace> &colorSpace, const MultiRgb &color);
+    [[nodiscard]] static MultiColor fromOklch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color);
 
     /** @brief Constructor for an uninitialized object.
      *
