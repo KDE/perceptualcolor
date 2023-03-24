@@ -4,11 +4,11 @@
 #ifndef HELPERCONVERSION_H
 #define HELPERCONVERSION_H
 
+#include "helpermath.h"
 #include "helperqttypes.h"
 #include "lchdouble.h"
 #include <lcms2.h>
 #include <qcolor.h>
-#include <qgenericmatrix.h>
 #include <qglobal.h>
 #include <type_traits>
 
@@ -44,13 +44,13 @@ template<typename T>
     return static_cast<quint8>(bounded);
 }
 
-[[nodiscard]] QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double> &value);
+[[nodiscard]] Trio fromOklabToXyzd65(const Trio &value);
 
 [[nodiscard]] cmsCIELab fromOklabToCmscielabD50(const cmsCIELab &oklab);
 
 QColor fromRgbDoubleToQColor(const RgbDouble &color);
 
-[[nodiscard]] QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value);
+[[nodiscard]] Trio fromXyzd65ToOklab(const Trio &value);
 
 /** @internal
  *

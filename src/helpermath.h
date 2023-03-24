@@ -9,6 +9,7 @@
 #include <optional>
 #include <qgenericmatrix.h>
 #include <qglobal.h>
+#include <qmetatype.h>
 #include <stdlib.h>
 #include <type_traits>
 
@@ -231,5 +232,9 @@ template<typename T>
 }
 
 } // namespace PerceptualColor
+
+Q_DECLARE_METATYPE(PerceptualColor::Quartet)
+Q_DECLARE_METATYPE(PerceptualColor::SquareMatrix3)
+Q_DECLARE_METATYPE(PerceptualColor::Trio)
 
 #endif // HELPERMATH_H

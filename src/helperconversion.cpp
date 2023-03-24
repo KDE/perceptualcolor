@@ -149,7 +149,7 @@ cmsCIELab toCmsCieLab(const cmsCIELCh &value)
  * @returns the same color in
  * <a href="https://bottosson.github.io/posts/oklab/">
  * Oklab color space</a>. */
-QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double> &value)
+Trio fromXyzd65ToOklab(const Trio &value)
 {
     // The following algorithm is as described in
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -209,7 +209,7 @@ QGenericMatrix<1, 3, double> fromXyzd65ToOklab(const QGenericMatrix<1, 3, double
  * CIE 1931 XYZ color space</a>. The XYZ value has
  * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
  * “a D65 whitepoint and white as Y=1”</a>. */
-QGenericMatrix<1, 3, double> fromOklabToXyzd65(const QGenericMatrix<1, 3, double> &value)
+Trio fromOklabToXyzd65(const Trio &value)
 {
     // The following algorithm is as described in
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -245,7 +245,7 @@ cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50)
                &xyzD50, // output
                &cielabD50); // input
     const double xyzD50Array[]{xyzD50.X, xyzD50.Y, xyzD50.Z};
-    const QGenericMatrix<1, 3, double> xyzD50Matrix(xyzD50Array);
+    const Trio xyzD50Matrix(xyzD50Array);
     const auto resultMatrix = fromXyzd65ToOklab( //
         (*xyzD50ToXyzD65) * xyzD50Matrix);
     const cmsCIELab result = {resultMatrix(0, 0), //
@@ -269,7 +269,7 @@ cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50)
 cmsCIELab fromOklabToCmscielabD50(const cmsCIELab &oklab)
 {
     const double oklabArray[] = {oklab.L, oklab.a, oklab.b};
-    const QGenericMatrix<1, 3, double> oklabMatrix(oklabArray);
+    const Trio oklabMatrix(oklabArray);
     const auto xyzD65 = fromOklabToXyzd65(oklabMatrix);
     const auto xyzD50 = (*xyzD65ToXyzD50) * xyzD65;
     const cmsCIEXYZ cmsXyzD50{xyzD50(0, 0), xyzD50(1, 0), xyzD50(2, 0)};
