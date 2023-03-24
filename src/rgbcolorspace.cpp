@@ -864,7 +864,7 @@ PerceptualColor::LchDouble RgbColorSpace::toCielchDouble(const QRgba64 rgbColor)
  * @sa @ref toQRgbOrTransparent */
 QRgb RgbColorSpace::toQRgbBound(const LchDouble &lch) const
 {
-    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
+    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsCIELab lab; // uses cmsFloat64Number internally
     cmsLCh2Lab(&lab, // output
                &myCmsCieLch // input
@@ -900,7 +900,7 @@ bool RgbColorSpace::isInGamut(const LchDouble &lch) const
         return false;
     }
     cmsCIELab lab; // uses cmsFloat64Number internally
-    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
+    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsLCh2Lab(&lab, &myCmsCieLch);
     return qAlpha(toQRgbOrTransparent(lab)) != 0;
 }
@@ -1000,7 +1000,7 @@ QRgb RgbColorSpace::toQRgbOrTransparent(const cmsCIELab &lab) const
  * RGB value which might be in-range or out-of range. */
 PerceptualColor::RgbDouble RgbColorSpace::toRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const
 {
-    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
+    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsCIELab lab; // uses cmsFloat64Number internally
     cmsLCh2Lab(&lab, // output
                &myCmsCieLch // input

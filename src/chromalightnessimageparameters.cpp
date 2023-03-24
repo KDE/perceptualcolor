@@ -121,7 +121,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             LCh.C = (x + 0.5) * 100.0 / imageHeight;
             rgbColor = //
                 parameters.rgbColorSpace->toQRgbOrTransparent( //
-                    toCmsCieLab(LCh));
+                    toCmsLab(LCh));
             if (qAlpha(rgbColor) != 0) {
                 // The pixel is within the gamut
                 myImage.setPixelColor(x, y, rgbColor);

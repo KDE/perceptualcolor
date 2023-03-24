@@ -1270,7 +1270,7 @@ void ColorDialogPrivate::readLightnessValue()
     lch.l = m_lchLightnessSelector->value() * 100;
     lch = m_rgbColorSpace->reduceChromaToFitIntoGamut(lch);
     setCurrentOpaqueColor( //
-        MultiColor::fromLch(m_rgbColorSpace, lch),
+        MultiColor::fromCielch(m_rgbColorSpace, lch),
         m_lchLightnessSelector);
 }
 
@@ -1355,8 +1355,8 @@ void ColorDialogPrivate::readWheelColorPickerValues()
         return;
     }
     setCurrentOpaqueColor( //
-        MultiColor::fromLch(m_rgbColorSpace, //
-                            m_wheelColorPicker->currentColor()),
+        MultiColor::fromCielch(m_rgbColorSpace, //
+                               m_wheelColorPicker->currentColor()),
         m_wheelColorPicker);
 }
 
@@ -1369,8 +1369,8 @@ void ColorDialogPrivate::readChromaHueDiagramValue()
         return;
     }
     setCurrentOpaqueColor( //
-        MultiColor::fromLch(m_rgbColorSpace, //
-                            m_chromaHueDiagram->currentColor()),
+        MultiColor::fromCielch(m_rgbColorSpace, //
+                               m_chromaHueDiagram->currentColor()),
         m_chromaHueDiagram);
 }
 
@@ -1461,7 +1461,7 @@ void ColorDialogPrivate::readHlcNumericValues()
     lch.c = hlcValues.at(2);
     const auto myColor = m_rgbColorSpace->reduceChromaToFitIntoGamut(lch);
     setCurrentOpaqueColor( //
-        MultiColor::fromLch( //
+        MultiColor::fromCielch( //
             m_rgbColorSpace,
             // TODO Would it be better to adapt all 3 axis instead of only
             // adapting C and L?

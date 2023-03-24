@@ -98,7 +98,7 @@ void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<Rgb
     const auto oklab = fromCmscielabD50ToOklab(cielab);
     // TODO xxx Missing support of Oklch to prevent arbitrary hue changes
     // near the gray axis, like we prevent it yet for cielch.
-    const auto oklchdouble = toCielchDouble(oklab);
+    const auto oklchdouble = toLchDouble(oklab);
     oklch = QList<double>({oklchdouble.l, oklchdouble.c, oklchdouble.h});
 }
 
@@ -111,15 +111,15 @@ void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<Rgb
  * @note The original color will neither be normalised nor moved into gamut.
  * If it’s an out-of-gamut color, the resulting RGB-based representations will
  * nevertheless be in-gamut and therefore be an incorrect color. */
-MultiColor MultiColor::fromLch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color)
+MultiColor MultiColor::fromCielch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color)
 {
     MultiColor result;
     result.cielch = color;
     result.ciehlc = QList<double>({result.cielch.h, result.cielch.l, result.cielch.c});
-    const cmsCIELCh tempcmscielch = toCmsCieLch(result.cielch);
-    const cmsCIELab tempcmscielab = toCmsCieLab(tempcmscielch);
+    const cmsCIELCh tempcmscielch = toCmsLch(result.cielch);
+    const cmsCIELab tempcmscielab = toCmsLab(tempcmscielch);
     const auto cmsoklab = fromCmscielabD50ToOklab(tempcmscielab);
-    const auto oklchdouble = toCielchDouble(cmsoklab);
+    const auto oklchdouble = toLchDouble(cmsoklab);
     // TODO xxx Missing support of Oklch to prevent arbitrary hue changes
     // near the gray axis, like we prevent it yet for cielch vs RGB.
     result.oklch = QList<double>({oklchdouble.l, oklchdouble.c, oklchdouble.h});

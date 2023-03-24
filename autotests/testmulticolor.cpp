@@ -242,7 +242,7 @@ private Q_SLOTS:
         myLch.l = 51;
         myLch.c = 21;
         myLch.h = 1;
-        MultiColor myMulticolor1 = MultiColor::fromLch( //
+        MultiColor myMulticolor1 = MultiColor::fromCielch( //
             RgbColorSpaceFactory::createSrgb(),
             myLch);
         QCOMPARE(myMulticolor1.cielch.l, 51);
@@ -324,26 +324,26 @@ private Q_SLOTS:
         QCOMPARE(value.multiRgb.hwb.at(0), 0);
     }
 
-    void testHueFromLchToRgb()
+    void testHueFromCielchToRgb()
     {
         // Hue values can be arbitrary when the color is on the gray axis.
         // For usability reasons, we should have nevertheless meaningful
         // hue values.
 
-        MultiColor grayColor1 = MultiColor::fromLch( //
+        MultiColor grayColor1 = MultiColor::fromCielch( //
             RgbColorSpaceFactory::createSrgb(), //
             LchDouble{50, 0, 150});
-        MultiColor slightlyColorfullColor1 = MultiColor::fromLch( //
+        MultiColor slightlyColorfullColor1 = MultiColor::fromCielch( //
             RgbColorSpaceFactory::createSrgb(), //
             LchDouble{50, 10, 150});
         QVERIFY( //
             isAlmostEqual(grayColor1.multiRgb.hsl.at(0), //
                           slightlyColorfullColor1.multiRgb.hsl.at(0)));
 
-        MultiColor grayColor2 = MultiColor::fromLch( //
+        MultiColor grayColor2 = MultiColor::fromCielch( //
             RgbColorSpaceFactory::createSrgb(), //
             LchDouble{50, 0, 350});
-        MultiColor slightlyColorfullColor2 = MultiColor::fromLch( //
+        MultiColor slightlyColorfullColor2 = MultiColor::fromCielch( //
             RgbColorSpaceFactory::createSrgb(), //
             LchDouble{50, 10, 350});
         QVERIFY( //
@@ -421,7 +421,7 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual(whiteHue, referenceLchCieHue, 1.));
     }
 
-    void testHueFromLchToRgbContinuity()
+    void testHueFromCielchToRgbContinuity()
     {
         // LCH-hue values can be arbitrary when the color is on the gray axis.
         // For usability reasons, we should have nevertheless meaningful
@@ -433,14 +433,14 @@ private Q_SLOTS:
         // which did show buggy behaviour in early stage of the code.
 
         const double referenceRgbHue = //
-            MultiColor::fromLch( //
+            MultiColor::fromCielch( //
                 RgbColorSpaceFactory::createSrgb(), //
                 LchDouble{50, 0, 186.35} //
                 )
                 .multiRgb.hsl.at(0);
 
         const double blackHue = //
-            MultiColor::fromLch( //
+            MultiColor::fromCielch( //
                 RgbColorSpaceFactory::createSrgb(), //
                 LchDouble{0, 0, 186.35} //
                 )
@@ -448,7 +448,7 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual(blackHue, referenceRgbHue, 1.));
 
         const double whiteHue = //
-            MultiColor::fromLch( //
+            MultiColor::fromCielch( //
                 RgbColorSpaceFactory::createSrgb(), //
                 LchDouble{100, 0, 186.35} //
                 )

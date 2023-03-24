@@ -564,7 +564,7 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
 {
     const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
     const auto myColor = //
-        m_rgbColorSpace->reduceChromaToFitIntoGamut(toCielchDouble(lab));
+        m_rgbColorSpace->reduceChromaToFitIntoGamut(toLchDouble(lab));
     q_pointer->setCurrentColor(myColor);
 }
 

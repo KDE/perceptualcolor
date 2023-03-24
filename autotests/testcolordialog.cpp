@@ -1695,7 +1695,7 @@ private Q_SLOTS:
         myOpaqueColor.l = 30;
         myOpaqueColor.c = 40;
         myOpaqueColor.h = 50;
-        const MultiColor myMultiColor = MultiColor::fromLch( //
+        const MultiColor myMultiColor = MultiColor::fromCielch( //
             myDialog->d_pointer->m_rgbColorSpace,
             myOpaqueColor);
         myDialog->d_pointer->setCurrentOpaqueColor(myMultiColor, nullptr);
@@ -2032,7 +2032,7 @@ private Q_SLOTS:
         testColor.c = 94;
         m_perceptualDialog->d_pointer->setCurrentOpaqueColor(
             // Color:
-            MultiColor::fromLch( //
+            MultiColor::fromCielch( //
                 m_perceptualDialog->d_pointer->m_rgbColorSpace, //
                 testColor),
             // Widget to ignore:

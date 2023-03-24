@@ -235,17 +235,17 @@ private Q_SLOTS:
         startValue.L = 50.1;
         startValue.C = 20.1;
         startValue.h = 80.1;
-        QCOMPARE(toCmsCieLch(toCielchDouble(startValue)).L, startValue.L);
-        QCOMPARE(toCmsCieLch(toCielchDouble(startValue)).C, startValue.C);
-        QCOMPARE(toCmsCieLch(toCielchDouble(startValue)).h, startValue.h);
+        QCOMPARE(toCmsLch(toLchDouble(startValue)).L, startValue.L);
+        QCOMPARE(toCmsLch(toLchDouble(startValue)).C, startValue.C);
+        QCOMPARE(toCmsLch(toLchDouble(startValue)).h, startValue.h);
         // The other sense
         LchDouble startValue2;
         startValue2.l = 50.1;
         startValue2.c = 20.1;
         startValue2.h = 80.1;
-        QCOMPARE(toCielchDouble(toCmsCieLch(startValue2)).l, startValue2.l);
-        QCOMPARE(toCielchDouble(toCmsCieLch(startValue2)).c, startValue2.c);
-        QCOMPARE(toCielchDouble(toCmsCieLch(startValue2)).h, startValue2.h);
+        QCOMPARE(toLchDouble(toCmsLch(startValue2)).l, startValue2.l);
+        QCOMPARE(toLchDouble(toCmsLch(startValue2)).c, startValue2.c);
+        QCOMPARE(toLchDouble(toCmsLch(startValue2)).h, startValue2.h);
     }
 
     void testFromXyzToOklabCubeRoot()

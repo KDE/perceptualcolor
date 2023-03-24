@@ -71,13 +71,13 @@ template<typename T>
                             static_cast<QColorFloatType>(blue));
 }
 
-[[nodiscard]] cmsCIELab toCmsCieLab(const cmsCIELCh &value);
+[[nodiscard]] cmsCIELab toCmsLab(const cmsCIELCh &value);
 
-[[nodiscard]] cmsCIELCh toCmsCieLch(const LchDouble &value);
+[[nodiscard]] cmsCIELCh toCmsLch(const LchDouble &value);
 
-[[nodiscard]] LchDouble toCielchDouble(const cmsCIELCh &value);
+[[nodiscard]] LchDouble toLchDouble(const cmsCIELCh &value);
 
-[[nodiscard]] LchDouble toCielchDouble(const cmsCIELab &value);
+[[nodiscard]] LchDouble toLchDouble(const cmsCIELab &value);
 
 /** @internal
  *

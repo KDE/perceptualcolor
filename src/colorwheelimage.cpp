@@ -212,7 +212,7 @@ QImage ColorWheelImage::getImage()
                 // We are within the wheel
                 lch.h = polarCoordinates.angleDegree();
                 rgbColor = m_rgbColorSpace->toQRgbOrTransparent( //
-                    toCmsCieLab(lch));
+                    toCmsLab(lch));
                 if (qAlpha(rgbColor) != 0) {
                     m_image.setPixelColor(x, y, rgbColor);
                 }

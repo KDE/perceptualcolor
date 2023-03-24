@@ -74,7 +74,7 @@ Q_GLOBAL_STATIC_WITH_ARGS( //
  * @brief Type conversion.
  * @param value An LCH value
  * @returns Same LCH value as <tt>cmsCIELCh</tt>. */
-cmsCIELCh toCmsCieLch(const LchDouble &value)
+cmsCIELCh toCmsLch(const LchDouble &value)
 {
     cmsCIELCh result;
     result.L = value.l;
@@ -88,7 +88,7 @@ cmsCIELCh toCmsCieLch(const LchDouble &value)
  * @brief Type conversion.
  * @param value An LCH value
  * @returns Same LCH value as @ref LchDouble. */
-LchDouble toCielchDouble(const cmsCIELCh &value)
+LchDouble toLchDouble(const cmsCIELCh &value)
 {
     LchDouble result;
     result.l = value.L;
@@ -102,11 +102,11 @@ LchDouble toCielchDouble(const cmsCIELCh &value)
  * @brief Conversion to @ref LchDouble
  * @param value a point in Lab representation
  * @returns the same point in @ref LchDouble representation */
-LchDouble toCielchDouble(const cmsCIELab &value)
+LchDouble toLchDouble(const cmsCIELab &value)
 {
     cmsCIELCh tempLch;
     cmsLab2LCh(&tempLch, &value);
-    return toCielchDouble(tempLch);
+    return toLchDouble(tempLch);
 }
 
 /** @internal
@@ -114,7 +114,7 @@ LchDouble toCielchDouble(const cmsCIELab &value)
  * @brief Conversion to <tt>cmsCIELab</tt>
  * @param value the value to convert
  * @returns the same value as <tt>cmsCIELab</tt> */
-cmsCIELab toCmsCieLab(const cmsCIELCh &value)
+cmsCIELab toCmsLab(const cmsCIELCh &value)
 {
     cmsCIELab lab; // uses cmsFloat64Number internally
     // convert from LCH to Lab
