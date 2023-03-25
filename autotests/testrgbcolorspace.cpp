@@ -10,11 +10,11 @@
 #include "cielchvalues.h"
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
+#include "helperposixmath.h"
 #include "lchdouble.h"
 #include "rgbcolorspacefactory.h"
 #include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
-#include <math.h>
 #include <qcolor.h>
 #include <qdatetime.h>
 #include <qdir.h>
@@ -349,7 +349,7 @@ private Q_SLOTS:
 
         // Test if maxSrgbChroma is big enough
         qreal precisionDegreeMaxSrgbChroma = //
-            presicion / 360 * 2 * M_PI * srgbMaximumChroma;
+            presicion / 360 * 2 * pi * srgbMaximumChroma;
         color.c = srgbMaximumChroma;
         qreal hue = 0;
         qreal lightness;

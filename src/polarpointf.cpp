@@ -6,6 +6,7 @@
 
 // Other includes
 #include "helpermath.h"
+#include "helperposixmath.h"
 #include <cmath>
 #include <qdebug.h>
 #include <qmath.h>
@@ -50,9 +51,7 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
     if (cartesianCoordiantes.y() >= 0) {
         m_angleDegree = qRadiansToDegrees(acos(cartesianCoordiantes.x() / m_radius));
     } else {
-        // M_PI is defined by QtMath (also on platforms that don’t
-        // support it native)
-        m_angleDegree = qRadiansToDegrees(2 * (M_PI)-acos(cartesianCoordiantes.x() / m_radius));
+        m_angleDegree = qRadiansToDegrees(2 * pi - acos(cartesianCoordiantes.x() / m_radius));
     }
 }
 

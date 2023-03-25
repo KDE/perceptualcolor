@@ -5,10 +5,10 @@
 // this forces the header to be self-contained.
 #include "cielchvalues.h"
 
+#include "helperposixmath.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <QtCore/qsharedpointer.h>
-#include <math.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
@@ -74,7 +74,7 @@ private Q_SLOTS:
 
         // Test if versatile is small enough
         qreal precisionVersatileSrgbChroma = //
-            presicion / 360 * 2 * M_PI * PerceptualColor::CielchValues::srgbVersatileChroma;
+            presicion / 360 * 2 * pi * PerceptualColor::CielchValues::srgbVersatileChroma;
         color.c = PerceptualColor::CielchValues::srgbVersatileChroma;
         color.l = 50;
         hue = 0;
