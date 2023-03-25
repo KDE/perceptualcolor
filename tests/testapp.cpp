@@ -7,11 +7,13 @@
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
+#include "csscolor.h" // IWYU pragma: keep
 #include "genericcolor.h" // IWYU pragma: keep
 #include "helper.h" // IWYU pragma: keep
 #include "helperconstants.h" // IWYU pragma: keep
 #include "helperconversion.h" // IWYU pragma: keep
 #include "helpermath.h" // IWYU pragma: keep
+#include "helperposixmath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
 #include "oklchvalues.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
@@ -45,6 +47,7 @@
 #include <qpixmap.h> // IWYU pragma: keep
 #include <qpointer.h> // IWYU pragma: keep
 #include <qrect.h> // IWYU pragma: keep
+#include <qregularexpression.h> // IWYU pragma: keep
 #include <qscopedpointer.h> // IWYU pragma: keep
 #include <qsettings.h> // IWYU pragma: keep
 #include <qsharedpointer.h> // IWYU pragma: keep
@@ -65,26 +68,6 @@ using namespace PerceptualColor;
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
 {
-#ifndef MSVC_DLL
-    const auto temp1 = AbsoluteColor::allConversions( //
-        ColorModel::XyzD65, //
-        GenericColor(0.20, 0.20, 0.61, 20));
-    QHashIterator<ColorModel, GenericColor> iterator1(temp1);
-    while (iterator1.hasNext()) {
-        iterator1.next();
-        qDebug() << toString(iterator1.key()) << iterator1.value();
-    }
-
-    const auto temp2 = AbsoluteColor::allConversions( //
-        ColorModel::OklchD65, //
-        GenericColor(0.585621, 0.142581, 253.545, 20));
-    QHashIterator<ColorModel, GenericColor> iterator2(temp2);
-    while (iterator2.hasNext()) {
-        iterator2.next();
-        qDebug() << toString(iterator2.key()) << iterator2.value();
-    }
-#endif
-
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     // Prepare configuration before instantiating the application object
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);

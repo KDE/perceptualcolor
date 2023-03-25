@@ -32,7 +32,7 @@ namespace PerceptualColor
  *   it was 0 with a negative sign) its  sign is changed and @ref angleDegree
  *   is turned by 180°.
  * - the @ref angleDegree() is normalized to 0° ≤ value < 360°
- *   (see @ref normalizedAngleDegree() for details)
+ *   (see @ref normalizedAngle360() for details)
  *
  * When the radius is 0, often by convention the (meaningless) angle is set
  * also 0. This class does <em>not</em> normalize the angle to 0 when the

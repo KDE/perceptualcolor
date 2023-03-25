@@ -26,10 +26,10 @@ PolarPointF::PolarPointF(const qreal newRadius, const qreal newAngleDegree)
 {
     if (newRadius < 0) {
         m_radius = newRadius * (-1);
-        m_angleDegree = normalizedAngleDegree(newAngleDegree + 180);
+        m_angleDegree = normalizedAngle360(newAngleDegree + 180);
     } else {
         m_radius = newRadius;
-        m_angleDegree = normalizedAngleDegree(newAngleDegree);
+        m_angleDegree = normalizedAngle360(newAngleDegree);
     }
 }
 

@@ -1031,10 +1031,10 @@
  *
  * The LCH values in this library are implemented with the following range:
  *
- * |        |    L     |    C     |    H     |
- * | :----- | :------: |:-------: | :------: |
- * | CIELCh | [0, 100] | [0, 255] | [0, 360[ |
- * | Oklch  |  [0, 1]  |  [0, 2]  | [0, 360[ |
+ * |               |    l     |    a     |    b     |    c     |    h     |
+ * | :------------ | :------: | :------: | :------: |:-------: | :------: |
+ * | CIELab/CIELCh | [0, 100] | [0, 255] | [0, 255] | [0, 255] | [0, 360[ |
+ * | Oklab/Oklch   |  [0, 1]  |  [0, 2]  |  [0, 2]  |  [0, 2]  | [0, 360[ |
  *
  * This range is enough to cover the hole range of human perception. (Note
  * that the actual range of human perception has an irregular shape and
@@ -1086,20 +1086,21 @@
  *    easily as Pythagoras of the a axis and b axis value pairs:
  *    √(a² + b²) = C.
  *
- * Following these tables, the maximum chroma in human perception in CIELCh
+ * Logically, the chroma value can reach higher values than a and b, however,
+ * for simplicity it seems appropriate to use the same range for chroma, a and
+ * b. Following these tables, the maximum chroma in human perception in CIELCh
  * is <tt>194.84</tt>. As apparently this depends on viewing  conditions,
  * it might be a good idea to use a slightly higher limit, to be sure that the
- * value will never be too small. Here, <tt>200</tt> might be a good candidate
+ * value will never be too small. Here, <tt>200</tt> might be a good candidate.
  * However, some gamuts are wider. The <em>LargeRGB-elle-V2-g22.icc</em>
  * profile goes up to a chroma value of 245. Finally, we have fixed the valid
  * range to 255, because this is for sure enough to cover the human
- * perception, and it will cover almost all existing profiles. Furthermore,
- * [0, 255] is quite standard in other color models.
+ * perception, and it will cover almost all existing profiles.
  *
  * For Oklch we have observed up to 1.52 as chroma values when using the
  * <em>LargeRGB-elle-V2-g22.icc</em> profile. As with CIELCh chroma, we have
  * added a safety margin, rounded up to the next integer, and finally
- * chosen 2 as maximum chroma.
+ * chosen 2 as maximum.
  *
  * @internal
  *

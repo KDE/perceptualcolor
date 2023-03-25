@@ -82,6 +82,8 @@ SquareMatrix3 createSquareMatrix3(double r0c0, double r0c1, double r0c2, double 
 
 Trio createTrio(double first, double second, double third);
 
+int decimalPlaces(const int rangeMax, const int significantFigures);
+
 std::optional<SquareMatrix3> inverseMatrix(const SquareMatrix3 &matrix);
 
 /** @internal
@@ -247,11 +249,11 @@ template<typename A, typename B>
  * @param value an angle (coordinates in degree)
  * @returns the value, normalized to the range 0° ≤ value < 360° */
 template<typename T>
-T normalizedAngleDegree(T value)
+T normalizedAngle360(T value)
 {
     static_assert( //
         std::is_floating_point<T>::value, //
-        "Template normalizeAngleDegree() only works with floating point types");
+        "Template normalizeAngle360() only works with floating point types");
     constexpr T min = 0;
     constexpr T max = 360;
     qreal temp = fmod(value, max);

@@ -426,7 +426,7 @@ void ColorWheel::setHue(const qreal newHue)
  * normalized value. */
 void ColorWheelPrivate::setHueNormalized(const qreal newHue)
 {
-    const qreal temp = normalizedAngleDegree(newHue);
+    const qreal temp = normalizedAngle360(newHue);
     q_pointer->setHue(temp);
 }
 

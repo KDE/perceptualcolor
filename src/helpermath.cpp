@@ -6,6 +6,7 @@
 
 #include <optional>
 #include <qgenericmatrix.h>
+#include <qmath.h>
 
 namespace PerceptualColor
 {
@@ -85,6 +86,32 @@ std::optional<SquareMatrix3> inverseMatrix(const SquareMatrix3 &matrix)
         d * h - e * g, b * g - a * h, a * e - b * d);
     // clang-format on
     return temp / determinant;
+}
+
+/** @brief Calculates the required number of decimals to achieve the requested
+ * number of significant figures within the given range.
+ *
+ * @param rangeMax The maximum value of the range [0, rangeMax].
+ * @param significantFigures The requested number of significant figures.
+ *
+ * | maxRange | decimalPlaces(maxRange, 2) | decimalPlaces(maxRange, 3) | decimalPlaces(maxRange, 4) |
+ * | -------: | -------------------------: | -------------------------: | -------------------------: |
+ * |        1 |                          1 |                          2 |                          3 |
+ * |        2 |                          1 |                          2 |                          3 |
+ * |      100 |                          0 |                          0 |                          1 |
+ * |      255 |                          0 |                          0 |                          1 |
+ * |      360 |                          0 |                          0 |                          1 |
+ *
+ * @returns The number of decimal places after the decimal point (in addition
+ * to the whole number part) required to achieve the requested
+ * number of significant figures within the given range. */
+int decimalPlaces(const int rangeMax, const int significantFigures)
+{
+    const auto myLog10Value = std::log10(qAbs(rangeMax));
+    const int wholeNumberDigits = (rangeMax == 0) //
+        ? 1 // special case
+        : qFloor(myLog10Value) + 1;
+    return qMax(0, significantFigures - wholeNumberDigits);
 }
 
 } // namespace PerceptualColor

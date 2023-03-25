@@ -90,7 +90,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
      * @internal
      *
      * The value gets normalized according
-     * to @ref PolarPointF::normalizedAngleDegree() */
+     * to @ref PolarPointF::normalizedAngle360() */
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged USER true)
 
 public:

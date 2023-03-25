@@ -14,6 +14,7 @@
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>
+#include <qtestdata.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -476,12 +477,12 @@ private Q_SLOTS:
 
     void testNormalizeAngle()
     {
-        QCOMPARE(normalizedAngleDegree(0.), 0);
-        QCOMPARE(normalizedAngleDegree(359.9), 359.9);
-        QCOMPARE(normalizedAngleDegree(360.), 0);
-        QCOMPARE(normalizedAngleDegree(720.), 0);
-        QCOMPARE(normalizedAngleDegree(-1.), 359);
-        QCOMPARE(normalizedAngleDegree(-1.3), 358.7);
+        QCOMPARE(normalizedAngle360(0.), 0);
+        QCOMPARE(normalizedAngle360(359.9), 359.9);
+        QCOMPARE(normalizedAngle360(360.), 0);
+        QCOMPARE(normalizedAngle360(720.), 0);
+        QCOMPARE(normalizedAngle360(-1.), 359);
+        QCOMPARE(normalizedAngle360(-1.3), 358.7);
     }
 
     void testCreateSquareMatrix3()
@@ -548,6 +549,71 @@ private Q_SLOTS:
         QCOMPARE(temp(0, 1), 6);
         QCOMPARE(temp(1, 0), 5);
         QCOMPARE(temp(1, 1), 4);
+    }
+
+    void testDecimalPlaces_data()
+    {
+        QTest::addColumn<int>("maxRange");
+        QTest::addColumn<int>("significantFigures");
+        QTest::addColumn<int>("expected");
+
+        QTest::newRow("0 << -1 << 0") << 0 << -1 << 0;
+        QTest::newRow("0 << 0 << 0") << 0 << 0 << 0;
+        QTest::newRow("0 << 1 << 0") << 0 << 1 << 0;
+        QTest::newRow("0 << 2 << 1") << 0 << 2 << 1;
+        QTest::newRow("0 << 3 << 2") << 0 << 3 << 2;
+        QTest::newRow("0 << 4 << 3") << 0 << 4 << 3;
+
+        QTest::newRow("1 << -1 << 0") << 1 << -1 << 0;
+        QTest::newRow("1 << 0 << 0") << 1 << 0 << 0;
+        QTest::newRow("1 << 1 << 0") << 1 << 1 << 0;
+        QTest::newRow("1 << 2 << 1") << 1 << 2 << 1;
+        QTest::newRow("1 << 3 << 2") << 1 << 3 << 2;
+        QTest::newRow("1 << 4 << 3") << 1 << 4 << 3;
+
+        QTest::newRow("2 << -1 << 0") << 2 << -1 << 0;
+        QTest::newRow("2 << 0 << 0") << 2 << 0 << 0;
+        QTest::newRow("2 << 1 << 0") << 2 << 1 << 0;
+        QTest::newRow("2 << 2 << 1") << 2 << 2 << 1;
+        QTest::newRow("2 << 3 << 2") << 2 << 3 << 2;
+        QTest::newRow("2 << 4 << 3") << 2 << 4 << 3;
+
+        QTest::newRow("100 << -1 << 0") << 100 << -1 << 0;
+        QTest::newRow("100 << 0 << 0") << 100 << 0 << 0;
+        QTest::newRow("100 << 1 << 0") << 100 << 1 << 0;
+        QTest::newRow("100 << 2 << 0") << 100 << 2 << 0;
+        QTest::newRow("100 << 3 << 0") << 100 << 3 << 0;
+        QTest::newRow("100 << 4 << 1") << 100 << 4 << 1;
+
+        QTest::newRow("255 << -1 << 0") << 255 << -1 << 0;
+        QTest::newRow("255 << 0 << 0") << 255 << 0 << 0;
+        QTest::newRow("255 << 1 << 0") << 255 << 1 << 0;
+        QTest::newRow("255 << 2 << 0") << 255 << 2 << 0;
+        QTest::newRow("255 << 3 << 0") << 255 << 3 << 0;
+        QTest::newRow("255 << 4 << 1") << 255 << 4 << 1;
+
+        QTest::newRow("-255 << -1 << 0") << -255 << -1 << 0;
+        QTest::newRow("-255 << 0 << 0") << -255 << 0 << 0;
+        QTest::newRow("-255 << 1 << 0") << -255 << 1 << 0;
+        QTest::newRow("-255 << 2 << 0") << -255 << 2 << 0;
+        QTest::newRow("-255 << 3 << 0") << -255 << 3 << 0;
+        QTest::newRow("-255 << 4 << 1") << -255 << 4 << 1;
+
+        QTest::newRow("360 << -1 << 0") << 360 << -1 << 0;
+        QTest::newRow("360 << 0 << 0") << 360 << 0 << 0;
+        QTest::newRow("360 << 1 << 0") << 360 << 1 << 0;
+        QTest::newRow("360 << 2 << 0") << 360 << 2 << 0;
+        QTest::newRow("360 << 3 << 0") << 360 << 3 << 0;
+        QTest::newRow("360 << 4 << 1") << 360 << 4 << 1;
+    }
+
+    void testDecimalPlaces()
+    {
+        QFETCH(int, maxRange);
+        QFETCH(int, significantFigures);
+        QFETCH(int, expected);
+
+        QCOMPARE(decimalPlaces(maxRange, significantFigures), expected);
     }
 };
 

@@ -109,7 +109,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     const auto imageWidth = parameters.imageSizePhysical.width();
 
     // Paint the gamut.
-    cielchD50.h = normalizedAngleDegree(parameters.hue);
+    cielchD50.h = normalizedAngle360(parameters.hue);
     for (y = 0; y < imageHeight; ++y) {
         if (callbackObject.shouldAbort()) {
             return;

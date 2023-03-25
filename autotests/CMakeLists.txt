@@ -143,6 +143,7 @@ if(BUILD_TESTING)
         testcolorwheelimage
         testconstpropagatingrawpointer
         testconstpropagatinguniquepointer
+        testcsscolor
         testextendeddoublevalidator
         testgenericcolor
         testgradientimageparameters

@@ -54,6 +54,8 @@ private Q_SLOTS:
     {
         // XXX Implement me!
 
+        QVERIFY(false);
+
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
         myWidget->show();

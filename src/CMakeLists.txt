@@ -36,6 +36,7 @@ set(library_SRC
     colorpatch.cpp
     colorwheel.cpp
     colorwheelimage.cpp
+    csscolor.cpp
     extendeddoublevalidator.cpp
     genericcolor.cpp
     gradientimageparameters.cpp

@@ -15,8 +15,8 @@ namespace PerceptualColor
 
 /** @internal
  *
- * @brief Numeric representation of a color without specifying the color
- * space. */
+ * @brief Numeric representation of an opaque color with up to four components
+ * without specifying the color space or the opacity/alpha.  */
 struct GenericColor {
 public:
     /** @brief Default constructor. */
@@ -110,7 +110,10 @@ public:
     double second = 0;
     /** @brief Third value. */
     double third = 0;
-    /** @brief Forth value. */
+    /** @brief Forth value.
+     *
+     * Note that is is for color spaces that have four components (like CMYK).
+     * It must <em>never</em> be used for opacity/alpha values. */
     double fourth = 0;
 };
 

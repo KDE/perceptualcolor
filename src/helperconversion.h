@@ -28,7 +28,7 @@ Q_NAMESPACE
 
 struct RgbDouble;
 
-/** @brief Identifiers for color spaces */
+/** @brief Identifiers for color models. */
 enum class ColorModel {
     CielabD50, /**< Cielab color space using a D50 illuminant.
         Lightness: [0, 100].<br/>
@@ -38,26 +38,39 @@ enum class ColorModel {
         Lightness: [0, 100].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    XyzD50, /**< Xyz color space using a D50 illuminant.
-        X: unbound.<br/>
-        Y: [0, 1].<br/>
-        Z: unbound. */
-    XyzD65, /**< Xzy color space using a D65 illuminant.
-        X: unbound.<br/>
-        Y: [0, 1].<br/>
-        Z: unbound. */
+    Hsl360_1_1, /**< A HSL color space.
+        Hue: [0, 360[.<br/>
+        Saturation: [0, 1].<br/>
+        Lightness: [0, 1]. */
+    Hwb360_1_1, /**< A HWB color space.
+        Hue: [0, 360[.<br/>
+        Whiteness: [0, 1].<br/>
+        Blackness: [0, 1]. */
+    Invalid, /**< Represents invalid data. */
     OklabD65, /**< Oklab color space, which by definition always and
         exclusively uses a D65 illuminant.
 
         Lightness: [0, 1].<br/>
         a: unbound.<br/>
         b: unbound. */
-    OklchD65 /**< Oklch color space, which by definition always and
+    OklchD65, /**< Oklch color space, which by definition always and
         exclusively uses a D65 illuminant.
 
         Lightness: [0, 1].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
+    Rgb1, /**< An Rgb color space.
+        R: [0, 1].<br/>
+        G: [0, 1].<br/>
+        B: [0, 1]. */
+    XyzD50, /**< Xyz color space using a D50 illuminant.
+        X: unbound.<br/>
+        Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>
+        Z: unbound. */
+    XyzD65 /**< Xzy color space using a D65 illuminant.
+        X: unbound.<br/>
+        Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>
+        Z: unbound. */
 };
 Q_ENUM_NS(ColorModel)
 
