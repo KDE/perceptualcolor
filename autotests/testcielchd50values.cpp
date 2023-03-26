@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 
 #include "helperposixmath.h"
 #include "lchdouble.h"
@@ -23,12 +23,12 @@
 
 namespace PerceptualColor
 {
-class TestCielchValues : public QObject
+class TestCielchD50Values : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestCielchValues(QObject *parent = nullptr)
+    explicit TestCielchD50Values(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -57,14 +57,14 @@ private Q_SLOTS:
     void testNeutralValues()
     {
         // Is the value as documented?
-        QCOMPARE(static_cast<qreal>(PerceptualColor::CielchValues::neutralChroma), 0);
+        QCOMPARE(static_cast<qreal>(PerceptualColor::CielchD50Values::neutralChroma), 0);
         // Is the value as documented?
-        QCOMPARE(static_cast<qreal>(PerceptualColor::CielchValues::neutralHue), 0);
+        QCOMPARE(static_cast<qreal>(PerceptualColor::CielchD50Values::neutralHue), 0);
         // Is the value as documented?
-        QCOMPARE(static_cast<qreal>(PerceptualColor::CielchValues::neutralLightness), 50);
+        QCOMPARE(static_cast<qreal>(PerceptualColor::CielchD50Values::neutralLightness), 50);
     }
 
-    void testCielchValues()
+    void testCielchD50Values()
     {
         auto temp = RgbColorSpace::createSrgb();
         LchDouble color;
@@ -74,24 +74,24 @@ private Q_SLOTS:
 
         // Test if versatile is small enough
         qreal precisionVersatileSrgbChroma = //
-            presicion / 360 * 2 * pi * PerceptualColor::CielchValues::srgbVersatileChroma;
-        color.c = PerceptualColor::CielchValues::srgbVersatileChroma;
+            presicion / 360 * 2 * pi * PerceptualColor::CielchD50Values::srgbVersatileChroma;
+        color.c = PerceptualColor::CielchD50Values::srgbVersatileChroma;
         color.l = 50;
         hue = 0;
         while (hue <= 360) {
             color.h = hue;
-            QVERIFY2(temp->isInGamut(color), "Test if versatile is small enough");
+            QVERIFY2(temp->isCielchD50InGamut(color), "Test if versatile is small enough");
             hue += precisionVersatileSrgbChroma;
         }
 
         // Test if versatile is as big as possible
-        color.c = PerceptualColor::CielchValues::srgbVersatileChroma + 1;
+        color.c = PerceptualColor::CielchD50Values::srgbVersatileChroma + 1;
         color.l = 50;
         inGamutValueFound = true;
         hue = 0;
         while (hue <= 360) {
             color.h = hue;
-            if (!temp->isInGamut(color)) {
+            if (!temp->isCielchD50InGamut(color)) {
                 inGamutValueFound = false;
                 break;
             }
@@ -103,13 +103,13 @@ private Q_SLOTS:
     void testNeutralGray()
     {
         // Test that the unified initialization is done in the correct order.
-        QCOMPARE(CielchValues::neutralGray.l,
+        QCOMPARE(CielchD50Values::neutralGray.l,
                  50 // Should be half the way between light and dark
         );
-        QCOMPARE(CielchValues::neutralGray.c,
+        QCOMPARE(CielchD50Values::neutralGray.c,
                  0 // Should have no chroma
         );
-        QCOMPARE(CielchValues::neutralGray.h,
+        QCOMPARE(CielchD50Values::neutralGray.h,
                  0 // Hue does not matter, but by convention should be 0
         );
     }
@@ -117,6 +117,6 @@ private Q_SLOTS:
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestCielchValues)
+QTEST_MAIN(PerceptualColor::TestCielchD50Values)
 // The following “include” is necessary because we do not use a header file:
-#include "testcielchvalues.moc"
+#include "testcielchd50values.moc"

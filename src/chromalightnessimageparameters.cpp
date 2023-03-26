@@ -101,7 +101,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     myImage.fill(Qt::transparent); // Initialize background color
 
     // Initialization
-    cmsCIELCh LCh;
+    cmsCIELCh cielchD50;
     QRgb rgbColor;
     int x;
     int y;
@@ -109,19 +109,19 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     const auto imageWidth = parameters.imageSizePhysical.width();
 
     // Paint the gamut.
-    LCh.h = normalizedAngleDegree(parameters.hue);
+    cielchD50.h = normalizedAngleDegree(parameters.hue);
     for (y = 0; y < imageHeight; ++y) {
         if (callbackObject.shouldAbort()) {
             return;
         }
-        LCh.L = 100 - (y + 0.5) * 100.0 / imageHeight;
+        cielchD50.L = 100 - (y + 0.5) * 100.0 / imageHeight;
         for (x = 0; x < imageWidth; ++x) {
             // Using the same scale as on the y axis. floating point
             // division thanks to 100 which is a "cmsFloat64Number"
-            LCh.C = (x + 0.5) * 100.0 / imageHeight;
+            cielchD50.C = (x + 0.5) * 100.0 / imageHeight;
             rgbColor = //
-                parameters.rgbColorSpace->toQRgbOrTransparent( //
-                    toCmsLab(LCh));
+                parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+                    toCmsLab(cielchD50));
             if (qAlpha(rgbColor) != 0) {
                 // The pixel is within the gamut
                 myImage.setPixelColor(x, y, rgbColor);

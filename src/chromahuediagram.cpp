@@ -10,7 +10,7 @@
 #include "abstractdiagram.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -68,7 +68,7 @@ ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColo
             &ChromaHueDiagram::callUpdate);
 
     // Initialize the color
-    setCurrentColor(CielchValues::srgbVersatileInitialColor);
+    setCurrentColor(CielchD50Values::srgbVersatileInitialColor);
 }
 
 /** @brief Default destructor */
@@ -165,12 +165,12 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
         event->accept();
-        const cmsCIELab lab = //
+        const cmsCIELab cielabD50 = //
             d_pointer->fromWidgetPixelPositionToLab(event->pos());
         const bool isWithinCircle = //
             d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle( //
                 event->pos());
-        if (isWithinCircle && d_pointer->m_rgbColorSpace->isInGamut(lab)) {
+        if (isWithinCircle && d_pointer->m_rgbColorSpace->isCielabD50InGamut(cielabD50)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
@@ -492,7 +492,7 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() const
 {
     const qreal scaleFactor = //
         (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder()) //
-        / (2.0 * m_rgbColorSpace->profileMaximumCielchChroma());
+        / (2.0 * m_rgbColorSpace->profileMaximumCielchD50Chroma());
     QPointF currentColor = //
         PolarPointF(m_currentColor.c, m_currentColor.h).toCartesian();
     return QPointF(
@@ -515,7 +515,7 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() const
 cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
 {
     const qreal scaleFactor = //
-        (2.0 * m_rgbColorSpace->profileMaximumCielchChroma()) //
+        (2.0 * m_rgbColorSpace->profileMaximumCielchD50Chroma()) //
         / (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
     // The pixel at position 0 0 has its top left border at position 0 0
     // and its bottom right border at position 1 1 and its center at
@@ -556,7 +556,7 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
  * @internal
  *
  * @todo What when the mouse goes outside the gray circle, but more gamut
- * is available outside (because @ref RgbColorSpace::profileMaximumCielchChroma()
+ * is available outside (because @ref RgbColorSpace::profileMaximumCielchD50Chroma()
  * was chosen too small)? For consistency, the handle of the diagram should
  * stay within the gray circle, and this should be interpreted also actually
  * as the value at the position of the handle. */

@@ -37,14 +37,15 @@ class RgbColorSpace;
  * The color conversion of this class provides meaningful values for
  * <em>hue</em> in all color formats, also for colors on the gray axis.
  *
- * @note When creating an object from a RGB-based color (HSL, HSV…), the
- * resulting @ref cielch and @ref ciehlc is <em>not</em> guaranteed to be
- * @ref RgbColorSpace::isInGamut. Reason: All in-range RGB values will actually
+ * @note When creating an object from a RGB-based color (HSL, HSV…),
+ * the resulting Oklab, Oklch, Cielab and Cielch values are
+ * <em>not</em> guaranteed to be recognized by @ref RgbColorSpace
+ * as in-gamut. Reason: All in-range RGB values will actually
  * always be in-gamut by definition; just because of possible rounding errors
- * @ref RgbColorSpace::isInGamut might return <tt>false</tt>, and modifying
- * them so that @ref RgbColorSpace::isInGamut returns <tt>true</tt> might be
+ * @ref RgbColorSpace might return <tt>false</tt> when testing if in-gamut,
+ * and having code that makes sure to return <tt>true</tt> here might be
  * slow. Note that values outside the normal RGB range [0, 255] respectively
- * [0.0, 1.0] might return useless @ref cielch and @ref ciehlc values.
+ * [0.0, 1.0] might return useless @ref cielchD50 and @ref ciehlcD50 values.
  *
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::MultiColor &value)
@@ -100,14 +101,14 @@ public:
 
     /** @brief HLC representation.
      *
-     * @sa @ref cielch */
-    QList<double> ciehlc;
+     * @sa @ref cielchD50 */
+    QList<double> ciehlcD50;
     /** @brief LCH representation.
      *
      * Range: See @ref lchrange
      *
-     * @sa @ref ciehlc */
-    LchDouble cielch;
+     * @sa @ref ciehlcD50 */
+    LchDouble cielchD50;
     /** @brief Oklch representation.
      *
      * @todo xxx Range: [0, 360], [0, 100], [0, 100] */

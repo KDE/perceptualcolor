@@ -8,7 +8,7 @@
 #include "colordialog_p.h" // IWYU pragma: associated
 
 #include "chromahuediagram.h"
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "colorpatch.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -214,7 +214,7 @@ void ColorDialogPrivate::retranslateUi()
     /*: @item:intext The maximum chroma. */
     const QString maximumCielchChroma = //
         tr("%L1 (estimated)")
-            .arg(m_rgbColorSpace->profileMaximumCielchChroma(), //
+            .arg(m_rgbColorSpace->profileMaximumCielchD50Chroma(), //
                  0, //
                  'f', //
                  decimals);
@@ -519,7 +519,7 @@ void ColorDialogPrivate::retranslateUi()
                                 + tr("<p>Hue: 0°⁠–⁠360°</p>"
                                      "<p>Lightness: 0%⁠–⁠100%</p>"
                                      "<p>Chroma: 0⁠–⁠%L1</p>")
-                                      .arg(CielchValues::maximumChroma));
+                                      .arg(CielchD50Values::maximumChroma));
 
     constexpr double maxOklchChroma = OklchValues::maximumChroma;
     /*: @info:tooltip Help text for Oklch. “lightness” is different from
@@ -971,7 +971,7 @@ ColorDialog::ColorDialog(QWidget *parent)
     setCurrentColor( //
         d_pointer //
             ->m_rgbColorSpace //
-            ->toQRgbBound(CielchValues::srgbVersatileInitialColor) //
+            ->fromCielchD50ToQRgbBound(CielchD50Values::srgbVersatileInitialColor) //
     );
 }
 
@@ -1012,7 +1012,7 @@ ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &c
     setCurrentColor( //
         d_pointer //
             ->m_rgbColorSpace //
-            ->toQRgbBound(CielchValues::srgbVersatileInitialColor) //
+            ->fromCielchD50ToQRgbBound(CielchD50Values::srgbVersatileInitialColor) //
     );
 }
 
@@ -1202,7 +1202,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::MultiColor
 
     // Update CIEHLC widget
     if (m_ciehlcSpinBox != ignoreWidget) {
-        m_ciehlcSpinBox->setSectionValues(m_currentOpaqueColor.ciehlc);
+        m_ciehlcSpinBox->setSectionValues(m_currentOpaqueColor.ciehlcD50);
     }
 
     // Update Oklch widget
@@ -1218,25 +1218,25 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::MultiColor
     // Update lightness selector
     if (m_lchLightnessSelector != ignoreWidget) {
         m_lchLightnessSelector->setValue( //
-            color.cielch.l / static_cast<qreal>(100));
+            color.cielchD50.l / static_cast<qreal>(100));
     }
 
     // Update chroma-hue diagram
     if (m_chromaHueDiagram != ignoreWidget) {
-        m_chromaHueDiagram->setCurrentColor(color.cielch);
+        m_chromaHueDiagram->setCurrentColor(color.cielchD50);
     }
 
     // Update wheel color picker
     if (m_wheelColorPicker != ignoreWidget) {
-        m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor.cielch);
+        m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor.cielchD50);
     }
 
     // Update alpha gradient slider
     if (m_alphaGradientSlider != ignoreWidget) {
         LchaDouble tempColor;
-        tempColor.l = m_currentOpaqueColor.cielch.l;
-        tempColor.c = m_currentOpaqueColor.cielch.c;
-        tempColor.h = m_currentOpaqueColor.cielch.h;
+        tempColor.l = m_currentOpaqueColor.cielchD50.l;
+        tempColor.c = m_currentOpaqueColor.cielchD50.c;
+        tempColor.h = m_currentOpaqueColor.cielchD50.h;
         tempColor.a = 0;
         m_alphaGradientSlider->setFirstColor(tempColor);
         tempColor.a = 1;
@@ -1266,7 +1266,7 @@ void ColorDialogPrivate::readLightnessValue()
         // Nothing to do!
         return;
     }
-    LchDouble lch = m_currentOpaqueColor.cielch;
+    LchDouble lch = m_currentOpaqueColor.cielchD50;
     lch.l = m_lchLightnessSelector->value() * 100;
     lch = m_rgbColorSpace->reduceChromaToFitIntoGamut(lch);
     setCurrentOpaqueColor( //
@@ -1443,7 +1443,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
 void ColorDialogPrivate::updateHlcButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_ciehlcSpinBox);
-    m_ciehlcSpinBox->setSectionValues(m_currentOpaqueColor.ciehlc);
+    m_ciehlcSpinBox->setSectionValues(m_currentOpaqueColor.ciehlcD50);
 }
 
 /** @brief If no @ref m_isColorChangeInProgress, reads the HLC numbers
@@ -1685,7 +1685,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         ciehlcSections.append(mySection);
         // C
         mySection.setMinimum(0);
-        mySection.setMaximum(CielchValues::maximumChroma);
+        mySection.setMaximum(CielchD50Values::maximumChroma);
         mySection.setWrapping(false);
         ciehlcSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…

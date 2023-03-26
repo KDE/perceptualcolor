@@ -8,7 +8,7 @@
 #include "chromalightnessdiagram_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
@@ -73,7 +73,7 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink)
-    : m_currentColor(CielchValues::srgbVersatileInitialColor)
+    : m_currentColor(CielchD50Values::srgbVersatileInitialColor)
     , q_pointer(backLink)
 {
 }
@@ -305,7 +305,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     // will trigger a new paint event, once the cache has been updated.
     d_pointer->m_chromaLightnessImage.refreshAsync();
     const QColor myNeutralGray = //
-        d_pointer->m_rgbColorSpace->toQRgbBound(CielchValues::neutralGray);
+        d_pointer->m_rgbColorSpace->fromCielchD50ToQRgbBound(CielchD50Values::neutralGray);
     painter.setPen(Qt::NoPen);
     painter.setBrush(myNeutralGray);
     const auto imageSize = //
@@ -518,7 +518,7 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
     }
 
     // Actually for in-gamut color:
-    return m_rgbColorSpace->isInGamut(color);
+    return m_rgbColorSpace->isCielchD50InGamut(color);
 }
 
 /** @brief Setter for the @ref currentColor() property.
@@ -598,7 +598,7 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
         // Add the gradient minimum length from y axis, multiplied with
         // the factor to allow at correct scaling showing up the whole
         // chroma range of the gamut.
-        + gradientMinimumLength() * d_pointer->m_rgbColorSpace->profileMaximumCielchChroma() / 100.0);
+        + gradientMinimumLength() * d_pointer->m_rgbColorSpace->profileMaximumCielchD50Chroma() / 100.0);
     // Expand to the global minimum size for GUI elements
     return QSize(minimumWidth, minimumHeight);
 }
@@ -822,7 +822,7 @@ PerceptualColor::LchDouble ChromaLightnessDiagramPrivate::nearestInGamutColorByA
     // Return is we are within the gamut.
     // NOTE Calling isInGamut() is slower than simply testing for the pixel,
     // it is more exact.
-    if (m_rgbColorSpace->isInGamut(temp)) {
+    if (m_rgbColorSpace->isCielchD50InGamut(temp)) {
         return temp;
     }
 

@@ -10,7 +10,7 @@
 #include "abstractdiagram.h"
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "colorwheel.h"
 #include "colorwheel_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
 #include "constpropagatingrawpointer.h"
@@ -81,11 +81,11 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
 
     // Initial color
     setCurrentColor(
-        // Though CielchValues::srgbVersatileInitialColor() is expected to
+        // Though CielchD50Values::srgbVersatileInitialColor() is expected to
         // be in-gamut, its more secure to guarantee this explicitly:
         d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(
             // Default sRGB initial color:
-            CielchValues::srgbVersatileInitialColor));
+            CielchD50Values::srgbVersatileInitialColor));
 }
 
 /** @brief Default destructor */
@@ -161,7 +161,7 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
      * | widgetHeight | widget height                    | b + v                              |
      * | a            | diagram width                    | ?                                  |
      */
-    const qreal r = 100.0 / m_rgbColorSpace->profileMaximumCielchChroma();
+    const qreal r = 100.0 / m_rgbColorSpace->profileMaximumCielchD50Chroma();
     const qreal h = m_chromaLightnessDiagram->d_pointer->leftBorderPhysical() //
         + m_chromaLightnessDiagram->d_pointer->defaultBorderPhysical();
     const qreal v = 2 * m_chromaLightnessDiagram->d_pointer->defaultBorderPhysical();

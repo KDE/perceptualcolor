@@ -5,7 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimage.h"
 
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "helpermath.h"
@@ -187,7 +187,7 @@ QImage ColorWheelImage::getImage()
     int x;
     int y;
     QRgb rgbColor;
-    cmsCIELCh lch;
+    cmsCIELCh cielchD50;
     const qreal center = (m_imageSizePhysical - 1) / static_cast<qreal>(2);
     m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), //
                      QImage::Format_ARGB32_Premultiplied);
@@ -195,8 +195,8 @@ QImage ColorWheelImage::getImage()
     // given lightness and chroma value) which are drawn transparent, it is
     // important to initialize this image with a transparent background.
     m_image.fill(Qt::transparent);
-    lch.L = CielchValues::neutralLightness;
-    lch.C = CielchValues::srgbVersatileChroma;
+    cielchD50.L = CielchD50Values::neutralLightness;
+    cielchD50.C = CielchD50Values::srgbVersatileChroma;
     // minimumRadial: Adding "+ 1" would reduce the workload (less pixel to
     // process) and still work mostly, but not completely. It creates sometimes
     // artifacts in the anti-aliasing process. So we don't do that.
@@ -210,9 +210,9 @@ QImage ColorWheelImage::getImage()
 
             ) {
                 // We are within the wheel
-                lch.h = polarCoordinates.angleDegree();
-                rgbColor = m_rgbColorSpace->toQRgbOrTransparent( //
-                    toCmsLab(lch));
+                cielchD50.h = polarCoordinates.angleDegree();
+                rgbColor = m_rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+                    toCmsLab(cielchD50));
                 if (qAlpha(rgbColor) != 0) {
                     m_image.setPixelColor(x, y, rgbColor);
                 }

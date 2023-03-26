@@ -78,14 +78,14 @@ private Q_SLOTS:
     void testDefaultConstructor()
     {
         MultiColor myMulticolor;
-        QCOMPARE(myMulticolor.ciehlc.size(), 0);
+        QCOMPARE(myMulticolor.ciehlcD50.size(), 0);
         QCOMPARE(myMulticolor.multiRgb.hwb.size(), 0);
         QCOMPARE(myMulticolor.multiRgb.hsl.size(), 0);
         QCOMPARE(myMulticolor.multiRgb.hsv.size(), 0);
         QCOMPARE(myMulticolor.oklch.size(), 0);
         QCOMPARE(myMulticolor.multiRgb.rgb.size(), 0);
-        QCOMPARE(myMulticolor.ciehlc.size(), 0);
-        QCOMPARE(myMulticolor.ciehlc.size(), 0);
+        QCOMPARE(myMulticolor.ciehlcD50.size(), 0);
+        QCOMPARE(myMulticolor.ciehlcD50.size(), 0);
         QCOMPARE(myMulticolor.multiRgb.rgbQColor.isValid(), false);
     }
 
@@ -93,10 +93,10 @@ private Q_SLOTS:
     {
         MultiColor myMulticolor1;
         MultiColor myMulticolor2(myMulticolor1);
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -111,10 +111,10 @@ private Q_SLOTS:
             RgbColorSpaceFactory::createSrgb(),
             MultiRgb::fromRgb(QList<double>{1, 2, 3}));
         MultiColor myMulticolor2(myMulticolor1);
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -128,10 +128,10 @@ private Q_SLOTS:
         MultiColor myMulticolor1;
         MultiColor myMulticolor2;
         myMulticolor2 = myMulticolor1;
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -150,10 +150,10 @@ private Q_SLOTS:
             MultiRgb::fromRgb(QList<double>{7, 8, 9}));
         Q_UNUSED(myMulticolor2);
         myMulticolor2 = myMulticolor1;
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -167,10 +167,10 @@ private Q_SLOTS:
         MultiColor myReference;
         MultiColor myMulticolor1 = myReference;
         MultiColor myMulticolor2(std::move(myMulticolor1));
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -186,10 +186,10 @@ private Q_SLOTS:
             MultiRgb::fromRgbQColor(Qt::yellow));
         MultiColor myMulticolor1 = myReference;
         MultiColor myMulticolor2(std::move(myMulticolor1));
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -204,10 +204,10 @@ private Q_SLOTS:
         MultiColor myMulticolor1 = myReference;
         MultiColor myMulticolor2;
         myMulticolor2 = std::move(myMulticolor1);
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -224,10 +224,10 @@ private Q_SLOTS:
         MultiColor myMulticolor1 = myReference;
         MultiColor myMulticolor2;
         myMulticolor2 = std::move(myMulticolor1);
-        QCOMPARE(myMulticolor2.ciehlc, myMulticolor1.ciehlc);
-        QCOMPARE(myMulticolor2.cielch.l, myMulticolor1.cielch.l);
-        QCOMPARE(myMulticolor2.cielch.c, myMulticolor1.cielch.c);
-        QCOMPARE(myMulticolor2.cielch.h, myMulticolor1.cielch.h);
+        QCOMPARE(myMulticolor2.ciehlcD50, myMulticolor1.ciehlcD50);
+        QCOMPARE(myMulticolor2.cielchD50.l, myMulticolor1.cielchD50.l);
+        QCOMPARE(myMulticolor2.cielchD50.c, myMulticolor1.cielchD50.c);
+        QCOMPARE(myMulticolor2.cielchD50.h, myMulticolor1.cielchD50.h);
         QCOMPARE(myMulticolor2.multiRgb.hsl, myMulticolor1.multiRgb.hsl);
         QCOMPARE(myMulticolor2.multiRgb.hsv, myMulticolor1.multiRgb.hsv);
         QCOMPARE(myMulticolor2.multiRgb.hwb, myMulticolor1.multiRgb.hwb);
@@ -245,10 +245,10 @@ private Q_SLOTS:
         MultiColor myMulticolor1 = MultiColor::fromCielch( //
             RgbColorSpaceFactory::createSrgb(),
             myLch);
-        QCOMPARE(myMulticolor1.cielch.l, 51);
-        QCOMPARE(myMulticolor1.cielch.c, 21);
-        QCOMPARE(myMulticolor1.cielch.h, 1);
-        QCOMPARE(myMulticolor1.ciehlc, (QList<double>{1, 51, 21}));
+        QCOMPARE(myMulticolor1.cielchD50.l, 51);
+        QCOMPARE(myMulticolor1.cielchD50.c, 21);
+        QCOMPARE(myMulticolor1.cielchD50.h, 1);
+        QCOMPARE(myMulticolor1.ciehlcD50, (QList<double>{1, 51, 21}));
     }
 
     void testRgb()
@@ -369,8 +369,8 @@ private Q_SLOTS:
             RgbColorSpaceFactory::createSrgb(), //
             MultiRgb::fromHsl(QList<double>({150, 10, 50})));
         QVERIFY( //
-            isAlmostEqual(grayColor1.ciehlc.at(0), //
-                          slightlyColorfullColor1.ciehlc.at(0)));
+            isAlmostEqual(grayColor1.ciehlcD50.at(0), //
+                          slightlyColorfullColor1.ciehlcD50.at(0)));
 
         MultiColor grayColor2 = MultiColor::fromMultiRgb( //
             RgbColorSpaceFactory::createSrgb(), //
@@ -379,11 +379,11 @@ private Q_SLOTS:
             RgbColorSpaceFactory::createSrgb(), //
             MultiRgb::fromHsl(QList<double>({350, 10, 50})));
         QVERIFY( //
-            isAlmostEqual(grayColor2.ciehlc.at(0), //
-                          slightlyColorfullColor2.ciehlc.at(0)));
+            isAlmostEqual(grayColor2.ciehlcD50.at(0), //
+                          slightlyColorfullColor2.ciehlcD50.at(0)));
 
-        QVERIFY(!isAlmostEqual(grayColor1.ciehlc.at(0), //
-                               grayColor2.ciehlc.at(0)));
+        QVERIFY(!isAlmostEqual(grayColor1.ciehlcD50.at(0), //
+                               grayColor2.ciehlcD50.at(0)));
     }
 
     void testHueFromRgbToLchContinuity()
@@ -402,14 +402,14 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({186.35, 0, 50})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
 
         const double blackHue = //
             MultiColor::fromMultiRgb( //
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({186.35, 0, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY(isAlmostEqual(blackHue, referenceLchCieHue, 1.));
 
         const double whiteHue = //
@@ -417,7 +417,7 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({186.35, 0, 100})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY(isAlmostEqual(whiteHue, referenceLchCieHue, 1.));
     }
 
@@ -467,14 +467,14 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 50, 100})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
 
         const double lowestSaturationCieHue = //
             MultiColor::fromMultiRgb( //
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 0, 100})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY(isAlmostEqual(lowestSaturationCieHue, referenceLchCieHue, 1.));
 
         const double highestSaturationCieHue = //
@@ -482,7 +482,7 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 100, 100})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY(isAlmostEqual(highestSaturationCieHue, referenceLchCieHue, 1.));
     }
 
@@ -497,14 +497,14 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 50, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
 
         const double lowestHslSaturationCieHue = //
             MultiColor::fromMultiRgb( //
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 0, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY( //
             isAlmostEqual(lowestHslSaturationCieHue, referenceLchCieHue, 1.));
 
@@ -513,7 +513,7 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 100, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY( //
             isAlmostEqual(highestHslSaturationCieHue, referenceLchCieHue, 1.));
 
@@ -522,7 +522,7 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 0, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY( //
             isAlmostEqual(lowestHsvSaturationCieHue, referenceLchCieHue, 1.));
 
@@ -531,7 +531,7 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 50, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY( //
             isAlmostEqual(middleHsvSaturationCieHue, referenceLchCieHue, 1.));
 
@@ -540,7 +540,7 @@ private Q_SLOTS:
                 RgbColorSpaceFactory::createSrgb(), //
                 MultiRgb::fromHsl(QList<double>({120, 100, 0})) //
                 )
-                .ciehlc.at(0);
+                .ciehlcD50.at(0);
         QVERIFY( //
             isAlmostEqual(highestHsvSaturationCieHue, referenceLchCieHue, 1.));
     }
@@ -567,13 +567,13 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.multiRgb.rgb.at(1), 122));
         QVERIFY(isAlmostEqual<double>(value.multiRgb.rgb.at(2), 31));
 
-        QVERIFY(isAlmostEqual<double>(value.cielch.l, 46));
-        QVERIFY(isAlmostEqual<double>(value.cielch.c, 55));
-        QVERIFY(isAlmostEqual<double>(value.cielch.h, 132));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.l, 46));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.c, 55));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.h, 132));
 
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(0), 132));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(1), 46));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(2), 55));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(0), 132));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(1), 46));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(2), 55));
     }
 
     void testFromHsv()
@@ -598,13 +598,13 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.multiRgb.rgb.at(1), 76));
         QVERIFY(isAlmostEqual<double>(value.multiRgb.rgb.at(2), 30));
 
-        QVERIFY(isAlmostEqual<double>(value.cielch.l, 29));
-        QVERIFY(isAlmostEqual<double>(value.cielch.c, 32));
-        QVERIFY(isAlmostEqual<double>(value.cielch.h, 132));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.l, 29));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.c, 32));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.h, 132));
 
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(0), 132));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(1), 29));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(2), 32));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(0), 132));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(1), 29));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(2), 32));
     }
 
     void testSaturationSynchronizationForBlackFromHsv()
@@ -782,13 +782,13 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.multiRgb.rgb.at(1), 179));
         QVERIFY(isAlmostEqual<double>(value.multiRgb.rgb.at(2), 153)); //
 
-        QVERIFY(isAlmostEqual<double>(value.cielch.l, 71));
-        QVERIFY(isAlmostEqual<double>(value.cielch.c, 16));
-        QVERIFY(isAlmostEqual<double>(value.cielch.h, 134));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.l, 71));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.c, 16));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.h, 134));
 
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(0), 134));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(1), 71));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(2), 16));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(0), 134));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(1), 71));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(2), 16));
     }
 
     void testFromHwbDenormalized()
@@ -818,11 +818,11 @@ private Q_SLOTS:
         // requires special treatment which is part of another unit test,
         // and we do not want to test this unit test two unrelated
         // behaviours at the same time.
-        QVERIFY(isAlmostEqual<double>(value.cielch.l, 54));
-        QVERIFY(isAlmostEqual<double>(value.cielch.c, 0));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.l, 54));
+        QVERIFY(isAlmostEqual<double>(value.cielchD50.c, 0));
 
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(1), 54));
-        QVERIFY(isAlmostEqual<double>(value.ciehlc.at(2), 0));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(1), 54));
+        QVERIFY(isAlmostEqual<double>(value.ciehlcD50.at(2), 0));
     }
 
     void testEquality()

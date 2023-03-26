@@ -1038,7 +1038,7 @@ private Q_SLOTS:
 
         // Get internal LCH value
         const LchDouble color = //
-            m_perceptualDialog->d_pointer->m_currentOpaqueColor.cielch;
+            m_perceptualDialog->d_pointer->m_currentOpaqueColor.cielchD50;
 
         // The very same LCH value has to be found in all widgets using it.
         // (This is not trivial, because even coming from RGB, because of
@@ -1582,7 +1582,7 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
         myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.l, 60);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 60);
     }
 
     void testReadHlcNumericValues()
@@ -1598,9 +1598,9 @@ private Q_SLOTS:
         myValues[2] = 12;
         myDialog->d_pointer->m_ciehlcSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.h, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.l, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.c, 12);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.c, 12);
 
         // Test with an out-of-gamut value.
         myValues[0] = 10;
@@ -1608,9 +1608,9 @@ private Q_SLOTS:
         myValues[2] = 12;
         myDialog->d_pointer->m_ciehlcSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.h, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.l, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielch.c, 12);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.c, 12);
     }
 
     void testReadHsvNumericValues()
@@ -2083,7 +2083,7 @@ private Q_SLOTS:
             m_perceptualDialog->d_pointer->m_lchLightnessSelector, //
             Qt::Key_End);
         QVERIFY( //
-            m_perceptualDialog->d_pointer->m_currentOpaqueColor.cielch.l > 95);
+            m_perceptualDialog->d_pointer->m_currentOpaqueColor.cielchD50.l > 95);
     }
 
     void testSnippet02()

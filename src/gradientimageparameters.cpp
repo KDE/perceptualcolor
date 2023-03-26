@@ -145,15 +145,15 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
                         QImage::Format_ARGB32_Premultiplied);
     onePixelLine.fill(Qt::transparent); // Initialize image with transparency.
     LchaDouble color;
-    LchDouble lch;
+    LchDouble cielchD50;
     QColor temp;
     for (int i = 0; i < parameters.m_gradientLength; ++i) {
         color = parameters.colorFromValue( //
             (i + 0.5) / static_cast<qreal>(parameters.m_gradientLength));
-        lch.l = color.l;
-        lch.c = color.c;
-        lch.h = color.h;
-        temp = parameters.rgbColorSpace->toQRgbBound(lch);
+        cielchD50.l = color.l;
+        cielchD50.c = color.c;
+        cielchD50.h = color.h;
+        temp = parameters.rgbColorSpace->fromCielchD50ToQRgbBound(cielchD50);
         temp.setAlphaF(
             // Reduce floating point precision if necessary.
             static_cast<QColorFloatType>(color.a));

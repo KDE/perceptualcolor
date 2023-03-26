@@ -7,7 +7,7 @@
 // Include the header of the public class of this private implementation.
 // #include "rgbcolorspace.h"
 
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconstants.h"
 #include "oklchvalues.h"
@@ -79,8 +79,8 @@ public:
      * @ref RgbColorSpace::profileManufacturer */
     QString m_profileManufacturer;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileMaximumCielchChroma */
-    double m_profileMaximumCielchChroma = CielchValues::maximumChroma;
+     * @ref RgbColorSpace::profileMaximumCielchD50Chroma */
+    double m_profileMaximumCielchD50Chroma = CielchD50Values::maximumChroma;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileMaximumOklchChroma */
     double m_profileMaximumOklchChroma = OklchValues::maximumChroma;
@@ -94,18 +94,18 @@ public:
      * @ref RgbColorSpace::profilePcsColorModel */
     cmsColorSpaceSignature m_profilePcsColorModel;
     /** @brief A handle to a LittleCMS transform. */
-    cmsHTRANSFORM m_transformLabToRgb16Handle = nullptr;
+    cmsHTRANSFORM m_transformCielabD50ToRgb16Handle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
-    cmsHTRANSFORM m_transformLabToRgbHandle = nullptr;
+    cmsHTRANSFORM m_transformCielabD50ToRgbHandle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
-    cmsHTRANSFORM m_transformRgbToLabHandle = nullptr;
+    cmsHTRANSFORM m_transformRgbToCielabD50Handle = nullptr;
     /** @brief The lightest in-gamut point on the L* axis.
      * @sa blackpointL() */
     qreal m_whitepointL = 100;
 
     // Functions:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
-    [[nodiscard]] double detectMaximumCielchChroma() const;
+    [[nodiscard]] double detectMaximumCielchD50Chroma() const;
     [[nodiscard]] double detectMaximumOklchChroma() const;
     [[nodiscard]] static QDateTime getCreationDateTimeFromProfile(cmsHPROFILE profileHandle);
     [[nodiscard]] static QVersionNumber getIccVersionFromProfile(cmsHPROFILE profileHandle);
@@ -153,10 +153,10 @@ public:
      *
      * The maximum-chroma detection, regardless of the precision,
      * might always return a value that is a bit too small. However,
-     * we want to have @ref RgbColorSpace::profileMaximumCielchChroma and
+     * we want to have @ref RgbColorSpace::profileMaximumCielchD50Chroma and
      * @ref RgbColorSpace::profileMaximumOklchChroma values that are equal
      * or slightly bigger than the actual maximum-chroma, to make sure to
-     * not exclude valid values. Therefore, @ref detectMaximumCielchChroma()
+     * not exclude valid values. Therefore, @ref detectMaximumCielchD50Chroma()
      * and @ref detectMaximumOklchChroma use this increment factor to
      * slightly increment the outcome of the chroma detection relative to
      * the original value, as a safety margin. Note that additionally,

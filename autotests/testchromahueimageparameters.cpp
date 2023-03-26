@@ -385,7 +385,7 @@ private Q_SLOTS:
         const qreal chromaAtCenter = //
             testProperties //
                 .rgbColorSpace //
-                ->toCielchDouble( //
+                ->toCielchD50Double( //
                     myMockup
                         .lastDeliveredImage() //
                         .pixelColor(positionAtCenter, positionAtCenter) //
@@ -399,10 +399,10 @@ private Q_SLOTS:
                 const qreal chromaAround = //
                     testProperties //
                         .rgbColorSpace //
-                        ->toCielchDouble(myMockup //
-                                             .lastDeliveredImage() //
-                                             .pixelColor(x, y) //
-                                             .rgba64()) //
+                        ->toCielchD50Double(myMockup //
+                                                .lastDeliveredImage() //
+                                                .pixelColor(x, y) //
+                                                .rgba64()) //
                         .c;
                 QVERIFY2(chromaAtCenter < chromaAround,
                          "The chroma of the pixel at the center of the image "
@@ -428,7 +428,7 @@ private Q_SLOTS:
         const qreal chromaAtCenterA = //
             testProperties //
                 .rgbColorSpace //
-                ->toCielchDouble( //
+                ->toCielchD50Double( //
                     myMockup //
                         .lastDeliveredImage() //
                         .pixelColor(positionAtCenter1, positionAtCenter1) //
@@ -437,7 +437,7 @@ private Q_SLOTS:
         const qreal chromaAtCenterB = //
             testProperties //
                 .rgbColorSpace //
-                ->toCielchDouble( //
+                ->toCielchD50Double( //
                     myMockup //
                         .lastDeliveredImage() //
                         .pixelColor(positionAtCenter1, positionAtCenter2) //
@@ -446,7 +446,7 @@ private Q_SLOTS:
         const qreal chromaAtCenterC = //
             testProperties //
                 .rgbColorSpace //
-                ->toCielchDouble( //
+                ->toCielchD50Double( //
                     myMockup //
                         .lastDeliveredImage() //
                         .pixelColor(positionAtCenter2, positionAtCenter1) //
@@ -455,7 +455,7 @@ private Q_SLOTS:
         const qreal chromaAtCenterD = //
             testProperties //
                 .rgbColorSpace //
-                ->toCielchDouble( //
+                ->toCielchD50Double( //
                     myMockup //
                         .lastDeliveredImage() //
                         .pixelColor(positionAtCenter2, positionAtCenter2) //
@@ -477,10 +477,10 @@ private Q_SLOTS:
                 const qreal chromaAround = //
                     testProperties //
                         .rgbColorSpace //
-                        ->toCielchDouble(myMockup //
-                                             .lastDeliveredImage() //
-                                             .pixelColor(x, y) //
-                                             .rgba64()) //
+                        ->toCielchD50Double(myMockup //
+                                                .lastDeliveredImage() //
+                                                .pixelColor(x, y) //
+                                                .rgba64()) //
                         .c;
                 QVERIFY2(maximumChromaAtCenter < chromaAround,
                          "The chroma of the pixels at the center of the image "

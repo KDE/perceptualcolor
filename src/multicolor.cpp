@@ -41,7 +41,7 @@ static_assert(std::is_copy_constructible_v<MultiColor>);
 // static_assert(std::is_nothrow_move_constructible_v<MultiColor>);
 
 MultiColor::MultiColor()
-    : cielch{0, 0, 0}
+    : cielchD50{0, 0, 0}
 {
 }
 
@@ -51,14 +51,14 @@ MultiColor::MultiColor()
  * @pre The values for RGB-based color formats are correct: @ref multiRgb
  *
  * @post The values for Lab-based color formats are set
- * accordingly: @ref ciehlc, @ref cielch.
+ * accordingly: @ref ciehlcD50, @ref cielchD50.
  *
  * @param colorSpace The color space in which the object is created. */
 void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<RgbColorSpace> &colorSpace)
 {
-    cielch = colorSpace->toCielchDouble(multiRgb.rgbQColor.rgba64());
-    if (cielch.c < colorDifferenceThreshold) {
-        cielch.c = 0;
+    cielchD50 = colorSpace->toCielchD50Double(multiRgb.rgbQColor.rgba64());
+    if (cielchD50.c < colorDifferenceThreshold) {
+        cielchD50.c = 0;
         // Get a similar, but more chromatic color. To do so, we raise the
         // HSL saturation. If the color is black or white or a nearby color,
         // we also move it a bit towards neutral gray, because black and
@@ -85,17 +85,17 @@ void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<Rgb
                 static_cast<QColorFloatType>(qBound(0., correctedLightness / 100, 1.)) //
                 )
                 .toRgb();
-        cielch.h = colorSpace->toCielchDouble(saturatedHslQColor.rgba64()).h;
+        cielchD50.h = colorSpace->toCielchD50Double(saturatedHslQColor.rgba64()).h;
         // Changing the hue might make the color out-of-gamut because some
         // gamuts have strange forms around the white point and the black
         // point. We push it back into the gamut:
-        cielch = colorSpace->reduceChromaToFitIntoGamut(cielch);
+        cielchD50 = colorSpace->reduceChromaToFitIntoGamut(cielchD50);
     }
 
-    ciehlc = QList<double>({cielch.h, cielch.l, cielch.c});
+    ciehlcD50 = QList<double>({cielchD50.h, cielchD50.l, cielchD50.c});
 
-    const auto cielab = colorSpace->toCielab(multiRgb.rgbQColor.rgba64());
-    const auto oklab = fromCmscielabD50ToOklab(cielab);
+    const auto cielabD50 = colorSpace->toCielabD50(multiRgb.rgbQColor.rgba64());
+    const auto oklab = fromCmscielabD50ToOklab(cielabD50);
     // TODO xxx Missing support of Oklch to prevent arbitrary hue changes
     // near the gray axis, like we prevent it yet for cielch.
     const auto oklchdouble = toLchDouble(oklab);
@@ -114,9 +114,9 @@ void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<Rgb
 MultiColor MultiColor::fromCielch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color)
 {
     MultiColor result;
-    result.cielch = color;
-    result.ciehlc = QList<double>({result.cielch.h, result.cielch.l, result.cielch.c});
-    const cmsCIELCh tempcmscielch = toCmsLch(result.cielch);
+    result.cielchD50 = color;
+    result.ciehlcD50 = QList<double>({result.cielchD50.h, result.cielchD50.l, result.cielchD50.c});
+    const cmsCIELCh tempcmscielch = toCmsLch(result.cielchD50);
     const cmsCIELab tempcmscielab = toCmsLab(tempcmscielch);
     const auto cmsoklab = fromCmscielabD50ToOklab(tempcmscielab);
     const auto oklchdouble = toLchDouble(cmsoklab);
@@ -124,7 +124,7 @@ MultiColor MultiColor::fromCielch(const QSharedPointer<RgbColorSpace> &colorSpac
     // near the gray axis, like we prevent it yet for cielch vs RGB.
     result.oklch = QList<double>({oklchdouble.l, oklchdouble.c, oklchdouble.h});
     std::optional<double> hue;
-    if (result.cielch.c < colorDifferenceThreshold) {
+    if (result.cielchD50.c < colorDifferenceThreshold) {
         // If we are very close to the cylindrical axis, a big numeric
         // difference in the hue is a very small difference in color. On the
         // cylindrical axis itself the hue is completely meaningless. However,
@@ -135,16 +135,16 @@ MultiColor MultiColor::fromCielch(const QSharedPointer<RgbColorSpace> &colorSpac
         // axis, we snap them exactly to the axis, and then use the hue
         // that corresponds to the same color, but with slightly higher
         // chroma/saturation.
-        LchDouble saturatedLch = result.cielch;
+        LchDouble saturatedCielchD50 = result.cielchD50;
         // Avoid black and white, as for these values, non-zero chroma is
         // out-of-gamut and therefore would not produce a meaningful result.
-        saturatedLch.l = qBound(colorDifferenceThreshold, //
-                                result.cielch.l, //
-                                100 - colorDifferenceThreshold);
+        saturatedCielchD50.l = qBound(colorDifferenceThreshold, //
+                                      result.cielchD50.l, //
+                                      100 - colorDifferenceThreshold);
         // Use a more saturated value:
-        saturatedLch.c = colorDifferenceThreshold;
-        const RgbDouble saturatedRgbDouble = colorSpace->toRgbDoubleUnbound( //
-            saturatedLch);
+        saturatedCielchD50.c = colorDifferenceThreshold;
+        const RgbDouble saturatedRgbDouble = colorSpace->fromCielchD50ToRgbDoubleUnbound( //
+            saturatedCielchD50);
         // TODO xxx The hue shouldn’t be calculated like here by QColor::hueF()
         // but rather using our own MultiRgb. Reasons:
         // 1. Consistency!
@@ -152,7 +152,7 @@ MultiColor MultiColor::fromCielch(const QSharedPointer<RgbColorSpace> &colorSpac
         //    would also benefit from this.
         hue = fromRgbDoubleToQColor(saturatedRgbDouble).hueF() * 360;
     }
-    const RgbDouble temp = colorSpace->toRgbDoubleUnbound(color);
+    const RgbDouble temp = colorSpace->fromCielchD50ToRgbDoubleUnbound(color);
     const QList<double> newRgbList({temp.red * 255, //
                                     temp.green * 255, //
                                     temp.blue * 255});
@@ -184,8 +184,8 @@ MultiColor MultiColor::fromMultiRgb(const QSharedPointer<RgbColorSpace> &colorSp
 bool MultiColor::operator==(const MultiColor &other) const
 {
     // Test equality for all data members
-    return (ciehlc == other.ciehlc) //
-        && (cielch.hasSameCoordinates(other.cielch)) //
+    return (ciehlcD50 == other.ciehlcD50) //
+        && (cielchD50.hasSameCoordinates(other.cielchD50)) //
         && (multiRgb == other.multiRgb) //
         && (oklch == other.oklch);
 }
@@ -202,8 +202,8 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiColor &value)
 {
     dbg.nospace() //
         << "MultiColor(\n"
-        << " - ciehlc: " << value.ciehlc << "\n"
-        << " - cielch: " << value.cielch.l << "\n"
+        << " - ciehlc: " << value.ciehlcD50 << "\n"
+        << " - cielch: " << value.cielchD50.l << "\n"
         << " - multirgb: " << value.multiRgb << "\n"
         << " - oklch: " << value.oklch << "\n"
         << ")";

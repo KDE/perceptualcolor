@@ -84,7 +84,7 @@ namespace PerceptualColor
  *
  * @todo BUG Wide gamut RGB: RGB 51 255 51. Chroma-Hue-Diagram: The handle
  * is drawn outside the circle. This should never happen! See also
- * @ref PerceptualColor::CielchValues::maximumChroma
+ * @ref PerceptualColor::CielchD50Values::maximumChroma
  *
  * @todo The hue circle around chroma-hue diagram might be confusing because
  * it is colored, but it is not a usable slider like all other colored

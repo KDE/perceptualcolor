@@ -8,7 +8,7 @@
 #include "colorwheel_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -74,7 +74,7 @@ ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<
     , q_pointer(backLink)
 {
     // Initialization
-    m_hue = CielchValues::neutralHue;
+    m_hue = CielchD50Values::neutralHue;
 }
 
 /** @brief Convert widget pixel positions to wheel coordinate points.

@@ -38,14 +38,14 @@ class RgbColorSpacePrivate;
  * This class has no public constructor. Objects can be generated
  * with the static factory functions.
  *
- * @note The maximum accepted LCH/LAB lightness range is 0 to 100, and the
- * maximum LCH chroma is @ref CielchValues::maximumChroma. Values outside of
- * this range are considered out-of-gamut, even if the profile itself
- * would accept them.
+ * @note The maximum accepted Cielch/Cielab lightness range is 0 to 100, and
+ * the maximum Cielch chroma is @ref CielchD50Values::maximumChroma. Values
+ * outside of this range are considered out-of-gamut, even if the profile
+ * itself would accept them.
  *
  * @todo Unit tests for @ref RgbColorSpace, especially the to…() functions.
  *
- * @todo Unit tests for @ref profileMaximumCielchChroma and
+ * @todo Unit tests for @ref profileMaximumCielchD50Chroma and
  *       @ref profileMaximumOklchChroma with all profiles that are available
  *       in the testbed.
  *
@@ -55,14 +55,12 @@ class RgbColorSpacePrivate;
  *       (0–1, or 0%–100%), but different for a and b:
  *       https://www.w3.org/TR/css-color-4/#ok-lab says up to 0.5, but
  *       we would have to actually test this. Therefore, also the
- *       @ref profileMaximumCielchChroma would have to be provides for all
+ *       @ref profileMaximumCielchD50Chroma would have to be provides for all
  *       these color spaces individually. Anyway, we could also
  *       output the data in a new data type for cylindrical coordinates
  *       (angle degree, radial, height), independent of the color
  *       space, which must always be cylindrical anyway as we have
- *       no support for anything else in our widgets. Anyway, we
- *       should rename functions in our API from LCH or LAB to
- *       CIELCH or CIELAB to avoid confusion with OKLAB and OKLCH.
+ *       no support for anything else in our widgets.
  *
  *
  * @todo The sRGB colour space object should be implemented as a singleton.
@@ -206,8 +204,8 @@ class RgbColorSpace : public QObject
      * in very rare cases return a value that is smaller than the actual
      * maximum chroma.
      *
-     * @sa READ @ref profileMaximumCielchChroma() const */
-    Q_PROPERTY(double profileMaximumCielchChroma READ profileMaximumCielchChroma CONSTANT)
+     * @sa READ @ref profileMaximumCielchD50Chroma() const */
+    Q_PROPERTY(double profileMaximumCielchD50Chroma READ profileMaximumCielchD50Chroma CONSTANT)
 
     /** @brief The maximum Oklch chroma of the profile.
      *
@@ -260,8 +258,8 @@ public: // Static factory functions
 
 public:
     virtual ~RgbColorSpace() noexcept override;
-    [[nodiscard]] Q_INVOKABLE virtual bool isInGamut(const cmsCIELab &lab) const;
-    [[nodiscard]] Q_INVOKABLE virtual bool isInGamut(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual bool isCielabD50InGamut(const cmsCIELab &lab) const;
+    [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::LchDouble &lch) const;
     /** @brief Getter for property @ref profileAbsoluteFilePath
      *  @returns the property @ref profileAbsoluteFilePath */
     [[nodiscard]] QString profileAbsoluteFilePath() const;
@@ -292,9 +290,9 @@ public:
     /** @brief Getter for property @ref profileManufacturer
      *  @returns the property @ref profileManufacturer */
     [[nodiscard]] QString profileManufacturer() const;
-    /** @brief Getter for property @ref profileMaximumCielchChroma
-     *  @returns the property @ref profileMaximumCielchChroma */
-    [[nodiscard]] double profileMaximumCielchChroma() const;
+    /** @brief Getter for property @ref profileMaximumCielchD50Chroma
+     *  @returns the property @ref profileMaximumCielchD50Chroma */
+    [[nodiscard]] double profileMaximumCielchD50Chroma() const;
     /** @brief Getter for property @ref profileMaximumOklchChroma
      *  @returns the property @ref profileMaximumOklchChroma */
     [[nodiscard]] double profileMaximumOklchChroma() const;
@@ -308,11 +306,11 @@ public:
      *  @returns the property @ref profilePcsColorModel */
     [[nodiscard]] cmsColorSpaceSignature profilePcsColorModel() const;
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceChromaToFitIntoGamut(const PerceptualColor::LchDouble &color) const;
-    [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielab(const QRgba64 rgbColor) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble toCielchDouble(const QRgba64 rgbColor) const;
-    [[nodiscard]] Q_INVOKABLE virtual QRgb toQRgbBound(const PerceptualColor::LchDouble &lch) const;
-    [[nodiscard]] Q_INVOKABLE virtual QRgb toQRgbOrTransparent(const cmsCIELab &lab) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::RgbDouble toRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielabD50(const QRgba64 rgbColor) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble toCielchD50Double(const QRgba64 rgbColor) const;
+    [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::RgbDouble fromCielchD50ToRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const;
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)

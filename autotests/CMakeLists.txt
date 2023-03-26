@@ -137,7 +137,7 @@ if(BUILD_TESTING)
         testlanguagechangeeventfilter
         testlchadouble
         testlchdouble
-        testcielchvalues
+        testcielchd50values
         testmulticolor
         testmultirgb
         testmultispinbox

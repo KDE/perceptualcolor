@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CIELCHVALUES_H
-#define CIELCHVALUES_H
+#ifndef CIELCHD50VALUES_H
+#define CIELCHD50VALUES_H
 
 #include "lchdouble.h"
 
@@ -15,7 +15,7 @@ namespace PerceptualColor
  * The @ref lchrangerationale "range of CIELCh values" it known.
  * But what could be useful default values? This struct provides some
  * proposals. All values are <tt>constexpr</tt>. */
-struct CielchValues final {
+struct CielchD50Values final {
 public:
     /** @brief Maximum chroma value as defined in @ref lchrangerationale. */
     static constexpr int maximumChroma = 255;
@@ -98,9 +98,9 @@ public:
 private:
     /** @brief Delete the constructor to disallow creating an instance
      * of this class. */
-    CielchValues() = delete;
+    CielchD50Values() = delete;
 };
 
 } // namespace PerceptualColor
 
-#endif // CIELCHVALUES_H
+#endif // CIELCHD50VALUES_H

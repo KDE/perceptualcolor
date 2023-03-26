@@ -10,7 +10,7 @@
 
 namespace PerceptualColor
 {
-/** @brief A LCH color.
+/** @brief A LCH color (Oklch, CielchD50, CielchD65…)
  *
  * Storage of floating point LCH values with <tt>double</tt> precision.
  *
@@ -46,10 +46,7 @@ namespace PerceptualColor
  * @internal
  *
  * @todo Would it make sense to normalize the hue (1° instead
- * of 361°, and only non-negative radials) and/or to bound the
- * @ref l component to the range <tt>[0, 100]</tt> and/or
- * to bound the radial to the range <tt>[0, 255]</tt> or
- * <tt>[0, @ref CielchValues::maximumChroma]</tt>? */
+ * of 361°, and only non-negative radials)? */
 struct PERCEPTUALCOLOR_IMPORTEXPORT LchDouble {
 public:
     /** @brief Lightness, mesured in percent.

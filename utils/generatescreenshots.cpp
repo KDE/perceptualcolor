@@ -261,19 +261,19 @@ static void makeScreenshots()
     //   hull (which  puts the marker somewhere in the inner of
     //   the gamut, which makes the screenshots easier to understand).
     const QColor defaultColorRgb = QColor::fromRgb(245, 194, 17);
-    const LchDouble defaultColorLch = //
-        m_colorSpace->toCielchDouble(defaultColorRgb.rgba64());
+    const LchDouble defaultColorCielchD50 = //
+        m_colorSpace->toCielchD50Double(defaultColorRgb.rgba64());
     QColor myColor;
 
     {
         ChromaHueDiagram m_chromaHueDiagram(m_colorSpace);
-        m_chromaHueDiagram.setCurrentColor(defaultColorLch);
+        m_chromaHueDiagram.setCurrentColor(defaultColorCielchD50);
         screenshotDelayed(&m_chromaHueDiagram);
     }
 
     {
         ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorSpace);
-        m_chromaLightnessDiagram.setCurrentColor(defaultColorLch);
+        m_chromaLightnessDiagram.setCurrentColor(defaultColorCielchD50);
         screenshotDelayed(&m_chromaLightnessDiagram);
     }
 
@@ -364,7 +364,7 @@ static void makeScreenshots()
 
     {
         ColorWheel m_colorWheel(m_colorSpace);
-        m_colorWheel.setHue(defaultColorLch.h);
+        m_colorWheel.setHue(defaultColorCielchD50.h);
         screenshot(&m_colorWheel);
     }
 
@@ -426,7 +426,7 @@ static void makeScreenshots()
 
     {
         WheelColorPicker m_wheelColorPicker(m_colorSpace);
-        m_wheelColorPicker.setCurrentColor(defaultColorLch);
+        m_wheelColorPicker.setCurrentColor(defaultColorCielchD50);
         screenshotDelayed(&m_wheelColorPicker);
     }
 

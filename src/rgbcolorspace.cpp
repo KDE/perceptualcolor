@@ -106,7 +106,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
     result->d_pointer->m_profileModel = QString();
     /*: @item Name of the built-in sRGB color space. */
     result->d_pointer->m_profileName = tr("sRGB color space");
-    result->d_pointer->m_profileMaximumCielchChroma = 132;
+    result->d_pointer->m_profileMaximumCielchD50Chroma = 132;
 
     // Return:
     return result;
@@ -133,7 +133,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  *
  * @internal
  *
- * @todo The value for @ref profileMaximumCielchChroma should be the actual maximum
+ * @todo The value for @ref profileMaximumCielchD50Chroma should be the actual maximum
  * chroma value of the profile, and not a fallback default value as currently.
  *
  * @note Currently, there is no function that loads a profile from a memory
@@ -255,8 +255,8 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     m_profilePcsColorModel = cmsGetPCS(rgbProfileHandle);
 
     {
-        // Create an ICC v4 profile object for the Lab color space.
-        cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(
+        // Create an ICC v4 profile object for the CielabD50 color space.
+        cmsHPROFILE cielabD50ProfileHandle = cmsCreateLab4Profile(
             // nullptr means: Default white point (D50)
             // TODO Does this make sense? sRGB, for example, has
             // D65 as whitepoint…
@@ -271,45 +271,45 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
         // pixels with the same color, which is the only situation where the
         // 1-pixel-cache makes processing faster.
         constexpr auto flags = cmsFLAGS_NOCACHE;
-        m_transformLabToRgbHandle = cmsCreateTransform(
+        m_transformCielabD50ToRgbHandle = cmsCreateTransform(
             // Create a transform function and get a handle to this function:
-            labProfileHandle, // input profile handle
+            cielabD50ProfileHandle, // input profile handle
             TYPE_Lab_DBL, // input buffer format
             rgbProfileHandle, // output profile handle
             TYPE_RGB_DBL, // output buffer format
             renderingIntent,
             flags);
-        m_transformLabToRgb16Handle = cmsCreateTransform(
+        m_transformCielabD50ToRgb16Handle = cmsCreateTransform(
             // Create a transform function and get a handle to this function:
-            labProfileHandle, // input profile handle
+            cielabD50ProfileHandle, // input profile handle
             TYPE_Lab_DBL, // input buffer format
             rgbProfileHandle, // output profile handle
             TYPE_RGB_16, // output buffer format
             renderingIntent,
             flags);
-        m_transformRgbToLabHandle = cmsCreateTransform(
+        m_transformRgbToCielabD50Handle = cmsCreateTransform(
             // Create a transform function and get a handle to this function:
             rgbProfileHandle, // input profile handle
             TYPE_RGB_DBL, // input buffer format
-            labProfileHandle, // output profile handle
+            cielabD50ProfileHandle, // output profile handle
             TYPE_Lab_DBL, // output buffer format
             renderingIntent,
             flags);
         // It is mandatory to close the profiles to prevent memory leaks:
-        cmsCloseProfile(labProfileHandle);
+        cmsCloseProfile(cielabD50ProfileHandle);
     }
 
     // After having closed the profiles, we can now return
     // (if appropriate) without having memory leaks:
-    if ((m_transformLabToRgbHandle == nullptr) //
-        || (m_transformLabToRgb16Handle == nullptr) //
-        || (m_transformRgbToLabHandle == nullptr) //
+    if ((m_transformCielabD50ToRgbHandle == nullptr) //
+        || (m_transformCielabD50ToRgb16Handle == nullptr) //
+        || (m_transformRgbToCielabD50Handle == nullptr) //
     ) {
         return false;
     }
 
     // Maximum chroma:
-    // TODO Detect an appropriate value for m_profileMaximumCielchChroma.
+    // TODO Detect an appropriate value for m_profileMaximumCielchD50Chroma.
 
     // Find blackpoint and whitepoint. We have to make sure that:
     // 0 <= blackbpoint < whitepoint <= 100
@@ -317,7 +317,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     candidate.l = 0;
     candidate.c = 0;
     candidate.h = 0;
-    while (!q_pointer->isInGamut(candidate)) {
+    while (!q_pointer->isCielchD50InGamut(candidate)) {
         candidate.l += gamutPrecision;
         if (candidate.l >= 100) {
             return false;
@@ -325,7 +325,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     }
     m_blackpointL = candidate.l;
     candidate.l = 100;
-    while (!q_pointer->isInGamut(candidate)) {
+    while (!q_pointer->isCielchD50InGamut(candidate)) {
         candidate.l -= gamutPrecision;
         if (candidate.l <= m_blackpointL) {
             return false;
@@ -335,7 +335,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 
     // Now, calculate the properties who’s calculation depends on a fully
     // initialized object.
-    m_profileMaximumCielchChroma = detectMaximumCielchChroma();
+    m_profileMaximumCielchD50Chroma = detectMaximumCielchD50Chroma();
     m_profileMaximumOklchChroma = detectMaximumOklchChroma();
 
     return true;
@@ -345,11 +345,11 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 RgbColorSpace::~RgbColorSpace() noexcept
 {
     RgbColorSpacePrivate::deleteTransform( //
-        &d_pointer->m_transformLabToRgb16Handle);
+        &d_pointer->m_transformCielabD50ToRgb16Handle);
     RgbColorSpacePrivate::deleteTransform( //
-        &d_pointer->m_transformLabToRgbHandle);
+        &d_pointer->m_transformCielabD50ToRgbHandle);
     RgbColorSpacePrivate::deleteTransform( //
-        &d_pointer->m_transformRgbToLabHandle);
+        &d_pointer->m_transformRgbToCielabD50Handle);
 }
 
 /** @brief Constructor
@@ -455,9 +455,9 @@ QString RgbColorSpace::profileManufacturer() const
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-double RgbColorSpace::profileMaximumCielchChroma() const
+double RgbColorSpace::profileMaximumCielchD50Chroma() const
 {
-    return d_pointer->m_profileMaximumCielchChroma;
+    return d_pointer->m_profileMaximumCielchD50Chroma;
 }
 
 // No documentation here (documentation of properties
@@ -720,7 +720,7 @@ QDateTime RgbColorSpacePrivate::getCreationDateTimeFromProfile(cmsHPROFILE profi
  *
  * @param color The color that will be adapted.
  *
- * @returns An @ref isInGamut color. */
+ * @returns An @ref isCielchD50InGamut color. */
 PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const PerceptualColor::LchDouble &color) const
 {
     // Normalize the LCH coordinates
@@ -733,13 +733,13 @@ PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const Perce
 
     // Bound to valid range:
     referenceColor.c = qMin<decltype(referenceColor.c)>(referenceColor.c, //
-                                                        profileMaximumCielchChroma());
+                                                        profileMaximumCielchD50Chroma());
     referenceColor.l = qBound(d_pointer->m_blackpointL, //
                               referenceColor.l, //
                               d_pointer->m_whitepointL);
 
     // Test special case: If we are yet in-gamut…
-    if (isInGamut(referenceColor)) {
+    if (isCielchD50InGamut(referenceColor)) {
         return referenceColor;
     }
 
@@ -750,7 +750,7 @@ PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const Perce
     // the other one).
     // Create an in-gamut point on the gray axis:
     LchDouble lowerChroma{referenceColor.l, 0, referenceColor.h};
-    if (!isInGamut(lowerChroma)) {
+    if (!isCielchD50InGamut(lowerChroma)) {
         // This is quite strange because every point between the blackpoint
         // and the whitepoint on the gray axis should be in-gamut on
         // normally shaped gamuts. But as we never know, we need a fallback,
@@ -769,7 +769,7 @@ PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const Perce
             // Our test candidate is half the way between lowerChroma
             // and upperChroma:
             temp.c = ((lowerChroma.c + upperChroma.c) / 2);
-            if (isInGamut(temp)) {
+            if (isCielchD50InGamut(temp)) {
                 lowerChroma = temp;
             } else {
                 upperChroma = temp;
@@ -781,7 +781,7 @@ PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const Perce
         // Do a slow-thorough search:
         temp = referenceColor;
         while (temp.c > 0) {
-            if (isInGamut(temp)) {
+            if (isCielchD50InGamut(temp)) {
                 break;
             } else {
                 temp.c -= gamutPrecision;
@@ -802,22 +802,22 @@ PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const Perce
  * @note By definition, each RGB color in a given color space is an in-gamut
  * color in this very same color space. Nevertheless, because of rounding
  * errors, when converting colors that are near to the outer hull of the
- * gamut/color space, than @ref isInGamut() might return <tt>false</tt> for
+ * gamut/color space, than @ref isCielabD50InGamut() might return <tt>false</tt> for
  * a return value of <em>this</em> function. */
-cmsCIELab RgbColorSpace::toCielab(const QRgba64 rgbColor) const
+cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
     const RgbDouble my_rgb{rgbColor.red() / maximum, //
                            rgbColor.green() / maximum, //
                            rgbColor.blue() / maximum};
-    cmsCIELab lab;
-    cmsDoTransform(d_pointer->m_transformRgbToLabHandle, // handle to transform
+    cmsCIELab cielabD50;
+    cmsDoTransform(d_pointer->m_transformRgbToCielabD50Handle, // handle to transform
                    &my_rgb, // input
-                   &lab, // output
+                   &cielabD50, // output
                    1 // convert exactly 1 value
     );
-    return lab;
+    return cielabD50;
 }
 
 /** @brief Conversion to CIELCh.
@@ -828,26 +828,26 @@ cmsCIELab RgbColorSpace::toCielab(const QRgba64 rgbColor) const
  * @note By definition, each RGB color in a given color space is an in-gamut
  * color in this very same color space. Nevertheless, because of rounding
  * errors, when converting colors that are near to the outer hull of the
- * gamut/color space, than @ref isInGamut() might return <tt>false</tt> for
+ * gamut/color space, than @ref isCielchD50InGamut() might return <tt>false</tt> for
  * a return value of <em>this</em> function. */
-PerceptualColor::LchDouble RgbColorSpace::toCielchDouble(const QRgba64 rgbColor) const
+PerceptualColor::LchDouble RgbColorSpace::toCielchD50Double(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
     const RgbDouble my_rgb{rgbColor.red() / maximum, //
                            rgbColor.green() / maximum, //
                            rgbColor.blue() / maximum};
-    cmsCIELab lab;
-    cmsDoTransform(d_pointer->m_transformRgbToLabHandle, // handle to transform
+    cmsCIELab cielabD50;
+    cmsDoTransform(d_pointer->m_transformRgbToCielabD50Handle, // handle to transform
                    &my_rgb, // input
-                   &lab, // output
+                   &cielabD50, // output
                    1 // convert exactly 1 value
     );
-    cmsCIELCh lch;
-    cmsLab2LCh(&lch, // output
-               &lab // input
+    cmsCIELCh cielchD50;
+    cmsLab2LCh(&cielchD50, // output
+               &cielabD50 // input
     );
-    return LchDouble{lch.L, lch.C, lch.h};
+    return LchDouble{cielchD50.L, cielchD50.C, cielchD50.h};
 }
 
 /** @brief Conversion to QRgb.
@@ -861,8 +861,8 @@ PerceptualColor::LchDouble RgbColorSpace::toCielchDouble(const QRgba64 rgbColor)
  * @note There is no guarantee <em>which</em> specific algorithm is used
  * to fit out-of-gamut colors into the gamut.
  *
- * @sa @ref toQRgbOrTransparent */
-QRgb RgbColorSpace::toQRgbBound(const LchDouble &lch) const
+ * @sa @ref fromCielabD50ToQRgbOrTransparent */
+QRgb RgbColorSpace::fromCielchD50ToQRgbBound(const LchDouble &lch) const
 {
     const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsCIELab lab; // uses cmsFloat64Number internally
@@ -870,7 +870,7 @@ QRgb RgbColorSpace::toQRgbBound(const LchDouble &lch) const
                &myCmsCieLch // input
     );
     cmsUInt16Number rgb_int[3];
-    cmsDoTransform(d_pointer->m_transformLabToRgb16Handle, // transform
+    cmsDoTransform(d_pointer->m_transformCielabD50ToRgb16Handle, // transform
                    &lab, // input
                    rgb_int, // output
                    1 // number of values to convert
@@ -887,39 +887,39 @@ QRgb RgbColorSpace::toQRgbBound(const LchDouble &lch) const
  * @param lch the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isInGamut(const LchDouble &lch) const
+bool RgbColorSpace::isCielchD50InGamut(const LchDouble &lch) const
 {
     if (!isInRange<decltype(lch.l)>(0, lch.l, 100)) {
         return false;
     }
     if (!isInRange<decltype(lch.l)>( //
-            (-1) * d_pointer->m_profileMaximumCielchChroma, //
+            (-1) * d_pointer->m_profileMaximumCielchD50Chroma, //
             lch.c, //
-            d_pointer->m_profileMaximumCielchChroma //
+            d_pointer->m_profileMaximumCielchD50Chroma //
             )) {
         return false;
     }
     cmsCIELab lab; // uses cmsFloat64Number internally
     const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsLCh2Lab(&lab, &myCmsCieLch);
-    return qAlpha(toQRgbOrTransparent(lab)) != 0;
+    return qAlpha(fromCielabD50ToQRgbOrTransparent(lab)) != 0;
 }
 
 /** @brief Check if a color is within the gamut.
  * @param lab the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isInGamut(const cmsCIELab &lab) const
+bool RgbColorSpace::isCielabD50InGamut(const cmsCIELab &lab) const
 {
     if (!isInRange<decltype(lab.L)>(0, lab.L, 100)) {
         return false;
     }
     const auto chromaSquare = lab.a * lab.a + lab.b * lab.b;
-    const auto maximumChromaSquare = qPow(d_pointer->m_profileMaximumCielchChroma, 2);
+    const auto maximumChromaSquare = qPow(d_pointer->m_profileMaximumCielchD50Chroma, 2);
     if (chromaSquare > maximumChromaSquare) {
         return false;
     }
-    return qAlpha(toQRgbOrTransparent(lab)) != 0;
+    return qAlpha(fromCielabD50ToQRgbOrTransparent(lab)) != 0;
 }
 
 /** @brief Conversion to QRgb.
@@ -927,16 +927,16 @@ bool RgbColorSpace::isInGamut(const cmsCIELab &lab) const
  * @pre
  * - Input Lightness: 0 ≤ lightness ≤ 100
  * @pre
- * - Input Chroma: - @ref RgbColorSpace::profileMaximumCielchChroma ≤ chroma ≤
- *   @ref RgbColorSpace::profileMaximumCielchChroma
+ * - Input Chroma: - @ref RgbColorSpace::profileMaximumCielchD50Chroma ≤ chroma ≤
+ *   @ref RgbColorSpace::profileMaximumCielchD50Chroma
  *
  * @param lab the original color
  *
  * @returns The corresponding opaque color if the original color is in-gamut.
  * A transparent color otherwise.
  *
- * @sa @ref toQRgbBound */
-QRgb RgbColorSpace::toQRgbOrTransparent(const cmsCIELab &lab) const
+ * @sa @ref fromCielchD50ToQRgbBound */
+QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
 {
     constexpr QRgb transparentValue = 0;
     static_assert(qAlpha(transparentValue) == 0, //
@@ -945,7 +945,7 @@ QRgb RgbColorSpace::toQRgbOrTransparent(const cmsCIELab &lab) const
     RgbDouble rgb;
     cmsDoTransform(
         // Parameters:
-        d_pointer->m_transformLabToRgbHandle, // handle to transform function
+        d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
         &lab, // input
         &rgb, // output
         1 // convert exactly 1 value
@@ -961,18 +961,18 @@ QRgb RgbColorSpace::toQRgbOrTransparent(const cmsCIELab &lab) const
     }
 
     // Detect deviation:
-    cmsCIELab roundtripLab;
+    cmsCIELab roundtripCielabD50;
     cmsDoTransform(
         // Parameters:
-        d_pointer->m_transformRgbToLabHandle, // handle to transform function
+        d_pointer->m_transformRgbToCielabD50Handle, // handle to transform function
         &rgb, // input
-        &roundtripLab, // output
+        &roundtripCielabD50, // output
         1 // convert exactly 1 value
     );
     const qreal actualDeviationSquare = //
-        qPow(lab.L - roundtripLab.L, 2) //
-        + qPow(lab.a - roundtripLab.a, 2) //
-        + qPow(lab.b - roundtripLab.b, 2);
+        qPow(lab.L - roundtripCielabD50.L, 2) //
+        + qPow(lab.a - roundtripCielabD50.a, 2) //
+        + qPow(lab.b - roundtripCielabD50.b, 2);
     constexpr auto cielabDeviationLimitSquare = //
         RgbColorSpacePrivate::cielabDeviationLimit //
         * RgbColorSpacePrivate::cielabDeviationLimit;
@@ -998,7 +998,7 @@ QRgb RgbColorSpace::toQRgbOrTransparent(const cmsCIELab &lab) const
  * @returns If the original color is in-gamut, it returns the corresponding
  * in-range RGB color. If the original color is out-of-gamut, it returns an
  * RGB value which might be in-range or out-of range. */
-PerceptualColor::RgbDouble RgbColorSpace::toRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const
+PerceptualColor::RgbDouble RgbColorSpace::fromCielchD50ToRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const
 {
     const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsCIELab lab; // uses cmsFloat64Number internally
@@ -1008,7 +1008,7 @@ PerceptualColor::RgbDouble RgbColorSpace::toRgbDoubleUnbound(const PerceptualCol
     RgbDouble rgb;
     cmsDoTransform(
         // Parameters:
-        d_pointer->m_transformLabToRgbHandle, // handle to transform function
+        d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
         &lab, // input
         &rgb, // output
         1 // convert exactly 1 value
@@ -1016,10 +1016,10 @@ PerceptualColor::RgbDouble RgbColorSpace::toRgbDoubleUnbound(const PerceptualCol
     return rgb;
 }
 
-/** @brief Calculation of @ref RgbColorSpace::profileMaximumCielchChroma
+/** @brief Calculation of @ref RgbColorSpace::profileMaximumCielchD50Chroma
  *
- * @returns Calculation of @ref RgbColorSpace::profileMaximumCielchChroma */
-double RgbColorSpacePrivate::detectMaximumCielchChroma() const
+ * @returns Calculation of @ref RgbColorSpace::profileMaximumCielchD50Chroma */
+double RgbColorSpacePrivate::detectMaximumCielchD50Chroma() const
 {
     // Make sure chromaDetectionPrecision is big enough to make a difference
     // when being added to floating point variable “hue” used in loop later.
@@ -1032,7 +1032,7 @@ double RgbColorSpacePrivate::detectMaximumCielchChroma() const
     while (hue < 360) {
         const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
         const auto color = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
-        result = qMax(result, q_pointer->toCielchDouble(color).c);
+        result = qMax(result, q_pointer->toCielchD50Double(color).c);
         hue += chromaDetectionPrecision;
     }
     return result * chromaDetectionIncrementFactor + cielabDeviationLimit;
@@ -1053,8 +1053,8 @@ double RgbColorSpacePrivate::detectMaximumOklchChroma() const
     while (hue < 360) {
         const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
         const auto rgbColor = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
-        const auto labColor = q_pointer->toCielab(rgbColor);
-        const auto oklab = fromCmscielabD50ToOklab(labColor);
+        const auto cielabD50Color = q_pointer->toCielabD50(rgbColor);
+        const auto oklab = fromCmscielabD50ToOklab(cielabD50Color);
         chromaSquare = qMax(chromaSquare, oklab.a * oklab.a + oklab.b * oklab.b);
         hue += chromaDetectionPrecision;
     }

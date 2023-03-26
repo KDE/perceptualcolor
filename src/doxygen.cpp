@@ -396,7 +396,8 @@
  *
  * @todo Use <tt>QCache</tt> where is makes sense. Maybe
  * @ref PerceptualColor::RgbColorSpace::reduceChromaToFitIntoGamut() or
- * @ref PerceptualColor::RgbColorSpace::isInGamut() or
+ * @ref PerceptualColor::RgbColorSpace::isCielchD50InGamut() or
+ * @ref PerceptualColor::RgbColorSpace::isCielabD50InGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutColorByAdjustingChromaLightness(().
  *
  * @todo Switch AbstractDiagram::handleOutlineThickness() and
@@ -1097,7 +1098,7 @@
  *
  * @internal
  *
- * @sa @ref PerceptualColor::CielchValues::maximumChroma
+ * @sa @ref PerceptualColor::CielchD50Values::maximumChroma
  * @sa @ref PerceptualColor::OklchValues::maximumChroma
  *
  * @todo Why is the exact extend of non-imaginary colors unknown? Could it be

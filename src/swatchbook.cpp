@@ -624,7 +624,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
         (layoutDirection() == Qt::LayoutDirection::LeftToRight) //
         ? d_pointer->m_selectedBasicColor //
         : d_pointer->m_paletteColors.count() - 1 - d_pointer->m_selectedBasicColor;
-    const LchDouble colorLch = d_pointer->m_rgbColorSpace->toCielchDouble( //
+    const LchDouble colorCielchD50 = d_pointer->m_rgbColorSpace->toCielchD50Double( //
         d_pointer //
             ->m_paletteColors //
             .at(d_pointer->m_selectedBasicColor) //
@@ -632,7 +632,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
             .rgba64() //
     );
     const QColor selectionMarkColor = //
-        handleColorFromBackgroundLightness(colorLch.l);
+        handleColorFromBackgroundLightness(colorCielchD50.l);
     const QPointF selectedPatchOffset = QPointF( //
         offset.x() //
             + static_cast<int>(visualSelectedColumnIndex) * (patchWidthOuter + horizontalSpacing), //

@@ -6,7 +6,7 @@
 #include "chromahueimageparameters.h"
 
 #include "asyncimagerendercallback.h"
-#include "cielchvalues.h"
+#include "cielchd50values.h"
 #include "helperconstants.h"
 #include "helpermath.h"
 #include "interlacingpass.h"
@@ -116,19 +116,19 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // If we continue, the circle will at least be visible.
 
     const QColor myNeutralGray = //
-        parameters.rgbColorSpace->toQRgbBound(CielchValues::neutralGray);
+        parameters.rgbColorSpace->fromCielchD50ToQRgbBound(CielchD50Values::neutralGray);
 
     // Initialize the hole image background to the background color
     // of the circle:
     myImage.fill(myNeutralGray);
 
     // Prepare for gamut painting
-    cmsCIELab lab;
-    lab.L = parameters.lightness;
+    cmsCIELab cielabD50;
+    cielabD50.L = parameters.lightness;
     int x;
     int y;
     QRgb tempColor;
-    const auto chromaRange = parameters.rgbColorSpace->profileMaximumCielchChroma();
+    const auto chromaRange = parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
         // The following line will never be 0 because we have have
         // tested above that circleRadius is > 0, so this line will
@@ -162,22 +162,22 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
             if (callbackObject.shouldAbort()) {
                 return;
             }
-            lab.b = chromaRange //
+            cielabD50.b = chromaRange //
                 - (y + pixelOffset - parameters.borderPhysical) * scaleFactor;
             for (x = currentPass.columnOffset; //
                  x < parameters.imageSizePhysical; //
                  x += currentPass.columnFrequency //
             ) {
-                lab.a = //
+                cielabD50.a = //
                     (x + pixelOffset - parameters.borderPhysical) * scaleFactor //
                     - chromaRange;
                 if ( //
-                    (qPow(lab.a, 2) + qPow(lab.b, 2)) //
+                    (qPow(cielabD50.a, 2) + qPow(cielabD50.b, 2)) //
                     <= (qPow(chromaRange + overlap, 2)) //
                 ) {
                     tempColor = parameters //
                                     .rgbColorSpace //
-                                    ->toQRgbOrTransparent(lab);
+                                    ->fromCielabD50ToQRgbOrTransparent(cielabD50);
                     if (qAlpha(tempColor) != 0) {
                         // The pixel is within the gamut!
                         myPainter.fillRect(
