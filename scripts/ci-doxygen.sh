@@ -39,7 +39,7 @@ echo Doxygen “public API” finished.
 sort --unique artifact_doxygen_temp  > artifact_doxygen.txt
 rm artifact_doxygen_temp
 rm --recursive --force doxyconf
-[ -s artifact_doxygen ] && ((errorcount++))
+[ -s artifact_doxygen.txt ] && ((errorcount++))
 echo "Run Doxygen finished."
 
 echo Terminating continuous integration with exit code $errorcount.
