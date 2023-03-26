@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-03-19 13:45+0300\n"
+"PO-Revision-Date: 2023-03-25 14:20+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -305,14 +305,13 @@ msgstr "<p>Ton: 0°⁠–⁠360°</p><p>Açıklık: %​0–%​100</p><p>Kroma:
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:528
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
-msgstr "<p>Açıklık: %L1–%L2</p><p>Kroma: %L3–%L4</p><p>Ton: 0°–360°</p>"
+msgstr ""
+"<p>Açıklık: %L1–%L2</p><p>Kroma: %L3–%L4</p><p>Ton: 0°–360°</p><p>Beyaz "
+"nokta: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:541

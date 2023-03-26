@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-03-19 06:59+0100\n"
+"PO-Revision-Date: 2023-03-25 10:46+0100\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100>=3 && n"
 "%100<=4 ? 2 : 3);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:95
@@ -307,14 +307,13 @@ msgstr "<p>Odtenek: 0°⁠–⁠360°</p><p>Svetlost: 0%⁠–⁠100%</p><p>Chro
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:528
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
-msgstr "<p>Svetlost: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Odtenek: 0°⁠–⁠360°</p>"
+msgstr ""
+"<p>Svetlost: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Odtenek: 0°⁠–⁠360°</p><p>Bela "
+"točka: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:541
