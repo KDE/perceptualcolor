@@ -45,7 +45,7 @@ cmake \
     ../examples
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_warnings_qt6.txt
 cd ..
-[ -s ./artifact_warnings_qt6.txt ] && ((errorcount++))
+[ -s artifact_warnings_qt6.txt ] && ((errorcount++))
 echo "Dynamic codecheck against Qt6 finished."
 
 echo Terminating continuous integration with exit code $errorcount.

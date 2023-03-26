@@ -34,7 +34,7 @@ cmake \
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt5.txt
 make install
 cd ..
-[ -s ./artifact_warnings_qt5.txt ] && ((errorcount++))
+[ -s artifact_warnings_qt5.txt ] && ((errorcount++))
 echo "Dynamic codecheck against Qt5 finished."
 
 echo Terminating continuous integration with exit code $errorcount.

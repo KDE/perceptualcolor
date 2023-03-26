@@ -33,7 +33,7 @@ cmake --build . --target perceptualcolor-0_QCH --parallel $PARALLEL_PROCESSES 2>
 # unavoidable.
 cmake --build . --target install --parallel $PARALLEL_PROCESSES
 cd ..
-[ -s ./artifact_warnings_qch.txt ] && ((errorcount++))
+[ -s artifact_warnings_qch.txt ] && ((errorcount++))
 echo "QCH build finished."
 
 echo Terminating continuous integration with exit code $errorcount.
