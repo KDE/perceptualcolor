@@ -38,9 +38,10 @@ class RgbColorSpacePrivate;
  * This class has no public constructor. Objects can be generated
  * with the static factory functions.
  *
- * @note The maximum accepted Cielch/Cielab lightness range is 0 to 100, and
- * the maximum Cielch chroma is @ref CielchD50Values::maximumChroma. Values
- * outside of this range are considered out-of-gamut, even if the profile
+ * @note The maximum accepted Cielch-D50/Cielab-D50 lightness range is
+ * 0 to 100, and the maximum Cielch-D50 chroma is
+ * @ref CielchD50Values::maximumChroma. Values outside of this
+ * range are considered out-of-gamut, even if the profile
  * itself would accept them.
  *
  * @todo Unit tests for @ref RgbColorSpace, especially the to…() functions.
@@ -196,7 +197,7 @@ class RgbColorSpace : public QObject
      * @sa READ @ref profileManufacturer() const */
     Q_PROPERTY(QString profileManufacturer READ profileManufacturer CONSTANT)
 
-    /** @brief The maximum CIELch chroma of the profile.
+    /** @brief The maximum CIELch-D50 chroma of the profile.
      *
      * This value is equal or slightly bigger than the actual maximum chroma.
      *

@@ -85,9 +85,9 @@ public:
     /** @brief Pointer to the @ref ChromaHueDiagram. */
     QPointer<ChromaHueDiagram> m_chromaHueDiagram;
     /** @brief Pointer to the @ref MultiSpinBox for CIEHLC. */
-    QPointer<MultiSpinBox> m_ciehlcSpinBox;
-    /** @brief Pointer to the label for @ref m_ciehlcSpinBox. */
-    QPointer<QLabel> m_ciehlcSpinBoxLabel;
+    QPointer<MultiSpinBox> m_ciehlcD50SpinBox;
+    /** @brief Pointer to the label for @ref m_ciehlcD50SpinBox. */
+    QPointer<QLabel> m_ciehlcD50SpinBoxLabel;
     /** @brief Pointer to the @ref ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
     /** @brief Holds the current color without alpha information

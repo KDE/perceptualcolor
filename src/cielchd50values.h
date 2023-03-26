@@ -10,9 +10,9 @@ namespace PerceptualColor
 {
 /** @internal
  *
- * @brief CIELCH default values
+ * @brief CIELCH-D50 default values
  *
- * The @ref lchrangerationale "range of CIELCh values" it known.
+ * The @ref lchrangerationale "range of CIELCh-D50 values" it known.
  * But what could be useful default values? This struct provides some
  * proposals. All values are <tt>constexpr</tt>. */
 struct CielchD50Values final {

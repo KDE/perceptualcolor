@@ -820,10 +820,10 @@ cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
     return cielabD50;
 }
 
-/** @brief Conversion to CIELCh.
+/** @brief Conversion to CIELCh-D50.
  *
  * @param rgbColor The original color.
- * @returns The corresponding (opaque) CIELCh color.
+ * @returns The corresponding (opaque) CIELCh-D50 color.
  *
  * @note By definition, each RGB color in a given color space is an in-gamut
  * color in this very same color space. Nevertheless, because of rounding

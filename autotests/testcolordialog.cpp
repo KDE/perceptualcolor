@@ -1060,7 +1060,7 @@ private Q_SLOTS:
                     ->m_chromaHueDiagram //
                     ->currentColor()));
         // We do not also control this here for
-        // m_perceptualDialog->d_pointer->m_ciehlcSpinBox because this
+        // m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox because this
         // widget rounds the given value to the current decimal precision
         // it’s using. Therefore, it’s pointless to control here
         // for rounding errors.
@@ -1590,13 +1590,13 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         QList<double> myValues = //
-            myDialog->d_pointer->m_ciehlcSpinBox->sectionValues();
+            myDialog->d_pointer->m_ciehlcD50SpinBox->sectionValues();
 
         // Test with a normal value
         myValues[0] = 10;
         myValues[1] = 11;
         myValues[2] = 12;
-        myDialog->d_pointer->m_ciehlcSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
@@ -1606,7 +1606,7 @@ private Q_SLOTS:
         myValues[0] = 10;
         myValues[1] = 11;
         myValues[2] = 12;
-        myDialog->d_pointer->m_ciehlcSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
@@ -1695,7 +1695,7 @@ private Q_SLOTS:
         myOpaqueColor.l = 30;
         myOpaqueColor.c = 40;
         myOpaqueColor.h = 50;
-        const MultiColor myMultiColor = MultiColor::fromCielch( //
+        const MultiColor myMultiColor = MultiColor::fromCielchD50( //
             myDialog->d_pointer->m_rgbColorSpace,
             myOpaqueColor);
         myDialog->d_pointer->setCurrentOpaqueColor(myMultiColor, nullptr);
@@ -1926,7 +1926,7 @@ private Q_SLOTS:
         // The value is also converted to HLC 100°, 98%, 95 (rounded)
         // visible in the HLC spin box.
         QList<double> hlc = //
-            m_perceptualDialog->d_pointer->m_ciehlcSpinBox->sectionValues();
+            m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox->sectionValues();
         QVERIFY(hlc.at(0) >= 100 - toleranceRange); // assertion
         QVERIFY(hlc.at(0) <= 100 + toleranceRange); // assertion
         QVERIFY(hlc.at(1) >= 98 - toleranceRange); // assertion
@@ -1941,7 +1941,7 @@ private Q_SLOTS:
         // behaviour was that the chroma value was changed from 95 to 24.
         // The expected result was that the chroma value only changes
         // slightly because of rounding (or ideally not at all).
-        hlc = m_perceptualDialog->d_pointer->m_ciehlcSpinBox->sectionValues();
+        hlc = m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox->sectionValues();
         QVERIFY(hlc.at(2) >= 95 - toleranceRange);
         QVERIFY(hlc.at(2) <= 95 + toleranceRange);
     }
@@ -1981,7 +1981,7 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
 
         // The user puts into the HLC spin box the value 100° 98% 94:
-        m_perceptualDialog->d_pointer->m_ciehlcSpinBox->setSectionValues( //
+        m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues( //
             QList<double>{100, 98, 94});
         // This is an out-of-gamut color which is not corrected until
         // the focus will leave the widget or the Return key is pressed.
@@ -2032,7 +2032,7 @@ private Q_SLOTS:
         testColor.c = 94;
         m_perceptualDialog->d_pointer->setCurrentOpaqueColor(
             // Color:
-            MultiColor::fromCielch( //
+            MultiColor::fromCielchD50( //
                 m_perceptualDialog->d_pointer->m_rgbColorSpace, //
                 testColor),
             // Widget to ignore:

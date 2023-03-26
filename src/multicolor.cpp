@@ -111,7 +111,7 @@ void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<Rgb
  * @note The original color will neither be normalised nor moved into gamut.
  * If it’s an out-of-gamut color, the resulting RGB-based representations will
  * nevertheless be in-gamut and therefore be an incorrect color. */
-MultiColor MultiColor::fromCielch(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color)
+MultiColor MultiColor::fromCielchD50(const QSharedPointer<RgbColorSpace> &colorSpace, const LchDouble &color)
 {
     MultiColor result;
     result.cielchD50 = color;
@@ -202,8 +202,8 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiColor &value)
 {
     dbg.nospace() //
         << "MultiColor(\n"
-        << " - ciehlc: " << value.ciehlcD50 << "\n"
-        << " - cielch: " << value.cielchD50.l << "\n"
+        << " - ciehlcD50: " << value.ciehlcD50 << "\n"
+        << " - cielchD50: " << value.cielchD50.l << "\n"
         << " - multirgb: " << value.multiRgb << "\n"
         << " - oklch: " << value.oklch << "\n"
         << ")";
