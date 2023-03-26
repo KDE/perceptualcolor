@@ -42,6 +42,8 @@ cmake \
     -DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy \
     -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
+    -DADDITIONAL_WARNINGS=TRUE \
+    -DBUILD_WITH_QT6=ON \
     ../examples
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_warnings_qt6.txt
 cd ..
