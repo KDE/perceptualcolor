@@ -120,6 +120,18 @@ codecheck_doxygen:
 
 
 
+codecheck_ipo_lto:
+  <<: *codecheck
+  before_script:
+    - apt-get update --assume-yes
+    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
+  script:
+    - scripts/ci-ipo-lto.sh
+
+
+
+
+
 codecheck_qch:
   <<: *codecheck
   before_script:
