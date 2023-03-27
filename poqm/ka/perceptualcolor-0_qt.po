@@ -305,14 +305,13 @@ msgstr "<p>ტონი: 0°⁠–⁠360°</p><p>სინათლის ძა
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:528
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
-msgstr "<p>განათებულობა: %L1⁠–⁠%L2</p><p>ქრომა: %L3⁠–⁠%L4</p><p>ტონი: 0°⁠–⁠360°</p>"
+msgstr ""
+"<p>განათებულობა: %L1⁠–⁠%L2</p><p>ქრომა: %L3⁠–⁠%L4</p><p>ტონი: 0°⁠–⁠360°</"
+"p>><p>თეთრი წერტილი: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:541
