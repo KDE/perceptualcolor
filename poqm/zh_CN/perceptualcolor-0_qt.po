@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
-"PO-Revision-Date: 2023-03-26 02:19\n"
+"PO-Revision-Date: 2023-03-27 12:00\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -312,6 +312,8 @@ msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
 msgstr ""
+"<p>亮度 (Lightness)：%L1⁠–⁠%L2</p><p>色品：%L3⁠–⁠%L4</p><p>色相：0°⁠–⁠360°</p><p>白"
+"点：D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:541
