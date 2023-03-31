@@ -38,8 +38,6 @@ PARALLEL_PROCESSES=`nproc --all`
 #   anyway. And, in Qt6 QList will be the default type. So we will follow
 #   this recommendation and always use QList. Anyway, in newer clazy
 #   versions it is not available anymore anyway.
-# • empty-qstringliteral: QLatin1String is a little bit faster, but we try
-#   to avoid non-Unicode encoding wherever we can, for simplicity.
 # • jni-signatures: When enabling this check, the whole build won’t work
 #   anymore (at least as long as you won’t build for Android).
 # • ifndef-define-typo: Shows many false-positives for Qt headers that we are
@@ -53,7 +51,6 @@ PARALLEL_PROCESSES=`nproc --all`
 export CLAZY_CHECKS="level2,\
 \
 no-ctor-missing-parent-argument,\
-no-empty-qstringliteral,\
 \
 assert-with-side-effects,\
 container-inside-loop,\
