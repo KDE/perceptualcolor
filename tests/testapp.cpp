@@ -8,6 +8,7 @@
 #include "helper.h" // IWYU pragma: keep
 #include "helperconstants.h" // IWYU pragma: keep
 #include "helperconversion.h" // IWYU pragma: keep
+#include "helpermath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
 #include "multicolor.h" // IWYU pragma: keep
 #include "oklchvalues.h" // IWYU pragma: keep
@@ -15,8 +16,6 @@
 #include "rgbcolorspace.h" // IWYU pragma: keep
 #include "rgbcolorspacefactory.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
-#include <QtCore/qsharedpointer.h> // IWYU pragma: keep
-#include <helpermath.h> // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
 #include <qcolor.h> // IWYU pragma: keep
 #include <qcolordialog.h> // IWYU pragma: keep
@@ -41,6 +40,7 @@
 #include <qpointer.h> // IWYU pragma: keep
 #include <qrect.h> // IWYU pragma: keep
 #include <qscopedpointer.h> // IWYU pragma: keep
+#include <qsharedpointer.h> // IWYU pragma: keep
 #include <qsize.h> // IWYU pragma: keep
 #include <qsizepolicy.h> // IWYU pragma: keep
 #include <qstring.h> // IWYU pragma: keep
