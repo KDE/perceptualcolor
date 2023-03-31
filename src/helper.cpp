@@ -6,7 +6,6 @@
 
 #include <qcolor.h>
 #include <qevent.h>
-#include <qnamespace.h>
 #include <qpainter.h>
 #include <qpoint.h>
 #include <qstringliteral.h>
@@ -150,27 +149,22 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  *
  * @param formatString The translated value string, which should contain
  * exactly <em>one</em> place marker as described in <tt>QString::arg()</tt>
- * like <tt>&amp;1</tt> or <tt>&amp;L1</tt>. This place marker represents
- * the value. Example: “Prefix&amp;1Suffix”. Prefix and suffix may be empty.
- * @param fallbackPrefix English fallback prefix.
- * @param fallbackSuffix English fallback suffix.
+ * like <tt>\%1</tt> or <tt>\%L2</tt>. This place marker represents
+ * the value. Example: “Prefix\%1Suffix”. Prefix and suffix may be empty.
  *
- * @returns At <tt>QPair::first</tt> the prefix of the first place marker,
- * and at <tt>QPair::second</tt> the suffix. If <tt>formatString</tt> does
- * not contain any place markers (for example because of a broken translation),
- * the English <tt>fallbackPrefix</tt> and <tt>fallbackSuffix</tt> are used
- * instead. */
-[[nodiscard]] QPair<QString, QString> valuePrefixSuffix(const QString &formatString, const QString &fallbackPrefix, const QString &fallbackSuffix)
+ * @returns If the <tt>formatString</tt> parameter has the correct format,
+ * the prefix will be returned at <tt>QPair::first</tt> and the suffix will
+ * be returned at <tt>QPair::second</tt>. Otherwise, they will be set to an
+ * empty string. */
+[[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString)
 {
-    static const QString separator = //
-        QStringLiteral("Just a string unlikely to occur in translations.");
-    const auto temp = formatString //
-                          .arg(separator) //
-                          .split(separator, Qt::KeepEmptyParts);
-    if (temp.count() == 2) {
-        return QPair<QString, QString>(temp.value(0), temp.value(1));
+    const auto list = formatString //
+                          .arg(QStringLiteral("%1")) //
+                          .split(QStringLiteral("%1"));
+    if (list.count() == 2) {
+        return QPair<QString, QString>(list.at(0), list.at(1));
     }
-    return QPair<QString, QString>(fallbackPrefix, fallbackSuffix);
+    return QPair<QString, QString>(QString(), QString());
 }
 
 } // namespace PerceptualColor

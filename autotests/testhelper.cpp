@@ -49,10 +49,8 @@ static void snippet02()
     //! [percentImproved]
     //! [percentFullyInternationalized]
     QSpinBox box3;
-    const QPair<QString, QString> temp = PerceptualColor::valuePrefixSuffix( //
-        QObject::tr("%1%"), // “%1” represents the value.
-        QString(),
-        QStringLiteral("%"));
+    const QPair<QString, QString> temp = //
+        PerceptualColor::getPrefixSuffix(QObject::tr("%1%"));
     box3.setPrefix(temp.first);
     box3.setSuffix(temp.second);
     //! [percentFullyInternationalized]

@@ -197,11 +197,11 @@ void ColorDialogPrivate::retranslateUi()
 {
     /*: @item/plain Percentage value in a spinbox. Range: 0%–100%. */
     const QPair<QString, QString> percentageInSpinbox = //
-        valuePrefixSuffix(tr("%1%"), QString(), QStringLiteral("%"));
+        getPrefixSuffix(tr("%1%"));
 
     /*: @item/plain Arc-degree value in a spinbox. Range: 0°–360°. */
     const QPair<QString, QString> arcDegreeInSpinbox = //
-        valuePrefixSuffix(tr("%1°"), QString(), QStringLiteral("°"));
+        getPrefixSuffix(tr("%1°"));
 
     QStringList profileInfo;
     const QString name = //

@@ -82,7 +82,7 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
     }
 }
 
-[[nodiscard]] QPair<QString, QString> valuePrefixSuffix(const QString &formatString, const QString &fallbackPrefix, const QString &fallbackSuffix);
+[[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 
 } // namespace PerceptualColor
 
