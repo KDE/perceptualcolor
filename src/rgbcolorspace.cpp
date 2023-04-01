@@ -28,6 +28,7 @@
 #include <qmath.h>
 #include <qnamespace.h>
 #include <qrgba64.h>
+#include <qsharedpointer.h>
 #include <qstringliteral.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))

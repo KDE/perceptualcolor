@@ -21,7 +21,6 @@
 #include "rgbcolorspacefactory.h"
 #include "settranslation.h"
 #include "wheelcolorpicker.h"
-#include <QtCore/qsharedpointer.h>
 #include <qapplication.h>
 #include <qbenchmark.h>
 #include <qbytearray.h>
@@ -40,6 +39,7 @@
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qscopedpointer.h>
+#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qspinbox.h>
 #include <qstringbuilder.h>

@@ -11,12 +11,12 @@
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"
 #include "lchdouble.h"
-#include <QtCore/qsharedpointer.h>
 #include <cmath>
 #include <functional>
 #include <limits>
 #include <optional>
 #include <qglobal.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 class QRect;
 class QPoint;

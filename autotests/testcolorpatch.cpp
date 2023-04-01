@@ -8,8 +8,8 @@
 #include "colorpatch_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
-#include <QtCore/qglobal.h>
 #include <qcolor.h>
+#include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qsize.h>

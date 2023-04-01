@@ -5,7 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "asyncimagerenderthread.h"
 
-#include <QtCore/qglobal.h>
+#include <qglobal.h>
 #include <qmetatype.h>
 
 class QObject;

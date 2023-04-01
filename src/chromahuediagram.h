@@ -8,8 +8,8 @@
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
 #include "lchdouble.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))

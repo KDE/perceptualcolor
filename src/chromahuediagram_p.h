@@ -13,9 +13,9 @@
 #include "constpropagatingrawpointer.h"
 #include "lchdouble.h"
 #include "lcms2.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 
 namespace PerceptualColor
 {

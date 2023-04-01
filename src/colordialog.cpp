@@ -58,6 +58,7 @@
 #include <qpushbutton.h>
 #include <qregularexpression.h>
 #include <qscreen.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qsizepolicy.h>
 #include <qspinbox.h>

@@ -10,11 +10,11 @@
 #include "multirgb.h"
 #include "rgbcolorspace.h"
 #include "rgbdouble.h"
-#include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <optional>
 #include <qcolor.h>
 #include <qglobal.h>
+#include <qsharedpointer.h>
 #include <type_traits>
 
 namespace PerceptualColor

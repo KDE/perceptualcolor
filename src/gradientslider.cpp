@@ -20,6 +20,7 @@
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qsizepolicy.h>
 #include <qtransform.h>
 #include <qwidget.h>

@@ -8,10 +8,10 @@
 // #include "wheelcolorpicker.h"
 
 #include "constpropagatingrawpointer.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 class QWidget;
 

@@ -29,6 +29,7 @@
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qwidget.h>
 
 namespace PerceptualColor

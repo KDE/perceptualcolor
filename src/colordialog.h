@@ -6,13 +6,13 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
-#include <QtCore/qsharedpointer.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
 #include <qdialog.h>
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
+#include <qsharedpointer.h>
 #include <qstring.h>
 class QEvent;
 class QWidget;

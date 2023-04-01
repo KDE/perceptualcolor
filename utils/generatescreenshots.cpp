@@ -18,7 +18,6 @@
 #include "swatchbook.h"
 #include "version.h"
 #include "wheelcolorpicker.h"
-#include <QtCore/qsharedpointer.h>
 #include <cstdlib>
 #include <helper.h>
 #include <qaction.h>
@@ -40,6 +39,7 @@
 #include <qpalette.h>
 #include <qpixmap.h>
 #include <qscopedpointer.h>
+#include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>

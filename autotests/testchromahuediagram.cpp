@@ -11,7 +11,6 @@
 #include "lchdouble.h"
 #include "polarpointf.h"
 #include "rgbcolorspacefactory.h"
-#include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <qcoreevent.h>
 #include <qevent.h>
@@ -20,6 +19,7 @@
 #include <qobject.h>
 #include <qpoint.h>
 #include <qscopedpointer.h>
+#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qtest.h>

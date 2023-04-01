@@ -25,6 +25,7 @@
 #include <qpoint.h>
 #include <qpointer.h>
 #include <qrect.h>
+#include <qsharedpointer.h>
 #include <utility>
 class QResizeEvent;
 class QWidget;

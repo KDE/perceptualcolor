@@ -10,7 +10,6 @@
 #include "constpropagatinguniquepointer.h"
 #include "helperqttypes.h"
 #include "rgbcolorspacefactory.h"
-#include <QtCore/qsharedpointer.h>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
@@ -19,6 +18,7 @@
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyle.h>

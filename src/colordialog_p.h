@@ -10,13 +10,13 @@
 #include "constpropagatingrawpointer.h"
 #include "languagechangeeventfilter.h"
 #include "multicolor.h"
-#include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
+#include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 class QDialogButtonBox;

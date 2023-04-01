@@ -13,10 +13,10 @@
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
+#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qtest.h>

@@ -7,13 +7,13 @@
 #include "constpropagatinguniquepointer.h"
 #include "lchdouble.h"
 #include "rgbdouble.h"
-#include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <qdatetime.h>
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qobject.h>
 #include <qrgb.h>
+#include <qsharedpointer.h>
 #include <qstring.h>
 #include <qversionnumber.h>
 class QRgba64;

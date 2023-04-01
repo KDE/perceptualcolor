@@ -12,7 +12,6 @@
 #include "extendeddoublevalidator.h"
 #include "helpermath.h"
 #include "multispinboxsection.h"
-#include <QtCore/qglobal.h>
 #include <math.h>
 #include <qaccessible.h>
 #include <qaccessiblewidget.h>
@@ -20,6 +19,7 @@
 #include <qdebug.h>
 #include <qevent.h>
 #include <qfontmetrics.h>
+#include <qglobal.h>
 #include <qlineedit.h>
 #include <qlocale.h>
 #include <qnamespace.h>

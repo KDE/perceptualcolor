@@ -7,8 +7,8 @@
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 class QKeyEvent;
 class QMouseEvent;

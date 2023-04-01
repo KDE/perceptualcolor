@@ -11,11 +11,11 @@
 #include "gradientimageparameters.h"
 #include "lchadouble.h"
 #include "rgbcolorspacefactory.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qsizepolicy.h>

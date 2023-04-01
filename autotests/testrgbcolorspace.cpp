@@ -13,7 +13,6 @@
 #include "helperposixmath.h"
 #include "lchdouble.h"
 #include "rgbcolorspacefactory.h"
-#include <QtCore/qsharedpointer.h>
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qdatetime.h>
@@ -26,6 +25,7 @@
 #include <qrgb.h>
 #include <qrgba64.h>
 #include <qscopedpointer.h>
+#include <qsharedpointer.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qtemporarydir.h>

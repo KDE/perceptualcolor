@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "refreshiconengine.h"
 
-#include <QtCore/qglobal.h>
 #include <qbytearray.h>
+#include <qglobal.h>
 #include <qicon.h>
 #include <qiconengine.h>
 #include <qimage.h>

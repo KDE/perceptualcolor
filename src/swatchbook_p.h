@@ -9,12 +9,12 @@
 
 #include "constpropagatingrawpointer.h"
 #include "helperqttypes.h"
-#include <QtCore/qsharedpointer.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qlist.h>
 #include <qobject.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyleoption.h>

@@ -8,9 +8,9 @@
 #include "helperposixmath.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
-#include <QtCore/qsharedpointer.h>
 #include <qglobal.h>
 #include <qobject.h>
+#include <qsharedpointer.h>
 #include <qtest.h>
 #include <qtestcase.h>
 
