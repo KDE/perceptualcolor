@@ -532,6 +532,23 @@ private Q_SLOTS:
         // clang-format on
         QCOMPARE(actualInverse, expectedInverse);
     }
+
+    void testCreateTrio()
+    {
+        const Trio temp = createTrio(7, 6, 5);
+        QCOMPARE(temp(0, 0), 7);
+        QCOMPARE(temp(1, 0), 6);
+        QCOMPARE(temp(2, 0), 5);
+    }
+
+    void testCreateMatrix()
+    {
+        const auto temp = createMatrix<2, 2, int>(7, 6, 5, 4);
+        QCOMPARE(temp(0, 0), 7);
+        QCOMPARE(temp(0, 1), 6);
+        QCOMPARE(temp(1, 0), 5);
+        QCOMPARE(temp(1, 1), 4);
+    }
 };
 
 } // namespace PerceptualColor

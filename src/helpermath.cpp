@@ -10,7 +10,9 @@
 namespace PerceptualColor
 {
 
-/** @brief Convenience constructor for @ref SquareMatrix3.
+/** @internal
+ *
+ * @brief Convenience constructor for @ref SquareMatrix3.
  *
  * @param r0c0 row 0, column 0
  * @param r0c1 row 0, column 1
@@ -33,7 +35,24 @@ SquareMatrix3 createSquareMatrix3(double r0c0, double r0c1, double r0c2, double 
     return SquareMatrix3(valueArray);
 }
 
-/** @brief Try to find the inverse matrix.
+/** @internal
+ *
+ * @brief Convenience constructor for @ref Trio.
+ *
+ * @param first first value
+ * @param second second value
+ * @param third third value
+ *
+ * @returns The corresponding @ref Trio. */
+Trio createTrio(double first, double second, double third)
+{
+    const double valueArray[] = {first, second, third};
+    return Trio(valueArray);
+}
+
+/** @internal
+ *
+ * @brief Try to find the inverse matrix.
  *
  * @param matrix The original matrix.
  *
