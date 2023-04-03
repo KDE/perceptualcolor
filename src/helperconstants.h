@@ -23,7 +23,16 @@ namespace PerceptualColor
  * We have to search sometimes for the gamut boundary. This value defines
  * the precision of the search:  Smaller values mean better precision and
  * slower processing. */
-constexpr qreal gamutPrecision = 0.001;
+constexpr qreal gamutPrecisionCielab = 0.001;
+
+/** @internal
+ *
+ * @brief Precision for gamut boundary search
+ *
+ * We have to search sometimes for the gamut boundary. This value defines
+ * the precision of the search:  Smaller values mean better precision and
+ * slower processing. */
+constexpr qreal gamutPrecisionOklab = gamutPrecisionCielab / 100;
 
 /** @internal
  *

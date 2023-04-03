@@ -1630,13 +1630,13 @@ private Q_SLOTS:
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
 
         // Test with an out-of-gamut value. Hue and lightness should not change.
-        // myValues[0] = 0.25;
-        // myValues[1] = 0.2;
-        // myValues[2] = 3;
-        // myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
-        // myDialog->d_pointer->readOklchNumericValues();
-        // QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(0), 0.25);
-        // QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
+        myValues[0] = 0.25;
+        myValues[1] = 0.2;
+        myValues[2] = 3;
+        myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->readOklchNumericValues();
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(0), 0.25);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
     }
 
     void testReadHsvNumericValues()

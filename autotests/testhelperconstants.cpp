@@ -73,11 +73,19 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testGamutPrecision()
+    void testCielabGamutPrecision()
     {
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
-        QVERIFY2(PerceptualColor::gamutPrecision < 1, //
+        QVERIFY2(PerceptualColor::gamutPrecisionCielab < 1, //
+                 "Verify that gamut precision value is not too high");
+    }
+
+    void testOklabPrecision()
+    {
+        // The value is somewhat arbitrary.
+        // Make sure that at least it is not too high.
+        QVERIFY2(PerceptualColor::gamutPrecisionCielab < 0.01, //
                  "Verify that gamut precision value is not too high");
     }
 

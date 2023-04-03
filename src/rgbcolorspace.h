@@ -261,6 +261,7 @@ public:
     virtual ~RgbColorSpace() noexcept override;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielabD50InGamut(const cmsCIELab &lab) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual bool isOklchInGamut(const PerceptualColor::LchDouble &lch) const;
     /** @brief Getter for property @ref profileAbsoluteFilePath
      *  @returns the property @ref profileAbsoluteFilePath */
     [[nodiscard]] QString profileAbsoluteFilePath() const;
@@ -307,6 +308,7 @@ public:
      *  @returns the property @ref profilePcsColorModel */
     [[nodiscard]] cmsColorSpaceSignature profilePcsColorModel() const;
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceOklchChromaToFitIntoGamut(const PerceptualColor::LchDouble &oklchColor) const;
     [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielabD50(const QRgba64 rgbColor) const;
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble toCielchD50Double(const QRgba64 rgbColor) const;
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::LchDouble &lch) const;

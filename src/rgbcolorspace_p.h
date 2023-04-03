@@ -47,7 +47,21 @@ public:
      *
      * @todo Use cmsDetectBlackPoint? But “our” “blackpoint” is always on
      * the grey axis, but the real blackpoint not? Document this? */
-    qreal m_blackpointL = 0;
+    qreal m_cielabD50BlackpointL = 0;
+    /** @brief The lightest in-gamut point on the L* axis.
+     * @sa blackpointL() */
+    qreal m_cielabD50WhitepointL = 100;
+    /** @brief The darkest in-gamut point on the L* axis.
+     * @sa whitepointL
+     *
+     * @internal
+     *
+     * @todo Use cmsDetectBlackPoint? But “our” “blackpoint” is always on
+     * the grey axis, but the real blackpoint not? Document this? */
+    qreal m_oklabBlackpointL = 0;
+    /** @brief The lightest in-gamut point on the L* axis.
+     * @sa blackpointL() */
+    qreal m_oklabWhitepointL = 1;
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profileAbsoluteFilePath */
     QString m_profileAbsoluteFilePath;
@@ -99,9 +113,6 @@ public:
     cmsHTRANSFORM m_transformCielabD50ToRgbHandle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformRgbToCielabD50Handle = nullptr;
-    /** @brief The lightest in-gamut point on the L* axis.
-     * @sa blackpointL() */
-    qreal m_whitepointL = 100;
 
     // Functions:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
@@ -148,7 +159,7 @@ public:
      * HSV conversions. Furthermore, since Qt6 it’s floating point interface
      * has been defined with “float”. For a more exact solution, we would
      * have to implement our own HSV conversion first. */
-    static constexpr double chromaDetectionPrecision = gamutPrecision;
+    static constexpr double chromaDetectionHuePrecision = gamutPrecisionCielab;
     /** @brief Increment factor for the maximum-chroma detection.
      *
      * The maximum-chroma detection, regardless of the precision,
@@ -186,7 +197,7 @@ public:
      * This deviation limit should be as small as possible for a more correct
      * gamut boundary. But it must unfortunately also be big enough to ignore
      * rounding errors. The current value was chosen by trial-and-error. */
-    static constexpr qreal oklabDeviationLimit = 0.005; // TODO Test this!
+    static constexpr qreal oklabDeviationLimit = 0.001;
 
 private:
     Q_DISABLE_COPY(RgbColorSpacePrivate)

@@ -88,9 +88,13 @@ private Q_SLOTS:
         myColorSpace = RgbColorSpace::createSrgb();
         QCOMPARE(myColorSpace.isNull(), false);
 
-        QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_blackpointL, 1));
+        QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_cielabD50BlackpointL, 1));
         QVERIFY( //
-            isInRange<qreal>(99, myColorSpace->d_pointer->m_whitepointL, 100));
+            isInRange<qreal>(99, myColorSpace->d_pointer->m_cielabD50WhitepointL, 100));
+
+        QVERIFY(isInRange<qreal>(0.00, myColorSpace->d_pointer->m_oklabBlackpointL, 0.01));
+        QVERIFY( //
+            isInRange<qreal>(0.99, myColorSpace->d_pointer->m_oklabWhitepointL, 1.00));
     }
 
     void testCreateFromFile()
@@ -163,16 +167,21 @@ private Q_SLOTS:
 
         auto myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
-        // assertion that L=100 is out of gamut:
+        // assertion that maximum lightness is out-of-gamut for this profile:
         QCOMPARE(myColorSpace->isCielchD50InGamut(LchDouble{100, 0, 0}), false);
+        QCOMPARE(myColorSpace->isOklchInGamut(LchDouble{1, 0, 0}), false);
 
         // Actual test:
-        QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_blackpointL, 1));
+        QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_cielabD50BlackpointL, 1));
         QVERIFY( //
-            isInRange<qreal>(99, myColorSpace->d_pointer->m_whitepointL, 100));
+            isInRange<qreal>(99, myColorSpace->d_pointer->m_cielabD50WhitepointL, 100));
+
+        QVERIFY(isInRange<qreal>(0.00, myColorSpace->d_pointer->m_oklabBlackpointL, 0.01));
+        QVERIFY( //
+            isInRange<qreal>(0.99, myColorSpace->d_pointer->m_oklabWhitepointL, 1.00));
     }
 
-    void testReduceChromaToFitIntoGamut()
+    void testReduceCielchD50ChromaToFitIntoGamut()
     {
         QScopedPointer<QTemporaryFile> wideGamutFile(
             // Create a temporary actual file…
@@ -201,7 +210,7 @@ private Q_SLOTS:
         QVERIFY(myColorSpace->isCielchD50InGamut(modifiedColor));
     }
 
-    void testBugReduceChromaToFitIntoGamut()
+    void testBugReduceCielchD50ChromaToFitIntoGamut()
     {
         QScopedPointer<QTemporaryFile> wideGamutFile(
             // Create a temporary actual file…
@@ -218,11 +227,58 @@ private Q_SLOTS:
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
         auto myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
-        LchDouble temp;
-        temp.l = 100;
-        temp.c = 50;
-        temp.h = 0;
+        LchDouble temp{100, 50, 0};
         QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).l > 95);
+    }
+
+    void testReduceOklabChromaToFitIntoGamut()
+    {
+        QScopedPointer<QTemporaryFile> wideGamutFile(
+            // Create a temporary actual file…
+            QTemporaryFile::createNativeFile(
+                // …from the content of this resource:
+                QStringLiteral(":/testbed/Compact-ICC-Profiles/Compact-ICC-Profiles/profiles/WideGamutCompat-v4.icc")));
+        if (wideGamutFile.isNull()) {
+            throw 0;
+        }
+
+        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
+        myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        QCOMPARE(myColorSpace.isNull(), false); // assertion
+        const LchDouble referenceColor{1, 0.151189, 359.374};
+        QCOMPARE(myColorSpace->isOklchInGamut(referenceColor), false); // assertion
+        // The value referenceColor is out-of-gamut because WideGamutRGB stops
+        // just a little bit before the lightness of 100.
+
+        // Now, test how this special situation is handled:
+        const LchDouble modifiedColor = //
+            myColorSpace->reduceOklchChromaToFitIntoGamut(referenceColor);
+        QVERIFY(modifiedColor.c <= referenceColor.c);
+        QCOMPARE(modifiedColor.h, referenceColor.h);
+        QVERIFY(isInRange<qreal>(0.99, modifiedColor.l, 1));
+        QVERIFY(modifiedColor.l < 1);
+        QVERIFY(myColorSpace->isOklchInGamut(modifiedColor));
+    }
+
+    void testBugReduceOklabChromaToFitIntoGamut()
+    {
+        QScopedPointer<QTemporaryFile> wideGamutFile(
+            // Create a temporary actual file…
+            QTemporaryFile::createNativeFile(
+                // …from the content of this resource:
+                QStringLiteral(":/testbed/Compact-ICC-Profiles/Compact-ICC-Profiles/profiles/WideGamutCompat-v4.icc")));
+        if (wideGamutFile.isNull()) {
+            throw 0;
+        }
+
+        // This test looks for a bug that was seen during development
+        // phase. When using WideGamutRGB and raising the lightness
+        // slider up to 100%: Bug behaviour: the color switches
+        // to 0% lightness. Expected behaviour: the color has almost
+        // 100% lightness.
+        auto myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        const LchDouble temp{1, 0.151189, 359.374};
+        QVERIFY(myColorSpace->reduceOklchChromaToFitIntoGamut(temp).l > 0.95);
     }
 
     void testDeleteTransformThatIsNull()
@@ -343,29 +399,27 @@ private Q_SLOTS:
     {
         auto temp = RgbColorSpace::createSrgb();
         LchDouble color;
-        qreal presicion = 0.1;
 
-        const auto srgbMaximumChroma = temp->profileMaximumCielchD50Chroma();
-
-        // Test if maxSrgbChroma is big enough
+        // Test if profileMaximumCielchD50Chroma is big enough
         qreal precisionDegreeMaxSrgbChroma = //
-            presicion / 360 * 2 * pi * srgbMaximumChroma;
-        color.c = srgbMaximumChroma;
+            0.1 / 360 * 2 * pi * temp->profileMaximumCielchD50Chroma();
+        color.c = temp->profileMaximumCielchD50Chroma();
         qreal hue = 0;
         qreal lightness;
+        qreal cielabPresicion = 0.1;
         while (hue <= 360) {
             color.h = hue;
             lightness = 0;
             while (lightness <= 100) {
                 color.l = lightness;
-                QVERIFY2(!temp->isCielchD50InGamut(color), "Test if maxSrgbChroma is big enough");
-                lightness += presicion;
+                QVERIFY2(!temp->isCielchD50InGamut(color), "Test if profileMaximumCielchD50Chroma is big enough");
+                lightness += cielabPresicion;
             }
             hue += precisionDegreeMaxSrgbChroma;
         }
 
-        // Test if maxSrgbChroma is as small as possible
-        color.c = srgbMaximumChroma - 1;
+        // Test if profileMaximumCielchD50Chroma is as small as possible
+        color.c = temp->profileMaximumCielchD50Chroma() * 0.97;
         bool inGamutValueFound = false;
         hue = 0;
         while (hue <= 360) {
@@ -377,7 +431,7 @@ private Q_SLOTS:
                     inGamutValueFound = true;
                     break;
                 }
-                lightness += presicion;
+                lightness += cielabPresicion;
             }
             if (inGamutValueFound) {
                 break;
@@ -385,7 +439,54 @@ private Q_SLOTS:
             hue += precisionDegreeMaxSrgbChroma;
         }
         QVERIFY2(inGamutValueFound, //
-                 "Test if maxSrgbChroma.h is as small as possible");
+                 "Test if profileMaximumCielchD50Chroma is as small as possible");
+    }
+
+    void testProfileMaximumOklchChroma()
+    {
+        auto temp = RgbColorSpace::createSrgb();
+        LchDouble color;
+
+        // Test if profileMaximumOklchChroma is big enough
+        qreal precisionDegreeMaxSrgbChroma = //
+            0.1 / 360 * 2 * pi * temp->profileMaximumOklchChroma() * 100;
+        color.c = temp->profileMaximumOklchChroma();
+        qreal hue = 0;
+        qreal lightness;
+        qreal oklabPrecision = 0.001;
+        while (hue <= 360) {
+            color.h = hue;
+            lightness = 0;
+            while (lightness <= 1) {
+                color.l = lightness;
+                QVERIFY2(!temp->isOklchInGamut(color), "Test if profileMaximumOklchChroma is big enough");
+                lightness += oklabPrecision;
+            }
+            hue += precisionDegreeMaxSrgbChroma;
+        }
+
+        // Test if profileMaximumOklchChroma is as small as possible
+        color.c = temp->profileMaximumOklchChroma() * 0.97;
+        bool inGamutValueFound = false;
+        hue = 0;
+        while (hue <= 360) {
+            color.h = hue;
+            lightness = 0;
+            while (lightness <= 1) {
+                color.l = lightness;
+                if (temp->isOklchInGamut(color)) {
+                    inGamutValueFound = true;
+                    break;
+                }
+                lightness += oklabPrecision;
+            }
+            if (inGamutValueFound) {
+                break;
+            }
+            hue += precisionDegreeMaxSrgbChroma;
+        }
+        QVERIFY2(inGamutValueFound, //
+                 "Test if profileMaximumOklchChroma is as small as possible");
     }
 
     void testToCielchD50Double()
@@ -444,7 +545,7 @@ private Q_SLOTS:
         QCOMPARE(qAlpha(result), 255); // opaque
     }
 
-    void testIsCielchD50InGamutLch()
+    void testIsCielchD50InGamut()
     {
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
             // Create sRGB which is pretty much standard.
@@ -472,7 +573,35 @@ private Q_SLOTS:
         QCOMPARE(myColorSpace->isCielchD50InGamut(color), false);
     }
 
-    void testIsCielchD50InGamutLab()
+    void testIsOlkchInGamut()
+    {
+        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+            // Create sRGB which is pretty much standard.
+            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+
+        // Variables
+        LchDouble color;
+
+        // In-gamut colors should work:
+        color.l = 0.5;
+        color.c = 0.10;
+        color.h = 10;
+        QCOMPARE(myColorSpace->isOklchInGamut(color), true);
+
+        // Out-of-gamut colors should work:
+        color.l = 1;
+        color.c = 0.3;
+        color.h = 10;
+        QCOMPARE(myColorSpace->isOklchInGamut(color), false);
+
+        // Out-of-boundary colors should work:
+        color.l = 200;
+        color.c = 300;
+        color.h = 400;
+        QCOMPARE(myColorSpace->isOklchInGamut(color), false);
+    }
+
+    void testIsCielabD50InGamut()
     {
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
             // Create sRGB which is pretty much standard.

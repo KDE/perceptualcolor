@@ -1500,8 +1500,6 @@ void ColorDialogPrivate::readHlcNumericValues()
     setCurrentOpaqueColor( //
         MultiColor::fromCielchD50( //
             m_rgbColorSpace,
-            // TODO Would it be better to adapt all 3 axis instead of only
-            // adapting C and L?
             myColor),
         // widget that will ignored during updating:
         m_ciehlcD50SpinBox);
@@ -1523,19 +1521,9 @@ void ColorDialogPrivate::readOklchNumericValues()
     originalOklch.l = m_oklchSpinBox->sectionValues().value(0);
     originalOklch.c = m_oklchSpinBox->sectionValues().value(1);
     originalOklch.h = m_oklchSpinBox->sectionValues().value(2);
-    const auto originalColor = MultiColor::fromOklch(m_rgbColorSpace, originalOklch);
-    const auto originalCielchD50 = originalColor.cielchD50;
-    // TODO Would it be better to adapt all 3 axis instead of only
-    // adapting C and L?
-    const auto inGamutCielch = m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(originalCielchD50);
-
-    const bool originalIsIsGamut = (originalCielchD50.l == inGamutCielch.l) //
-        && (originalCielchD50.c == inGamutCielch.c) && (originalCielchD50.h == inGamutCielch.h);
-    const MultiColor finalColor = originalIsIsGamut //
-        ? originalColor //
-        : MultiColor::fromCielchD50(m_rgbColorSpace, inGamutCielch);
-
-    setCurrentOpaqueColor(finalColor,
+    const auto inGamutOklch = m_rgbColorSpace->reduceOklchChromaToFitIntoGamut(originalOklch);
+    const auto inGamutColor = MultiColor::fromOklch(m_rgbColorSpace, inGamutOklch);
+    setCurrentOpaqueColor(inGamutColor,
                           // widget that will ignored during updating:
                           m_oklchSpinBox);
 }
