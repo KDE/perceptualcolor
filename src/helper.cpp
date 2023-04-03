@@ -142,15 +142,18 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  * @snippet testhelper.cpp percentTraditional
  * It could be improved like this:
  * @snippet testhelper.cpp percentImproved
- * However, some languages like Turkish put the percent sign <em>before</em>
- * the value, which is not possible with the above code. This function allows
- * to do this feature easily in a fail-safe way:
+ * However, in some languages, the position of the prefix and suffix may be
+ * reversed compared to English. Example: In English, you write 50\%, but in
+ * Turkish, you write \%50. Qt does not offer an out-of-the-box solution for
+ * this. This helper now provides complete internationalization for prefixes
+ * and suffixes of spin boxes, allowing to do this easily in a fail-safe way:
  * @snippet testhelper.cpp percentFullyInternationalized
  *
- * @param formatString The translated value string, which should contain
- * exactly <em>one</em> place marker as described in <tt>QString::arg()</tt>
- * like <tt>\%1</tt> or <tt>\%L2</tt>. This place marker represents
- * the value. Example: “Prefix\%1Suffix”. Prefix and suffix may be empty.
+ * @param formatString A translated string in the format "prefix%1suffix". It
+ * should contain exactly <em>one</em> place marker as described in
+ * <tt>QString::arg()</tt> like <tt>\%1</tt> or <tt>\%L2</tt>. This place
+ * marker represents the value. Example: “Prefix\%1Suffix”. Prefix and suffix
+ * may be empty.
  *
  * @returns If the <tt>formatString</tt> parameter has the correct format,
  * the prefix will be returned at <tt>QPair::first</tt> and the suffix will
@@ -158,6 +161,7 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  * empty string. */
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString)
 {
+    // QString::arg() support for %L2, %5 etc which translators might expect:
     const auto list = formatString //
                           .arg(QStringLiteral("%1")) //
                           .split(QStringLiteral("%1"));
