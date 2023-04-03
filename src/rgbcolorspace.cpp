@@ -719,13 +719,13 @@ QDateTime RgbColorSpacePrivate::getCreationDateTimeFromProfile(cmsHPROFILE profi
  * chroma. As this function always <em>reduces</em> the chroma,
  * in this case the result is not the nearest in-gamut color.
  *
- * @param color The color that will be adapted.
+ * @param cielchD50color The color that will be adapted.
  *
  * @returns An @ref isCielchD50InGamut color. */
-PerceptualColor::LchDouble RgbColorSpace::reduceChromaToFitIntoGamut(const PerceptualColor::LchDouble &color) const
+PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const
 {
     // Normalize the LCH coordinates
-    LchDouble referenceColor = color;
+    LchDouble referenceColor = cielchD50color;
     {
         const PolarPointF temp(referenceColor.c, referenceColor.h);
         referenceColor.c = temp.radius();

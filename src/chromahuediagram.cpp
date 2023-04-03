@@ -265,7 +265,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         LchDouble newColor = d_pointer->m_currentColor;
         newColor.h += standardWheelStepCount(event) * singleStepHue;
         setCurrentColor( //
-            d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(newColor));
+            d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(newColor));
     } else {
         event->ignore();
     }
@@ -353,7 +353,7 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
         newColor.c = 0;
     }
     // Move the value into gamut (if necessary):
-    newColor = d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(newColor);
+    newColor = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(newColor);
     // Apply the new value:
     setCurrentColor(newColor);
 }
@@ -565,7 +565,7 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
 {
     const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
     const auto myColor = //
-        m_rgbColorSpace->reduceChromaToFitIntoGamut(toLchDouble(lab));
+        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(toLchDouble(lab));
     q_pointer->setCurrentColor(myColor);
 }
 

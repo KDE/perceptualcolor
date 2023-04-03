@@ -395,7 +395,7 @@
  * this avoids the time-consuming memory allocations at each paint event!
  *
  * @todo Use <tt>QCache</tt> where is makes sense. Maybe
- * @ref PerceptualColor::RgbColorSpace::reduceChromaToFitIntoGamut() or
+ * @ref PerceptualColor::RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut() or
  * @ref PerceptualColor::RgbColorSpace::isCielchD50InGamut() or
  * @ref PerceptualColor::RgbColorSpace::isCielabD50InGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutColorByAdjustingChromaLightness(().

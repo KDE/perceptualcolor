@@ -442,7 +442,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Right:
         temp.c += singleStepChroma;
-        temp = d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(temp);
+        temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
     case Qt::Key_PageUp:
         temp.l += pageStepLightness;
@@ -452,7 +452,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Home:
         temp.c += pageStepChroma;
-        temp = d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(temp);
+        temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
     case Qt::Key_End:
         temp.c = qMax<double>(0, temp.c - pageStepChroma);
@@ -478,7 +478,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // Set the new color (only takes effect when the color is indeed different).
     setCurrentColor(
         // Search for the nearest color without changing the hue:
-        d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(temp));
+        d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp));
     // TODO Instead of this, simply do setCurrentColor(temp); but guarantee
     // for up, down, page-up and page-down that the lightness is raised
     // or reduced until fitting into the gamut. Maybe find a way to share

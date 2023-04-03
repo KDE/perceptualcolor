@@ -193,7 +193,7 @@ private Q_SLOTS:
 
         // Now, test how this special situation is handled:
         const LchDouble modifiedColor = //
-            myColorSpace->reduceChromaToFitIntoGamut(referenceColor);
+            myColorSpace->reduceCielchD50ChromaToFitIntoGamut(referenceColor);
         QVERIFY(modifiedColor.c <= referenceColor.c);
         QCOMPARE(modifiedColor.h, referenceColor.h);
         QVERIFY(isInRange<qreal>(99, modifiedColor.l, 100));
@@ -222,7 +222,7 @@ private Q_SLOTS:
         temp.l = 100;
         temp.c = 50;
         temp.h = 0;
-        QVERIFY(myColorSpace->reduceChromaToFitIntoGamut(temp).l > 95);
+        QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).l > 95);
     }
 
     void testDeleteTransformThatIsNull()

@@ -306,7 +306,7 @@ public:
     /** @brief Getter for property @ref profilePcsColorModel
      *  @returns the property @ref profilePcsColorModel */
     [[nodiscard]] cmsColorSpaceSignature profilePcsColorModel() const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceChromaToFitIntoGamut(const PerceptualColor::LchDouble &color) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const;
     [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielabD50(const QRgba64 rgbColor) const;
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble toCielchD50Double(const QRgba64 rgbColor) const;
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::LchDouble &lch) const;

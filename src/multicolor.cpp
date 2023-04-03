@@ -89,7 +89,7 @@ void MultiColor::fillLchAndDerivatesFromRgbAndDerivates(const QSharedPointer<Rgb
         // Changing the hue might make the color out-of-gamut because some
         // gamuts have strange forms around the white point and the black
         // point. We push it back into the gamut:
-        cielchD50 = colorSpace->reduceChromaToFitIntoGamut(cielchD50);
+        cielchD50 = colorSpace->reduceCielchD50ChromaToFitIntoGamut(cielchD50);
     }
 
     ciehlcD50 = QList<double>({cielchD50.h, cielchD50.l, cielchD50.c});

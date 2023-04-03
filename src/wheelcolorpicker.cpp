@@ -63,7 +63,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
             lch.h = newHue;
             // We have to be sure that the color is in-gamut also for the
             // new hue. If it is not, we adjust it:
-            lch = d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(lch);
+            lch = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
             d_pointer->m_chromaLightnessDiagram->setCurrentColor(lch);
         });
     connect(d_pointer->m_chromaLightnessDiagram,
@@ -84,7 +84,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     setCurrentColor(
         // Though CielchD50Values::srgbVersatileInitialColor() is expected to
         // be in-gamut, its more secure to guarantee this explicitly:
-        d_pointer->m_rgbColorSpace->reduceChromaToFitIntoGamut(
+        d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(
             // Default sRGB initial color:
             CielchD50Values::srgbVersatileInitialColor));
 }

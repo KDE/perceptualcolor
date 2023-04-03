@@ -1269,7 +1269,7 @@ void ColorDialogPrivate::readLightnessValue()
     }
     LchDouble lch = m_currentOpaqueColor.cielchD50;
     lch.l = m_lchLightnessSelector->value() * 100;
-    lch = m_rgbColorSpace->reduceChromaToFitIntoGamut(lch);
+    lch = m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
     setCurrentOpaqueColor( //
         MultiColor::fromCielchD50(m_rgbColorSpace, lch),
         m_lchLightnessSelector);
@@ -1461,7 +1461,7 @@ void ColorDialogPrivate::readHlcNumericValues()
     lch.h = hlcValues.at(0);
     lch.l = hlcValues.at(1);
     lch.c = hlcValues.at(2);
-    const auto myColor = m_rgbColorSpace->reduceChromaToFitIntoGamut(lch);
+    const auto myColor = m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
     setCurrentOpaqueColor( //
         MultiColor::fromCielchD50( //
             m_rgbColorSpace,
