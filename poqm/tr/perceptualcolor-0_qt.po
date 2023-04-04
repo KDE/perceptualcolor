@@ -326,7 +326,7 @@ msgid "&Pick Screen Color"
 msgstr "Ekran Rengi &Seç"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:914
+#: colordialog.cpp:924
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Renk Seç"

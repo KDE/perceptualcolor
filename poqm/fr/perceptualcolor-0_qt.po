@@ -332,7 +332,7 @@ msgid "&Pick Screen Color"
 msgstr "&Échantillonner une couleur d'écran"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:914
+#: colordialog.cpp:924
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Sélectionner une couleur"
