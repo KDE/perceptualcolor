@@ -25,7 +25,7 @@ rm --recursive --force build/*
 cd build
 cmake \
     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=TRUE \
-    -DADDITIONAL_WARNINGS=TRUE \
+    -DADDITIONAL_WARNINGS=ON \
     -DBUILD_WITH_QT6=ON \
     ..
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_ipo_lto.txt
@@ -36,7 +36,7 @@ rm --recursive --force buildexamples/*
 cd buildexamples
 cmake \
     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=TRUE \
-    -DADDITIONAL_WARNINGS=TRUE \
+    -DADDITIONAL_WARNINGS=ON \
     -DBUILD_WITH_QT6=ON \
     ../examples
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_warnings_ipo_lto.txt

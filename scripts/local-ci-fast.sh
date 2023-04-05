@@ -83,7 +83,7 @@ while true; do
         yes ) mkdir --parents build \
                 && rm --recursive --force build/* \
                 && cd build \
-                && cmake -DADDITIONAL_WARNINGS=TRUE .. > /dev/null
+                && cmake -DADDITIONAL_WARNINGS=ON .. > /dev/null
             exit;;
         * ) exit;;
     esac
