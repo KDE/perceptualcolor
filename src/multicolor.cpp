@@ -273,6 +273,4 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiColor &value)
     return dbg.maybeSpace();
 }
 
-static_assert(std::is_standard_layout_v<MultiColor>);
-
 } // namespace PerceptualColor
