@@ -46,6 +46,7 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~SwatchBookPrivate() noexcept override = default;
 
+    [[nodiscard]] QList<QList<QColor>> wcsBasicColorPalette() const;
     [[nodiscard]] QSize patchSizeOuter() const;
     [[nodiscard]] QSize patchSizeInner() const;
     [[nodiscard]] int horizontalPatchSpacing() const;

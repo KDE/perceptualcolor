@@ -36,19 +36,17 @@ class RgbColorSpace;
  *
  * @image html SwatchBook.png "SwatchBook"
  *
- * The user can select a color by mouse click or keyboard.
+ * The user can select a color either by mouse click or by using the keyboard.
  *
- * This used palette shows tints and shades of the basic colors.
- * Many other widgets of this library are about the perceptually
- * uniform color space. This one is different. How can we determine
- * the basic colors? The associations people have with individual
- * colors can be culturally determined. But the <em>basic color terms</em> in
- * almost all languages on earth might follow a universal pattern,
- * as Brent Berlin and Paul Kay suggest in their study
+ * The palette contains various tints and shades of the basic colors. While
+ * many other widgets in this library use the perceptually uniform color space,
+ * this one is different. The choice of the basic colors is based on the
  * <a href="https://en.wikipedia.org/wiki/Basic_Color_Terms:_Their_Universality_and_Evolution">
- * Basic Colour Terms: Their Universality and Evolution</a>: There
- * are eleven basic color terms that appear in this order during
- * the evolution of a language:
+ * study by Brent Berlin and Paul Kay</a>, who suggest that the
+ * basic color terms in almost all languages on earth follow a universal
+ * pattern. They propose that there are eleven basic color terms that appear
+ * in this order during the evolution of a language:
+ *
  * 1. black, white
  * 2. red
  * 3. green, yellow
@@ -56,40 +54,28 @@ class RgbColorSpace;
  * 5. brown
  * 6. purple, pink, orange, gray
  *
- * And also it seem that people worldwide agree quite well what each
- * of those color terms actually means (e.g. which HLC value has a
- * typical green or a typical read). That’s a fascinating theory. And
- * it’s a good base to chose basic colors for this palette.
+ * Additionally, people worldwide seem to agree quite well on the typical
+ * values of each of these color terms. This theory is a fascinating one
+ * and forms a good basis for choosing basic colors for this palette.
  *
- * For the purpose of this widget, the colors are ordered, as exactly
- * as possible as in the perceptually uniform color space. We start
- * with the chromatic basic colors red, orange, yellow, green,
- * blue, purple, pink (this is the  order they appear on the
- * LCH hue). Then follows brown, which is a special case
- * at its hue is quite the same as for orange — it’s
- * just the less chromatic part of this hue, but nevertheless
- * perceived by humans as an independent color. For each of these
- * basic colors are provides five variants in the order
- * <a href="https://en.wikipedia.org/wiki/Tints_and_shades">
- * tint → pure color → shade</a>. After brown, which is yet less
- * chromatic than the previous colors, appear now five achromatic
- * variants in the order white → gray → black.
+ * This widget's colors have been arranged largely according to the color
+ * wheel of the perceptually uniform color space. We start with the saturated
+ * basic colors: red, orange, yellow, green, blue, and purple in order of
+ * their hue angles. Next, we have pink and brown, which have roughly the
+ * same hue as red or orange but are less saturated. These are simply the
+ * less chromatic parts of this hue but are nevertheless perceived by humans
+ * as independent colors.For each of these basic colors, there are five
+ * variants in the order of <a href="https://en.wikipedia.org/wiki/Tints_and_shades">
+ * tint, pure color, and shade</a>. Following the saturated colors and
+ * eventually the less saturated ones, the gray axis comes in last place.
  *
- * The marker which is used to mark the currently selected color depends
+ * The marker used to mark the currently selected color depends
  * on the current translation; see @ref setTranslation for details.
  *
- * @internal
- *
- * @section whatcolor What exact color to use?
- *
- * Currently, we use the colors of the Gtk color picker (except of pink). But
- * is there a more objective choice? What exactly is a typical “red” or a
- * typical “green”?
- *
- * We have the eleven <em>basic color terms</em> that we want
- * to use. But doesn’t every human have a slightly different
+ * What exact colors are used? What exactly is a typical “red” or a
+ * “green”? Doesn’t every human have a slightly different
  * feeling what a “typical” red or a “typical” blue is? We
- * need a <em>focal color</em>. A definition according to
+ * need a <em>focal color</em>, which is, according to
  * <a href="https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095825870">
  * Oxford Reference</a>:
  *
@@ -97,12 +83,16 @@ class RgbColorSpace;
  * > such as a shade of red that a majority of viewers consider to be the
  * > best example of a red colour.”
  *
- * A big study about focal colors of speakers of different languages across
- * the world is the <a href="https://www1.icsi.berkeley.edu/wcs/">World
- * Color Survery</a> (WCS), who’s data is available online. Unfortunately,
- * it does not give a direct values for focal colors. Various studies have
- * however used this data, so we can find for some <em>basic color terms</em>
- * a focal color, and for some others at least a naming centroid.
+ * The <a href="https://www1.icsi.berkeley.edu/wcs/">World Color Survey</a>
+ * (WCS) is a significant study about focal colors of speakers of different
+ * languages across the world. The data from this survey is available online,
+ * and while it does not provide direct values for focal colors, various
+ * studies have used this data to determine focal colors for some
+ * <em>basic color terms</em> and a naming centroid for others.
+ *
+ * The table below shows the WCS grid coordinates for the basic color terms
+ * along with the corresponding Cielab values for the focal color (where
+ * available) or the naming centroid (where focal color data is unavailable).
  *
  * |Basic color term|WCS grid coordinates|Cielab³ L|Cielab³ a|Cielab³ b|
  * | :--------------| -----------------: | ------: | ------: | ------: |
@@ -133,8 +123,16 @@ class RgbColorSpace;
  *   <a href="https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new-README.txt">
  *   corresponding explanation</a>.
  *
- * @todo Maybe choose slightly different, but more systematic colors:
- * Same CIE-LCH or OKLCH hue for all tints and shade of a given color?
+ * From this data, the colors in our palette have been derived as follows:
+ * - The gray axis has been defined manually, ignoring the WCS data. Chroma
+ *   is 0. The lightness is 100% for white, 0% for black, and 75%, 50%,
+ *   and 25% for the intermediate grays.
+ * - The other columns for chromatic colors use the WCS data for the swatch in
+ *   the middle. Tints and shades are calculated by adding or reducing chroma
+ *   and lightness within the Oklab color space. If the resulting color falls
+ *   outside the widget's gamut, a nearby in-gamut color is chosen instead.
+ *
+ * @internal
  *
  * @todo A design question: Should we draw margins around each individual
  * color patch? Maybe rely on @ref ColorPatch somehow?

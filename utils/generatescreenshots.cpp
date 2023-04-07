@@ -260,7 +260,7 @@ static void makeScreenshots()
     // — has nevertheless a little bit of distance to the outer
     //   hull (which  puts the marker somewhere in the inner of
     //   the gamut, which makes the screenshots easier to understand).
-    const QColor defaultColorRgb = QColor::fromRgb(245, 194, 17);
+    const QColor defaultColorRgb = QColor::fromRgb(50, 127, 206);
     const LchDouble defaultColorCielchD50 = //
         m_colorSpace->toCielchD50Double(defaultColorRgb.rgba64());
     QColor myColor;

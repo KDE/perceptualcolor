@@ -10,10 +10,13 @@
 #include "abstractdiagram.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
+#include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
+#include <array>
+#include <lcms2.h>
 #include <optional>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
@@ -33,6 +36,8 @@
 #include <qstyleoption.h>
 #include <qtransform.h>
 #include <qwidget.h>
+#include <type_traits>
+#include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>
@@ -122,70 +127,7 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     // (Important on some QStyle who might paint widgets different then.)
     setAttribute(Qt::WA_Hover);
 
-    QList<QColor> red; // Same as in GTK’s color dialog
-    red.append(QColor(246, 97, 81));
-    red.append(QColor(237, 51, 59));
-    red.append(QColor(224, 27, 36));
-    red.append(QColor(192, 28, 40));
-    red.append(QColor(165, 29, 45));
-    QList<QColor> orange; // Same as in GTK’s color dialog
-    orange.append(QColor(255, 190, 111));
-    orange.append(QColor(255, 163, 72));
-    orange.append(QColor(255, 120, 0));
-    orange.append(QColor(230, 97, 0));
-    orange.append(QColor(198, 70, 0));
-    QList<QColor> yellow; // Same as in GTK’s color dialog
-    yellow.append(QColor(249, 240, 107));
-    yellow.append(QColor(248, 228, 92));
-    yellow.append(QColor(246, 211, 45));
-    yellow.append(QColor(245, 194, 17));
-    yellow.append(QColor(229, 165, 10));
-    QList<QColor> green; // Same as in GTK’s color dialog
-    green.append(QColor(143, 240, 164));
-    green.append(QColor(87, 227, 137));
-    green.append(QColor(51, 209, 122));
-    green.append(QColor(46, 194, 126));
-    green.append(QColor(38, 162, 105));
-    QList<QColor> blue; // Same as in GTK’s color dialog
-    blue.append(QColor(153, 193, 241));
-    blue.append(QColor(98, 160, 234));
-    blue.append(QColor(53, 132, 228));
-    blue.append(QColor(28, 113, 216));
-    blue.append(QColor(26, 95, 180));
-    QList<QColor> purple; // Same as in GTK’s color dialog
-    purple.append(QColor(220, 138, 221));
-    purple.append(QColor(192, 97, 203));
-    purple.append(QColor(145, 65, 172));
-    purple.append(QColor(129, 61, 156));
-    purple.append(QColor(97, 53, 131));
-    QList<QColor> pink; // Not is GTK’s color dialog
-    pink.append(QColor(252, 193, 213));
-    pink.append(QColor(255, 158, 192));
-    pink.append(QColor(234, 99, 150));
-    pink.append(QColor(207, 81, 128));
-    pink.append(QColor(180, 62, 105));
-    QList<QColor> brown; // Same as in GTK’s color dialog
-    brown.append(QColor(205, 171, 143));
-    brown.append(QColor(181, 131, 90));
-    brown.append(QColor(152, 106, 68));
-    brown.append(QColor(134, 94, 60));
-    brown.append(QColor(99, 69, 44));
-    QList<QColor> achromatic; // Subset of what’s in GTK’s color dialog
-    achromatic.append(QColor(255, 255, 255));
-    achromatic.append(QColor(222, 221, 218));
-    achromatic.append(QColor(154, 153, 150));
-    achromatic.append(QColor(94, 92, 100));
-    achromatic.append(QColor(0, 0, 0));
-    d_pointer->m_paletteColors //
-        << red //
-        << orange //
-        << yellow //
-        << green //
-        << blue //
-        << purple //
-        << pink //
-        << brown //
-        << achromatic;
+    d_pointer->m_paletteColors = d_pointer->wcsBasicColorPalette();
 
     // Initialize the selection (and implicitly the currentColor property):
     d_pointer->selectColorFromPalette(8, 0); // Same default as in QColorDialog
@@ -826,6 +768,87 @@ void SwatchBook::changeEvent(QEvent *event)
     }
 
     QWidget::changeEvent(event);
+}
+
+/** @brief Palette derived from the basic colors.
+ *
+ * The exact maximim-chroma basic colors come from the WCS. Tints and shades
+ * are calculated with Oklab.
+ *
+ * @returns Palette derived from the basic colors. */
+QList<QList<QColor>> SwatchBookPrivate::wcsBasicColorPalette() const
+{
+    constexpr std::array<double, 3> red{{41.22, 61.40, 17.92}};
+    constexpr std::array<double, 3> orange{{61.70, 29.38, 64.40}};
+    constexpr std::array<double, 3> yellow{{81.35, 07.28, 109.12}};
+    constexpr std::array<double, 3> green{{51.57, -63.28, 28.95}};
+    constexpr std::array<double, 3> blue{{51.57, -03.41, -48.08}};
+    constexpr std::array<double, 3> purple{{41.22, 33.08, -30.50}};
+    constexpr std::array<double, 3> pink{{61.70, 49.42, 18.23}};
+    constexpr std::array<double, 3> brown{{41.22, 17.04, 45.95}};
+    constexpr std::array<std::array<double, 3>, 8> chromaticCielabColors //
+        {{red, orange, yellow, green, blue, purple, pink, brown}};
+
+    QList<QList<QColor>> result;
+    result.reserve(chromaticCielabColors.size() + 1); // + 1 for gray axis
+
+    QList<QColor> rgbList;
+
+    // Chromatic colors
+    constexpr double strongTint = 0.46;
+    constexpr double weakTint = 0.23;
+    constexpr double weakShade = 0.18;
+    constexpr double strongShade = 0.36;
+    for (const auto &cielabList : std::as_const(chromaticCielabColors)) {
+        const cmsCIELab myCmsCielab{cielabList.at(0), //
+                                    cielabList.at(1), //
+                                    cielabList.at(2)};
+        const auto oklab = fromCmscielabD50ToOklab(myCmsCielab);
+        cmsCIELCh oklch;
+        cmsLab2LCh(&oklch, &oklab);
+        QList<cmsCIELCh> tintsAndShades;
+        tintsAndShades << cmsCIELCh //
+            {oklch.L + (1 - oklch.L) * strongTint, //
+             oklch.C * (1 - strongTint), //
+             oklch.h};
+        tintsAndShades << cmsCIELCh //
+            {oklch.L + (1 - oklch.L) * weakTint, //
+             oklch.C * (1 - weakTint), //
+             oklch.h};
+        tintsAndShades << oklch;
+        tintsAndShades << cmsCIELCh //
+            {oklch.L * (1 - weakShade), //
+             oklch.C * (1 - weakShade), //
+             oklch.h};
+        tintsAndShades << cmsCIELCh //
+            {oklch.L * (1 - strongShade), //
+             oklch.C * (1 - strongShade), //
+             oklch.h};
+        rgbList.clear();
+        rgbList.reserve(tintsAndShades.count());
+        for (const auto &variation : std::as_const(tintsAndShades)) {
+            cmsCIELab variationOklab;
+            cmsLCh2Lab(&variationOklab, &variation);
+            const auto cielabD50 = fromOklabToCmscielabD50(variationOklab);
+            rgbList << m_rgbColorSpace->fromCielchD50ToQRgbBound( //
+                toLchDouble(cielabD50));
+        }
+        result << rgbList;
+    }
+
+    // Gray axis
+    QList<double> lightnesses{1, 0.75, 0.5, 0.25, 0};
+    rgbList.clear();
+    rgbList.reserve(lightnesses.count());
+    for (const auto &lightness : lightnesses) {
+        const cmsCIELab myOklab{lightness, 0, 0};
+        const auto cielabD50 = fromOklabToCmscielabD50(myOklab);
+        rgbList << m_rgbColorSpace->fromCielchD50ToQRgbBound( //
+            toLchDouble(cielabD50));
+    }
+    result << rgbList;
+
+    return result;
 }
 
 } // namespace PerceptualColor
