@@ -2,15 +2,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-02-24 12:13+0100\n"
+"PO-Revision-Date: 2023-04-03 16:51+0200\n"
 "Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 22.12.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -36,16 +36,14 @@ msgstr "RGB"
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
-msgstr ""
+msgstr "%1 %"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
 #: colordialog.cpp:205
-#, fuzzy, qt-format
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "°"
+#, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1°"
-msgstr "°"
+msgstr "%1°"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:213
@@ -352,10 +350,7 @@ msgid "sRGB color space"
 msgstr "sRGB-Farbraum"
 
 #. @item Used to indicate the selected color in the palette. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:83
-#, fuzzy
-#| msgctxt "PerceptualColor::PaletteWidgetPrivate|"
-#| msgid "✓"
+#: swatchbook.cpp:88
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
