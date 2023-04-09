@@ -24,6 +24,7 @@
 #include <qcoreapplication.h> // IWYU pragma: keep
 #include <qcoreevent.h> // IWYU pragma: keep
 #include <qdebug.h> // IWYU pragma: keep
+#include <qdialogbuttonbox.h> // IWYU pragma: keep
 #include <qfileinfo.h> // IWYU pragma: keep
 #include <qfontdatabase.h> // IWYU pragma: keep
 #include <qgenericmatrix.h> // IWYU pragma: keep
@@ -34,6 +35,7 @@
 #include <qlist.h> // IWYU pragma: keep
 #include <qlocale.h> // IWYU pragma: keep
 #include <qmath.h> // IWYU pragma: keep
+#include <qmetaobject.h> // IWYU pragma: keep
 #include <qnamespace.h> // IWYU pragma: keep
 #include <qobject.h> // IWYU pragma: keep
 #include <qpixmap.h> // IWYU pragma: keep
@@ -297,3 +299,5 @@ int main(int argc, char *argv[])
     // Run
     return app.exec();
 }
+
+#include "testapp.moc"
