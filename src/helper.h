@@ -86,7 +86,7 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
 
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 
-/** @brief The C++ identifier as QString.
+/** @brief The full-qualified C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
@@ -97,14 +97,17 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
  * @pre The enumeration type of the enumerator is declared with
  * Q_ENUM or Q_ENUM_NS.
  *
- * @returns The C++ identifier as QString, followed by the underlying integer
- * value in parenthesis. If the enumerator does not exist (for example because
- * you have done a static_cast of an invalid integer to  the enum class), an
- * empty String is returned instead. If the enumerator has synonyms (that
- * means, there exist other enumerators that share the same integer with
- * the current enumerator), all synonym enumerators are returned. */
+ * @returns The full-qualified C++ identifier as QString, followed by the
+ * underlying integer value in parenthesis. If the enumerator does not
+ * exist (for example because you have done a static_cast of an invalid
+ * integer to  the enum class), an empty String is returned instead. If
+ * the enumerator has synonyms (that means, there exist other enumerators
+ * that share the same integer with the current enumerator), all synonym
+ * enumerators are returned.
+ *
+ * @sa @ref toString() */
 template<typename T>
-QString toString(const T &enumerator)
+QString toFullString(const T &enumerator)
 {
     const auto value = static_cast<int>(enumerator);
     const auto myMeta = QMetaEnum::fromType<T>();
@@ -125,7 +128,47 @@ QString toString(const T &enumerator)
     return QStringLiteral("%1::%2::%3(%4)").arg(scope, name, keys).arg(value);
 }
 
-/** @brief The C++ identifier as QString.
+/** @brief The full-qualified C++ identifier as QString.
+ *
+ * This can be useful for debugging purposes.
+ *
+ * @tparam T The enumeration type. Can usually be omitted.
+ *
+ * @param enumerator An enumerator.
+ *
+ * @pre The enumeration type of the enumerator is declared with
+ * Q_ENUM or Q_ENUM_NS.
+ *
+ * @returns The full-qualified C++ identifier as QString, followed by the
+ * underlying integer value in parenthesis. If the enumerator does not
+ * exist (for example because you have done a static_cast of an invalid
+ * integer to  the enum class), an empty String is returned instead. If
+ * the enumerator has synonyms (that means, there exist other enumerators
+ * that share the same integer with the current enumerator), all synonym
+ * enumerators are returned.
+ *
+ * @sa @ref toFullString() */
+template<typename T>
+QString toString(const T &enumerator)
+{
+    const auto value = static_cast<int>(enumerator);
+    const auto myMeta = QMetaEnum::fromType<T>();
+
+    // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
+    // (synonym) keys for a given value. But it also returns happily
+    // fantasy strings for non-existing values. Therefore, we have check
+    // first with QMetaEnum::valueToKeys (identifier with a final s) which
+    // does only return one single key for each value, but is guaranteed to
+    // return nullptr if the value has no key.
+    if (!myMeta.valueToKey(value)) {
+        return QString();
+    }
+
+    const auto keys = QString::fromUtf8(myMeta.valueToKeys(value));
+    return QStringLiteral("%1(%2)").arg(keys).arg(value);
+}
+
+/** @brief The full-qualified C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
@@ -134,9 +177,9 @@ QString toString(const T &enumerator)
  * @pre The enumeration type is declared with
  * Q_ENUM or Q_ENUM_NS.
  *
- * @returns The C++ identifier as QString. */
+ * @returns The full-qualified C++ identifier as QString. */
 template<typename T>
-QString toString()
+QString toFullString()
 {
     const auto myMeta = QMetaEnum::fromType<T>();
     const auto scope = QString::fromUtf8(myMeta.scope());
