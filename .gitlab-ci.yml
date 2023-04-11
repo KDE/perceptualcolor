@@ -69,7 +69,7 @@ codecheck_cppcheck:
   # on if issues have been found or not. And it runs always, and not only
   # when C++ code has changed.
   stage: build
-  image: kdeorg/ci-suse-qt515:latest
+  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt515:latest
   tags:
     - Linux
   interruptible: true
