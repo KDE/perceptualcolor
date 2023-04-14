@@ -171,18 +171,27 @@ private Q_SLOTS:
         temp01 = PerceptualColor::PolarPointF(QPointF(2, 0));
         QCOMPARE(temp01.radius(), 2);
         QCOMPARE(temp01.angleDegree(), 0);
-        temp01 = PerceptualColor::PolarPointF(QPointF(0, 2));
-        QCOMPARE(temp01.radius(), 2);
-        QCOMPARE(temp01.angleDegree(), 90);
-        temp01 = PerceptualColor::PolarPointF(QPointF(-2, 0));
-        QCOMPARE(temp01.radius(), 2);
-        QCOMPARE(temp01.angleDegree(), 180);
-        temp01 = PerceptualColor::PolarPointF(QPointF(0, -2));
-        QCOMPARE(temp01.radius(), 2);
-        QCOMPARE(temp01.angleDegree(), 270);
         temp01 = PerceptualColor::PolarPointF(QPointF(2, 2));
         QCOMPARE(temp01.radius(), sqrt(8));
         QCOMPARE(temp01.angleDegree(), static_cast<qreal>(45));
+        temp01 = PerceptualColor::PolarPointF(QPointF(0, 2));
+        QCOMPARE(temp01.radius(), 2);
+        QCOMPARE(temp01.angleDegree(), 90);
+        temp01 = PerceptualColor::PolarPointF(QPointF(-2, 2));
+        QCOMPARE(temp01.radius(), sqrt(8));
+        QCOMPARE(temp01.angleDegree(), static_cast<qreal>(135));
+        temp01 = PerceptualColor::PolarPointF(QPointF(-2, 0));
+        QCOMPARE(temp01.radius(), 2);
+        QCOMPARE(temp01.angleDegree(), 180);
+        temp01 = PerceptualColor::PolarPointF(QPointF(-2, -2));
+        QCOMPARE(temp01.radius(), sqrt(8));
+        QCOMPARE(temp01.angleDegree(), static_cast<qreal>(225));
+        temp01 = PerceptualColor::PolarPointF(QPointF(0, -2));
+        QCOMPARE(temp01.radius(), 2);
+        QCOMPARE(temp01.angleDegree(), 270);
+        temp01 = PerceptualColor::PolarPointF(QPointF(2, -2));
+        QCOMPARE(temp01.radius(), sqrt(8));
+        QCOMPARE(temp01.angleDegree(), static_cast<qreal>(315));
     }
 
     void testIsSamePoint()

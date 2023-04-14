@@ -48,6 +48,12 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
         m_angleDegree = 0;
         return;
     }
+    // NOTE As explained in https://en.wikipedia.org/wiki/Atan2
+    // the function std::atan2() can be used to calculate the angle without
+    // an “if” statement. However, it returns angles in the interval [-π, +π]
+    // while we need [0°, 360°], so finally we could avoind an “if” statement
+    // but need to add code for the range correction. Therefore, the current
+    // approach seems fine.
     if (cartesianCoordiantes.y() >= 0) {
         m_angleDegree = qRadiansToDegrees(acos(cartesianCoordiantes.x() / m_radius));
     } else {
