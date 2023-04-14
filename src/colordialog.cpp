@@ -300,15 +300,12 @@ void ColorDialogPrivate::retranslateUi()
         profileInfo.append( //
             tableRow.arg(tr("Created:"), (creationDateTimeString)));
     }
-    const QVersionNumber iccVersion = //
-        m_rgbColorSpace->profileIccVersion();
-    if (!creationDateTime.isNull()) {
-        /*: @item:intext An information from the color profile to be added to
-        the info text about current color space.
-        This is the version number of the ICC file format that is used. */
-        profileInfo.append( //
-            tableRow.arg(tr("ICC format:"), (iccVersion.toString())));
-    }
+    const QVersionNumber iccVersion = m_rgbColorSpace->profileIccVersion();
+    /*: @item:intext An information from the color profile to be added to
+    the info text about current color space.
+    This is the version number of the ICC file format that is used. */
+    profileInfo.append( //
+        tableRow.arg(tr("ICC format:"), (iccVersion.toString())));
     const bool hasMatrixShaper = //
         m_rgbColorSpace->profileHasMatrixShaper();
     const bool hasClut = //

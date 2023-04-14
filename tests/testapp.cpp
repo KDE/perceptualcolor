@@ -119,16 +119,16 @@ int main(int argc, char *argv[])
     // app.setLayoutDirection(Qt::RightToLeft);
 
     // Initialize the color dialog
-    /*
+
     auto myColorSpace = //
         PerceptualColor::RgbColorSpaceFactory::createFromFile(
             // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
             // QStringLiteral("/usr/share/color/icc/test/PhotoGamutRGB_avg6c.icc")
             // QStringLiteral("WideGamutRGB.icc") //
-            // QStringLiteral("/usr/share/color/icc/compatibleWithAdobeRGB1998.icc")
+            QStringLiteral("/usr/share/color/icc/compatibleWithAdobeRGB1998.icc")
             // QStringLiteral("/usr/share/color/icc/sRGB.icc")
             // QStringLiteral("/usr/share/color/icc/krita/Rec2020-elle-V4-g10.icc") //
-            QStringLiteral("/usr/share/color/icc/krita/LargeRGB-elle-V2-g22.icc") //
+            // QStringLiteral("/usr/share/color/icc/krita/LargeRGB-elle-V2-g22.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/WideRGB-elle-V2-g22.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/XYZ-D50-Identity-elle-V4.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/ACEScg-elle-V4-g10.icc") //
@@ -136,8 +136,8 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
             // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
         );
-    */
-    PerceptualColor::ColorDialog m_colorDialog;
+
+    PerceptualColor::ColorDialog m_colorDialog(myColorSpace);
     // For session management, according to https://doc.qt.io/qt-6/session.html
     //     “you must identify your top level widgets with
     //      unique application-wide object names”

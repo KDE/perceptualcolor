@@ -182,8 +182,6 @@ class RgbColorSpace : public QObject
 
     /** @brief The ICC version of the profile.
      *
-     * @note This is null if the information is not available.
-     *
      * @sa READ @ref profileIccVersion() const */
     Q_PROPERTY(QVersionNumber profileIccVersion READ profileIccVersion CONSTANT)
 
