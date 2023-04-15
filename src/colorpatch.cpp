@@ -24,7 +24,6 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include <qsizepolicy.h>
-#include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 class QWidget;
@@ -54,7 +53,6 @@ ColorPatchPrivate::ColorPatchPrivate(ColorPatch *backLink)
     : m_label(new QLabel(backLink))
     , q_pointer(backLink)
 {
-    m_label->setText(QStringLiteral("sdlfj"));
     m_label->setFrameShape(QFrame::StyledPanel);
     m_label->setFrameShadow(QFrame::Sunken);
     m_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
