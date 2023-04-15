@@ -1,0 +1,10 @@
+<!DOCTYPE RCC>
+<!--
+SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+SPDX-License-Identifier: BSD-2-Clause OR MIT
+-->
+<RCC version="1.0">
+    <qresource prefix="PerceptualColor/icons">
+        <file alias="brightness-2.svg">../icons/lighttheme/brightness-2.svg</file>
+    </qresource>
+</RCC>

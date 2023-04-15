@@ -5,9 +5,13 @@
 // this forces the header to be self-contained.
 #include "helper.h"
 
+#include <optional>
+#include <qcontainerfwd.h>
 #include <qevent.h>
 #include <qglobal.h>
+#include <qicon.h>
 #include <qimage.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qnamespace.h>
 #include <qobject.h>
@@ -19,12 +23,19 @@
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
+#include <qwidget.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
 #else
 #include <qobjectdefs.h>
 #endif
+
+// From Qt documentation:
+//     “Note: This function is not declared in any of Qt's header files. To
+//      use it in your application, declare the function prototype before
+//      calling it.”
+void qt_set_sequence_auto_mnemonic(bool b);
 
 static void snippet01()
 {
@@ -383,6 +394,86 @@ private Q_SLOTS:
                  QStringLiteral("value1|value2(1)"));
         QCOMPARE(enumeratorToString(static_cast<EnumTestClass::DoubledKey>(2)), //
                  QString());
+    }
+
+    void testQIconFromTheme()
+    {
+        // Test that this does not crash.
+        const QIcon icon = qIconFromTheme(QStringList(), //
+                                          QStringLiteral("eye-exclamation"),
+                                          ColorSchemeType::Light);
+        Q_UNUSED(icon)
+    }
+
+    void testFromMnemonicToRichTextWithAutoMnemonic()
+    {
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // enabled, also on platforms that disable it by default.
+        qt_set_sequence_auto_mnemonic(true);
+        QCOMPARE(fromMnemonicToRichText(QString()), //
+                 QString());
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("A")), //
+                 QStringLiteral("A"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&A")), //
+                 QStringLiteral("<u>A</u>"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("x&A")), //
+                 QStringLiteral("x<u>A</u>"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&Ax")), //
+                 QStringLiteral("<u>A</u>x"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("& ")), //
+                 QStringLiteral("<u> </u>"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&Ax&A")), //
+                 QStringLiteral("<u>A</u>x<u>A</u>"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&&")), //
+                 QStringLiteral("&"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&A&&x")), //
+                 QStringLiteral("<u>A</u>&x"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&A&&x")), //
+                 QStringLiteral("<u>A</u>&x"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("T&est && T&es&t")), //
+                 QStringLiteral("T<u>e</u>st & T<u>e</u>s<u>t</u>"));
+    }
+
+    void testFromMnemonicToRichTextWithoutAutoMnemonic()
+    {
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // disabled, also on platforms that enable it by default.
+        qt_set_sequence_auto_mnemonic(false);
+        QCOMPARE(fromMnemonicToRichText(QString()), //
+                 QString());
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("A")), //
+                 QStringLiteral("A"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&A")), //
+                 QStringLiteral("A"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("x&A")), //
+                 QStringLiteral("xA"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&Ax")), //
+                 QStringLiteral("Ax"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("& ")), //
+                 QStringLiteral(" "));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&Ax&A")), //
+                 QStringLiteral("AxA"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&&")), //
+                 QStringLiteral("&"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&A&&x")), //
+                 QStringLiteral("A&x"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("&A&&x")), //
+                 QStringLiteral("A&x"));
+        QCOMPARE(fromMnemonicToRichText(QStringLiteral("T&est && T&es&t")), //
+                 QStringLiteral("Test & Test"));
+    }
+
+    void testGuessColorSchemeTypeFromWidget()
+    {
+        QWidget myWidget;
+
+        QCOMPARE(guessColorSchemeTypeFromWidget(nullptr).has_value(), false);
+
+        myWidget.resize(0, 0);
+        QCOMPARE(guessColorSchemeTypeFromWidget(&myWidget).has_value(), false);
+
+        myWidget.resize(1, 1);
+        QCOMPARE(guessColorSchemeTypeFromWidget(&myWidget).has_value(), true);
     }
 };
 

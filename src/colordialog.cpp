@@ -24,7 +24,6 @@
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "oklchvalues.h"
-#include "refreshiconengine.h"
 #include "rgbcolor.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
@@ -46,10 +45,10 @@
 #include <qdebug.h>
 #include <qdialogbuttonbox.h>
 #include <qformlayout.h>
-#include <qgridlayout.h>
 #include <qgroupbox.h>
 #include <qguiapplication.h>
 #include <qicon.h>
+#include <qkeysequence.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
@@ -59,14 +58,17 @@
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qregularexpression.h>
+#include <qscopedpointer.h>
 #include <qscreen.h>
 #include <qsharedpointer.h>
+#include <qshortcut.h>
 #include <qsize.h>
 #include <qsizepolicy.h>
 #include <qspinbox.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qtabwidget.h>
+#include <qtoolbutton.h>
 #include <qvalidator.h>
 #include <qversionnumber.h>
 #include <qwidget.h>
@@ -79,6 +81,10 @@ class QShowEvent;
 #include <qobjectdefs.h>
 #else
 #include <qstringlist.h>
+#endif
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
+#include <qstylehints.h>
 #endif
 
 namespace PerceptualColor
@@ -398,7 +404,7 @@ void ColorDialogPrivate::retranslateUi()
     m_ciehlcD50SpinBoxLabel->setText(tr("CIEHL&C D50:"));
 
     /*: @label:spinbox Label for Oklch color model, based on Lightness, Chroma,
-     * Hue, and using the D65 illuminant as white point. */
+    Hue, and using the D65 illuminant as white point. */
     m_oklchSpinBoxLabel->setText(tr("O&klch:"));
 
     /*: @label:spinbox Label for RGB color model, based on Red, Green, Blue. */
@@ -409,32 +415,51 @@ void ColorDialogPrivate::retranslateUi()
 
     const int paletteIndex = m_tabWidget->indexOf(m_paletteWrapperWidget);
     if (paletteIndex >= 0) {
-        /*: @title:tab Same text as in QColorDialog */
-        m_tabWidget->setTabText(paletteIndex, tr("&Basic colors"));
+        /*: @title:tab
+        The tab contains a swatch book showing the basic colors like yellow,
+        orange, red… Same text as in QColorDialog */
+        const auto mnemonic = tr("&Basic colors");
+        m_tabWidget->setTabToolTip( //
+            paletteIndex, //
+            richTextMarker + fromMnemonicToRichText(mnemonic));
+        m_paletteTabShortcut->setKey(QKeySequence::mnemonic(mnemonic));
     }
     const int hueFirstIndex = m_tabWidget->indexOf(m_hueFirstWrapperWidget);
     if (hueFirstIndex >= 0) {
-        /*: @title:tab */
-        m_tabWidget->setTabText(hueFirstIndex, tr("&Hue-based"));
+        /*: @title:tab
+        The tab contains a visual UI to choose first the hue, and in a
+        second step chroma and lightness. */
+        const auto mnemonic = tr("&Hue-based");
+        m_tabWidget->setTabToolTip( //
+            hueFirstIndex, //
+            richTextMarker + fromMnemonicToRichText(mnemonic));
+        m_hueFirstTabShortcut->setKey(QKeySequence::mnemonic(mnemonic));
     }
     const int lightnessFirstIndex = //
         m_tabWidget->indexOf(m_lightnessFirstWrapperWidget);
     if (lightnessFirstIndex >= 0) {
-        /*: @title:tab “lightness” is different from “brightness”/“value”
+        /*: @title:tab
+        The tab contains a visual UI to choose first the lightness, and in a
+        second step chroma and hue.
+        “Lightness” is different from “brightness”/“value”
         and should therefore get a different translation. */
-        m_tabWidget->setTabText(lightnessFirstIndex, tr("&Lightness-based"));
-    }
-    const int fromScreenIndex = //
-        m_tabWidget->indexOf(m_screenColorPickerWidget);
-    if (fromScreenIndex >= 0) {
-        /*: @title:tab */
-        m_tabWidget->setTabText(fromScreenIndex, tr("From &screen"));
+        const auto mnemonic = tr("&Lightness-based");
+        m_tabWidget->setTabToolTip( //
+            lightnessFirstIndex, //
+            richTextMarker + fromMnemonicToRichText(mnemonic));
+        m_lightnessFirstTabShortcut->setKey(QKeySequence::mnemonic(mnemonic));
     }
     const int numericIndex = //
         m_tabWidget->indexOf(m_numericalWidget);
     if (numericIndex >= 0) {
-        /*: @title:tab */
-        m_tabWidget->setTabText(numericIndex, tr("&Numeric"));
+        /*: @title:tab
+        The tab contains a UI to describe the color with numbers: Spin boxes
+        and line edits containing values like “#2A7845” or “RGB 85 45 12”. */
+        const auto mnemonic = tr("&Numeric");
+        m_tabWidget->setTabToolTip( //
+            numericIndex, //
+            richTextMarker + fromMnemonicToRichText(mnemonic));
+        m_numericalTabShortcut->setKey(QKeySequence::mnemonic(mnemonic));
     }
 
     /*: @label:spinbox HSL (hue, saturation, lightness) */
@@ -651,9 +676,31 @@ void ColorDialogPrivate::retranslateUi()
     }
 
     if (m_screenColorPickerButton) {
-        /*: @action:button Same text as in QColorDialog */
-        m_screenColorPickerButton->setText(tr("&Pick Screen Color"));
+        /*: @action:button (eye dropper/pipette).
+        A click on the button transforms the mouse cursor to a cross and lets
+        the user choose a color from the screen by doing a left-click.
+        Same text as in QColorDialog */
+        const auto mnemonic = tr("&Pick screen color");
+        m_screenColorPickerButton->setToolTip( //
+            richTextMarker + fromMnemonicToRichText(mnemonic));
+        m_screenColorPickerButton->setShortcut( //
+            QKeySequence::mnemonic(mnemonic));
     }
+
+    /*: @info:tooltip Tooltip for the gamut-correction action.
+    The icon for this action is only visible in the UI while the
+    color value within the corresponding spinbox is an out-of-gamut
+    value. A click on the icon will change the spinbox’s values to
+    the nearest in-gamut color (and make the icon disappear). */
+    const auto gamutMnemonic = //
+        tr("Click to snap to nearest in-&gamut color");
+    const QString gamutTooltip = //
+        richTextMarker + fromMnemonicToRichText(gamutMnemonic);
+    const auto gamutShortcut = QKeySequence::mnemonic(gamutMnemonic);
+    m_ciehlcD50SpinBoxGamutAction->setToolTip(gamutTooltip);
+    m_ciehlcD50SpinBoxGamutAction->setShortcut(gamutShortcut);
+    m_oklchSpinBoxGamutAction->setToolTip(gamutTooltip);
+    m_oklchSpinBoxGamutAction->setShortcut(gamutShortcut);
 
     // NOTE No need to call
     //
@@ -669,6 +716,95 @@ void ColorDialogPrivate::retranslateUi()
     // height should not. We didn’t find the reason and didn’t manage
     // to reproduce this behaviour within the unit tests. But anyway
     // the call is not necessary, as mentioned earlier.
+}
+
+/** @brief Reloads all icons, adapting to the current color schema and
+ * widget style. */
+void ColorDialogPrivate::reloadIcons()
+{
+    QScopedPointer<QLabel> label{new QLabel(q_pointer)};
+    ColorSchemeType newType = guessColorSchemeTypeFromWidget(label.data()) //
+                                  .value_or(newType);
+
+    m_currentIconThemeType = newType;
+
+    static const QStringList paletteIcons //
+        {
+            QStringLiteral("paint-swatch"),
+            QStringLiteral("palette-symbolic"),
+        };
+    const int paletteIndex = //
+        m_tabWidget->indexOf(m_paletteWrapperWidget);
+    if (paletteIndex >= 0) {
+        m_tabWidget->setTabIcon(paletteIndex, //
+                                qIconFromTheme(paletteIcons, //
+                                               QStringLiteral("color-swatch"),
+                                               newType));
+    }
+
+    static const QStringList hueFirstIcons //
+        {
+            QStringLiteral("color-mode-hue-shift-positive"),
+        };
+    const int hueFirstIndex = //
+        m_tabWidget->indexOf(m_hueFirstWrapperWidget);
+    if (hueFirstIndex >= 0) {
+        m_tabWidget->setTabIcon(hueFirstIndex, //
+                                qIconFromTheme(hueFirstIcons, //
+                                               QStringLiteral("steering-wheel"),
+                                               newType));
+    }
+
+    static const QStringList lightnessFirstIcons //
+        {
+            QStringLiteral("brightness-high"),
+        };
+    const int lightnessFirstIndex = //
+        m_tabWidget->indexOf(m_lightnessFirstWrapperWidget);
+    if (lightnessFirstIndex >= 0) {
+        m_tabWidget->setTabIcon(lightnessFirstIndex, //
+                                qIconFromTheme(lightnessFirstIcons, //
+                                               QStringLiteral("brightness-2"),
+                                               newType));
+    }
+
+    static const QStringList numericIcons //
+        {
+            QStringLiteral("black_sum"),
+        };
+    const int numericIndex = //
+        m_tabWidget->indexOf(m_numericalWidget);
+    if (numericIndex >= 0) {
+        m_tabWidget->setTabIcon(numericIndex, //
+                                qIconFromTheme(numericIcons, //
+                                               QStringLiteral("123"),
+                                               newType));
+    }
+
+    // Gamut button for some spin boxes
+    static const QStringList gamutIconNames //
+        {
+            QStringLiteral("data-warning"),
+            QStringLiteral("dialog-warning-symbolic"),
+        };
+    const QIcon gamutIcon = qIconFromTheme(gamutIconNames, //
+                                           QStringLiteral("eye-exclamation"),
+                                           newType);
+    m_ciehlcD50SpinBoxGamutAction->setIcon(gamutIcon);
+    m_oklchSpinBoxGamutAction->setIcon(gamutIcon);
+
+    static const QStringList candidates //
+        {
+            QStringLiteral("color-picker"), //
+            QStringLiteral("gtk-color-picker"), //
+            QStringLiteral("tool_color_picker"), //
+        };
+    if (!m_screenColorPickerButton.isNull()) {
+        m_screenColorPickerButton->setIcon( //
+            qIconFromTheme(candidates, //
+                           QStringLiteral("color-picker"),
+                           newType));
+    }
 }
 
 /** @brief Basic initialization.
@@ -733,20 +869,74 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     initializeScreenColorPicker();
 
     m_tabWidget = new QTabWidget;
+    // It would be good to have bigger icons. Via QStyle::pixelMetrics()
+    // we could get values for this. QStyle::PM_LargeIconSize seems to large,
+    // be we could use std::max() with QStyle::PM_ToolBarIconSize,
+    // QStyle::PM_SmallIconSize, QStyle::PM_TabBarIconSize,
+    // QStyle::PM_ButtonIconSize. But the problem is a regression in Qt6
+    // (compared to Qt5) that breaks rendering of bigger icons via
+    // QTabWidget::iconSize(): https://bugreports.qt.io/browse/QTBUG-114849
+    // Furthermore, it appears that the MacOS style does not adjust the height
+    // of the tab bar to match the icon height. This causes larger icons to
+    // simply overflow, which looks like a rendering issue. Therefore,
+    // currently we stick with the default icons size for tab bars.
     m_tabWidget->addTab(m_paletteWrapperWidget, QString());
+    m_paletteTabShortcut = new QShortcut(q_pointer);
+    connect(m_paletteTabShortcut, //
+            &QShortcut::activated,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_paletteWrapperWidget));
+            });
+    connect(m_paletteTabShortcut, //
+            &QShortcut::activatedAmbiguously,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_paletteWrapperWidget));
+            });
+
     m_tabWidget->addTab(m_hueFirstWrapperWidget, QString());
+    m_hueFirstTabShortcut = new QShortcut(q_pointer);
+    connect(m_hueFirstTabShortcut, //
+            &QShortcut::activated,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_hueFirstWrapperWidget));
+            });
+    connect(m_hueFirstTabShortcut, //
+            &QShortcut::activatedAmbiguously,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_hueFirstWrapperWidget));
+            });
+
     m_tabWidget->addTab(m_lightnessFirstWrapperWidget, QString());
-    if (m_screenColorPickerWidget) {
-        m_tabWidget->addTab(m_screenColorPickerWidget, QString());
-    }
+    m_lightnessFirstTabShortcut = new QShortcut(q_pointer);
+    connect(m_lightnessFirstTabShortcut, //
+            &QShortcut::activated,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_lightnessFirstWrapperWidget));
+            });
+    connect(m_lightnessFirstTabShortcut, //
+            &QShortcut::activatedAmbiguously,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_lightnessFirstWrapperWidget));
+            });
+
     m_tabTable.insert(&m_paletteWrapperWidget, //
                       QStringLiteral("swatch"));
     m_tabTable.insert(&m_hueFirstWrapperWidget, //
                       QStringLiteral("hue-based"));
     m_tabTable.insert(&m_lightnessFirstWrapperWidget, //
                       QStringLiteral("lightness-based"));
-    m_tabTable.insert(&m_screenColorPickerWidget, //
-                      QStringLiteral("screen-picker"));
     m_tabTable.insert(&m_numericalWidget, //
                       QStringLiteral("numerical"));
     connect(m_tabWidget, //
@@ -758,8 +948,34 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_colorPatch = new ColorPatch();
     m_colorPatch->setMinimumSize(m_colorPatch->minimumSizeHint() * 1.5);
 
+    QHBoxLayout *headerLayout = new QHBoxLayout();
+    headerLayout->addWidget(m_colorPatch, 1);
+    m_screenColorPickerButton->setSizePolicy(QSizePolicy::Minimum, // horizontal
+                                             QSizePolicy::Minimum); // vertical
+    headerLayout->addWidget(m_screenColorPickerButton,
+                            // Do not grow the cell in the direction
+                            // of the QBoxLayout:
+                            0,
+                            // No alignment: Fill the entire cell.
+                            Qt::Alignment());
+
     // Create widget for the numerical values
     m_numericalWidget = initializeNumericPage();
+    m_numericalTabShortcut = new QShortcut(q_pointer);
+    connect(m_numericalTabShortcut, //
+            &QShortcut::activated,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_numericalWidget));
+            });
+    connect(m_numericalTabShortcut, //
+            &QShortcut::activatedAmbiguously,
+            this,
+            [this]() {
+                m_tabWidget->setCurrentIndex( //
+                    m_tabWidget->indexOf(m_numericalWidget));
+            });
 
     // Create layout for graphical and numerical widgets
     m_selectorLayout = new QHBoxLayout();
@@ -828,7 +1044,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
 
     // Create the main layout
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
-    tempMainLayout->addWidget(m_colorPatch);
+    tempMainLayout->addLayout(headerLayout);
     tempMainLayout->addLayout(m_selectorLayout);
     tempMainLayout->addLayout(m_alphaLayout);
     tempMainLayout->addWidget(m_buttonBox);
@@ -952,22 +1168,32 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // QtCurve.
     q_pointer->setSizeGripEnabled(true);
 
-    // Refresh button for some spin boxes
     // The q_pointer’s object is still not fully initialized at this point,
     // but it’s base class constructor has fully run; this should be enough
     // to use functionality based on QWidget, so we can use it as parent.
-    QAction *ciehlcD50Action = addRefreshAction(m_ciehlcD50SpinBox, q_pointer);
-    connect(ciehlcD50Action, // sender
+    m_ciehlcD50SpinBoxGamutAction = new QAction(q_pointer);
+    connect(m_ciehlcD50SpinBoxGamutAction, // sender
             &QAction::triggered, // signal
             this, // receiver
             &ColorDialogPrivate::updateHlcButBlockSignals // slot
     );
-    QAction *oklchAction = addRefreshAction(m_oklchSpinBox, q_pointer);
-    connect(oklchAction, // sender
+    m_oklchSpinBoxGamutAction = new QAction(q_pointer);
+    connect(m_oklchSpinBoxGamutAction, // sender
             &QAction::triggered, // signal
             this, // receiver
             &ColorDialogPrivate::updateOklchButBlockSignals // slot
     );
+    // However, here we hide the action because initially the
+    // current color should be in-gamut, so no need for the gamut action
+    // to be visible.
+    m_ciehlcD50SpinBoxGamutAction->setVisible(false);
+    m_ciehlcD50SpinBox->addActionButton( //
+        m_ciehlcD50SpinBoxGamutAction, //
+        QLineEdit::ActionPosition::TrailingPosition);
+    m_oklchSpinBoxGamutAction->setVisible(false);
+    m_oklchSpinBox->addActionButton( //
+        m_oklchSpinBoxGamutAction, //
+        QLineEdit::ActionPosition::TrailingPosition);
 
     initializeTranslation(QCoreApplication::instance(),
                           // An empty std::optional means: If in initialization
@@ -976,25 +1202,14 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
                           // values.
                           std::optional<QStringList>());
     retranslateUi();
-}
 
-/** @brief Adds a refresh action (with icon, but without text).
- *
- * @param spinbox The spinbox to which the action is added.
- * @param parent The parent for the action.
- *
- * @returns A pointer to the action. */
-QAction *ColorDialogPrivate::addRefreshAction(MultiSpinBox *spinbox, QWidget *parent)
-{
-    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
-    myIconEngine->setReferenceWidget(spinbox);
-    // myIcon takes ownership of myIconEngine, therefore we won’t
-    // delete myIconEngine manually.
-    QIcon myIcon = QIcon(myIconEngine);
-    QAction *myAction = new QAction(myIcon, QString(), parent);
-    spinbox->addActionButton(myAction, //
-                             QLineEdit::ActionPosition::TrailingPosition);
-    return myAction;
+    reloadIcons();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
+    connect(qGuiApp->styleHints(), // sender
+            &QStyleHints::colorSchemeChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::reloadIcons);
+#endif
 }
 
 /** @brief Constructor
@@ -1519,6 +1734,7 @@ void ColorDialogPrivate::updateHlcButBlockSignals()
                                       cielchD50.first,
                                       cielchD50.second};
     m_ciehlcD50SpinBox->setSectionValues(ciehlcD50List);
+    m_ciehlcD50SpinBoxGamutAction->setVisible(false);
 }
 
 /** @brief Updates the Oklch spin box to @ref m_currentOpaqueColorAbs.
@@ -1531,6 +1747,7 @@ void ColorDialogPrivate::updateOklchButBlockSignals()
     QSignalBlocker mySignalBlocker(m_oklchSpinBox);
     const auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
     m_oklchSpinBox->setSectionValues(oklch.toQList3());
+    m_oklchSpinBoxGamutAction->setVisible(false);
 }
 
 /** @brief If no @ref m_isColorChangeInProgress, reads the HLC numbers
@@ -1546,6 +1763,11 @@ void ColorDialogPrivate::readHlcNumericValues()
     lch.h = hlcValues.at(0);
     lch.l = hlcValues.at(1);
     lch.c = hlcValues.at(2);
+    if (m_rgbColorSpace->isCielchD50InGamut(lch)) {
+        m_ciehlcD50SpinBoxGamutAction->setVisible(false);
+    } else {
+        m_ciehlcD50SpinBoxGamutAction->setVisible(true);
+    }
     const auto myColor = GenericColor( //
         m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch));
     setCurrentOpaqueColor( //
@@ -1570,6 +1792,11 @@ void ColorDialogPrivate::readOklchNumericValues()
     originalOklch.l = m_oklchSpinBox->sectionValues().value(0);
     originalOklch.c = m_oklchSpinBox->sectionValues().value(1);
     originalOklch.h = m_oklchSpinBox->sectionValues().value(2);
+    if (m_rgbColorSpace->isOklchInGamut(originalOklch)) {
+        m_oklchSpinBoxGamutAction->setVisible(false);
+    } else {
+        m_oklchSpinBoxGamutAction->setVisible(true);
+    }
     const auto inGamutOklch = GenericColor( //
         m_rgbColorSpace->reduceOklchChromaToFitIntoGamut(originalOklch));
     const auto inGamutColor = //
@@ -1581,29 +1808,15 @@ void ColorDialogPrivate::readOklchNumericValues()
 
 /** @brief Try to initialize the screen color picker feature.
  *
- * @post If supported, @ref m_screenColorPickerButton and
- * @ref m_screenColorPickerWidget are created. Otherwise, both
- * stay <tt>nullptr</tt>. */
+ * @post If supported, @ref m_screenColorPickerButton
+ * is created. Otherwise, it stays <tt>nullptr</tt>. */
 void ColorDialogPrivate::initializeScreenColorPicker()
 {
     auto screenPicker = new ScreenColorPicker(q_pointer);
     if (!screenPicker->isAvailable()) {
         return;
     }
-    m_screenColorPickerWidget = new QWidget;
-    m_screenColorPickerButton = new QPushButton;
-    const QStringList candidates{
-        QStringLiteral("color-picker"), //
-        QStringLiteral("gtk-color-picker"), //
-        QStringLiteral("tool_color_picker") //
-    };
-    for (auto const &name : std::as_const(candidates)) {
-        QIcon myIcon = QIcon::fromTheme(name);
-        if (!myIcon.isNull()) {
-            m_screenColorPickerButton->setIcon(myIcon);
-            break;
-        }
-    }
+    m_screenColorPickerButton = new QToolButton;
     screenPicker->setParent(m_screenColorPickerButton); // For better support
     connect(m_screenColorPickerButton,
             &QPushButton::clicked,
@@ -1629,9 +1842,6 @@ void ColorDialogPrivate::initializeScreenColorPicker()
                                         qBound<double>(0, blue * 255, 255)};
                 setCurrentOpaqueColor(RgbColor::fromRgb255(rgb), nullptr);
             });
-    QGridLayout *tempLayout = new QGridLayout();
-    tempLayout->addWidget(m_screenColorPickerButton, 0, 0, Qt::AlignCenter);
-    m_screenColorPickerWidget->setLayout(tempLayout);
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.
@@ -2124,6 +2334,7 @@ void ColorDialogPrivate::applyLayoutDimensions()
             m_tabWidget->addTab(m_numericalWidget, QString());
             m_tabWidget->setUpdatesEnabled(oldUpdatesEnabled);
             retranslateUi(); // Will put a label for the recently inserted tab.
+            reloadIcons(); // Will put an icon for the recently inserted tab.
             // We don’t call m_numericalWidget->show(); because this
             // is controlled by the QTabWidget.
             // Adopt size of dialog to new layout’s size hint:
@@ -2152,7 +2363,9 @@ void ColorDialogPrivate::applyLayoutDimensions()
  * @param event The event. */
 void ColorDialog::changeEvent(QEvent *event)
 {
-    if (event->type() == QEvent::LanguageChange) {
+    const auto type = event->type();
+
+    if (type == QEvent::LanguageChange) {
         // From QCoreApplication documentation:
         //     “Installing or removing a QTranslator, or changing an installed
         //      QTranslator generates a LanguageChange event for the
@@ -2176,6 +2389,10 @@ void ColorDialog::changeEvent(QEvent *event)
             QApplication::sendEvent(d_pointer->m_buttonOK, //
                                     &eventForButtonCancel);
         }
+    }
+
+    if ((type == QEvent::PaletteChange) || (type == QEvent::StyleChange)) {
+        d_pointer->reloadIcons();
     }
 
     QDialog::changeEvent(event);

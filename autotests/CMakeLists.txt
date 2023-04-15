@@ -167,7 +167,6 @@ if(BUILD_TESTING)
         testoklchvalues
         testsettings
         testpolarpointf
-        testrefreshiconengine
         testrgbcolor
         testrgbcolorspace
         testrgbcolorspacefactory

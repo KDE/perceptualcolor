@@ -4,10 +4,15 @@
 // Own header
 #include "helper.h"
 
+#include "initializelibraryresources.h"
+#include <qchar.h>
 #include <qcolor.h>
 #include <qevent.h>
+#include <qkeysequence.h>
 #include <qpainter.h>
+#include <qpixmap.h>
 #include <qpoint.h>
+#include <qsize.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
@@ -17,6 +22,11 @@
 #include <qlist.h>
 #else
 #include <qstringlist.h>
+#endif
+
+#ifndef PERCEPTUALCOLORINTERNAL
+#include <type_traits>
+#include <utility>
 #endif
 
 namespace PerceptualColor
@@ -169,6 +179,151 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
         return QPair<QString, QString>(list.at(0), list.at(1));
     }
     return QPair<QString, QString>(QString(), QString());
+}
+
+/** @internal
+ *
+ * @brief Icon from theme.
+ *
+ * @param names List of names, preferred names first. The system’s icon
+ *              themes are searched for this.
+ * @param fallback If the system icon themes do not provide an icon, use
+ *                 this fallback icon from the built-in resources.
+ * @param type Type of widget color scheme for which the fallback icon (if
+ *             used) should be suitable.
+ *
+ * @returns An icon from the system icons and or a fallback icons. If none is
+ * available, an empty icon. */
+QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type)
+{
+#ifdef PERCEPTUALCOLORINTERNAL
+    Q_UNUSED(names)
+#else
+    // Try to find icon in theme
+    for (auto const &name : std::as_const(names)) {
+        const QIcon myIcon = QIcon::fromTheme(name);
+        if (!myIcon.isNull()) {
+            return myIcon;
+        }
+    }
+#endif
+
+    // Return fallback icon
+    initializeLibraryResources();
+    QString path = QStringLiteral( //
+        ":/PerceptualColor/icons/lighttheme/%1.svg");
+    if (type == ColorSchemeType::Dark) {
+        path = QStringLiteral( //
+            ":/PerceptualColor/icons/darktheme/%1.svg");
+    }
+    return QIcon(path.arg(fallback));
+}
+
+/** @internal
+ *
+ * @brief Converts text with mnemonics to rich text rendering the mnemonics.
+ *
+ * At some places in Qt, mnemonics are used. For example, setting
+ * <tt>QPushButton::setText()</tt> to "T&est" will make appear the text
+ * "Test". If mnemonic support is enabled in the current platform theme,
+ * the "e" is underlined.
+ *
+ * At some other places in Qt, rich text is used. For example, setting
+ * <tt>QWidget::setToolTip()</tt> to "T<u>e</u>st" will make appear the text
+ * "Test", but with the "e" underlined.
+ *
+ * @param mnemonicText A text that might contain mnemonics
+ *
+ * @returns A rich text that will render in rich-text-functions with the same
+ * rendering as if the mnemonic text would have been
+ * used in mnemonic-functions: If currently in the platform theme,
+ * auto-mnemonics are enabled, the mnemonics are underlined. Otherwise,
+ * the mnemonics are not underlined nor is the “&” character visible
+ *
+ * @note This function mimics Qt’s algorithm form mnemonic rendering quite
+ * well, but there might be subtile differences in corner cases. Like Qt,
+ * this function accepts multiple occurrences of "&" in the same string, even
+ * before different characters, and underlines all of them, though
+ * <tt>QKeySequence::mnemonic()</tt> will return only one of them as
+ * shortcut. */
+QString fromMnemonicToRichText(const QString &mnemonicText)
+{
+    QString result;
+
+    const bool doUnderline = !QKeySequence::mnemonic(mnemonicText).isEmpty();
+    const auto underlineStart = doUnderline ? QStringLiteral("<u>") : QString();
+    const auto underlineStop = doUnderline ? QStringLiteral("</u>") : QString();
+
+    bool underlineNextChar = false;
+    for (int i = 0; i < mnemonicText.length(); ++i) {
+        if (mnemonicText[i] == QStringLiteral("&")) {
+            const auto nextChar = //
+                (i + 1 < mnemonicText.length()) //
+                ? mnemonicText[i + 1]
+                : QChar();
+            if (nextChar == QStringLiteral("&")) {
+                // Double ampersand: Escape the "&"
+                result.append(QStringLiteral("&"));
+                i++; // Skip the second "&"
+            } else {
+                // Single ampersand: Start underline
+                underlineNextChar = true;
+            }
+        } else {
+            if (underlineNextChar) {
+                // End underline
+                result.append(underlineStart);
+                result.append(mnemonicText[i]);
+                result.append(underlineStop);
+                underlineNextChar = false;
+            } else {
+                result.append(mnemonicText[i]);
+            }
+        }
+    }
+
+    return result;
+}
+
+/** @brief If the the average lightness of a widget rendering is dark.
+ *
+ * Takes a screenshot of a widget and calculates the average lightness
+ * of this screenshot.
+ *
+ * @param widget The widget to evaluate
+ *
+ * @returns <tt>std::nullopt</tt> if the widget is <tt>nullptr</tt> or
+ * its size is empty. <tt>true</tt> if the average lightness is less than
+ * rather dark. <tt>false</tt> otherwise.
+ *
+ * @note The exact measurement of “lightness” and “dark” is not specified
+ * and might change over time. */
+std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
+{
+    if (widget == nullptr) {
+        return std::nullopt;
+    }
+
+    // Take a screenshot of the widget
+    const QImage screenshot = widget->grab().toImage();
+    if (screenshot.size().isEmpty()) {
+        return std::nullopt;
+    }
+
+    // Calculate the average lightness of the screenshot
+    float totalLightness = 0;
+    const int pixelCount = screenshot.width() * screenshot.height();
+    for (int y = 0; y < screenshot.height(); ++y) {
+        for (int x = 0; x < screenshot.width(); ++x) {
+            totalLightness += QColor(screenshot.pixel(x, y)).lightnessF();
+        }
+    }
+    const bool isDark = totalLightness / static_cast<float>(pixelCount) < 0.5f;
+
+    if (isDark) {
+        return ColorSchemeType::Dark;
+    }
+    return ColorSchemeType::Light;
 }
 
 } // namespace PerceptualColor

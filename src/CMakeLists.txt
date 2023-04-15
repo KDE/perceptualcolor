@@ -44,6 +44,7 @@ set(library_SRC
     helper.cpp
     helperconversion.cpp
     helpermath.cpp
+    initializelibraryresources.cpp
     initializetranslation.cpp
     interlacingpass.cpp
     iohandlerfactory.cpp
@@ -53,7 +54,6 @@ set(library_SRC
     multispinbox.cpp
     multispinboxsection.cpp
     polarpointf.cpp
-    refreshiconengine.cpp
     rgbcolor.cpp
     rgbcolorspace.cpp
     rgbcolorspacefactory.cpp
@@ -65,6 +65,13 @@ set(library_SRC
     swatchbook.cpp
     version.cpp
     wheelcolorpicker.cpp
+)
+qt_add_resources(
+    library_SRC # existing source list
+    resources.qrc # File with list of Qt resource to be added
+    # NOTE Starting with Qt6, it will no longer be necessary to have a
+    # .qrc file, but the list of files can be passed in the very same
+    # qt_add_resources() command.
 )
 # NOTE Keep the following list synchronized
 # between scripts/static-codecheck.sh and src/CMakeLists.txt
@@ -244,7 +251,7 @@ target_link_libraries(
     # that we will not need it in the future either. Otherwise, it’s better
     # to keep it, for future binary compatibility.
     PUBLIC
-        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent
+        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent Qt::Svg
     PRIVATE
         ${LCMS2_LIBRARIES})
 install(
@@ -305,6 +312,9 @@ target_sources(
     PRIVATE
         ${library_SRC}
         ${lib_PUBLICHEADERS})
+target_compile_definitions(
+    ${INTERNAL_LIBRARY_NAME}
+    PRIVATE PERCEPTUALCOLORINTERNAL)
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(
         ${INTERNAL_LIBRARY_NAME}
@@ -381,4 +391,6 @@ target_link_libraries(
     # to internal headers. These headers may include LittleCMS, and without
     # public access, users wouldn't be able to use the library as intended.
     PUBLIC
-        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent ${LCMS2_LIBRARIES})
+        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent Qt::Svg
+        ${LCMS2_LIBRARIES}
+)

@@ -219,7 +219,7 @@ class RgbColorSpace;
  * support for hexadecimal digits in @ref MultiSpinBox).
  *
  * @todo Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
- * functionality as the refresh button in the HCL @ref MultiSpinBox.
+ * functionality as the gamut button in the HCL @ref MultiSpinBox.
  * But attention: If a library user <em>embeds</em> the dialog, he does
  * not want his shortcuts to be intercepted!
  *

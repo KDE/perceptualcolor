@@ -7,9 +7,10 @@
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
-find_dependency( # Keep in sync between src/Config.cmake.in and CMakeLists.txt!
+find_dependency(
     Qt6
-    COMPONENTS Core Gui Widgets DBus Test Concurrent
+    # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
+    COMPONENTS Core Gui Widgets DBus Test Concurrent Svg
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/@LIBRARY_NAME@.cmake")

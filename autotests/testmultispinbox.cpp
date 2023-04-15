@@ -276,7 +276,7 @@ private Q_SLOTS:
             // does not work on MacOS.
             QTest::keyClick(widget.data(), Qt::Key_Left);
         }
-        QCOMPARE(widget->lineEdit()->selectedText(), QStringLiteral(u""));
+        QCOMPARE(widget->lineEdit()->selectedText(), QString());
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
         QCOMPARE(widget->lineEdit()->cursorPosition(), 0);
         // Select the first “0”:

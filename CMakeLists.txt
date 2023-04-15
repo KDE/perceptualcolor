@@ -487,9 +487,10 @@ message(
     "Building against Qt${QT_MAJOR_VERSION}.\n"
     "   You can control this with “-DBUILD_WITH_QT6=ON” (build with Qt6)\n"
     "   or “-DBUILD_WITH_QT6=OFF” (build with Qt5).")
-find_package( # Keep in sync between src/Config.cmake.in and CMakeLists.txt!
+find_package(
     Qt${QT_MAJOR_VERSION}
-    COMPONENTS Core Gui Widgets DBus Test Concurrent
+    # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
+    COMPONENTS Core Gui Widgets DBus Test Concurrent Svg
     REQUIRED)
 message(STATUS
         "Using Qt version: "

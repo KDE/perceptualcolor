@@ -60,6 +60,12 @@ private Q_SLOTS:
         // to make focus and widget events working within unit tests.
         myWidget->show();
         QApplication::setActiveWindow(myWidget.data());
+
+        // Key clicks must go to the focus widget to work as expected.
+        widget1->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_T,
+                        Qt::KeyboardModifier::AltModifier);
     }
 };
 

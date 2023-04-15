@@ -12,7 +12,6 @@
 #include "lchdouble.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
-#include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include "settranslation.h"
@@ -417,15 +416,13 @@ static void makeScreenshots()
         m_multiSpinBox.setSectionValues(values);
         screenshot(&m_multiSpinBox);
 
-        // Refresh button for the HLC spin box
-        RefreshIconEngine *myIconEngine = new RefreshIconEngine;
-        myIconEngine->setReferenceWidget(&m_multiSpinBox);
-        // myIcon takes ownership of myIconEngine, therefore we won’t
-        // delete myIconEngine manually.
-        QIcon myIcon = QIcon(myIconEngine);
+        // Out-of-gamut button for the HLC spin box
         QAction *myAction = new QAction(
             // Icon:
-            myIcon,
+            qIconFromTheme( //
+                QStringList(),
+                QStringLiteral("eye-exclamation"),
+                ColorSchemeType::Light),
             // Text:
             QString(),
             // Parent object:

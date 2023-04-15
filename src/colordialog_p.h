@@ -9,11 +9,13 @@
 
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
+#include "helper.h"
 #include "helperconversion.h"
 #include "languagechangeeventfilter.h"
 #include "rgbcolor.h"
 #include "settings.h"
 #include <lcms2.h>
+#include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -31,7 +33,9 @@ class QHBoxLayout;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QShortcut;
 class QTabWidget;
+class QToolButton;
 class QWidget;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -91,13 +95,23 @@ public:
     QPointer<ChromaHueDiagram> m_chromaHueDiagram;
     /** @brief Pointer to the @ref MultiSpinBox for CIEHLC. */
     QPointer<MultiSpinBox> m_ciehlcD50SpinBox;
+    /** @brief Pointer to the gamut action for @ref m_ciehlcD50SpinBox. */
+    QPointer<QAction> m_ciehlcD50SpinBoxGamutAction;
     /** @brief Pointer to the label for @ref m_ciehlcD50SpinBox. */
     QPointer<QLabel> m_ciehlcD50SpinBoxLabel;
     /** @brief Pointer to the @ref ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
+    /** @brief Holds the currently used icon theme.
+     *
+     * Initially this is <tt>std::nullopt</tt>. Once @ref reloadIcons() has
+     * been called, it has an actual value. */
+    std::optional<ColorSchemeType> m_currentIconThemeType = std::nullopt;
     /** @brief Current color without alpha information
      *
      * Holds the color in absolutely defined color models.
+     *
+     * @note This value is considered in-gamut (even thought @ref RgbColor
+     * might tell different because of rounding errors).
      *
      * @sa @ref ColorDialog::currentColor()
      * @sa @ref m_currentOpaqueColorRgb */
@@ -105,6 +119,8 @@ public:
     /** @brief Current color without alpha information
      *
      * Holds the color in the RGB color model and derived color models.
+     *
+     * @note This value is in-gamut by definition.
      *
      * @sa @ref ColorDialog::currentColor()
      * @sa @ref m_currentOpaqueColorAbs */
@@ -123,6 +139,8 @@ public:
     QPointer<MultiSpinBox> m_hwbSpinBox;
     /** @brief Pointer to the label for @ref m_hwbSpinBox. */
     QPointer<QLabel> m_hwbSpinBoxLabel;
+    /** @brief Shortcut to show the tab with @ref m_hueFirstWrapperWidget. */
+    QPointer<QShortcut> m_hueFirstTabShortcut;
     /** @brief Pointer to the QWidget wrapper that contains
      * @ref m_wheelColorPicker. */
     QPointer<QWidget> m_hueFirstWrapperWidget;
@@ -155,6 +173,8 @@ public:
      * @ref ColorDialog::DialogLayoutDimensions::Collapsed or
      * @ref ColorDialog::DialogLayoutDimensions::Expanded. */
     PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensionsEffective = m_layoutDimensions;
+    /** @brief Shortcut to show the tab with @ref m_lightnessFirstWrapperWidget. */
+    QPointer<QShortcut> m_lightnessFirstTabShortcut;
     /** @brief Pointer to the QWidget wrapper that contains
      * @ref m_lchLightnessSelector and @ref m_chromaHueDiagram. */
     QPointer<QWidget> m_lightnessFirstWrapperWidget;
@@ -174,15 +194,21 @@ public:
      * This string is introduced <em>twice</em> between two sections
      * within a @ref MultiSpinBox. */
     static inline const QString m_multispinboxSectionSeparator = QStringLiteral(u" ");
+    /** @brief Shortcut to show the tab with @ref m_numericalWidget. */
+    QPointer<QShortcut> m_numericalTabShortcut;
     /** @brief Pointer to the widget that holds the numeric color
      *         representation. */
     QPointer<QWidget> m_numericalWidget;
     /** @brief Pointer to the @ref MultiSpinBox for CIEHLC. */
     QPointer<MultiSpinBox> m_oklchSpinBox;
+    /** @brief Pointer to the gamut action for @ref m_oklchSpinBox. */
+    QPointer<QAction> m_oklchSpinBoxGamutAction;
     /** @brief Pointer to the label for @ref m_oklchSpinBox. */
     QPointer<QLabel> m_oklchSpinBoxLabel;
     /** @brief Pointer to the palette widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBook;
+    /** @brief Shortcut to show the tab with @ref m_paletteWrapperWidget. */
+    QPointer<QShortcut> m_paletteTabShortcut;
     /** @brief Pointer to the QWidget wrapper that contains
      * @ref m_swatchBook. */
     QPointer<QWidget> m_paletteWrapperWidget;
@@ -216,9 +242,7 @@ public:
     Settings &m_settings = Settings::instance();
     /** @brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
-    QPointer<QPushButton> m_screenColorPickerButton;
-    /** @brief Widget that holds the @ref m_screenColorPickerButton. */
-    QPointer<QWidget> m_screenColorPickerWidget;
+    QPointer<QToolButton> m_screenColorPickerButton;
     /** @brief A row with two columns within a table in Qt’s rich text
      * formatting.
      *
@@ -245,7 +269,6 @@ public:
      * @sa @ref decimals */
     static constexpr quint8 okdecimals = decimals + 2;
 
-    static QAction *addRefreshAction(MultiSpinBox *spinbox, QWidget *parent);
     void applyLayoutDimensions();
     void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     [[nodiscard]] QWidget *initializeNumericPage();
@@ -264,6 +287,7 @@ public Q_SLOTS:
     void readRgbNumericValues();
     void readSwatchBook();
     void readWheelColorPickerValues();
+    void reloadIcons();
     void retranslateUi();
     void saveCurrentTab();
     void setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget);

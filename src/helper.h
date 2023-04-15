@@ -4,8 +4,11 @@
 #ifndef HELPER_H
 #define HELPER_H
 
+#include <optional>
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qglobal.h>
+#include <qicon.h>
 #include <qimage.h>
 #include <qmetaobject.h>
 #include <qpair.h>
@@ -19,7 +22,17 @@ class QWidget;
 namespace PerceptualColor
 {
 
+/** @brief Represents the appearance of a theme. */
+enum class ColorSchemeType {
+    Light, /**< Rather light appearance. */
+    Dark /**< Rather light appearance. */
+};
+
 void drawQWidgetStyleSheetAware(QWidget *widget);
+
+QString fromMnemonicToRichText(const QString &mnemonicText);
+
+std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget);
 
 /** @internal
  *
@@ -84,6 +97,8 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
     }
 }
 
+[[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type);
+
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 
 /** @brief The full-qualified C++ identifier as QString.
@@ -97,7 +112,7 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
  *
  * @returns The full-qualified C++ identifier as QString. */
 template<typename T>
-QString enumerationToFullString()
+[[nodiscard]] QString enumerationToFullString()
 {
     const auto myMeta = QMetaEnum::fromType<T>();
     const auto scope = QString::fromUtf8(myMeta.scope());
@@ -126,7 +141,7 @@ QString enumerationToFullString()
  *
  * @sa @ref enumeratorToString() */
 template<typename T>
-QString enumeratorToFullString(const T &enumerator)
+[[nodiscard]] QString enumeratorToFullString(const T &enumerator)
 {
     const auto value = static_cast<int>(enumerator);
     const auto myMeta = QMetaEnum::fromType<T>();
@@ -168,7 +183,7 @@ QString enumeratorToFullString(const T &enumerator)
  *
  * @sa @ref enumeratorToFullString() */
 template<typename T>
-QString enumeratorToString(const T &enumerator)
+[[nodiscard]] QString enumeratorToString(const T &enumerator)
 {
     const auto value = static_cast<int>(enumerator);
     const auto myMeta = QMetaEnum::fromType<T>();

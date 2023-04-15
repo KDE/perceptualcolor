@@ -1,0 +1,28 @@
+<!DOCTYPE RCC>
+<!--
+SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+SPDX-License-Identifier: BSD-2-Clause OR MIT
+-->
+<RCC version="1.0">
+    <qresource prefix="PerceptualColor/icons">
+
+        <file alias="lighttheme/123.svg">../icons/lighttheme/123.svg</file>
+        <file alias="darktheme/123.svg">../icons/darktheme/123.svg</file>
+
+        <file alias="lighttheme/brightness-2.svg">../icons/lighttheme/brightness-2.svg</file>
+        <file alias="darktheme/brightness-2.svg">../icons/darktheme/brightness-2.svg</file>
+
+        <file alias="lighttheme/eye-exclamation.svg">../icons/lighttheme/eye-exclamation.svg</file>
+        <file alias="darktheme/eye-exclamation.svg">../icons/darktheme/eye-exclamation.svg</file>
+
+        <file alias="lighttheme/color-picker.svg">../icons/lighttheme/color-picker.svg</file>
+        <file alias="darktheme/color-picker.svg">../icons/darktheme/color-picker.svg</file>
+
+        <file alias="lighttheme/color-swatch.svg">../icons/lighttheme/color-swatch.svg</file>
+        <file alias="darktheme/color-swatch.svg">../icons/darktheme/color-swatch.svg</file>
+
+        <file alias="lighttheme/steering-wheel.svg">../icons/lighttheme/steering-wheel.svg</file>
+        <file alias="darktheme/steering-wheel.svg">../icons/darktheme/steering-wheel.svg</file>
+
+    </qresource>
+</RCC>

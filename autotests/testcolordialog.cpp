@@ -24,6 +24,7 @@
 #include "rgbcolorspacefactory.h"
 #include "settranslation.h"
 #include "wheelcolorpicker.h"
+#include <qaction.h>
 #include <qapplication.h>
 #include <qbenchmark.h>
 #include <qbytearray.h>
@@ -347,11 +348,8 @@ private Q_SLOTS:
     void initTestCase()
     {
         // Called before the first test function is executed
-
-        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
-        // enabled, also on platforms that disable it by default.
-        qt_set_sequence_auto_mnemonic(true);
     }
+
     void cleanupTestCase()
     {
         // Called after the last test function was executed
@@ -360,6 +358,10 @@ private Q_SLOTS:
     void init()
     {
         // Called before each test function is executed
+
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // enabled, also on platforms that disable it by default.
+        qt_set_sequence_auto_mnemonic(true);
     }
 
     void cleanup()
@@ -1658,6 +1660,75 @@ private Q_SLOTS:
     }
 #endif
 
+    void testGamutIconCiehlcD50()
+    {
+        QScopedPointer<ColorDialog> myDialog( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+
+        // On startup, the current color should be in-gamut, so no gamut action
+        // should be visible.
+        QCOMPARE( //
+            myDialog->d_pointer->m_ciehlcD50SpinBoxGamutAction->isVisible(), //
+            false);
+        QCOMPARE( //
+            myDialog->d_pointer->m_oklchSpinBoxGamutAction->isVisible(), //
+            false);
+
+        constexpr int iterations = 15;
+
+        auto &myCiehlcD50SpinBox = myDialog->d_pointer->m_ciehlcD50SpinBox;
+        myCiehlcD50SpinBox->setFocus();
+        QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_Tab);
+        QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_Tab);
+        // Now, the focus should be on the chroma value.
+        for (int i = 0; i < iterations; ++i) {
+            QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_PageUp);
+        }
+        QCOMPARE( //
+            myDialog->d_pointer->m_ciehlcD50SpinBoxGamutAction->isVisible(), //
+            true);
+        for (int i = 0; i < iterations; ++i) {
+            QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_PageDown);
+        }
+        QCOMPARE( //
+            myDialog->d_pointer->m_ciehlcD50SpinBoxGamutAction->isVisible(), //
+            false);
+    }
+
+    void testGamutIconOklch()
+    {
+        QScopedPointer<ColorDialog> myDialog( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+
+        // On startup, the current color should be in-gamut, so no gamut action
+        // should be visible.
+        QCOMPARE( //
+            myDialog->d_pointer->m_oklchSpinBoxGamutAction->isVisible(), //
+            false);
+        QCOMPARE( //
+            myDialog->d_pointer->m_oklchSpinBoxGamutAction->isVisible(), //
+            false);
+
+        constexpr int iterations = 15;
+
+        auto &myOklchSpinBox = myDialog->d_pointer->m_oklchSpinBox;
+        myOklchSpinBox->setFocus();
+        QTest::keyClick(myOklchSpinBox, Qt::Key_Tab);
+        // Now, the focus should be on the chroma value.
+        for (int i = 0; i < iterations; ++i) {
+            QTest::keyClick(myOklchSpinBox, Qt::Key_PageUp);
+        }
+        QCOMPARE( //
+            myDialog->d_pointer->m_oklchSpinBoxGamutAction->isVisible(), //
+            true);
+        for (int i = 0; i < iterations; ++i) {
+            QTest::keyClick(myOklchSpinBox, Qt::Key_PageDown);
+        }
+        QCOMPARE( //
+            myDialog->d_pointer->m_oklchSpinBoxGamutAction->isVisible(), //
+            false);
+    }
+
 #ifndef MSVC_DLL
     void testReadHlcNumericValues()
     {
@@ -2192,6 +2263,246 @@ private Q_SLOTS:
     }
 #endif
 
+    void testExplicitShortcutsExpanded()
+    {
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // enabled, also on platforms that disable it by default.
+        qt_set_sequence_auto_mnemonic(true);
+
+        setTranslation(QCoreApplication::instance(), //
+                       QLocale(QLocale::English).uiLanguages());
+        // Create a ColorDialog:
+        m_perceptualDialog.reset( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        m_perceptualDialog->setLayoutDimensions( //
+            ColorDialog::DialogLayoutDimensions::Expanded);
+        m_perceptualDialog->show();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
+        auto &d = m_perceptualDialog->d_pointer;
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_B, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_H, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_hueFirstWrapperWidget));
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_L, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_lightnessFirstWrapperWidget));
+
+        // Return to "Basic colors" tab
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_B, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+
+        // The shortcut for the "Numerical" works.
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_N, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+
+        const auto indexOfPaletteTab = //
+            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto toolTipContainsUnderline = //
+            toolTip.contains(QStringLiteral("<u>"));
+        QCOMPARE(toolTipContainsUnderline, true);
+    }
+
+    void testExplicitShortcutsCollapsed()
+    {
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // enabled, also on platforms that disable it by default.
+        qt_set_sequence_auto_mnemonic(true);
+
+        setTranslation(QCoreApplication::instance(), //
+                       QLocale(QLocale::English).uiLanguages());
+        // Create a ColorDialog:
+        m_perceptualDialog.reset( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        m_perceptualDialog->setLayoutDimensions( //
+            ColorDialog::DialogLayoutDimensions::Collapsed);
+        m_perceptualDialog->show();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
+        auto &d = m_perceptualDialog->d_pointer;
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_B, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_H, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_hueFirstWrapperWidget));
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_L, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_lightnessFirstWrapperWidget));
+
+        // Return to "Basic colors" tab
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_B, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+
+        // The shortcut for the "Numerical" works.
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_N, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 d->m_tabWidget->indexOf(d->m_numericalWidget));
+
+        const auto indexOfPaletteTab = //
+            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto toolTipContainsUnderline = //
+            toolTip.contains(QStringLiteral("<u>"));
+        QCOMPARE(toolTipContainsUnderline, true);
+    }
+
+    void testExplicitShortcutsExpandedDisabled()
+    {
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // disabled, also on platforms that enable it by default.
+        qt_set_sequence_auto_mnemonic(false);
+
+        setTranslation(QCoreApplication::instance(), //
+                       QLocale(QLocale::English).uiLanguages());
+        // Create a ColorDialog:
+        m_perceptualDialog.reset( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        m_perceptualDialog->setLayoutDimensions( //
+            ColorDialog::DialogLayoutDimensions::Expanded);
+        m_perceptualDialog->show();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
+        auto &d = m_perceptualDialog->d_pointer;
+
+        const auto originalIndex = d->m_tabWidget->currentIndex();
+
+        // NOTE When mnemonics are disabled, all these key clicks should
+        // not have any effect.
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_B, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_H, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_L, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_N, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        const auto indexOfPaletteTab = //
+            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto toolTipContainsUnderline = //
+            toolTip.contains(QStringLiteral("<u>"));
+        QCOMPARE(toolTipContainsUnderline, false);
+    }
+
+    void testExplicitShortcutsCollapsedDisabled()
+    {
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // disabled, also on platforms that enable it by default.
+        qt_set_sequence_auto_mnemonic(false);
+
+        setTranslation(QCoreApplication::instance(), //
+                       QLocale(QLocale::English).uiLanguages());
+        // Create a ColorDialog:
+        m_perceptualDialog.reset( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        m_perceptualDialog->setLayoutDimensions( //
+            ColorDialog::DialogLayoutDimensions::Collapsed);
+        m_perceptualDialog->show();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
+        auto &d = m_perceptualDialog->d_pointer;
+
+        const auto originalIndex = d->m_tabWidget->currentIndex();
+
+        // NOTE When mnemonics are disabled, all these key clicks should
+        // not have any effect.
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_B, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_H, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_L, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        d->m_tabWidget->setFocus();
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key_N, //
+                        Qt::AltModifier);
+        QCOMPARE(d->m_tabWidget->currentIndex(), //
+                 originalIndex);
+
+        const auto indexOfPaletteTab = //
+            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto toolTipContainsUnderline = //
+            toolTip.contains(QStringLiteral("<u>"));
+        QCOMPARE(toolTipContainsUnderline, false);
+    }
+
     void testSnippet02()
     {
         snippet02();
@@ -2257,7 +2568,8 @@ private Q_SLOTS:
                  "Assert that theTabWidget has actually been found.");
         constexpr int myIndex = 1;
         // Assert that we got the correct tab widget:
-        QCOMPARE(theTabWidget->tabText(myIndex), QStringLiteral("&Hue-based"));
+        QCOMPARE(theTabWidget->tabToolTip(myIndex), //
+                 QStringLiteral("<a/><u>H</u>ue-based"));
         theTabWidget->setCurrentIndex(myIndex);
 
         QBENCHMARK {
@@ -2284,8 +2596,8 @@ private Q_SLOTS:
                  "Assert that theTabWidget has actually been found.");
         constexpr int myIndex = 2;
         // Assert that we got the correct tab widget:
-        QCOMPARE(theTabWidget->tabText(myIndex), //
-                 QStringLiteral("&Lightness-based"));
+        QCOMPARE(theTabWidget->tabToolTip(myIndex), //
+                 QStringLiteral("<a/><u>L</u>ightness-based"));
         theTabWidget->setCurrentIndex(myIndex);
 
         QBENCHMARK {
@@ -2333,8 +2645,8 @@ private Q_SLOTS:
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
-        QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->tabText(0), //
-                 QStringLiteral("&Basiskleuren"));
+        QCOMPARE(m_perceptualDialog->d_pointer->m_buttonCancel->text(), //
+                 QStringLiteral("&Annuleren"));
 
         initializeTranslation(QCoreApplication::instance(), //
                               QLocale(QLocale::Catalan).uiLanguages());
@@ -2342,8 +2654,8 @@ private Q_SLOTS:
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
-        QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->tabText(0), //
-                 QStringLiteral("Colors &bàsics"));
+        QCOMPARE(m_perceptualDialog->d_pointer->m_buttonCancel->text(), //
+                 QStringLiteral("&Cancel·la"));
 
         initializeTranslation(QCoreApplication::instance(), //
                               QLocale(QLocale::Spanish).uiLanguages());
@@ -2351,8 +2663,8 @@ private Q_SLOTS:
             QEvent temp(QEvent::LanguageChange);
             QCoreApplication::sendEvent(m_perceptualDialog.data(), &temp);
         }
-        QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->tabText(0), //
-                 QStringLiteral("Colores &básicos"));
+        QCOMPARE(m_perceptualDialog->d_pointer->m_buttonCancel->text(), //
+                 QStringLiteral("&Cancelar"));
     }
 
     void testChangeEventRetranslateButtons()

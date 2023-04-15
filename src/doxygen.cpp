@@ -9,13 +9,12 @@
 
 /** @page build Build instructions and requirements
  *
- * Requirements:
+ * Build-time dependencies:
  * - LittleCMS 2 (minimum version: 2.0)
- * - Qt 5 (minimum version: 5.15) or Qt 6 (minimum
- *   version: 6.0.0). Components: Core, Gui, Widgets,
- *   DBus, Concurrent, Test. <!-- Qt 5.15 has an API that is close
+ * - Qt 5 (minimum version: 5.15) <!-- Qt 5.15 has an API that is close
  *   to Qt 6. It introduces some new functions we are using to avoid
- *   deprecated older functions. -->
+ *   deprecated older functions. --> or Qt 6 (minimum version: 6.0.0).
+     Components: Core, Gui, Widgets, DBus, Concurrent, Test, Svg.
  * - CMake
  * - ECM (Extra CMake Modules from KDE)
  * - C++17
@@ -45,6 +44,15 @@
  *   source code of your application and load it in your main function
  *   before using this library. This can make color management faster.
  *   (Note that this plugin has a different license than LittleCMS itself.)
+ *
+ * Additional mandatory run-time dependencies:
+ * - QSvgIconEnginePlugin. Available plugins are loaded
+ *   automatically by Qt. Therefore, just make sure that this plugin is
+ *   present. On Linux, it seems possible to enforce this by linking
+ *   dynamically to the plugin itself, if you want to. This forces Linux
+ *   package managers to produce packages of your application that depend
+ *   not only on Qt base, but also on the SVG plugin. A typical file name of
+ *   the plugin is <tt>plugins/iconengines/libqsvgicon.so</tt>.
  *
  * Please make sure that you comply with the licences of used libraries.
  *
@@ -741,58 +749,34 @@
  * checking with LanguageTool */
 
 /** @page hidpisupport High DPI support
- * This library supports High DPI out of the box. You do not need to do
- * much to use it. The widgets provide High DPI support automatically.
  *
- * The only problem are icons. Icons are used for
- * @ref PerceptualColor::MultiSpinBox::addActionButton and for
- * the “refresh” icon and (on some widget styles) for the “Ok”
- * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
+ * This library supports High DPI out of the box.
  *
- * @section loadicons Load icons
+ * The only thing that requires special attention are icons.
+ *
+ * @section iconsupport Icon support
  *
  * This library uses by default a possibly existing icon theme
- * if available in Qt.
+ * if available in Qt. Windows and Mac do not provide icon themes by
+ * default, while Linux usually provides them. SVG is pretty much the standard
+ * nowadays and the only reliably way to have crisp icons also on desktop
+ * scales like 1.25 or 1.5. If high-DPI icons are available depends finally
+ * on your operation system. Only if no icon at all is provided by the
+ * operation system, the library falls back to built-in high-DPI SVG icons.
  *
- * - Windows and Mac do not provide icon themes by default, while Linux
- *   usually provides them.
+ * Note that QSvgIconEnginePlugin is a mandatory run-time
+ * dependency (see @ref build for details).
  *
- * - You might bundle icons (as resource) with your application.
+ * @section qt5icons Qt5 legacy
  *
- * There are different file formats for icon themes:
- *
- * - Loading raster image icons is supported out-of-the-box by Qt.
- *
- * - Loading SVG icons is supported by Qt’s SVG icon
- *   support plugin. (On Linux this is the file
- *   <tt>plugins/iconengines/libqsvgicon.so</tt>). This
- *   plugin is loaded by Qt automatically if present.
- *
- * SVG is pretty much the standard nowadays and the only
- * reliably way to have crisp icons also on desktop scales like 1.25 or 1.5.
- * Make sure that the plugin is present if you want that SVG icons
- * can be loaded. (On Linux, it seems possible to enforce this by linking
- * dynamically to the plugin itself, if you want to. This forces Linux
- * package managers to produce packages of your application that depend
- * not only on Qt base, but also on the SVG plugin.)
- *
- * If no external icon can be loaded by Qt, this library uses hard-coded
- * fallback icon where necessary.
- *
- * @section rendericons Render icons
- *
- * - <a href="https://bugreports.qt.io/browse/QTBUG-89279">Qt6 renders icons
- *   always with high-DPI.</a>
- * - Qt5 renders icons by default in low resolution. This applies even
- *   for SVG icons on high-DPI displays! Application developers have to enable
- *   high-DPI icon rendering manually with the following code (which should be
- *   put by convention <em>before</em> creating the <tt>QCoreApplication</tt>
- *   object):
- *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
- *
- * Exception: The hard-coded fallback icons of this library render <em>always
- * and on all Qt versions (even if no SVG support is available at all
- * in Qt)</em> at high-DPI! */
+ * While <a href="https://bugreports.qt.io/browse/QTBUG-89279">Qt6
+ * renders icons always with high-DPI</a> (if available),
+ * Qt5 renders icons by default in low resolution. This applies even
+ * for SVG icons on high-DPI displays! Application developers have to enable
+ * high-DPI icon rendering manually with the following code (which should be
+ * put by convention <em>before</em> creating the <tt>QCoreApplication</tt>
+ * object):
+ * <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt> */
 
 /** @page howtogetstarted How to get started
  *
@@ -856,10 +840,14 @@
  *
  * @copyright
  * - We follow the <a href="https://reuse.software/">“Reuse”
- *   specification</a>. The source code of the library itself (and also this
- *   documentation itself) are dual-licensed. You can use it (at your option)
- *   either under BSD-2-Clause or MIT. Deviating from this, some CMake files
- *   are exclusively BSD-3-Clause.
+ *   specification</a>.
+ * - The files from which the library (and this documentation as well)
+ *   are generated do not all have the same license; instead, each file
+ *   is subject to one of the following permissive licenses:
+ *   - BSD-2-Clause OR MIT (for example, some C++ source code files)
+ *   - MIT (for example, some icons)
+ *   - BSD-3-Clause (for example, some CMake files)
+ *   - CC0-1.0 (for example, some color profiles)
  * - Other parts of the codebase (which will
  *   <em>not</em> be installed by CMake, examples include <em>autotests</em>
  *   and <em>utils</em>) might have different licenses and/or include

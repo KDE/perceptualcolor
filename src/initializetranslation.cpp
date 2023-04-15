@@ -5,6 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "initializetranslation.h"
 
+#include "initializelibraryresources.h"
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
@@ -25,35 +26,6 @@
 /** @internal @file
  *
  * Provides the @ref PerceptualColor::initializeTranslation() function. */
-
-/** @internal
- *
- * @brief Initializes the resources of the <tt>Qt resource system</tt> that
- * come with this library.
- *
- * It is safe to call this function multiple times: If the resources are
- * yet initialized, nothing happens.
- *
- * @post The resources are initialized.
- *
- * @note This is a helper function for
- * @ref PerceptualColor::initializeTranslation() which is the only user of
- * the resources. <tt>Q_INIT_RESOURCE</tt> may not be used within a namespace.
- * Therefore exists this function which is not part of any namespace. To avoid
- * pollution of the global namespace, it is declared <tt>static</tt> which
- * gives here internal linkage, so it is not visible outside of this
- * compilation unit. */
-static void helperInitializeLibraryResources()
-{
-    // Resource initialization is necessary on some systems for static
-    // libraries, but also recommended for dynamic libraries. For details see
-    // https://doc.qt.io/qt-6/resources.html#using-resources-in-a-library
-    // The argument of this macro is the name of the .qrc file (without
-    // the .qrc suffix) just as in the corresponding CMakeLists.txt.
-    // This macro relies on qRegisterResourceData() which checks if
-    // the resource is yet loaded: If so, it is not loaded again.
-    Q_INIT_RESOURCE(resourcelist);
-}
 
 namespace PerceptualColor
 {
@@ -178,7 +150,7 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
         // here we make sure that our resources are actually currently loaded.
         // It is safe to call this function various times, and the overhead
         // should not be big.
-        helperInitializeLibraryResources();
+        initializeLibraryResources();
 
         if (newUiLanguages.value().count() <= 0) {
             // QTranslator::load() will always delete the currently loaded

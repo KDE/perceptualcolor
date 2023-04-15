@@ -46,6 +46,7 @@
 #include <qnamespace.h> // IWYU pragma: keep
 #include <qobject.h> // IWYU pragma: keep
 #include <qpixmap.h> // IWYU pragma: keep
+#include <qpluginloader.h> // IWYU pragma: keep
 #include <qpointer.h> // IWYU pragma: keep
 #include <qrect.h> // IWYU pragma: keep
 #include <qregularexpression.h> // IWYU pragma: keep
@@ -85,6 +86,7 @@ int main(int argc, char *argv[])
     // QLocale::setDefault(QLocale::Spanish);
     // QLocale::setDefault(QLocale::Ukrainian);
     // QLocale::setDefault(QLocale::Turkish);
+    // QLocale::setDefault(QLocale::Chinese);
 
     PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                            QLocale().uiLanguages());
@@ -124,7 +126,7 @@ int main(int argc, char *argv[])
     myColor.setAlphaF(0.5);
     // m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-    m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
+    // m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
     // m_colorDialog.setEnabled(false);
     // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
     m_colorDialog.show();
