@@ -547,8 +547,9 @@ private Q_SLOTS:
     // The automatic export of otherwise private symbols on MSVC
     // shared libraries via CMake's WINDOWS_EXPORT_ALL_SYMBOLS property
     // does not work well for Qt meta objects, resulting in non-functional
-    // signals. Since the following unit test requires signals, it cannot be
+    // signals. Since the following unit tests require signals, it cannot be
     // built for MSVC shared libraries.
+
     void testCurrentColorProperty()
     {
         ChromaLightnessDiagram test{m_rgbColorSpace};
@@ -584,6 +585,7 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 3);
         QVERIFY(test.currentColor().hasSameCoordinates(color));
     }
+
 #endif
 
     void testResizeEvent()

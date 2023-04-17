@@ -31,6 +31,7 @@
 #include "screencolorpicker.h"
 #include "swatchbook.h"
 #include "wheelcolorpicker.h"
+#include <algorithm>
 #include <lcms2.h>
 #include <optional>
 #include <qaction.h>
@@ -70,6 +71,7 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
+class QShowEvent;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>
@@ -736,6 +738,20 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     if (m_screenColorPickerWidget) {
         m_tabWidget->addTab(m_screenColorPickerWidget, QString());
     }
+    m_tabTable.insert(&m_paletteWrapperWidget, //
+                      QStringLiteral("swatch"));
+    m_tabTable.insert(&m_hueFirstWrapperWidget, //
+                      QStringLiteral("hue-based"));
+    m_tabTable.insert(&m_lightnessFirstWrapperWidget, //
+                      QStringLiteral("lightness-based"));
+    m_tabTable.insert(&m_screenColorPickerWidget, //
+                      QStringLiteral("screen-picker"));
+    m_tabTable.insert(&m_numericalWidget, //
+                      QStringLiteral("numerical"));
+    connect(m_tabWidget, //
+            &QTabWidget::currentChanged, //
+            this, //
+            &ColorDialogPrivate::saveCurrentTab);
 
     // Create the ColorPatch
     m_colorPatch = new ColorPatch();
@@ -2013,17 +2029,20 @@ void ColorDialog::setLayoutDimensions(const ColorDialog::DialogLayoutDimensions 
  * or the expanded layout is used. */
 void ColorDialogPrivate::applyLayoutDimensions()
 {
-    bool collapsedLayout; // true for small layout, false for large layout.
+    constexpr auto collapsed = ColorDialog::DialogLayoutDimensions::Collapsed;
+    constexpr auto expanded = ColorDialog::DialogLayoutDimensions::Expanded;
+    constexpr auto screenSizeDependent = //
+        ColorDialog::DialogLayoutDimensions::ScreenSizeDependent;
     int effectivelyAvailableScreenWidth;
     int widthThreeshold;
     switch (m_layoutDimensions) {
-    case ColorDialog::DialogLayoutDimensions::Collapsed:
-        collapsedLayout = true;
+    case collapsed:
+        m_layoutDimensionsEffective = collapsed;
         break;
-    case ColorDialog::DialogLayoutDimensions::Expanded:
-        collapsedLayout = false;
+    case expanded:
+        m_layoutDimensionsEffective = expanded;
         break;
-    case ColorDialog::DialogLayoutDimensions::ScreenSizeDependent:
+    case screenSizeDependent:
         // Note: The following code works correctly on scaled
         // devices (high-DPI…).
 
@@ -2046,7 +2065,11 @@ void ColorDialogPrivate::applyLayoutDimensions()
         widthThreeshold = qRound(widthThreeshold * 1.2);
 
         // Now decide between collapsed layout and expanded layout
-        collapsedLayout = (effectivelyAvailableScreenWidth < widthThreeshold);
+        if (effectivelyAvailableScreenWidth < widthThreeshold) {
+            m_layoutDimensionsEffective = collapsed;
+        } else {
+            m_layoutDimensionsEffective = expanded;
+        }
         break;
     default:
         // We should never reach this point, because we treat all possible
@@ -2054,7 +2077,7 @@ void ColorDialogPrivate::applyLayoutDimensions()
         throw 0;
     }
 
-    if (collapsedLayout) {
+    if (m_layoutDimensionsEffective == collapsed) {
         if (m_selectorLayout->indexOf(m_numericalWidget) >= 0) {
             // Indeed we have expanded layout and have to switch to
             // collapsed layout…
@@ -2121,6 +2144,63 @@ void ColorDialog::changeEvent(QEvent *event)
     }
 
     QDialog::changeEvent(event);
+}
+
+/** @brief Handle show events.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The event.
+ *
+ * @internal
+ *
+ * On the first show event, make @ref ColorDialogPrivate::m_tabWidget use
+ * the current tab corresponding to @ref ColorDialogPrivate::m_settings. */
+void ColorDialog::showEvent(QShowEvent *event)
+{
+    if (!d_pointer->everShown) {
+        constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
+        const bool exp = d_pointer->m_layoutDimensionsEffective == expValue;
+        const auto tabString = exp //
+            ? d_pointer->m_settings.tabExpanded() //
+            : d_pointer->m_settings.tab();
+        const auto key = d_pointer->m_tabTable.key(tabString, nullptr);
+        if (key != nullptr) {
+            d_pointer->m_tabWidget->setCurrentWidget(*key);
+            // Save the new tab explicitly. If setCurrentWidget() is not
+            // different from the default value, it does not trigger the
+            // QTabWidget::currentChanged() signal, resulting in the tab
+            // not being saved. However, we want to ensure that the tab
+            // is saved whenever the user has first seen it.
+            d_pointer->saveCurrentTab();
+        }
+        d_pointer->everShown = true;
+    }
+    QDialog::showEvent(event);
+}
+
+/** @brief Saves the current tab of @ref m_tabWidget to @ref m_settings. */
+void ColorDialogPrivate::saveCurrentTab()
+{
+    const auto currentIndex = m_tabWidget->currentIndex();
+    QWidget const *const widget = m_tabWidget->widget(currentIndex);
+    const auto keyList = m_tabTable.keys();
+    auto it = std::find_if( //
+        keyList.begin(),
+        keyList.end(),
+        [widget](const auto &key) {
+            return ((*key) == widget);
+        } //
+    );
+    if (it != keyList.end()) {
+        const auto tabString = m_tabTable.value(*it);
+        constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
+        if (m_layoutDimensionsEffective == expValue) {
+            m_settings.setTabExpanded(tabString);
+        } else {
+            m_settings.setTab(tabString);
+        }
+    }
 }
 
 } // namespace PerceptualColor

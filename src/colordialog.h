@@ -15,8 +15,9 @@
 #include <qsharedpointer.h>
 #include <qstring.h>
 class QEvent;
-class QWidget;
 class QObject;
+class QShowEvent;
+class QWidget;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -342,6 +343,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      *
      * @internal
      *
+     * @sa @ref ColorDialogPrivate::m_layoutDimensionsEffective
+     *
      * @todo Remove this property? Instead, implement a truly convertible
      * layout: Show/hide the widget for numbers depending on dialog size,
      * and maybe even re-arrange even more of the widgets with varying
@@ -478,6 +481,7 @@ Q_SIGNALS:
 protected:
     virtual void changeEvent(QEvent *event) override;
     virtual void done(int result) override;
+    virtual void showEvent(QShowEvent *event) override;
 
 private:
     Q_DISABLE_COPY(ColorDialog)

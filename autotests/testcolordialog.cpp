@@ -28,6 +28,7 @@
 #include <qcolordialog.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
+#include <qdebug.h>
 #include <qglobal.h>
 #include <qlineedit.h>
 #include <qlist.h>
@@ -51,6 +52,7 @@
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
 #include <qwidget.h>
+#include <type_traits>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>
@@ -63,6 +65,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qvector.h>
+#include <utility>
 #endif
 
 class TestColorDialogSnippetClass : public QWidget
@@ -2321,6 +2324,45 @@ private Q_SLOTS:
         }
         QCOMPARE(m_perceptualDialog->d_pointer->m_buttonCancel->text(), //
                  QStringLiteral("&Cancelar"));
+    }
+
+    void testRestoreTab_data()
+    {
+        QTest::addColumn<ColorDialog::DialogLayoutDimensions>("layout");
+
+        QTest::newRow("Collapsed") //
+            << ColorDialog::DialogLayoutDimensions::Collapsed;
+        QTest::newRow("Expanded") //
+            << ColorDialog::DialogLayoutDimensions::Expanded;
+        QTest::newRow("ScreenSizeDependent") //
+            << ColorDialog::DialogLayoutDimensions::ScreenSizeDependent;
+    }
+
+    void testRestoreTab()
+    {
+        QFETCH(ColorDialog::DialogLayoutDimensions, layout);
+        m_perceptualDialog.reset( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        m_perceptualDialog->setLayoutDimensions(layout);
+        m_perceptualDialog->show(); // Needed for correct m_tabWidget->count()
+
+        QList<int> testList;
+        const auto tabCount = m_perceptualDialog->d_pointer->m_tabWidget->count();
+        testList.reserve(tabCount + 1);
+        for (int i = 0; i < tabCount; ++i) {
+            testList.append(i);
+        }
+        testList.append(0); // Finally return again to the first tab.
+
+        for (const auto i : std::as_const(testList)) {
+            m_perceptualDialog->d_pointer->m_tabWidget->setCurrentIndex(i);
+            m_perceptualDialog.reset( //
+                new ColorDialog(m_srgbBuildinColorSpace));
+            // The last tab is only restored on show().
+            m_perceptualDialog->setLayoutDimensions(layout);
+            m_perceptualDialog->show();
+            QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->currentIndex(), i);
+        }
     }
 
 private:

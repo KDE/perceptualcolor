@@ -30,6 +30,9 @@ add_executable(testapp)
 target_sources(
     testapp
     PRIVATE testapp.cpp)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND BUILD_SHARED_LIBS)
+    target_compile_definitions(testapp PUBLIC MSVC_DLL)
+endif()
 target_link_libraries(
     testapp
     # Transitive dependencies (PUBLIC, INTERFACE) don’t make sense

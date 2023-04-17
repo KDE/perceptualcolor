@@ -169,6 +169,7 @@ if(BUILD_TESTING)
         testmultispinbox
         testmultispinboxsection
         testoklchvalues
+        testsettings
         testpolarpointf
         testrefreshiconengine
         testrgbcolorspace

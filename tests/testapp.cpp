@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 #include "asyncimageprovider.h" // IWYU pragma: keep
+#include "asyncimageproviderbase.h" // IWYU pragma: keep
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
@@ -15,6 +16,7 @@
 #include "polarpointf.h" // IWYU pragma: keep
 #include "rgbcolorspace.h" // IWYU pragma: keep
 #include "rgbcolorspacefactory.h" // IWYU pragma: keep
+#include "settings.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
 #include <qcolor.h> // IWYU pragma: keep
@@ -42,6 +44,7 @@
 #include <qpointer.h> // IWYU pragma: keep
 #include <qrect.h> // IWYU pragma: keep
 #include <qscopedpointer.h> // IWYU pragma: keep
+#include <qsettings.h> // IWYU pragma: keep
 #include <qsharedpointer.h> // IWYU pragma: keep
 #include <qsize.h> // IWYU pragma: keep
 #include <qsizepolicy.h> // IWYU pragma: keep
@@ -55,43 +58,7 @@
 #include <qtranslator.h> // IWYU pragma: keep
 #include <utility> // IWYU pragma: keep
 
-/* // This if for testing if actually we get warnings as expected:
-#include <qglobal.h>
-#include <qstring.h>
-static bool triggerWarning()
-{
-    // Trigger a clazy warning:
-    QString test = QStringLiteral();
-
-    // Trigger a clang-tidy warning:
-    int *testpointer = new int(42);
-
-    // Avoid warnings for unused…
-    Q_UNUSED(testpointer)
-    Q_UNUSED(test)
-    return true;
-}
-*/
-
-class Testpointerclass
-{
-public:
-    void doConst() const
-    {
-        // *value = QColor();
-        // temp.setBlue(1);
-        // value->setBlue(1);
-    }
-    void doNonconst()
-    {
-        *value = QColor();
-        auto temp = *value;
-        temp.setBlue(1);
-    }
-
-private:
-    PerceptualColor::ConstPropagatingUniquePointer<QColor> value;
-};
+using namespace PerceptualColor;
 
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
@@ -147,7 +114,7 @@ int main(int argc, char *argv[])
     myColor.setAlphaF(0.5);
     // m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-    m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
+    // m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
     // m_colorDialog.setEnabled(false);
     // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
     m_colorDialog.show();
@@ -295,6 +262,26 @@ int main(int argc, char *argv[])
                        } //
     );
     */
+
+    auto &mySettings = Settings::instance();
+    mySettings.setCustomColors(Settings::ColorList({Qt::black, Qt::green}));
+
+#ifndef MSVC_DLL
+    // Just for testing purpose: Miss-use the customColor property to
+    // synchronize the current color of ColorDialog between various instances.
+    QObject::connect(&m_colorDialog, //
+                     &ColorDialog::currentColorChanged,
+                     &mySettings,
+                     [&](const QColor &color) {
+                         mySettings.setCustomColors(Settings::ColorList({color}));
+                     });
+    QObject::connect(&mySettings, //
+                     &Settings::customColorsChanged,
+                     &m_colorDialog,
+                     [&](const Settings::ColorList &customColors) {
+                         m_colorDialog.setCurrentColor(customColors.value(0));
+                     });
+#endif
 
     // Run
     return app.exec();

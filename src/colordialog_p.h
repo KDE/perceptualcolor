@@ -10,10 +10,12 @@
 #include "constpropagatingrawpointer.h"
 #include "languagechangeeventfilter.h"
 #include "multicolor.h"
+#include "settings.h"
 #include <lcms2.h>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qglobal.h>
+#include <qhash.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qsharedpointer.h>
@@ -95,6 +97,8 @@ public:
      *
      * @sa @ref ColorDialog::currentColor() */
     MultiColor m_currentOpaqueColor;
+    /** @brief If @ref q_pointer has ever been shown. */
+    bool everShown = false;
     /** @brief Pointer to the @ref MultiSpinBox for HSL. */
     QPointer<MultiSpinBox> m_hslSpinBox;
     /** @brief Pointer to the label for @ref m_hslSpinBox. */
@@ -130,6 +134,15 @@ public:
         ColorDialog::DialogLayoutDimensions::Collapsed
         //! [layoutDimensionsDefaultValue]
         ;
+    /** @brief The <em>effective</em> layout dimensions.
+     *
+     * The property @ref ColorDialog::layoutDimensions has a value
+     * @ref ColorDialog::DialogLayoutDimensions::ScreenSizeDependent.
+     * <em>This</em> variable holds whatever <em>effectively</em>
+     * is applied. So it can only have the values
+     * @ref ColorDialog::DialogLayoutDimensions::Collapsed or
+     * @ref ColorDialog::DialogLayoutDimensions::Expanded. */
+    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensionsEffective = m_layoutDimensions;
     /** @brief Pointer to the QWidget wrapper that contains
      * @ref m_lchLightnessSelector and @ref m_chromaHueDiagram. */
     QPointer<QWidget> m_lightnessFirstWrapperWidget;
@@ -187,6 +200,8 @@ public:
     QColor m_selectedColor;
     /** @brief Layout that holds the graphical and numeric selectors. */
     QPointer<QHBoxLayout> m_selectorLayout;
+    /** @brief Access to the @ref Settings singleton. */
+    Settings &m_settings = Settings::instance();
     /** @brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
     QPointer<QPushButton> m_screenColorPickerButton;
@@ -198,6 +213,11 @@ public:
      * To use it, call QString::arg() twice: Once with the content of the
      * first column and once with the content of the second column. */
     const QString tableRow = QStringLiteral(u"<tr><td>%1</td><td>%2</td></tr>");
+    /** @brief Table assigning to each tab a value for the @ref Settings.
+     *
+     * This helps to convert from QString values stored in @ref Settings
+     * to the actual tab widgets and vice versa. */
+    QHash<QPointer<QWidget> *, QString> m_tabTable;
     /** @brief Pointer to the tab widget. */
     QPointer<QTabWidget> m_tabWidget;
     /** @brief Pointer to the @ref WheelColorPicker widget. */
@@ -233,6 +253,7 @@ public Q_SLOTS:
     void readSwatchBook();
     void readWheelColorPickerValues();
     void retranslateUi();
+    void saveCurrentTab();
     void setCurrentOpaqueColor(const PerceptualColor::MultiColor &color, QWidget *const ignoreWidget);
     void updateColorPatch();
     void updateHlcButBlockSignals();
