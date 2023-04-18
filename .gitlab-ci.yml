@@ -139,7 +139,9 @@ codecheck_iwyu_qt5:
   <<: *codecheck
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qtbase5-dev qtbase5-dev-tools qttools5-dev
+    # NOTE For some obscure reason, iwyu does not print anything if clazy
+    # is not installed. Therefore, installing clazy here.
+    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qtbase5-dev qtbase5-dev-tools qttools5-dev
   script:
     - scripts/ci-iwyu-qt5.sh
 
@@ -151,7 +153,9 @@ codecheck_iwyu_qt6:
   <<: *codecheck
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
+    # NOTE For some obscure reason, iwyu does not print anything if clazy
+    # is not installed. Therefore, installing clazy here.
+    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
   script:
     - scripts/ci-iwyu-qt6.sh
 
