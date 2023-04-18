@@ -67,7 +67,8 @@ codecheck_cmakelint:
 codecheck_cppcheck:
   # Like the cppcheck that invent.kde.org provides, but exit status depends
   # on if issues have been found or not. And it runs always, and not only
-  # when C++ code has changed.
+  # when C++ code has changed. And it provides its results directly as
+  # well-formatted JSON.
   stage: build
   image: invent-registry.kde.org/sysadmin/ci-images/suse-qt515:latest
   tags:
@@ -82,6 +83,8 @@ codecheck_cppcheck:
     -     exit 0
     - else
     -     echo "cppcheck found issues."
+    -     echo "Format cppcheck’s JSON… output for usage as artifact."
+    -     python3 -m json.tool cppcheck.json > artifact_cppcheck.json
     -     exit 1
     - fi
   rules:
@@ -91,7 +94,7 @@ codecheck_cppcheck:
     expire_in: 20 weeks
     when: always
     paths:
-      - cppcheck.json
+      - artifact_cppcheck.json
     reports:
       codequality: cppcheck.json
 
