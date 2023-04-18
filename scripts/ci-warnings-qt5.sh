@@ -26,7 +26,6 @@ cd build
 cmake \
     -DCMAKE_CXX_COMPILER=clazy \
     -DCMAKE_CXX_CLANG_TIDY=/usr/bin/clang-tidy \
-    -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
     -DADDITIONAL_WARNINGS=ON \
     -DBUILD_WITH_QT6=OFF \
