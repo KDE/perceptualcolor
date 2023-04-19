@@ -130,7 +130,9 @@ if(BUILD_TESTING)
         testhelperconstants
         testhelperconversion
         testhelpermath
+        testhelperposixmath
         testhelperqttypes
+        testimportexport
         testinitializetranslation
         testinterlacingpass
         testiohandlerfactory
@@ -149,6 +151,7 @@ if(BUILD_TESTING)
         testrgbcolorspace
         testrgbcolorspacefactory
         testrgbdouble
+        testscreencolorpicker
         testsettranslation
         testversion
         testwheelcolorpicker)

@@ -77,7 +77,7 @@ grep \
     $PUBLIC_HEADERS \
          | sed 's/^/“final” should not show up in public headers: /'
 
-# All public header files in include/ should use
+# All public header files should use
 # the PERCEPTUALCOLOR_IMPORTEXPORT macro.
 grep \
     --recursive --exclude-dir=testbed \
@@ -90,7 +90,7 @@ grep \
     --recursive --exclude-dir={testbed,include} \
     $EXCLUDE_PUBLIC_HEADER_FROM_GREP \
     --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
-    $ALL_CODE \
+    $CODE_WITHOUT_UNIT_TESTS \
          | sed 's/^/Internal files may not use PERCEPTUALCOLOR_IMPORTEXPORT macro: /'
 
 # Do not use constexpr in public headers as when we change the value

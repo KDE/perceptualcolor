@@ -79,6 +79,9 @@ Q_SIGNALS:
     void newColor(double red, double green, double blue);
 
 private:
+    /** @internal @brief Only for unit tests. */
+    friend class TestScreenColorPicker;
+
     void pickWithPortal();
     [[nodiscard]] static bool hasPortalSupport();
     void initializeQColorDialogSupport();
