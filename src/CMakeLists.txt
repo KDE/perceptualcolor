@@ -91,13 +91,6 @@ set(lib_PUBLICHEADERS
 
 
 ################# Translation #################
-include(ECMPoQmTools)
-# NOTE ECMPoQmTools provides also ecm_install_po_files_as_qm to conveniently
-# generate and install qm files as individual files, and ecm_create_qm_loader
-# to conveniently load the translations automatically. However, currently
-# we compile the translation into the library binary itself. First, this
-# avoids that translations can ever be lost. Second, ecm_create_qm_loader
-# does not work on static libraries.
 get_filename_component(absolute_poqm_directory "../poqm" ABSOLUTE)
 file(
     # TODO Is it possible to get rid of GLOB_RECURSE?
@@ -121,9 +114,23 @@ file(
     "<!DOCTYPE RCC>\n"
     "<RCC version=\"1.0\">\n"
     "    <qresource prefix=\"PerceptualColor/i18n\">\n")
+include(ECMPoQmTools)
 foreach(po_file_original ${po_file_list})
     get_filename_component(po_dir ${po_file_original} DIRECTORY)
     get_filename_component(lang ${po_dir} NAME)
+    # NOTE ECMPoQmTools provides also ecm_install_po_files_as_qm to
+    # conveniently generate and install qm files as individual files,
+    # and ecm_create_qm_loader to conveniently load the translations
+    # automatically. However, currently we compile the translation
+    # into the library binary itself. First, this avoids that
+    # translations can ever  be lost. Second, ecm_create_qm_loader does
+    # not work on static libraries. So ecm_process_po_files_as_qm is a
+    # safer choice. However, its API documentation does not explain in
+    # which destination folder the generated qm files will be stored.
+    # Indeed, the destination folder has changed in the past:
+    # https://invent.kde.org/frameworks/extra-cmake-modules/-/merge_requests/351
+    # Therefore, we use our own copy of ECMPoQmTools (located at
+    # cmake/Modules) to make sure we get a defined behaviour.
     ecm_process_po_files_as_qm(
         ${lang}
         ALL # Add this target to the ALL target.
@@ -140,7 +147,7 @@ foreach(po_file_original ${po_file_list})
         "threshold=\"100\" "
         "compress-algo=\"none\" "
         "alias=\"localization.${lang}.qm\">"
-        "${lang}/perceptualcolor-0_qt.qm"
+        "ECMPoQm/${lang}/perceptualcolor-0_qt.qm"
         "</file>\n")
 endforeach()
 file(
