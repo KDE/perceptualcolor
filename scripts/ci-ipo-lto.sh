@@ -20,8 +20,8 @@ echo "Build with IPO/LTO against Qt6 started."
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
 echo Number of available CPU threads: $PARALLEL_PROCESSES
+rm --recursive --force build
 mkdir --parents build
-rm --recursive --force build/*
 cd build
 cmake \
     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=TRUE \
@@ -30,8 +30,8 @@ cmake \
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_ipo_lto.txt
 make install
 cd ..
+rm --recursive --force buildexamples
 mkdir --parents buildexamples
-rm --recursive --force buildexamples/*
 cd buildexamples
 cmake \
     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=TRUE \
