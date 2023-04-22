@@ -38,7 +38,7 @@ mkdir --parents buildexamples
 cd buildexamples
 # iwyu is based on clang internals, therefore forcing usage of clang.
 cmake \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
     -DBUILD_WITH_QT6=ON \
