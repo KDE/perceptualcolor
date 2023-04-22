@@ -31,7 +31,7 @@ cmake \
     -DBUILD_WITH_QT6=ON \
     ..
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt6.txt
-make install
+cmake --build . --target install --parallel $PARALLEL_PROCESSES
 cd ..
 rm --recursive --force buildexamples
 mkdir --parents buildexamples

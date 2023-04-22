@@ -20,10 +20,12 @@ echo "Dynamic codecheck against Qt6 started."
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
 echo Number of available CPU threads: $PARALLEL_PROCESSES
+rm --recursive --force build
 mkdir --parents build
-rm --recursive --force build/*
 cd build
+# iwyu is based on clang internals, therefore forcing usage of clang.
 cmake \
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
     -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
     -DBUILD_WITH_QT6=ON \
@@ -31,10 +33,12 @@ cmake \
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_iwyu_qt6.txt
 make install
 cd ..
+rm --recursive --force buildexamples
 mkdir --parents buildexamples
-rm --recursive --force buildexamples/*
 cd buildexamples
+# iwyu is based on clang internals, therefore forcing usage of clang.
 cmake \
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++
     -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
     -DBUILD_WITH_QT6=ON \
