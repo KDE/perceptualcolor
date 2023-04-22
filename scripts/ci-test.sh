@@ -46,6 +46,13 @@ totalerrors=$((totalerrors + exitcode))
 echo "ci-ipo-lto finished with exit code $exitcode."
 exitcode_ipo_lto=$exitcode
 
+echo "Starting ci-qch.sh …"
+scripts/ci-qch.sh
+exitcode=$?
+totalerrors=$((totalerrors + exitcode))
+echo "ci-qch.sh finished with exit code $exitcode."
+exitcode_qch=$exitcode
+
 echo "Starting ci-warnings.sh …"
 scripts/ci-warnings.sh
 exitcode=$?
@@ -72,6 +79,7 @@ echo "cmakelint: $exitcode_cmakelint"
 echo "automatic_integration: $exitcode_automatic_integration"
 echo "doxygen: $exitcode_doxygen"
 echo "ipo_lto: $exitcode_ipo_lto"
+echo "qch: $exitcode_qch"
 echo "warnings: $exitcode_warnings"
 echo
 echo "Terminating ci.sh with exit code $totalerrors."

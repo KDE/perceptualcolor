@@ -20,6 +20,7 @@ echo "QCH build started."
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
 echo Number of available CPU threads: $PARALLEL_PROCESSES
+rm --recursive --force build
 mkdir --parents build
 cd build
 # NOTE -DQHelpGenerator_EXECUTABLE=/usr/lib/qt5/bin/qhelpgenerator seems to be

@@ -33,8 +33,8 @@ cmake \
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_warnings_qt6.txt
 make install
 cd ..
+rm --recursive --force buildexamples
 mkdir --parents buildexamples
-rm --recursive --force buildexamples/*
 cd buildexamples
 cmake \
     -DCMAKE_CXX_COMPILER=clazy \
