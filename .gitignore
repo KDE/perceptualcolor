@@ -6,6 +6,7 @@
 /.clang-format
 /.kdev4/
 /build/*
+/buildexamples/*
 /Doxyfile
 /docs/publicapi/
 /docs/publicapiandinternals/

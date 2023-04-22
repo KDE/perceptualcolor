@@ -16,6 +16,7 @@ errorcount=0
 
 # Run generatescreenshots. This makes sure that Doxygen documentation
 # builds correctly also after a re-run of generatescreenshots.
+rm --recursive --force build
 scripts/update-screenshots.sh
 echo "Run Doxygen."
 # Doxygen run. We let Doxygen update the config files, so that no

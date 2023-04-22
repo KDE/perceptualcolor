@@ -7,6 +7,21 @@
 
 
 
+# Efficient CI resource usage: Splitting into various stages to avoid
+# unnecessary work load.
+stages:
+  - build
+  - test
+  - cppcheck
+  - iwyu
+  - ipo_lto
+  - qch
+  - end
+
+
+
+
+
 variables:
   # Accept default answer for all questions during Debian/Ubuntu
   # package management:
@@ -17,8 +32,9 @@ variables:
 
 
 codecheck: &codecheck
-  stage: build
   image: ubuntu:22.04
+  # Fake stage (unfortunately required)
+  stage: end
   tags:
     - Linux
   interruptible: true
@@ -37,28 +53,26 @@ codecheck: &codecheck
 
 
 
-codecheck_automatic_integration:
+codecheck_ci:
   <<: *codecheck
+  stage: test
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git
-  script:
-    - scripts/ci-automatic-integration.sh
-
-
-
-
-
-codecheck_cmakelint:
-  <<: *codecheck
-  before_script:
-    - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends python3-pip
+    - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy
     - echo "pip version:" && pip --version
     - pip install cmakelint
     - echo "cmakelint version:" && cmakelint --version
+    - echo "doxygen version:" && doxygen --version
+    - echo "graphviz dot version:" && dot -V
+    # The following commands make a graphical shell available
+    # (necessary for generatescreenshots).
+    - apt-get install --assume-yes --no-install-recommends xvfb openbox fonts-noto-core
+    - export DISPLAY=':90'
+    - Xvfb :90 -ac -screen 0 1600x1200x24+32 &
+    - sleep 5s
+    - openbox &
   script:
-    - scripts/ci-cmakelint.sh
+    - scripts/ci.sh
 
 
 
@@ -69,7 +83,7 @@ codecheck_cppcheck:
   # on if issues have been found or not. And it runs always, and not only
   # when C++ code has changed. And it provides its results directly as
   # well-formatted JSON.
-  stage: build
+  stage: cppcheck
   image: invent-registry.kde.org/sysadmin/ci-images/suse-qt515:latest
   tags:
     - Linux
@@ -102,29 +116,9 @@ codecheck_cppcheck:
 
 
 
-codecheck_doxygen:
-  <<: *codecheck
-  before_script:
-    - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends doxygen graphviz cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools wget
-    - echo "doxygen version:" && doxygen --version
-    - echo "graphviz dot version:" && dot -V
-    # The following commands make a graphical shell available
-    # (necessary for generatescreenshots).
-    - apt-get install --assume-yes --no-install-recommends xvfb openbox fonts-noto-core
-    - export DISPLAY=':90'
-    - Xvfb :90 -ac -screen 0 1600x1200x24+32 &
-    - sleep 5s
-    - openbox &
-  script:
-    - scripts/ci-doxygen.sh
-
-
-
-
-
 codecheck_ipo_lto:
   <<: *codecheck
+  stage: ipo_lto
   before_script:
     - apt-get update --assume-yes
     - apt-get install --assume-yes --no-install-recommends cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
@@ -135,29 +129,16 @@ codecheck_ipo_lto:
 
 
 
-codecheck_iwyu_qt5:
+codecheck_iwyu:
   <<: *codecheck
-  before_script:
-    - apt-get update --assume-yes
-    # NOTE For some obscure reason, iwyu does not print anything if clazy
-    # is not installed. Therefore, installing clazy here.
-    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qtbase5-dev qtbase5-dev-tools qttools5-dev
-  script:
-    - scripts/ci-iwyu-qt5.sh
-
-
-
-
-
-codecheck_iwyu_qt6:
-  <<: *codecheck
+  stage: iwyu
   before_script:
     - apt-get update --assume-yes
     # NOTE For some obscure reason, iwyu does not print anything if clazy
     # is not installed. Therefore, installing clazy here.
     - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
   script:
-    - scripts/ci-iwyu-qt6.sh
+    - scripts/ci-iwyu.sh
 
 
 
@@ -165,6 +146,7 @@ codecheck_iwyu_qt6:
 
 codecheck_qch:
   <<: *codecheck
+  stage: qch
   before_script:
     - apt-get update --assume-yes
     - apt-get install --assume-yes --no-install-recommends doxygen graphviz qt6-documentation-tools texlive-latex-base cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
@@ -173,39 +155,6 @@ codecheck_qch:
     - /usr/lib/qt6/bin/qhelpgenerator -v
   script:
     - scripts/ci-qch.sh
-
-
-
-
-
-codecheck_staticcodecheck:
-  <<: *codecheck
-  script:
-    - scripts/ci-staticcodecheck.sh
-
-
-
-
-
-codecheck_warnings_qt5:
-  <<: *codecheck
-  before_script:
-    - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qtbase5-dev qtbase5-dev-tools qttools5-dev
-  script:
-    - scripts/ci-warnings-qt5.sh
-
-
-
-
-
-codecheck_warnings_qt6:
-  <<: *codecheck
-  before_script:
-    - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang clazy clang-tidy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
-  script:
-    - scripts/ci-warnings-qt6.sh
 
 
 
@@ -224,7 +173,7 @@ include:
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/craft-windows-x86-64.yml
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/flatpak.yml
   - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd-qt6.yml
-  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd.yml
+  # - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd.yml
   - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-qt6.yml
   - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-static.yml
   # NOTE The following line adds Linux build. Furthermore, it adds a job for

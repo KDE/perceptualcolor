@@ -17,6 +17,6 @@ errorcount=0
 scripts/static-codecheck.sh &> artifact_staticcodecheck.txt
 [ -s artifact_staticcodecheck.txt ] && ((errorcount++))
 
-echo Terminating continuous integration with exit code $errorcount.
+echo Terminating ci-staticcodecheck.sh with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.
 exit $errorcount
