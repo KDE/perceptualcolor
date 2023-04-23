@@ -30,7 +30,7 @@ cmake \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
     -DBUILD_WITH_QT6=ON \
     ..
-cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_iwyu_qt6.txt
+cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_iwyu.txt
 make install
 cd ..
 rm --recursive --force buildexamples
@@ -43,9 +43,9 @@ cmake \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
     -DBUILD_WITH_QT6=ON \
     ../examples
-cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_iwyu_qt6.txt
+cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_iwyu.txt
 cd ..
-[ -s artifact_iwyu_qt6.txt ] && ((errorcount++))
+[ -s artifact_iwyu.txt ] && ((errorcount++))
 echo "Dynamic codecheck against Qt6 finished."
 
 echo Terminating continuous integration with exit code $errorcount.

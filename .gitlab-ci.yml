@@ -70,7 +70,7 @@ codecheck_cppcheck:
 
 
 codecheck_iwyu:
-  image: ubuntu:22.04
+  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt515:latest
   tags:
     - Linux
   interruptible: true
@@ -81,15 +81,15 @@ codecheck_iwyu:
     expire_in: 20 weeks
     when: always
     paths:
-      - artifact_*
+      - artifact_iwyu.txt
   stage: iwyu
-  before_script:
-    - apt-get update --assume-yes
-    # NOTE For some obscure reason, iwyu does not print anything if clazy
-    # is not installed. Therefore, installing clazy here.
-    - apt-get install --assume-yes --no-install-recommends cmake make clang iwyu clazy liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools
+  dependencies:
+    - codecheck_test
   script:
-    - scripts/ci-iwyu.sh
+    - if [ -f "artifact_iwyu.txt" ]; then
+    -   exit 1
+    - fi
+
 
 
 
@@ -111,7 +111,7 @@ codecheck_test:
   stage: build
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy
+    - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy iwyu
     # The following commands are necessary for the qch build. And
     # it seems that ecm_add_qch() has still some explicit Qt5 dependencies:
     - apt-get install --assume-yes --no-install-recommends qt6-documentation-tools texlive-latex-base qtbase5-dev qtbase5-dev-tools qttools5-dev

@@ -60,6 +60,14 @@ totalerrors=$((totalerrors + exitcode))
 echo "ci-warnings.sh finished with exit code $exitcode."
 exitcode_warnings=$exitcode
 
+echo "Starting ci-iwyu.sh …"
+scripts/ci-iwyu.sh
+exitcode=$?
+# NOTE Do NOT count this exit code. There is a separate job that will
+# use iwyu aretefacts later…
+echo "ci-iwyu.sh finished with exit code $exitcode."
+exitcode_iwyu=$exitcode
+
 # Delete empty artifacts
 echo "BEGIN list of artifacts"
 for file in artifact_*
@@ -81,6 +89,7 @@ echo "doxygen: $exitcode_doxygen"
 echo "ipo_lto: $exitcode_ipo_lto"
 echo "qch: $exitcode_qch"
 echo "warnings: $exitcode_warnings"
+echo "iwyu: $exitcode_iwyu (ignored)"
 echo
 echo "Terminating ci.sh with exit code $totalerrors."
 # NOTE The exit code of the last command is available with $? in the shell.
