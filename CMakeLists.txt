@@ -283,11 +283,6 @@ if(
     add_compile_options(
         # Issue all the warnings demanded by strict ISO C++:
         -Wpedantic
-        # Some pedantic warning are not turned into errors by -Werror,
-        # as the gcc manual explains. -pedantic-errors fills this gap.
-        -pedantic-errors
-        # Treat all warnings as errors:
-        # -Werror
         # Contrary to the name, "-Wall" does not activate all warnings,
         # but only the most important ones:
         -Wall
@@ -300,6 +295,7 @@ if(
         -Wchar-subscripts
         -Wcomment
         -Wconversion
+        -Wdeprecated
         -Wdisabled-optimization
         # -Wfloat-equal # TODO Enable this check!
         -Wformat
@@ -412,7 +408,19 @@ if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
     # docs.microsoft.com/cpp/build/reference/compiler-option-warning-level
     add_compile_options(
         /Wall # Enable many warnings.
-        /WX # Treats all compiler warnings as errors.
+    )
+endif()
+
+
+
+
+
+################# General compiler options #################
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    add_compile_options(
+        # warning C5033: 'register' is no longer a supported storage class
+        # This warning is triggered by lcms2.h. /wd5033 will suppress it.
+        /wd5033
     )
 endif()
 
