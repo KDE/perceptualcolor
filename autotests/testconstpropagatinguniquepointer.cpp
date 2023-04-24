@@ -71,7 +71,7 @@ private Q_SLOTS:
     void testDefaultConstructor()
     {
         ConstPropagatingUniquePointer<QObject> test;
-        QCOMPARE(test, nullptr);
+        QCOMPARE(test.get(), nullptr);
     }
 
     // NOTE Should break on compile time when the function is const.
@@ -112,6 +112,56 @@ private Q_SLOTS:
     {
         QRectF temp = *pointerToQRectF;
         Q_UNUSED(temp)
+    }
+
+    void testReset()
+    {
+        ConstPropagatingUniquePointer<int> ptr(new int(42));
+        QCOMPARE(*ptr, 42);
+
+        ptr.reset(new int(23));
+        QCOMPARE(*ptr, 23);
+
+        ptr.reset();
+        QCOMPARE(ptr.operator->(), nullptr);
+        QCOMPARE(ptr.get(), nullptr);
+    }
+
+    void testSwap1()
+    {
+        ConstPropagatingUniquePointer<int> ptr1(new int(42));
+        ConstPropagatingUniquePointer<int> ptr2(new int(23));
+        QCOMPARE(*ptr1, 42);
+        QCOMPARE(*ptr2, 23);
+
+        ptr1.swap(ptr2);
+        QCOMPARE(*ptr1, 23);
+        QCOMPARE(*ptr2, 42);
+    }
+
+    void testSwap2()
+    {
+        ConstPropagatingUniquePointer<int> ptr1(new int(42));
+        ConstPropagatingUniquePointer<int> ptr2;
+        QCOMPARE(*ptr1, 42);
+        QCOMPARE(ptr2.operator->(), nullptr);
+
+        ptr1.swap(ptr2);
+        QCOMPARE(ptr1.operator->(), nullptr);
+        QCOMPARE(*ptr2, 42);
+    }
+
+    void testGet()
+    {
+        ConstPropagatingUniquePointer<int> ptr(new int(42));
+        QCOMPARE(*ptr.get(), 42);
+        QVERIFY(ptr.get() != nullptr);
+    }
+
+    void testGet2()
+    {
+        ConstPropagatingUniquePointer<int> ptr;
+        QCOMPARE(ptr.get(), nullptr);
     }
 
     void testSnippet01()

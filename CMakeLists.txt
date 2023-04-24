@@ -407,7 +407,15 @@ if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
     # NOTE Documentation of warning for MSVC:
     # docs.microsoft.com/cpp/build/reference/compiler-option-warning-level
     add_compile_options(
-        /Wall # Enable many warnings.
+        # List of additional warnings for MSVC
+
+        # NOTE We do not use /Wall because it pulls in also extremly confusing
+        # messages with little practical value.
+
+        # warning C4711: function selected for automatic inline expansion
+        # MSVC issues this warning for its own std header files when /Wall is
+        # active. /wd4711 will suppress it.
+        /wd4711
     )
 endif()
 
@@ -418,9 +426,25 @@ endif()
 ################# General compiler options #################
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options(
+        # Set source and execution character sets to UTF-8
+        #
+        # Necessary to make sure that the execution character set is UTF-8
+        # in all environments.
+        #
+        # It should not be necessary to set the source character set because
+        # we have a BOM in each source file, but it does not hurt to set it
+        # explicitly either.
+        /utf-8
         # warning C5033: 'register' is no longer a supported storage class
         # This warning is triggered by lcms2.h. /wd5033 will suppress it.
         /wd5033
+    )
+endif()
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_compile_options(
+        # Disable -Wregister because lcms2.h makes use of the “register“
+        # keyword, but is not under our control.
+        -Wno-regixster
     )
 endif()
 
@@ -519,11 +543,18 @@ list(APPEND CLANG_FORMAT_PATTERNS
     src/*.h # The .in.hpp file is intentionally missing in this pattern.
     src/*.cpp)
 
+# TODO Under MSVC, linking statically against the internal library fails.
+# MSVC_STATIC it TRUE if we are compiling on MSVC and doing a static build.
+set(MSVC
+    ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
+set(MSVC_STATIC
+    (${MSVC} AND (NOT ${BUILD_SHARED_LIBS})))
+
 # Use unit tests only when building this project itself, and
 # not when it is included within another project:
 if("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     include(CTest)
-    if(BUILD_TESTING)
+    if(BUILD_TESTING AND (NOT ${MSVC_STATIC}))
         add_subdirectory(autotests)
     endif()
 endif()
@@ -531,12 +562,16 @@ list(APPEND CLANG_FORMAT_PATTERNS
     autotests/*.h
     autotests/*.cpp)
 
-add_subdirectory(tests)
+if(NOT ${MSVC_STATIC})
+    add_subdirectory(tests)
+endif()
 list(APPEND CLANG_FORMAT_PATTERNS
     tests/*.h
     tests/*.cpp)
 
-add_subdirectory(utils)
+if(NOT ${MSVC_STATIC})
+    add_subdirectory(utils)
+endif()
 list(APPEND CLANG_FORMAT_PATTERNS
     utils/*.h
     utils/*.cpp)

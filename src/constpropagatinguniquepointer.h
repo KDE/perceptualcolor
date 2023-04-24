@@ -5,7 +5,7 @@
 #define CONSTPROPAGATINGUNIQUEPOINTER_H
 
 #include "importexport.h"
-#include <memory> // for std::unique_ptr
+#include <memory>
 
 namespace PerceptualColor
 {
@@ -21,7 +21,7 @@ namespace PerceptualColor
  * the object members and propagates them to the call through the pointer;
  * it will trigger a compiler error if non-cost access to object members
  * or methods is done from within const functions. Apart from that, it
- * behaves like <tt>std::unique_ptr</tt> (from which it inherits).
+ * behaves like <tt>std::unique_ptr</tt>.
  *
  * Think of this template as a simple alternative to
  * <tt>std::experimental::propagate_const&lt; std::unique_ptr&lt;T&gt; &gt;</tt>
@@ -41,11 +41,11 @@ namespace PerceptualColor
  * @internal
  *
  * @sa @ref ConstPropagatingRawPointer
- * @sa This code is based on the idea in
- * <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
- * which is a more general implementation of this concept, that does not
- * provide a <tt>std::unique_ptr</tt> but acts as a wrapper template around
- * smart pointers in general. It lacks however the dereference operator.
+ *
+ * This class inherits privately <tt>std::shared_ptr</tt> and not
+ * <tt>std::unique_ptr</tt> because the latter will not compile on
+ * the MSVC compiler when used with incomplete types, which is however
+ * necessary for usage within @ref pimpl.
  *
  * @note This class could be replaced in the future by <tt>
  * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
@@ -58,14 +58,14 @@ namespace PerceptualColor
  * https://github.com/jbcoe/propagate_const instead of having our own
  * implementation? Or remove propagate_const header from this library? */
 template<typename T>
-class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer : public std::unique_ptr<T>
+class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer : private std::shared_ptr<T>
 {
 public:
     /** @brief Default constructor
      *
      * Creates a pointer that points to <tt>nullptr</tt>. */
     explicit ConstPropagatingUniquePointer()
-        : std::unique_ptr<T>(nullptr)
+        : std::shared_ptr<T>(nullptr)
     {
     }
 
@@ -73,7 +73,7 @@ public:
      *
      * @param pointerToObject Object to which to point */
     explicit ConstPropagatingUniquePointer(T *pointerToObject)
-        : std::unique_ptr<T>(pointerToObject)
+        : std::shared_ptr<T>(pointerToObject)
     {
     }
 
@@ -83,13 +83,19 @@ public:
      * base class’s destructor is not virtual.*/
     ~ConstPropagatingUniquePointer() noexcept = default;
 
+    // No copy/move assignment or constructor.
+    ConstPropagatingUniquePointer(const ConstPropagatingUniquePointer &) = delete;
+    ConstPropagatingUniquePointer(ConstPropagatingUniquePointer &&) = delete;
+    ConstPropagatingUniquePointer &operator=(const ConstPropagatingUniquePointer &) = delete; // clazy:exclude=function-args-by-value
+    ConstPropagatingUniquePointer &operator=(ConstPropagatingUniquePointer &&) = delete;
+
     /** @brief Non-const pointer operator
      *
      * @returns Non-const pointer operator */
     [[nodiscard]] T *operator->()
     {
         // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
-        return std::unique_ptr<T>::operator->();
+        return std::shared_ptr<T>::operator->();
     }
 
     /** @brief Const pointer operator
@@ -98,7 +104,7 @@ public:
     [[nodiscard]] const T *operator->() const
     {
         // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
-        return std::unique_ptr<T>::operator->();
+        return std::shared_ptr<T>::operator->();
     }
 
     /** @brief Non-const dereference operator
@@ -107,7 +113,7 @@ public:
     [[nodiscard]] T &operator*()
     {
         // cppcheck-suppress returnTempReference // false positive
-        return std::unique_ptr<T>::operator*();
+        return std::shared_ptr<T>::operator*();
     }
 
     /** @brief Const dereference operator
@@ -116,7 +122,37 @@ public:
     [[nodiscard]] const T &operator*() const
     {
         // cppcheck-suppress returnTempReference // false positive
-        return std::unique_ptr<T>::operator*();
+        return std::shared_ptr<T>::operator*();
+    }
+
+    /** @brief Deletes the previously managed object (if any) and starts
+     * to manage a new object.
+     *
+     * @param newObject The new object that will be managed. Can be
+     * <tt>nullptr</tt> to not manage any object anymore. */
+    void reset(T *newObject = nullptr)
+    {
+        std::shared_ptr<T>::reset(newObject);
+    }
+
+    /** @brief Swaps the managed objects.
+     *
+     * @param other Another @ref ConstPropagatingUniquePointer object to
+     * swap the managed object with. */
+    void swap(ConstPropagatingUniquePointer &other)
+    {
+        std::shared_ptr<T>::swap(other);
+    }
+
+    /** @brief Returns a pointer to the managed object or <tt>nullptr</tt> if
+     * no object is owned.
+     *
+     * @returns A pointer to the managed object or <tt>nullptr</tt> if
+     * no object is owned. */
+    [[nodiscard]] T *get()
+    {
+        // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
+        return std::shared_ptr<T>::get();
     }
 };
 

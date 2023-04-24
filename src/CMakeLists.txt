@@ -197,6 +197,14 @@ target_compile_definitions(
     PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
 set_target_properties(
     ${LIBRARY_NAME} PROPERTIES
+    # By default, on Windows all symbols are hidden except those that are
+    # explicitly marked for export using the "__declspec(dllexport)"
+    # or "__declspec(dllimport)" keywords in the code. On Unix-based systems,
+    # however, all symbols are exported by default unless they are explicitly
+    # marked as hidden. To achieve the same behavior as on Windows, set
+    # the "CXX_VISIBILITY_PRESET" property to "hidden" in CMake to hide all
+    # symbols by default, unless they are explicitly marked for export using
+    # compiler-specific attributes.
     CXX_VISIBILITY_PRESET "hidden"
     VISIBILITY_INLINES_HIDDEN TRUE
     VERSION "${FULL_VERSION}"
@@ -226,8 +234,10 @@ target_link_libraries(
     # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure
     # that we will not need it in the future either. Otherwise, it’s better
     # to keep it, for future binary compatibility.
-    PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent
-    PRIVATE ${LCMS2_LIBRARIES})
+    PUBLIC
+        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent
+    PRIVATE
+        ${LCMS2_LIBRARIES})
 install(
     DIRECTORY
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
@@ -294,7 +304,17 @@ target_compile_definitions(
 # it’s true.)
 set_target_properties(
     ${INTERNAL_LIBRARY_NAME} PROPERTIES
+    # We want all symbols to be publicly available. On Unix-based systems, this
+    # is the default behavior, and no additional configuration is required.
     CXX_VISIBILITY_PRESET "default"
+    # However, on Windows, all symbols are hidden by default except for those
+    # that are explicitly marked for export using "__declspec(dllexport)" or
+    # "__declspec(dllimport)" keywords. To achieve the same behavior on Windows
+    # as on Unix-based systems, CMake provides the "WINDOWS_EXPORT_ALL_SYMBOLS"
+    # property, which can be set to "TRUE" to automatically generate the
+    # necessary export symbols for all classes and functions on Windows.
+    # However, please note that this option does not work for global variables.
+    WINDOWS_EXPORT_ALL_SYMBOLS TRUE
     VISIBILITY_INLINES_HIDDEN FALSE
     VERSION "${FULL_VERSION}"
     SOVERSION "${MAJOR_VERSION}")
@@ -305,12 +325,19 @@ target_include_directories(
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/>
         # No $<INSTALL_INTERFACE:xxx> because this target is only meant to
         # be build as part of this project, and not by external projects.
-    PRIVATE
+        # NOTE It's necessary for LittleCMS to be marked as PUBLIC for the
+        # internal build since users of the internal build have full access
+        # to internal headers. These headers may include LittleCMS, and without
+        # public access, users wouldn't be able to use the library as intended.
         ${LCMS2_INCLUDE_DIRS})
 target_link_libraries(
     ${INTERNAL_LIBRARY_NAME}
     # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure
     # that we will not need it in the future either. Otherwise, it’s better
     # to keep it, for future binary compatibility.
-    PUBLIC Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent
-    PRIVATE ${LCMS2_LIBRARIES})
+    # NOTE It's necessary for LittleCMS to be marked as PUBLIC for the
+    # internal build since users of the internal build have full access
+    # to internal headers. These headers may include LittleCMS, and without
+    # public access, users wouldn't be able to use the library as intended.
+    PUBLIC
+        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent ${LCMS2_LIBRARIES})

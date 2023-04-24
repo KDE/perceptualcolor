@@ -57,12 +57,7 @@ MultiSpinBoxSection &MultiSpinBoxSection::operator=(const MultiSpinBoxSection &o
  * @param other the object to move */
 MultiSpinBoxSection::MultiSpinBoxSection(MultiSpinBoxSection &&other) noexcept
 {
-    // .reset() deletes the old object and resets the pointer to the
-    // new one. Unlike the move assignment, it does however not update
-    // the  deleters. We  use it nevertheless, because move assignment
-    // is currently not supported  by our pointer type, and at the
-    // same time we do not use deleters.
-    d_pointer.reset(other.d_pointer.release());
+    d_pointer.swap(other.d_pointer);
 }
 
 /** @brief Move assignment operator
@@ -73,12 +68,7 @@ MultiSpinBoxSection::MultiSpinBoxSection(MultiSpinBoxSection &&other) noexcept
 MultiSpinBoxSection &MultiSpinBoxSection::operator=(MultiSpinBoxSection &&other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
-        // .reset() deletes the old object and resets the pointer to the
-        // new one. Unlike the move assignment, it does however not update
-        // the  deleters. We  use it nevertheless, because move assignment
-        // is currently not supported  by our pointer type, and at the
-        // same time we do not use deleters.
-        d_pointer.reset(other.d_pointer.release());
+        d_pointer.swap(other.d_pointer);
     }
 
     return *this; // By convention, always return *this.

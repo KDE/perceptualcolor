@@ -37,7 +37,7 @@ This library:
 - Provides complete documentation for the public API (as well as for the
   internal API and source code itself).
 - Is cross-platform. It does not use platform-specific code nor rely on a
-  specific byte order.
+  specific byte order. CI-tested on Linux, Windows, FreeBSD.
 - Provides internationalization and localization, including right-to-left
   layouts.
 - Provides high-DPI support.

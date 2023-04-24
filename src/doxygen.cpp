@@ -47,7 +47,12 @@
  *
  * Please make sure that you comply with the licences of used libraries.
  *
- * To prepare the build, run cmake. Then, to build and install the library:
+ * To prepare the build, run cmake. We provide plenty of CMake options
+ * that control the build type (shared/dynamic vs. static), IPO/LPO and
+ * much more. The options are self-documenting. When you run CMake,
+ * the options are listed with their values and a description of them.
+ *
+ * Then, to build and install the library:
  * @code{.unparsed}
  * make && sudo make install
  * @endcode
