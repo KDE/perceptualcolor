@@ -744,34 +744,33 @@ private Q_SLOTS:
 
     void testGetInformationFromProfile3()
     {
-        if (sizeof(wchar_t) == 2) {
+        if constexpr (sizeof(wchar_t) >= 4) {
             // This test makes only sense when wchar_t has 32 bit (4 bytes).
-            return;
-        }
 
-        // Test UTF-32 value beyond U+10000
-        wchar_t *buffer = new wchar_t[2]; // Allocate the buffer
-        // Initialize the buffer an UTF-32 encoding of “🖌” who’s code point
-        // is U+1F58C and who’s UTF-32 representation is 0x1F58C,
-        // followed by a null character.
-        *(buffer + 0) = 0x1F58C;
-        *(buffer + 1) = 0;
-        const QString result = QString::fromWCharArray(
-            // Convert to string with these parameters:
-            buffer, // read from this buffer
-            -1 // read until the first null element
-        );
-        // Free allocated memory of the buffer
-        delete[] buffer;
-        // Test if the resulting QString has valid data:
-        QVERIFY(result.isValidUtf16());
-        // Test if the count of UTF-16 code units is as expected:
-        QCOMPARE(result.size(), 2);
-        // Test if the content is exactly 1 code point (excluding
-        // the null termination)
-        QCOMPARE(result.toUcs4().size(), 1);
-        // Test if the code point is correctly recognized:
-        QCOMPARE(result.toUcs4().at(0), 0x1F58C);
+            // Test UTF-32 value beyond U+10000
+            wchar_t *buffer = new wchar_t[2]; // Allocate the buffer
+            // Initialize the buffer an UTF-32 encoding of “🖌” who’s code point
+            // is U+1F58C and who’s UTF-32 representation is 0x1F58C,
+            // followed by a null character.
+            *(buffer + 0) = 0x1F58C;
+            *(buffer + 1) = 0;
+            const QString result = QString::fromWCharArray(
+                // Convert to string with these parameters:
+                buffer, // read from this buffer
+                -1 // read until the first null element
+            );
+            // Free allocated memory of the buffer
+            delete[] buffer;
+            // Test if the resulting QString has valid data:
+            QVERIFY(result.isValidUtf16());
+            // Test if the count of UTF-16 code units is as expected:
+            QCOMPARE(result.size(), 2);
+            // Test if the content is exactly 1 code point (excluding
+            // the null termination)
+            QCOMPARE(result.toUcs4().size(), 1);
+            // Test if the code point is correctly recognized:
+            QCOMPARE(result.toUcs4().at(0), 0x1F58C);
+        }
     }
 };
 
