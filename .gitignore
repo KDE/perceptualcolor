@@ -12,6 +12,9 @@
 /docs/publicapiandinternals/
 /artifact_*
 /.screenshotfont.ttf
+/.vs/
+/out/
+/.qtc_*/
 
 # Otherwise the pattern may also match at any level below
 # the .gitignore level:

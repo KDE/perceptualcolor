@@ -330,6 +330,26 @@ target_include_directories(
         # to internal headers. These headers may include LittleCMS, and without
         # public access, users wouldn't be able to use the library as intended.
         ${LCMS2_INCLUDE_DIRS})
+# Using MATCHES instead of STREQUAL for checking CMAKE_SYSTEM_NAME because
+# its value is not necessarily an exact match with "Windows" but could contain
+# values like "WindowsStore". MATCHES does a regular-expression match, so
+# returning TRUE also for "WindowsStore" and similar.
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+    set(ON_WINDOWS TRUE)
+else()
+    set(ON_WINDOWS FALSE)
+endif()
+if(ON_WINDOWS AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # NOTE --export-all-symbols is necessary when using the GNU compiler
+    # on Windows (MinGW), but is refused when using the GNU compiler on Linux.
+    # NOTE Options like -rdynamic (for the compiler) or --export-dynamic
+    # (directly for the GNU linker) respectively --export_dynamic (directly
+    # for the Clang linker) only affect executables. --export-all-symbols
+    # however affects also libraries.
+    target_link_options(${INTERNAL_LIBRARY_NAME}
+        # "-Wl," passes the following option to the linker.
+        PRIVATE "-Wl,--export-all-symbols")
+endif()
 target_link_libraries(
     ${INTERNAL_LIBRARY_NAME}
     # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure

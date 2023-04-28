@@ -49,9 +49,11 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void PERCEPTUALCOLOR_IMPORTEXPORT testDefined()
+    void testDefined()
     {
-        // If this compiles, PERCEPTUALCOLOR_IMPORTEXPORT is defined.
+#ifndef PERCEPTUALCOLOR_IMPORTEXPORT
+        QVERIFY(false);
+#endif
     }
 };
 

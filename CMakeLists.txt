@@ -27,6 +27,8 @@ project(
     DESCRIPTION "Perceptual color components"
     LANGUAGES CXX
 )
+message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "CMAKE_SYSTEM_VERSION: ${CMAKE_SYSTEM_VERSION}")
 message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
@@ -444,7 +446,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     add_compile_options(
         # Disable -Wregister because lcms2.h makes use of the “register“
         # keyword, but is not under our control.
-        -Wno-regixster
+        -Wno-register
     )
 endif()
 

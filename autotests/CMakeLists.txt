@@ -36,9 +36,11 @@ if(BUILD_TESTING)
 
     enable_testing() # Also defines the target “test”
 
-    # MSVC_STATIC it TRUE if we are compiling on MSVC and doing a static build.
-    set(MSVC
-        ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        set(ON_MSVC TRUE)
+    else()
+        set(ON_MSVC FALSE)
+    endif()
 
     # Define add_unit_tests(). For adding the unit tests “testfoo.cpp” and
     # “testbar.cpp”, call “add_unit_tests(testfoo testbar)”. If a file
@@ -102,10 +104,15 @@ if(BUILD_TESTING)
                     ${target_options})
             endif()
 
-            if(NOT ${MSVC})
-                # TODO On MSVC, the tests are only build, but do not run.
-                # Apparently most of them fail; maybe the CI hasn’t a
-                # graphical environment?
+            if(NOT ${ON_MSVC})
+                # NOTE On MSVC, the tests are only build, but do not run.
+                # This is because KDE’s CI system uses MSVC on Windows,
+                # and apparently the CI system does not run a graphical
+                # environment. KDE’s CI runs be default all existing
+                # unit tests. Because of the missing graphical environment,
+                # the available tests would fail, so the CI job would fail.
+                # As a (bad) workaround, we do not add the unit tests when
+                # using MSVC.
                 add_test(
                     NAME "${test_target_name}"
                     COMMAND "${test_target_name}")
@@ -158,7 +165,7 @@ if(BUILD_TESTING)
         testversion
         testwheelcolorpicker)
 
-    if(NOT ${MSVC})
+    if(NOT ${ON_MSVC})
         # TODO These unit tests currently don't even compile on MSVC.
         add_unit_tests(
             testasyncimageprovider
