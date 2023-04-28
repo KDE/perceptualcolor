@@ -15,6 +15,7 @@
 /.vs/
 /out/
 /.qtc_*/
+/CMakeLists.txt.user
 
 # Otherwise the pattern may also match at any level below
 # the .gitignore level:
