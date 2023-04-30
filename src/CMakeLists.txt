@@ -192,9 +192,15 @@ target_sources(
         ${library_SRC}
         ${lib_PUBLICHEADERS})
 # Setting the symbol visibility:
-target_compile_definitions(
-    ${LIBRARY_NAME}
-    PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(
+        ${LIBRARY_NAME}
+        PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+else()
+    target_compile_definitions(
+        ${LIBRARY_NAME}
+        PUBLIC PERCEPTUALCOLORLIB_STATIC)
+endif()
 set_target_properties(
     ${LIBRARY_NAME} PROPERTIES
     # By default, on Windows all symbols are hidden except those that are
@@ -296,9 +302,15 @@ target_sources(
     PRIVATE
         ${library_SRC}
         ${lib_PUBLICHEADERS})
-target_compile_definitions(
-    ${INTERNAL_LIBRARY_NAME}
-    PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(
+        ${INTERNAL_LIBRARY_NAME}
+        PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+else()
+    target_compile_definitions(
+        ${INTERNAL_LIBRARY_NAME}
+        PUBLIC PERCEPTUALCOLORLIB_STATIC)
+endif()
 # Setting the symbol visibility to “visible”. Following GCC documentation,
 # indeed the option for “visible” is called “default” (Sounds strange, but
 # it’s true.)

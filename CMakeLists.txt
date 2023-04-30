@@ -545,18 +545,11 @@ list(APPEND CLANG_FORMAT_PATTERNS
     src/*.h # The .in.hpp file is intentionally missing in this pattern.
     src/*.cpp)
 
-# TODO Under MSVC, linking statically against the internal library fails.
-# MSVC_STATIC it TRUE if we are compiling on MSVC and doing a static build.
-set(MSVC
-    ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
-set(MSVC_STATIC
-    (${MSVC} AND (NOT ${BUILD_SHARED_LIBS})))
-
 # Use unit tests only when building this project itself, and
 # not when it is included within another project:
 if("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     include(CTest)
-    if(BUILD_TESTING AND (NOT ${MSVC_STATIC}))
+    if(BUILD_TESTING)
         add_subdirectory(autotests)
     endif()
 endif()
@@ -564,16 +557,12 @@ list(APPEND CLANG_FORMAT_PATTERNS
     autotests/*.h
     autotests/*.cpp)
 
-if(NOT ${MSVC_STATIC})
-    add_subdirectory(tests)
-endif()
+add_subdirectory(tests)
 list(APPEND CLANG_FORMAT_PATTERNS
     tests/*.h
     tests/*.cpp)
 
-if(NOT ${MSVC_STATIC})
-    add_subdirectory(utils)
-endif()
+add_subdirectory(utils)
 list(APPEND CLANG_FORMAT_PATTERNS
     utils/*.h
     utils/*.cpp)

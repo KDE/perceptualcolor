@@ -33,26 +33,9 @@
  * <tt>Q_DECL_EXPORT</tt> macro. Exported symbols will be visible
  * symbols in the dynamic library. To get this behaviour, it is
  * necessary to define <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt>
- * always when this library itself is build. The definition can be made
- * within CMake:
+ * always when this library itself is build.
  *
- * @code{.unparsed}
- * target_compile_definitions(
- *     my_target_name
- *     PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
- * @endcode
- *
- * And you also have to make sure that all symbols that are <em>not</em>
- * explicitly exported will be actually hidden:
- *
- * @code{.unparsed}
- * set_target_properties(
- *     my_target_name PROPERTIES
- *     CXX_VISIBILITY_PRESET "hidden"
- *     VISIBILITY_INLINES_HIDDEN TRUE)
- * @endcode
- *
- * @section ab Build either the static library itself or an application using it
+ * @section buildstatic Build either the static library itself or an application using it
  *
  * When either
  *
@@ -65,13 +48,69 @@
  *
  * the macro expands to <em>nothing</em>, because for static libraries
  * no import nor export must happen. To get this behaviour, it is
- * necessary to define <tt>PERCEPTUALCOLORLIB_STATIC</tt>. The definition
- * can be made within CMake:
+ * necessary to define <tt>PERCEPTUALCOLORLIB_STATIC</tt>.
+ *
+ * @section cmakeimportexport CMake code
+ *
+ * The definition can be made within CMake:
  *
  * @code{.unparsed}
- * target_compile_definitions(
- *     my_target_name
- *     PUBLIC PERCEPTUALCOLORLIB_STATIC)
+ * if(BUILD_SHARED_LIBS)
+ *     target_compile_definitions(
+ *         my_target_name
+ *         PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+ * else()
+ *     target_compile_definitions(
+ *         my_target_name
+ *         PUBLIC PERCEPTUALCOLORLIB_STATIC)
+ * endif()
+ * @endcode
+ *
+ * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> is defined
+ * <tt>PRIVATE</tt>, so it only becomes available when building
+ * the library <em>itself</em> dynamically, and not when building
+ * an application <em>using</em> the dynamic library.
+ *
+ * <tt>PERCEPTUALCOLORLIB_STATIC</tt> however is defined
+ * <tt>PUBLIC</tt>, so it only becomes available both, when building
+ * the library <em>itself</em> statically, and also when building
+ * an application <em>using</em> the static library.
+ *
+ * And you also have to make sure that all symbols that are <em>not</em>
+ * explicitly exported will be actually hidden on all platforms:
+ *
+ * @code{.unparsed}
+ * set_target_properties(
+ *     my_target_name PROPERTIES
+ *     # By default, on Windows all symbols are hidden except those that are
+ *     # explicitly marked for export using the "__declspec(dllexport)"
+ *     # or "__declspec(dllimport)" keywords in the code. On Unix-based systems,
+ *     # however, all symbols are exported by default unless they are explicitly
+ *     # marked as hidden. To achieve the same behavior as on Windows, set
+ *     # the "CXX_VISIBILITY_PRESET" property to "hidden" in CMake to hide all
+ *     # symbols by default, unless they are explicitly marked for export using
+ *     # compiler-specific attributes.
+ *     CXX_VISIBILITY_PRESET "hidden"
+ *     VISIBILITY_INLINES_HIDDEN TRUE)
+ * @endcode
+ *
+ * For your information: The opposite would look like this:
+ *
+ * @code{.unparsed}
+ * set_target_properties(
+ *     my_target_name PROPERTIES
+ *     # We want all symbols to be publicly available. On Unix-based systems, this
+ *     # is the default behavior, and no additional configuration is required.
+ *     CXX_VISIBILITY_PRESET "default"
+ *     # However, on Windows, all symbols are hidden by default except for those
+ *     # that are explicitly marked for export using "__declspec(dllexport)" or
+ *     # "__declspec(dllimport)" keywords. To achieve the same behavior on Windows
+ *     # as on Unix-based systems, CMake provides the "WINDOWS_EXPORT_ALL_SYMBOLS"
+ *     # property, which can be set to "TRUE" to automatically generate the
+ *     # necessary export symbols for all classes and functions on Windows.
+ *     # However, please note that this option does not work for global variables.
+ *     WINDOWS_EXPORT_ALL_SYMBOLS TRUE
+ *     VISIBILITY_INLINES_HIDDEN FALSE)
  * @endcode
  *
  * @section importexportlinks Further reading
