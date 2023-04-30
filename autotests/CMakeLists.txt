@@ -104,15 +104,18 @@ if(BUILD_TESTING)
                     ${target_options})
             endif()
 
-            if(NOT ${ON_MSVC})
-                # NOTE: On MSVC, the tests are only built but not run.
-                # Reason: KDE's CI system runs all existing unit tests by
-                # default. However, unlike on Linux and FreeBSD, it does
-                # not run a graphical environment on Windows, causing most
-                # unit tests to fail. As KDE's CI uses MSVC on Windows, we
-                # avoid adding the unit tests here as a (bad) workaround. If
-                # you are running the tests locally on Windows, you can
-                # still run them manually after building.
+            if(NOT (${BUILD_SHARED_LIBS} AND ${ON_MSVC}))
+                # NOTE: On MSVC, for shared/dynamic libraries, the tests are
+                # built but not run.
+                #
+                # This is because of limitations in the KDE CI system. While
+                # the CI environment for Linux and FreeBSD can run both static
+                # and shared/dynamic builds with a graphical environment, on
+                # Windows, it only provides a graphical environment for static
+                # builds, leading to most unit tests failing on shared/dynamic
+                # builds. As an ugly workaround, we exclude unit tests for
+                # shared/dynamic builds on MSVC. You can manually run the tests
+                # after building when testing locally.
                 add_test(
                     NAME "${test_target_name}"
                     COMMAND "${test_target_name}")
@@ -176,7 +179,6 @@ if(BUILD_TESTING)
             testchromahueimageparameters
             testconstpropagatinguniquepointer
             testswatchbook)
-
     endif()
 
 else()

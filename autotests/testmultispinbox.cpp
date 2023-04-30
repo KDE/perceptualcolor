@@ -261,7 +261,12 @@ private Q_SLOTS:
         // TODO The following line that copies to clipboard
         // is surprisingly extremly slow.
         QTest::keyClick(widget.data(), Qt::Key_C, Qt::ControlModifier, 0);
+        // Go to the left
+        QTest::keyClick(widget.data(), Qt::Key_Left);
+        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"45°  0%  0"));
         // Go to second section
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"45°  0%  0"));
         QTest::keyClick(widget.data(), Qt::Key_Right);
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"45°  0%  0"));
         QTest::keyClick(widget.data(), Qt::Key_Right);
