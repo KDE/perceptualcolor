@@ -228,21 +228,10 @@ add_compile_definitions(
 # the size of the binary and the loading time. According to
 # https://www.technovelty.org/linux/stripping-shared-libraries.html
 # shared libraries do not need the symbols, so they can safely be
-# removed. But we have to the the option manually; there is no
+# removed. But we have to set the option manually; there is no
 # build-in CMake support that helps us do this in a portable way.
 # Therefore, we leave it up to the packagers to strip the symbols
 # finally with “strip --strip-unneeded libraryname”.
-
-
-
-
-
-################# Compiler character sets #################
-# NOTE It is possible to force UTF-8 as input character set:
-# GCC and clang use “-finput-charset=UTF-8” to set the input character set.
-# MSVC uses “/utf-8” which sets both, the input and the narrow execution
-# character set. However, currently we try to get away with the default
-# settings provided by CMake.
 
 
 
@@ -426,28 +415,42 @@ endif()
 
 
 ################# General compiler options #################
+
+# Character set configuration:
+#
+# There are three character sets involved: the input character set, the
+# narrow execution character set, and the wide execution character set. The
+# wide execution character set is not utilized in this project. However, it
+# is essential to ensure that both the input character set and the narrow
+# execution character set are always set to UTF-8.
+#
+# For GCC and Clang, the input character set is set using
+# "-finput-charset=UTF-8". By default, with the CMake settings we have, both
+# the input character set and the narrow execution character set are already
+# set to UTF-8, so no additional configuration is required in this case.
+#
+# On MSVC, the situation is different. Although the input character set is
+# is expected to be recognized as UTF-8 when each source file starts with a
+# Byte Order Mark (BOM) — which is indeed the case in our code base — the
+# narrow execution character set may still default to an obscure
+# Windows code page. To ensure consistent behavior, we explicitly set
+# both the input and narrow execution character sets to UTF-8
+# using "/utf-8" flag in our MSVC configuration.
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_compile_options(
-        # Set source and execution character sets to UTF-8
-        #
-        # Necessary to make sure that the execution character set is UTF-8
-        # in all environments.
-        #
-        # It should not be necessary to set the source character set because
-        # we have a BOM in each source file, but it does not hurt to set it
-        # explicitly either.
-        /utf-8
-        # warning C5033: 'register' is no longer a supported storage class
-        # This warning is triggered by lcms2.h. /wd5033 will suppress it.
-        /wd5033
-    )
+    add_compile_options(/utf-8)
+endif()
+
+# Given that the "register" keyword has been deprecated in C++ since C++17,
+# the compiler may generate a warning when encountering its usage. It’s worth
+# noting that the LittleCMS header "lcms2.h," which we rely on, is a C header
+# and not specifically designed for C++. In this header, the "register" keyword
+# is extensively used. Since modifying the external header is not possible, we
+# opt to disable the warning.
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    add_compile_options(/wd5033)
 endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    add_compile_options(
-        # Disable -Wregister because lcms2.h makes use of the “register“
-        # keyword, but is not under our control.
-        -Wno-register
-    )
+    add_compile_options(-Wno-register)
 endif()
 
 

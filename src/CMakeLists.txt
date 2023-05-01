@@ -348,6 +348,7 @@ if(WIN32)
         # export symbols for all classes and functions on Windows. However,
         # please note that this option does not work for global variables.
         # Note that this is incompatible with INTERPROCEDURAL_OPTIMIZATION.
+        # See also https://stackoverflow.com/q/225432/5706738
         WINDOWS_EXPORT_ALL_SYMBOLS TRUE
         # WINDOWS_EXPORT_ALL_SYMBOLS is incompatible with the /GL option
         # for IPO/LTO (whole program optimization) on MSVC. And maybe also
