@@ -36,10 +36,10 @@ if(BUILD_TESTING)
 
     enable_testing() # Also defines the target “test”
 
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-        set(ON_MSVC TRUE)
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND BUILD_SHARED_LIBS)
+        set(MSVC_DLL TRUE)
     else()
-        set(ON_MSVC FALSE)
+        set(MSVC_DLL FALSE)
     endif()
 
     # Define add_unit_tests(). For adding the unit tests “testfoo.cpp” and
@@ -70,6 +70,11 @@ if(BUILD_TESTING)
             target_sources(
                 ${test_target_name}
                 PRIVATE ${test_sources})
+            if(MSVC_DLL)
+                target_compile_definitions(
+                    ${test_target_name}
+                    PRIVATE MSVC_DLL)
+            endif()
             target_link_libraries(
                 ${test_target_name}
                 # Transitive dependencies (PUBLIC, INTERFACE) don’t make sense
@@ -104,7 +109,7 @@ if(BUILD_TESTING)
                     ${target_options})
             endif()
 
-            if(NOT (${BUILD_SHARED_LIBS} AND ${ON_MSVC}))
+            if(NOT ${MSVC_DLL})
                 # NOTE: On MSVC, for shared/dynamic libraries, the tests are
                 # built but not run.
                 #
@@ -128,14 +133,20 @@ if(BUILD_TESTING)
 
     add_unit_tests(
         testabstractdiagram
+        testasyncimageprovider
         testasyncimageproviderbase
         testasyncimagerendercallback
         testasyncimagerenderthread
+        testchromahuediagram
+        testchromahueimageparameters
+        testchromalightnessdiagram
+        testchromalightnessimageparameters
         testcolordialog
         testcolorpatch
         testcolorwheel
         testcolorwheelimage
         testconstpropagatingrawpointer
+        testconstpropagatinguniquepointer
         testextendeddoublevalidator
         testgradientimageparameters
         testgradientslider
@@ -165,21 +176,9 @@ if(BUILD_TESTING)
         testrgbdouble
         testscreencolorpicker
         testsettranslation
+        testswatchbook
         testversion
         testwheelcolorpicker)
-
-    if(NOT (${BUILD_SHARED_LIBS} AND "${ON_MSVC}"))
-        # TODO These unit tests currently don't even compile on
-        # MSVC when using a shared/dynamic build.
-        add_unit_tests(
-            testasyncimageprovider
-            testchromalightnessdiagram
-            testchromalightnessimageparameters
-            testchromahuediagram
-            testchromahueimageparameters
-            testconstpropagatinguniquepointer
-            testswatchbook)
-    endif()
 
 else()
 

@@ -319,13 +319,14 @@ set_target_properties(
     # We want all symbols to be publicly available. On Unix-based systems, this
     # is the default behavior, and no additional configuration is required.
     CXX_VISIBILITY_PRESET "default"
-    # However, on Windows, all symbols are hidden by default except for those
-    # that are explicitly marked for export using "__declspec(dllexport)" or
-    # "__declspec(dllimport)" keywords. To achieve the same behavior on Windows
-    # as on Unix-based systems, CMake provides the "WINDOWS_EXPORT_ALL_SYMBOLS"
-    # property, which can be set to "TRUE" to automatically generate the
-    # necessary export symbols for all classes and functions on Windows.
-    # However, please note that this option does not work for global variables.
+    # However, on Windows, all symbols are hidden by default
+    # except for those that are explicitly marked for export using
+    # "__declspec(dllexport)" or "__declspec(dllimport)" keywords.
+    # To achieve a similar behavior on Window as on Unix-based systems,
+    # CMake provides the "WINDOWS_EXPORT_ALL_SYMBOLS" property, which
+    # can be set to "TRUE" to automatically generate the necessary
+    # export symbols for all classes and functions on Windows. However,
+    # please note that this option does not work for global variables.
     WINDOWS_EXPORT_ALL_SYMBOLS TRUE
     VISIBILITY_INLINES_HIDDEN FALSE
     VERSION "${FULL_VERSION}"

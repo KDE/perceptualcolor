@@ -68,6 +68,15 @@ private Q_SLOTS:
         ChromaLightnessImageParameters test;
     }
 
+#ifndef MSVC_DLL
+    // The automatic export of otherwise private symbols on MSVC
+    // shared libraries via CMake's WINDOWS_EXPORT_ALL_SYMBOLS property
+    // does not work well for Qt meta objects. AsyncImageProvider inherits
+    // from AsyncImageProviderBase, which relies on Qt meta object
+    // functionality and whose API is private. Therefore, instantiation of
+    // AsyncImageProvider is not possible, so the following unit tests cannot
+    // be built for MSVC shared libraries.
+
     void testGetImage0()
     {
         ChromaLightnessImageParameters m_imageParameters;
@@ -246,6 +255,8 @@ private Q_SLOTS:
         m_imageProvider.refreshSync();
         Q_UNUSED(m_imageProvider.getCache())
     }
+
+#endif
 };
 
 } // namespace PerceptualColor

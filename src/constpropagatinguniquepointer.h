@@ -57,8 +57,9 @@ namespace PerceptualColor
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
  * implementation? Or remove propagate_const header from this library? */
+// NOTE No PERCEPTUALCOLOR_IMPORTEXPORT for generic template definitions!
 template<typename T>
-class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer : private std::shared_ptr<T>
+class ConstPropagatingUniquePointer : private std::shared_ptr<T>
 {
 public:
     /** @brief Default constructor

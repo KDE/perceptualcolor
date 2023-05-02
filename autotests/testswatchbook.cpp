@@ -118,6 +118,12 @@ private Q_SLOTS:
                  "height.");
     }
 
+#ifndef MSVC_DLL
+    // The automatic export of otherwise private symbols on MSVC
+    // shared libraries via CMake's WINDOWS_EXPORT_ALL_SYMBOLS property
+    // does not work well for Qt meta objects, resulting in non-functional
+    // signals. Since the following unit test requires signals, it cannot be
+    // built for MSVC shared libraries.
     void testCurrentColor()
     {
         SwatchBook testWidget(m_rgbColorSpace);
@@ -164,6 +170,7 @@ private Q_SLOTS:
         QCOMPARE(testWidget.currentColor(), myQColorDialog.currentColor());
         QCOMPARE(lastSignalColor, myQColorDialog.currentColor());
     }
+#endif
 
     void testPatchSpacing_data()
     {
