@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-03-29 23:23+0300\n"
+"PO-Revision-Date: 2023-05-01 12:42+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.03.70\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:96
@@ -29,7 +29,7 @@ msgstr "Lab"
 #: colordialog.cpp:102
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "RGB"
-msgstr "KYM"
+msgstr "RGB"
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:201
@@ -181,7 +181,7 @@ msgstr "Oklch:"
 #: colordialog.cpp:402
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&RGB:"
-msgstr "&KYM:"
+msgstr "&RGB:"
 
 #. @label:textbox Label for hexadecimal RGB representation like #12ab45
 #: colordialog.cpp:405
