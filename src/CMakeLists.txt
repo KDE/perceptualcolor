@@ -5,6 +5,21 @@
 
 
 
+################# General #################
+# Using MATCHES instead of STREQUAL for checking CMAKE_SYSTEM_NAME because
+# its value is not necessarily an exact match with "Windows" but could contain
+# values like "WindowsStore". MATCHES does a regular-expression match, so
+# returning TRUE also for "WindowsStore" and similar.
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+    set(ON_WINDOWS TRUE)
+else()
+    set(ON_WINDOWS FALSE)
+endif()
+
+
+
+
+
 ################# Version number #################
 # Substitutes all occurrences of @MAJOR_VERSION@… and similar declarations
 # in the source code file by the actual value in CMake:
@@ -319,18 +334,26 @@ set_target_properties(
     # We want all symbols to be publicly available. On Unix-based systems, this
     # is the default behavior, and no additional configuration is required.
     CXX_VISIBILITY_PRESET "default"
-    # However, on Windows, all symbols are hidden by default
-    # except for those that are explicitly marked for export using
-    # "__declspec(dllexport)" or "__declspec(dllimport)" keywords.
-    # To achieve a similar behavior on Window as on Unix-based systems,
-    # CMake provides the "WINDOWS_EXPORT_ALL_SYMBOLS" property, which
-    # can be set to "TRUE" to automatically generate the necessary
-    # export symbols for all classes and functions on Windows. However,
-    # please note that this option does not work for global variables.
-    WINDOWS_EXPORT_ALL_SYMBOLS TRUE
     VISIBILITY_INLINES_HIDDEN FALSE
     VERSION "${FULL_VERSION}"
     SOVERSION "${MAJOR_VERSION}")
+if(WIN32)
+    set_target_properties(${INTERNAL_LIBRARY_NAME} PROPERTIES
+        # However, on Windows, all symbols are hidden by default
+        # except for those that are explicitly marked for export using
+        # "__declspec(dllexport)" or "__declspec(dllimport)" keywords.
+        # To achieve a similar behavior on Window as on Unix-based systems,
+        # CMake provides the "WINDOWS_EXPORT_ALL_SYMBOLS" property, which
+        # can be set to "TRUE" to automatically generate the necessary
+        # export symbols for all classes and functions on Windows. However,
+        # please note that this option does not work for global variables.
+        # Note that this is incompatible with INTERPROCEDURAL_OPTIMIZATION.
+        WINDOWS_EXPORT_ALL_SYMBOLS TRUE
+        # WINDOWS_EXPORT_ALL_SYMBOLS is incompatible with the /GL option
+        # for IPO/LTO (whole program optimization) on MSVC. And maybe also
+        # with IPO/LTO on MinGW?
+        INTERPROCEDURAL_OPTIMIZATION OFF)
+endif()
 target_include_directories(
     ${INTERNAL_LIBRARY_NAME}
     PUBLIC
@@ -343,15 +366,6 @@ target_include_directories(
         # to internal headers. These headers may include LittleCMS, and without
         # public access, users wouldn't be able to use the library as intended.
         ${LCMS2_INCLUDE_DIRS})
-# Using MATCHES instead of STREQUAL for checking CMAKE_SYSTEM_NAME because
-# its value is not necessarily an exact match with "Windows" but could contain
-# values like "WindowsStore". MATCHES does a regular-expression match, so
-# returning TRUE also for "WindowsStore" and similar.
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-    set(ON_WINDOWS TRUE)
-else()
-    set(ON_WINDOWS FALSE)
-endif()
 if(ON_WINDOWS AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # NOTE --export-all-symbols is necessary when using the GNU compiler
     # on Windows (MinGW), but is refused when using the GNU compiler on Linux.
