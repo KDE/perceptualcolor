@@ -30,7 +30,7 @@ add_executable(testapp)
 target_sources(
     testapp
     PRIVATE testapp.cpp)
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND BUILD_SHARED_LIBS)
+if(MSVC_DLL)
     target_compile_definitions(testapp PUBLIC MSVC_DLL)
 endif()
 target_link_libraries(

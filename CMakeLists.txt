@@ -511,6 +511,12 @@ message(
     "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}.\n"
     "   You can control this with “-DBUILD_SHARED_LIBS=ON” (dynamic library)\n"
     "   or “-DBUILD_SHARED_LIBS=OFF” (static library).")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND BUILD_SHARED_LIBS)
+    set(MSVC_DLL TRUE)
+else()
+    set(MSVC_DLL FALSE)
+endif()
+message("MSVC_DLL: ${MSVC_DLL}")
 
 
 

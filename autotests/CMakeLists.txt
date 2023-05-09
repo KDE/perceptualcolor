@@ -36,12 +36,6 @@ if(BUILD_TESTING)
 
     enable_testing() # Also defines the target “test”
 
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND BUILD_SHARED_LIBS)
-        set(MSVC_DLL TRUE)
-    else()
-        set(MSVC_DLL FALSE)
-    endif()
-
     # Define add_unit_tests(). For adding the unit tests “testfoo.cpp” and
     # “testbar.cpp”, call “add_unit_tests(testfoo testbar)”. If a file
     # “foo.qrc” or “bar.qrc” exists, the corresponding resources are compiled
@@ -109,7 +103,7 @@ if(BUILD_TESTING)
                     ${target_options})
             endif()
 
-            if(NOT ${MSVC_DLL})
+            if(NOT MSVC_DLL)
                 # NOTE: On MSVC, for shared/dynamic libraries, the tests are
                 # built but not run.
                 #

@@ -5,21 +5,6 @@
 
 
 
-################# General #################
-# Using MATCHES instead of STREQUAL for checking CMAKE_SYSTEM_NAME because
-# its value is not necessarily an exact match with "Windows" but could contain
-# values like "WindowsStore". MATCHES does a regular-expression match, so
-# returning TRUE also for "WindowsStore" and similar.
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-    set(ON_WINDOWS TRUE)
-else()
-    set(ON_WINDOWS FALSE)
-endif()
-
-
-
-
-
 ################# Version number #################
 # Substitutes all occurrences of @MAJOR_VERSION@… and similar declarations
 # in the source code file by the actual value in CMake:
@@ -358,10 +343,10 @@ endif()
 # does not work well for Qt meta objects, resulting in non-functional
 # signals. Since some unit tests require signals, it is good to give
 # linker feedback in targets linking against this library (therefore PUBLIC).
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND BUILD_SHARED_LIBS)
+if(MSVC AND BUILD_SHARED_LIBS)
     target_link_options(${INTERNAL_LIBRARY_NAME} PUBLIC "/VERBOSE")
 endif()
-if(ON_WINDOWS AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if(WIN32 AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # NOTE --export-all-symbols is necessary when using the GNU compiler
     # on Windows (MinGW), but is refused when using the GNU compiler on Linux.
     # NOTE Options like -rdynamic (for the compiler) or --export-dynamic
