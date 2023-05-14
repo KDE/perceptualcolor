@@ -20,6 +20,8 @@ Options:
   setup-dbus-session: True
   #force-inject-asan: False
   #ctest-arguments: ''
+  #ctest-arguments: '--verbose'
+  #ctest-arguments: '--extra-verbose'
   require-passing-tests-on: ['@all']
   run-cppcheck: True
   cppcheck-arguments: '--enable=all --suppress=unusedFunction --inline-suppr --language=c++ --std=c++17'

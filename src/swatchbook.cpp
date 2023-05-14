@@ -523,7 +523,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
         // We draw the frame slightly shrunk on windowsvista style. Otherwise,
         // when the windowsvista style is used on 125% scale factor and with
         // a multi-monitor setup, the frame would sometimes not render on some
-        // borders.
+        // of the borders on some of the screens.
         const bool vistaStyle = QString::compare( //
                                     QApplication::style()->objectName(),
                                     QStringLiteral("windowsvista"),

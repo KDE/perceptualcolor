@@ -91,7 +91,22 @@ private:
      * QColorDialog-based screen color picking.
      *
      * Might hold an empty value if @ref initializeQColorDialogSupport has
-     * never been called. */
+     * never been called.
+     *
+     * @warning The declaration as <tt>static in‍line</tt> can be problematic:
+     * At least when linking on MSVC against a shared/static library,
+     * apparently there are two instances of this variable: One that is used
+     * within the shared/dynamic library and another one that is used within
+     * the executable that links against this library. While on GCC and Clang
+     * this does not happen, maybe this behaviour is implementation-defined.
+     * And we do not want to rely on implementation-defined behaviour. However,
+     * because the variable is <tt>private</tt>, this won't make any problems
+     * under normal circumstances, because it's inaccessible anyway. Only when
+     * doing a whitebox test and bypass the private access modifier via the
+     * @ref ScreenColorPicker::TestScreenColorPicker "friend declaration" for
+     * unit tests, you might see the wrong variable and consequently possibly
+     * the wrong value. Therefore, unit tests should only access this variable
+     * when building against the static library. */
     static inline std::optional<bool> m_hasQColorDialogSupport = std::nullopt;
     /** @brief The hidden QColorDialog widget (if any).
      *
