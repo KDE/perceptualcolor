@@ -46,15 +46,16 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~SwatchBookPrivate() noexcept override = default;
 
-    [[nodiscard]] QList<QList<QColor>> wcsBasicColorPalette() const;
-    [[nodiscard]] QSize patchSizeOuter() const;
-    [[nodiscard]] QSize patchSizeInner() const;
+    [[nodiscard]] QSize colorPatchesSizeWithMargin() const;
     [[nodiscard]] int horizontalPatchSpacing() const;
     void initStyleOption(QStyleOptionFrame *option) const;
     [[nodiscard]] QPoint offset(const QStyleOptionFrame &styleOptionFrame) const;
+    [[nodiscard]] QSize patchSizeInner() const;
+    [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();
     void selectColorFromPalette(QListSizeType newCurrentBasicColor, QListSizeType newCurrentRow);
     [[nodiscard]] int verticalPatchSpacing() const;
+    [[nodiscard]] QList<QList<QColor>> wcsBasicColorPalette() const;
 
     /** @brief The colors of the palette.
      *

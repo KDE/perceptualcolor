@@ -18,12 +18,14 @@
 #include <array>
 #include <lcms2.h>
 #include <optional>
+#include <qapplication.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qfontmetrics.h>
 #include <qline.h>
 #include <qlist.h>
+#include <qmargins.h>
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qpainterpath.h>
@@ -32,6 +34,7 @@
 #include <qrect.h>
 #include <qsharedpointer.h>
 #include <qsizepolicy.h>
+#include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qtransform.h>
@@ -178,29 +181,12 @@ QSize SwatchBook::minimumSizeHint() const
 {
     ensurePolished();
 
-    const QSize myPatchSize = d_pointer->patchSizeOuter();
-    const int myColumnCount = //
-        static_cast<int>(d_pointer->m_paletteColors.count());
-    const int myRowCount = static_cast<int>( //
-        d_pointer->m_paletteColors.at(0).count());
-    QSize myContentSize;
-    myContentSize.setWidth( //
-        style()->pixelMetric(QStyle::PM_LayoutLeftMargin) //
-        + myColumnCount * myPatchSize.width() //
-        + (myColumnCount - 1) * d_pointer->horizontalPatchSpacing() //
-        + style()->pixelMetric(QStyle::PM_LayoutRightMargin));
-    myContentSize.setHeight( //
-        style()->pixelMetric(QStyle::PM_LayoutTopMargin) //
-        + myRowCount * myPatchSize.height() //
-        + (myRowCount - 1) * d_pointer->verticalPatchSpacing() //
-        + style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
-
     QStyleOptionFrame myOption;
     d_pointer->initStyleOption(&myOption);
 
     return style()->sizeFromContents(QStyle::CT_LineEdit, //
                                      &myOption,
-                                     myContentSize,
+                                     d_pointer->colorPatchesSizeWithMargin(),
                                      this);
 }
 
@@ -383,23 +369,27 @@ QPoint SwatchBookPrivate::offset(const QStyleOptionFrame &styleOptionFrame) cons
         q_pointer->style()->pixelMetric(QStyle::PM_LayoutTopMargin));
 
     QStyleOptionFrame temp = styleOptionFrame; // safety copy
-    const QRect myContentRectangle = q_pointer->style()->subElementRect( //
+    const QRectF frameContentRectangle = q_pointer->style()->subElementRect( //
         QStyle::SE_LineEditContents,
         &temp, // Risk of changes, therefore using the safety copy
         q_pointer.toPointerToConstObject());
+    const QSizeF swatchbookContentSize = colorPatchesSizeWithMargin();
 
-    QPoint frameOffset = myContentRectangle.topLeft();
-    // In the Kvantum style in version 0.18, there was a bug
-    // https://github.com/tsujan/Kvantum/issues/676 that returned
-    // negative values here. This Kvantum bug broke this widget here.
-    // Therefore, it is well possible that other QStyle subclasses have
-    // the same bug. While the Kvantum is has been fixed in the meantime,
-    // to be sure we use this workaround, which isn’t perfect, but
-    // better than nothing:
-    frameOffset.rx() = qMax(frameOffset.x(), 0);
-    frameOffset.ry() = qMax(frameOffset.y(), 0);
+    // Some styles, such as the Fusion style, regularly return a slightly
+    // larger rectangle through QStyle::subElementRect() than the one
+    // requested in SwatchBook::minimumSizeHint(), which we need to draw
+    // the color patches. In the case of the Kvantum style,
+    // QStyle::subElementRect().height() is even greater than
+    // SwatchBook::height(). It extends beyond the widget's own dimensions,
+    // both at the top and bottom. QStyle::subElementRect().y() is
+    // negative. Please see https://github.com/tsujan/Kvantum/issues/676
+    // for more information. To ensure a visually pleasing rendering, we
+    // implement centering within QStyle::subElementRect().
+    QPointF frameOffset = frameContentRectangle.center();
+    frameOffset.rx() -= swatchbookContentSize.width() / 2.;
+    frameOffset.ry() -= swatchbookContentSize.height() / 2.;
 
-    return frameOffset + innerMarginOffset;
+    return (frameOffset + innerMarginOffset).toPoint();
 }
 
 /** @brief React on a mouse press event.
@@ -426,6 +416,10 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     QStyleOptionFrame myFrameStyleOption;
     d_pointer->initStyleOption(&myFrameStyleOption);
     const QPoint temp = event->pos() - d_pointer->offset(myFrameStyleOption);
+
+    if ((temp.x() < 0) || (temp.y() < 0)) {
+        return; // Click position too much leftwards or upwards.
+    }
 
     const auto columnWidth = myPatchWidth + d_pointer->horizontalPatchSpacing();
     const int xWithinPatch = temp.x() % columnWidth;
@@ -525,10 +519,36 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const int patchHeightOuter = patchSizeOuter.height();
 
     // Draw the background
-    style()->drawPrimitive(QStyle::PE_PanelLineEdit, //
-                           &frameStyleOption,
-                           &widgetPainter,
-                           this);
+    {
+        // We draw the frame slightly shrunk on windowsvista style. Otherwise,
+        // when the windowsvista style is used on 125% scale factor and with
+        // a multi-monitor setup, the frame would sometimes not render on some
+        // borders.
+        const bool vistaStyle = QString::compare( //
+                                    QApplication::style()->objectName(),
+                                    QStringLiteral("windowsvista"),
+                                    Qt::CaseInsensitive)
+            == 0;
+        const int shrink = vistaStyle ? 1 : 0;
+        const QMargins margins(shrink, shrink, shrink, shrink);
+        auto shrunkFrameStyleOption = frameStyleOption;
+        shrunkFrameStyleOption.rect = frameStyleOption.rect - margins;
+        // NOTE On ukui style, drawing this primitive results in strange
+        // rendering on mouse hover. Actual behaviour: The whole panel
+        // background is drawn blue. Expected behaviour: Only the frame is
+        // drawn blue (as ukui actually does when rendering a QLineEdit).
+        // Playing around with PE_FrameLineEdit instead of or additional to
+        // PE_PanelLineEdit did not give better results either.
+        // As ukui has many, many graphical glitches and bugs (up to
+        // crashed unfixed for years), we assume that this is a problem of
+        // ukui, and not of our code. Furthermore, while the behavior is
+        // unexpected, the rendering doesn’t look completely terrible; we
+        // can live with that.
+        style()->drawPrimitive(QStyle::PE_PanelLineEdit, //
+                               &shrunkFrameStyleOption,
+                               &widgetPainter,
+                               this);
+    }
 
     // Draw the color patches
     const QPoint offset = d_pointer->offset(frameStyleOption);
@@ -849,6 +869,29 @@ QList<QList<QColor>> SwatchBookPrivate::wcsBasicColorPalette() const
     result << rgbList;
 
     return result;
+}
+
+/** @brief Size necessary to render the color patches, including a margin.
+ *
+ * @returns Size necessary to render the color patches, including a margin.
+ * Measured in device-independent pixels. */
+QSize SwatchBookPrivate::colorPatchesSizeWithMargin() const
+{
+    q_pointer->ensurePolished();
+    const QSize patchSize = patchSizeOuter();
+    const int columnCount = static_cast<int>(m_paletteColors.count());
+    const int rowCount = static_cast<int>(m_paletteColors.at(0).count());
+    const int width = //
+        q_pointer->style()->pixelMetric(QStyle::PM_LayoutLeftMargin) //
+        + columnCount * patchSize.width() //
+        + (columnCount - 1) * horizontalPatchSpacing() //
+        + q_pointer->style()->pixelMetric(QStyle::PM_LayoutRightMargin);
+    const int height = //
+        q_pointer->style()->pixelMetric(QStyle::PM_LayoutTopMargin) //
+        + rowCount * patchSize.height() //
+        + (rowCount - 1) * verticalPatchSpacing() //
+        + q_pointer->style()->pixelMetric(QStyle::PM_LayoutBottomMargin);
+    return QSize(width, height);
 }
 
 } // namespace PerceptualColor
