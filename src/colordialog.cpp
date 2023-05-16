@@ -225,7 +225,7 @@ void ColorDialogPrivate::retranslateUi()
     /*: @item:intext An information from the color profile to be added
     to the info text about current color space. */
     profileInfo.append( //
-        tableRow.arg(tr("Maximum CIELch chroma:"), maximumCielchD50Chroma));
+        tableRow.arg(tr("Maximum CIELCh-D50 chroma:"), maximumCielchD50Chroma));
     /*: @item:intext The maximum chroma. */
     const QString maximumOklchChroma = //
         tr("%L1 (estimated)")
