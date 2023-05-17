@@ -115,10 +115,17 @@ class MultiSpinBoxPrivate;
  * However, a full-featured interface could look like that:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured interface
  *
- * @todo Use a MultiSpinBox with a locale that uses “,” as decimal separator,
- * and with a value with some decimals. Try to type “0,1”. It will not be
- * accepted. However, “0.1” will be accepted (and, when moving on, corrected
- * to “0,1”). This is not the expected behaviour.
+ * @todo i18n bug: Use a MultiSpinBox with a locale that uses “,” as decimal
+ * separator, and with a value with some decimals. Try to type “0,1”. It will
+ * not be accepted. However, “0.1” will be accepted (and, when moving on,
+ * corrected to “0,1”). This is not the expected behaviour.
+ *
+ * @todo i18n bug: Enter HLC values like “<tt>80.</tt>” or “<tt>80,</tt>”
+ * or “<tt>80e</tt>”. Depending on the locale, it is possible to
+ * actually enter these characters, but apparently on validation it
+ * is not accepted and the value is replaced by <tt>0</tt>.
+ * MultiSpinBox should never become 0 because the validator
+ * allows something that the converter cannot convert!
  *
  * @todo In @ref ColorDialog go to the HLC @ref MultiSpinBox and place
  * the text cursor behind the degree sign, than press the ⌫ (backspace) key.
@@ -129,13 +136,9 @@ class MultiSpinBoxPrivate;
  *
  * @todo <tt>Ctrl-A</tt> support for this class. (Does this shortcut
  * trigger <tt>selectAll()</tt>?) <tt>Ctrl-U</tt> support for this class?
- * If so, do it via @ref clear(). And: It the user tries to delete
+ * If so, do it via @ref clear(). And: If the user tries to delete
  * everything, delete instead only the current value!? (By the way:
  * How does QDateTimeEdit handle this?)
- *
- * @todo Do really not text-cursor-select more than <em>one</em> value when
- * editing (or do not allow text selection at all)?? Also: Selecting text
- * with the mouse cursor seems somewhat unpredictable
  *
  * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
  * Then, switch back the the “numeric“ tab. Expected behaviour: When
@@ -145,13 +148,6 @@ class MultiSpinBoxPrivate;
  * (While <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt> don’t do that
  * either, <tt>QDateTimeEdit</tt> indeed <em>does</em>, and that seems
  * appropriate also for @ref MultiSpinBox.
- *
- * @todo Bug: Enter HLC values like “<tt>80.</tt>” or “<tt>80,</tt>”
- * or “<tt>80e</tt>”. Depending on the locale, it is possible to
- * actually enter these characters, but apparently on validation it
- * is not accepted and the value is replaced by <tt>0</tt>.
- * MultiSpinBox should never become 0 because the validator
- * allows something that the converter cannot convert!
  *
  * @todo Now, @ref setSectionValues does not select automatically the first
  * section anymore. Is this in conformance with <tt>QDateTimeEdit</tt>?

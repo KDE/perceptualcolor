@@ -102,7 +102,7 @@ public:
 
     // Functions
     [[nodiscard]] QString formattedValue(QListSizeType index) const;
-    [[nodiscard]] bool isCursorPositionAtCurrentSectionValue(const int cursorPosition) const;
+    [[nodiscard]] bool isCursorTouchingCurrentSectionValue() const;
     void setCurrentIndexAndUpdateTextAndSelectValue(QListSizeType newIndex);
     void setCurrentIndexToZeroAndUpdateTextAndSelectValue();
     void setCurrentIndexWithoutUpdatingText(QListSizeType newIndex);

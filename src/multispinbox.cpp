@@ -39,22 +39,24 @@ class QAction;
 
 namespace PerceptualColor
 {
-/** @brief Test if a cursor position is at the current value.
+/** @brief If the text cursor is touching at the current section’s value.
  *
  * Everything from the cursor position exactly before the value itself up
- * to the cursor position exactly after the value itself. Example: “ab12cd”
+ * to the cursor position exactly after the value itself. Prefixes and
+ * suffixes are not considered as part of the value. Example: “ab12cd”
  * (prefix “ab”, value 12, suffix “cd”). The cursor positions 2, 3 and 4 are
- * <em>at</em> the current value.
+ * considered <em>touching</em> the current value.
  *
- * @param cursorPosition the cursor position to test
- *
- * @returns <tt>true</tt> if the indicated cursor position is at the
- * <em>value</em> text of the current section. <tt>false</tt> otherwise. */
-bool MultiSpinBoxPrivate::isCursorPositionAtCurrentSectionValue(const int cursorPosition) const
+ * @returns <tt>true</tt> if the text cursor is touching at the current
+ * section’s value.. <tt>false</tt> otherwise. */
+bool MultiSpinBoxPrivate::isCursorTouchingCurrentSectionValue() const
 {
-    const bool newPositionIsHighEnough = (cursorPosition >= m_textBeforeCurrentValue.length());
-    const bool newPositionIsLowEnough = (cursorPosition <= (q_pointer->lineEdit()->text().length() - m_textAfterCurrentValue.length()));
-    return (newPositionIsHighEnough && newPositionIsLowEnough);
+    const auto cursorPosition = q_pointer->lineEdit()->cursorPosition();
+    const bool highEnough = (cursorPosition >= m_textBeforeCurrentValue.length());
+    const auto after = q_pointer->lineEdit()->text().length() //
+        - m_textAfterCurrentValue.length();
+    const bool lowEnough = (cursorPosition <= after);
+    return (highEnough && lowEnough);
 }
 
 /** @brief The recommended minimum size for the widget
@@ -547,7 +549,7 @@ void MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(const QList<dou
     // valid (minimum <= value <= maximum):
     MultiSpinBoxSection myConfig;
     double rangeWidth;
-    qreal temp; // TODO Why qreal and not double?
+    double temp;
     for (int i = 0; i < sectionCount; ++i) {
         myConfig = m_sectionConfigurations.at(i);
         fixedNewSectionValues[i] =
@@ -599,15 +601,7 @@ void MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(const QList<dou
  * @ref MultiSpinBoxSection::minimum and
  * @ref MultiSpinBoxSection::maximum. Their precision will be
  * reduced to as many decimal places as given by
- * @ref MultiSpinBoxSection::decimals.
- *
- * @internal
- *
- * @todo TODO Before, we had: <em>The first section will be
- * selected  as new current section.</em> We did this by calling
- * @ref MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue().
- * Now, this isn’t possible anymore because the function is used much more
- * in our code which expects this not to change… */
+ * @ref MultiSpinBoxSection::decimals. */
 void MultiSpinBox::setSectionValues(const QList<double> &newSectionValues)
 {
     d_pointer->setSectionValuesWithoutFurtherUpdating(newSectionValues);
@@ -624,7 +618,7 @@ void MultiSpinBox::setSectionValues(const QList<double> &newSectionValues)
         // setCurrentIndexAndUpdateTextAndSelectValue(m_currentIndex);
     }
 
-    // Make sure that the buttons for step up and step down are updated.
+    // Make sure that the buttons for step-up and step-down are updated.
     update();
 }
 
@@ -867,14 +861,6 @@ bool MultiSpinBox::event(QEvent *event)
  * @param newPos the new cursor position (current position) */
 void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const int newPos)
 {
-    // This slot is meant to be connected to the
-    // QLineEdit::cursorPositionChanged() signal of
-    // the MultiSpinBox::lineEdit() child widget.
-    // This signal emits the two “int” parameters “oldPos”
-    // and “newPos”. We only need the second one, but we have
-    // to take both of them as parameter if we want to stay
-    // compatible. Therefore, we mark the first one
-    // with Q_UNUSED to avoid compiler warnings.
     Q_UNUSED(oldPos)
 
     // We are working here with QString::length() and
@@ -884,7 +870,7 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     // in code _points_, it does not matter for this code, as the behaviour
     // is consistent between both usages.
 
-    if (isCursorPositionAtCurrentSectionValue(newPos)) {
+    if (isCursorTouchingCurrentSectionValue()) {
         // We are within the value text of our current section value.
         // There is nothing to do here.
         return;
@@ -897,7 +883,7 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     // its length. If the new cursor position is after this value, it will
     // have to be adapted (if the value had been changed or alternated).
     const QListSizeType oldTextLength = q_pointer->lineEdit()->text().length();
-    const bool cursorPositionHasToBeAdaptedToTextLenghtChange = //
+    const bool mustAdjustCursorPosition = //
         (newPos > (oldTextLength - m_textAfterCurrentValue.length()));
 
     // Calculate in which section the cursor is
@@ -927,7 +913,7 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
                                    + m_textOfCurrentValue //
                                    + m_textAfterCurrentValue);
     int correctedCursorPosition = newPos;
-    if (cursorPositionHasToBeAdaptedToTextLenghtChange) {
+    if (mustAdjustCursorPosition) {
         correctedCursorPosition = //
             static_cast<int>(newPos //
                              + q_pointer->lineEdit()->text().length() //
@@ -936,7 +922,6 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     q_pointer->lineEdit()->setCursorPosition(correctedCursorPosition);
 
     // Make sure that the buttons for step up and step down are updated.
-
     q_pointer->update();
 }
 
