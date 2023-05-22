@@ -5,7 +5,6 @@
 // this forces the header to be self-contained.
 #include "screencolorpicker.h"
 
-#include <optional>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
@@ -20,6 +19,10 @@
 #include <qmetatype.h>
 #include <qobjectdefs.h>
 #include <qstring.h>
+#endif
+
+#ifdef PERCEPTUALCOLORLIB_STATIC
+#include <optional>
 #endif
 
 namespace PerceptualColor
@@ -76,12 +79,34 @@ private Q_SLOTS:
         ScreenColorPicker picker(nullptr);
         // Difficult to test. Make sure that at least it does not crash.
         picker.initializeQColorDialogSupport();
+
+#ifdef PERCEPTUALCOLORLIB_STATIC
+        // NOTE The variable m_hasQColorDialogSupport is defined as “static
+        // inline … = …;”. This decision has caused issues when
+        // perceptualcolorinternal is used as a shared/dynamic
+        // library, and the value of m_hasQColorDialogSupport is
+        // accessed from  outside. Specifically, on MSVC, incorrect
+        // values are returned during variable access from outside, likely
+        // due to MSVC creating another  concurrent variable within the unit
+        // test executable, while initializeQColorDialogSupport modifies
+        // the variable within the dll. However, in general, having “static
+        // inline … = …;” variables is acceptable if they are
+        // private class members, as nobody can access them. Consequently,
+        // this part of the unit test is intended for static builds only.
+
         // There has to be at least a result (even if we do not know which)
         QVERIFY(picker.m_hasQColorDialogSupport.has_value());
+
+        // Tough future code changes in Qt could break our
+        // QColorDialog support, it is a good idea to check
+        // here if the QColorDialog support does actually work,
+        // so we might get at least alerts by failing unit tests.
         if (picker.m_hasQColorDialogSupport.has_value()) {
-            QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
-            QVERIFY(!picker.m_qColorDialog.isNull());
+            QCOMPARE(picker.m_hasQColorDialogSupport.value(), true);
         }
+#endif
+        QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
+        QVERIFY(!picker.m_qColorDialog.isNull());
     }
 
     void testHasPortalSupport()

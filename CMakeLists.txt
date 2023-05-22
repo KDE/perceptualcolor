@@ -17,7 +17,7 @@
 # Qt 6.2 LTS requires at least CMake version 3.16 for the Qt shared library
 # and CMake version 3.21.1 for Qt static library.
 # https://doc.qt.io/archives/qt-6.2/cmake-get-started.html
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.22.0)
 message(STATUS "CMAKE_VERSION: ${CMAKE_VERSION}")
 
 # Project setup. We need only a C++ (CXX) compiler, and no C compiler.

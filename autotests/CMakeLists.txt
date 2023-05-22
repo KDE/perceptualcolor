@@ -102,26 +102,27 @@ if(BUILD_TESTING)
                     PROPERTY COMPILE_OPTIONS
                     ${target_options})
             endif()
-
-            if(NOT MSVC_DLL)
-                # NOTE: On MSVC, for shared/dynamic libraries, the tests are
-                # built but not run.
-                #
-                # This is because of limitations in the KDE CI system. While
-                # the CI environment for Linux and FreeBSD can run both static
-                # and shared/dynamic builds with a graphical environment, on
-                # Windows, it only provides a graphical environment for static
-                # builds, leading to most unit tests failing on shared/dynamic
-                # builds. As an ugly workaround, we exclude unit tests for
-                # shared/dynamic builds on MSVC. You can manually run the tests
-                # after building when testing locally.
-                add_test(
-                    NAME "${test_target_name}"
-                    COMMAND "${test_target_name}")
-                add_dependencies(
-                    buildtests
-                    "${test_target_name}")
+            add_test(
+                NAME "${test_target_name}"
+                COMMAND "${test_target_name}")
+            if(MSVC_DLL)
+                # NOTE On MSVC, when using a shared/dynamic library,
+                # we need to explicitly provide the path to the
+                # perceptualcolorinteral DLL. More information can be found at:
+                # https://www.scivision.dev/cmake-ctest-set-environment-variable
+                # Alternatively, installing the library would make it
+                # discoverable, but since we are linking against the
+                # internal library instead of the public one, installation
+                # is not suitable.
+                set_tests_properties(
+                    "${test_target_name}"
+                    PROPERTIES
+                        ENVIRONMENT_MODIFICATION
+                            "PATH=path_list_append:${CMAKE_BINARY_DIR}/src")
             endif()
+            add_dependencies(
+                buildtests
+                "${test_target_name}")
         endforeach()
     endfunction()
 
