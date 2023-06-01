@@ -293,7 +293,7 @@ msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
 "0%⁠–⁠100%</p>"
 msgstr ""
-"<p>To: 0°⁠–⁠360°</p><p>Saturació HSV/HSB: 0%⁠–⁠100%</p><p>Lluminositat/Valor: "
+"<p>To: 0°⁠–⁠360°</p><p>Saturació HSV/HSB: 0%⁠–⁠100%</p><p>Brillantor/Valor: "
 "0%⁠–⁠100%</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
