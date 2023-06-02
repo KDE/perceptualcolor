@@ -207,6 +207,7 @@ add_compile_definitions(
     QT_NO_URL_CAST_FROM_STRING
     QT_USE_QSTRINGBUILDER
     QT_NO_KEYWORDS
+    QT_NO_FOREACH
     # DQT_DISABLE_DEPRECATED_BEFORE disables all deprecated features.
     # While normal deprecation warnings are NOT issued for ALL deprecated
     # features, THIS flag actually seems to block actually all deprecated
