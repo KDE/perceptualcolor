@@ -15,7 +15,7 @@ type: functional
 platforms:
     - name: Linux
     - name: FreeBSD
-    #- name: Windows
+    - name: Windows
     #- name: MacOSX
     #- name: Android
     #- name: All
