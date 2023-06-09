@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-05-04 11:37+0300\n"
+"PO-Revision-Date: 2023-06-08 18:55+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.03.70\n"
+"X-Generator: Lokalize 23.07.70\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:98
@@ -36,7 +36,7 @@ msgstr "RGB"
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
-msgstr "%​%1"
+msgstr "%%1"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
 #: colordialog.cpp:207
