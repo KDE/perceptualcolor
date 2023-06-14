@@ -20,9 +20,9 @@ echo "QCH build started."
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
 echo Number of available CPU threads: $PARALLEL_PROCESSES
-rm --recursive --force build
-mkdir --parents build
-cd build
+rm --recursive --force build_qch
+mkdir --parents build_qch
+cd build_qch
 # NOTE -DQHelpGenerator_EXECUTABLE=/usr/lib/qt5/bin/qhelpgenerator seems to be
 # necessary to find qhelpgenerator on the Gitlab CI system and other
 # systems where “if (TARGET Qt5::qhelpgenerator)” is not available.

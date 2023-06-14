@@ -104,6 +104,9 @@ codecheck_test:
     when: always
     paths:
       - artifact_*
+      - build_qch/perceptualcolor.qch
+      - build_qch/perceptualcolor.tags
+      - build_qch/perceptualcolor-0_QCHTargets.cmake
   stage: build
   before_script:
     - apt-get update --assume-yes
