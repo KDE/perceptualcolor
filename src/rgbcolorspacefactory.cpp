@@ -69,9 +69,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createFromF
  * <a href="https://www.freedesktop.org/software/colord/index.html">colord</a>.
  * Also on Windows, there are specific API calls
  * (<a href="https://learn.microsoft.com/en-us/windows/win32/wcs/profile-management-functions">[1]</a>
- * <a href="https://learn.microsoft.com/en-us/windows/win32/api/icm/nf-icm-wcsgetdefaultcolorprofile">[1]</a>
- * <a href="https://learn.microsoft.com/en-us/windows/win32/api/icm/nf-icm-getcolordirectoryw">[1]</a>
- * <a href="https://learn.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.getcolorprofileasync?view=winrt-22621">[1]</a>)
+ * <a href="https://learn.microsoft.com/en-us/windows/win32/api/icm/nf-icm-wcsgetdefaultcolorprofile">[2]</a>
+ * <a href="https://learn.microsoft.com/en-us/windows/win32/api/icm/nf-icm-getcolordirectoryw">[3]</a>
+ * <a href="https://learn.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.getcolorprofileasync?view=winrt-22621">[4]</a>)
  * Some other operating systems have similar APIs.
  *
  * The best solution is to rely on the operating system’s API. However,

@@ -64,7 +64,7 @@ echo "Starting ci-iwyu.sh …"
 scripts/ci-iwyu.sh
 exitcode=$?
 # NOTE Do NOT count this exit code. There is a separate job that will
-# use iwyu aretefacts later…
+# use iwyu artifacts later…
 echo "ci-iwyu.sh finished with exit code $exitcode."
 exitcode_iwyu=$exitcode
 

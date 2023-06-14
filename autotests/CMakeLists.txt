@@ -22,7 +22,7 @@ if(BUILD_TESTING)
         "   CMake’s own “test” target unfortunately runs the unit tests \n"
         "   without building them if the source files have changed. \n"
         "   Therefore, to run unit tests, you should always execute \n"
-        "   the target “buildandruntests” instead, which build and updates \n"
+        "   the target “buildandruntests” instead, which builds and updates \n"
         "   the unit tests if necessary.")
 
     add_custom_target(buildtests)

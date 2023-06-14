@@ -11,7 +11,8 @@
  *
  * Requirements:
  * - LittleCMS 2 (minimum version: 2.0)
- * - Qt 5 (minimum version: 5.15). Components: Core, Gui, Widgets,
+ * - Qt 5 (minimum version: 5.15) or Qt 6 (minimum
+ *   version: 6.0.0). Components: Core, Gui, Widgets,
  *   DBus, Concurrent, Test. <!-- Qt 5.15 has an API that is close
  *   to Qt 6. It introduces some new functions we are using to avoid
  *   deprecated older functions. -->
@@ -102,7 +103,7 @@
  * <tt>target_include_directories()</tt> instead. Use
  * <tt>target_link_libraries()</tt> to pull in dependencies, which gives you
  * automatically the correct include directories, compile options etc.
- * When using <tt>target_link_libraries()</tt>, always specify the
+ * When using <tt>target_link_libraries()</tt>, always specify
  * <tt>PUBLIC</tt> or <tt>PRIVATE</tt> or <tt>INTERFACE</tt> explicitly.
  *
  * @subsection codingstylecmakeindent Indent

@@ -126,7 +126,7 @@ set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 
 
 
-################# Compiler standard #################
+################# C++ standard #################
 # Our choice for the required C++ standard is documented via Doxygen (main
 # page of the documentation).
 set(CMAKE_CXX_STANDARD 17)

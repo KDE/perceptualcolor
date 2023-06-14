@@ -128,6 +128,11 @@ codecheck_test:
     # (necessary for generatescreenshots).
     - apt-get install --assume-yes --no-install-recommends xvfb openbox fonts-noto-core
     - export DISPLAY=':90'
+    # From Xvfb documentation:
+    # “−ac disables host-based access control mechanisms. Enables access by
+    #  any host, and permits any host to modify the access control list. Use
+    #  with extreme caution. This option exists primarily for running test
+    #  suites remotely.”
     - Xvfb :90 -ac -screen 0 1600x1200x24+32 &
     - sleep 5s
     - openbox &
