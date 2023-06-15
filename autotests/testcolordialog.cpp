@@ -7,16 +7,19 @@
 // Second, the private implementation.
 #include "colordialog_p.h" // IWYU pragma: keep
 
+#include "absolutecolor.h"
 #include "chromahuediagram.h"
 #include "colorpatch.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "gradientslider.h"
+#include "helperconversion.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
+#include "lchadouble.h"
 #include "lchdouble.h"
-#include "multicolor.h"
-#include "multirgb.h"
 #include "multispinbox.h"
+#include "rgbcolor.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include "settranslation.h"
@@ -30,6 +33,7 @@
 #include <qcoreevent.h>
 #include <qdebug.h>
 #include <qglobal.h>
+#include <qhash.h>
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qlocale.h>
@@ -1032,16 +1036,19 @@ private Q_SLOTS:
                  static_cast<int>(opaqueColor.spec()));
     }
 
+#ifndef MSVC_DLL
     void testSetCurrentColor()
     {
         m_perceptualDialog.reset( //
             new ColorDialog(m_srgbBuildinColorSpace));
         m_perceptualDialog->show();
-        m_perceptualDialog->setCurrentColor(Qt::yellow);
+        constexpr auto testColor = Qt::yellow;
+        m_perceptualDialog->setCurrentColor(testColor);
 
         // Get internal LCH value
+        const auto tmp = m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs;
         const LchDouble color = //
-            m_perceptualDialog->d_pointer->m_currentOpaqueColor.cielchD50;
+            tmp.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble();
 
         // The very same LCH value has to be found in all widgets using it.
         // (This is not trivial, because even coming from RGB, because of
@@ -1067,7 +1074,14 @@ private Q_SLOTS:
         // widget rounds the given value to the current decimal precision
         // it’s using. Therefore, it’s pointless to control here
         // for rounding errors.
+
+        const auto sliderColor = //
+            m_perceptualDialog->d_pointer->m_alphaGradientSlider->secondColor();
+        QCOMPARE(sliderColor.l, color.l);
+        QCOMPARE(sliderColor.c, color.c);
+        QCOMPARE(sliderColor.h, color.h);
     }
+#endif
 
     void testOpen()
     {
@@ -1453,6 +1467,15 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
     }
 
+    void testRgbInput()
+    {
+        m_perceptualDialog.reset( //
+            new ColorDialog(m_srgbBuildinColorSpace));
+        m_perceptualDialog->setOption( //
+            QColorDialog::ShowAlphaChannel, //
+            true);
+    }
+
     void testAlphaSpinbox()
     {
         m_perceptualDialog.reset( //
@@ -1579,15 +1602,18 @@ private Q_SLOTS:
         QCOMPARE(m_perceptualDialog->options(), m_qDialog->options());
     }
 
+#ifndef MSVC_DLL
     void testReadLightnessValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 60);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first, 60);
     }
+#endif
 
+#ifndef MSVC_DLL
     void testReadHlcNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
@@ -1601,9 +1627,9 @@ private Q_SLOTS:
         myValues[2] = 12;
         myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.c, 12);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).third, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).second, 12);
 
         // Test with an out-of-gamut value. Hue and lightness should not change.
         myValues[0] = 10;
@@ -1611,10 +1637,12 @@ private Q_SLOTS:
         myValues[2] = 50;
         myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.h, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.cielchD50.l, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).third, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first, 11);
     }
+#endif
 
+#ifndef MSVC_DLL
     void testReadOklchNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
@@ -1628,9 +1656,9 @@ private Q_SLOTS:
         myValues[2] = 3;
         myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readOklchNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(0), 0.25);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(1), 0.05);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).first, 0.25);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).second, 0.05);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).third, 3);
 
         // Test with an out-of-gamut value. Hue and lightness should not change.
         myValues[0] = 0.25;
@@ -1638,9 +1666,10 @@ private Q_SLOTS:
         myValues[2] = 3;
         myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readOklchNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(0), 0.25);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.oklch.at(2), 3);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).first, 0.25);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).third, 3);
     }
+#endif
 
     void testReadHsvNumericValues()
     {
@@ -1716,34 +1745,31 @@ private Q_SLOTS:
         QCOMPARE(myDialog->currentColor().blue(), 12);
     }
 
+#ifndef MSVC_DLL
     void testSetCurrentOpaqueColor()
     {
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
-        LchDouble myOpaqueColor;
-        myOpaqueColor.l = 30;
-        myOpaqueColor.c = 40;
-        myOpaqueColor.h = 50;
-        const MultiColor myMultiColor = MultiColor::fromCielchD50( //
-            myDialog->d_pointer->m_rgbColorSpace,
-            myOpaqueColor);
+        const auto myMultiColor = AbsoluteColor::allConversions( //
+            ColorModel::CielchD50,
+            GenericColor(30, 40, 50));
+        const auto myRgbColor = RgbColor();
         myDialog->d_pointer->setCurrentOpaqueColor(myMultiColor, nullptr);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor, myMultiColor);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs, myMultiColor);
         QList<double> myValues = //
             myDialog->d_pointer->m_rgbSpinBox->sectionValues();
         QCOMPARE(qRound(myValues.at(0)), 113);
         QCOMPARE(qRound(myValues.at(1)), 53);
         QCOMPARE(qRound(myValues.at(2)), 23);
     }
+#endif
 
     void testUpdateColorPatch()
     {
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
-        myDialog->d_pointer->m_currentOpaqueColor = //
-            MultiColor::fromMultiRgb( //
-                myDialog->d_pointer->m_rgbColorSpace,
-                MultiRgb::fromRgbQColor(QColor(1, 2, 3)));
+        myDialog->d_pointer->m_currentOpaqueColorRgb = //
+            RgbColor::fromRgbQColor(QColor(1, 2, 3));
         myDialog->d_pointer->updateColorPatch();
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().red(), 1);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().green(), 2);
@@ -1911,8 +1937,10 @@ private Q_SLOTS:
             m_perceptualDialog->d_pointer->m_tabWidget->setCurrentIndex(i);
             oldFocusWidgets.clear();
             const QColor oldColor = m_perceptualDialog->currentColor();
-            const MultiColor oldOpaqueLchColor = //
-                m_perceptualDialog->d_pointer->m_currentOpaqueColor;
+            const auto oldOpaqueColorAbs = //
+                m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs;
+            const auto oldOpaqueColorRgb = //
+                m_perceptualDialog->d_pointer->m_currentOpaqueColorRgb;
             bool focusPassingIsWorking = true;
             while ( //
                 focusPassingIsWorking //
@@ -1922,8 +1950,11 @@ private Q_SLOTS:
                 focusPassingIsWorking = m_perceptualDialog->focusNextChild();
                 QCOMPARE(oldColor, m_perceptualDialog->currentColor());
                 QVERIFY( //
-                    oldOpaqueLchColor //
-                    == m_perceptualDialog->d_pointer->m_currentOpaqueColor);
+                    oldOpaqueColorAbs //
+                    == m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs);
+                QVERIFY( //
+                    oldOpaqueColorRgb //
+                    == m_perceptualDialog->d_pointer->m_currentOpaqueColorRgb);
             }
         };
     }
@@ -2040,6 +2071,7 @@ private Q_SLOTS:
             expectedRgbValues);
     }
 
+#ifndef MSVC_DLL
     void testRgbHexRounding()
     {
         // This is a test for a bug discovered during development.
@@ -2055,15 +2087,12 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
 
         // Set a color that triggers the rounding error:
-        LchDouble testColor;
-        testColor.h = 100;
-        testColor.l = 97;
-        testColor.c = 94;
+        GenericColor testColorLch{97, 94, 100};
         m_perceptualDialog->d_pointer->setCurrentOpaqueColor(
             // Color:
-            MultiColor::fromCielchD50( //
-                m_perceptualDialog->d_pointer->m_rgbColorSpace, //
-                testColor),
+            AbsoluteColor::allConversions( //
+                ColorModel::CielchD50, //
+                testColorLch),
             // Widget to ignore:
             nullptr);
 
@@ -2087,7 +2116,9 @@ private Q_SLOTS:
         // Compare
         QCOMPARE(actualHex, expectedHex);
     }
+#endif
 
+#ifndef MSVC_DLL
     void testBugMaximumLightness()
     {
         QScopedPointer<QTemporaryFile> wideGamutProfile(
@@ -2112,8 +2143,9 @@ private Q_SLOTS:
             m_perceptualDialog->d_pointer->m_lchLightnessSelector, //
             Qt::Key_End);
         QVERIFY( //
-            m_perceptualDialog->d_pointer->m_currentOpaqueColor.cielchD50.l > 95);
+            m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first > 95);
     }
+#endif
 
     void testSnippet02()
     {

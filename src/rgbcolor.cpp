@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 // Own header
-#include "multirgb.h"
+#include "rgbcolor.h"
 
 #include "helperqttypes.h"
 #include <qglobal.h>
@@ -14,40 +14,41 @@ namespace PerceptualColor
 // TODO xxx Decide on the commented-out static_assert statements. Ideally
 // get them working!
 
-// static_assert(std::is_trivially_copyable_v<MultiRgb>);
-// static_assert(std::is_trivial_v<MultiRgb>);
+// static_assert(std::is_trivially_copyable_v<RgbColor>);
+// static_assert(std::is_trivial_v<RgbColor>);
 
-static_assert(std::is_standard_layout_v<MultiRgb>);
+static_assert(std::is_standard_layout_v<RgbColor>);
 
-static_assert(std::is_default_constructible_v<MultiRgb>);
-// static_assert(std::is_trivially_default_constructible_v<MultiRgb>);
-// static_assert(std::is_nothrow_default_constructible_v<MultiRgb>);
+static_assert(std::is_default_constructible_v<RgbColor>);
+// static_assert(std::is_trivially_default_constructible_v<RgbColor>);
+// static_assert(std::is_nothrow_default_constructible_v<RgbColor>);
 
-static_assert(std::is_copy_constructible_v<MultiRgb>);
-// static_assert(std::is_trivially_copy_constructible_v<MultiRgb>);
-// static_assert(std::is_nothrow_copy_constructible_v<MultiRgb>);
+static_assert(std::is_copy_constructible_v<RgbColor>);
+// static_assert(std::is_trivially_copy_constructible_v<RgbColor>);
+// static_assert(std::is_nothrow_copy_constructible_v<RgbColor>);
 
-// static_assert(std::is_move_constructible_v<MultiRgb>);
-// static_assert(std::is_trivially_move_constructible_v<MultiRgb>);
-// static_assert(std::is_nothrow_move_constructible_v<MultiRgb>);
+// static_assert(std::is_move_constructible_v<RgbColor>);
+// static_assert(std::is_trivially_move_constructible_v<RgbColor>);
+// static_assert(std::is_nothrow_move_constructible_v<RgbColor>);
 
-MultiRgb::MultiRgb()
+RgbColor::RgbColor()
 {
 }
 
-/** @brief Set all RGB-based color formats.
+/** @brief Set all member variables.
  *
  * @param color The new color as <tt>QColor</tt> object. Might be of any
  * <tt>QColor::Spec</tt>.
  * @param hue When empty, the hue is calculated automatically. Otherwise,
  * this value is used instead. Valid range: [0, 360[
  *
- * @post @ref hsl, @ref hsv, @ref hwb, @ref rgb and @ref rgbQColor are set. */
-void MultiRgb::fillRgbAndDerivates(QColor color, std::optional<double> hue)
+ * @post @ref hsl, @ref hsv, @ref hwb, @ref rgb255 and @ref rgbQColor are
+ * set. */
+void RgbColor::fillAll(QColor color, std::optional<double> hue)
 {
-    rgb = QList<double>({static_cast<double>(color.redF() * 255), //
-                         static_cast<double>(color.greenF() * 255), //
-                         static_cast<double>(color.blueF() * 255)});
+    rgb255 = QList<double>({static_cast<double>(color.redF() * 255), //
+                            static_cast<double>(color.greenF() * 255), //
+                            static_cast<double>(color.blueF() * 255)});
 
     rgbQColor = color.toRgb();
 
@@ -82,16 +83,16 @@ void MultiRgb::fillRgbAndDerivates(QColor color, std::optional<double> hue)
                          hwbBlacknessPercentage});
 }
 
-/** @brief Static convenience function that returns a @ref MultiRgb
+/** @brief Static convenience function that returns a @ref RgbColor
  * constructed from the given color.
  *
- * @param color Original color.
+ * @param color Original color. Valid range: [0, 255]
  * @param hue If not empty, this value is used instead of the actually
- *            calculated hue value.
- * @returns A @ref MultiRgb object representing this color. */
-MultiRgb MultiRgb::fromRgb(const QList<double> &color, std::optional<double> hue)
+ *            calculated hue value. Valid range: [0, 360[
+ * @returns A @ref RgbColor object representing this color. */
+RgbColor RgbColor::fromRgb255(const QList<double> &color, std::optional<double> hue)
 {
-    MultiRgb result;
+    RgbColor result;
     if (color.count() < 3) {
         qWarning() << "The private-API function" << __func__ //
                    << "in file" << __FILE__ //
@@ -110,33 +111,33 @@ MultiRgb MultiRgb::fromRgb(const QList<double> &color, std::optional<double> hue
     const QColor newRgbQColor = QColor::fromRgbF(qBound(zero, red, one), //
                                                  qBound(zero, green, one), //
                                                  qBound(zero, blue, one));
-    result.fillRgbAndDerivates(newRgbQColor, hue);
-    result.rgb = color;
+    result.fillAll(newRgbQColor, hue);
+    result.rgb255 = color;
 
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref MultiRgb
+/** @brief Static convenience function that returns a @ref RgbColor
  * constructed from the given color.
  *
  * @param color Original color.
- * @returns A @ref MultiRgb object representing this color. */
-MultiRgb MultiRgb::fromRgbQColor(const QColor &color)
+ * @returns A @ref RgbColor object representing this color. */
+RgbColor RgbColor::fromRgbQColor(const QColor &color)
 {
-    MultiRgb result;
-    result.fillRgbAndDerivates(color, std::optional<double>());
+    RgbColor result;
+    result.fillAll(color, std::optional<double>());
 
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref MultiRgb
+/** @brief Static convenience function that returns a @ref RgbColor
  * constructed from the given color.
  *
  * @param color Original color.
- * @returns A @ref MultiRgb object representing this color. */
-MultiRgb MultiRgb::fromHsl(const QList<double> &color)
+ * @returns A @ref RgbColor object representing this color. */
+RgbColor RgbColor::fromHsl(const QList<double> &color)
 {
-    MultiRgb result;
+    RgbColor result;
     if (color.count() < 3) {
         qWarning() << "The private-API function" << __func__ //
                    << "in file" << __FILE__ //
@@ -158,7 +159,7 @@ MultiRgb MultiRgb::fromHsl(const QList<double> &color)
         qBound(zero, static_cast<QColorFloatType>(color.at(2) / 100.0), one);
     const QColor newRgbQColor = //
         QColor::fromHslF(hslHue, hslSaturation, hslLightness).toRgb();
-    result.fillRgbAndDerivates(newRgbQColor, color.at(0));
+    result.fillAll(newRgbQColor, color.at(0));
     // Override again with the original value:
     result.hsl = color;
     if (result.hsl.at(2) == 0) {
@@ -171,14 +172,14 @@ MultiRgb MultiRgb::fromHsl(const QList<double> &color)
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref MultiRgb
+/** @brief Static convenience function that returns a @ref RgbColor
  * constructed from the given color.
  *
  * @param color Original color.
- * @returns A @ref MultiRgb object representing this color. */
-MultiRgb MultiRgb::fromHsv(const QList<double> &color)
+ * @returns A @ref RgbColor object representing this color. */
+RgbColor RgbColor::fromHsv(const QList<double> &color)
 {
-    MultiRgb result;
+    RgbColor result;
     if (color.count() < 3) {
         qWarning() << "The private-API function" << __func__ //
                    << "in file" << __FILE__ //
@@ -199,7 +200,7 @@ MultiRgb MultiRgb::fromHsv(const QList<double> &color)
         qBound(zero, static_cast<QColorFloatType>(color.at(2) / 100.0), one);
     const QColor newRgbQColor = //
         QColor::fromHsvF(hsvHue, hsvSaturation, hsvValue);
-    result.fillRgbAndDerivates(newRgbQColor, color.at(0));
+    result.fillAll(newRgbQColor, color.at(0));
     // Override again with the original value:
     result.hsv = color;
     if (result.hsv.at(2) == 0) {
@@ -212,14 +213,14 @@ MultiRgb MultiRgb::fromHsv(const QList<double> &color)
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref MultiRgb
+/** @brief Static convenience function that returns a @ref RgbColor
  * constructed from the given color.
  *
  * @param color Original color.
- * @returns A @ref MultiRgb object representing this color. */
-MultiRgb MultiRgb::fromHwb(const QList<double> &color)
+ * @returns A @ref RgbColor object representing this color. */
+RgbColor RgbColor::fromHwb(const QList<double> &color)
 {
-    MultiRgb result;
+    RgbColor result;
     if (color.count() < 3) {
         qWarning() << "The private-API function" << __func__ //
                    << "in file" << __FILE__ //
@@ -255,7 +256,7 @@ MultiRgb MultiRgb::fromHwb(const QList<double> &color)
             static_cast<QColorFloatType>(newHsv.at(0) / 360), //
             static_cast<QColorFloatType>(newHsv.at(1) / 100), //
             static_cast<QColorFloatType>(newHsv.at(2) / 100));
-    result.fillRgbAndDerivates(newRgbQColor, normalizedHwb.at(0));
+    result.fillAll(newRgbQColor, normalizedHwb.at(0));
     // Override again with the original value:
     result.hsv = newHsv;
     result.hwb = color; // Intentionally not normalized, but original value.
@@ -269,37 +270,37 @@ MultiRgb MultiRgb::fromHwb(const QList<double> &color)
  *
  * @returns <tt>true</tt> if all data members have exactly the same
  * coordinates. <tt>false</tt> otherwise. */
-bool MultiRgb::operator==(const MultiRgb &other) const
+bool RgbColor::operator==(const RgbColor &other) const
 {
     // Test equality for all data members
     return (hsl == other.hsl) //
         && (hsv == other.hsv) //
         && (hwb == other.hwb) //
-        && (rgb == other.rgb) //
+        && (rgb255 == other.rgb255) //
         && (rgbQColor == other.rgbQColor);
 }
 
 /** @internal
  *
  * @brief Adds QDebug() support for data type
- * @ref PerceptualColor::MultiRgb
+ * @ref PerceptualColor::RgbColor
  *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in */
-QDebug operator<<(QDebug dbg, const PerceptualColor::MultiRgb &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
 {
     dbg.nospace() //
-        << "MultiRgb(\n"
+        << "RgbColor(\n"
         << " - hsl: " << value.hsl << "\n"
         << " - hsv: " << value.hsv << "\n"
         << " - hwb: " << value.hwb << "\n"
-        << " - rgb: " << value.rgb << "\n"
+        << " - rgb: " << value.rgb255 << "\n"
         << " - rgbQColor: " << value.rgbQColor << "\n"
         << ")";
     return dbg.maybeSpace();
 }
 
-static_assert(std::is_standard_layout_v<MultiRgb>);
+static_assert(std::is_standard_layout_v<RgbColor>);
 
 } // namespace PerceptualColor

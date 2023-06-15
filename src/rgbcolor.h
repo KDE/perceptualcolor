@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef MULTIRGB_H
-#define MULTIRGB_H
+#ifndef RGBCOLOR_H
+#define RGBCOLOR_H
 
 #include <optional>
 #include <qcolor.h>
@@ -18,7 +18,7 @@ namespace PerceptualColor
  *
  * Unlike <tt>QColor</tt> (which is essentially a C++ <tt>union</tt> of
  * different color formats, so only one of them is actually saved),
- * @ref MultiRgb <em>actually</em> stores <em>all</em> available color
+ * @ref RgbColor <em>actually</em> stores <em>all</em> available color
  * transformations.
  *
  * This data type is just an (ugly) implementation detail of @ref ColorDialog.
@@ -38,15 +38,17 @@ namespace PerceptualColor
  * <em>HSL-saturation</em> and <em>HSV-saturation</em> values.
  *
  * This data type can be passed to QDebug thanks to
- * @ref operator<<(QDebug dbg, const PerceptualColor::MultiRgb &value) */
-class MultiRgb final
+ * @ref operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
+ *
+ * @sa @ref AbsoluteColor */
+class RgbColor final
 {
 public:
-    [[nodiscard]] static MultiRgb fromHsl(const QList<double> &color);
-    [[nodiscard]] static MultiRgb fromHsv(const QList<double> &color);
-    [[nodiscard]] static MultiRgb fromHwb(const QList<double> &color);
-    [[nodiscard]] static MultiRgb fromRgb(const QList<double> &color, std::optional<double> hue = std::optional<double>());
-    [[nodiscard]] static MultiRgb fromRgbQColor(const QColor &color);
+    [[nodiscard]] static RgbColor fromHsl(const QList<double> &color);
+    [[nodiscard]] static RgbColor fromHsv(const QList<double> &color);
+    [[nodiscard]] static RgbColor fromHwb(const QList<double> &color);
+    [[nodiscard]] static RgbColor fromRgb255(const QList<double> &color, std::optional<double> hue = std::optional<double>());
+    [[nodiscard]] static RgbColor fromRgbQColor(const QColor &color);
 
     /** @brief Constructor for an uninitialized object.
      *
@@ -55,14 +57,14 @@ public:
      *
      * @warning As the data members are uninitialized, this implies that the
      * count of <tt>QList</tt> items is not correct! */
-    MultiRgb();
+    RgbColor();
     /** @brief Default copy constructor
      * @param other the object to copy */
-    MultiRgb(const MultiRgb &other) = default;
+    RgbColor(const RgbColor &other) = default;
     /** @brief Default copy assignment operator
      * @param other the object to copy
      * @returns The default implementation’s return value. */
-    MultiRgb &operator=(const MultiRgb &other) = default;
+    RgbColor &operator=(const RgbColor &other) = default;
     // NOTE About move constructor and move assignment operator:
     // Declaring them with “= default” will create a compiler-generated
     // implementation that, apparently, does not copy correctly
@@ -77,10 +79,10 @@ public:
     // code needs a move constructor, the overload resolution does not find
     // one and falls back to the copy constructor (which is the default
     // implementation, but apparently works correctly also for QList members).
-    // MultiRgb &operator=(MultiRgb &&other) noexcept = default;
-    // MultiRgb(MultiRgb &&other) noexcept = default;
+    // RgbColor &operator=(RgbColor &&other) noexcept = default;
+    // RgbColor(RgbColor &&other) noexcept = default;
 
-    [[nodiscard]] bool operator==(const MultiRgb &other) const;
+    [[nodiscard]] bool operator==(const RgbColor &other) const;
 
     /** @brief HWB representation.
      *
@@ -97,18 +99,18 @@ public:
     /** @brief RGB representation.
      *
      * Range: [0, 255] */
-    QList<double> rgb;
+    QList<double> rgb255;
     /** @brief QColor representation.
      *
      * <tt>QColor::spec()</tt> is <tt>QColor::Rgb</tt>. */
     QColor rgbQColor;
 
 private:
-    void fillRgbAndDerivates(QColor color, std::optional<double> hue);
+    void fillAll(QColor color, std::optional<double> hue);
 };
 
-QDebug operator<<(QDebug dbg, const PerceptualColor::MultiRgb &value);
+QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value);
 
 } // namespace PerceptualColor
 
-#endif // MULTIRGB_H
+#endif // RGBCOLOR_H

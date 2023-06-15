@@ -127,6 +127,7 @@ if(BUILD_TESTING)
     endfunction()
 
     add_unit_tests(
+        testabsolutecolor
         testabstractdiagram
         testasyncimageprovider
         testasyncimageproviderbase
@@ -143,6 +144,7 @@ if(BUILD_TESTING)
         testconstpropagatingrawpointer
         testconstpropagatinguniquepointer
         testextendeddoublevalidator
+        testgenericcolor
         testgradientimageparameters
         testgradientslider
         testhelper
@@ -159,14 +161,13 @@ if(BUILD_TESTING)
         testlchadouble
         testlchdouble
         testcielchd50values
-        testmulticolor
-        testmultirgb
         testmultispinbox
         testmultispinboxsection
         testoklchvalues
         testsettings
         testpolarpointf
         testrefreshiconengine
+        testrgbcolor
         testrgbcolorspace
         testrgbcolorspacefactory
         testrgbdouble

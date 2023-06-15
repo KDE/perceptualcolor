@@ -4,13 +4,16 @@
 #ifndef HELPERCONVERSION_H
 #define HELPERCONVERSION_H
 
-#include "helpermath.h"
 #include "helperqttypes.h"
 #include "lchdouble.h"
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <type_traits>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#endif
 
 /** @internal
  *
@@ -21,9 +24,46 @@
 namespace PerceptualColor
 {
 
+Q_NAMESPACE
+
 struct RgbDouble;
 
-[[nodiscard]] cmsCIELab fromCmscielabD50ToOklab(const cmsCIELab &cielabD50);
+/** @brief Identifiers for color spaces */
+enum class ColorModel {
+    CielabD50, /**< Cielab color space using a D50 illuminant.
+        Lightness: [0, 100].<br/>
+        a: unbound.<br/>
+        b: unbound. */
+    CielchD50, /**< Cielch color space using a D50 illuminant.
+        Lightness: [0, 100].<br/>
+        Chroma: unbound.<br/>
+        Hue: [0, 360[. */
+    XyzD50, /**< Xyz color space using a D50 illuminant.
+        X: unbound.<br/>
+        Y: [0, 1].<br/>
+        Z: unbound. */
+    XyzD65, /**< Xzy color space using a D65 illuminant.
+        X: unbound.<br/>
+        Y: [0, 1].<br/>
+        Z: unbound. */
+    OklabD65, /**< Oklab color space, which by definition always and
+        exclusively uses a D65 illuminant.
+
+        Lightness: [0, 1].<br/>
+        a: unbound.<br/>
+        b: unbound. */
+    OklchD65 /**< Oklch color space, which by definition always and
+        exclusively uses a D65 illuminant.
+
+        Lightness: [0, 1].<br/>
+        Chroma: unbound.<br/>
+        Hue: [0, 360[. */
+};
+Q_ENUM_NS(ColorModel)
+
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+uint qHash(const ColorModel t, uint seed = 0); // clazy:exclude=qt6-qhash-signature
+#endif
 
 /** @internal
  *
@@ -44,13 +84,7 @@ template<typename T>
     return static_cast<quint8>(bounded);
 }
 
-[[nodiscard]] Trio fromOklabToXyzd65(const Trio &value);
-
-[[nodiscard]] cmsCIELab fromOklabToCmscielabD50(const cmsCIELab &oklab);
-
 QColor fromRgbDoubleToQColor(const RgbDouble &color);
-
-[[nodiscard]] Trio fromXyzd65ToOklab(const Trio &value);
 
 /** @internal
  *
@@ -95,6 +129,7 @@ template<typename T>
  * > Z = 108.883”
  *
  * Normalizing this to Y = 1 as expected by LittleCMS, gives this value. */
+// TODO xxx This seems to be not longer used!?
 constexpr cmsCIEXYZ whitePointD65TwoDegree{0.95047, 1.00000, 1.08883};
 
 } // namespace PerceptualColor

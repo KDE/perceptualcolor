@@ -7,16 +7,17 @@
 // Second, the private implementation.
 #include "swatchbook_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "abstractdiagram.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <array>
-#include <lcms2.h>
 #include <optional>
 #include <qapplication.h>
 #include <qcoreapplication.h>
@@ -792,21 +793,21 @@ void SwatchBook::changeEvent(QEvent *event)
 
 /** @brief Palette derived from the basic colors.
  *
- * The exact maximim-chroma basic colors come from the WCS. Tints and shades
- * are calculated with Oklab.
+ * The basic colors with maximum chroma come from the WCS. Tints and shades
+ * are derived from these, and the derivation is done within with Oklab.
  *
  * @returns Palette derived from the basic colors. */
 QList<QList<QColor>> SwatchBookPrivate::wcsBasicColorPalette() const
 {
-    constexpr std::array<double, 3> red{{41.22, 61.40, 17.92}};
-    constexpr std::array<double, 3> orange{{61.70, 29.38, 64.40}};
-    constexpr std::array<double, 3> yellow{{81.35, 07.28, 109.12}};
-    constexpr std::array<double, 3> green{{51.57, -63.28, 28.95}};
-    constexpr std::array<double, 3> blue{{51.57, -03.41, -48.08}};
-    constexpr std::array<double, 3> purple{{41.22, 33.08, -30.50}};
-    constexpr std::array<double, 3> pink{{61.70, 49.42, 18.23}};
-    constexpr std::array<double, 3> brown{{41.22, 17.04, 45.95}};
-    constexpr std::array<std::array<double, 3>, 8> chromaticCielabColors //
+    constexpr GenericColor red{41.22, 61.40, 17.92};
+    constexpr GenericColor orange{61.70, 29.38, 64.40};
+    constexpr GenericColor yellow{81.35, 07.28, 109.12};
+    constexpr GenericColor green{51.57, -63.28, 28.95};
+    constexpr GenericColor blue{51.57, -03.41, -48.08};
+    constexpr GenericColor purple{41.22, 33.08, -30.50};
+    constexpr GenericColor pink{61.70, 49.42, 18.23};
+    constexpr GenericColor brown{41.22, 17.04, 45.95};
+    constexpr std::array<GenericColor, 8> chromaticCielabColors //
         {{red, orange, yellow, green, blue, purple, pink, brown}};
 
     QList<QList<QColor>> result;
@@ -819,39 +820,41 @@ QList<QList<QColor>> SwatchBookPrivate::wcsBasicColorPalette() const
     constexpr double weakTint = 0.23;
     constexpr double weakShade = 0.18;
     constexpr double strongShade = 0.36;
-    for (const auto &cielabList : std::as_const(chromaticCielabColors)) {
-        const cmsCIELab myCmsCielab{cielabList.at(0), //
-                                    cielabList.at(1), //
-                                    cielabList.at(2)};
-        const auto oklab = fromCmscielabD50ToOklab(myCmsCielab);
-        cmsCIELCh oklch;
-        cmsLab2LCh(&oklch, &oklab);
-        QList<cmsCIELCh> tintsAndShades;
-        tintsAndShades << cmsCIELCh //
-            {oklch.L + (1 - oklch.L) * strongTint, //
-             oklch.C * (1 - strongTint), //
-             oklch.h};
-        tintsAndShades << cmsCIELCh //
-            {oklch.L + (1 - oklch.L) * weakTint, //
-             oklch.C * (1 - weakTint), //
-             oklch.h};
+    for (const auto &cielabD50 : std::as_const(chromaticCielabColors)) { //
+        const auto oklch = AbsoluteColor::convert(ColorModel::CielabD50, //
+                                                  cielabD50, //
+                                                  ColorModel::OklchD65 //
+                                                  )
+                               .value_or(GenericColor());
+        QList<GenericColor> tintsAndShades;
+        tintsAndShades << GenericColor //
+            {oklch.first + (1 - oklch.first) * strongTint, //
+             oklch.second * (1 - strongTint), //
+             oklch.third};
+        tintsAndShades << GenericColor //
+            {oklch.first + (1 - oklch.first) * weakTint, //
+             oklch.second * (1 - weakTint), //
+             oklch.third};
         tintsAndShades << oklch;
-        tintsAndShades << cmsCIELCh //
-            {oklch.L * (1 - weakShade), //
-             oklch.C * (1 - weakShade), //
-             oklch.h};
-        tintsAndShades << cmsCIELCh //
-            {oklch.L * (1 - strongShade), //
-             oklch.C * (1 - strongShade), //
-             oklch.h};
+        tintsAndShades << GenericColor //
+            {oklch.first * (1 - weakShade), //
+             oklch.second * (1 - weakShade), //
+             oklch.third};
+        tintsAndShades << GenericColor //
+            {oklch.first * (1 - strongShade), //
+             oklch.second * (1 - strongShade), //
+             oklch.third};
         rgbList.clear();
         rgbList.reserve(tintsAndShades.count());
         for (const auto &variation : std::as_const(tintsAndShades)) {
-            cmsCIELab variationOklab;
-            cmsLCh2Lab(&variationOklab, &variation);
-            const auto cielabD50 = fromOklabToCmscielabD50(variationOklab);
+            const auto variationCielchD50 = AbsoluteColor::convert( //
+                                                ColorModel::OklchD65, //
+                                                variation, //
+                                                ColorModel::CielchD50 //
+                                                )
+                                                .value_or(GenericColor());
             rgbList << m_rgbColorSpace->fromCielchD50ToQRgbBound( //
-                toLchDouble(cielabD50));
+                variationCielchD50.reinterpretAsLchToLchDouble());
         }
         result << rgbList;
     }
@@ -861,10 +864,15 @@ QList<QList<QColor>> SwatchBookPrivate::wcsBasicColorPalette() const
     rgbList.clear();
     rgbList.reserve(lightnesses.count());
     for (const auto &lightness : lightnesses) {
-        const cmsCIELab myOklab{lightness, 0, 0};
-        const auto cielabD50 = fromOklabToCmscielabD50(myOklab);
+        const GenericColor myOklab{lightness, 0, 0};
+        const auto cielabD50 = AbsoluteColor::convert( //
+                                   ColorModel::OklabD65, //
+                                   myOklab, //
+                                   ColorModel::CielchD50 //
+                                   )
+                                   .value_or(GenericColor());
         rgbList << m_rgbColorSpace->fromCielchD50ToQRgbBound( //
-            toLchDouble(cielabD50));
+            cielabD50.reinterpretAsLchToLchDouble());
     }
     result << rgbList;
 

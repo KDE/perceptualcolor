@@ -573,7 +573,7 @@ private Q_SLOTS:
         QCOMPARE(myColorSpace->isCielchD50InGamut(color), false);
     }
 
-    void testIsOlkchInGamut()
+    void testIsOklchInGamut()
     {
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
             // Create sRGB which is pretty much standard.

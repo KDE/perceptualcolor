@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "multirgb.h"
+#include "rgbcolor.h"
 
 #include <qcolor.h>
 #include <qglobal.h>
@@ -24,12 +24,12 @@
 
 namespace PerceptualColor
 {
-class TestMultiRgb : public QObject
+class TestRgbColor : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestMultiRgb(QObject *parent = nullptr)
+    explicit TestRgbColor(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -64,138 +64,143 @@ private Q_SLOTS:
 
     void testConstructorDestructorStatic()
     {
-        MultiRgb myColor;
+        RgbColor myColor;
     }
 
     void testConstructorDestructorDynamic()
     {
-        QScopedPointer<MultiRgb> myPointer{new MultiRgb()};
+        QScopedPointer<RgbColor> myPointer{new RgbColor()};
     }
 
     void testDefaultConstructor()
     {
-        MultiRgb myColor;
+        RgbColor myColor;
         QCOMPARE(myColor.hwb.size(), 0);
         QCOMPARE(myColor.hsl.size(), 0);
         QCOMPARE(myColor.hsv.size(), 0);
-        QCOMPARE(myColor.rgb.size(), 0);
+        QCOMPARE(myColor.rgb255.size(), 0);
         QCOMPARE(myColor.rgbQColor.isValid(), false);
     }
 
     void testCopyConstructorUninitialized()
     {
-        MultiRgb myColor1;
-        MultiRgb myColor2(myColor1);
+        RgbColor myColor1;
+        RgbColor myColor2(myColor1);
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testCopyConstructor()
     {
-        MultiRgb myColor1 = MultiRgb::fromRgb(QList<double>{1, 2, 3});
-        MultiRgb myColor2(myColor1);
+        RgbColor myColor1 = RgbColor::fromRgb255(QList<double>{1, 2, 3});
+        RgbColor myColor2(myColor1);
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testCopyAssignmentUninitialized()
     {
-        MultiRgb myColor1;
-        MultiRgb myColor2;
+        RgbColor myColor1;
+        RgbColor myColor2;
         myColor2 = myColor1;
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testCopyAssignment()
     {
-        MultiRgb myColor1 = MultiRgb::fromRgb(QList<double>{4, 5, 6});
-        MultiRgb myColor2 = MultiRgb::fromRgb(QList<double>{7, 8, 9});
+        RgbColor myColor1 = RgbColor::fromRgb255(QList<double>{4, 5, 6});
+        RgbColor myColor2 = RgbColor::fromRgb255(QList<double>{7, 8, 9});
         Q_UNUSED(myColor2);
         myColor2 = myColor1;
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testMoveConstructorUninitialized()
     {
-        MultiRgb myReference;
-        MultiRgb myColor1 = myReference;
-        MultiRgb myColor2(std::move(myColor1));
+        RgbColor myReference;
+        RgbColor myColor1 = myReference;
+        RgbColor myColor2(std::move(myColor1));
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testMoveConstructor()
     {
-        MultiRgb myReference = MultiRgb::fromRgbQColor(Qt::yellow);
-        MultiRgb myColor1 = myReference;
-        MultiRgb myColor2(std::move(myColor1));
+        RgbColor myReference = RgbColor::fromRgbQColor(Qt::yellow);
+        RgbColor myColor1 = myReference;
+        RgbColor myColor2(std::move(myColor1));
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testMoveAssignmentUninitialized()
     {
-        MultiRgb myReference;
-        MultiRgb myColor1 = myReference;
-        MultiRgb myColor2;
+        RgbColor myReference;
+        RgbColor myColor1 = myReference;
+        RgbColor myColor2;
         myColor2 = std::move(myColor1);
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
     void testMoveAssignment()
     {
-        MultiRgb myReference = MultiRgb::fromRgbQColor(Qt::red);
-        MultiRgb myColor1 = myReference;
-        MultiRgb myColor2;
+        RgbColor myReference = RgbColor::fromRgbQColor(Qt::red);
+        RgbColor myColor1 = myReference;
+        RgbColor myColor2;
         myColor2 = std::move(myColor1);
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb, myColor1.rgb);
+        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
-    void testRgb()
+    void testFromRgb()
     {
-        MultiRgb myColor1 = //
-            MultiRgb::fromRgbQColor(Qt::yellow);
+        RgbColor myColor1 = RgbColor::fromRgb255(QList<double>{113, 53, 23});
+        QCOMPARE(myColor1.rgbQColor, QColor::fromRgb(113, 53, 23));
+    }
+
+    void testFromRgbQColor()
+    {
+        RgbColor myColor1 = RgbColor::fromRgbQColor(Qt::yellow);
         QCOMPARE(myColor1.rgbQColor, Qt::yellow);
     }
 
     void testRgbHue()
     {
         // The hue of the RGB-based HSV, HSL and HBW is identical.
-        MultiRgb value;
+        RgbColor value;
 
-        value = MultiRgb::fromHsl(QList<double>({150, 40, 30}));
+        value = RgbColor::fromHsl(QList<double>({150, 40, 30}));
         QCOMPARE(value.hsl.at(0), 150);
         QCOMPARE(value.hsv.at(0), 150);
 
-        value = MultiRgb::fromHsv(QList<double>({150, 40, 30}));
+        value = RgbColor::fromHsv(QList<double>({150, 40, 30}));
         QCOMPARE(value.hsl.at(0), 150);
         QCOMPARE(value.hsv.at(0), 150);
     }
@@ -204,31 +209,31 @@ private Q_SLOTS:
     {
         // The hue of the RGB-based HSV, HSL and HBW is identical,
         // even when the value is on the gray axis.
-        MultiRgb value;
+        RgbColor value;
 
-        value = MultiRgb::fromHsl(QList<double>({150, 0, 50}));
+        value = RgbColor::fromHsl(QList<double>({150, 0, 50}));
         QCOMPARE(value.hsl.at(0), 150);
         QCOMPARE(value.hsv.at(0), 150);
         QCOMPARE(value.hwb.at(0), 150);
 
-        value = MultiRgb::fromHsv(QList<double>({150, 0, 50}));
+        value = RgbColor::fromHsv(QList<double>({150, 0, 50}));
         QCOMPARE(value.hsl.at(0), 150);
         QCOMPARE(value.hsv.at(0), 150);
         QCOMPARE(value.hwb.at(0), 150);
 
-        value = MultiRgb::fromHwb(QList<double>({150, 50, 50}));
+        value = RgbColor::fromHwb(QList<double>({150, 50, 50}));
         // Sum of w and b is 100.
         QCOMPARE(value.hsl.at(0), 150);
         QCOMPARE(value.hsv.at(0), 150);
         QCOMPARE(value.hwb.at(0), 150);
 
-        value = MultiRgb::fromHwb(QList<double>({150, 70, 70}));
+        value = RgbColor::fromHwb(QList<double>({150, 70, 70}));
         // Sum of w and b is more than 100.
         QCOMPARE(value.hsl.at(0), 150);
         QCOMPARE(value.hsv.at(0), 150);
         QCOMPARE(value.hwb.at(0), 150);
 
-        value = MultiRgb::fromRgb(QList<double>({120, 120, 120}));
+        value = RgbColor::fromRgb255(QList<double>({120, 120, 120}));
         // An RGB value on the gray axis does not provide any information
         // about the hue. We can reasonably expect a standard value: 0°.
         QCOMPARE(value.hsl.at(0), 0);
@@ -245,7 +250,7 @@ private Q_SLOTS:
 
     void testFromHsl()
     {
-        const MultiRgb value = MultiRgb::fromHsl(QList<double>({100, 60, 30}));
+        const RgbColor value = RgbColor::fromHsl(QList<double>({100, 60, 30}));
 
         QVERIFY(isAlmostEqual<double>(value.hsl.at(0), 100));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 60));
@@ -259,14 +264,14 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.at(1), 12));
         QVERIFY(isAlmostEqual<double>(value.hwb.at(2), 52));
 
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(0), 61));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(1), 122));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(2), 31));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(0), 61));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(1), 122));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(2), 31));
     }
 
     void testFromHsv()
     {
-        const MultiRgb value = MultiRgb::fromHsv(QList<double>({100, 60, 30}));
+        const RgbColor value = RgbColor::fromHsv(QList<double>({100, 60, 30}));
 
         QVERIFY(isAlmostEqual<double>(value.hsl.at(0), 100));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 43));
@@ -280,9 +285,9 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.at(1), 12));
         QVERIFY(isAlmostEqual<double>(value.hwb.at(2), 70));
 
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(0), 45));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(1), 76));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(2), 30));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(0), 45));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(1), 76));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(2), 30));
     }
 
     void testSaturationSynchronizationForBlackFromHsv()
@@ -295,18 +300,18 @@ private Q_SLOTS:
         // from the blackpoint. Therefore, it seems somewhat logical
         // that both are synchronized if (and only if) the color is black.
 
-        MultiRgb value;
+        RgbColor value;
 
-        value = MultiRgb::fromHsv(QList<double>({150, 100, 0}));
+        value = RgbColor::fromHsv(QList<double>({150, 100, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 100));
 
-        value = MultiRgb::fromHsv(QList<double>({150, 60, 0}));
+        value = RgbColor::fromHsv(QList<double>({150, 60, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 60));
 
-        value = MultiRgb::fromHsv(QList<double>({150, 30, 0}));
+        value = RgbColor::fromHsv(QList<double>({150, 30, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 30));
 
-        value = MultiRgb::fromHsv(QList<double>({150, 0, 0}));
+        value = RgbColor::fromHsv(QList<double>({150, 0, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 0));
     }
 
@@ -320,18 +325,18 @@ private Q_SLOTS:
         // from the blackpoint. Therefore, it seems somewhat logical
         // that both are synchronized if (and only if) the color is black.
 
-        MultiRgb value;
+        RgbColor value;
 
-        value = MultiRgb::fromHsl(QList<double>({150, 100, 0}));
+        value = RgbColor::fromHsl(QList<double>({150, 100, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsv.at(1), 100));
 
-        value = MultiRgb::fromHsl(QList<double>({150, 60, 0}));
+        value = RgbColor::fromHsl(QList<double>({150, 60, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsv.at(1), 60));
 
-        value = MultiRgb::fromHsl(QList<double>({150, 30, 0}));
+        value = RgbColor::fromHsl(QList<double>({150, 30, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsv.at(1), 30));
 
-        value = MultiRgb::fromHsl(QList<double>({150, 0, 0}));
+        value = RgbColor::fromHsl(QList<double>({150, 0, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsv.at(1), 0));
     }
 
@@ -350,15 +355,15 @@ private Q_SLOTS:
         // black, so that the whole gray axis has a uniform saturation
         // value.
 
-        MultiRgb value;
+        RgbColor value;
 
         constexpr int saturationOfBlackColor = 0;
 
-        value = MultiRgb::fromRgb(QList<double>({0, 0, 0}));
+        value = RgbColor::fromRgb255(QList<double>({0, 0, 0}));
         QVERIFY(isAlmostEqual<double>(value.hsv.at(1), saturationOfBlackColor));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), saturationOfBlackColor));
 
-        value = MultiRgb::fromHwb(QList<double>({320, 0, 100}));
+        value = RgbColor::fromHwb(QList<double>({320, 0, 100}));
         QVERIFY(isAlmostEqual<double>(value.hsv.at(1), saturationOfBlackColor));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), saturationOfBlackColor));
     }
@@ -375,11 +380,11 @@ private Q_SLOTS:
         // saturation value for the whole gray axis (including black and
         // white).
 
-        MultiRgb value;
+        RgbColor value;
 
         constexpr int saturationOfWhiteColor = 0;
 
-        value = MultiRgb::fromHsl(QList<double>({320, 50, 100}));
+        value = RgbColor::fromHsl(QList<double>({320, 50, 100}));
         // Expect a non-standard value because original values
         // should never be changed.
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 50));
@@ -387,17 +392,17 @@ private Q_SLOTS:
         // All other original color formats should give the standard
         // HSL-saturation for white:
 
-        value = MultiRgb::fromRgb(QList<double>({255, 255, 255}));
+        value = RgbColor::fromRgb255(QList<double>({255, 255, 255}));
         // Expect a non-standard value because original values
         // should never be changed.
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), saturationOfWhiteColor));
 
-        value = MultiRgb::fromHsv(QList<double>({320, 0, 100}));
+        value = RgbColor::fromHsv(QList<double>({320, 0, 100}));
         // Expect a non-standard value because original values
         // should never be changed.
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), saturationOfWhiteColor));
 
-        value = MultiRgb::fromHwb(QList<double>({320, 100, 0}));
+        value = RgbColor::fromHwb(QList<double>({320, 100, 0}));
         // Expect a non-standard value because original values
         // should never be changed.
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), saturationOfWhiteColor));
@@ -405,7 +410,7 @@ private Q_SLOTS:
 
     void testFromHwb()
     {
-        const MultiRgb value = MultiRgb::fromHwb(QList<double>({100, 60, 30}));
+        const RgbColor value = RgbColor::fromHwb(QList<double>({100, 60, 30}));
 
         QVERIFY(isAlmostEqual<double>(value.hsl.at(0), 100));
         QVERIFY(isAlmostEqual<double>(value.hsl.at(1), 14));
@@ -419,14 +424,14 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.at(1), 60));
         QVERIFY(isAlmostEqual<double>(value.hwb.at(2), 30)); //
 
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(0), 162));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(1), 179));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(2), 153)); //
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(0), 162));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(1), 179));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(2), 153)); //
     }
 
     void testFromHwbDenormalized()
     {
-        const MultiRgb value = MultiRgb::fromHwb(QList<double>({100, 70, 70}));
+        const RgbColor value = RgbColor::fromHwb(QList<double>({100, 70, 70}));
         // The sum of w and b is greater than 100. This is denormalized.
 
         QVERIFY(isAlmostEqual<double>(value.hsl.at(0), 100));
@@ -441,24 +446,24 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.at(1), 70));
         QVERIFY(isAlmostEqual<double>(value.hwb.at(2), 70)); //
 
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(0), 128));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(1), 128));
-        QVERIFY(isAlmostEqual<double>(value.rgb.at(2), 128)); //
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(0), 128));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(1), 128));
+        QVERIFY(isAlmostEqual<double>(value.rgb255.at(2), 128)); //
     }
 
     void testEquality()
     {
-        MultiRgb myColor1 = MultiRgb::fromRgb(QList<double>{1, 2, 3});
-        MultiRgb myColor2 = MultiRgb::fromRgb(QList<double>{1, 2, 3});
+        RgbColor myColor1 = RgbColor::fromRgb255(QList<double>{1, 2, 3});
+        RgbColor myColor2 = RgbColor::fromRgb255(QList<double>{1, 2, 3});
         QVERIFY(myColor1 == myColor2);
-        myColor2.rgb[0] += 1;
+        myColor2.rgb255[0] += 1;
         QVERIFY(!(myColor1 == myColor2));
     }
 };
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestMultiRgb)
+QTEST_MAIN(PerceptualColor::TestRgbColor)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testmultirgb.moc"
+#include "testrgbcolor.moc"

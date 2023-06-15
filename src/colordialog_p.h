@@ -8,8 +8,10 @@
 #include "colordialog.h"
 
 #include "constpropagatingrawpointer.h"
+#include "genericcolor.h"
+#include "helperconversion.h"
 #include "languagechangeeventfilter.h"
-#include "multicolor.h"
+#include "rgbcolor.h"
 #include "settings.h"
 #include <lcms2.h>
 #include <qbytearray.h>
@@ -93,10 +95,20 @@ public:
     QPointer<QLabel> m_ciehlcD50SpinBoxLabel;
     /** @brief Pointer to the @ref ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
-    /** @brief Holds the current color without alpha information
+    /** @brief Current color without alpha information
      *
-     * @sa @ref ColorDialog::currentColor() */
-    MultiColor m_currentOpaqueColor;
+     * Holds the color in absolutely defined color models.
+     *
+     * @sa @ref ColorDialog::currentColor()
+     * @sa @ref m_currentOpaqueColorRgb */
+    QHash<ColorModel, GenericColor> m_currentOpaqueColorAbs;
+    /** @brief Current color without alpha information
+     *
+     * Holds the color in the RGB color model and derived color models.
+     *
+     * @sa @ref ColorDialog::currentColor()
+     * @sa @ref m_currentOpaqueColorAbs */
+    RgbColor m_currentOpaqueColorRgb;
     /** @brief If @ref q_pointer has ever been shown. */
     bool everShown = false;
     /** @brief Pointer to the @ref MultiSpinBox for HSL. */
@@ -121,7 +133,7 @@ public:
      * @sa @ref setCurrentOpaqueColor() */
     bool m_isColorChangeInProgress = false;
     /** @brief Holds whether the current text of @ref m_rgbLineEdit differs
-     * from the value in @ref m_currentOpaqueColor.
+     * from the value in @ref m_currentOpaqueColorRgb.
      * @sa @ref readRgbHexValues
      * @sa @ref updateRgbHexButBlockSignals */
     bool m_isDirtyRgbLineEdit = false;
@@ -254,7 +266,11 @@ public Q_SLOTS:
     void readWheelColorPickerValues();
     void retranslateUi();
     void saveCurrentTab();
-    void setCurrentOpaqueColor(const PerceptualColor::MultiColor &color, QWidget *const ignoreWidget);
+    void setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget);
+    void setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, QWidget *const ignoreWidget);
+    void setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs,
+                               const PerceptualColor::RgbColor &rgb,
+                               QWidget *const ignoreWidget);
     void updateColorPatch();
     void updateHlcButBlockSignals();
     void updateOklchButBlockSignals();

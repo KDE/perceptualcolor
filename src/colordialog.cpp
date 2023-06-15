@@ -7,6 +7,7 @@
 // Second, the private implementation.
 #include "colordialog_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "chromahuediagram.h"
 #include "cielchd50values.h"
 #include "colorpatch.h"
@@ -20,14 +21,14 @@
 #include "initializetranslation.h"
 #include "lchadouble.h"
 #include "lchdouble.h"
-#include "multicolor.h"
-#include "multirgb.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "oklchvalues.h"
 #include "refreshiconengine.h"
+#include "rgbcolor.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
+#include "rgbdouble.h"
 #include "screencolorpicker.h"
 #include "swatchbook.h"
 #include "wheelcolorpicker.h"
@@ -1101,7 +1102,7 @@ ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink)
 // and its getters are in the header)
 QColor ColorDialog::currentColor() const
 {
-    QColor temp = d_pointer->m_currentOpaqueColor.multiRgb.rgbQColor;
+    QColor temp = d_pointer->m_currentOpaqueColorRgb.rgbQColor;
     temp.setAlphaF( //
         static_cast<QColorFloatType>( //
             d_pointer->m_alphaGradientSlider->value()));
@@ -1139,10 +1140,8 @@ void ColorDialog::setCurrentColor(const QColor &color)
     }
     // No need to update m_alphaSpinBox as this is done
     // automatically by signals emitted by m_alphaGradientSlider.
-    const MultiRgb myMultiRgb = MultiRgb::fromRgbQColor(temp);
-    d_pointer->setCurrentOpaqueColor( //
-        MultiColor::fromMultiRgb(d_pointer->m_rgbColorSpace, myMultiRgb), //
-        nullptr);
+    const RgbColor myRgbColor = RgbColor::fromRgbQColor(temp);
+    d_pointer->setCurrentOpaqueColor(myRgbColor, nullptr);
 }
 
 /** @brief Opens the dialog and connects its @ref colorSelected() signal to
@@ -1169,34 +1168,67 @@ void ColorDialog::open(QObject *receiver, const char *member)
 /** @brief Updates the color patch widget
  *
  * @post The color patch widget will show the color
- * of @ref m_currentOpaqueColor and the alpha
+ * of @ref m_currentOpaqueColorRgb and the alpha
  * value of @ref m_alphaGradientSlider. */
 void ColorDialogPrivate::updateColorPatch()
 {
-    QColor tempRgbQColor = m_currentOpaqueColor.multiRgb.rgbQColor;
+    QColor tempRgbQColor = m_currentOpaqueColorRgb.rgbQColor;
     tempRgbQColor.setAlphaF( //
         static_cast<QColorFloatType>(m_alphaGradientSlider->value()));
     m_colorPatch->setColor(tempRgbQColor);
 }
 
-/** @brief Updates @ref m_currentOpaqueColor and affected widgets.
+/** @brief Overloaded function. */
+void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget)
+{
+    const RgbDouble rgb = m_rgbColorSpace->fromCielchD50ToRgbDoubleUnbound( //
+        abs.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble());
+    const auto rgbList = QList<double>{rgb.red * 255, //
+                                       rgb.green * 255, //
+                                       rgb.blue * 255};
+    const auto rgbColor = RgbColor::fromRgb255(rgbList);
+    setCurrentOpaqueColor(abs, rgbColor, ignoreWidget);
+}
+
+/** @brief Overloaded function. */
+void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, QWidget *const ignoreWidget)
+{
+    const auto temp = rgb.rgb255;
+    const QColor myQColor = QColor::fromRgbF( //
+        static_cast<float>(temp.at(0) / 255.), //
+        static_cast<float>(temp.at(1) / 255.), //
+        static_cast<float>(temp.at(2) / 255.));
+    const auto cielchD50 = GenericColor( //
+        m_rgbColorSpace->toCielchD50Double(myQColor.rgba64()));
+    setCurrentOpaqueColor( //
+        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
+        rgb,
+        ignoreWidget);
+}
+
+/** @brief Updates @ref m_currentOpaqueColorAbs, @ref m_currentOpaqueColorRgb
+ * and affected widgets.
  *
- * @param color the new color
+ * @param abs The new color in absolute color models
+ * @param rgb The new color in RGB and RGB-derived models (profile-dependant)
  *
  * @param ignoreWidget A widget that should <em>not</em> be updated. Or
  * <tt>nullptr</tt> to update <em>all</em> widgets.
  *
  * @post If this function is called recursively, nothing happens. Else
- * the color is moved into the gamut, then @ref m_currentOpaqueColor is
- * updated, and the corresponding widgets are updated (except the widget
- * specified to be ignored – if any).
+ * the color is moved into the gamut, then @ref m_currentOpaqueColorAbs and
+ * @ref m_currentOpaqueColorRgb are updated, and the corresponding widgets
+ * are updated (except the widget specified to be ignored – if any).
  *
  * @note Recursive functions calls are ignored. This is useful, because you
  * can connect signals from various widgets to this slot without having to
  * worry about infinite recursions. */
-void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::MultiColor &color, QWidget *const ignoreWidget)
+void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs,
+                                               const PerceptualColor::RgbColor &rgb,
+                                               QWidget *const ignoreWidget)
 {
-    if (m_isColorChangeInProgress || (color == m_currentOpaqueColor)) {
+    const bool isIdentical = (abs == m_currentOpaqueColorAbs) && (rgb == m_currentOpaqueColorRgb);
+    if (m_isColorChangeInProgress || isIdentical) {
         // Nothing to do!
         return;
     }
@@ -1210,41 +1242,47 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::MultiColor
     QColor oldQColor = q_pointer->currentColor();
 
     // Update m_currentOpaqueColor
-    m_currentOpaqueColor = color;
+    m_currentOpaqueColorAbs = abs;
+    m_currentOpaqueColorRgb = rgb;
 
     // Update palette
     if (m_swatchBook != ignoreWidget) {
-        m_swatchBook->setCurrentColor(m_currentOpaqueColor.multiRgb.rgbQColor);
+        m_swatchBook->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
     }
 
     // Update RGB widget
     if (m_rgbSpinBox != ignoreWidget) {
-        m_rgbSpinBox->setSectionValues(m_currentOpaqueColor.multiRgb.rgb);
+        m_rgbSpinBox->setSectionValues(m_currentOpaqueColorRgb.rgb255);
     }
 
     // Update HSL widget
     if (m_hslSpinBox != ignoreWidget) {
-        m_hslSpinBox->setSectionValues(m_currentOpaqueColor.multiRgb.hsl);
+        m_hslSpinBox->setSectionValues(m_currentOpaqueColorRgb.hsl);
     }
 
     // Update HWB widget
     if (m_hwbSpinBox != ignoreWidget) {
-        m_hwbSpinBox->setSectionValues(m_currentOpaqueColor.multiRgb.hwb);
+        m_hwbSpinBox->setSectionValues(m_currentOpaqueColorRgb.hwb);
     }
 
     // Update HSV widget
     if (m_hsvSpinBox != ignoreWidget) {
-        m_hsvSpinBox->setSectionValues(m_currentOpaqueColor.multiRgb.hsv);
+        m_hsvSpinBox->setSectionValues(m_currentOpaqueColorRgb.hsv);
     }
 
     // Update CIEHLC-D50 widget
+    const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
+    const auto ciehlcD50 = QList<double>{cielchD50.third, //
+                                         cielchD50.first,
+                                         cielchD50.second};
     if (m_ciehlcD50SpinBox != ignoreWidget) {
-        m_ciehlcD50SpinBox->setSectionValues(m_currentOpaqueColor.ciehlcD50);
+        m_ciehlcD50SpinBox->setSectionValues(ciehlcD50);
     }
 
     // Update Oklch widget
+    const auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
     if (m_oklchSpinBox != ignoreWidget) {
-        m_oklchSpinBox->setSectionValues(m_currentOpaqueColor.oklch);
+        m_oklchSpinBox->setSectionValues(oklch.toQList3());
     }
 
     // Update RGB hex widget
@@ -1255,25 +1293,27 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::MultiColor
     // Update lightness selector
     if (m_lchLightnessSelector != ignoreWidget) {
         m_lchLightnessSelector->setValue( //
-            color.cielchD50.l / static_cast<qreal>(100));
+            cielchD50.first / static_cast<qreal>(100));
     }
 
     // Update chroma-hue diagram
     if (m_chromaHueDiagram != ignoreWidget) {
-        m_chromaHueDiagram->setCurrentColor(color.cielchD50);
+        m_chromaHueDiagram->setCurrentColor( //
+            cielchD50.reinterpretAsLchToLchDouble());
     }
 
     // Update wheel color picker
     if (m_wheelColorPicker != ignoreWidget) {
-        m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor.cielchD50);
+        m_wheelColorPicker->setCurrentColor( //
+            cielchD50.reinterpretAsLchToLchDouble());
     }
 
     // Update alpha gradient slider
     if (m_alphaGradientSlider != ignoreWidget) {
         LchaDouble tempColor;
-        tempColor.l = m_currentOpaqueColor.cielchD50.l;
-        tempColor.c = m_currentOpaqueColor.cielchD50.c;
-        tempColor.h = m_currentOpaqueColor.cielchD50.h;
+        tempColor.l = cielchD50.first;
+        tempColor.c = cielchD50.second;
+        tempColor.h = cielchD50.third;
         tempColor.a = 0;
         m_alphaGradientSlider->setFirstColor(tempColor);
         tempColor.a = 1;
@@ -1303,11 +1343,13 @@ void ColorDialogPrivate::readLightnessValue()
         // Nothing to do!
         return;
     }
-    LchDouble lch = m_currentOpaqueColor.cielchD50;
-    lch.l = m_lchLightnessSelector->value() * 100;
-    lch = m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
+    auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
+    cielchD50.first = m_lchLightnessSelector->value() * 100;
+    cielchD50 = GenericColor( //
+        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut( //
+            cielchD50.reinterpretAsLchToLchDouble()));
     setCurrentOpaqueColor( //
-        MultiColor::fromCielchD50(m_rgbColorSpace, lch),
+        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50), //
         m_lchLightnessSelector);
 }
 
@@ -1319,10 +1361,8 @@ void ColorDialogPrivate::readHslNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = MultiRgb::fromHsl(m_hslSpinBox->sectionValues());
-    setCurrentOpaqueColor( //
-        MultiColor::fromMultiRgb(m_rgbColorSpace, temp), //
-        m_hslSpinBox);
+    const auto temp = RgbColor::fromHsl(m_hslSpinBox->sectionValues());
+    setCurrentOpaqueColor(temp, m_hslSpinBox);
 }
 
 /** @brief Reads the HWB numbers in the dialog and
@@ -1333,9 +1373,8 @@ void ColorDialogPrivate::readHwbNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = MultiRgb::fromHwb(m_hwbSpinBox->sectionValues());
-    setCurrentOpaqueColor(MultiColor::fromMultiRgb(m_rgbColorSpace, temp), //
-                          m_hwbSpinBox);
+    const auto temp = RgbColor::fromHwb(m_hwbSpinBox->sectionValues());
+    setCurrentOpaqueColor(temp, m_hwbSpinBox);
 }
 
 /** @brief Reads the HSV numbers in the dialog and
@@ -1346,10 +1385,8 @@ void ColorDialogPrivate::readHsvNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = MultiRgb::fromHsv(m_hsvSpinBox->sectionValues());
-    setCurrentOpaqueColor( //
-        MultiColor::fromMultiRgb(m_rgbColorSpace, temp), //
-        m_hsvSpinBox);
+    const auto temp = RgbColor::fromHsv(m_hsvSpinBox->sectionValues());
+    setCurrentOpaqueColor(temp, m_hsvSpinBox);
 }
 
 /** @brief Reads the decimal RGB numbers in the dialog and
@@ -1360,9 +1397,8 @@ void ColorDialogPrivate::readRgbNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = MultiRgb::fromRgb(m_rgbSpinBox->sectionValues());
-    const MultiColor myMulti = MultiColor::fromMultiRgb(m_rgbColorSpace, temp);
-    setCurrentOpaqueColor(myMulti, m_rgbSpinBox);
+    const auto temp = RgbColor::fromRgb255(m_rgbSpinBox->sectionValues());
+    setCurrentOpaqueColor(temp, m_rgbSpinBox);
 }
 
 /** @brief Reads the color of the palette widget, and (if any)
@@ -1378,9 +1414,8 @@ void ColorDialogPrivate::readSwatchBook()
         // No color is currently selected!
         return;
     }
-    const auto myMultiRgb = MultiRgb::fromRgbQColor(temp);
-    setCurrentOpaqueColor(MultiColor::fromMultiRgb(m_rgbColorSpace, myMultiRgb), //
-                          m_swatchBook);
+    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
+    setCurrentOpaqueColor(myRgbColor, m_swatchBook);
 }
 
 /** @brief Reads the color of the @ref WheelColorPicker in the dialog and
@@ -1391,10 +1426,9 @@ void ColorDialogPrivate::readWheelColorPickerValues()
         // Nothing to do!
         return;
     }
+    const auto cielchD50 = GenericColor(m_wheelColorPicker->currentColor());
     setCurrentOpaqueColor( //
-        MultiColor::fromCielchD50(m_rgbColorSpace, //
-                                  m_wheelColorPicker->currentColor()),
-
+        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
         m_wheelColorPicker);
 }
 
@@ -1406,10 +1440,9 @@ void ColorDialogPrivate::readChromaHueDiagramValue()
         // Nothing to do!
         return;
     }
+    const auto cielchD50 = GenericColor(m_chromaHueDiagram->currentColor());
     setCurrentOpaqueColor( //
-        MultiColor::fromCielchD50(m_rgbColorSpace, //
-                                  m_chromaHueDiagram->currentColor()),
-
+        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
         m_chromaHueDiagram);
 }
 
@@ -1428,18 +1461,16 @@ void ColorDialogPrivate::readRgbHexValues()
     QColor rgb;
     rgb.setNamedColor(temp);
     if (rgb.isValid()) {
-        const auto myMultiRgb = MultiRgb::fromRgbQColor(rgb);
-        setCurrentOpaqueColor( //
-            MultiColor::fromMultiRgb(m_rgbColorSpace, myMultiRgb), //
-            m_rgbLineEdit);
+        const auto myRgbColor = RgbColor::fromRgbQColor(rgb);
+        setCurrentOpaqueColor(myRgbColor, m_rgbLineEdit);
     } else {
         m_isDirtyRgbLineEdit = true;
     }
 }
 
-/** @brief Updates the RGB Hex widget to @ref m_currentOpaqueColor.
+/** @brief Updates the RGB Hex widget to @ref m_currentOpaqueColorRgb.
  *
- * @post The @ref m_rgbLineEdit gets the value of @ref m_currentOpaqueColor.
+ * @post The @ref m_rgbLineEdit gets the value of @ref m_currentOpaqueColorRgb.
  * During this operation, all signals of @ref m_rgbLineEdit are blocked. */
 void ColorDialogPrivate::updateRgbHexButBlockSignals()
 {
@@ -1449,7 +1480,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     // because of rounding issues, a conversion to an unbounded RGB
     // color could result in an invalid color. Therefore, we must
     // use a conversion to a _bounded_ RGB color.
-    const auto rgbFloat = m_currentOpaqueColor.multiRgb.rgb;
+    const auto rgbFloat = m_currentOpaqueColorRgb.rgb255;
     QList<int> rgbInteger;
     rgbInteger.reserve(rgbFloat.count());
     for (auto value : std::as_const(rgbFloat)) {
@@ -1475,25 +1506,31 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     m_rgbLineEdit->setText(hexString);
 }
 
-/** @brief Updates the HLC spin box to @ref m_currentOpaqueColor.
+/** @brief Updates the HLC spin box to @ref m_currentOpaqueColorAbs.
  *
  * @post The @ref m_ciehlcD50SpinBox gets the value of
- * @ref m_currentOpaqueColor. During this operation, all signals of
+ * @ref m_currentOpaqueColorAbs. During this operation, all signals of
  * @ref m_ciehlcD50SpinBox are blocked. */
 void ColorDialogPrivate::updateHlcButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_ciehlcD50SpinBox);
-    m_ciehlcD50SpinBox->setSectionValues(m_currentOpaqueColor.ciehlcD50);
+    const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
+    const QList<double> ciehlcD50List{cielchD50.third, //
+                                      cielchD50.first,
+                                      cielchD50.second};
+    m_ciehlcD50SpinBox->setSectionValues(ciehlcD50List);
 }
 
-/** @brief Updates the Oklch spin box to @ref m_currentOpaqueColor.
+/** @brief Updates the Oklch spin box to @ref m_currentOpaqueColorAbs.
  *
- * @post The @ref m_oklchSpinBox gets the value of @ref m_currentOpaqueColor.
- * During this operation, all signals of @ref m_oklchSpinBox are blocked. */
+ * @post The @ref m_oklchSpinBox gets the value
+ * of @ref m_currentOpaqueColorAbs. During this operation,
+ * all signals of @ref m_oklchSpinBox are blocked. */
 void ColorDialogPrivate::updateOklchButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_oklchSpinBox);
-    m_oklchSpinBox->setSectionValues(m_currentOpaqueColor.oklch);
+    const auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
+    m_oklchSpinBox->setSectionValues(oklch.toQList3());
 }
 
 /** @brief If no @ref m_isColorChangeInProgress, reads the HLC numbers
@@ -1509,11 +1546,10 @@ void ColorDialogPrivate::readHlcNumericValues()
     lch.h = hlcValues.at(0);
     lch.l = hlcValues.at(1);
     lch.c = hlcValues.at(2);
-    const auto myColor = m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
+    const auto myColor = GenericColor( //
+        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch));
     setCurrentOpaqueColor( //
-        MultiColor::fromCielchD50( //
-            m_rgbColorSpace,
-            myColor),
+        AbsoluteColor::allConversions(ColorModel::CielchD50, myColor),
         // widget that will ignored during updating:
         m_ciehlcD50SpinBox);
 }
@@ -1534,8 +1570,10 @@ void ColorDialogPrivate::readOklchNumericValues()
     originalOklch.l = m_oklchSpinBox->sectionValues().value(0);
     originalOklch.c = m_oklchSpinBox->sectionValues().value(1);
     originalOklch.h = m_oklchSpinBox->sectionValues().value(2);
-    const auto inGamutOklch = m_rgbColorSpace->reduceOklchChromaToFitIntoGamut(originalOklch);
-    const auto inGamutColor = MultiColor::fromOklch(m_rgbColorSpace, inGamutOklch);
+    const auto inGamutOklch = GenericColor( //
+        m_rgbColorSpace->reduceOklchChromaToFitIntoGamut(originalOklch));
+    const auto inGamutColor = //
+        AbsoluteColor::allConversions(ColorModel::OklchD65, inGamutOklch);
     setCurrentOpaqueColor(inGamutColor,
                           // widget that will ignored during updating:
                           m_oklchSpinBox);
@@ -1589,10 +1627,7 @@ void ColorDialogPrivate::initializeScreenColorPicker()
                 const QList<double> rgb{qBound<double>(0, red * 255, 255), //
                                         qBound<double>(0, green * 255, 255), //
                                         qBound<double>(0, blue * 255, 255)};
-                const auto multiColor = MultiColor::fromMultiRgb( //
-                    m_rgbColorSpace,
-                    MultiRgb::fromRgb(rgb));
-                setCurrentOpaqueColor(multiColor, nullptr);
+                setCurrentOpaqueColor(RgbColor::fromRgb255(rgb), nullptr);
             });
     QGridLayout *tempLayout = new QGridLayout();
     tempLayout->addWidget(m_screenColorPickerButton, 0, 0, Qt::AlignCenter);

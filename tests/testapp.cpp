@@ -1,17 +1,18 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
+#include "absolutecolor.h" // IWYU pragma: keep
 #include "asyncimageprovider.h" // IWYU pragma: keep
 #include "asyncimageproviderbase.h" // IWYU pragma: keep
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
+#include "genericcolor.h" // IWYU pragma: keep
 #include "helper.h" // IWYU pragma: keep
 #include "helperconstants.h" // IWYU pragma: keep
 #include "helperconversion.h" // IWYU pragma: keep
 #include "helpermath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
-#include "multicolor.h" // IWYU pragma: keep
 #include "oklchvalues.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
 #include "rgbcolorspace.h" // IWYU pragma: keep
@@ -31,6 +32,7 @@
 #include <qfontdatabase.h> // IWYU pragma: keep
 #include <qgenericmatrix.h> // IWYU pragma: keep
 #include <qglobal.h> // IWYU pragma: keep
+#include <qhash.h> // IWYU pragma: keep
 #include <qlabel.h> // IWYU pragma: keep
 #include <qlayout.h> // IWYU pragma: keep
 #include <qlibraryinfo.h> // IWYU pragma: keep
@@ -63,6 +65,26 @@ using namespace PerceptualColor;
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
 {
+#ifndef MSVC_DLL
+    const auto temp1 = AbsoluteColor::allConversions( //
+        ColorModel::XyzD65, //
+        GenericColor(0.20, 0.20, 0.61, 20));
+    QHashIterator<ColorModel, GenericColor> iterator1(temp1);
+    while (iterator1.hasNext()) {
+        iterator1.next();
+        qDebug() << toString(iterator1.key()) << iterator1.value();
+    }
+
+    const auto temp2 = AbsoluteColor::allConversions( //
+        ColorModel::OklchD65, //
+        GenericColor(0.585621, 0.142581, 253.545, 20));
+    QHashIterator<ColorModel, GenericColor> iterator2(temp2);
+    while (iterator2.hasNext()) {
+        iterator2.next();
+        qDebug() << toString(iterator2.key()) << iterator2.value();
+    }
+#endif
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     // Prepare configuration before instantiating the application object
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -92,7 +114,8 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
             // QStringLiteral("/usr/share/color/icc/test/PhotoGamutRGB_avg6c.icc")
             // QStringLiteral("WideGamutRGB.icc") //
-            QStringLiteral("/usr/share/color/icc/compatibleWithAdobeRGB1998.icc")
+            // QStringLiteral("/usr/share/color/icc/compatibleWithAdobeRGB1998.icc")
+            QStringLiteral("invalid")
             // QStringLiteral("/usr/share/color/icc/sRGB.icc")
             // QStringLiteral("/usr/share/color/icc/krita/Rec2020-elle-V4-g10.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/LargeRGB-elle-V2-g22.icc") //
@@ -117,7 +140,7 @@ int main(int argc, char *argv[])
     myColor.setAlphaF(0.5);
     // m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-    // m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
+    m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
     // m_colorDialog.setEnabled(false);
     // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
     m_colorDialog.show();

@@ -7,8 +7,10 @@
 // Second, the private implementation.
 #include "rgbcolorspace_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "helpermath.h"
@@ -1025,10 +1027,13 @@ bool RgbColorSpace::isOklchInGamut(const LchDouble &lch) const
             )) {
         return false;
     }
-    cmsCIELab lab; // uses cmsFloat64Number internally
-    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
-    cmsLCh2Lab(&lab, &myCmsCieLch);
-    return qAlpha(fromCielabD50ToQRgbOrTransparent(fromOklabToCmscielabD50(lab))) != 0;
+    const auto oklab = AbsoluteColor::fromPolarToCartesian(GenericColor(lch));
+    const auto xyzD65 = AbsoluteColor::fromOklabToXyzD65(oklab);
+    const auto xyzD50 = AbsoluteColor::fromXyzD65ToXyzD50(xyzD65);
+    const auto cielabD50 = AbsoluteColor::fromXyzD50ToCielabD50(xyzD50);
+    const auto cielabD50cms = cielabD50.reinterpretAsLabToCmscielab();
+    const auto rgb = fromCielabD50ToQRgbOrTransparent(cielabD50cms);
+    return (qAlpha(rgb) != 0);
 }
 
 /** @brief Check if a color is within the gamut.
@@ -1180,8 +1185,13 @@ double RgbColorSpacePrivate::detectMaximumOklchChroma() const
         const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
         const auto rgbColor = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
         const auto cielabD50Color = q_pointer->toCielabD50(rgbColor);
-        const auto oklab = fromCmscielabD50ToOklab(cielabD50Color);
-        chromaSquare = qMax(chromaSquare, oklab.a * oklab.a + oklab.b * oklab.b);
+        const auto cielabD50 = GenericColor(cielabD50Color);
+        const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
+        const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
+        const auto oklab = AbsoluteColor::fromXyzD65ToOklab(xyzD65);
+        chromaSquare = qMax( //
+            chromaSquare, //
+            oklab.second * oklab.second + oklab.third * oklab.third);
         hue += chromaDetectionHuePrecision;
     }
     return qSqrt(chromaSquare) * chromaDetectionIncrementFactor //
