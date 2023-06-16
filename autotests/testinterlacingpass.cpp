@@ -65,9 +65,23 @@ private Q_SLOTS:
         InterlacingPass testE{11};
     }
 
+    void testMake()
+    {
+        InterlacingPass testA = InterlacingPass::make<3>();
+        InterlacingPass testB = InterlacingPass::make<5>();
+        InterlacingPass testC = InterlacingPass::make<7>();
+        InterlacingPass testD = InterlacingPass::make<9>();
+        InterlacingPass testE = InterlacingPass::make<11>();
+        Q_UNUSED(testA);
+        Q_UNUSED(testB);
+        Q_UNUSED(testC);
+        Q_UNUSED(testD);
+        Q_UNUSED(testE);
+    }
+
     void testAdam3()
     {
-        InterlacingPass test{3};
+        InterlacingPass test = InterlacingPass::make<3>();
         QCOMPARE(test.countdown, 3);
         QCOMPARE(test.rectangleSize.width(), 2);
         QCOMPARE(test.rectangleSize.height(), 2);

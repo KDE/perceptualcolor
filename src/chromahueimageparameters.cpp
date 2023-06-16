@@ -151,7 +151,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // itself might also increase performance at least a little bit…
     constexpr auto numberOfPasses = 11;
     static_assert(isOdd(numberOfPasses));
-    InterlacingPass currentPass{numberOfPasses};
+    InterlacingPass currentPass = InterlacingPass::make<numberOfPasses>();
     QPainter myPainter(&myImage);
     myPainter.setRenderHint(QPainter::Antialiasing, false);
     while (true) {

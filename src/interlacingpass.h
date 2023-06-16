@@ -4,6 +4,7 @@
 #ifndef InterlacingPass_H
 #define InterlacingPass_H
 
+#include "helpermath.h"
 #include <qsize.h>
 
 namespace PerceptualColor
@@ -35,7 +36,25 @@ namespace PerceptualColor
 class InterlacingPass final
 {
 public:
-    explicit InterlacingPass(const int passCount);
+    /** @brief Constructor
+     *
+     * Constructs an object for a new interlacing cycle.
+     *
+     * @tparam passCount Number of passes within this interlacing
+     * cycle. This MUST be a positive odd number. Use <tt>7</tt>
+     * for <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>
+     * interlacing, or any other positive odd number for
+     * <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>-like
+     * interlacing, but with a different number of steps.
+     *
+     * @returns A corresponding object. */
+    template<int passCount>
+    static InterlacingPass make()
+    {
+        static_assert(passCount > 0, "passCount must be positive.");
+        static_assert(isOdd(passCount), "passCount must be odd.");
+        return InterlacingPass(passCount);
+    }
 
     void switchToNextPass();
 
@@ -66,6 +85,12 @@ public:
      * | 6th         |       2        |
      * | 7th (last)  |       1        | */
     int countdown;
+
+private:
+    explicit InterlacingPass(const int passCount);
+
+    /** @internal @brief Only for unit tests. */
+    friend class TestInterlacingPass;
 };
 
 } // namespace PerceptualColor
