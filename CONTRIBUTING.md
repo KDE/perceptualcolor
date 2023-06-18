@@ -19,7 +19,7 @@ scripts/local-ci-build-warnings.sh
 and with
 
 ```shell
-scripts/automatic-integration.sh
+scripts/format.sh
 ```
 you can to some adjustments automatically. Please run also
 ```shell

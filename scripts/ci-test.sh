@@ -25,11 +25,11 @@ totalerrors=$((totalerrors + exitcode))
 echo "ci-cmakelint.sh finished with exit code $exitcode."
 exitcode_cmakelint=$exitcode
 
-echo "Starting ci-automatic-integration.sh …"
-scripts/ci-automatic-integration.sh
+echo "Starting ci-format.sh …"
+scripts/ci-format.sh
 exitcode=$?
 totalerrors=$((totalerrors + exitcode))
-echo "ci-automatic-integration.sh finished with exit code $exitcode."
+echo "ci-format.sh finished with exit code $exitcode."
 exitcode_automatic_integration=$exitcode
 
 echo "Starting ci-doxygen.sh …"

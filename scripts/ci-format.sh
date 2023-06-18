@@ -19,11 +19,11 @@ errorcount=0
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
 rm --recursive --force build
-scripts/automatic-integration.sh
-git diff > artifact_automatic_integration_diff.txt
+scripts/format.sh
+git diff > artifact_format_diff.txt
 git reset --hard HEAD
-[ -s artifact_automatic_integration_diff.txt ] && ((errorcount++))
+[ -s artifact_format_diff.txt ] && ((errorcount++))
 
-echo Terminating ci-automatic-integration.sh with exit code $errorcount.
+echo Terminating ci-format.sh with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.
 exit $errorcount
