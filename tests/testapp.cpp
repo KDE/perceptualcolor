@@ -6,6 +6,9 @@
 #include "asyncimageproviderbase.h" // IWYU pragma: keep
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
+#include "colordialog_p.h" // IWYU pragma: keep
+#include "colorpatch.h" // IWYU pragma: keep
+#include "colorpatch_p.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
 #include "csscolor.h" // IWYU pragma: keep
 #include "genericcolor.h" // IWYU pragma: keep
@@ -294,6 +297,8 @@ int main(int argc, char *argv[])
                          m_colorDialog.setCurrentColor(customColors.value(0));
                      });
 #endif
+
+    m_colorDialog.setCurrentColor(QColor(50, 127, 206));
 
     // Run
     return app.exec();

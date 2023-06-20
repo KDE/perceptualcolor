@@ -11,6 +11,7 @@
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
+#include <qpoint.h>
 class QLabel;
 
 namespace PerceptualColor
@@ -33,6 +34,13 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~ColorPatchPrivate() noexcept = default;
 
+    /** @brief Initial cursor position (at the time of the left-click)
+     * where a drag-and-drop action starts.
+     *
+     * @sa @ref ColorPatch::mousePressEvent
+     * @sa @ref ColorPatch::mouseMoveEvent */
+    QPoint dragStartPosition;
+
     /** @brief Internal storage for property @ref ColorPatch::color
      *
      * QColor automatically initializes with an invalid color, just like it
@@ -42,6 +50,7 @@ public:
     /** @brief The QLabel widget that is used to display the color. */
     QLabel *m_label;
 
+    [[nodiscard]] int dragPixmapSize() const;
     [[nodiscard]] QImage renderImage();
     void updatePixmap();
 

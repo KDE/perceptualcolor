@@ -8,14 +8,22 @@
 #include "colorpatch_p.h" // IWYU pragma: associated
 
 #include "constpropagatinguniquepointer.h"
+#include "csscolor.h"
+#include "genericcolor.h"
 #include "helper.h"
+#include "helperconversion.h"
+#include "helperqttypes.h"
+#include <algorithm>
+#include <qapplication.h>
 #include <qbrush.h>
+#include <qdrag.h>
 #include <qevent.h>
 #include <qfont.h>
 #include <qframe.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qmath.h>
+#include <qmimedata.h>
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qpalette.h>
@@ -24,8 +32,10 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include <qsizepolicy.h>
+#include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+#include <qvariant.h>
 class QWidget;
 
 namespace PerceptualColor
@@ -36,6 +46,7 @@ ColorPatch::ColorPatch(QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ColorPatchPrivate(this))
 {
+    setAcceptDrops(true);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     d_pointer->updatePixmap();
 }
@@ -164,7 +175,8 @@ void ColorPatch::setColor(const QColor &newColor)
  * visible. If @ref ColorPatch has RTL layout, the image is mirrored. The
  * device-pixel-ratio is set accordingly to @ref ColorPatch. The size of
  * the image is equal or slightly bigger than necessary to paint the whole
- * @ref ColorPatch surface at the given device-pixel-ratio. As @ref m_label
+ * @ref ColorPatch surface at the given device-pixel-ratio (but always at
+ * least @ref dragPixmapSize). As @ref m_label
  * does <em>not</em> scale the image by default, it will be displayed with
  * the correct aspect ratio, while guaranteeing to be big enough whatever
  * QLabel’s frame size is with the currently used QStyle.*/
@@ -173,11 +185,13 @@ QImage ColorPatchPrivate::renderImage()
     // Initialization
     // Round up to the next integer to be sure to have a big-enough image:
     const auto qLabelContentsRect = m_label->contentsRect();
-    const qreal imageWidthF = //
-        qLabelContentsRect.width() * q_pointer->devicePixelRatioF();
+    const qreal imageWidthF = std::max<qreal>( //
+        qLabelContentsRect.width() * q_pointer->devicePixelRatioF(),
+        dragPixmapSize());
     const int imageWidth = qCeil(imageWidthF);
-    const qreal imageHeightF = //
-        qLabelContentsRect.height() * q_pointer->devicePixelRatioF();
+    const qreal imageHeightF = std::max<qreal>( //
+        qLabelContentsRect.height() * q_pointer->devicePixelRatioF(),
+        dragPixmapSize());
     const int imageHeight = qCeil(imageHeightF);
     QImage myImage(imageWidth, //
                    imageHeight, //
@@ -279,6 +293,103 @@ QImage ColorPatchPrivate::renderImage()
     }
     myImage.setDevicePixelRatio(q_pointer->devicePixelRatioF());
     return myImage;
+}
+
+/** @brief React on a mouse move event.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The corresponding mouse event */
+void ColorPatch::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+        d_pointer->dragStartPosition = event->pos();
+    AbstractDiagram::mousePressEvent(event);
+}
+
+/** @brief React on a mouse press event.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The corresponding mouse event */
+void ColorPatch::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton) {
+        // Distance since the left mouse buttons was originally clicked.
+        const auto vector = event->pos() - d_pointer->dragStartPosition;
+        const auto distanceSquare = vector.x() * vector.x() //
+            + vector.y() * vector.y();
+        const auto refSquare = QApplication::startDragDistance() //
+            * QApplication::startDragDistance();
+        if (distanceSquare >= refSquare) {
+            QDrag *drag = new QDrag(this); // Mandatory on heap and with parent
+            QMimeData *mimeData = new QMimeData;
+            mimeData->setColorData(d_pointer->m_color);
+            drag->setMimeData(mimeData); // Takes ownership of mime data
+            const QPixmap originalPixmap = d_pointer->m_label->pixmap();
+            const int x = (layoutDirection() == Qt::RightToLeft) //
+                ? originalPixmap.width() - d_pointer->dragPixmapSize()
+                : 0;
+            const QPixmap clampedPixmap = originalPixmap.copy( //
+                x,
+                0,
+                d_pointer->dragPixmapSize(),
+                d_pointer->dragPixmapSize());
+            drag->setPixmap(clampedPixmap);
+            drag->exec(Qt::CopyAction);
+        }
+    }
+    // NOTE Intentionally not calling the parent’s class’ implementation to
+    // avoid that on Breeze style, instead of drag-and-drop, sometimes
+    // the window gets moved.
+}
+
+/** @brief Size of the pixmap glued to the cursor during drag-and-drop.
+ *
+ * @returns Size of the pixmap glued to the cursor during drag-and-drop,
+ * measured in physical pixels. */
+int ColorPatchPrivate::dragPixmapSize() const
+{
+    const auto minSize = q_pointer->minimumSizeHint();
+    const auto deviceIndependant = std::max({30, //
+                                             minSize.width(), //
+                                             minSize.height()});
+    return qCeil(deviceIndependant * q_pointer->devicePixelRatioF());
+}
+
+/** @brief Accepts drag events for colors.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The corresponding event */
+void ColorPatch::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasColor()) {
+        const QColor colorToDrop = qvariant_cast<QColor>( //
+            event->mimeData()->colorData());
+        if (colorToDrop.isValid()) {
+            event->acceptProposedAction();
+            return;
+        }
+    }
+}
+
+/** @brief Accepts drag events for colors.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The corresponding event */
+void ColorPatch::dropEvent(QDropEvent *event)
+{
+    if (event->mimeData()->hasColor()) {
+        const QColor colorToDrop = qvariant_cast<QColor>( //
+            event->mimeData()->colorData());
+        if (colorToDrop.isValid()) {
+            setColor(colorToDrop);
+            event->acceptProposedAction();
+            return;
+        }
+    }
 }
 
 } // namespace PerceptualColor

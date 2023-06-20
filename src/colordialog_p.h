@@ -277,6 +277,7 @@ public:
 
 public Q_SLOTS:
     void readChromaHueDiagramValue();
+    void readColorPatchValue();
     void readHlcNumericValues();
     void readHslNumericValues();
     void readHsvNumericValues();
@@ -285,7 +286,7 @@ public Q_SLOTS:
     void readOklchNumericValues();
     void readRgbHexValues();
     void readRgbNumericValues();
-    void readSwatchBook();
+    void readSwatchBookValue();
     void readWheelColorPickerValues();
     void reloadIcons();
     void retranslateUi();

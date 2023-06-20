@@ -1052,10 +1052,15 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     q_pointer->setLayout(tempMainLayout);
 
     // initialize signal-slot-connections
+    connect(m_colorPatch, // sender
+            &ColorPatch::colorChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readColorPatchValue // slot
+    );
     connect(m_swatchBook, // sender
             &SwatchBook::currentColorChanged, // signal
             this, // receiver
-            &ColorDialogPrivate::readSwatchBook // slot
+            &ColorDialogPrivate::readSwatchBookValue // slot
     );
     connect(m_rgbSpinBox, // sender
             &MultiSpinBox::sectionValuesChanged, // signal
@@ -1626,9 +1631,26 @@ void ColorDialogPrivate::readRgbNumericValues()
     setCurrentOpaqueColor(temp, m_rgbSpinBox);
 }
 
+/** @brief Reads the color of the color patch, and
+ * updates the dialog accordingly. */
+void ColorDialogPrivate::readColorPatchValue()
+{
+    if (m_isColorChangeInProgress) {
+        // Nothing to do!
+        return;
+    }
+    const QColor temp = m_colorPatch->color();
+    if (!temp.isValid()) {
+        // No color is currently selected!
+        return;
+    }
+    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
+    setCurrentOpaqueColor(myRgbColor, m_colorPatch);
+}
+
 /** @brief Reads the color of the palette widget, and (if any)
  * updates the dialog accordingly. */
-void ColorDialogPrivate::readSwatchBook()
+void ColorDialogPrivate::readSwatchBookValue()
 {
     if (m_isColorChangeInProgress) {
         // Nothing to do!

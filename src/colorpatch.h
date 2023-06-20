@@ -10,6 +10,9 @@
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qsize.h>
+class QDragEnterEvent;
+class QDropEvent;
+class QMouseEvent;
 class QResizeEvent;
 class QWidget;
 
@@ -27,8 +30,10 @@ class ColorPatchPrivate;
 
 /** @brief A color display widget.
  *
- * This widget simply displays a color. Useful for showing a given
- * color. The instantiation and usage is simple. Example:
+ * This widget simply displays a color. And it provides drag-and-drop support;
+ * it emits also @ref colorChanged on drop events if the color has changed.
+ * Useful for showing a given color. The instantiation and usage is simple.
+ * Example:
  * @snippet testcolorpatch.cpp ColorPatch Create widget
  *
  * @image html ColorPatch.png "ColorPatch" width=50
@@ -108,6 +113,10 @@ Q_SIGNALS:
     void colorChanged(const QColor &color);
 
 protected:
+    virtual void dragEnterEvent(QDragEnterEvent *event) override;
+    virtual void dropEvent(QDropEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
