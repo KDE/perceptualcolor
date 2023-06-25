@@ -1195,9 +1195,9 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &
 {
     const auto temp = rgb.rgb255;
     const QColor myQColor = QColor::fromRgbF( //
-        static_cast<float>(temp.at(0) / 255.), //
-        static_cast<float>(temp.at(1) / 255.), //
-        static_cast<float>(temp.at(2) / 255.));
+        static_cast<QColorFloatType>(temp.at(0) / 255.), //
+        static_cast<QColorFloatType>(temp.at(1) / 255.), //
+        static_cast<QColorFloatType>(temp.at(2) / 255.));
     const auto cielchD50 = GenericColor( //
         m_rgbColorSpace->toCielchD50Double(myQColor.rgba64()));
     setCurrentOpaqueColor( //
