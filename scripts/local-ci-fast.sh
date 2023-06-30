@@ -118,6 +118,7 @@ mkdir --parents build \
     | grep --invert-match --perl-regexp "^Added \d+ tests to meet fixture requirements" \
     | grep --invert-match --perl-regexp "^Checking test dependency graph\.\.\." \
     | grep --invert-match --perl-regexp "^Checking test dependency graph end" \
+    | grep --invert-match --perl-regexp "^Parse Config file:.*DartConfiguration.tcl$" \
     | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
     | grep --invert-match --perl-regexp "^\d+: RESULT : " \
     | grep --invert-match --perl-regexp "^      Start " \
