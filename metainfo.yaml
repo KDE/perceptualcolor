@@ -16,7 +16,7 @@ platforms:
     - name: Linux
     - name: FreeBSD
     - name: Windows
-    #- name: MacOSX
+    - name: MacOSX
     #- name: Android
     #- name: All
 public_lib: true

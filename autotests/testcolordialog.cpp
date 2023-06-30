@@ -72,6 +72,12 @@
 #include <utility>
 #endif
 
+// From Qt documentation:
+//     “Note: This function is not declared in any of Qt's header files. To
+//      use it in your application, declare the function prototype before
+//      calling it.”
+void qt_set_sequence_auto_mnemonic(bool b);
+
 class TestColorDialogSnippetClass : public QWidget
 {
     Q_OBJECT
@@ -341,6 +347,10 @@ private Q_SLOTS:
     void initTestCase()
     {
         // Called before the first test function is executed
+
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // enabled, also on platforms that disable it by default.
+        qt_set_sequence_auto_mnemonic(true);
     }
     void cleanupTestCase()
     {
@@ -475,11 +485,15 @@ private Q_SLOTS:
                  tempWidget.data());
     }
 
+#ifdef Q_OS_LINUX
+    // Linux has no native color dialog, so it is the only system guaranteed
+    // to use QColorDialog’s own implementation not only after calling
+    // QColorDialog::setOption(QColorDialog::DontUseNativeDialog, true);
+    // but yet on QColorDialog’s constructor call.
     void testConstructorQColorQWidgetConformance_data()
     {
         helperProvideQColors();
     }
-
     void testConstructorQColorQWidgetConformance()
     {
         QFETCH(QColor, color);
@@ -499,7 +513,13 @@ private Q_SLOTS:
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
         helperCompareDialog(tempPerceptualDialog2, tempQDialog2);
     }
+#endif
 
+#ifdef Q_OS_LINUX
+    // Linux has no native color dialog, so it is the only system guaranteed
+    // to use QColorDialog’s own implementation not only after calling
+    // QColorDialog::setOption(QColorDialog::DontUseNativeDialog, true);
+    // but yet on QColorDialog’s constructor call.
     void testConformanceWithQColorDialog_data()
     {
         QTest::addColumn<QColor>("initialColor");
@@ -544,7 +564,6 @@ private Q_SLOTS:
             }
         }
     }
-
     void testConformanceWithQColorDialog()
     {
         // Some conformance tests (without a particular systematic approach)
@@ -582,7 +601,13 @@ private Q_SLOTS:
         QTest::keyClick(m_qDialog.data(), Qt::Key_Escape);
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
     }
+#endif
 
+#ifdef Q_OS_LINUX
+    // Linux has no native color dialog, so it is the only system guaranteed
+    // to use QColorDialog’s own implementation not only after calling
+    // QColorDialog::setOption(QColorDialog::DontUseNativeDialog, true);
+    // but yet on QColorDialog’s constructor call.
     void testConformanceWithQColorDialogNoButtons_data()
     {
         QTest::addColumn<bool>("showAlphaChannel");
@@ -593,7 +618,6 @@ private Q_SLOTS:
         QTest::newRow("/NoButtons") << false << true;
         QTest::newRow("") << false << false;
     }
-
     void testConformanceWithQColorDialogNoButtons()
     {
         // Some conformance tests (without a particular systematic approach)
@@ -634,6 +658,7 @@ private Q_SLOTS:
         QTest::keyClick(m_qDialog.data(), Qt::Key_Escape);
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
     }
+#endif
 
     void testColorSelectedSignal()
     {
@@ -641,6 +666,7 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
         m_perceptualDialog->show();
         m_qDialog.reset(new QColorDialog());
+        m_qDialog->setOption(QColorDialog::DontUseNativeDialog, true);
         m_qDialog->show();
         QSignalSpy spyPerceptualDialog( //
             m_perceptualDialog.data(), //
@@ -936,7 +962,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset( //
             new ColorDialog(m_srgbBuildinColorSpace));
         m_qDialog.reset(new QColorDialog);
-
+        m_qDialog->setOption(QColorDialog::DontUseNativeDialog, true);
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
             true);
@@ -1088,6 +1114,7 @@ private Q_SLOTS:
         // Test our reference (QColorDialog)
         m_color = Qt::black;
         m_qDialog.reset(new QColorDialog);
+        m_qDialog->setOption(QColorDialog::DontUseNativeDialog, true);
         m_qDialog->setCurrentColor(Qt::white);
         m_qDialog->open(this, SLOT(helperReceiveSignals(QColor)));
         m_qDialog->setCurrentColor(Qt::red);
@@ -1219,6 +1246,11 @@ private Q_SLOTS:
             true);
     }
 
+#ifdef Q_OS_LINUX
+    // Linux has no native color dialog, so it is the only system guaranteed
+    // to use QColorDialog’s own implementation not only after calling
+    // QColorDialog::setOption(QColorDialog::DontUseNativeDialog, true);
+    // but yet on QColorDialog’s constructor call.
     void testOptionShowAlpha()
     {
         m_perceptualDialog.reset( //
@@ -1250,7 +1282,13 @@ private Q_SLOTS:
         m_qDialog->setCurrentColor(tempColor);
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
     }
+#endif
 
+#ifdef Q_OS_LINUX
+    // Linux has no native color dialog, so it is the only system guaranteed
+    // to use QColorDialog’s own implementation not only after calling
+    // QColorDialog::setOption(QColorDialog::DontUseNativeDialog, true);
+    // but yet on QColorDialog’s constructor call.
     void testOptionNoButtons()
     {
         m_perceptualDialog.reset( //
@@ -1296,6 +1334,7 @@ private Q_SLOTS:
                  "Should no longer be visible after Return key pressed.");
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
     }
+#endif
 
     void testSetOptionAndTestOptionInteraction()
     {
@@ -1496,6 +1535,11 @@ private Q_SLOTS:
         QCOMPARE(m_perceptualDialog->d_pointer->m_alphaSpinBox->value(), 51);
     }
 
+#ifdef Q_OS_LINUX
+    // Linux has no native color dialog, so it is the only system guaranteed
+    // to use QColorDialog’s own implementation not only after calling
+    // QColorDialog::setOption(QColorDialog::DontUseNativeDialog, true);
+    // but yet on QColorDialog’s constructor call.
     void testSelectedColorAndSetVisible()
     {
         m_perceptualDialog.reset( //
@@ -1553,6 +1597,7 @@ private Q_SLOTS:
                  m_qDialog->selectedColor());
         QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
     }
+#endif
 
     void testAliases()
     {

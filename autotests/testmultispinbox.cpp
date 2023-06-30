@@ -39,6 +39,12 @@
 #include <qobjectdefs.h>
 #endif
 
+// From Qt documentation:
+//     “Note: This function is not declared in any of Qt's header files. To
+//      use it in your application, declare the function prototype before
+//      calling it.”
+void qt_set_sequence_auto_mnemonic(bool b);
+
 static void snippet02()
 {
     //! [MultiSpinBox Basic example]
@@ -177,6 +183,12 @@ private Q_SLOTS:
     void initTestCase()
     {
         // Called before the first test function is executed
+
+        // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
+        // enabled, also on platforms that disable it by default.
+        qt_set_sequence_auto_mnemonic(true);
+
+        // Provide example configuration
         MultiSpinBoxSection mySection;
         mySection.setDecimals(0);
         mySection.setMinimum(0);
@@ -248,9 +260,21 @@ private Q_SLOTS:
         // Assert that the setup is okay.
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
         // Go to begin of the line edit
-        QTest::keyClick(widget.data(), Qt::Key_Home);
+        for (int i = 0; i < 10; i++) {
+            // NOTE Simply use 1 time Qt::Key_Home would be easier
+            // than calling 10 times Qt::Key_Left, however Qt::Key_Home
+            // does not work on MacOS.
+            QTest::keyClick(widget.data(), Qt::Key_Left);
+        }
+        QCOMPARE(widget->lineEdit()->selectedText(), QStringLiteral(u""));
+        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
+        QCOMPARE(widget->lineEdit()->cursorPosition(), 0);
         // Select the first “0”:
         QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
+        // The content shouldn’t have changed.
+        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
+        // The selection should contain “0”.
+        QCOMPARE(widget->lineEdit()->selectedText(), QStringLiteral(u"0"));
         // Write “45”
         QTest::keyClicks(widget.data(), QStringLiteral(u"45"));
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"45°  0%  0"));

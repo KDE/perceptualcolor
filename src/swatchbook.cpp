@@ -492,11 +492,14 @@ QSize SwatchBookPrivate::patchSizeOuter() const
  * device-independent pixel. */
 QSize SwatchBookPrivate::patchSizeInner() const
 {
-    const int temp = q_pointer->style()->pixelMetric( //
+    const int metric = q_pointer->style()->pixelMetric( //
         QStyle::PM_ButtonIconSize,
         nullptr,
         q_pointer.toPointerToConstObject());
-    return QSize(temp, temp);
+    const int size = std::max({metric, //
+                               horizontalPatchSpacing(), //
+                               verticalPatchSpacing()});
+    return QSize(size, size);
 }
 
 /** @brief Paint the widget.

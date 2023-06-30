@@ -211,12 +211,12 @@ private Q_SLOTS:
             testWidget.setStyle(style);
             QVERIFY(!testWidget.d_pointer->patchSizeInner().isEmpty());
             QVERIFY(!testWidget.d_pointer->patchSizeOuter().isEmpty());
-            QVERIFY(testWidget.d_pointer->patchSizeOuter().width() > testWidget.d_pointer->patchSizeInner().width());
-            QVERIFY(testWidget.d_pointer->patchSizeOuter().height() > testWidget.d_pointer->patchSizeInner().height());
+            QVERIFY(testWidget.d_pointer->patchSizeOuter().width() >= testWidget.d_pointer->patchSizeInner().width());
+            QVERIFY(testWidget.d_pointer->patchSizeOuter().height() >= testWidget.d_pointer->patchSizeInner().height());
 
             // Test also some design properties:
-            QVERIFY(testWidget.d_pointer->patchSizeInner().width() > testWidget.d_pointer->horizontalPatchSpacing());
-            QVERIFY(testWidget.d_pointer->patchSizeInner().height() > testWidget.d_pointer->verticalPatchSpacing());
+            QVERIFY(testWidget.d_pointer->patchSizeInner().width() >= testWidget.d_pointer->horizontalPatchSpacing());
+            QVERIFY(testWidget.d_pointer->patchSizeInner().height() >= testWidget.d_pointer->verticalPatchSpacing());
         }
         delete style;
     }

@@ -109,6 +109,12 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(ON_CLANG_DERIVATE true)
+else()
+    set(ON_CLANG_DERIVATE false)
+endif()
+
 
 
 
@@ -263,14 +269,9 @@ option(
 message(
     STATUS
     "ADDITIONAL_WARNINGS: ${ADDITIONAL_WARNINGS}")
-if(
-    ADDITIONAL_WARNINGS
+if(ADDITIONAL_WARNINGS
     AND
-    (
-        ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        OR
-        ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    )
+    ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR ON_CLANG_DERIVATE)
 )
     add_compile_options(
         # Issue all the warnings demanded by strict ISO C++:
@@ -350,7 +351,7 @@ if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"))
         -Wunsafe-loop-optimizations
     )
 endif()
-if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
+if(ADDITIONAL_WARNINGS AND ON_CLANG_DERIVATE)
     # Add additional flags for Clang:
     add_compile_options(
         # More warnings:
@@ -450,7 +451,7 @@ endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options(/wd5033)
 endif()
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR ON_CLANG_DERIVATE)
     add_compile_options(-Wno-register)
 endif()
 

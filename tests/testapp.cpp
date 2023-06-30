@@ -38,6 +38,7 @@
 #include <qlabel.h> // IWYU pragma: keep
 #include <qlayout.h> // IWYU pragma: keep
 #include <qlibraryinfo.h> // IWYU pragma: keep
+#include <qlineedit.h> // IWYU pragma: keep
 #include <qlist.h> // IWYU pragma: keep
 #include <qlocale.h> // IWYU pragma: keep
 #include <qmath.h> // IWYU pragma: keep
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
     // QLocale::setDefault(QLocale::Bengali);
     // QLocale::setDefault(QLocale(QLocale::German, QLocale::Country::Germany));
     // QLocale::setDefault(QLocale(QLocale::Georgian));
-    // QLocale::setDefault(QLocale::English);
+    QLocale::setDefault(QLocale::English);
     // QLocale::setDefault(QLocale::French);
     // QLocale::setDefault(QLocale::Spanish);
     // QLocale::setDefault(QLocale::Ukrainian);
