@@ -855,7 +855,7 @@ private Q_SLOTS:
     void testParseArgumentPercentNoneTo1()
     {
         QVERIFY(!CssColor::parseArgumentPercentNoneTo1( //
-                     QStringLiteral(""))
+                     QString())
                      .has_value());
         QVERIFY(!CssColor::parseArgumentPercentNoneTo1( //
                      QStringLiteral("0"))
@@ -903,7 +903,7 @@ private Q_SLOTS:
                  0.);
 
         QVERIFY(!CssColor::parseArgumentHueNoneTo360( //
-                     QStringLiteral(""))
+                     QString())
                      .has_value());
 
         QCOMPARE(CssColor::parseArgumentHueNoneTo360( //
@@ -1045,7 +1045,7 @@ private Q_SLOTS:
         QTest::addColumn<double>("alpha1");
 
         QTest::newRow("") //
-            << QStringLiteral("") //
+            << QString() //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
             << 0. << 0. << 0. << 0. //

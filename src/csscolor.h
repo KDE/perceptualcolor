@@ -77,8 +77,8 @@ public:
         double alpha1 = 0;
     };
 
-    static CssColorValue parse(const QString &string);
-    static QStringList generateCss(const QHash<ColorModel, GenericColor> &input, const double opacity1, const int significantFigures);
+    [[nodiscard]] static CssColorValue parse(const QString &string);
+    [[nodiscard]] static QStringList generateCss(const QHash<ColorModel, GenericColor> &input, const double opacity1, const int significantFigures);
 
 private:
     /** @brief Syntaxes of the CSS Color 4 color functions. */
@@ -94,14 +94,14 @@ private:
             @ref FunctionSyntax::StandardSyntax. */
     };
 
-    static CssColorValue parseAbsoluteColorFunction(const QString &colorFunction);
-    static std::optional<QStringList> parseAllFunctionArguments(const QString &arguments, const FunctionSyntax mode, const int count);
-    static std::optional<QRgb> parseHexColor(const QString &hexColor);
-    static std::optional<QRgb> parseNamedColor(const QString &namedColor);
-    static std::optional<double> parseArgumentHueNoneTo360(const QString &argument);
-    static std::optional<double> parseArgumentPercentNoneTo1(const QString &argument);
-    static std::optional<double> parseArgumentPercentNumberNone(const QString &argument, const double full, const double none);
-    static std::optional<QStringList> validateArguments(const QStringList &arguments);
+    [[nodiscard]] static CssColorValue parseAbsoluteColorFunction(const QString &colorFunction);
+    [[nodiscard]] static std::optional<QStringList> parseAllFunctionArguments(const QString &arguments, const FunctionSyntax mode, const int count);
+    [[nodiscard]] static std::optional<QRgb> parseHexColor(const QString &hexColor);
+    [[nodiscard]] static std::optional<QRgb> parseNamedColor(const QString &namedColor);
+    [[nodiscard]] static std::optional<double> parseArgumentHueNoneTo360(const QString &argument);
+    [[nodiscard]] static std::optional<double> parseArgumentPercentNoneTo1(const QString &argument);
+    [[nodiscard]] static std::optional<double> parseArgumentPercentNumberNone(const QString &argument, const double full, const double none);
+    [[nodiscard]] static std::optional<QStringList> validateArguments(const QStringList &arguments);
 
     /** @internal @brief Only for unit tests. */
     friend class TestCssColor;
