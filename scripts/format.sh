@@ -33,11 +33,11 @@ set -euo pipefail
 # whenever no BOM is present. Using a BOM makes it working out-of-the-box
 # without relying on Microsoft-only compiler options like “/utf-8”. Details:
 # https://devblogs.microsoft.com/cppblog/new-options-for-managing-character-sets-in-the-microsoft-cc-compiler/#dos-donts-and-the-future
-#
-# Unfortunately, this following command changes the modification date of all
-# files, even those that have yet a BOM and don’t need a change. Therefore,
-# after calling this script, the next “make” call will rebuild everything.
-sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/*.hpp autotests/*.cpp tests/* utils/* examples/example.cpp
+for file in src/*.h src/*.cpp src/*.hpp autotests/*.cpp tests/* utils/* examples/example.cpp; do
+    if ! grep -q $'\xef\xbb\xbf' "$file"; then
+        sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' "$file"
+    fi
+done
 
 
 
@@ -46,8 +46,8 @@ sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/*.h src/*.cpp src/*.hpp autote
 ################# Clang format #################
 # Run within a sub-shell (therefore the parenthesis),
 # so that after this we go back to the original working directory.
-mkdir --parents build
-cd build
+mkdir --parents buildclangformat
+cd buildclangformat
 cmake -DBUILD_WITH_QT6=ON ..
 cmake --build . --parallel $PARALLEL_PROCESSES --target clang-format
 cd ..
