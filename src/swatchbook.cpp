@@ -17,6 +17,7 @@
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
+#include <algorithm>
 #include <array>
 #include <optional>
 #include <qapplication.h>

@@ -35,7 +35,7 @@ jobs:
           name: Build project
           command: |
             PARALLEL_PROCESSES=$(sysctl -n hw.ncpu)
-            echo "Number of available CPU threads: $PARALLEL_PROCESSES"
+            echo Number of available CPU threads: $PARALLEL_PROCESSES
             rm -rf build
             mkdir -p build
             cd build
@@ -50,10 +50,17 @@ jobs:
             cmake -DBUILD_WITH_QT6=ON ../examples
             cmake --build . --parallel
             cd ..
+            mkdir -p screenshots
+            cd screenshots
+            ../build/utils/generatescreenshots --native
+            zip -r ../screenshots.zip .
+            cd ..
+      - store_artifacts:
+          path: screenshots.zip
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  cmake-build-workflow:
+  build-workflow:
     jobs:
       - build-macos

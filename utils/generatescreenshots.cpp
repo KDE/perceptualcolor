@@ -23,6 +23,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcolor.h>
+#include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -499,12 +500,20 @@ int main(int argc, char *argv[])
     parser.setApplicationDescription(description);
     parser.addHelpOption();
     parser.addVersionOption();
+    const QCommandLineOption native //
+        {QStringLiteral("native"),
+         QStringLiteral("Use the current environment’s default style instead "
+                        "of a hard-coded style. Also, “fontfiles” will be "
+                        "ignored.")};
+    parser.addOption(native);
     parser.addPositionalArgument( //
         QStringLiteral("fontfiles"), //
         QStringLiteral("Zero or more font files (preferred fonts first)."));
     parser.process(app);
-    initWidgetAppearance(&app);
-    initFonts(&app, parser.positionalArguments());
+    if (!parser.isSet(native)) {
+        initWidgetAppearance(&app);
+        initFonts(&app, parser.positionalArguments());
+    }
 
     // Do the actual work
     makeScreenshots();
