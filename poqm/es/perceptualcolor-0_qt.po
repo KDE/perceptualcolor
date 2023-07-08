@@ -345,7 +345,7 @@ msgid "sRGB color space"
 msgstr "Espacio de color sRGB"
 
 #. @item Used to indicate the selected color in the palette. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:92
+#: swatchbook.cpp:93
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
