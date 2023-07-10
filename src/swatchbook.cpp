@@ -182,14 +182,20 @@ QSize SwatchBook::sizeHint() const
 QSize SwatchBook::minimumSizeHint() const
 {
     ensurePolished();
-
     QStyleOptionFrame myOption;
     d_pointer->initStyleOption(&myOption);
-
-    return style()->sizeFromContents(QStyle::CT_LineEdit, //
-                                     &myOption,
-                                     d_pointer->colorPatchesSizeWithMargin(),
-                                     this);
+    const auto contentSize = d_pointer->colorPatchesSizeWithMargin();
+    const auto styleSize = style()->sizeFromContents(QStyle::CT_LineEdit, //
+                                                     &myOption,
+                                                     contentSize,
+                                                     this);
+    // On some style like (for example the MacOS style), sizeFromContents()
+    // for line edits returns a value that is less height than the content
+    // size. Therefore, here comes some safety code:
+    const auto lineWidth = myOption.lineWidth;
+    QMargins margins{lineWidth, lineWidth, lineWidth, lineWidth};
+    const QSize minimumSize = contentSize.grownBy(margins);
+    return minimumSize.expandedTo(styleSize);
 }
 
 // No documentation here (documentation of properties
