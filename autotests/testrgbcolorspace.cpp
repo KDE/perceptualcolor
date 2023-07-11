@@ -14,6 +14,7 @@
 #include "lchdouble.h"
 #include "rgbcolorspacefactory.h"
 #include <lcms2.h>
+#include <qbytearray.h>
 #include <qcolor.h>
 #include <qdatetime.h>
 #include <qdir.h>
@@ -499,13 +500,13 @@ private Q_SLOTS:
         const QRgba64 white = QColor{255, 255, 255}.rgba64();
         const auto convertedWhite = myColorSpace->toCielchD50Double(white);
         const auto bufferWhiteL = QStringLiteral("convertedWhite.l: %1") //
-            .arg(convertedWhite.l, 0, 'e') //
-            .toUtf8();
+                                      .arg(convertedWhite.l, 0, 'e') //
+                                      .toUtf8();
         QVERIFY2(convertedWhite.l >= 99, bufferWhiteL.constData());
         QVERIFY2(convertedWhite.l <= 100, bufferWhiteL.constData());
         const auto bufferWhiteC = QStringLiteral("convertedWhite.c: %1") //
-            .arg(convertedWhite.c, 0, 'e') //
-            .toUtf8();
+                                      .arg(convertedWhite.c, 0, 'e') //
+                                      .toUtf8();
         QVERIFY2(convertedWhite.c >= -1, bufferWhiteC.constData());
         QVERIFY2(convertedWhite.c <= 1, bufferWhiteC.constData());
         // No test for hue because it would be meaningless.
@@ -514,13 +515,13 @@ private Q_SLOTS:
         const QRgba64 black = QColor{0, 0, 0}.rgba64();
         const auto convertedBlack = myColorSpace->toCielchD50Double(black);
         const auto bufferBlackL = QStringLiteral("convertedBlack.l: %1") //
-            .arg(convertedBlack.l, 0, 'e') //
-            .toUtf8();
+                                      .arg(convertedBlack.l, 0, 'e') //
+                                      .toUtf8();
         QVERIFY2(convertedBlack.l >= 0, bufferBlackL.constData());
         QVERIFY2(convertedBlack.l <= 1, bufferBlackL.constData());
         const auto bufferBlackC = QStringLiteral("convertedBlack.c: %1") //
-            .arg(convertedBlack.c, 0, 'e') //
-            .toUtf8();
+                                      .arg(convertedBlack.c, 0, 'e') //
+                                      .toUtf8();
         QVERIFY2(convertedBlack.c >= -1, bufferBlackC.constData());
         QVERIFY2(convertedBlack.c <= 1, bufferBlackC.constData());
         // No test for hue because it would be meaningless.
