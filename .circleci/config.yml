@@ -9,9 +9,59 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+
+
+
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
+
+  job-build-bigendian:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      # See: https://circleci.com/docs/configuration-reference/#steps
+      - checkout
+      - run:
+          name: Enable run containers with different architectures
+          command: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run:
+          name: Run docker container for s390x
+          command: docker run -it -d --platform linux/s390x --name ubuntu_bigendian ubuntu:22.04
+      - run:
+          name: Display information about the container’s virtual hardware
+          command: docker exec -it ubuntu_bigendian bash -c "lscpu"
+      - run:
+          name: Set noninteractive environment
+          command: docker exec -it ubuntu_bigendian bash -c "echo 'export DEBIAN_FRONTEND=noninteractive' >> $BASH_ENV"
+      - run:
+          name: Checkout code into the virtual machine
+          command: |
+            docker cp "$(pwd)" ubuntu_bigendian:/project
+      - run:
+          name: Install dependencies
+          command: |
+            docker exec -it ubuntu_bigendian bash -c "apt-get update --assume-yes"
+            docker exec -it ubuntu_bigendian bash -c "apt-get install --assume-yes --no-install-recommends cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools xvfb openbox qt6-tools-dev qt6-tools-dev-tools libegl-dev"
+      - run:
+          name: Build project
+          command: |
+            docker exec -it ubuntu_bigendian bash -c '(
+                set -ex
+                Xvfb :90 -ac -screen 0 1600x1200x24+32 &
+                cd /project
+                PARALLEL_PROCESSES=`nproc --all`
+                mkdir --parents build
+                cd build
+                cmake -DBUILD_WITH_QT6=ON ..
+                openbox &
+                cmake --build . --parallel $PARALLEL_PROCESSES
+                export DISPLAY=":90"
+                ctest --output-on-failure --progress
+                cd ..
+              )'
+
   job-build-macos:
     macos:
       # Use macOS executor for Mac build with the medium resource class
@@ -58,6 +108,10 @@ jobs:
       - store_artifacts:
           path: screenshots.zip
 
+
+
+
+
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
@@ -68,3 +122,8 @@ workflows:
             branches:
               only:
                 - /^ci_mac_.*/
+      - job-build-bigendian:
+          filters:
+            branches:
+              only:
+                - /^ci_bigendian_.*/
