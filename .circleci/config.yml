@@ -12,7 +12,7 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  build-macos:
+  job-build-macos:
     macos:
       # Use macOS executor for Mac build with the medium resource class
       xcode: 14.3.1
@@ -61,6 +61,10 @@ jobs:
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  build-workflow:
+  workflow-build:
     jobs:
-      - build-macos
+      - job-build-macos:
+          filters:
+            branches:
+              only:
+                - /^ci_mac_.*/
