@@ -12,6 +12,7 @@
 # does not come from KDE. Therefore we use them as less as possible.
 stages:
   - build
+  - quality
   - iwyu
 
 
@@ -80,7 +81,7 @@ codecheck_iwyu:
       - artifact_iwyu.txt
   stage: iwyu
   dependencies:
-    - codecheck_test
+    - codecheck_quality
   script:
     - if [ -f "artifact_iwyu.txt" ]; then
     -   exit 1
@@ -91,14 +92,14 @@ codecheck_iwyu:
 
 
 
-codecheck_test:
+codecheck_quality:
   image: ubuntu:22.04
   tags:
     - Linux
   interruptible: true
   rules:
-    - when: always
-      allow_failure: false
+    - when: on_success
+    - allow_failure: false
   artifacts:
     expire_in: 20 weeks
     when: always
@@ -107,7 +108,7 @@ codecheck_test:
       - build_qch/perceptualcolor.qch
       - build_qch/perceptualcolor.tags
       - build_qch/perceptualcolor-0_QCHTargets.cmake
-  stage: build
+  stage: quality
   before_script:
     - apt-get update --assume-yes
     # NOTE For some obscure reason, iwyu does not print anything if clazy
@@ -155,15 +156,18 @@ include:
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/craft-windows-mingw64.yml
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/craft-windows-x86-64.yml
   #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/flatpak.yml
-  #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd-qt6.yml
-  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd.yml
-  #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-qt6.yml
-  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-static.yml
+  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd-qt6.yml
+  #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/freebsd.yml
+  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-qt6.yml
+  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-qt6-static.yml
+  #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux-static.yml
   # NOTE The following line adds Linux build. Furthermore, it adds a job for
   # cppcheck, but only if there were actual changes to CPP code since last time.
+  # TODO This is the last remaining test that explicitly builds against Qt5. It
+  # must be removed when Qt5 support is finally dropped.
   - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/linux.yml
   # NOTE The following line runs reuse-lint on everything except translations.
   - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/reuse-lint.yml
-  #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/windows-qt6.yml
+  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/windows-qt6.yml
   - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/windows-static.yml
-  - https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/windows.yml
+  #- https://invent.kde.org/sysadmin/ci-utilities/raw/master/gitlab-templates/windows.yml

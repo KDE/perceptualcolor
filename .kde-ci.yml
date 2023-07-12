@@ -2,9 +2,12 @@
 # SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 Dependencies:
-- 'on': ['@all']
+- 'on': ['Linux/Qt5', 'FreeBSD/Qt5', 'Windows/Qt5']
   'require':
     'frameworks/extra-cmake-modules': '@stable'
+- 'on': ['Linux/Qt6', 'FreeBSD/Qt6', 'Windows/Qt6']
+  'require':
+    'frameworks/extra-cmake-modules': '@latest-kf6'
 
 #- 'on': ['Linux', 'FreeBSD', 'Windows', 'macOS']
 
