@@ -79,12 +79,8 @@ static void forceFont(QWidget *widget, const QFont &font = qApp->font())
     }
 }
 
-static void screenshot(QWidget *widget, const QString &comment = QString())
+static void screenshotInternal(QWidget *widget, const QString &comment = QString())
 {
-    forceFont(widget);
-    // Set an acceptable widget size (important
-    // standalone-widgets without layout management):
-    widget->resize(widget->sizeHint());
     // Get fully qualified class name
     QString className = QString::fromUtf8(widget->metaObject()->className());
     // Strip all the qualifiers
@@ -101,6 +97,15 @@ static void screenshot(QWidget *widget, const QString &comment = QString())
         0);
 }
 
+static void screenshot(QWidget *widget, const QString &comment = QString())
+{
+    forceFont(widget);
+    // Set an acceptable widget size (important
+    // standalone-widgets without layout management):
+    widget->resize(widget->sizeHint());
+    screenshotInternal(widget, comment);
+}
+
 // Screenshots of widgets with asynchronous image processing.
 //
 // This function is not deterministic! If the delays are enough to
@@ -109,11 +114,21 @@ static void screenshot(QWidget *widget, const QString &comment = QString())
 // your system!
 static void screenshotDelayed(QWidget *widget, const QString &comment = QString())
 {
-    forceFont(widget); // Deliberately call this (also) _before_ show().
+    QWidget parent;
+    const auto oldParent = widget->parentWidget();
+    widget->setParent(&parent);
+    parent.show();
+    // forceFont influences the metrics. Therefore, calling it before
+    // QWidget::resize() and QWidget::show().
+    forceFont(widget);
+    // Set an acceptable widget size (important
+    // standalone-widgets without layout management):
+    widget->resize(widget->sizeHint());
     widget->show(); // Necessary to receive and process events like paintEvent()
     delayedEventProcessing();
-    screenshot(widget, comment);
+    screenshotInternal(widget, comment);
     widget->hide();
+    widget->setParent(oldParent);
 }
 
 // A message handler that does not print any messages.
