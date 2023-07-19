@@ -8,6 +8,7 @@
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
 #include "gradientslider.h"
+#include "helper.h"
 #include "lchdouble.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
@@ -19,7 +20,6 @@
 #include "version.h"
 #include "wheelcolorpicker.h"
 #include <cstdlib>
-#include <helper.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcolor.h>
