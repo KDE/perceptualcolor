@@ -3,13 +3,6 @@
 project(example)
 
 find_package(
-    ECM ${KF5_MIN_VERSION}
-    CONFIG
-    REQUIRED)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
-include(KDEInstallDirs)
-
-find_package(
     "perceptualcolor-0"
     REQUIRED)
 
