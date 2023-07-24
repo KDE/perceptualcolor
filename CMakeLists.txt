@@ -491,6 +491,11 @@ find_package( # Keep in sync between src/Config.cmake.in and CMakeLists.txt!
     Qt${QT_MAJOR_VERSION}
     COMPONENTS Core Gui Widgets DBus Test Concurrent
     REQUIRED)
+message(STATUS
+        "Using Qt version: "
+        "${Qt${QT_MAJOR_VERSION}_VERSION_MAJOR}."
+        "${Qt${QT_MAJOR_VERSION}_VERSION_MINOR}."
+        "${Qt${QT_MAJOR_VERSION}_VERSION_PATCH}")
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC TRUE)
 # Instruct CMake to create code from Qt designer ui files
