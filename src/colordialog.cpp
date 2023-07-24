@@ -399,7 +399,7 @@ void ColorDialogPrivate::retranslateUi()
 
     /*: @label:spinbox Label for Oklch color model, based on Lightness, Chroma,
      * Hue, and using the D65 illuminant as white point. */
-    m_oklchSpinBoxLabel->setText(tr("Oklch:"));
+    m_oklchSpinBoxLabel->setText(tr("O&klch:"));
 
     /*: @label:spinbox Label for RGB color model, based on Red, Green, Blue. */
     m_rgbSpinBoxLabel->setText(tr("&RGB:"));
@@ -1838,7 +1838,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     m_ciehlcD50SpinBoxLabel->setBuddy(m_ciehlcD50SpinBox);
     cielabFormLayout->addRow(m_ciehlcD50SpinBoxLabel, m_ciehlcD50SpinBox);
     m_oklchSpinBoxLabel = new QLabel();
-    m_oklchSpinBoxLabel->setBuddy(m_oklchSpinBoxLabel);
+    m_oklchSpinBoxLabel->setBuddy(m_oklchSpinBox);
     cielabFormLayout->addRow(m_oklchSpinBoxLabel, m_oklchSpinBox);
     tempMainLayout->addLayout(cielabFormLayout);
     tempMainLayout->addWidget(m_rgbGroupBox);
