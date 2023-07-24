@@ -539,7 +539,7 @@ void ColorDialogPrivate::retranslateUi()
     transparent. The higher the opacity value increases, the
     more opaque the colour becomes,  until it finally becomes
     completely opaque at the highest possible opacity value. */
-    const QString opacityLabel = tr("O&pacity:");
+    const QString opacityLabel = tr("Op&acity:");
     m_alphaGradientSlider->setAccessibleName(opacityLabel);
     m_alphaLabel->setText(opacityLabel);
 
