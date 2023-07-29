@@ -90,6 +90,25 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
  *
  * This can be useful for debugging purposes.
  *
+ * @tparam T The enumeration.
+ *
+ * @pre The enumeration type is declared with
+ * Q_ENUM or Q_ENUM_NS.
+ *
+ * @returns The full-qualified C++ identifier as QString. */
+template<typename T>
+QString enumerationToFullString()
+{
+    const auto myMeta = QMetaEnum::fromType<T>();
+    const auto scope = QString::fromUtf8(myMeta.scope());
+    const auto name = QString::fromUtf8(myMeta.name());
+    return QStringLiteral("%1::%2").arg(scope, name);
+}
+
+/** @brief The full-qualified C++ identifier as QString.
+ *
+ * This can be useful for debugging purposes.
+ *
  * @tparam T The enumeration type. Can usually be omitted.
  *
  * @param enumerator An enumerator.
@@ -105,9 +124,9 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
  * that share the same integer with the current enumerator), all synonym
  * enumerators are returned.
  *
- * @sa @ref toString() */
+ * @sa @ref enumeratorToString() */
 template<typename T>
-QString toFullString(const T &enumerator)
+QString enumeratorToFullString(const T &enumerator)
 {
     const auto value = static_cast<int>(enumerator);
     const auto myMeta = QMetaEnum::fromType<T>();
@@ -128,7 +147,7 @@ QString toFullString(const T &enumerator)
     return QStringLiteral("%1::%2::%3(%4)").arg(scope, name, keys).arg(value);
 }
 
-/** @brief The full-qualified C++ identifier as QString.
+/** @brief The C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
@@ -139,7 +158,7 @@ QString toFullString(const T &enumerator)
  * @pre The enumeration type of the enumerator is declared with
  * Q_ENUM or Q_ENUM_NS.
  *
- * @returns The full-qualified C++ identifier as QString, followed by the
+ * @returns The C++ identifier as QString, followed by the
  * underlying integer value in parenthesis. If the enumerator does not
  * exist (for example because you have done a static_cast of an invalid
  * integer to  the enum class), an empty String is returned instead. If
@@ -147,9 +166,9 @@ QString toFullString(const T &enumerator)
  * that share the same integer with the current enumerator), all synonym
  * enumerators are returned.
  *
- * @sa @ref toFullString() */
+ * @sa @ref enumeratorToFullString() */
 template<typename T>
-QString toString(const T &enumerator)
+QString enumeratorToString(const T &enumerator)
 {
     const auto value = static_cast<int>(enumerator);
     const auto myMeta = QMetaEnum::fromType<T>();
@@ -166,25 +185,6 @@ QString toString(const T &enumerator)
 
     const auto keys = QString::fromUtf8(myMeta.valueToKeys(value));
     return QStringLiteral("%1(%2)").arg(keys).arg(value);
-}
-
-/** @brief The full-qualified C++ identifier as QString.
- *
- * This can be useful for debugging purposes.
- *
- * @tparam T The enumeration.
- *
- * @pre The enumeration type is declared with
- * Q_ENUM or Q_ENUM_NS.
- *
- * @returns The full-qualified C++ identifier as QString. */
-template<typename T>
-QString toFullString()
-{
-    const auto myMeta = QMetaEnum::fromType<T>();
-    const auto scope = QString::fromUtf8(myMeta.scope());
-    const auto name = QString::fromUtf8(myMeta.name());
-    return QStringLiteral("%1::%2").arg(scope, name);
 }
 
 } // namespace PerceptualColor

@@ -181,207 +181,207 @@ private Q_SLOTS:
                  false);
     }
 
-    void testToFullStringNormal()
+    void testEnumeratorToFullStringNormal()
     {
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Normal>(-1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Normal>(-1)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::Normal::value0), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Normal::value0), //
                  QStringLiteral("EnumTestClass::Normal::value0(0)"));
-        QCOMPARE(toFullString(EnumTestClass::Normal::value1), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Normal::value1), //
                  QStringLiteral("EnumTestClass::Normal::value1(1)"));
-        QCOMPARE(toFullString(EnumTestClass::Normal::value2), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Normal::value2), //
                  QStringLiteral("EnumTestClass::Normal::value2(2)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Normal>(3)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Normal>(3)), //
                  QString());
     }
 
-    void testToFullStringDefined()
+    void testEnumeratorToFullStringDefined()
     {
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Defined>(-1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Defined>(-1)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::Defined::value0), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Defined::value0), //
                  QStringLiteral("EnumTestClass::Defined::value0(0)"));
-        QCOMPARE(toFullString(EnumTestClass::Defined::value1), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Defined::value1), //
                  QStringLiteral("EnumTestClass::Defined::value1(1)"));
-        QCOMPARE(toFullString(EnumTestClass::Defined::value2), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Defined::value2), //
                  QStringLiteral("EnumTestClass::Defined::value2(2)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Defined>(3)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Defined>(3)), //
                  QString());
     }
 
-    void testToFullStringShifted()
+    void testEnumeratorToFullStringShifted()
     {
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Shifted>(-1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Shifted>(-1)), //
                  QString());
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Shifted>(0)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Shifted>(0)), //
                  QString());
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Shifted>(1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Shifted>(1)), //
                  QString());
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Shifted>(9)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Shifted>(9)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::Shifted::value0), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Shifted::value0), //
                  QStringLiteral("EnumTestClass::Shifted::value0(10)"));
-        QCOMPARE(toFullString(EnumTestClass::Shifted::value1), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Shifted::value1), //
                  QStringLiteral("EnumTestClass::Shifted::value1(11)"));
-        QCOMPARE(toFullString(EnumTestClass::Shifted::value2), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Shifted::value2), //
                  QStringLiteral("EnumTestClass::Shifted::value2(12)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Shifted>(13)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Shifted>(13)), //
                  QString());
     }
 
-    void testToFullStringMissing()
+    void testEnumeratorToFullStringMissing()
     {
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Missing>(-1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Missing>(-1)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::Missing::value0), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Missing::value0), //
                  QStringLiteral("EnumTestClass::Missing::value0(0)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Missing>(1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Missing>(1)), //
                  QString());
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Missing>(9)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Missing>(9)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::Missing::value1), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Missing::value1), //
                  QStringLiteral("EnumTestClass::Missing::value1(10)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Missing>(11)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Missing>(11)), //
                  QString());
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Missing>(19)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Missing>(19)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::Missing::value2), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::Missing::value2), //
                  QStringLiteral("EnumTestClass::Missing::value2(20)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::Missing>(21)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::Missing>(21)), //
                  QString());
     }
 
-    void testToFullStringDoubledValue()
+    void testEnumeratorToFullStringDoubledValue()
     {
-        QCOMPARE(toFullString(static_cast<EnumTestClass::DoubledValue>(-1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::DoubledValue>(-1)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::DoubledValue::value0), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::DoubledValue::value0), //
                  QStringLiteral("EnumTestClass::DoubledValue::value0(0)"));
-        QCOMPARE(toFullString(EnumTestClass::DoubledValue::value1), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::DoubledValue::value1), //
                  QStringLiteral("EnumTestClass::DoubledValue::value1|value2(1)"));
-        QCOMPARE(toFullString(EnumTestClass::DoubledValue::value2), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::DoubledValue::value2), //
                  QStringLiteral("EnumTestClass::DoubledValue::value1|value2(1)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::DoubledValue>(2)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::DoubledValue>(2)), //
                  QString());
     }
 
-    void testToFullStringDoubledKey()
+    void testEnumeratorToFullStringDoubledKey()
     {
-        QCOMPARE(toFullString(static_cast<EnumTestClass::DoubledKey>(-1)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::DoubledKey>(-1)), //
                  QString());
-        QCOMPARE(toFullString(EnumTestClass::DoubledKey::value0), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::DoubledKey::value0), //
                  QStringLiteral("EnumTestClass::DoubledKey::value0(0)"));
-        QCOMPARE(toFullString(EnumTestClass::DoubledKey::value1), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::DoubledKey::value1), //
                  QStringLiteral("EnumTestClass::DoubledKey::value1|value2(1)"));
-        QCOMPARE(toFullString(EnumTestClass::DoubledKey::value2), //
+        QCOMPARE(enumeratorToFullString(EnumTestClass::DoubledKey::value2), //
                  QStringLiteral("EnumTestClass::DoubledKey::value1|value2(1)"));
-        QCOMPARE(toFullString(static_cast<EnumTestClass::DoubledKey>(2)), //
+        QCOMPARE(enumeratorToFullString(static_cast<EnumTestClass::DoubledKey>(2)), //
                  QString());
     }
 
     void testEnumerationToFullString()
     {
-        QCOMPARE(toFullString<EnumTestClass::DoubledKey>(), //
+        QCOMPARE(enumerationToFullString<EnumTestClass::DoubledKey>(), //
                  QStringLiteral("EnumTestClass::DoubledKey"));
-        QCOMPARE(toFullString<MyNamespace::NamespaceEnum>(), //
+        QCOMPARE(enumerationToFullString<MyNamespace::NamespaceEnum>(), //
                  QStringLiteral("MyNamespace::NamespaceEnum"));
     }
 
-    void testToStringNormal()
+    void testEnumeratorToStringNormal()
     {
-        QCOMPARE(toString(static_cast<EnumTestClass::Normal>(-1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Normal>(-1)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::Normal::value0), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Normal::value0), //
                  QStringLiteral("value0(0)"));
-        QCOMPARE(toString(EnumTestClass::Normal::value1), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Normal::value1), //
                  QStringLiteral("value1(1)"));
-        QCOMPARE(toString(EnumTestClass::Normal::value2), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Normal::value2), //
                  QStringLiteral("value2(2)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::Normal>(3)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Normal>(3)), //
                  QString());
     }
 
-    void testToStringDefined()
+    void testEnumeratorToStringDefined()
     {
-        QCOMPARE(toString(static_cast<EnumTestClass::Defined>(-1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Defined>(-1)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::Defined::value0), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Defined::value0), //
                  QStringLiteral("value0(0)"));
-        QCOMPARE(toString(EnumTestClass::Defined::value1), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Defined::value1), //
                  QStringLiteral("value1(1)"));
-        QCOMPARE(toString(EnumTestClass::Defined::value2), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Defined::value2), //
                  QStringLiteral("value2(2)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::Defined>(3)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Defined>(3)), //
                  QString());
     }
 
-    void testToStringShifted()
+    void testEnumeratorToStringShifted()
     {
-        QCOMPARE(toString(static_cast<EnumTestClass::Shifted>(-1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Shifted>(-1)), //
                  QString());
-        QCOMPARE(toString(static_cast<EnumTestClass::Shifted>(0)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Shifted>(0)), //
                  QString());
-        QCOMPARE(toString(static_cast<EnumTestClass::Shifted>(1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Shifted>(1)), //
                  QString());
-        QCOMPARE(toString(static_cast<EnumTestClass::Shifted>(9)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Shifted>(9)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::Shifted::value0), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Shifted::value0), //
                  QStringLiteral("value0(10)"));
-        QCOMPARE(toString(EnumTestClass::Shifted::value1), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Shifted::value1), //
                  QStringLiteral("value1(11)"));
-        QCOMPARE(toString(EnumTestClass::Shifted::value2), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Shifted::value2), //
                  QStringLiteral("value2(12)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::Shifted>(13)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Shifted>(13)), //
                  QString());
     }
 
-    void testToStringMissing()
+    void testEnumeratorToStringMissing()
     {
-        QCOMPARE(toString(static_cast<EnumTestClass::Missing>(-1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Missing>(-1)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::Missing::value0), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Missing::value0), //
                  QStringLiteral("value0(0)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::Missing>(1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Missing>(1)), //
                  QString());
-        QCOMPARE(toString(static_cast<EnumTestClass::Missing>(9)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Missing>(9)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::Missing::value1), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Missing::value1), //
                  QStringLiteral("value1(10)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::Missing>(11)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Missing>(11)), //
                  QString());
-        QCOMPARE(toString(static_cast<EnumTestClass::Missing>(19)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Missing>(19)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::Missing::value2), //
+        QCOMPARE(enumeratorToString(EnumTestClass::Missing::value2), //
                  QStringLiteral("value2(20)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::Missing>(21)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::Missing>(21)), //
                  QString());
     }
 
-    void testToStringDoubledValue()
+    void testEnumeratorToStringDoubledValue()
     {
-        QCOMPARE(toString(static_cast<EnumTestClass::DoubledValue>(-1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::DoubledValue>(-1)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::DoubledValue::value0), //
+        QCOMPARE(enumeratorToString(EnumTestClass::DoubledValue::value0), //
                  QStringLiteral("value0(0)"));
-        QCOMPARE(toString(EnumTestClass::DoubledValue::value1), //
+        QCOMPARE(enumeratorToString(EnumTestClass::DoubledValue::value1), //
                  QStringLiteral("value1|value2(1)"));
-        QCOMPARE(toString(EnumTestClass::DoubledValue::value2), //
+        QCOMPARE(enumeratorToString(EnumTestClass::DoubledValue::value2), //
                  QStringLiteral("value1|value2(1)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::DoubledValue>(2)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::DoubledValue>(2)), //
                  QString());
     }
 
-    void testToStringDoubledKey()
+    void testEnumeratorToStringDoubledKey()
     {
-        QCOMPARE(toString(static_cast<EnumTestClass::DoubledKey>(-1)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::DoubledKey>(-1)), //
                  QString());
-        QCOMPARE(toString(EnumTestClass::DoubledKey::value0), //
+        QCOMPARE(enumeratorToString(EnumTestClass::DoubledKey::value0), //
                  QStringLiteral("value0(0)"));
-        QCOMPARE(toString(EnumTestClass::DoubledKey::value1), //
+        QCOMPARE(enumeratorToString(EnumTestClass::DoubledKey::value1), //
                  QStringLiteral("value1|value2(1)"));
-        QCOMPARE(toString(EnumTestClass::DoubledKey::value2), //
+        QCOMPARE(enumeratorToString(EnumTestClass::DoubledKey::value2), //
                  QStringLiteral("value1|value2(1)"));
-        QCOMPARE(toString(static_cast<EnumTestClass::DoubledKey>(2)), //
+        QCOMPARE(enumeratorToString(static_cast<EnumTestClass::DoubledKey>(2)), //
                  QString());
     }
 };
