@@ -923,6 +923,10 @@ cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
                    &cielabD50, // output
                    1 // convert exactly 1 value
     );
+    if (cielabD50.L < 0) {
+        // Workaround for https://github.com/mm2/Little-CMS/issues/395
+        cielabD50.L = 0;
+    }
     return cielabD50;
 }
 
@@ -949,6 +953,10 @@ PerceptualColor::LchDouble RgbColorSpace::toCielchD50Double(const QRgba64 rgbCol
                    &cielabD50, // output
                    1 // convert exactly 1 value
     );
+    if (cielabD50.L < 0) {
+        // Workaround for https://github.com/mm2/Little-CMS/issues/395
+        cielabD50.L = 0;
+    }
     cmsCIELCh cielchD50;
     cmsLab2LCh(&cielchD50, // output
                &cielabD50 // input
