@@ -46,7 +46,7 @@ jobs:
           name: Install dependencies
           command: |
             docker exec -it ubuntu_bigendian bash -c "apt-get update --assume-yes"
-            docker exec -it ubuntu_bigendian bash -c "apt-get install --assume-yes --no-install-recommends cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools xvfb openbox qt6-tools-dev qt6-tools-dev-tools libegl-dev"
+            docker exec -it ubuntu_bigendian bash -c "apt-get install --assume-yes --no-install-recommends cmake make clang liblcms2-dev liblcms2-2 pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools xvfb openbox qt6-tools-dev qt6-tools-dev-tools libegl-dev zip"
       - run:
           name: Build project
           command: |
@@ -60,10 +60,25 @@ jobs:
                 cmake -DBUILD_WITH_QT6=ON ..
                 openbox &
                 cmake --build . --parallel $PARALLEL_PROCESSES
+                cmake --build . --target install --parallel $PARALLEL_PROCESSES
                 export DISPLAY=":90"
                 ctest --output-on-failure --progress
                 cd ..
+                mkdir -p screenshots
+                cd screenshots
+                ../build/utils/generatescreenshots --native
+                zip -r ../screenshots.zip .
+                cd ..
+                rm -rf buildexamples
+                mkdir -p buildexamples
+                cd buildexamples
+                cmake -DBUILD_WITH_QT6=ON ../examples
+                cmake --build . --parallel
+                cd ..
               )'
+              docker cp ubuntu_bigendian:/project/screenshots.zip "$(pwd)"
+      - store_artifacts:
+          path: screenshots.zip
 
   job-build-macos:
     macos:
