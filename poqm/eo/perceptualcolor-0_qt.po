@@ -1,20 +1,23 @@
+# translation of perceptualcolor-0_qt.pot to esperanto
+# Copyright (C)  Free Software Foundation, Inc.
+# This file is distributed under the same license as the perceptualcolor package.
+# Oliver Kellogg <okellogg@users.sourceforge.net, 2023.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: kdeorg\n"
-"PO-Revision-Date: 2023-07-30 07:11\n"
-"Language-Team: Chinese Simplified\n"
-"Language: zh_CN\n"
+"Project-Id-Version: perceptualcolor\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-02-20 02:03+0100\n"
+"PO-Revision-Date: 2023-07-30 11:24+0100\n"
+"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
+"Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
+"Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Crowdin-Project: kdeorg\n"
-"X-Crowdin-Project-ID: 269464\n"
-"X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: /kf5-trunk/messages/perceptualcolor/perceptualcolor-0_qt."
-"pot\n"
-"X-Crowdin-File-ID: 41787\n"
+"X-Generator: translate-po (https://github.com/zcribe/translate-po)\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:99
@@ -26,7 +29,7 @@ msgstr "XYZ"
 #: colordialog.cpp:102
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Lab"
-msgstr "Lab"
+msgstr "Laboratorio"
 
 #. @item A color model: red, green, blue.
 #: colordialog.cpp:105
@@ -52,211 +55,211 @@ msgstr "%1°"
 #: colordialog.cpp:216
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Name:"
-msgstr "名称："
+msgstr "Nomo:"
 
 #. @item:intext The maximum chroma.
 #: colordialog.cpp:220 colordialog.cpp:231
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%L1 (estimated)"
-msgstr "%L1 (估计值)"
+msgstr "%L1 (taksa)"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:228
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum CIELch chroma:"
-msgstr "最大 CIELch 色品："
+msgstr "Maksimuma CIELch-kroma:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:239
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum Oklch chroma:"
-msgstr "最大 Oklch 色品："
+msgstr "Maksimuma Oklch-kroma:"
 
 #. @item:intext The class of an ICC profile.
 #: colordialog.cpp:244
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Display profile"
-msgstr "显示器特性文件"
+msgstr "Montri profilon"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:263
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Profile class:"
-msgstr "特性文件类："
+msgstr "Profila klaso:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The color model of the color space which is described by this profile.
 #: colordialog.cpp:272
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color model:"
-msgstr "色彩模型："
+msgstr "Kolora modelo:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is usually the manufacturer of the device to which the colour profile applies.
 #: colordialog.cpp:281
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Manufacturer:"
-msgstr "厂商："
+msgstr "Fabrikisto:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is usually the model identifier of the device to which the colour profile applies.
 #: colordialog.cpp:290
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Device model:"
-msgstr "设备型号："
+msgstr "Aparato modelo:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is the date and time of the creation of the profile.
 #: colordialog.cpp:304
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Created:"
-msgstr "创建时间："
+msgstr "Kreita:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is the version number of the ICC file format that is used.
 #: colordialog.cpp:311
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "ICC format:"
-msgstr "ICC 格式："
+msgstr "ICC-formato:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
 #: colordialog.cpp:322
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Implementation:"
-msgstr "实现方式："
+msgstr "Efektivigo:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
 #: colordialog.cpp:329
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Matrices and color lookup tables"
-msgstr "矩阵和颜色查找表"
+msgstr "Matricoj kaj koloraj serĉtabeloj"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
 #: colordialog.cpp:335
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Matrices"
-msgstr "矩阵 (Matrix)"
+msgstr "Matricoj"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
 #: colordialog.cpp:342
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color lookup tables"
-msgstr "颜色查找表 (LUT)"
+msgstr "Koloraj serĉtabeloj"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The color model of the PCS (profile connection space) which is used internally by this profile.
 #: colordialog.cpp:353
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "PCS color model:"
-msgstr "PCS 色彩模型："
+msgstr "PCS-kolormodelo:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The copyright of this profile.
 #: colordialog.cpp:360
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Copyright:"
-msgstr "版权："
+msgstr "Kopirajto:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is the size of the ICC file that was read in.
 #: colordialog.cpp:368
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "File size:"
-msgstr "文件大小："
+msgstr "Dosiera grandeco:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:376
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "File name:"
-msgstr "文件名："
+msgstr "Dosiernomo:"
 
 #. @info:intext Title of info text about current color space (will be followed by other information as available in the color profile.
 #: colordialog.cpp:392
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color space information"
-msgstr "色彩空间信息"
+msgstr "Informoj pri kolorspaco"
 
 #. @label:spinbox Label for CIE’s CIEHLC color model, based on Hue, Lightness, Chroma, and using the D50 illuminant as white point.
 #: colordialog.cpp:398
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "CIEHL&C D50:"
-msgstr "CIEHL&C D50："
+msgstr "CIEHL&C D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, * Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:402
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Oklch:"
-msgstr "Oklch："
+msgstr "Oklch:"
 
 #. @label:spinbox Label for RGB color model, based on Red, Green, Blue.
 #: colordialog.cpp:405
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&RGB:"
-msgstr "&RGB："
+msgstr "&RGB:"
 
 #. @label:textbox Label for hexadecimal RGB representation like #12ab45
 #: colordialog.cpp:408
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "He&x:"
-msgstr "He&x："
+msgstr "Li&x:"
 
 #. @title:tab Same text as in QColorDialog
 #: colordialog.cpp:413
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Basic colors"
-msgstr "基本颜色(&B)"
+msgstr "&Bazaj koloroj"
 
 #. @title:tab
 #: colordialog.cpp:418
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Hue-based"
-msgstr "基于色相(&H)"
+msgstr "&Nuanco-bazita"
 
 #. @title:tab “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:425
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Lightness-based"
-msgstr "基于亮度(&L)"
+msgstr "&Leĝeco-bazita"
 
 #. @title:tab
 #: colordialog.cpp:431
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "From &screen"
-msgstr "来自屏幕(&S)"
+msgstr "De &ekrano"
 
 #. @title:tab
 #: colordialog.cpp:437
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Numeric"
-msgstr "数值(&N)"
+msgstr "&Numera"
 
 #. @label:spinbox HSL (hue, saturation, lightness)
 #: colordialog.cpp:441
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "HS&L:"
-msgstr "HS&L："
+msgstr "HS&L:"
 
 #. @label:spinbox HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model.
 #: colordialog.cpp:445
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "HS&V/HSB:"
-msgstr "HS&V/HSB："
+msgstr "HS&V/HSB:"
 
 #. @label:spinbox HWB (hue, whiteness, blackness)
 #: colordialog.cpp:448
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "H&WB:"
-msgstr "H&WB："
+msgstr "H&WB:"
 
 #. @action:button
 #: colordialog.cpp:451
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&OK"
-msgstr "确定(&O)"
+msgstr "&BONE"
 
 #. @action:button
 #: colordialog.cpp:454
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Cancel"
-msgstr "取消(&C)"
+msgstr "&Nuligi"
 
 #. @info:tooltip Help text for RGB spinbox.
 #: colordialog.cpp:458
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Red: 0⁠–⁠255</p><p>Green: 0⁠–⁠255</p><p>Blue: 0⁠–⁠255</p>"
-msgstr "<p>红：0⁠–⁠255</p><p>绿：0⁠–⁠255</p><p>蓝：0⁠–⁠255</p>"
+msgstr "<p>Ruĝa: 0⁠–⁠255</p><p>Verda: 0⁠–⁠255</p><p>Blua: 0⁠–⁠255</p>"
 
 #. @info:tooltip Help text for hexadecimal code.
 #: colordialog.cpp:465
@@ -266,8 +269,9 @@ msgid ""
 "for red: 00⁠–⁠FF</p><p>GG: two-digit code for green: 00⁠–⁠FF</p><p>BB: two-digit "
 "code for blue: 00⁠–⁠FF</p>"
 msgstr ""
-"<p>HTML 十六进制颜色代码：#RRGGBB</p><p>RR：红通道的两位代码：00⁠–⁠FF</"
-"p><p>GG：绿通道的两位代码：00⁠–⁠FF</p><p>BB：蓝通道的两位代码：00⁠–⁠FF</p>"
+"<p>Deksesuma kolorkodo, kiel uzata en HTML: #RRGGBB</p><p>RR: ducifera kodo "
+"por ruĝa: 00⁠–⁠FF</p><p>GG: ducifera kodo por verda : 00⁠–⁠FF</p><p>BB: ducifera "
+"kodo por bluo: 00⁠–⁠FF</p>"
 
 #. @info:tooltip Help text for HSL (hue, saturation, lightness). Saturation: 0 means something on the grey axis; 255 means something between the grey axis and the most colorful color. This is different from “chroma” and should therefore get a different translation. Lightness: 0 means always black; 255 means always white. This is different from “brightness” and should therefore get a different translation.
 #: colordialog.cpp:478
@@ -275,13 +279,13 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
 msgstr ""
-"<p>色相：0°⁠–⁠360°</p><p>饱和度 (HSL)：0%⁠–⁠100%</p><p>亮度 (HSL)：0%⁠–⁠100%</p>"
+"<p>Nuanco: 0°⁠–⁠360°</p><p>HSL-Saturiĝo: 0%⁠–⁠100%</p><p>Heleco: 0%⁠–⁠100%</p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
 #: colordialog.cpp:492
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Whiteness: 0%⁠–⁠100%</p><p>Blackness: 0%⁠–⁠100%</p>"
-msgstr "<p>色相：0°⁠–⁠360°</p><p>白度：0%⁠–⁠100%</p><p>黑度：0%⁠–⁠100%</p>"
+msgstr "<p>Nuanco: 0°⁠–⁠360°</p><p>Blankeco: 0%⁠–⁠100%</p><p>Nigreco: 0%⁠–⁠100%</p>"
 
 #. @info:tooltip Help text for HSV/HSB. HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model. Saturation: 0 means something between black and white; 255 means something between black and the most colorful color. This is different from “chroma” and should therefore get a different translation. Brightness/value: 0 means always black; 255 means something between white and the most colorful color. This is different from “lightness” and should therefore get a different translation.
 #: colordialog.cpp:505
@@ -290,20 +294,20 @@ msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
 "0%⁠–⁠100%</p>"
 msgstr ""
-"<p>色相：0°⁠–⁠360°</p><p>饱和度 (HSV/HSB)：0%⁠–⁠100%</p><p>亮度 (HSV/HSB)："
-"0%⁠–⁠100%</p>"
+"<p>Nuanco: 0°⁠–⁠360°</p><p>HSV/HSB-Saturiĝo: 0%⁠–⁠100%</p><p>Brilo/Valoro: "
+"0%⁠–⁠100% </p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:515
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Lightness"
-msgstr "亮度 (Lightness)"
+msgstr "Malpezeco"
 
 #. @info:tooltip Help text for CIEHLC. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:520
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"
-msgstr "<p>色相：0°⁠–⁠360°</p><p>亮度 (Lightness)：0%⁠–⁠100%</p><p>色品：0⁠–⁠%L1</p>"
+msgstr "<p>Nuanco: 0°⁠–⁠360°</p><p>Heleco: 0%⁠–⁠100%</p><p>Kromo: 0⁠–⁠%L1</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:529
@@ -312,26 +316,26 @@ msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
 msgstr ""
-"<p>亮度 (Lightness)：%L1⁠–⁠%L2</p><p>色品：%L3⁠–⁠%L4</p><p>色相：0°⁠–⁠360°</p><p>白"
-"点：D65</p>"
+"<p>Heleco: %L1⁠–⁠%L2</p><p>Kromo: %L3⁠–⁠%L4</p><p>Nuanco: 0°⁠–⁠360°</"
+"p><p>Blankpunkto: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:542
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "O&pacity:"
-msgstr "不透明度(&P)："
+msgstr "O&pakeco:"
 
 #. @action:button Same text as in QColorDialog
 #: colordialog.cpp:655
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick Screen Color"
-msgstr "拾取屏幕颜色(&P)"
+msgstr "&Elekti Ekrankoloron"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:938
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
-msgstr "选择颜色"
+msgstr "Elekti koloron"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: rgbcolorspace.cpp:108
@@ -343,7 +347,7 @@ msgstr "LittleCMS"
 #: rgbcolorspace.cpp:111
 msgctxt "PerceptualColor::RgbColorSpace|"
 msgid "sRGB color space"
-msgstr "sRGB 色彩空间"
+msgstr "sRGB kolorspaco"
 
 #. @item Used to indicate the selected color in the palette. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
 #: swatchbook.cpp:93
