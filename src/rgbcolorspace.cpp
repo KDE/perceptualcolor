@@ -19,6 +19,7 @@
 #include "iohandlerfactory.h"
 #include "lchdouble.h"
 #include "polarpointf.h"
+#include <algorithm>
 #include <limits>
 #include <optional>
 #include <qbytearray.h>
@@ -1174,7 +1175,8 @@ double RgbColorSpacePrivate::detectMaximumCielchD50Chroma() const
         result = qMax(result, q_pointer->toCielchD50Double(color).c);
         hue += chromaDetectionHuePrecision;
     }
-    return result * chromaDetectionIncrementFactor + cielabDeviationLimit;
+    result = result * chromaDetectionIncrementFactor + cielabDeviationLimit;
+    return std::min<double>(result, CielchD50Values::maximumChroma);
 }
 
 /** @brief Calculation of @ref RgbColorSpace::profileMaximumOklchChroma
@@ -1202,8 +1204,9 @@ double RgbColorSpacePrivate::detectMaximumOklchChroma() const
             oklab.second * oklab.second + oklab.third * oklab.third);
         hue += chromaDetectionHuePrecision;
     }
-    return qSqrt(chromaSquare) * chromaDetectionIncrementFactor //
+    const auto result = qSqrt(chromaSquare) * chromaDetectionIncrementFactor //
         + oklabDeviationLimit;
+    return std::min<double>(result, OklchValues::maximumChroma);
 }
 
 /** @brief Gets the rendering intents supported by the LittleCMS library.
