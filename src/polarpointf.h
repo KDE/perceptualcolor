@@ -67,7 +67,7 @@ public:
      * @param other the object to move */
     PolarPointF(PolarPointF &&other) noexcept = default;
 
-    explicit PolarPointF(const qreal newRadial, const qreal newAngleDegree);
+    explicit PolarPointF(const qreal newRadius, const qreal newAngleDegree);
 
     explicit PolarPointF(const QPointF cartesianCoordiantes);
 

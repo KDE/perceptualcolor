@@ -276,7 +276,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
  * Reimplemented from base class.
  *
  * The keys do not react in form of up, down, left and right like in
- * Cartesian coordinate systems. The keys change radial and angel like
+ * Cartesian coordinate systems. The keys change radius and angel like
  * in polar coordinate systems, because our color model is also based
  * on a polar coordinate system.
  *
@@ -300,7 +300,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
  *
  * @todo Is this behavior really a good user experience? Or is it confusing
  * that left, right, up and down don’t do what was expected? What could be
- * more intuitive keys for changing radial and angle? At least the arrow keys
+ * more intuitive keys for changing radius and angle? At least the arrow keys
  * are likely that the user tries them out by trial-and-error. */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
@@ -581,7 +581,7 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
  * is within the circle, <tt>false</tt> otherwise. */
 bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
 {
-    const qreal radial = PolarPointF(
+    const qreal radius = PolarPointF(
                              // Position relative to
                              // polar coordinate system center:
                              position
@@ -596,7 +596,7 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
     const qreal diagramCircleRadius = //
         q_pointer->maximumWidgetSquareSize() / 2.0 - diagramBorder();
 
-    return (radial <= diagramCircleRadius);
+    return (radius <= diagramCircleRadius);
 }
 
 /** @brief Paint the widget.
@@ -767,15 +767,15 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         (widgetCoordinatesFromCurrentColor.y() - diagramOffset) * (-1));
     PolarPointF diagramPolarCoordinatesFromCurrentColor( //
         diagramCartesianCoordinatesFromCurrentColor);
-    // lineRadial will be a point at the middle of the line thickness
+    // lineRadius will be a point at the middle of the line thickness
     // of the circular handle.
-    qreal lineRadial = //
+    qreal lineRadius = //
         diagramPolarCoordinatesFromCurrentColor.radius() - handleRadius();
-    if (lineRadial > 0) {
+    if (lineRadius > 0) {
         QPointF lineEndWidgetCoordinates = //
             PolarPointF(
-                // radial:
-                lineRadial,
+                // radius:
+                lineRadius,
                 // angle:
                 diagramPolarCoordinatesFromCurrentColor.angleDegree() //
                 )

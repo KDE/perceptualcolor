@@ -59,7 +59,7 @@ class RgbColorSpacePrivate;
  *       @ref profileMaximumCielchD50Chroma would have to be provides for all
  *       these color spaces individually. Anyway, we could also
  *       output the data in a new data type for cylindrical coordinates
- *       (angle degree, radial, height), independent of the color
+ *       (angle degree, radius, height), independent of the color
  *       space, which must always be cylindrical anyway as we have
  *       no support for anything else in our widgets.
  *

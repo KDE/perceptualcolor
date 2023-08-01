@@ -59,7 +59,7 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testConstructorRadialAngle()
+    void testConstructorRadiusAngle()
     {
         PerceptualColor::PolarPointF temp01;
 
@@ -78,7 +78,7 @@ private Q_SLOTS:
         QCOMPARE(temp01.radius(), 2);
         QCOMPARE(temp01.angleDegree(), 3);
 
-        // Negative radials are normalized (180° shift for angle)
+        // Negative radii are normalized (180° shift for angle)
         temp01 = PerceptualColor::PolarPointF(-2, 183);
         QCOMPARE(temp01.radius(), 2);
         QCOMPARE(temp01.angleDegree(), 3);
@@ -92,7 +92,7 @@ private Q_SLOTS:
         QCOMPARE(temp01.radius(), 2);
         QCOMPARE(temp01.angleDegree(), 3);
 
-        // Also when both radial and angle are
+        // Also when both radius and angle are
         // out-of-range, normalization works
         temp01 = PerceptualColor::PolarPointF(-2, -357);
         QCOMPARE(temp01.radius(), 2);
@@ -107,7 +107,7 @@ private Q_SLOTS:
         QCOMPARE(temp01.radius(), 2);
         QCOMPARE(temp01.angleDegree(), 183);
 
-        // When radial is 0, angle (while meaningless) is
+        // When radius is 0, angle (while meaningless) is
         // preserved (but normalized)
         temp01 = PerceptualColor::PolarPointF(0, 150);
         QCOMPARE(temp01.radius(), 0);
@@ -198,7 +198,7 @@ private Q_SLOTS:
     {
         QVERIFY(!PerceptualColor::PolarPointF(0, 0).isSamePoint(PerceptualColor::PolarPointF(1, 0)));
 
-        // If radial is 0, different angle still means same point
+        // If radius is 0, different angle still means same point
         QVERIFY(PerceptualColor::PolarPointF(0, 0).isSamePoint(PerceptualColor::PolarPointF(0, 500)));
 
         QVERIFY(PerceptualColor::PolarPointF(0, 0).isSamePoint(PerceptualColor::PolarPointF(0, 300)));

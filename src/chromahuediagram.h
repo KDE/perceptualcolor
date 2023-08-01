@@ -41,7 +41,7 @@ namespace PerceptualColor
 /** @brief A widget for selecting chroma and hue in LCH color space
  *
  * This widget displays the plan of chroma and hue
- * (that means a diagram of the radial and the angle of the
+ * (that means a diagram of the radius and the angle of the
  * LCH color space respectively the a axis and the b axis of the
  * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
  * Lab color model</a>) at a given lightness.
@@ -55,7 +55,7 @@ namespace PerceptualColor
  * The form of the selection handle (that always indicates the distance from
  * the center of the diagram) and the circular form of the widget, all this
  * helps the user to understand intuitively that he is moving within a
- * polar coordinate system and to capture easily the current radial
+ * polar coordinate system and to capture easily the current radius
  * and angle.
  *
  * Usage example: @snippet testchromahuediagram.cpp instantiate
@@ -108,7 +108,7 @@ namespace PerceptualColor
  * handle cannot follow)?
  *
  * @todo Support additional mouse buttons. For example, “forward” and
- * “backward” could be used to increase or decrease the radial.
+ * “backward” could be used to increase or decrease the radius.
  *
  * @todo What if black or white are out of gamut on L=0.1 or L=99.9? Where
  * are the handles placed? Visible or invisible? How to react? Should

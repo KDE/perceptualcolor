@@ -197,16 +197,16 @@ QImage ColorWheelImage::getImage()
     m_image.fill(Qt::transparent);
     cielchD50.L = CielchD50Values::neutralLightness;
     cielchD50.C = CielchD50Values::srgbVersatileChroma;
-    // minimumRadial: Adding "+ 1" would reduce the workload (less pixel to
+    // minimumRadius: Adding "+ 1" would reduce the workload (less pixel to
     // process) and still work mostly, but not completely. It creates sometimes
     // artifacts in the anti-aliasing process. So we don't do that.
-    const qreal minimumRadial = //
+    const qreal minimumRadius = //
         center - m_wheelThicknessPhysical - m_borderPhysical - overlap;
-    const qreal maximumRadial = center - m_borderPhysical + overlap;
+    const qreal maximumRadius = center - m_borderPhysical + overlap;
     for (x = 0; x < m_imageSizePhysical; ++x) {
         for (y = 0; y < m_imageSizePhysical; ++y) {
             polarCoordinates = PolarPointF(QPointF(x - center, center - y));
-            if (isInRange<qreal>(minimumRadial, polarCoordinates.radius(), maximumRadial)
+            if (isInRange<qreal>(minimumRadius, polarCoordinates.radius(), maximumRadius)
 
             ) {
                 // We are within the wheel

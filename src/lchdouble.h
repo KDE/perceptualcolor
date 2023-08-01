@@ -46,7 +46,7 @@ namespace PerceptualColor
  * @internal
  *
  * @todo Would it make sense to normalize the hue (1° instead
- * of 361°, and only non-negative radials)? */
+ * of 361°, and only non-negative radii)? */
 struct PERCEPTUALCOLOR_IMPORTEXPORT LchDouble {
 public:
     /** @brief Lightness, mesured in percent.
