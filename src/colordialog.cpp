@@ -43,6 +43,7 @@
 #include <qdatetime.h>
 #include <qdebug.h>
 #include <qdialogbuttonbox.h>
+#include <qfontmetrics.h>
 #include <qformlayout.h>
 #include <qgroupbox.h>
 #include <qguiapplication.h>
@@ -1992,7 +1993,18 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         tempRgbFormLayout->addRow(m_hsvSpinBoxLabel, m_hsvSpinBox);
         m_rgbGroupBox = new QGroupBox();
         m_rgbGroupBox->setLayout(tempRgbFormLayout);
-        m_rgbGroupBox->setTitle(m_rgbColorSpace->profileName());
+        // Using the profile name as QGroupBox title. But the title
+        // is always shown completely, even if the text is extremly
+        // long. As the text is out of our control, and some profiles
+        // like Krita’s ITUR_2100_PQ_FULL.ICC have actually extremly
+        // long names, we use eliding.
+        const QFontMetricsF fontMetrics(m_rgbGroupBox->font());
+        const auto elidedProfileName = fontMetrics.elidedText( //
+            m_rgbColorSpace->profileName(),
+            Qt::TextElideMode::ElideRight,
+            340 // width (in device-independent pixels). Optimized for Breeze.
+        );
+        m_rgbGroupBox->setTitle(elidedProfileName);
     }
 
     // Create widget for the CIEHLC-D50 color representation

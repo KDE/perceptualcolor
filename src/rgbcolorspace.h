@@ -232,6 +232,10 @@ class RgbColorSpace : public QObject
      * If supported by the underlying profile, this property is localized
      * to the current locale <em>at the moment of the constructor call</em>.
      *
+     * Note that this string might be very long in some profiles. On some
+     * UI elements, maybe it should be elided (truncate it and put “…” at
+     * the end).
+     *
      * @note This is empty if the information is not available.
      *
      * @sa READ @ref profileName() const */
