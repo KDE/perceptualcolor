@@ -9,6 +9,19 @@
 namespace PerceptualColor
 {
 
+/** @brief Constructor.
+ *
+ * @param list Initial values. Only the first 4 elements are considered.
+ *             Excess elements are ignored. Missing elements are
+ *             interpreted as 0. */
+GenericColor::GenericColor(const QList<double> &list)
+    : first(list.value(0, 0))
+    , second(list.value(1, 0))
+    , third(list.value(2, 0))
+    , fourth(list.value(3, 0))
+{
+}
+
 /** @brief Type conversion.
  *
  * @warning Interprets the current data members as Lch.

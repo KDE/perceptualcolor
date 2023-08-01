@@ -1869,7 +1869,6 @@ private Q_SLOTS:
         const auto myMultiColor = AbsoluteColor::allConversions( //
             ColorModel::CielchD50,
             GenericColor(30, 40, 50));
-        const auto myRgbColor = RgbColor();
         myDialog->d_pointer->setCurrentOpaqueColor(myMultiColor, nullptr);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs, myMultiColor);
         QList<double> myValues = //

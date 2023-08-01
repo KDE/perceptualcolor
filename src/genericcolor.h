@@ -95,6 +95,8 @@ public:
     {
     }
 
+    explicit GenericColor(const QList<double> &list);
+
     bool operator==(const GenericColor &other) const;
     bool operator!=(const GenericColor &other) const;
 

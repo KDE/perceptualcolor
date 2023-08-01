@@ -4,10 +4,10 @@
 #ifndef RGBCOLOR_H
 #define RGBCOLOR_H
 
+#include "genericcolor.h"
 #include <optional>
 #include <qcolor.h>
 #include <qdebug.h>
-#include <qlist.h>
 
 namespace PerceptualColor
 {
@@ -44,10 +44,10 @@ namespace PerceptualColor
 class RgbColor final
 {
 public:
-    [[nodiscard]] static RgbColor fromHsl(const QList<double> &color);
-    [[nodiscard]] static RgbColor fromHsv(const QList<double> &color);
-    [[nodiscard]] static RgbColor fromHwb(const QList<double> &color);
-    [[nodiscard]] static RgbColor fromRgb255(const QList<double> &color, std::optional<double> hue = std::optional<double>());
+    [[nodiscard]] static RgbColor fromHsl(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromHsv(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromHwb(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromRgb255(const GenericColor &color, std::optional<double> hue = std::optional<double>());
     [[nodiscard]] static RgbColor fromRgbQColor(const QColor &color);
 
     /** @brief Constructor for an uninitialized object.
@@ -87,19 +87,19 @@ public:
     /** @brief HWB representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
-    QList<double> hwb;
+    GenericColor hwb;
     /** @brief HSL representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
-    QList<double> hsl;
+    GenericColor hsl;
     /** @brief HSV representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
-    QList<double> hsv;
+    GenericColor hsv;
     /** @brief RGB representation.
      *
      * Range: [0, 255] */
-    QList<double> rgb255;
+    GenericColor rgb255;
     /** @brief QColor representation.
      *
      * <tt>QColor::spec()</tt> is <tt>QColor::Rgb</tt>. */

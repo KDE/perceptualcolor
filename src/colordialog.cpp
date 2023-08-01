@@ -71,7 +71,6 @@
 #include <qvalidator.h>
 #include <qversionnumber.h>
 #include <qwidget.h>
-#include <type_traits>
 #include <utility>
 class QShowEvent;
 
@@ -1395,12 +1394,13 @@ void ColorDialogPrivate::updateColorPatch()
 /** @brief Overloaded function. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget)
 {
-    const auto rgb = m_rgbColorSpace->fromCielchD50ToRgb1( //
-        abs.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble());
-    const auto rgbList = QList<double>{rgb.first * 255, //
-                                       rgb.second * 255, //
-                                       rgb.third * 255};
-    const auto rgbColor = RgbColor::fromRgb255(rgbList);
+    const auto cielchD50 = //
+        abs.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble();
+    const auto rgb1 = m_rgbColorSpace->fromCielchD50ToRgb1(cielchD50);
+    const auto rgb255 = GenericColor(rgb1.first * 255, //
+                                     rgb1.second * 255,
+                                     rgb1.third * 255);
+    const auto rgbColor = RgbColor::fromRgb255(rgb255);
     setCurrentOpaqueColor(abs, rgbColor, ignoreWidget);
 }
 
@@ -1409,9 +1409,9 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &
 {
     const auto temp = rgb.rgb255;
     const QColor myQColor = QColor::fromRgbF( //
-        static_cast<QColorFloatType>(temp.at(0) / 255.), //
-        static_cast<QColorFloatType>(temp.at(1) / 255.), //
-        static_cast<QColorFloatType>(temp.at(2) / 255.));
+        static_cast<QColorFloatType>(temp.first / 255.), //
+        static_cast<QColorFloatType>(temp.second / 255.), //
+        static_cast<QColorFloatType>(temp.third / 255.));
     const auto cielchD50 = GenericColor( //
         m_rgbColorSpace->toCielchD50Double(myQColor.rgba64()));
     setCurrentOpaqueColor( //
@@ -1466,22 +1466,26 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 
     // Update RGB widget
     if (m_rgbSpinBox != ignoreWidget) {
-        m_rgbSpinBox->setSectionValues(m_currentOpaqueColorRgb.rgb255);
+        m_rgbSpinBox->setSectionValues( //
+            m_currentOpaqueColorRgb.rgb255.toQList3());
     }
 
     // Update HSL widget
     if (m_hslSpinBox != ignoreWidget) {
-        m_hslSpinBox->setSectionValues(m_currentOpaqueColorRgb.hsl);
+        m_hslSpinBox->setSectionValues( //
+            m_currentOpaqueColorRgb.hsl.toQList3());
     }
 
     // Update HWB widget
     if (m_hwbSpinBox != ignoreWidget) {
-        m_hwbSpinBox->setSectionValues(m_currentOpaqueColorRgb.hwb);
+        m_hwbSpinBox->setSectionValues( //
+            m_currentOpaqueColorRgb.hwb.toQList3());
     }
 
     // Update HSV widget
     if (m_hsvSpinBox != ignoreWidget) {
-        m_hsvSpinBox->setSectionValues(m_currentOpaqueColorRgb.hsv);
+        m_hsvSpinBox->setSectionValues( //
+            m_currentOpaqueColorRgb.hsv.toQList3());
     }
 
     // Update CIEHLC-D50 widget
@@ -1575,7 +1579,8 @@ void ColorDialogPrivate::readHslNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromHsl(m_hslSpinBox->sectionValues());
+    const auto temp = RgbColor::fromHsl( //
+        GenericColor(m_hslSpinBox->sectionValues()));
     setCurrentOpaqueColor(temp, m_hslSpinBox);
 }
 
@@ -1587,7 +1592,8 @@ void ColorDialogPrivate::readHwbNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromHwb(m_hwbSpinBox->sectionValues());
+    const auto temp = RgbColor::fromHwb( //
+        GenericColor(m_hwbSpinBox->sectionValues()));
     setCurrentOpaqueColor(temp, m_hwbSpinBox);
 }
 
@@ -1599,7 +1605,8 @@ void ColorDialogPrivate::readHsvNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromHsv(m_hsvSpinBox->sectionValues());
+    const auto temp = RgbColor::fromHsv( //
+        GenericColor(m_hsvSpinBox->sectionValues()));
     setCurrentOpaqueColor(temp, m_hsvSpinBox);
 }
 
@@ -1611,7 +1618,8 @@ void ColorDialogPrivate::readRgbNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromRgb255(m_rgbSpinBox->sectionValues());
+    const auto temp = RgbColor::fromRgb255( //
+        GenericColor(m_rgbSpinBox->sectionValues()));
     setCurrentOpaqueColor(temp, m_rgbSpinBox);
 }
 
@@ -1694,12 +1702,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     // because of rounding issues, a conversion to an unbounded RGB
     // color could result in an invalid color. Therefore, we must
     // use a conversion to a _bounded_ RGB color.
-    const auto rgbFloat = m_currentOpaqueColorRgb.rgb255;
-    QList<int> rgbInteger;
-    rgbInteger.reserve(rgbFloat.count());
-    for (auto value : std::as_const(rgbFloat)) {
-        rgbInteger.append(qBound(0, qRound(value), 255));
-    }
+    const auto &rgbFloat = m_currentOpaqueColorRgb.rgb255;
 
     // We cannot rely on the convenient QColor.name() because this function
     // seems to use floor() instead of round(), which does not make sense in
@@ -1713,9 +1716,18 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     // 4) The fill character (leading zero)
     const QString hexString = //
         QStringLiteral(u"#%1%2%3")
-            .arg(rgbInteger.value(0), 2, 16, QChar::fromLatin1('0'))
-            .arg(rgbInteger.value(1), 2, 16, QChar::fromLatin1('0'))
-            .arg(rgbInteger.value(2), 2, 16, QChar::fromLatin1('0'))
+            .arg(qBound(0, qRound(rgbFloat.first), 255), //
+                 2, //
+                 16, //
+                 QChar::fromLatin1('0'))
+            .arg(qBound(0, qRound(rgbFloat.second), 255), //
+                 2, //
+                 16, //
+                 QChar::fromLatin1('0'))
+            .arg(qBound(0, qRound(rgbFloat.third), 255), //
+                 2, //
+                 16, //
+                 QChar::fromLatin1('0'))
             .toUpper(); // Convert to upper case
     m_rgbLineEdit->setText(hexString);
 }
@@ -1836,10 +1848,11 @@ void ColorDialogPrivate::initializeScreenColorPicker()
             &ScreenColorPicker::newColor, //
             q_pointer, //
             [this](const double red, const double green, const double blue) {
-                const QList<double> rgb{qBound<double>(0, red * 255, 255), //
-                                        qBound<double>(0, green * 255, 255), //
-                                        qBound<double>(0, blue * 255, 255)};
-                setCurrentOpaqueColor(RgbColor::fromRgb255(rgb), nullptr);
+                const GenericColor rgb255 //
+                    {qBound<double>(0, red * 255, 255), //
+                     qBound<double>(0, green * 255, 255),
+                     qBound<double>(0, blue * 255, 255)};
+                setCurrentOpaqueColor(RgbColor::fromRgb255(rgb255), nullptr);
             });
 }
 
