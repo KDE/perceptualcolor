@@ -6,7 +6,6 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
-#include "lchdouble.h"
 #include <lcms2.h>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
@@ -274,8 +273,8 @@ public: // Static factory functions
 public:
     virtual ~RgbColorSpace() noexcept override;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielabD50InGamut(const cmsCIELab &lab) const;
-    [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::LchDouble &lch) const;
-    [[nodiscard]] Q_INVOKABLE virtual bool isOklchInGamut(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::GenericColor &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual bool isOklchInGamut(const PerceptualColor::GenericColor &lch) const;
     /** @brief Getter for property @ref profileAbsoluteFilePath
      *  @returns the property @ref profileAbsoluteFilePath */
     [[nodiscard]] QString profileAbsoluteFilePath() const;
@@ -324,13 +323,19 @@ public:
     /** @brief Getter for property @ref profileTagSignatures
      *  @returns the property @ref profileTagSignatures */
     [[nodiscard]] QStringList profileTagSignatures() const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceOklchChromaToFitIntoGamut(const PerceptualColor::LchDouble &oklchColor) const;
+    // The function declaration is kept on a single line to prevent issues
+    // with Doxygen parsing.
+    // clang-format is disabled here to prevent automatic line breaks.
+    // clang-format off
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const;
+    // clang-format on
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const;
     [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielabD50(const QRgba64 rgbColor) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble toCielchD50Double(const QRgba64 rgbColor) const;
-    [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor toCielchD50(const QRgba64 rgbColor) const;
+    [[nodiscard]] Q_INVOKABLE static cmsCIELab fromLchToCmsCIELab(const PerceptualColor::GenericColor &lch);
+    [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::GenericColor &cielchD50) const;
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor fromCielchD50ToRgb1(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const;
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)

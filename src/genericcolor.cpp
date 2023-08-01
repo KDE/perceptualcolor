@@ -22,20 +22,6 @@ GenericColor::GenericColor(const QList<double> &list)
 {
 }
 
-/** @brief Type conversion.
- *
- * @warning Interprets the current data members as Lch.
- *
- * @returns Type conversion. */
-LchDouble GenericColor::reinterpretAsLchToLchDouble() const
-{
-    LchDouble result;
-    result.l = first;
-    result.c = second;
-    result.h = third;
-    return result;
-}
-
 /** @brief The values @ref first, @ref second, @ref third as @ref Trio.
  *
  * @returns The values @ref first, @ref second, @ref third as @ref Trio. */
@@ -70,6 +56,16 @@ cmsCIEXYZ GenericColor::reinterpretAsXyzToCmsciexyz() const
 cmsCIELab GenericColor::reinterpretAsLabToCmscielab() const
 {
     return cmsCIELab{first, second, third};
+}
+
+/** @brief Type conversion.
+ *
+ * @warning Interprets the current data members as LCh.
+ *
+ * @returns Type conversion. */
+cmsCIELCh GenericColor::reinterpretAsLchToCmscielch() const
+{
+    return cmsCIELCh{first, second, third};
 }
 
 /** @brief Equal operator

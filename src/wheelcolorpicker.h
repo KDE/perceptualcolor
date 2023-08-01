@@ -6,8 +6,8 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "importexport.h"
-#include "lchdouble.h"
 #include <qglobal.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
@@ -57,25 +57,29 @@ class PERCEPTUALCOLOR_IMPORTEXPORT WheelColorPicker : public AbstractDiagram
 
     /** @brief Currently selected color
      *
-     * @sa READ @ref currentColor() const
-     * @sa WRITE @ref setCurrentColor()
-     * @sa NOTIFY @ref currentColorChanged() */
-    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
+     * @sa READ @ref currentColorCielchD50() const
+     * @sa WRITE @ref setCurrentColorCielchD50()
+     * @sa NOTIFY @ref currentColorCielchD50Changed() */
+    // The Q_PROPERTY macro must be on a single line for correct compilation.
+    // clang-format is disabled here to prevent automatic line breaks.
+    // clang-format off
+    Q_PROPERTY(PerceptualColor::GenericColor currentColorCielchD50 READ currentColorCielchD50 WRITE setCurrentColorCielchD50 NOTIFY currentColorCielchD50Changed USER true)
+    // clang-format on
 
 public:
     Q_INVOKABLE explicit WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~WheelColorPicker() noexcept override;
-    /** @brief Getter for property @ref currentColor
-     *  @returns the property @ref currentColor */
-    [[nodiscard]] PerceptualColor::LchDouble currentColor() const;
+    /** @brief Getter for property @ref currentColorCielchD50
+     *  @returns the property @ref currentColorCielchD50 */
+    [[nodiscard]] PerceptualColor::GenericColor currentColorCielchD50() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
-    void setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor);
+    void setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColor.
-     *  @param newCurrentColor the new current color */
-    void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
+    /** @brief Notify signal for property @ref currentColorCielchD50.
+     *  @param newCurrentColorCielchD50 the new current color */
+    void currentColorCielchD50Changed(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;

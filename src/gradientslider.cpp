@@ -12,7 +12,6 @@
 #include "constpropagatinguniquepointer.h"
 #include "gradientimageparameters.h"
 #include "helperconstants.h"
-#include "lchadouble.h"
 #include <helper.h>
 #include <qevent.h>
 #include <qguiapplication.h>
@@ -63,8 +62,8 @@ GradientSlider::~GradientSlider() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink)
-    : m_firstColor{0, 0, 0, 0} // dummy value
-    , m_secondColor{0, 0, 0, 0} // dummy value
+    : m_firstColorCieLchD50A{0, 0, 0, 0} // dummy value
+    , m_secondColorCieLchD50A{0, 0, 0, 0} // dummy value
     , q_pointer(backLink)
 {
 }
@@ -89,8 +88,8 @@ void GradientSliderPrivate::initialize(const QSharedPointer<RgbColorSpace> &colo
     q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_gradientImageParameters.rgbColorSpace = colorSpace;
     setOrientationWithoutSignalAndForceNewSizePolicy(orientation);
-    constexpr LchaDouble first{75, 65, 90, 1};
-    constexpr LchaDouble second{50, 75, 45, 1};
+    constexpr GenericColor first{75, 65, 90, 1};
+    constexpr GenericColor second{50, 75, 45, 1};
     q_pointer->setColors(first, second);
 
     // Connections
@@ -103,57 +102,57 @@ void GradientSliderPrivate::initialize(const QSharedPointer<RgbColorSpace> &colo
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-LchaDouble GradientSlider::firstColor() const
+GenericColor GradientSlider::firstColorCieLchD50A() const
 {
-    return d_pointer->m_firstColor;
+    return d_pointer->m_firstColorCieLchD50A;
 }
 
-/** @brief Setter for @ref firstColor property.
+/** @brief Setter for @ref firstColorCieLchD50A property.
  *
- * @param newFirstColor the new @ref firstColor */
-void GradientSlider::setFirstColor(const PerceptualColor::LchaDouble &newFirstColor)
+ * @param newFirstColorCieLchD50A the new @ref firstColorCieLchD50A */
+void GradientSlider::setFirstColorCieLchD50A(const PerceptualColor::GenericColor &newFirstColorCieLchD50A)
 {
-    if (!d_pointer->m_firstColor.hasSameCoordinates(newFirstColor)) {
-        d_pointer->m_firstColor = newFirstColor;
-        d_pointer->m_gradientImageParameters.setFirstColor(newFirstColor);
+    if (!(d_pointer->m_firstColorCieLchD50A == newFirstColorCieLchD50A)) {
+        d_pointer->m_firstColorCieLchD50A = newFirstColorCieLchD50A;
+        d_pointer->m_gradientImageParameters.setFirstColorCieLchD50A(newFirstColorCieLchD50A);
         d_pointer->m_gradientImage.setImageParameters( //
             d_pointer->m_gradientImageParameters);
         update();
-        Q_EMIT firstColorChanged(newFirstColor);
+        Q_EMIT firstColorCieLchD50AChanged(newFirstColorCieLchD50A);
     }
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-LchaDouble GradientSlider::secondColor() const
+GenericColor GradientSlider::secondColorCieLchD50A() const
 {
-    return d_pointer->m_secondColor;
+    return d_pointer->m_secondColorCieLchD50A;
 }
 
-/** @brief Setter for @ref secondColor property.
+/** @brief Setter for @ref secondColorCieLchD50A property.
  *
- * @param newSecondColor the new @ref secondColor */
-void GradientSlider::setSecondColor(const PerceptualColor::LchaDouble &newSecondColor)
+ * @param newSecondColorCieLchD50A the new @ref secondColorCieLchD50A */
+void GradientSlider::setSecondColorCieLchD50A(const PerceptualColor::GenericColor &newSecondColorCieLchD50A)
 {
-    if (!d_pointer->m_secondColor.hasSameCoordinates(newSecondColor)) {
-        d_pointer->m_secondColor = newSecondColor;
-        d_pointer->m_gradientImageParameters.setSecondColor(newSecondColor);
+    if (!(d_pointer->m_secondColorCieLchD50A == newSecondColorCieLchD50A)) {
+        d_pointer->m_secondColorCieLchD50A = newSecondColorCieLchD50A;
+        d_pointer->m_gradientImageParameters.setSecondColorCieLchD50A(newSecondColorCieLchD50A);
         d_pointer->m_gradientImage.setImageParameters( //
             d_pointer->m_gradientImageParameters);
         update();
-        Q_EMIT secondColorChanged(newSecondColor);
+        Q_EMIT secondColorCieLchD50AChanged(newSecondColorCieLchD50A);
     }
 }
 
-/** @brief Setter for both, @ref firstColor property and @ref secondColor
+/** @brief Setter for both, @ref firstColorCieLchD50A property and @ref secondColorCieLchD50A
  * property.
  *
- * @param newFirstColor the new @ref firstColor
- * @param newSecondColor the new @ref secondColor */
-void GradientSlider::setColors(const PerceptualColor::LchaDouble &newFirstColor, const PerceptualColor::LchaDouble &newSecondColor)
+ * @param newFirstColorCieLchD50A the new @ref firstColorCieLchD50A
+ * @param newSecondColorCieLchD50A the new @ref secondColorCieLchD50A */
+void GradientSlider::setColors(const PerceptualColor::GenericColor &newFirstColorCieLchD50A, const PerceptualColor::GenericColor &newSecondColorCieLchD50A)
 {
-    setFirstColor(newFirstColor);
-    setSecondColor(newSecondColor);
+    setFirstColorCieLchD50A(newFirstColorCieLchD50A);
+    setSecondColorCieLchD50A(newSecondColorCieLchD50A);
     update();
 }
 
@@ -600,7 +599,7 @@ void GradientSlider::paintEvent(QPaintEvent *event)
             d_pointer->m_gradientImageParameters
                 .colorFromValue( //
                     d_pointer->m_value)
-                .l));
+                .first));
     bufferPainter.setPen(pen);
     bufferPainter.drawLine(QPointF(handleCoordinatePoint, 0), //
                            QPointF(handleCoordinatePoint, gradientThickness()));

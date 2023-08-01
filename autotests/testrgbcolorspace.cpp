@@ -9,9 +9,9 @@
 
 #include "cielchd50values.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "helpermath.h"
 #include "helperposixmath.h"
-#include "lchdouble.h"
 #include "rgbcolorspacefactory.h"
 #include <lcms2.h>
 #include <qbytearray.h>
@@ -169,8 +169,8 @@ private Q_SLOTS:
         auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         // assertion that maximum lightness is out-of-gamut for this profile:
-        QCOMPARE(myColorSpace->isCielchD50InGamut(LchDouble{100, 0, 0}), false);
-        QCOMPARE(myColorSpace->isOklchInGamut(LchDouble{1, 0, 0}), false);
+        QCOMPARE(myColorSpace->isCielchD50InGamut(GenericColor{100, 0, 0}), false);
+        QCOMPARE(myColorSpace->isOklchInGamut(GenericColor{1, 0, 0}), false);
 
         // Actual test:
         QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_cielabD50BlackpointL, 1));
@@ -196,18 +196,18 @@ private Q_SLOTS:
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
         myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
-        const LchDouble referenceColor{100, 50, 0};
+        const GenericColor referenceColor{100, 50, 0};
         QCOMPARE(myColorSpace->isCielchD50InGamut(referenceColor), false); // assertion
         // The value referenceColor is out-of-gamut because WideGamutRGB stops
         // just a little bit before the lightness of 100.
 
         // Now, test how this special situation is handled:
-        const LchDouble modifiedColor = //
+        const GenericColor modifiedColor = //
             myColorSpace->reduceCielchD50ChromaToFitIntoGamut(referenceColor);
-        QVERIFY(modifiedColor.c <= referenceColor.c);
-        QCOMPARE(modifiedColor.h, referenceColor.h);
-        QVERIFY(isInRange<qreal>(99, modifiedColor.l, 100));
-        QVERIFY(modifiedColor.l < 100);
+        QVERIFY(modifiedColor.second <= referenceColor.second);
+        QCOMPARE(modifiedColor.third, referenceColor.third);
+        QVERIFY(isInRange<qreal>(99, modifiedColor.first, 100));
+        QVERIFY(modifiedColor.first < 100);
         QVERIFY(myColorSpace->isCielchD50InGamut(modifiedColor));
     }
 
@@ -228,8 +228,8 @@ private Q_SLOTS:
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
         auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
-        LchDouble temp{100, 50, 0};
-        QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).l > 95);
+        GenericColor temp{100, 50, 0};
+        QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).first > 95);
     }
 
     void testReduceOklabChromaToFitIntoGamut()
@@ -246,18 +246,18 @@ private Q_SLOTS:
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
         myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
-        const LchDouble referenceColor{1, 0.151189, 359.374};
+        const GenericColor referenceColor{1, 0.151189, 359.374};
         QCOMPARE(myColorSpace->isOklchInGamut(referenceColor), false); // assertion
         // The value referenceColor is out-of-gamut because WideGamutRGB stops
         // just a little bit before the lightness of 100.
 
         // Now, test how this special situation is handled:
-        const LchDouble modifiedColor = //
+        const GenericColor modifiedColor = //
             myColorSpace->reduceOklchChromaToFitIntoGamut(referenceColor);
-        QVERIFY(modifiedColor.c <= referenceColor.c);
-        QCOMPARE(modifiedColor.h, referenceColor.h);
-        QVERIFY(isInRange<qreal>(0.99, modifiedColor.l, 1));
-        QVERIFY(modifiedColor.l < 1);
+        QVERIFY(modifiedColor.second <= referenceColor.second);
+        QCOMPARE(modifiedColor.third, referenceColor.third);
+        QVERIFY(isInRange<qreal>(0.99, modifiedColor.first, 1));
+        QVERIFY(modifiedColor.first < 1);
         QVERIFY(myColorSpace->isOklchInGamut(modifiedColor));
     }
 
@@ -278,8 +278,8 @@ private Q_SLOTS:
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
         auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
-        const LchDouble temp{1, 0.151189, 359.374};
-        QVERIFY(myColorSpace->reduceOklchChromaToFitIntoGamut(temp).l > 0.95);
+        const GenericColor temp{1, 0.151189, 359.374};
+        QVERIFY(myColorSpace->reduceOklchChromaToFitIntoGamut(temp).first > 0.95);
     }
 
     void testDeleteTransformThatIsNull()
@@ -399,20 +399,20 @@ private Q_SLOTS:
     void testProfileMaximumCielchD50Chroma()
     {
         auto temp = RgbColorSpace::createSrgb();
-        LchDouble color;
+        GenericColor color;
 
         // Test if profileMaximumCielchD50Chroma is big enough
         qreal precisionDegreeMaxSrgbChroma = //
             0.1 / 360 * 2 * pi * temp->profileMaximumCielchD50Chroma();
-        color.c = temp->profileMaximumCielchD50Chroma();
+        color.second = temp->profileMaximumCielchD50Chroma();
         qreal hue = 0;
         qreal lightness;
         qreal cielabPresicion = 0.1;
         while (hue <= 360) {
-            color.h = hue;
+            color.third = hue;
             lightness = 0;
             while (lightness <= 100) {
-                color.l = lightness;
+                color.first = lightness;
                 QVERIFY2(!temp->isCielchD50InGamut(color), "Test if profileMaximumCielchD50Chroma is big enough");
                 lightness += cielabPresicion;
             }
@@ -420,14 +420,14 @@ private Q_SLOTS:
         }
 
         // Test if profileMaximumCielchD50Chroma is as small as possible
-        color.c = temp->profileMaximumCielchD50Chroma() * 0.97;
+        color.second = temp->profileMaximumCielchD50Chroma() * 0.97;
         bool inGamutValueFound = false;
         hue = 0;
         while (hue <= 360) {
-            color.h = hue;
+            color.third = hue;
             lightness = 0;
             while (lightness <= 100) {
-                color.l = lightness;
+                color.first = lightness;
                 if (temp->isCielchD50InGamut(color)) {
                     inGamutValueFound = true;
                     break;
@@ -446,20 +446,20 @@ private Q_SLOTS:
     void testProfileMaximumOklchChroma()
     {
         auto temp = RgbColorSpace::createSrgb();
-        LchDouble color;
+        GenericColor color;
 
         // Test if profileMaximumOklchChroma is big enough
         qreal precisionDegreeMaxSrgbChroma = //
             0.1 / 360 * 2 * pi * temp->profileMaximumOklchChroma() * 100;
-        color.c = temp->profileMaximumOklchChroma();
+        color.second = temp->profileMaximumOklchChroma();
         qreal hue = 0;
         qreal lightness;
         qreal oklabPrecision = 0.001;
         while (hue <= 360) {
-            color.h = hue;
+            color.third = hue;
             lightness = 0;
             while (lightness <= 1) {
-                color.l = lightness;
+                color.first = lightness;
                 QVERIFY2(!temp->isOklchInGamut(color), "Test if profileMaximumOklchChroma is big enough");
                 lightness += oklabPrecision;
             }
@@ -467,14 +467,14 @@ private Q_SLOTS:
         }
 
         // Test if profileMaximumOklchChroma is as small as possible
-        color.c = temp->profileMaximumOklchChroma() * 0.97;
+        color.second = temp->profileMaximumOklchChroma() * 0.97;
         bool inGamutValueFound = false;
         hue = 0;
         while (hue <= 360) {
-            color.h = hue;
+            color.third = hue;
             lightness = 0;
             while (lightness <= 1) {
-                color.l = lightness;
+                color.first = lightness;
                 if (temp->isOklchInGamut(color)) {
                     inGamutValueFound = true;
                     break;
@@ -498,32 +498,32 @@ private Q_SLOTS:
 
         // Testing
         const QRgba64 white = QColor{255, 255, 255}.rgba64();
-        const auto convertedWhite = myColorSpace->toCielchD50Double(white);
-        const auto bufferWhiteL = QStringLiteral("convertedWhite.l: %1") //
-                                      .arg(convertedWhite.l, 0, 'e') //
+        const auto convertedWhite = myColorSpace->toCielchD50(white);
+        const auto bufferWhiteL = QStringLiteral("convertedWhite.first: %1") //
+                                      .arg(convertedWhite.first, 0, 'e') //
                                       .toUtf8();
-        QVERIFY2(convertedWhite.l >= 99, bufferWhiteL.constData());
-        QVERIFY2(convertedWhite.l <= 100, bufferWhiteL.constData());
-        const auto bufferWhiteC = QStringLiteral("convertedWhite.c: %1") //
-                                      .arg(convertedWhite.c, 0, 'e') //
+        QVERIFY2(convertedWhite.first >= 99, bufferWhiteL.constData());
+        QVERIFY2(convertedWhite.first <= 100, bufferWhiteL.constData());
+        const auto bufferWhiteC = QStringLiteral("convertedWhite.second: %1") //
+                                      .arg(convertedWhite.second, 0, 'e') //
                                       .toUtf8();
-        QVERIFY2(convertedWhite.c >= -1, bufferWhiteC.constData());
-        QVERIFY2(convertedWhite.c <= 1, bufferWhiteC.constData());
+        QVERIFY2(convertedWhite.second >= -1, bufferWhiteC.constData());
+        QVERIFY2(convertedWhite.second <= 1, bufferWhiteC.constData());
         // No test for hue because it would be meaningless.
 
         // Testing
         const QRgba64 black = QColor{0, 0, 0}.rgba64();
-        const auto convertedBlack = myColorSpace->toCielchD50Double(black);
-        const auto bufferBlackL = QStringLiteral("convertedBlack.l: %1") //
-                                      .arg(convertedBlack.l, 0, 'e') //
+        const auto convertedBlack = myColorSpace->toCielchD50(black);
+        const auto bufferBlackL = QStringLiteral("convertedBlack.first: %1") //
+                                      .arg(convertedBlack.first, 0, 'e') //
                                       .toUtf8();
-        QVERIFY2(convertedBlack.l >= 0, bufferBlackL.constData());
-        QVERIFY2(convertedBlack.l <= 1, bufferBlackL.constData());
-        const auto bufferBlackC = QStringLiteral("convertedBlack.c: %1") //
-                                      .arg(convertedBlack.c, 0, 'e') //
+        QVERIFY2(convertedBlack.first >= 0, bufferBlackL.constData());
+        QVERIFY2(convertedBlack.first <= 1, bufferBlackL.constData());
+        const auto bufferBlackC = QStringLiteral("convertedBlack.second: %1") //
+                                      .arg(convertedBlack.second, 0, 'e') //
                                       .toUtf8();
-        QVERIFY2(convertedBlack.c >= -1, bufferBlackC.constData());
-        QVERIFY2(convertedBlack.c <= 1, bufferBlackC.constData());
+        QVERIFY2(convertedBlack.second >= -1, bufferBlackC.constData());
+        QVERIFY2(convertedBlack.second <= 1, bufferBlackC.constData());
         // No test for hue because it would be meaningless.
     }
 
@@ -534,26 +534,26 @@ private Q_SLOTS:
             PerceptualColor::RgbColorSpaceFactory::createSrgb();
 
         // Variables
-        LchDouble color;
+        GenericColor color;
 
         // In-gamut colors should work:
-        color.l = 50;
-        color.c = 20;
-        color.h = 10;
+        color.first = 50;
+        color.second = 20;
+        color.third = 10;
         auto result = myColorSpace->fromCielchD50ToQRgbBound(color);
         QCOMPARE(qAlpha(result), 255); // opaque
 
         // Out-of-gamut colors should work:
-        color.l = 100;
-        color.c = 200;
-        color.h = 10;
+        color.first = 100;
+        color.second = 200;
+        color.third = 10;
         result = myColorSpace->fromCielchD50ToQRgbBound(color);
         QCOMPARE(qAlpha(result), 255); // opaque
 
         // Out-of-boundary colors should work:
-        color.l = 200;
-        color.c = 300;
-        color.h = 400;
+        color.first = 200;
+        color.second = 300;
+        color.third = 400;
         result = myColorSpace->fromCielchD50ToQRgbBound(color);
         QCOMPARE(qAlpha(result), 255); // opaque
     }
@@ -565,24 +565,24 @@ private Q_SLOTS:
             PerceptualColor::RgbColorSpaceFactory::createSrgb();
 
         // Variables
-        LchDouble color;
+        GenericColor color;
 
         // In-gamut colors should work:
-        color.l = 50;
-        color.c = 20;
-        color.h = 10;
+        color.first = 50;
+        color.second = 20;
+        color.third = 10;
         QCOMPARE(myColorSpace->isCielchD50InGamut(color), true);
 
         // Out-of-gamut colors should work:
-        color.l = 100;
-        color.c = 200;
-        color.h = 10;
+        color.first = 100;
+        color.second = 200;
+        color.third = 10;
         QCOMPARE(myColorSpace->isCielchD50InGamut(color), false);
 
         // Out-of-boundary colors should work:
-        color.l = 200;
-        color.c = 300;
-        color.h = 400;
+        color.first = 200;
+        color.second = 300;
+        color.third = 400;
         QCOMPARE(myColorSpace->isCielchD50InGamut(color), false);
     }
 
@@ -593,24 +593,24 @@ private Q_SLOTS:
             PerceptualColor::RgbColorSpaceFactory::createSrgb();
 
         // Variables
-        LchDouble color;
+        GenericColor color;
 
         // In-gamut colors should work:
-        color.l = 0.5;
-        color.c = 0.10;
-        color.h = 10;
+        color.first = 0.5;
+        color.second = 0.10;
+        color.third = 10;
         QCOMPARE(myColorSpace->isOklchInGamut(color), true);
 
         // Out-of-gamut colors should work:
-        color.l = 1;
-        color.c = 0.3;
-        color.h = 10;
+        color.first = 1;
+        color.second = 0.3;
+        color.third = 10;
         QCOMPARE(myColorSpace->isOklchInGamut(color), false);
 
         // Out-of-boundary colors should work:
-        color.l = 200;
-        color.c = 300;
-        color.h = 400;
+        color.first = 200;
+        color.second = 300;
+        color.third = 400;
         QCOMPARE(myColorSpace->isOklchInGamut(color), false);
     }
 

@@ -19,8 +19,6 @@
 #include "helperconversion.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
-#include "lchadouble.h"
-#include "lchdouble.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "oklchvalues.h"
@@ -915,17 +913,17 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_hueFirstWrapperWidget->setLayout(tempHueFirstLayout);
 
     m_lchLightnessSelector = new GradientSlider(m_rgbColorSpace);
-    LchaDouble black;
-    black.l = 0;
-    black.c = 0;
-    black.h = 0;
-    black.a = 1;
-    LchaDouble white;
-    white.l = 100;
-    white.c = 0;
-    white.h = 0;
-    white.a = 1;
-    m_lchLightnessSelector->setColors(black, white);
+    GenericColor blackCielchD50;
+    blackCielchD50.first = 0;
+    blackCielchD50.second = 0;
+    blackCielchD50.third = 0;
+    blackCielchD50.fourth = 1;
+    GenericColor whiteCielchD50;
+    whiteCielchD50.first = 100;
+    whiteCielchD50.second = 0;
+    whiteCielchD50.third = 0;
+    whiteCielchD50.fourth = 1;
+    m_lchLightnessSelector->setColors(blackCielchD50, whiteCielchD50);
     m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
@@ -1189,12 +1187,12 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &ColorDialogPrivate::readLightnessValue // slot
     );
     connect(m_wheelColorPicker, // sender
-            &WheelColorPicker::currentColorChanged, // signal
+            &WheelColorPicker::currentColorCielchD50Changed, // signal
             this, // receiver
             &ColorDialogPrivate::readWheelColorPickerValues // slot
     );
     connect(m_chromaHueDiagram, // sender
-            &ChromaHueDiagram::currentColorChanged, // signal
+            &ChromaHueDiagram::currentColorCielchD50Changed, // signal
             this, // receiver
             &ColorDialogPrivate::readChromaHueDiagramValue // slot
     );
@@ -1475,8 +1473,7 @@ void ColorDialogPrivate::updateColorPatch()
 /** @brief Overloaded function. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget)
 {
-    const auto cielchD50 = //
-        abs.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble();
+    const auto cielchD50 = abs.value(ColorModel::CielchD50);
     const auto rgb1 = m_rgbColorSpace->fromCielchD50ToRgb1(cielchD50);
     const auto rgb255 = GenericColor(rgb1.first * 255, //
                                      rgb1.second * 255,
@@ -1494,7 +1491,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &
         static_cast<QColorFloatType>(temp.second / 255.), //
         static_cast<QColorFloatType>(temp.third / 255.));
     const auto cielchD50 = GenericColor( //
-        m_rgbColorSpace->toCielchD50Double(myQColor.rgba64()));
+        m_rgbColorSpace->toCielchD50(myQColor.rgba64()));
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
         rgb,
@@ -1604,26 +1601,24 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 
     // Update chroma-hue diagram
     if (m_chromaHueDiagram != ignoreWidget) {
-        m_chromaHueDiagram->setCurrentColor( //
-            cielchD50.reinterpretAsLchToLchDouble());
+        m_chromaHueDiagram->setCurrentColorCielchD50(cielchD50);
     }
 
     // Update wheel color picker
     if (m_wheelColorPicker != ignoreWidget) {
-        m_wheelColorPicker->setCurrentColor( //
-            cielchD50.reinterpretAsLchToLchDouble());
+        m_wheelColorPicker->setCurrentColorCielchD50(cielchD50);
     }
 
     // Update alpha gradient slider
     if (m_alphaGradientSlider != ignoreWidget) {
-        LchaDouble tempColor;
-        tempColor.l = cielchD50.first;
-        tempColor.c = cielchD50.second;
-        tempColor.h = cielchD50.third;
-        tempColor.a = 0;
-        m_alphaGradientSlider->setFirstColor(tempColor);
-        tempColor.a = 1;
-        m_alphaGradientSlider->setSecondColor(tempColor);
+        GenericColor tempColor;
+        tempColor.first = cielchD50.first;
+        tempColor.second = cielchD50.second;
+        tempColor.third = cielchD50.third;
+        tempColor.fourth = 0;
+        m_alphaGradientSlider->setFirstColorCieLchD50A(tempColor);
+        tempColor.fourth = 1;
+        m_alphaGradientSlider->setSecondColorCieLchD50A(tempColor);
     }
 
     // Update widgets that take alpha information
@@ -1652,8 +1647,7 @@ void ColorDialogPrivate::readLightnessValue()
     auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
     cielchD50.first = m_lchLightnessSelector->value() * 100;
     cielchD50 = GenericColor( //
-        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut( //
-            cielchD50.reinterpretAsLchToLchDouble()));
+        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(cielchD50));
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50), //
         m_lchLightnessSelector);
@@ -1770,7 +1764,7 @@ void ColorDialogPrivate::readWheelColorPickerValues()
         // Nothing to do!
         return;
     }
-    const auto cielchD50 = GenericColor(m_wheelColorPicker->currentColor());
+    const auto cielchD50 = GenericColor(m_wheelColorPicker->currentColorCielchD50());
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
         m_wheelColorPicker);
@@ -1784,7 +1778,7 @@ void ColorDialogPrivate::readChromaHueDiagramValue()
         // Nothing to do!
         return;
     }
-    const auto cielchD50 = GenericColor(m_chromaHueDiagram->currentColor());
+    const auto cielchD50 = GenericColor(m_chromaHueDiagram->currentColorCielchD50());
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
         m_chromaHueDiagram);
@@ -1892,10 +1886,10 @@ void ColorDialogPrivate::readHlcNumericValues()
         return;
     }
     QList<double> hlcValues = m_ciehlcD50SpinBox->sectionValues();
-    LchDouble lch;
-    lch.h = hlcValues.at(0);
-    lch.l = hlcValues.at(1);
-    lch.c = hlcValues.at(2);
+    GenericColor lch;
+    lch.third = hlcValues.at(0);
+    lch.first = hlcValues.at(1);
+    lch.second = hlcValues.at(2);
     if (m_rgbColorSpace->isCielchD50InGamut(lch)) {
         m_ciehlcD50SpinBoxGamutAction->setVisible(false);
     } else {
@@ -1921,10 +1915,10 @@ void ColorDialogPrivate::readOklchNumericValues()
     // TODO xxx This code moves into gamut based on the Cielch-D50 instead of
     // the Oklch gamut. This leads to wrong results, because Oklch hue is not
     // guaranteed to be respected. Use actually Oklch to move into gamut!
-    LchDouble originalOklch;
-    originalOklch.l = m_oklchSpinBox->sectionValues().value(0);
-    originalOklch.c = m_oklchSpinBox->sectionValues().value(1);
-    originalOklch.h = m_oklchSpinBox->sectionValues().value(2);
+    GenericColor originalOklch;
+    originalOklch.first = m_oklchSpinBox->sectionValues().value(0);
+    originalOklch.second = m_oklchSpinBox->sectionValues().value(1);
+    originalOklch.third = m_oklchSpinBox->sectionValues().value(2);
     if (m_rgbColorSpace->isOklchInGamut(originalOklch)) {
         m_oklchSpinBoxGamutAction->setVisible(false);
     } else {

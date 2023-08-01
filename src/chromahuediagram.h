@@ -6,8 +6,8 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "importexport.h"
-#include "lchdouble.h"
 #include <qglobal.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
@@ -136,27 +136,27 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
      * The programmer can set this property to out-of-gamut values; the
      * user cannot.
      *
-     * @sa READ @ref currentColor() const
-     * @sa WRITE @ref setCurrentColor()
-     * @sa NOTIFY @ref currentColorChanged() */
-    Q_PROPERTY(LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
+     * @sa READ @ref currentColorCielchD50() const
+     * @sa WRITE @ref setCurrentColorCielchD50()
+     * @sa NOTIFY @ref currentColorCielchD50Changed() */
+    Q_PROPERTY(GenericColor currentColorCielchD50 READ currentColorCielchD50 WRITE setCurrentColorCielchD50 NOTIFY currentColorCielchD50Changed)
 
 public:
     Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
-    /** @brief Getter for property @ref currentColor
-     *  @returns the property @ref currentColor */
-    [[nodiscard]] LchDouble currentColor() const;
+    /** @brief Getter for property @ref currentColorCielchD50
+     *  @returns the property @ref currentColorCielchD50 */
+    [[nodiscard]] GenericColor currentColorCielchD50() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor);
+    void setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColor.
-     *  @param newCurrentColor the new current color */
-    void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
+    /** @brief Notify signal for property @ref currentColorCielchD50.
+     *  @param newCurrentColorCielchD50 the new current color */
+    void currentColorCielchD50Changed(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;

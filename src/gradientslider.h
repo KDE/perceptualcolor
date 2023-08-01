@@ -6,8 +6,8 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "importexport.h"
-#include "lchadouble.h"
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
@@ -55,20 +55,20 @@ class RgbColorSpace;
  * Example:
  * |                  |   L |  C |   h  | alpha |
  * | :--------------- | --: | -: | ---: | ----: |
- * | @ref firstColor  | 80% |  5 |  15° |   0.7 |
+ * | @ref firstColorCieLchD50A  | 80% |  5 |  15° |   0.7 |
  * |                  | 70% |  7 |   5° |   0.8 |
  * |                  | 60% |  9 | 355° |   0.9 |
- * | @ref secondColor | 50% | 11 | 345° |   1.0 |
+ * | @ref secondColorCieLchD50A | 50% | 11 | 345° |   1.0 |
  *
  * Note that due to this mathematical model, there might be out-of-gamut colors
  * within the slider even if both, the first and the second color are in-gamut
  * colors. Out-of-gamut colors are rendered as nearby in-gamut colors.
  *
- * - In the case of vertical @ref orientation, @ref firstColor is the colour
- *   at the bottom of the widget and @ref secondColor is the colour at the
+ * - In the case of vertical @ref orientation, @ref firstColorCieLchD50A is the colour
+ *   at the bottom of the widget and @ref secondColorCieLchD50A is the colour at the
  *   top of the widget.
- * - In the case of horizontal @ref orientation, @ref firstColor is the
- *   colour on the left of the widget and @ref secondColor is the colour
+ * - In the case of horizontal @ref orientation, @ref firstColorCieLchD50A is the
+ *   colour on the left of the widget and @ref secondColorCieLchD50A is the colour
  *   on the right of the widget in LTR layout. In RTL layout it is the
  *   other way round.
  *
@@ -103,11 +103,11 @@ class PERCEPTUALCOLOR_IMPORTEXPORT GradientSlider : public AbstractDiagram
 
     /** @brief First color (the one corresponding to a low @ref value)
      *
-     * @sa READ @ref firstColor() const
-     * @sa WRITE @ref setFirstColor()
-     * @sa NOTIFY @ref firstColorChanged()
-     * @sa @ref secondColor */
-    Q_PROPERTY(PerceptualColor::LchaDouble firstColor READ firstColor WRITE setFirstColor NOTIFY firstColorChanged)
+     * @sa READ @ref firstColorCieLchD50A() const
+     * @sa WRITE @ref setFirstColorCieLchD50A()
+     * @sa NOTIFY @ref firstColorCieLchD50AChanged()
+     * @sa @ref secondColorCieLchD50A */
+    Q_PROPERTY(PerceptualColor::GenericColor firstColorCieLchD50A READ firstColorCieLchD50A WRITE setFirstColorCieLchD50A NOTIFY firstColorCieLchD50AChanged)
 
     /** @brief Orientation of the widget.
      *
@@ -143,11 +143,15 @@ class PERCEPTUALCOLOR_IMPORTEXPORT GradientSlider : public AbstractDiagram
 
     /** @brief Second color (the one corresponding to a high @ref value)
      *
-     * @sa READ @ref secondColor() const
-     * @sa WRITE @ref setSecondColor()
-     * @sa NOTIFY @ref secondColorChanged()
-     * @sa @ref firstColor */
-    Q_PROPERTY(PerceptualColor::LchaDouble secondColor READ secondColor WRITE setSecondColor NOTIFY secondColorChanged)
+     * @sa READ @ref secondColorCieLchD50A() const
+     * @sa WRITE @ref setSecondColorCieLchD50A()
+     * @sa NOTIFY @ref secondColorCieLchD50AChanged()
+     * @sa @ref firstColorCieLchD50A */
+    // The Q_PROPERTY macro must be on a single line for correct compilation.
+    // clang-format is disabled here to prevent automatic line breaks.
+    // clang-format off
+    Q_PROPERTY(PerceptualColor::GenericColor secondColorCieLchD50A READ secondColorCieLchD50A WRITE setSecondColorCieLchD50A NOTIFY secondColorCieLchD50AChanged)
+    // clang-format on
 
     /** @brief This property holds the single step.
      *
@@ -168,8 +172,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT GradientSlider : public AbstractDiagram
      * The valid range is <tt>[0, 1]</tt>.
      * The slider forces the value to be within the valid range:
      * <tt>0 <= value <= 1</tt>.
-     * - <tt>0</tt> means: totally firstColor()
-     * - <tt>1</tt> means: totally secondColor()
+     * - <tt>0</tt> means: totally firstColorCieLchD50A()
+     * - <tt>1</tt> means: totally secondColorCieLchD50A()
      *
      * @sa READ @ref value() const
      * @sa WRITE @ref setValue()
@@ -182,9 +186,9 @@ public:
                                         Qt::Orientation orientation,
                                         QWidget *parent = nullptr);
     virtual ~GradientSlider() noexcept override;
-    /** @brief Getter for property @ref firstColor
+    /** @brief Getter for property @ref firstColorCieLchD50A
      *  @returns the property */
-    [[nodiscard]] PerceptualColor::LchaDouble firstColor() const;
+    [[nodiscard]] PerceptualColor::GenericColor firstColorCieLchD50A() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     /** @brief Getter for property @ref orientation
      *  @returns the property */
@@ -192,9 +196,9 @@ public:
     /** @brief Getter for property @ref pageStep
      *  @returns the property */
     [[nodiscard]] qreal pageStep() const;
-    /** @brief Getter for property @ref secondColor
+    /** @brief Getter for property @ref secondColorCieLchD50A
      *  @returns the property */
-    [[nodiscard]] PerceptualColor::LchaDouble secondColor() const;
+    [[nodiscard]] PerceptualColor::GenericColor secondColorCieLchD50A() const;
     /** @brief Getter for property @ref singleStep
      *  @returns the property */
     [[nodiscard]] qreal singleStep() const;
@@ -204,18 +208,18 @@ public:
     [[nodiscard]] qreal value() const;
 
 Q_SIGNALS:
-    /** @brief Signal for @ref firstColor property.
-     * @param newFirstColor the new @ref firstColor */
-    void firstColorChanged(const PerceptualColor::LchaDouble &newFirstColor);
+    /** @brief Signal for @ref firstColorCieLchD50A property.
+     * @param newFirstColorCieLchD50A the new @ref firstColorCieLchD50A */
+    void firstColorCieLchD50AChanged(const PerceptualColor::GenericColor &newFirstColorCieLchD50A);
     /** @brief Signal for @ref orientation property.
      * @param newOrientation the new @ref orientation */
     void orientationChanged(const Qt::Orientation newOrientation);
     /** @brief Signal for @ref pageStep property.
      * @param newPageStep the new @ref pageStep */
     void pageStepChanged(const qreal newPageStep);
-    /** @brief Signal for @ref secondColor property.
-     * @param newSecondColor the new @ref secondColor */
-    void secondColorChanged(const PerceptualColor::LchaDouble &newSecondColor);
+    /** @brief Signal for @ref secondColorCieLchD50A property.
+     * @param newSecondColorCieLchD50A the new @ref secondColorCieLchD50A */
+    void secondColorCieLchD50AChanged(const PerceptualColor::GenericColor &newSecondColorCieLchD50A);
     /** @brief Signal for @ref singleStep property.
      * @param newSingleStep the new @ref singleStep */
     void singleStepChanged(const qreal newSingleStep);
@@ -224,11 +228,11 @@ Q_SIGNALS:
     void valueChanged(const qreal newValue);
 
 public Q_SLOTS:
-    void setColors(const PerceptualColor::LchaDouble &newFirstColor, const PerceptualColor::LchaDouble &newSecondColor);
-    void setFirstColor(const PerceptualColor::LchaDouble &newFirstColor);
+    void setColors(const PerceptualColor::GenericColor &newFirstColorCieLchD50A, const PerceptualColor::GenericColor &newSecondColorCieLchD50A);
+    void setFirstColorCieLchD50A(const PerceptualColor::GenericColor &newFirstColorCieLchD50A);
     void setOrientation(const Qt::Orientation newOrientation);
     void setPageStep(const qreal newPageStep);
-    void setSecondColor(const PerceptualColor::LchaDouble &newSecondColor);
+    void setSecondColorCieLchD50A(const PerceptualColor::GenericColor &newSecondColorCieLchD50A);
     void setSingleStep(const qreal newSingleStep);
     void setValue(const qreal newValue);
 

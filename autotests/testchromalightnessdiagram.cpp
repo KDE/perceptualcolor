@@ -8,9 +8,9 @@
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "helper.h"
 #include "helpermath.h"
-#include "lchdouble.h"
 #include "rgbcolorspacefactory.h"
 #include <cmath>
 #include <limits>
@@ -129,7 +129,7 @@ private Q_SLOTS:
         myWidget.repaint();
     }
 
-    void testSetCurrentColorFromWidgetPixelPosition1()
+    void testSetCurrentColorCielchD50FromWidgetPixelPosition1()
     {
         // Also very small widget sizes should not crash the widget.
         // This might happen because if the widget is too small, there
@@ -144,44 +144,44 @@ private Q_SLOTS:
         myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(negative);
     }
 
-    void testSetCurrentColorFromWidgetPixelPosition2()
+    void testSetCurrentColorCielchD50FromWidgetPixelPosition2()
     {
         // Test this function for out-of-gamut positions
         ChromaLightnessDiagram myWidget{m_rgbColorSpace};
         myWidget.show();
         constexpr int size = 100;
         myWidget.resize(size, size);
-        LchDouble color;
+        GenericColor color;
 
         // Test for top-left corner
         myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(
             // Same x and y spacing from top-left corner
             QPoint(size * (-1), size * (-1)));
         delayedEventProcessing();
-        color = myWidget.currentColor();
-        QCOMPARE(color.l, 100);
-        QCOMPARE(color.c, 0);
+        color = myWidget.currentColorCielchD50();
+        QCOMPARE(color.first, 100);
+        QCOMPARE(color.second, 0);
 
         // Test for bottom-left corner
         myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(
             // Same x and y spacing from bottom-left corner
             QPoint(size * (-1), size * 2));
         delayedEventProcessing();
-        color = myWidget.currentColor();
-        QCOMPARE(color.l, 0);
-        QCOMPARE(color.c, 0);
+        color = myWidget.currentColorCielchD50();
+        QCOMPARE(color.first, 0);
+        QCOMPARE(color.second, 0);
 
         // Test for middle-right position
         myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(
             // x position far from diagram boundaries, y position in the middle
             QPoint(size * 10, size * 50 / 100));
         delayedEventProcessing();
-        color = myWidget.currentColor();
+        color = myWidget.currentColorCielchD50();
         // Lightness should be somewhere in the middle.
-        QVERIFY(color.l > 10);
-        QVERIFY(color.l < 90);
+        QVERIFY(color.first > 10);
+        QVERIFY(color.first < 90);
         // At least 25 should be possible on all hues.
-        QVERIFY(color.c > 25);
+        QVERIFY(color.second > 25);
     }
 
     void testDefaultBorderPhysical()
@@ -230,65 +230,65 @@ private Q_SLOTS:
         const QPoint positive(10, 20);
         const QPoint negative(-10, -20);
         myWidget.resize(QSize());
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(-1, -1));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(-1, 0));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(0, -1));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(0, 1));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(1, 0));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(1, 1));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(2, 2));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(3, 3));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(4, 4));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(5, 5));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(6, 6));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(7, 7));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(8, 8));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(9, 9));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(10, 10));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(11, 11));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(12, 12));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(13, 13));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
         myWidget.resize(QSize(14, 14));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(positive));
-        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToColor(negative));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(positive));
+        Q_UNUSED(myWidget.d_pointer->fromWidgetPixelPositionToCielchD50(negative));
     }
 
     void testMouseSupport1()
@@ -317,7 +317,7 @@ private Q_SLOTS:
         myWidget.show();
         constexpr int size = 100;
         myWidget.resize(size, size);
-        LchDouble color;
+        GenericColor color;
 
         // Test for top-left corner
         QTest::mousePress(&myWidget,
@@ -336,9 +336,9 @@ private Q_SLOTS:
                             QPoint(size * (-1), size * (-1)));
         // Test if the widget value is really the nearest in-gamut color
         delayedEventProcessing();
-        color = myWidget.currentColor();
-        QCOMPARE(color.l, 100);
-        QCOMPARE(color.c, 0);
+        color = myWidget.currentColorCielchD50();
+        QCOMPARE(color.first, 100);
+        QCOMPARE(color.second, 0);
 
         // Test for bottom-left corner
         QTest::mousePress(&myWidget,
@@ -356,9 +356,9 @@ private Q_SLOTS:
                             // sure to get a point within the gamut.
                             QPoint(size * (-1), size * 2));
         // Test if the widget value is really the nearest in-gamut color
-        color = myWidget.currentColor();
-        QCOMPARE(color.l, 0);
-        QCOMPARE(color.c, 0);
+        color = myWidget.currentColorCielchD50();
+        QCOMPARE(color.first, 0);
+        QCOMPARE(color.second, 0);
 
         // Test for middle-right position
         QTest::mousePress(&myWidget,
@@ -376,12 +376,12 @@ private Q_SLOTS:
                             // sure to get a point within the gamut.
                             QPoint(size * 10, size * 50 / 100));
         // Test if the widget value is really the nearest in-gamut color
-        color = myWidget.currentColor();
+        color = myWidget.currentColorCielchD50();
         // Lightness should be somewhere in the middle.
-        QVERIFY(color.l > 10);
-        QVERIFY(color.l < 90);
+        QVERIFY(color.first > 10);
+        QVERIFY(color.first < 90);
         // At least 25 should be possible on all hues.
-        QVERIFY(color.c > 25);
+        QVERIFY(color.second > 25);
     }
 
     void testPaintEventNormalSize()
@@ -414,115 +414,115 @@ private Q_SLOTS:
     void testKeyPressEvent()
     {
         ChromaLightnessDiagram myDiagram(m_rgbColorSpace);
-        LchDouble referenceColorLch;
-        referenceColorLch.l = 50;
-        referenceColorLch.c = 20;
-        referenceColorLch.h = 180;
-        myDiagram.setCurrentColor(referenceColorLch);
+        GenericColor referenceColorLch;
+        referenceColorLch.first = 50;
+        referenceColorLch.second = 20;
+        referenceColorLch.third = 180;
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
 
         // Assert pre-conditions:
 
-        QCOMPARE(myDiagram.currentColor().l, 50);
-        QCOMPARE(myDiagram.currentColor().c, 20);
-        QCOMPARE(myDiagram.currentColor().h, 180);
+        QCOMPARE(myDiagram.currentColorCielchD50().first, 50);
+        QCOMPARE(myDiagram.currentColorCielchD50().second, 20);
+        QCOMPARE(myDiagram.currentColorCielchD50().third, 180);
 
         // Actual test:
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Left);
-        QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c < referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first == referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second < referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Right);
-        QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c > referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first == referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second > referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Up);
-        QVERIFY(myDiagram.currentColor().l > referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first > referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Down);
-        QVERIFY(myDiagram.currentColor().l < referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first < referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Home);
-        QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c > referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first == referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second > referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_End);
-        QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c < referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first == referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second < referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_PageUp);
-        QVERIFY(myDiagram.currentColor().l > referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first > referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_PageDown);
-        QVERIFY(myDiagram.currentColor().l < referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first < referenceColorLch.first);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        referenceColorLch.c = 0;
+        referenceColorLch.second = 0;
 
         // Chroma should never become negative
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Left);
-        QCOMPARE(myDiagram.currentColor().l, referenceColorLch.l);
-        QCOMPARE(myDiagram.currentColor().c, referenceColorLch.c);
-        QCOMPARE(myDiagram.currentColor().h, referenceColorLch.h);
+        QCOMPARE(myDiagram.currentColorCielchD50().first, referenceColorLch.first);
+        QCOMPARE(myDiagram.currentColorCielchD50().second, referenceColorLch.second);
+        QCOMPARE(myDiagram.currentColorCielchD50().third, referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_End);
-        QCOMPARE(myDiagram.currentColor().l, referenceColorLch.l);
-        QCOMPARE(myDiagram.currentColor().c, referenceColorLch.c);
-        QCOMPARE(myDiagram.currentColor().h, referenceColorLch.h);
+        QCOMPARE(myDiagram.currentColorCielchD50().first, referenceColorLch.first);
+        QCOMPARE(myDiagram.currentColorCielchD50().second, referenceColorLch.second);
+        QCOMPARE(myDiagram.currentColorCielchD50().third, referenceColorLch.third);
 
-        referenceColorLch.l = 0;
+        referenceColorLch.first = 0;
 
         // Lightness should never be smaller than 0.
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Down);
-        QVERIFY(myDiagram.currentColor().l >= 0);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first >= 0);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_PageDown);
-        QVERIFY(myDiagram.currentColor().l >= 0);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first >= 0);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        referenceColorLch.l = 100;
+        referenceColorLch.first = 100;
 
         // Lightness should never be bigger than 100.
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Up);
-        QVERIFY(myDiagram.currentColor().l <= 100);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first <= 100);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
-        myDiagram.setCurrentColor(referenceColorLch);
+        myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_PageUp);
-        QVERIFY(myDiagram.currentColor().l <= 100);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QVERIFY(myDiagram.currentColorCielchD50().first <= 100);
+        QVERIFY(myDiagram.currentColorCielchD50().second == referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
     }
 
     void testIsWidgetPixelPositionInGamut()
@@ -550,40 +550,40 @@ private Q_SLOTS:
     // signals. Since the following unit tests require signals, it cannot be
     // built for MSVC shared libraries.
 
-    void testCurrentColorProperty()
+    void testCurrentColorCielchD50Property()
     {
         ChromaLightnessDiagram test{m_rgbColorSpace};
-        LchDouble color;
-        color.l = 50;
-        color.c = 20;
-        color.h = 10;
-        test.setCurrentColor(color);
-        QVERIFY(test.currentColor().hasSameCoordinates(color));
-        QSignalSpy spy(&test, &ChromaLightnessDiagram::currentColorChanged);
+        GenericColor color;
+        color.first = 50;
+        color.second = 20;
+        color.third = 10;
+        test.setCurrentColorCielchD50(color);
+        QVERIFY(test.currentColorCielchD50() == color);
+        QSignalSpy spy(&test, &ChromaLightnessDiagram::currentColorCielchD50Changed);
         QCOMPARE(spy.count(), 0);
 
         // Change hue only:
-        color.h += 1;
-        test.setCurrentColor(color);
+        color.third += 1;
+        test.setCurrentColorCielchD50(color);
         QCOMPARE(spy.count(), 1);
-        QVERIFY(test.currentColor().hasSameCoordinates(color));
+        QVERIFY(test.currentColorCielchD50() == color);
 
         // Change chroma only:
-        color.c += 1;
-        test.setCurrentColor(color);
+        color.second += 1;
+        test.setCurrentColorCielchD50(color);
         QCOMPARE(spy.count(), 2);
-        QVERIFY(test.currentColor().hasSameCoordinates(color));
+        QVERIFY(test.currentColorCielchD50() == color);
 
         // Change lightness only:
-        color.l += 1;
-        test.setCurrentColor(color);
+        color.first += 1;
+        test.setCurrentColorCielchD50(color);
         QCOMPARE(spy.count(), 3);
-        QVERIFY(test.currentColor().hasSameCoordinates(color));
+        QVERIFY(test.currentColorCielchD50() == color);
 
         // Not changing the color should not trigger the signal
-        test.setCurrentColor(color);
+        test.setCurrentColorCielchD50(color);
         QCOMPARE(spy.count(), 3);
-        QVERIFY(test.currentColor().hasSameCoordinates(color));
+        QVERIFY(test.currentColorCielchD50() == color);
     }
 
 #endif
@@ -617,17 +617,17 @@ private Q_SLOTS:
 
         // Test that setting out-of-gamut colors works
 
-        const LchDouble myFirstColor{100, 150, 0};
-        myWidget.setCurrentColor(myFirstColor);
-        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.currentColor()));
+        const GenericColor myFirstColor{100, 150, 0};
+        myWidget.setCurrentColorCielchD50(myFirstColor);
+        QVERIFY(myFirstColor == myWidget.currentColorCielchD50());
         QVERIFY( //
-            myFirstColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+            myFirstColor == myWidget.d_pointer->m_currentColorCielchD50);
 
-        const LchDouble mySecondColor{0, 150, 0};
-        myWidget.setCurrentColor(mySecondColor);
-        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.currentColor()));
+        const GenericColor mySecondColor{0, 150, 0};
+        myWidget.setCurrentColorCielchD50(mySecondColor);
+        QVERIFY(mySecondColor == myWidget.currentColorCielchD50());
         QVERIFY( //
-            mySecondColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+            mySecondColor == myWidget.d_pointer->m_currentColorCielchD50);
     }
 
     void testOutOfRange()
@@ -639,17 +639,17 @@ private Q_SLOTS:
         // Test that setting colors, that are not only out-of-gamut colors
         // but also out of a reasonable range, works.
 
-        const LchDouble myFirstColor{300, 550, -10};
-        myWidget.setCurrentColor(myFirstColor);
+        const GenericColor myFirstColor{300, 550, -10};
+        myWidget.setCurrentColorCielchD50(myFirstColor);
         QVERIFY( //
-            myFirstColor.hasSameCoordinates(myWidget.currentColor()));
+            myFirstColor == myWidget.currentColorCielchD50());
         QVERIFY( //
-            myFirstColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+            myFirstColor == myWidget.d_pointer->m_currentColorCielchD50);
 
-        const LchDouble mySecondColor{-100, -150, 890};
-        myWidget.setCurrentColor(mySecondColor);
-        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.currentColor()));
-        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+        const GenericColor mySecondColor{-100, -150, 890};
+        myWidget.setCurrentColorCielchD50(mySecondColor);
+        QVERIFY(mySecondColor == myWidget.currentColorCielchD50());
+        QVERIFY(mySecondColor == myWidget.d_pointer->m_currentColorCielchD50);
     }
 
     void testNearestInGamutColorByAdjustingChromaLightness()
@@ -657,29 +657,29 @@ private Q_SLOTS:
         ChromaLightnessDiagram myWidget{m_rgbColorSpace};
 
         // Variables
-        LchDouble color;
-        LchDouble nearestInGamutColor;
+        GenericColor color;
+        GenericColor nearestInGamutColor;
 
         // In-gamut colors should not be changed.
-        color.l = 50;
-        color.c = 20;
-        color.h = 10;
-        myWidget.setCurrentColor(color);
+        color.first = 50;
+        color.second = 20;
+        color.third = 10;
+        myWidget.setCurrentColorCielchD50(color);
         nearestInGamutColor = //
-            myWidget.d_pointer->nearestInGamutColorByAdjustingChromaLightness(color.c, color.l);
-        QVERIFY(nearestInGamutColor.hasSameCoordinates(color));
+            myWidget.d_pointer->nearestInGamutCielchD50ByAdjustingChromaLightness(color.second, color.first);
+        QVERIFY(nearestInGamutColor == color);
 
         // A negative chroma value should not be normalized (this would
         // mean to change the hue), but just put to 0.
-        color.l = 50;
-        color.c = -20;
-        color.h = 10;
-        myWidget.setCurrentColor(color);
+        color.first = 50;
+        color.second = -20;
+        color.third = 10;
+        myWidget.setCurrentColorCielchD50(color);
         nearestInGamutColor = //
-            myWidget.d_pointer->nearestInGamutColorByAdjustingChromaLightness(color.c, color.l);
-        QCOMPARE(nearestInGamutColor.l, 50);
-        QCOMPARE(nearestInGamutColor.c, 0);
-        QCOMPARE(nearestInGamutColor.h, 10);
+            myWidget.d_pointer->nearestInGamutCielchD50ByAdjustingChromaLightness(color.second, color.first);
+        QCOMPARE(nearestInGamutColor.first, 50);
+        QCOMPARE(nearestInGamutColor.second, 0);
+        QCOMPARE(nearestInGamutColor.third, 10);
     }
 
     void testNearestInGamutColorByAdjustingChromaLightnessSmallSize()
@@ -687,23 +687,23 @@ private Q_SLOTS:
         ChromaLightnessDiagram myWidget{m_rgbColorSpace};
 
         // Variables
-        LchDouble color;
-        LchDouble nearestInGamutColor;
+        GenericColor color;
+        GenericColor nearestInGamutColor;
 
         // In-gamut colors should not be changed.
-        color.l = 50;
-        color.c = 20;
-        color.h = 10;
-        myWidget.setCurrentColor(color);
+        color.first = 50;
+        color.second = 20;
+        color.third = 10;
+        myWidget.setCurrentColorCielchD50(color);
 
-        // nearestInGamutColorByAdjustingChromaLightness() is only
+        // nearestInGamutCielchD50ByAdjustingChromaLightness() is only
         // guaranteed to work correctly for an image size of at least
         // two pixel width and two pixel height. Test here if at least
         // we can call the function without crash, even if the result
         // does not make sense.
         myWidget.resize(1, 1);
         nearestInGamutColor = //
-            myWidget.d_pointer->nearestInGamutColorByAdjustingChromaLightness(color.c, color.l);
+            myWidget.d_pointer->nearestInGamutCielchD50ByAdjustingChromaLightness(color.second, color.first);
     }
 
     void testDistanceFromRange()

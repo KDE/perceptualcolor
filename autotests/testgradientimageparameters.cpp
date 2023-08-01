@@ -6,7 +6,7 @@
 #include "gradientimageparameters.h"
 
 #include "asyncimagerenderthread.h"
-#include "lchadouble.h"
+#include "genericcolor.h"
 #include "rgbcolorspacefactory.h"
 #include <qglobal.h>
 #include <qobject.h>
@@ -49,18 +49,18 @@ public:
             static_cast<int>(100 * devicePixelRatioF()));
         exampleParameters.setGradientThickness( //
             static_cast<int>(100 * devicePixelRatioF()));
-        PerceptualColor::LchaDouble firstColor;
-        firstColor.h = 10;
-        firstColor.l = 20;
-        firstColor.c = 30;
-        firstColor.a = 0.4;
-        exampleParameters.setFirstColor(firstColor);
-        PerceptualColor::LchaDouble secondColor;
-        secondColor.h = 50;
-        secondColor.l = 60;
-        secondColor.c = 25;
-        secondColor.a = 0.9;
-        exampleParameters.setSecondColor( //
+        PerceptualColor::GenericColor firstColor;
+        firstColor.third = 10;
+        firstColor.first = 20;
+        firstColor.second = 30;
+        firstColor.fourth = 0.4;
+        exampleParameters.setFirstColorCieLchD50A(firstColor);
+        PerceptualColor::GenericColor secondColor;
+        secondColor.third = 50;
+        secondColor.first = 60;
+        secondColor.second = 25;
+        secondColor.fourth = 0.9;
+        exampleParameters.setSecondColorCieLchD50A( //
             secondColor);
         exampleParameters.setDevicePixelRatioF( //
             devicePixelRatioF());
@@ -116,72 +116,72 @@ private Q_SLOTS:
     {
         GradientImageParameters myGradient;
         myGradient.rgbColorSpace = m_rgbColorSpace;
-        LchaDouble lchaTestValue;
+        GenericColor lchaTestValue;
 
         // Test values that are too high
-        lchaTestValue.l = 500;
-        lchaTestValue.c = 20;
-        lchaTestValue.h = 361;
-        lchaTestValue.a = 5;
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).l, 100);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).c, 20);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).h, 1);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).a, 1);
+        lchaTestValue.first = 500;
+        lchaTestValue.second = 20;
+        lchaTestValue.third = 361;
+        lchaTestValue.fourth = 5;
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).first, 100);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).second, 20);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).third, 1);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).fourth, 1);
 
         // Test value that are too low
-        lchaTestValue.l = -500;
-        lchaTestValue.c = -20;
-        lchaTestValue.h = -1;
-        lchaTestValue.a = -5;
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).l, 0);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).c,
+        lchaTestValue.first = -500;
+        lchaTestValue.second = -20;
+        lchaTestValue.third = -1;
+        lchaTestValue.fourth = -5;
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).first, 0);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).second,
                  20 // Normalised to positive value (hue is changed by 180°)
         );
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).h,
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).third,
                  179 // Changed by 180° because of the negative chroma value
         );
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).a, 0);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).fourth, 0);
 
         // Test value that much too low
-        lchaTestValue.l = 50;
-        lchaTestValue.c = 20;
-        lchaTestValue.h = -361;
-        lchaTestValue.a = 0.5;
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).l, 50);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).c, 20);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).h, 359);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).a, 0.5);
+        lchaTestValue.first = 50;
+        lchaTestValue.second = 20;
+        lchaTestValue.third = -361;
+        lchaTestValue.fourth = 0.5;
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).first, 50);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).second, 20);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).third, 359);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).fourth, 0.5);
 
         // Test that hue is preserved also if chroma is zero
-        lchaTestValue.l = 50;
-        lchaTestValue.c = 0;
-        lchaTestValue.h = 50;
-        lchaTestValue.a = 0.5;
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).l, 50);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).c, 0);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).h, 50);
-        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).a, 0.5);
+        lchaTestValue.first = 50;
+        lchaTestValue.second = 0;
+        lchaTestValue.third = 50;
+        lchaTestValue.fourth = 0.5;
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).first, 50);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).second, 0);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).third, 50);
+        QCOMPARE(myGradient.completlyNormalizedAndBounded(lchaTestValue).fourth, 0.5);
     }
     void testUpdateSecondColor()
     {
         GradientImageParameters myGradient;
         myGradient.rgbColorSpace = m_rgbColorSpace;
-        myGradient.m_firstColorCorrected = LchaDouble{50, 0, 30, 0.5};
-        myGradient.m_secondColorCorrectedAndAltered = LchaDouble{50, 0, 40, 0.5};
+        myGradient.m_firstColorCorrected = GenericColor{50, 0, 30, 0.5};
+        myGradient.m_secondColorCorrectedAndAltered = GenericColor{50, 0, 40, 0.5};
         myGradient.updateSecondColor();
-        qreal absoluteDifference = qAbs(myGradient.m_firstColorCorrected.h - myGradient.m_secondColorCorrectedAndAltered.h);
+        qreal absoluteDifference = qAbs(myGradient.m_firstColorCorrected.third - myGradient.m_secondColorCorrectedAndAltered.third);
         QVERIFY2(absoluteDifference <= 180, "Verify that the hue difference is 0° ≤ difference ≤ 180°.");
-        myGradient.m_secondColorCorrectedAndAltered = LchaDouble{50, 0, 240, 0.5};
+        myGradient.m_secondColorCorrectedAndAltered = GenericColor{50, 0, 240, 0.5};
         myGradient.updateSecondColor();
-        QVERIFY2(qAbs(myGradient.m_firstColorCorrected.h - myGradient.m_secondColorCorrectedAndAltered.h) <= 180,
+        QVERIFY2(qAbs(myGradient.m_firstColorCorrected.third - myGradient.m_secondColorCorrectedAndAltered.third) <= 180,
                  "Verify that the hue difference is 0° ≤ difference ≤ 180°.");
-        myGradient.m_secondColorCorrectedAndAltered = LchaDouble{50, 0, 540, 0.5};
+        myGradient.m_secondColorCorrectedAndAltered = GenericColor{50, 0, 540, 0.5};
         myGradient.updateSecondColor();
-        QVERIFY2(qAbs(myGradient.m_firstColorCorrected.h - myGradient.m_secondColorCorrectedAndAltered.h) <= 180,
+        QVERIFY2(qAbs(myGradient.m_firstColorCorrected.third - myGradient.m_secondColorCorrectedAndAltered.third) <= 180,
                  "Verify that the hue difference is 0° ≤ difference ≤ 180°.");
-        myGradient.m_secondColorCorrectedAndAltered = LchaDouble{50, 0, -240, 0.5};
+        myGradient.m_secondColorCorrectedAndAltered = GenericColor{50, 0, -240, 0.5};
         myGradient.updateSecondColor();
-        QVERIFY2(qAbs(myGradient.m_firstColorCorrected.h - myGradient.m_secondColorCorrectedAndAltered.h) <= 180,
+        QVERIFY2(qAbs(myGradient.m_firstColorCorrected.third - myGradient.m_secondColorCorrectedAndAltered.third) <= 180,
                  "Verify that the hue difference is 0° ≤ difference ≤ 180°.");
     }
 
@@ -202,13 +202,13 @@ private Q_SLOTS:
     {
         GradientImageParameters myGradient;
         myGradient.rgbColorSpace = m_rgbColorSpace;
-        myGradient.m_firstColorCorrected = LchaDouble{50, 0, 30, 0.5};
-        myGradient.m_secondColorCorrectedAndAltered = LchaDouble{60, 10, 20, 0.4};
-        LchaDouble middleColor = myGradient.colorFromValue(0.5);
-        QCOMPARE(middleColor.l, 55);
-        QCOMPARE(middleColor.c, 5);
-        QCOMPARE(middleColor.h, 25);
-        QCOMPARE(middleColor.a, 0.45);
+        myGradient.m_firstColorCorrected = GenericColor{50, 0, 30, 0.5};
+        myGradient.m_secondColorCorrectedAndAltered = GenericColor{60, 10, 20, 0.4};
+        GenericColor middleColor = myGradient.colorFromValue(0.5);
+        QCOMPARE(middleColor.first, 55);
+        QCOMPARE(middleColor.second, 5);
+        QCOMPARE(middleColor.third, 25);
+        QCOMPARE(middleColor.fourth, 0.45);
     }
 
     void testSetDevicelPixelRatioF()

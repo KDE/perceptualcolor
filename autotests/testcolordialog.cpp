@@ -16,8 +16,6 @@
 #include "helperconversion.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
-#include "lchadouble.h"
-#include "lchdouble.h"
 #include "multispinbox.h"
 #include "rgbcolor.h"
 #include "rgbcolorspace.h"
@@ -994,7 +992,7 @@ private Q_SLOTS:
                  static_cast<int>(correctedColor.spec()));
 
         // Test that changing QColorDialog::ShowAlphaChannel
-        // alone does not change the currentColor property
+        // alone does not change the currentColor() property
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
             false);
@@ -1042,7 +1040,7 @@ private Q_SLOTS:
                  static_cast<int>(opaqueColor.spec()));
 
         // Test that changing QColorDialog::ShowAlphaChannel
-        // alone does not change the currentColor property
+        // alone does not change the currentColor() property
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
             true);
@@ -1075,8 +1073,7 @@ private Q_SLOTS:
 
         // Get internal LCH value
         const auto tmp = m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs;
-        const LchDouble color = //
-            tmp.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble();
+        const GenericColor color = tmp.value(ColorModel::CielchD50);
 
         // The very same LCH value has to be found in all widgets using it.
         // (This is not trivial, because even coming from RGB, because of
@@ -1086,17 +1083,17 @@ private Q_SLOTS:
         // to fit it into the gamut – each widget with a different
         // algorithm.)
         QVERIFY( //
-            color.hasSameCoordinates( //
-                m_perceptualDialog //
-                    ->d_pointer //
-                    ->m_wheelColorPicker //
-                    ->currentColor()));
+            color == //
+            m_perceptualDialog //
+                ->d_pointer //
+                ->m_wheelColorPicker //
+                ->currentColorCielchD50());
         QVERIFY( //
-            color.hasSameCoordinates( //
-                m_perceptualDialog //
-                    ->d_pointer //
-                    ->m_chromaHueDiagram //
-                    ->currentColor()));
+            color == //
+            m_perceptualDialog //
+                ->d_pointer //
+                ->m_chromaHueDiagram //
+                ->currentColorCielchD50());
         // We do not also control this here for
         // m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox because this
         // widget rounds the given value to the current decimal precision
@@ -1104,10 +1101,10 @@ private Q_SLOTS:
         // for rounding errors.
 
         const auto sliderColor = //
-            m_perceptualDialog->d_pointer->m_alphaGradientSlider->secondColor();
-        QCOMPARE(sliderColor.l, color.l);
-        QCOMPARE(sliderColor.c, color.c);
-        QCOMPARE(sliderColor.h, color.h);
+            m_perceptualDialog->d_pointer->m_alphaGradientSlider->secondColorCieLchD50A();
+        QCOMPARE(sliderColor.first, color.first);
+        QCOMPARE(sliderColor.second, color.second);
+        QCOMPARE(sliderColor.third, color.third);
     }
 #endif
 

@@ -4,7 +4,7 @@
 #ifndef GRADIENTIMAGEPARAMETERS_H
 #define GRADIENTIMAGEPARAMETERS_H
 
-#include "lchadouble.h"
+#include "genericcolor.h"
 #include <qglobal.h>
 #include <qimage.h>
 #include <qmetatype.h>
@@ -46,20 +46,20 @@ public:
     /** @brief Pointer to @ref RgbColorSpace object */
     QSharedPointer<PerceptualColor::RgbColorSpace> rgbColorSpace = nullptr;
 
-    [[nodiscard]] LchaDouble colorFromValue(qreal value) const;
+    [[nodiscard]] GenericColor colorFromValue(qreal value) const;
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
-    void setFirstColor(const LchaDouble &newFirstColor);
+    void setFirstColorCieLchD50A(const GenericColor &newFirstColor);
     void setGradientLength(const int newGradientLength);
     void setGradientThickness(const int newGradientThickness);
-    void setSecondColor(const LchaDouble &newFirstColor);
+    void setSecondColorCieLchD50A(const GenericColor &newFirstColor);
 
 private:
     /** @internal @brief Only for unit tests. */
     friend class TestGradientImageParameters;
 
     // Methods
-    [[nodiscard]] static LchaDouble completlyNormalizedAndBounded(const LchaDouble &color);
+    [[nodiscard]] static GenericColor completlyNormalizedAndBounded(const GenericColor &color);
     void updateSecondColor();
 
     // Data members
@@ -71,7 +71,7 @@ private:
      *
      * The color is normalized and bound to the LCH color space.
      * @sa @ref completlyNormalizedAndBounded() */
-    LchaDouble m_firstColorCorrected;
+    GenericColor m_firstColorCorrected;
     /** @brief Internal storage for the gradient length, measured in
      * physical pixels.
      *
@@ -101,11 +101,11 @@ private:
      * from this color to @ref m_firstColorCorrected. This is necessary to
      * easily allow to calculate the intermediate colors of the gradient, so
      * that they take the shortest way through the color space.
-     * @sa @ref setFirstColor()
-     * @sa @ref setSecondColor()
+     * @sa @ref setFirstColorCieLchD50A()
+     * @sa @ref setSecondColorCieLchD50A()
      * @sa @ref completlyNormalizedAndBounded()
      * @sa @ref updateSecondColor() */
-    LchaDouble m_secondColorCorrectedAndAltered;
+    GenericColor m_secondColorCorrectedAndAltered;
 };
 
 } // namespace PerceptualColor

@@ -4,7 +4,7 @@
 #ifndef CIELCHD50VALUES_H
 #define CIELCHD50VALUES_H
 
-#include "lchdouble.h"
+#include <genericcolor.h>
 
 namespace PerceptualColor
 {
@@ -53,9 +53,9 @@ public:
      * to provide the corresponding RGB value within @ref RgbColorSpace
      * as a property, returning a variable that is initialized on first
      * usage. */
-    static constexpr LchDouble neutralGray{neutralLightness, //
-                                           neutralChroma, //
-                                           neutralHue};
+    static constexpr GenericColor neutralGray{neutralLightness, //
+                                              neutralChroma, //
+                                              neutralHue};
     /** @brief Versatile chroma value in
      * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
      * sRGB gamut
@@ -93,7 +93,7 @@ public:
      * among 0°, 90°, 180° and 270°, it’s 180° that has the lowest possible
      * maximum chroma. So when choose 180°, with a given chroma, the resulting
      * color is more vivid and clean than those at 0°, 90° and 270°. */
-    static constexpr LchDouble srgbVersatileInitialColor = {neutralLightness, srgbVersatileChroma, neutralHue};
+    static constexpr GenericColor srgbVersatileInitialColor = {neutralLightness, srgbVersatileChroma, neutralHue};
 
 private:
     /** @brief Delete the constructor to disallow creating an instance

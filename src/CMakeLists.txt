@@ -48,8 +48,6 @@ set(library_SRC
     interlacingpass.cpp
     iohandlerfactory.cpp
     languagechangeeventfilter.cpp
-    lchadouble.cpp
-    lchdouble.cpp
     multispinbox.cpp
     multispinboxsection.cpp
     perceptualsettings.cpp
@@ -84,8 +82,6 @@ set(lib_PUBLICHEADERS
     constpropagatinguniquepointer.h
     gradientslider.h
     importexport.h
-    lchadouble.h
-    lchdouble.h
     multispinbox.h
     multispinboxsection.h
     rgbcolorspacefactory.h

@@ -7,9 +7,9 @@
 #include "colorpatch.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "gradientslider.h"
 #include "helper.h"
-#include "lchdouble.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "rgbcolorspace.h"
@@ -288,19 +288,19 @@ static void makeScreenshots()
     //   hull (which  puts the marker somewhere in the inner of
     //   the gamut, which makes the screenshots easier to understand).
     const QColor defaultColorRgb = QColor::fromRgb(50, 127, 206);
-    const LchDouble defaultColorCielchD50 = //
-        m_colorSpace->toCielchD50Double(defaultColorRgb.rgba64());
+    const GenericColor defaultColorCielchD50 = //
+        m_colorSpace->toCielchD50(defaultColorRgb.rgba64());
     QColor myColor;
 
     {
         ChromaHueDiagram m_chromaHueDiagram(m_colorSpace);
-        m_chromaHueDiagram.setCurrentColor(defaultColorCielchD50);
+        m_chromaHueDiagram.setCurrentColorCielchD50(defaultColorCielchD50);
         screenshotDelayed(&m_chromaHueDiagram);
     }
 
     {
         ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorSpace);
-        m_chromaLightnessDiagram.setCurrentColor(defaultColorCielchD50);
+        m_chromaLightnessDiagram.setCurrentColorCielchD50(defaultColorCielchD50);
         screenshotDelayed(&m_chromaLightnessDiagram);
     }
 
@@ -387,7 +387,7 @@ static void makeScreenshots()
 
     {
         ColorWheel m_colorWheel(m_colorSpace);
-        m_colorWheel.setHue(defaultColorCielchD50.h);
+        m_colorWheel.setHue(defaultColorCielchD50.third);
         screenshotDelayed(&m_colorWheel);
     }
 
@@ -447,7 +447,7 @@ static void makeScreenshots()
 
     {
         WheelColorPicker m_wheelColorPicker(m_colorSpace);
-        m_wheelColorPicker.setCurrentColor(defaultColorCielchD50);
+        m_wheelColorPicker.setCurrentColorCielchD50(defaultColorCielchD50);
         screenshotDelayed(&m_wheelColorPicker);
     }
 

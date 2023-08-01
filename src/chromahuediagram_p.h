@@ -11,7 +11,7 @@
 #include "chromahueimageparameters.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
-#include "lchdouble.h"
+#include "genericcolor.h"
 #include "lcms2.h"
 #include <qglobal.h>
 #include <qpoint.h>
@@ -51,9 +51,9 @@ public:
     AsyncImageProvider<ChromaHueImageParameters> m_chromaHueImage;
     /** @brief Properties for @ref m_chromaHueImage. */
     ChromaHueImageParameters m_chromaHueImageParameters;
-    /** @brief Internal storage of the @ref ChromaHueDiagram::currentColor()
+    /** @brief Internal storage of the @ref ChromaHueDiagram::currentColorCielchD50()
      * property */
-    LchDouble m_currentColor;
+    GenericColor m_currentColorCielchD50;
     /** @brief Holds if currently a mouse event is active or not.
      *
      * Default value is <tt>false</tt>.
@@ -84,7 +84,7 @@ public:
     [[nodiscard]] cmsCIELab fromWidgetPixelPositionToLab(const QPoint position) const;
     [[nodiscard]] bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);
-    [[nodiscard]] QPointF widgetCoordinatesFromCurrentColor() const;
+    [[nodiscard]] QPointF widgetCoordinatesFromCurrentColorCielchD50() const;
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)

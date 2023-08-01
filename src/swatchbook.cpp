@@ -10,10 +10,10 @@
 #include "abstractdiagram.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "helper.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
-#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <algorithm>
 #include <optional>
@@ -719,15 +719,15 @@ void SwatchBook::paintEvent(QPaintEvent *event)
         (layoutDirection() == Qt::LayoutDirection::LeftToRight) //
         ? d_pointer->m_selectedColumn //
         : d_pointer->m_swatchGrid.iCount() - 1 - d_pointer->m_selectedColumn;
-    const LchDouble colorCielchD50 = //
-        d_pointer->m_rgbColorSpace->toCielchD50Double( //
+    const auto colorCielchD50 = //
+        d_pointer->m_rgbColorSpace->toCielchD50( //
             d_pointer //
                 ->m_swatchGrid //
                 .value(d_pointer->m_selectedColumn, d_pointer->m_selectedRow) //
                 .rgba64() //
         );
     const QColor selectionMarkColor = //
-        handleColorFromBackgroundLightness(colorCielchD50.l);
+        handleColorFromBackgroundLightness(colorCielchD50.first);
     const QPointF selectedPatchOffset = QPointF( //
         offset.x() //
             + (static_cast<int>(visualSelectedColumnIndex) //

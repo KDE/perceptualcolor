@@ -12,7 +12,6 @@
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
-#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <optional>
 #include <qcolor.h>
@@ -74,13 +73,14 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink)
-    : m_currentColor(CielchD50Values::srgbVersatileInitialColor)
+    : m_currentColorCielchD50(CielchD50Values::srgbVersatileInitialColor)
     , q_pointer(backLink)
 {
 }
 
-/** @brief Updates @ref ChromaLightnessDiagram::currentColor corresponding
- * to the given widget pixel position.
+/**
+ * @brief Updates @ref ChromaLightnessDiagram::currentColorCielchD50
+ * corresponding to the given widget pixel position.
  *
  * @param widgetPixelPosition The position of a pixel within the widget’s
  * coordinate system. This does not necessarily need to intersect with the
@@ -88,16 +88,16 @@ ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiag
  * outside the widget.
  *
  * @post If the pixel position is within the gamut, then the corresponding
- * @ref ChromaLightnessDiagram::currentColor is set. If the pixel position
- * is outside the gamut, than a nearby in-gamut color is set (hue is
+ * @ref ChromaLightnessDiagram::currentColorCielchD50 is set. If the pixel
+ * position is outside the gamut, than a nearby in-gamut color is set (hue is
  * preserved, chroma and lightness are adjusted). Exception: If the
  * widget is so small that no diagram is displayed, nothing will happen. */
 void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
-    const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
-    q_pointer->setCurrentColor(
+    const GenericColor color = fromWidgetPixelPositionToCielchD50(widgetPixelPosition);
+    q_pointer->setCurrentColorCielchD50(
         // Search for the nearest color without changing the hue:
-        nearestInGamutColorByAdjustingChromaLightness(color.c, color.l));
+        nearestInGamutCielchD50ByAdjustingChromaLightness(color.second, color.first));
 }
 
 /** @brief The border between the widget outer top, right and bottom
@@ -181,7 +181,7 @@ QSize ChromaLightnessDiagramPrivate::calculateImageSizePhysical() const
  * returned.
  *
  * @sa @ref measurementdetails */
-LchDouble ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const
+GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50(const QPoint widgetPixelPosition) const
 {
     const QPointF offset(leftBorderPhysical(), defaultBorderPhysical());
     const QPointF imageCoordinatePoint = widgetPixelPosition
@@ -190,16 +190,16 @@ LchDouble ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor(const QP
         - offset / q_pointer->devicePixelRatioF()
         // Offset to pass from pixel positions to coordinate points:
         + QPointF(0.5, 0.5);
-    LchDouble color;
-    color.h = m_currentColor.h;
+    GenericColor color;
+    color.third = m_currentColorCielchD50.third;
     const qreal diagramHeight = //
         calculateImageSizePhysical().height() / q_pointer->devicePixelRatioF();
     if (diagramHeight > 0) {
-        color.l = imageCoordinatePoint.y() * 100.0 / diagramHeight * (-1.0) + 100.0;
-        color.c = imageCoordinatePoint.x() * 100.0 / diagramHeight;
+        color.first = imageCoordinatePoint.y() * 100.0 / diagramHeight * (-1.0) + 100.0;
+        color.second = imageCoordinatePoint.x() * 100.0 / diagramHeight;
     } else {
-        color.l = 50;
-        color.c = 0;
+        color.first = 50;
+        color.second = 0;
     }
     return color;
 }
@@ -380,9 +380,9 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     const int diagramHeight = d_pointer->calculateImageSizePhysical().height();
     QPointF colorCoordinatePoint = QPointF(
         // x:
-        d_pointer->m_currentColor.c * diagramHeight / 100.0,
+        d_pointer->m_currentColorCielchD50.second * diagramHeight / 100.0,
         // y:
-        d_pointer->m_currentColor.l * diagramHeight / 100.0 * (-1) + diagramHeight);
+        d_pointer->m_currentColorCielchD50.first * diagramHeight / 100.0 * (-1) + diagramHeight);
     colorCoordinatePoint += QPointF(
         // horizontal offset:
         d_pointer->leftBorderPhysical(),
@@ -390,7 +390,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
         d_pointer->defaultBorderPhysical());
     pen = QPen();
     pen.setWidthF(handleOutlineThickness() * devicePixelRatioF());
-    pen.setColor(handleColorFromBackgroundLightness(d_pointer->m_currentColor.l));
+    pen.setColor(handleColorFromBackgroundLightness(d_pointer->m_currentColorCielchD50.first));
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -429,33 +429,33 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  * gamut has some sort of corner, and there, the curser blocks. */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
-    LchDouble temp = d_pointer->m_currentColor;
+    GenericColor temp = d_pointer->m_currentColorCielchD50;
     switch (event->key()) {
     case Qt::Key_Up:
-        temp.l += singleStepLightness;
+        temp.first += singleStepLightness;
         break;
     case Qt::Key_Down:
-        temp.l -= singleStepLightness;
+        temp.first -= singleStepLightness;
         break;
     case Qt::Key_Left:
-        temp.c = qMax<double>(0, temp.c - singleStepChroma);
+        temp.second = qMax<double>(0, temp.second - singleStepChroma);
         break;
     case Qt::Key_Right:
-        temp.c += singleStepChroma;
+        temp.second += singleStepChroma;
         temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
     case Qt::Key_PageUp:
-        temp.l += pageStepLightness;
+        temp.first += pageStepLightness;
         break;
     case Qt::Key_PageDown:
-        temp.l -= pageStepLightness;
+        temp.first -= pageStepLightness;
         break;
     case Qt::Key_Home:
-        temp.c += pageStepChroma;
+        temp.second += pageStepChroma;
         temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
     case Qt::Key_End:
-        temp.c = qMax<double>(0, temp.c - pageStepChroma);
+        temp.second = qMax<double>(0, temp.second - pageStepChroma);
         break;
     default:
         // Quote from Qt documentation:
@@ -476,7 +476,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // keyPressEvent yet to the parent and returned.
 
     // Set the new color (only takes effect when the color is indeed different).
-    setCurrentColor(
+    setCurrentColorCielchD50(
         // Search for the nearest color without changing the hue:
         d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp));
     // TODO Instead of this, simply do setCurrentColor(temp); but guarantee
@@ -510,11 +510,11 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
         return false;
     }
 
-    const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
+    const GenericColor color = fromWidgetPixelPositionToCielchD50(widgetPixelPosition);
 
     // Test if C is in range. This is important because a negative C value
     // can be in-gamut, but is not in the _displayed_ gamut.
-    if (color.c < 0) {
+    if (color.second < 0) {
         return false;
     }
 
@@ -522,31 +522,31 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
     return m_rgbColorSpace->isCielchD50InGamut(color);
 }
 
-/** @brief Setter for the @ref currentColor() property.
+/** @brief Setter for the @ref currentColorCielchD50() property.
  *
- * @param newCurrentColor the new @ref currentColor
+ * @param newCurrentColorCielchD50 the new @ref currentColorCielchD50
  *
  * @todo When an out-of-gamut color is given, both lightness and chroma
  * are adjusted. But does this really make sense? In @ref WheelColorPicker,
  * when using the hue wheel, also <em>both</em>, lightness <em>and</em> chroma
  * will change. Isn’t that confusing? */
-void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor)
+void ChromaLightnessDiagram::setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50)
 {
-    if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
+    if (newCurrentColorCielchD50 == d_pointer->m_currentColorCielchD50) {
         return;
     }
 
-    double oldHue = d_pointer->m_currentColor.h;
-    d_pointer->m_currentColor = newCurrentColor;
-    if (d_pointer->m_currentColor.h != oldHue) {
+    double oldHue = d_pointer->m_currentColorCielchD50.third;
+    d_pointer->m_currentColorCielchD50 = newCurrentColorCielchD50;
+    if (d_pointer->m_currentColorCielchD50.third != oldHue) {
         // Update the diagram (only if the hue has changed):
         d_pointer->m_chromaLightnessImageParameters.hue = //
-            d_pointer->m_currentColor.h;
+            d_pointer->m_currentColorCielchD50.third;
         d_pointer->m_chromaLightnessImage.setImageParameters( //
             d_pointer->m_chromaLightnessImageParameters);
     }
     update(); // Schedule a paint event
-    Q_EMIT currentColorChanged(newCurrentColor);
+    Q_EMIT currentColorCielchD50Changed(newCurrentColorCielchD50);
 }
 
 /** @brief React on a resize event.
@@ -606,9 +606,9 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-LchDouble PerceptualColor::ChromaLightnessDiagram::currentColor() const
+GenericColor PerceptualColor::ChromaLightnessDiagram::currentColorCielchD50() const
 {
-    return d_pointer->m_currentColor;
+    return d_pointer->m_currentColorCielchD50;
 }
 
 /** @brief An abstract Nearest-neighbor-search algorithm.
@@ -796,7 +796,7 @@ std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition
 
 /** @brief Find the nearest in-gamut pixel.
  *
- * The hue is assumed to be the current hue at @ref m_currentColor.
+ * The hue is assumed to be the current hue at @ref m_currentColorCielchD50.
  * Chroma and lightness are sacrificed, but the hue is preserved. This function
  * works at the precision of the current @ref m_chromaLightnessImage.
  *
@@ -809,15 +809,15 @@ std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition
  *
  * @returns The nearest in-gamut pixel with the same hue as the original
  * color. */
-PerceptualColor::LchDouble ChromaLightnessDiagramPrivate::nearestInGamutColorByAdjustingChromaLightness(const double chroma, const double lightness)
+PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutCielchD50ByAdjustingChromaLightness(const double chroma, const double lightness)
 {
     // Initialization
-    LchDouble temp;
-    temp.l = lightness;
-    temp.c = chroma;
-    temp.h = m_currentColor.h;
-    if (temp.c < 0) {
-        temp.c = 0;
+    GenericColor temp;
+    temp.first = lightness;
+    temp.second = chroma;
+    temp.third = m_currentColorCielchD50.third;
+    if (temp.second < 0) {
+        temp.second = 0;
     }
 
     // Return is we are within the gamut.
@@ -829,14 +829,14 @@ PerceptualColor::LchDouble ChromaLightnessDiagramPrivate::nearestInGamutColorByA
 
     const auto imageHeight = calculateImageSizePhysical().height();
     QPoint myPixelPosition( //
-        qRound(temp.c * (imageHeight - 1) / 100.0),
-        qRound(imageHeight - 1 - temp.l * (imageHeight - 1) / 100.0));
+        qRound(temp.second * (imageHeight - 1) / 100.0),
+        qRound(imageHeight - 1 - temp.first * (imageHeight - 1) / 100.0));
 
     myPixelPosition = //
         nearestInGamutPixelPosition(myPixelPosition).value_or(QPoint(0, 0));
-    LchDouble result = temp;
-    result.c = myPixelPosition.x() * 100.0 / (imageHeight - 1);
-    result.l = 100 - myPixelPosition.y() * 100.0 / (imageHeight - 1);
+    GenericColor result = temp;
+    result.second = myPixelPosition.x() * 100.0 / (imageHeight - 1);
+    result.first = 100 - myPixelPosition.y() * 100.0 / (imageHeight - 1);
     return result;
 }
 

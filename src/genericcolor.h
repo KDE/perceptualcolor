@@ -5,10 +5,10 @@
 #define GENERICCOLOR_H
 
 #include "helpermath.h"
-#include "lchdouble.h"
 #include <lcms2.h>
 #include <qdebug.h>
 #include <qlist.h>
+#include <qmetatype.h>
 
 namespace PerceptualColor
 {
@@ -16,7 +16,14 @@ namespace PerceptualColor
 /** @internal
  *
  * @brief Numeric representation of an opaque color with up to four components
- * without specifying the color space or the opacity/alpha.  */
+ * without specifying the color space or the opacity/alpha.
+ *
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use for <em>queued</em> signal-slot connections),
+ * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object.
+ */
 struct GenericColor {
 public:
     /** @brief Default constructor. */
@@ -47,10 +54,10 @@ public:
     /** @brief Constructor.
      *
      * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIEXYZ &init)
-        : first(init.X)
-        , second(init.Y)
-        , third(init.Z)
+    explicit constexpr GenericColor(const cmsCIELCh &init)
+        : first(init.L)
+        , second(init.C)
+        , third(init.h)
         , fourth(0)
     {
     }
@@ -58,10 +65,10 @@ public:
     /** @brief Constructor.
      *
      * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const LchDouble &init)
-        : first(init.l)
-        , second(init.c)
-        , third(init.h)
+    explicit constexpr GenericColor(const cmsCIEXYZ &init)
+        : first(init.X)
+        , second(init.Y)
+        , third(init.Z)
         , fourth(0)
     {
     }
@@ -101,7 +108,7 @@ public:
     bool operator!=(const GenericColor &other) const;
 
     [[nodiscard]] cmsCIELab reinterpretAsLabToCmscielab() const;
-    [[nodiscard]] LchDouble reinterpretAsLchToLchDouble() const;
+    [[nodiscard]] cmsCIELCh reinterpretAsLchToCmscielch() const;
     [[nodiscard]] cmsCIEXYZ reinterpretAsXyzToCmsciexyz() const;
     [[nodiscard]] QList<double> toQList3() const;
     [[nodiscard]] Trio toTrio() const;
@@ -122,5 +129,7 @@ public:
 QDebug operator<<(QDebug dbg, const PerceptualColor::GenericColor &value);
 
 } // namespace PerceptualColor
+
+Q_DECLARE_METATYPE(PerceptualColor::GenericColor)
 
 #endif // GENERICCOLOR_H

@@ -17,7 +17,6 @@
 #include "helper.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
-#include "lchdouble.h"
 #include "polarpointf.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
@@ -69,7 +68,7 @@ ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColo
             &ChromaHueDiagram::callUpdate);
 
     // Initialize the color
-    setCurrentColor(CielchD50Values::srgbVersatileInitialColor);
+    setCurrentColorCielchD50(CielchD50Values::srgbVersatileInitialColor);
 }
 
 /** @brief Default destructor */
@@ -84,7 +83,7 @@ ChromaHueDiagram::~ChromaHueDiagram() noexcept
  * @param colorSpace The color space within which this widget
  *                   should operate. */
 ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
-    : m_currentColor{0, 0, 0} // dummy value
+    : m_currentColorCielchD50{0, 0, 0} // dummy value
     , m_wheelImage(colorSpace)
     , q_pointer(backLink)
 {
@@ -262,9 +261,9 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         // Calculate the new hue.
         // This may result in a hue smaller then 0° or bigger then 360°.
         // This should not make any problems.
-        LchDouble newColor = d_pointer->m_currentColor;
-        newColor.h += standardWheelStepCount(event) * singleStepHue;
-        setCurrentColor( //
+        GenericColor newColor = d_pointer->m_currentColorCielchD50;
+        newColor.third += standardWheelStepCount(event) * singleStepHue;
+        setCurrentColorCielchD50( //
             d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(newColor));
     } else {
         event->ignore();
@@ -304,31 +303,31 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
  * are likely that the user tries them out by trial-and-error. */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
-    LchDouble newColor = currentColor();
+    GenericColor newColor = currentColorCielchD50();
     switch (event->key()) {
     case Qt::Key_Up:
-        newColor.c += singleStepChroma;
+        newColor.second += singleStepChroma;
         break;
     case Qt::Key_Down:
-        newColor.c -= singleStepChroma;
+        newColor.second -= singleStepChroma;
         break;
     case Qt::Key_Left:
-        newColor.h += singleStepHue;
+        newColor.third += singleStepHue;
         break;
     case Qt::Key_Right:
-        newColor.h -= singleStepHue;
+        newColor.third -= singleStepHue;
         break;
     case Qt::Key_PageUp:
-        newColor.c += pageStepChroma;
+        newColor.second += pageStepChroma;
         break;
     case Qt::Key_PageDown:
-        newColor.c -= pageStepChroma;
+        newColor.second -= pageStepChroma;
         break;
     case Qt::Key_Home:
-        newColor.h += pageStepHue;
+        newColor.third += pageStepHue;
         break;
     case Qt::Key_End:
-        newColor.h -= pageStepHue;
+        newColor.third -= pageStepHue;
         break;
     default:
         // Quote from Qt documentation:
@@ -347,15 +346,15 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     // Here we reach only if the key has been recognized. If not, in the
     // default branch of the switch statement, we would have passed the
     // keyPressEvent yet to the parent and returned.
-    if (newColor.c < 0) {
+    if (newColor.second < 0) {
         // Do not allow negative chroma values.
         // (Doing so would be counter-intuitive.)
-        newColor.c = 0;
+        newColor.second = 0;
     }
     // Move the value into gamut (if necessary):
     newColor = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(newColor);
     // Apply the new value:
-    setCurrentColor(newColor);
+    setCurrentColorCielchD50(newColor);
 }
 
 /** @brief Recommended size for the widget.
@@ -390,28 +389,28 @@ QSize ChromaHueDiagram::minimumSizeHint() const
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-LchDouble ChromaHueDiagram::currentColor() const
+GenericColor ChromaHueDiagram::currentColorCielchD50() const
 {
-    return d_pointer->m_currentColor;
+    return d_pointer->m_currentColorCielchD50;
 }
 
-/** @brief Setter for the @ref currentColor property.
+/** @brief Setter for the @ref currentColorCielchD50 property.
  *
- * @param newCurrentColor the new color */
-void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
+ * @param newCurrentColorCielchD50 the new color */
+void ChromaHueDiagram::setCurrentColorCielchD50(const GenericColor &newCurrentColorCielchD50)
 {
-    if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
+    if (newCurrentColorCielchD50 == d_pointer->m_currentColorCielchD50) {
         return;
     }
 
-    const LchDouble oldColor = d_pointer->m_currentColor;
+    const GenericColor oldColor = d_pointer->m_currentColorCielchD50;
 
-    d_pointer->m_currentColor = newCurrentColor;
+    d_pointer->m_currentColorCielchD50 = newCurrentColorCielchD50;
 
     // Update, if necessary, the diagram.
-    if (d_pointer->m_currentColor.l != oldColor.l) {
+    if (d_pointer->m_currentColorCielchD50.first != oldColor.first) {
         const qreal temp = qBound(static_cast<qreal>(0), //
-                                  d_pointer->m_currentColor.l, //
+                                  d_pointer->m_currentColorCielchD50.first, //
                                   static_cast<qreal>(100));
         d_pointer->m_chromaHueImageParameters.lightness = temp;
         // TODO xxx Enable this line one the performance problem is solved.
@@ -424,7 +423,7 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
     update();
 
     // Emit notify signal
-    Q_EMIT currentColorChanged(newCurrentColor);
+    Q_EMIT currentColorCielchD50Changed(newCurrentColorCielchD50);
 }
 
 /** @brief The point that is the center of the diagram coordinate system.
@@ -481,21 +480,21 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
 }
 
 /** @brief  Widget coordinate point corresponding to the
- * @ref ChromaHueDiagram::currentColor property
+ * @ref ChromaHueDiagram::currentColorCielchD50 property
  *
  * @returns Widget coordinate point corresponding to the
- * @ref ChromaHueDiagram::currentColor property. This is the position
- * of @ref ChromaHueDiagram::currentColor in the gamut diagram, but measured
+ * @ref ChromaHueDiagram::currentColorCielchD50 property. This is the position
+ * of @ref ChromaHueDiagram::currentColorCielchD50 in the gamut diagram, but measured
  * and expressed as widget coordinate point.
  *
  * @sa @ref ChromaHueMeasurement "Measurement details" */
-QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() const
+QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorCielchD50() const
 {
     const qreal scaleFactor = //
         (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder()) //
         / (2.0 * m_rgbColorSpace->profileMaximumCielchD50Chroma());
     QPointF currentColor = //
-        PolarPointF(m_currentColor.c, m_currentColor.h).toCartesian();
+        PolarPointF(m_currentColorCielchD50.second, m_currentColorCielchD50.third).toCartesian();
     return QPointF(
         // x:
         currentColor.x() * scaleFactor + diagramOffset(),
@@ -524,7 +523,7 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
     // for conversion, therefore we have to ship by 0.5 widget pixels.
     constexpr qreal pixelValueShift = 0.5;
     cmsCIELab lab;
-    lab.L = m_currentColor.l;
+    lab.L = m_currentColorCielchD50.first;
     lab.a = //
         (position.x() + pixelValueShift - diagramOffset()) * scaleFactor;
     lab.b = //
@@ -532,7 +531,7 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
     return lab;
 }
 
-/** @brief Sets the @ref ChromaHueDiagram::currentColor property corresponding
+/** @brief Sets the @ref ChromaHueDiagram::currentColorCielchD50 property corresponding
  * to a given widget pixel position.
  *
  * @param position The position of a pixel of the widget coordinate
@@ -541,11 +540,11 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
  * negative.
  *
  * @post If the <em>center</em> of the widget pixel is within the represented
- * gamut, then the @ref ChromaHueDiagram::currentColor property is
+ * gamut, then the @ref ChromaHueDiagram::currentColorCielchD50 property is
  * set correspondingly. If the center of the widget pixel is outside
  * the gamut, then the chroma value is reduced (while the hue is
  * maintained) until arriving at the outer shell of the gamut; the
- * @ref ChromaHueDiagram::currentColor property is than set to this adapted
+ * @ref ChromaHueDiagram::currentColorCielchD50 property is than set to this adapted
  * color.
  *
  * @note This function works independently of the actually displayed color
@@ -565,8 +564,9 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
 {
     const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
     const auto myColor = //
-        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(toLchDouble(lab));
-    q_pointer->setCurrentColor(myColor);
+        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut( //
+            toGenericColorCielabD50(lab));
+    q_pointer->setCurrentColorCielchD50(myColor);
 }
 
 /** @brief Tests if a widget pixel position is within the mouse sensible circle.
@@ -623,7 +623,7 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
  * @todo Show the indicator on the color wheel not only while a mouse button
  * is pressed, but also while a keyboard button is pressed.
  *
- * @todo What when @ref ChromaHueDiagramPrivate::m_currentColor has a valid
+ * @todo What when @ref ChromaHueDiagramPrivate::m_currentColorCielchD50 has a valid
  * in-gamut color, but this color is out of the <em>displayed</em> diagram?
  * How to handle that? */
 void ChromaHueDiagram::paintEvent(QPaintEvent *event)
@@ -662,9 +662,9 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // Set color of the handle: Black or white, depending on the lightness of
     // the currently selected color.
     const QColor handleColor //
-        {handleColorFromBackgroundLightness(d_pointer->m_currentColor.l)};
-    const QPointF widgetCoordinatesFromCurrentColor //
-        {d_pointer->widgetCoordinatesFromCurrentColor()};
+        {handleColorFromBackgroundLightness(d_pointer->m_currentColorCielchD50.first)};
+    const QPointF widgetCoordinatesFromCurrentColorCielchD50 //
+        {d_pointer->widgetCoordinatesFromCurrentColorCielchD50()};
 
     // Paint the gamut itself as available in the cache.
     bufferPainter.setRenderHint(QPainter::Antialiasing, false);
@@ -679,7 +679,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         // Guaranteed to be ≥ 0:
         maximumPhysicalSquareSize();
     const qreal temp = qBound(static_cast<qreal>(0), //
-                              d_pointer->m_currentColor.l, //
+                              d_pointer->m_currentColorCielchD50.first, //
                               static_cast<qreal>(100));
     d_pointer->m_chromaHueImageParameters.lightness = temp;
     d_pointer->m_chromaHueImageParameters.devicePixelRatioF = //
@@ -726,12 +726,12 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
             maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
         // Get widget coordinate point for the handle
         QPointF myHandleInner = PolarPointF(radius - gradientThickness(), //
-                                            d_pointer->m_currentColor.h)
+                                            d_pointer->m_currentColorCielchD50.third)
                                     .toCartesian();
         myHandleInner.ry() *= -1; // Transform to Widget coordinate points
         myHandleInner += d_pointer->diagramCenter();
         QPointF myHandleOuter = //
-            PolarPointF(radius, d_pointer->m_currentColor.h).toCartesian();
+            PolarPointF(radius, d_pointer->m_currentColorCielchD50.third).toCartesian();
         myHandleOuter.ry() *= -1; // Transform to Widget coordinate points
         myHandleOuter += d_pointer->diagramCenter();
         // Draw the line
@@ -755,29 +755,29 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     pen.setCapStyle(Qt::RoundCap);
     bufferPainter.setPen(pen);
     bufferPainter.setBrush(transparentBrush);
-    bufferPainter.drawEllipse(widgetCoordinatesFromCurrentColor, // center
+    bufferPainter.drawEllipse(widgetCoordinatesFromCurrentColorCielchD50, // center
                               handleRadius(), // x radius
                               handleRadius() // y radius
     );
     const auto diagramOffset = d_pointer->diagramOffset();
-    const QPointF diagramCartesianCoordinatesFromCurrentColor(
+    const QPointF diagramCartesianCoordinatesFromCurrentColorCielchD50(
         // x:
-        widgetCoordinatesFromCurrentColor.x() - diagramOffset,
+        widgetCoordinatesFromCurrentColorCielchD50.x() - diagramOffset,
         // y:
-        (widgetCoordinatesFromCurrentColor.y() - diagramOffset) * (-1));
-    PolarPointF diagramPolarCoordinatesFromCurrentColor( //
-        diagramCartesianCoordinatesFromCurrentColor);
+        (widgetCoordinatesFromCurrentColorCielchD50.y() - diagramOffset) * (-1));
+    PolarPointF diagramPolarCoordinatesFromCurrentColorCielchD50( //
+        diagramCartesianCoordinatesFromCurrentColorCielchD50);
     // lineRadius will be a point at the middle of the line thickness
     // of the circular handle.
     qreal lineRadius = //
-        diagramPolarCoordinatesFromCurrentColor.radius() - handleRadius();
+        diagramPolarCoordinatesFromCurrentColorCielchD50.radius() - handleRadius();
     if (lineRadius > 0) {
         QPointF lineEndWidgetCoordinates = //
             PolarPointF(
                 // radius:
                 lineRadius,
                 // angle:
-                diagramPolarCoordinatesFromCurrentColor.angleDegree() //
+                diagramPolarCoordinatesFromCurrentColorCielchD50.angleDegree() //
                 )
                 .toCartesian();
         lineEndWidgetCoordinates.ry() *= (-1);

@@ -9,8 +9,8 @@
 
 #include "asyncimageprovider.h"
 #include "constpropagatingrawpointer.h"
+#include "genericcolor.h"
 #include "gradientimageparameters.h"
-#include "lchadouble.h"
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qsharedpointer.h>
@@ -42,8 +42,8 @@ public:
     [[nodiscard]] int physicalPixelThickness() const;
 
     // Data members
-    /** @brief Internal storage for property @ref GradientSlider::firstColor */
-    LchaDouble m_firstColor;
+    /** @brief Internal storage for property @ref GradientSlider::firstColorCieLchD50A */
+    GenericColor m_firstColorCieLchD50A;
     /** @brief The gradient image (without the handle).
      *
      * Always at the left is the first color, always at the right
@@ -61,8 +61,8 @@ public:
      * @ref GradientSlider::pageStep */
     qreal m_pageStep = 0.1;
     /** @brief Internal storage for property
-     * @ref GradientSlider::secondColor */
-    LchaDouble m_secondColor;
+     * @ref GradientSlider::secondColorCieLchD50A */
+    GenericColor m_secondColorCieLchD50A;
     /** @brief Internal storage for property
      * @ref GradientSlider::singleStep */
     qreal m_singleStep = 0.01;

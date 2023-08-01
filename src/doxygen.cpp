@@ -412,7 +412,7 @@
  * @ref PerceptualColor::RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut() or
  * @ref PerceptualColor::RgbColorSpace::isCielchD50InGamut() or
  * @ref PerceptualColor::RgbColorSpace::isCielabD50InGamut() or
- * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutColorByAdjustingChromaLightness(().
+ * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutCielchD50ByAdjustingChromaLightness(().
  *
  * @todo Switch AbstractDiagram::handleOutlineThickness() and
  * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
@@ -549,7 +549,7 @@
  * all our types?
  *
  * @todo We prevent division by 0 in
- * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor().
+ * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50().
  * We should make sure this happens also in the other diagram widgets!
  *
  * @todo Add a @ref PerceptualColor::ConstPropagatingUniquePointer to

@@ -4,8 +4,8 @@
 #ifndef HELPERCONVERSION_H
 #define HELPERCONVERSION_H
 
+#include "genericcolor.h"
 #include "helperqttypes.h"
-#include "lchdouble.h"
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -124,11 +124,7 @@ template<typename T>
 
 [[nodiscard]] cmsCIELab toCmsLab(const cmsCIELCh &value);
 
-[[nodiscard]] cmsCIELCh toCmsLch(const LchDouble &value);
-
-[[nodiscard]] LchDouble toLchDouble(const cmsCIELCh &value);
-
-[[nodiscard]] LchDouble toLchDouble(const cmsCIELab &value);
+[[nodiscard]] GenericColor toGenericColorCielabD50(const cmsCIELab &value);
 
 /** @internal
  *

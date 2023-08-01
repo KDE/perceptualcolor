@@ -9,6 +9,7 @@
 #include "helperconversion.h"
 #include "helpermath.h"
 #include <algorithm>
+#include <cmath>
 #include <lcms2.h>
 #include <optional>
 #include <qgenericmatrix.h>
@@ -254,6 +255,17 @@ private Q_SLOTS:
 
     void testFromXyzd65ToOklab()
     {
+        // Test pre-requirements:
+        // The code of the function fromXyzD65ToOklab relies on the assumption
+        // that std::cbrt() returns negative results for negative radicands,
+        // and not simply “nan”. As std::cbrt() isn’t constexpr, we cannot
+        // use a static assert within the function. Therefore, we have this
+        // small pre-requirement test:
+        const auto actual = std::cbrt(-27);
+        const decltype(actual) expected = -3;
+        QCOMPARE(actual, expected);
+
+        // Actual unit test:
         QFETCH(double, x);
         QFETCH(double, y);
         QFETCH(double, z);

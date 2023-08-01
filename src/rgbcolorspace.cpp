@@ -12,12 +12,10 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
 #include "helpermath.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
 #include "iohandlerfactory.h"
-#include "lchdouble.h"
 #include <algorithm>
 #include <limits>
 #include <optional>
@@ -349,42 +347,42 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 
     // Find blackpoint and whitepoint.
     // For CielabD50 make sure that: 0 <= blackpoint < whitepoint <= 100
-    LchDouble candidate;
-    candidate.c = 0;
-    candidate.h = 0;
-    candidate.l = 0;
+    GenericColor candidate;
+    candidate.second = 0;
+    candidate.third = 0;
+    candidate.first = 0;
     while (!q_pointer->isCielchD50InGamut(candidate)) {
-        candidate.l += gamutPrecisionCielab;
-        if (candidate.l >= 100) {
+        candidate.first += gamutPrecisionCielab;
+        if (candidate.first >= 100) {
             return false;
         }
     }
-    m_cielabD50BlackpointL = candidate.l;
-    candidate.l = 100;
+    m_cielabD50BlackpointL = candidate.first;
+    candidate.first = 100;
     while (!q_pointer->isCielchD50InGamut(candidate)) {
-        candidate.l -= gamutPrecisionCielab;
-        if (candidate.l <= m_cielabD50BlackpointL) {
+        candidate.first -= gamutPrecisionCielab;
+        if (candidate.first <= m_cielabD50BlackpointL) {
             return false;
         }
     }
-    m_cielabD50WhitepointL = candidate.l;
+    m_cielabD50WhitepointL = candidate.first;
     // For Oklab make sure that: 0 <= blackbpoint < whitepoint <= 1
-    candidate.l = 0;
+    candidate.first = 0;
     while (!q_pointer->isOklchInGamut(candidate)) {
-        candidate.l += gamutPrecisionOklab;
-        if (candidate.l >= 1) {
+        candidate.first += gamutPrecisionOklab;
+        if (candidate.first >= 1) {
             return false;
         }
     }
-    m_oklabBlackpointL = candidate.l;
-    candidate.l = 1;
+    m_oklabBlackpointL = candidate.first;
+    candidate.first = 1;
     while (!q_pointer->isOklchInGamut(candidate)) {
-        candidate.l -= gamutPrecisionOklab;
-        if (candidate.l <= m_oklabBlackpointL) {
+        candidate.first -= gamutPrecisionOklab;
+        if (candidate.first <= m_oklabBlackpointL) {
             return false;
         }
     }
-    m_oklabWhitepointL = candidate.l;
+    m_oklabWhitepointL = candidate.first;
 
     // Now, calculate the properties who’s calculation depends on a fully
     // initialized object.
@@ -850,20 +848,20 @@ QStringList RgbColorSpacePrivate::profileTagSignatures(cmsHPROFILE profileHandle
  * @param cielchD50color The color that will be adapted.
  *
  * @returns An @ref isCielchD50InGamut color. */
-PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const
+PerceptualColor::GenericColor RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const
 {
-    LchDouble referenceColor = cielchD50color;
+    GenericColor referenceColor = cielchD50color;
 
     // Normalize the LCH coordinates
-    normalizePolar360(referenceColor.c, referenceColor.h);
+    normalizePolar360(referenceColor.second, referenceColor.third);
 
     // Bound to valid range:
-    referenceColor.c = qMin<decltype(referenceColor.c)>( //
-        referenceColor.c, //
+    referenceColor.second = qMin<decltype(referenceColor.second)>( //
+        referenceColor.second, //
         profileMaximumCielchD50Chroma());
-    referenceColor.l = qBound(d_pointer->m_cielabD50BlackpointL, //
-                              referenceColor.l, //
-                              d_pointer->m_cielabD50WhitepointL);
+    referenceColor.first = qBound(d_pointer->m_cielabD50BlackpointL, //
+                                  referenceColor.first, //
+                                  d_pointer->m_cielabD50WhitepointL);
 
     // Test special case: If we are yet in-gamut…
     if (isCielchD50InGamut(referenceColor)) {
@@ -871,31 +869,31 @@ PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(co
     }
 
     // Now we know: We are out-of-gamut.
-    LchDouble temp;
+    GenericColor temp;
 
     // Create an in-gamut point on the gray axis:
-    LchDouble lowerChroma{referenceColor.l, 0, referenceColor.h};
+    GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
     if (!isCielchD50InGamut(lowerChroma)) {
         // This is quite strange because every point between the blackpoint
         // and the whitepoint on the gray axis should be in-gamut on
         // normally shaped gamuts. But as we never know, we need a fallback,
         // which is guaranteed to be in-gamut:
-        referenceColor.l = d_pointer->m_cielabD50BlackpointL;
-        lowerChroma.l = d_pointer->m_cielabD50BlackpointL;
+        referenceColor.first = d_pointer->m_cielabD50BlackpointL;
+        lowerChroma.first = d_pointer->m_cielabD50BlackpointL;
     }
     // TODO Decide which one of the algorithms provides with the “if constexpr”
     // will be used (and remove the other one).
     constexpr bool quickApproximate = true;
     if constexpr (quickApproximate) {
         // Do a quick-approximate search:
-        LchDouble upperChroma{referenceColor};
+        GenericColor upperChroma{referenceColor};
         // Now we know for sure that lowerChroma is in-gamut
         // and upperChroma is out-of-gamut…
         temp = upperChroma;
-        while (upperChroma.c - lowerChroma.c > gamutPrecisionCielab) {
+        while (upperChroma.second - lowerChroma.second > gamutPrecisionCielab) {
             // Our test candidate is half the way between lowerChroma
             // and upperChroma:
-            temp.c = ((lowerChroma.c + upperChroma.c) / 2);
+            temp.second = ((lowerChroma.second + upperChroma.second) / 2);
             if (isCielchD50InGamut(temp)) {
                 lowerChroma = temp;
             } else {
@@ -907,15 +905,15 @@ PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(co
     } else {
         // Do a slow-thorough search:
         temp = referenceColor;
-        while (temp.c > 0) {
+        while (temp.second > 0) {
             if (isCielchD50InGamut(temp)) {
                 break;
             } else {
-                temp.c -= gamutPrecisionCielab;
+                temp.second -= gamutPrecisionCielab;
             }
         }
-        if (temp.c < 0) {
-            temp.c = 0;
+        if (temp.second < 0) {
+            temp.second = 0;
         }
         return temp;
     }
@@ -934,20 +932,20 @@ PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(co
  * @param oklchColor The color that will be adapted.
  *
  * @returns An @ref isOklchInGamut color. */
-PerceptualColor::LchDouble RgbColorSpace::reduceOklchChromaToFitIntoGamut(const PerceptualColor::LchDouble &oklchColor) const
+PerceptualColor::GenericColor RgbColorSpace::reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const
 {
-    LchDouble referenceColor = oklchColor;
+    GenericColor referenceColor = oklchColor;
 
     // Normalize the LCH coordinates
-    normalizePolar360(referenceColor.c, referenceColor.h);
+    normalizePolar360(referenceColor.second, referenceColor.third);
 
     // Bound to valid range:
-    referenceColor.c = qMin<decltype(referenceColor.c)>( //
-        referenceColor.c, //
+    referenceColor.second = qMin<decltype(referenceColor.second)>( //
+        referenceColor.second, //
         profileMaximumOklchChroma());
-    referenceColor.l = qBound(d_pointer->m_oklabBlackpointL,
-                              referenceColor.l, //
-                              d_pointer->m_oklabWhitepointL);
+    referenceColor.first = qBound(d_pointer->m_oklabBlackpointL,
+                                  referenceColor.first, //
+                                  d_pointer->m_oklabWhitepointL);
 
     // Test special case: If we are yet in-gamut…
     if (isOklchInGamut(referenceColor)) {
@@ -955,31 +953,31 @@ PerceptualColor::LchDouble RgbColorSpace::reduceOklchChromaToFitIntoGamut(const 
     }
 
     // Now we know: We are out-of-gamut.
-    LchDouble temp;
+    GenericColor temp;
 
     // Create an in-gamut point on the gray axis:
-    LchDouble lowerChroma{referenceColor.l, 0, referenceColor.h};
+    GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
     if (!isOklchInGamut(lowerChroma)) {
         // This is quite strange because every point between the blackpoint
         // and the whitepoint on the gray axis should be in-gamut on
         // normally shaped gamuts. But as we never know, we need a fallback,
         // which is guaranteed to be in-gamut:
-        referenceColor.l = d_pointer->m_oklabBlackpointL;
-        lowerChroma.l = d_pointer->m_oklabBlackpointL;
+        referenceColor.first = d_pointer->m_oklabBlackpointL;
+        lowerChroma.first = d_pointer->m_oklabBlackpointL;
     }
     // TODO Decide which one of the algorithms provides with the “if constexpr”
     // will be used (and remove the other one).
     constexpr bool quickApproximate = true;
     if constexpr (quickApproximate) {
         // Do a quick-approximate search:
-        LchDouble upperChroma{referenceColor};
+        GenericColor upperChroma{referenceColor};
         // Now we know for sure that lowerChroma is in-gamut
         // and upperChroma is out-of-gamut…
         temp = upperChroma;
-        while (upperChroma.c - lowerChroma.c > gamutPrecisionOklab) {
+        while (upperChroma.second - lowerChroma.second > gamutPrecisionOklab) {
             // Our test candidate is half the way between lowerChroma
             // and upperChroma:
-            temp.c = ((lowerChroma.c + upperChroma.c) / 2);
+            temp.second = ((lowerChroma.second + upperChroma.second) / 2);
             if (isOklchInGamut(temp)) {
                 lowerChroma = temp;
             } else {
@@ -991,15 +989,15 @@ PerceptualColor::LchDouble RgbColorSpace::reduceOklchChromaToFitIntoGamut(const 
     } else {
         // Do a slow-thorough search:
         temp = referenceColor;
-        while (temp.c > 0) {
+        while (temp.second > 0) {
             if (isOklchInGamut(temp)) {
                 break;
             } else {
-                temp.c -= gamutPrecisionOklab;
+                temp.second -= gamutPrecisionOklab;
             }
         }
-        if (temp.c < 0) {
-            temp.c = 0;
+        if (temp.second < 0) {
+            temp.second = 0;
         }
         return temp;
     }
@@ -1043,9 +1041,10 @@ cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
  * @note By definition, each RGB color in a given color space is an in-gamut
  * color in this very same color space. Nevertheless, because of rounding
  * errors, when converting colors that are near to the outer hull of the
- * gamut/color space, than @ref isCielchD50InGamut() might return <tt>false</tt> for
- * a return value of <em>this</em> function. */
-PerceptualColor::LchDouble RgbColorSpace::toCielchD50Double(const QRgba64 rgbColor) const
+ * gamut/color space, than @ref isCielchD50InGamut() might return
+ * <tt>false</tt> for a return value of <em>this</em> function.
+ */
+PerceptualColor::GenericColor RgbColorSpace::toCielchD50(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
@@ -1066,12 +1065,34 @@ PerceptualColor::LchDouble RgbColorSpace::toCielchD50Double(const QRgba64 rgbCol
     cmsLab2LCh(&cielchD50, // output
                &cielabD50 // input
     );
-    return LchDouble{cielchD50.L, cielchD50.C, cielchD50.h};
+    return GenericColor{cielchD50.L, cielchD50.C, cielchD50.h};
+}
+
+/**
+ * @brief Conversion LCh polar coordinates to corresponding Lab Cartesian
+ * coordinates.
+ *
+ * @param lch The original LCh polar coordinates.
+ *
+ * @returns The corresponding Lab Cartesian coordinates.
+ *
+ * @note This function can convert both, from @ref ColorModel::CielchD50 to
+ * @ref ColorModel::CielabD50, and from @ref ColorModel::OklchD65 to
+ * @ref ColorModel::OklabD65.
+ */
+cmsCIELab RgbColorSpace::fromLchToCmsCIELab(const GenericColor &lch)
+{
+    const cmsCIELCh myCmsCieLch = lch.reinterpretAsLchToCmscielch();
+    cmsCIELab lab; // uses cmsFloat64Number internally
+    cmsLCh2Lab(&lab, // output
+               &myCmsCieLch // input
+    );
+    return lab;
 }
 
 /** @brief Conversion to QRgb.
  *
- * @param lch The original color.
+ * @param cielchD50 The original color.
  *
  * @returns If the original color is in-gamut, the corresponding
  * (opaque) in-range RGB value. If the original color is out-of-gamut,
@@ -1081,16 +1102,12 @@ PerceptualColor::LchDouble RgbColorSpace::toCielchD50Double(const QRgba64 rgbCol
  * to fit out-of-gamut colors into the gamut.
  *
  * @sa @ref fromCielabD50ToQRgbOrTransparent */
-QRgb RgbColorSpace::fromCielchD50ToQRgbBound(const LchDouble &lch) const
+QRgb RgbColorSpace::fromCielchD50ToQRgbBound(const GenericColor &cielchD50) const
 {
-    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
-    cmsCIELab lab; // uses cmsFloat64Number internally
-    cmsLCh2Lab(&lab, // output
-               &myCmsCieLch // input
-    );
+    const auto cielabD50 = fromLchToCmsCIELab(cielchD50);
     cmsUInt16Number rgb_int[3];
     cmsDoTransform(d_pointer->m_transformCielabD50ToRgb16Handle, // transform
-                   &lab, // input
+                   &cielabD50, // input
                    rgb_int, // output
                    1 // number of values to convert
     );
@@ -1106,36 +1123,34 @@ QRgb RgbColorSpace::fromCielchD50ToQRgbBound(const LchDouble &lch) const
  * @param lch the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isCielchD50InGamut(const LchDouble &lch) const
+bool RgbColorSpace::isCielchD50InGamut(const GenericColor &lch) const
 {
-    if (!isInRange<decltype(lch.l)>(0, lch.l, 100)) {
+    if (!isInRange<decltype(lch.first)>(0, lch.first, 100)) {
         return false;
     }
-    if (!isInRange<decltype(lch.l)>( //
+    if (!isInRange<decltype(lch.first)>( //
             (-1) * d_pointer->m_profileMaximumCielchD50Chroma, //
-            lch.c, //
+            lch.second, //
             d_pointer->m_profileMaximumCielchD50Chroma //
             )) {
         return false;
     }
-    cmsCIELab lab; // uses cmsFloat64Number internally
-    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
-    cmsLCh2Lab(&lab, &myCmsCieLch);
-    return qAlpha(fromCielabD50ToQRgbOrTransparent(lab)) != 0;
+    const auto cielabD50 = fromLchToCmsCIELab(lch);
+    return qAlpha(fromCielabD50ToQRgbOrTransparent(cielabD50)) != 0;
 }
 
 /** @brief Check if a color is within the gamut.
  * @param lch the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isOklchInGamut(const LchDouble &lch) const
+bool RgbColorSpace::isOklchInGamut(const GenericColor &lch) const
 {
-    if (!isInRange<decltype(lch.l)>(0, lch.l, 1)) {
+    if (!isInRange<decltype(lch.first)>(0, lch.first, 1)) {
         return false;
     }
-    if (!isInRange<decltype(lch.l)>( //
+    if (!isInRange<decltype(lch.first)>( //
             (-1) * d_pointer->m_profileMaximumOklchChroma, //
-            lch.c, //
+            lch.second, //
             d_pointer->m_profileMaximumOklchChroma //
             )) {
         return false;
@@ -1243,18 +1258,14 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
  * in-range RGB color. If the original color is out-of-gamut, it returns an
  * RGB value which might be in-range or out-of range. The RGB value range
  * is [0, 1]. */
-PerceptualColor::GenericColor RgbColorSpace::fromCielchD50ToRgb1(const PerceptualColor::LchDouble &lch) const
+PerceptualColor::GenericColor RgbColorSpace::fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const
 {
-    const cmsCIELCh myCmsCieLch = toCmsLch(lch);
-    cmsCIELab lab; // uses cmsFloat64Number internally
-    cmsLCh2Lab(&lab, // output
-               &myCmsCieLch // input
-    );
+    const auto cielabD50 = fromLchToCmsCIELab(lch);
     double rgb[3];
     cmsDoTransform(
         // Parameters:
         d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
-        &lab, // input
+        &cielabD50, // input
         &rgb, // output
         1 // convert exactly 1 value
     );
@@ -1277,7 +1288,7 @@ double RgbColorSpacePrivate::detectMaximumCielchD50Chroma() const
     while (hue < 360) {
         const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
         const auto color = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
-        result = qMax(result, q_pointer->toCielchD50Double(color).c);
+        result = qMax(result, q_pointer->toCielchD50(color).second);
         hue += chromaDetectionHuePrecision;
     }
     result = result * chromaDetectionIncrementFactor + cielabDeviationLimit;

@@ -160,8 +160,6 @@ if(BUILD_TESTING)
         testinterlacingpass
         testiohandlerfactory
         testlanguagechangeeventfilter
-        testlchadouble
-        testlchdouble
         testmultispinbox
         testmultispinboxsection
         testoklchvalues

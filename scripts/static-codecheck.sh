@@ -29,8 +29,6 @@ PUBLIC_HEADERS="
     src/constpropagatinguniquepointer.h
     src/gradientslider.h
     src/importexport.h
-    src/lchadouble.h
-    src/lchdouble.h
     src/multispinbox.h
     src/multispinboxsection.h
     src/rgbcolorspacefactory.h

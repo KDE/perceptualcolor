@@ -10,7 +10,7 @@
 #include "asyncimageprovider.h"
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"
-#include "lchdouble.h"
+#include "genericcolor.h"
 #include <cmath>
 #include <functional>
 #include <limits>
@@ -46,8 +46,8 @@ public:
     /** @brief Properties for @ref m_chromaLightnessImage. */
     ChromaLightnessImageParameters m_chromaLightnessImageParameters;
     /** @brief Internal storage of
-     * the @ref ChromaLightnessDiagram::currentColor property */
-    LchDouble m_currentColor;
+     * the @ref ChromaLightnessDiagram::currentColorCielchD50 property */
+    GenericColor m_currentColorCielchD50;
     /** @brief Holds if currently a mouse event is active or not.
      *
      * Default value is <tt>false</tt>.
@@ -99,10 +99,10 @@ public:
         }
         return 0;
     }
-    [[nodiscard]] LchDouble fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const;
+    [[nodiscard]] GenericColor fromWidgetPixelPositionToCielchD50(const QPoint widgetPixelPosition) const;
     [[nodiscard]] bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const;
     [[nodiscard]] int leftBorderPhysical() const;
-    [[nodiscard]] PerceptualColor::LchDouble nearestInGamutColorByAdjustingChromaLightness(const double chroma, const double lightness);
+    [[nodiscard]] GenericColor nearestInGamutCielchD50ByAdjustingChromaLightness(const double chroma, const double lightness);
     [[nodiscard]] std::optional<QPoint> nearestInGamutPixelPosition(const QPoint originalPixelPosition);
     [[nodiscard]] static std::optional<QPoint>
     nearestNeighborSearch(const QPoint point, const QRect searchRectangle, const std::function<bool(const QPoint)> &doesPointExist);

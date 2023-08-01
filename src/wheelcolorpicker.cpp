@@ -16,7 +16,6 @@
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
-#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <math.h>
 #include <qapplication.h>
@@ -59,19 +58,19 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
         &ColorWheel::hueChanged,
         this,
         [this](const qreal newHue) {
-            LchDouble lch = d_pointer->m_chromaLightnessDiagram->currentColor();
-            lch.h = newHue;
+            GenericColor lch = d_pointer->m_chromaLightnessDiagram->currentColorCielchD50();
+            lch.third = newHue;
             // We have to be sure that the color is in-gamut also for the
             // new hue. If it is not, we adjust it:
             lch = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
-            d_pointer->m_chromaLightnessDiagram->setCurrentColor(lch);
+            d_pointer->m_chromaLightnessDiagram->setCurrentColorCielchD50(lch);
         });
     connect(d_pointer->m_chromaLightnessDiagram,
-            &ChromaLightnessDiagram::currentColorChanged,
+            &ChromaLightnessDiagram::currentColorCielchD50Changed,
             this,
             // As value is stored anyway within ChromaLightnessDiagram member,
             // it’s enough to just emit the corresponding signal of this class:
-            &WheelColorPicker::currentColorChanged);
+            &WheelColorPicker::currentColorCielchD50Changed);
     connect(
         // QWidget’s constructor requires a QApplication object. As this
         // is a class derived from QWidget, calling qApp is safe here.
@@ -81,7 +80,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
         &WheelColorPickerPrivate::handleFocusChanged);
 
     // Initial color
-    setCurrentColor(
+    setCurrentColorCielchD50(
         // Though CielchD50Values::srgbVersatileInitialColor() is expected to
         // be in-gamut, its more secure to guarantee this explicitly:
         d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(
@@ -319,29 +318,29 @@ void WheelColorPickerPrivate::resizeChildWidgets()
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-LchDouble WheelColorPicker::currentColor() const
+GenericColor WheelColorPicker::currentColorCielchD50() const
 {
-    return d_pointer->m_chromaLightnessDiagram->currentColor();
+    return d_pointer->m_chromaLightnessDiagram->currentColorCielchD50();
 }
 
-/** @brief Setter for the @ref currentColor() property.
+/** @brief Setter for the @ref currentColorCielchD50() property.
  *
- * @param newCurrentColor the new color */
-void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
+ * @param newCurrentColorCielchD50 the new color */
+void WheelColorPicker::setCurrentColorCielchD50(const GenericColor &newCurrentColorCielchD50)
 {
     // The following line will also emit the signal of this class:
-    d_pointer->m_chromaLightnessDiagram->setCurrentColor(newCurrentColor);
+    d_pointer->m_chromaLightnessDiagram->setCurrentColorCielchD50(newCurrentColorCielchD50);
 
     // Avoid that setting the new hue will move the color into gamut.
     // (As documented, this function accepts happily out-of-gamut colors.)
     QSignalBlocker myBlocker(d_pointer->m_colorWheel);
-    d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
+    d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().third);
 }
 
 /** @brief Recommended size for the widget
  *
  * Reimplemented from base class.
- *
+ *wh
  * @returns Recommended size for the widget.
  *
  * @sa @ref sizeHint() */

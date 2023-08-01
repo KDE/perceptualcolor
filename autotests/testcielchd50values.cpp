@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "cielchd50values.h"
 
+#include "genericcolor.h"
 #include "helperposixmath.h"
-#include "lchdouble.h"
 #include "rgbcolorspace.h"
 #include <qglobal.h>
 #include <qobject.h>
@@ -67,7 +67,7 @@ private Q_SLOTS:
     void testCielchD50Values()
     {
         auto temp = RgbColorSpace::createSrgb();
-        LchDouble color;
+        GenericColor color;
         qreal presicion = 0.1;
         qreal hue = 0;
         bool inGamutValueFound = false;
@@ -75,22 +75,22 @@ private Q_SLOTS:
         // Test if versatile is small enough
         qreal precisionVersatileSrgbChroma = //
             presicion / 360 * 2 * pi * PerceptualColor::CielchD50Values::srgbVersatileChroma;
-        color.c = PerceptualColor::CielchD50Values::srgbVersatileChroma;
-        color.l = 50;
+        color.second = PerceptualColor::CielchD50Values::srgbVersatileChroma;
+        color.first = 50;
         hue = 0;
         while (hue <= 360) {
-            color.h = hue;
+            color.third = hue;
             QVERIFY2(temp->isCielchD50InGamut(color), "Test if versatile is small enough");
             hue += precisionVersatileSrgbChroma;
         }
 
         // Test if versatile is as big as possible
-        color.c = PerceptualColor::CielchD50Values::srgbVersatileChroma + 1;
-        color.l = 50;
+        color.second = PerceptualColor::CielchD50Values::srgbVersatileChroma + 1;
+        color.first = 50;
         inGamutValueFound = true;
         hue = 0;
         while (hue <= 360) {
-            color.h = hue;
+            color.third = hue;
             if (!temp->isCielchD50InGamut(color)) {
                 inGamutValueFound = false;
                 break;
@@ -103,13 +103,13 @@ private Q_SLOTS:
     void testNeutralGray()
     {
         // Test that the unified initialization is done in the correct order.
-        QCOMPARE(CielchD50Values::neutralGray.l,
+        QCOMPARE(CielchD50Values::neutralGray.first,
                  50 // Should be half the way between light and dark
         );
-        QCOMPARE(CielchD50Values::neutralGray.c,
+        QCOMPARE(CielchD50Values::neutralGray.second,
                  0 // Should have no chroma
         );
-        QCOMPARE(CielchD50Values::neutralGray.h,
+        QCOMPARE(CielchD50Values::neutralGray.third,
                  0 // Hue does not matter, but by convention should be 0
         );
     }

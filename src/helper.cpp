@@ -515,7 +515,7 @@ Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &co
                                                 )
                                                 .value_or(GenericColor());
             const auto variationRgb = colorSpace->fromCielchD50ToQRgbBound( //
-                variationCielchD50.reinterpretAsLchToLchDouble());
+                variationCielchD50);
             wcsSwatches.setValue(i, //
                                  j,
                                  variationRgb);
@@ -526,14 +526,13 @@ Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &co
     QList<double> lightnesses{1, 0.75, 0.5, 0.25, 0};
     for (int j = 0; j < lightnesses.count(); ++j) {
         const GenericColor myOklab{lightnesses.at(j), 0, 0};
-        const auto cielabD50 = AbsoluteColor::convert( //
+        const auto cielchD50 = AbsoluteColor::convert( //
                                    ColorModel::OklabD65, //
                                    myOklab, //
                                    ColorModel::CielchD50 //
                                    )
                                    .value_or(GenericColor());
-        const auto rgb = colorSpace->fromCielchD50ToQRgbBound( //
-            cielabD50.reinterpretAsLchToLchDouble());
+        const auto rgb = colorSpace->fromCielchD50ToQRgbBound(cielchD50);
         wcsSwatches.setValue(columnCount - 1, j, rgb);
     }
 

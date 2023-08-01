@@ -4,50 +4,25 @@
 // Own header
 #include "helperconversion.h"
 
-#include "lchdouble.h"
+#include "genericcolor.h"
 #include <qglobal.h>
 
 namespace PerceptualColor
 {
 
-/** @internal
+/**
+ * @internal
  *
- * @brief Type conversion.
- * @param value An LCH value
- * @returns Same LCH value as <tt>cmsCIELCh</tt>. */
-cmsCIELCh toCmsLch(const LchDouble &value)
-{
-    cmsCIELCh result;
-    result.L = value.l;
-    result.C = value.c;
-    result.h = value.h;
-    return result;
-}
-
-/** @internal
- *
- * @brief Type conversion.
- * @param value An LCH value
- * @returns Same LCH value as @ref LchDouble. */
-LchDouble toLchDouble(const cmsCIELCh &value)
-{
-    LchDouble result;
-    result.l = value.L;
-    result.c = value.C;
-    result.h = value.h;
-    return result;
-}
-
-/** @internal
- *
- * @brief Conversion to @ref LchDouble
+ * @brief Conversion to @ref GenericColor with @ref ColorModel::CielabD50
  * @param value a point in Lab representation
- * @returns the same point in @ref LchDouble representation */
-LchDouble toLchDouble(const cmsCIELab &value)
+ * @returns the same point as @ref GenericColor with
+ * @ref ColorModel::CielabD50
+ */
+GenericColor toGenericColorCielabD50(const cmsCIELab &value)
 {
     cmsCIELCh tempLch;
     cmsLab2LCh(&tempLch, &value);
-    return toLchDouble(tempLch);
+    return GenericColor(tempLch);
 }
 
 /** @internal
