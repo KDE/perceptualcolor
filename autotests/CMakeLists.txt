@@ -170,7 +170,6 @@ if(BUILD_TESTING)
         testrgbcolor
         testrgbcolorspace
         testrgbcolorspacefactory
-        testrgbdouble
         testscreencolorpicker
         testsettranslation
         testswatchbook

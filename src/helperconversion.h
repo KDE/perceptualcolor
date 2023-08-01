@@ -26,8 +26,6 @@ namespace PerceptualColor
 
 Q_NAMESPACE
 
-struct RgbDouble;
-
 /** @brief Identifiers for color models. */
 enum class ColorModel {
     CielabD50, /**< Cielab color space using a D50 illuminant.
@@ -96,8 +94,6 @@ template<typename T>
     const auto bounded = qBound<int>(0, rounded, 255);
     return static_cast<quint8>(bounded);
 }
-
-QColor fromRgbDoubleToQColor(const RgbDouble &color);
 
 /** @internal
  *

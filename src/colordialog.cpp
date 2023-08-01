@@ -27,7 +27,6 @@
 #include "rgbcolor.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
-#include "rgbdouble.h"
 #include "screencolorpicker.h"
 #include "swatchbook.h"
 #include "wheelcolorpicker.h"
@@ -1396,11 +1395,11 @@ void ColorDialogPrivate::updateColorPatch()
 /** @brief Overloaded function. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget)
 {
-    const RgbDouble rgb = m_rgbColorSpace->fromCielchD50ToRgbDoubleUnbound( //
+    const auto rgb = m_rgbColorSpace->fromCielchD50ToRgb1( //
         abs.value(ColorModel::CielchD50).reinterpretAsLchToLchDouble());
-    const auto rgbList = QList<double>{rgb.red * 255, //
-                                       rgb.green * 255, //
-                                       rgb.blue * 255};
+    const auto rgbList = QList<double>{rgb.first * 255, //
+                                       rgb.second * 255, //
+                                       rgb.third * 255};
     const auto rgbColor = RgbColor::fromRgb255(rgbList);
     setCurrentOpaqueColor(abs, rgbColor, ignoreWidget);
 }

@@ -57,7 +57,6 @@ set(library_SRC
     rgbcolor.cpp
     rgbcolorspace.cpp
     rgbcolorspacefactory.cpp
-    rgbdouble.cpp
     screencolorpicker.cpp
     settings.cpp
     settranslation.cpp

@@ -5,7 +5,6 @@
 #include "helperconversion.h"
 
 #include "lchdouble.h"
-#include "rgbdouble.h"
 #include <qglobal.h>
 
 namespace PerceptualColor
@@ -62,26 +61,6 @@ cmsCIELab toCmsLab(const cmsCIELCh &value)
     // convert from LCH to Lab
     cmsLCh2Lab(&lab, &value);
     return lab;
-}
-
-/** @internal
- *
- * @brief Converts from @ref RgbDouble to a <tt>QColor</tt> with
- * <tt>spec()</tt> value <tt>QColor::Rgb</tt>.
- *
- * @param color The original color
- *
- * @return The same color as <tt>QColor</tt> with
- * <tt>spec()</tt> value <tt>QColor::Rgb</tt>.
- * If the original color has out-of-range values,
- * than these values are silently clipped to the
- * valid range. */
-QColor fromRgbDoubleToQColor(const RgbDouble &color)
-{
-    return QColor::fromRgbF( //
-        static_cast<QColorFloatType>(qBound<QColorFloatType>(0, color.red, 1)), //
-        static_cast<QColorFloatType>(qBound<QColorFloatType>(0, color.green, 1)), //
-        static_cast<QColorFloatType>(qBound<QColorFloatType>(0, color.blue, 1)));
 }
 
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))

@@ -19,7 +19,6 @@
 #include "iohandlerfactory.h"
 #include "lchdouble.h"
 #include "polarpointf.h"
-#include "rgbdouble.h"
 #include <limits>
 #include <optional>
 #include <qbytearray.h>
@@ -914,9 +913,9 @@ cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
-    const RgbDouble my_rgb{rgbColor.red() / maximum, //
-                           rgbColor.green() / maximum, //
-                           rgbColor.blue() / maximum};
+    const double my_rgb[]{rgbColor.red() / maximum, //
+                          rgbColor.green() / maximum, //
+                          rgbColor.blue() / maximum};
     cmsCIELab cielabD50;
     cmsDoTransform(d_pointer->m_transformRgbToCielabD50Handle, // handle to transform
                    &my_rgb, // input
@@ -944,9 +943,9 @@ PerceptualColor::LchDouble RgbColorSpace::toCielchD50Double(const QRgba64 rgbCol
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
-    const RgbDouble my_rgb{rgbColor.red() / maximum, //
-                           rgbColor.green() / maximum, //
-                           rgbColor.blue() / maximum};
+    const double my_rgb[]{rgbColor.red() / maximum, //
+                          rgbColor.green() / maximum, //
+                          rgbColor.blue() / maximum};
     cmsCIELab cielabD50;
     cmsDoTransform(d_pointer->m_transformRgbToCielabD50Handle, // handle to transform
                    &my_rgb, // input
@@ -1081,7 +1080,7 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
     static_assert(qAlpha(transparentValue) == 0, //
                   "The alpha value of a transparent QRgb must be 0.");
 
-    RgbDouble rgb;
+    double rgb[3];
     cmsDoTransform(
         // Parameters:
         d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
@@ -1092,9 +1091,9 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
 
     // Detect if valid:
     const bool colorIsValid = //
-        isInRange<decltype(rgb.red)>(0, rgb.red, 1) //
-        && isInRange<decltype(rgb.green)>(0, rgb.green, 1) //
-        && isInRange<decltype(rgb.blue)>(0, rgb.blue, 1);
+        isInRange<double>(0, rgb[0], 1) //
+        && isInRange<double>(0, rgb[1], 1) //
+        && isInRange<double>(0, rgb[2], 1);
     if (!colorIsValid) {
         return transparentValue;
     }
@@ -1124,27 +1123,28 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
     }
 
     // If in-gamut, return an opaque color.
-    QColor temp = QColor::fromRgbF(static_cast<QColorFloatType>(rgb.red), //
-                                   static_cast<QColorFloatType>(rgb.green), //
-                                   static_cast<QColorFloatType>(rgb.blue));
+    QColor temp = QColor::fromRgbF(static_cast<QColorFloatType>(rgb[0]), //
+                                   static_cast<QColorFloatType>(rgb[1]), //
+                                   static_cast<QColorFloatType>(rgb[2]));
     return temp.rgb();
 }
 
-/** @brief Conversion to @ref RgbDouble.
+/** @brief Conversion to RGB.
  *
  * @param lch The original color.
  *
  * @returns If the original color is in-gamut, it returns the corresponding
  * in-range RGB color. If the original color is out-of-gamut, it returns an
- * RGB value which might be in-range or out-of range. */
-PerceptualColor::RgbDouble RgbColorSpace::fromCielchD50ToRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const
+ * RGB value which might be in-range or out-of range. The RGB value range
+ * is [0, 1]. */
+PerceptualColor::GenericColor RgbColorSpace::fromCielchD50ToRgb1(const PerceptualColor::LchDouble &lch) const
 {
     const cmsCIELCh myCmsCieLch = toCmsLch(lch);
     cmsCIELab lab; // uses cmsFloat64Number internally
     cmsLCh2Lab(&lab, // output
                &myCmsCieLch // input
     );
-    RgbDouble rgb;
+    double rgb[3];
     cmsDoTransform(
         // Parameters:
         d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
@@ -1152,7 +1152,7 @@ PerceptualColor::RgbDouble RgbColorSpace::fromCielchD50ToRgbDoubleUnbound(const 
         &rgb, // output
         1 // convert exactly 1 value
     );
-    return rgb;
+    return GenericColor(rgb[0], rgb[1], rgb[2]);
 }
 
 /** @brief Calculation of @ref RgbColorSpace::profileMaximumCielchD50Chroma

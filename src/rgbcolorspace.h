@@ -5,8 +5,8 @@
 #define RGBCOLORSPACE_H
 
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
 #include "lchdouble.h"
-#include "rgbdouble.h"
 #include <lcms2.h>
 #include <qdatetime.h>
 #include <qglobal.h>
@@ -311,7 +311,7 @@ public:
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble toCielchD50Double(const QRgba64 rgbColor) const;
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::LchDouble &lch) const;
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::RgbDouble fromCielchD50ToRgbDoubleUnbound(const PerceptualColor::LchDouble &lch) const;
+    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor fromCielchD50ToRgb1(const PerceptualColor::LchDouble &lch) const;
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)
