@@ -56,10 +56,10 @@ class RgbColorSpacePrivate;
  *       (0–1, or 0%–100%), but different for a and b:
  *       https://www.w3.org/TR/css-color-4/#ok-lab says up to 0.5, but
  *       we would have to actually test this. Therefore, also the
- *       @ref profileMaximumCielchD50Chroma would have to be provides for all
+ *       @ref profileMaximumCielchD50Chroma would have to be provided for all
  *       these color spaces individually. Anyway, we could also
  *       output the data in a new data type for cylindrical coordinates
- *       (angle degree, radius, height), independent of the color
+ *       (angle [in degree], radius, z), independent of the color
  *       space, which must always be cylindrical anyway as we have
  *       no support for anything else in our widgets.
  *
