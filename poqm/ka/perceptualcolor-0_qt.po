@@ -14,249 +14,249 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 
 #. @item A color model: X, Y, Z.
-#: colordialog.cpp:99
+#: colordialog.cpp:105
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "XYZ"
 msgstr "XYZ"
 
 #. @item A color model: Lightness, a, b.
-#: colordialog.cpp:102
+#: colordialog.cpp:108
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Lab"
 msgstr "Lab"
 
 #. @item A color model: red, green, blue.
-#: colordialog.cpp:105
+#: colordialog.cpp:111
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "RGB"
 msgstr "RGB"
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
-#: colordialog.cpp:204
+#: colordialog.cpp:210
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
 msgstr "%1%"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
-#: colordialog.cpp:208
+#: colordialog.cpp:214
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1°"
 msgstr "%1°"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
-#: colordialog.cpp:216
+#: colordialog.cpp:222
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Name:"
 msgstr "სახელი:"
 
 #. @item:intext The maximum chroma.
-#: colordialog.cpp:220 colordialog.cpp:231
+#: colordialog.cpp:226 colordialog.cpp:237
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%L1 (estimated)"
 msgstr "%L1 (დაახლ)"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
-#: colordialog.cpp:228
+#: colordialog.cpp:234
+#, fuzzy
+#| msgctxt "PerceptualColor::ColorDialogPrivate|"
+#| msgid "Maximum CIELch chroma:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
-msgid "Maximum CIELch chroma:"
+msgid "Maximum CIELCh-D50 chroma:"
 msgstr "მაქსმალური CIELch ქრომა:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
-#: colordialog.cpp:239
+#: colordialog.cpp:245
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum Oklch chroma:"
 msgstr "მაქსიმალური Oklch ქრომა:"
 
 #. @item:intext The class of an ICC profile.
-#: colordialog.cpp:244
+#: colordialog.cpp:250
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Display profile"
 msgstr "ეკრანის პროფილი"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
-#: colordialog.cpp:263
+#: colordialog.cpp:269
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Profile class:"
 msgstr "პროფილის კლასი:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The color model of the color space which is described by this profile.
-#: colordialog.cpp:272
+#: colordialog.cpp:278
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color model:"
 msgstr "ფერის მოდელი:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is usually the manufacturer of the device to which the colour profile applies.
-#: colordialog.cpp:281
+#: colordialog.cpp:287
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Manufacturer:"
 msgstr "მწარმოებელი:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is usually the model identifier of the device to which the colour profile applies.
-#: colordialog.cpp:290
+#: colordialog.cpp:296
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Device model:"
 msgstr "მოწყობილობის მოდელი:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is the date and time of the creation of the profile.
-#: colordialog.cpp:304
+#: colordialog.cpp:310
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Created:"
 msgstr "შექმნილია:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is the version number of the ICC file format that is used.
-#: colordialog.cpp:311
+#: colordialog.cpp:317
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "ICC format:"
 msgstr "ICC ფორმატი:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
-#: colordialog.cpp:322
+#: colordialog.cpp:328
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Implementation:"
 msgstr "განხორციელება:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
-#: colordialog.cpp:329
+#: colordialog.cpp:335
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Matrices and color lookup tables"
 msgstr "მატრიცები და ფერის ძებნის ცხრილები"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
-#: colordialog.cpp:335
+#: colordialog.cpp:341
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Matrices"
 msgstr "მატრიცები"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
-#: colordialog.cpp:342
+#: colordialog.cpp:348
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color lookup tables"
 msgstr "ფერის საძებნი ცხრილები"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The color model of the PCS (profile connection space) which is used internally by this profile.
-#: colordialog.cpp:353
+#: colordialog.cpp:359
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "PCS color model:"
 msgstr "PCS ფერის მოდელი:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The copyright of this profile.
-#: colordialog.cpp:360
+#: colordialog.cpp:366
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Copyright:"
 msgstr "უფლებები:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. This is the size of the ICC file that was read in.
-#: colordialog.cpp:368
+#: colordialog.cpp:374
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "File size:"
 msgstr "ფაილის ზომა:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
-#: colordialog.cpp:376
+#: colordialog.cpp:382
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "File name:"
 msgstr "ფაილის სახელი:"
 
 #. @info:intext Title of info text about current color space (will be followed by other information as available in the color profile.
-#: colordialog.cpp:392
+#: colordialog.cpp:398
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Color space information"
 msgstr "ფერების სივრცის ინფორმაცია"
 
 #. @label:spinbox Label for CIE’s CIEHLC color model, based on Hue, Lightness, Chroma, and using the D50 illuminant as white point.
-#: colordialog.cpp:398
+#: colordialog.cpp:404
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "CIEHL&C D50:"
 msgstr "CIEHL&C D50:"
 
-#. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, * Hue, and using the D65 illuminant as white point.
-#: colordialog.cpp:402
+#. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
+#: colordialog.cpp:408
+#, fuzzy
+#| msgctxt "PerceptualColor::ColorDialogPrivate|"
+#| msgid "Oklch:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
-msgid "Oklch:"
+msgid "O&klch:"
 msgstr "Oklch:"
 
 #. @label:spinbox Label for RGB color model, based on Red, Green, Blue.
-#: colordialog.cpp:405
+#: colordialog.cpp:411
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&RGB:"
 msgstr "&RGB:"
 
 #. @label:textbox Label for hexadecimal RGB representation like #12ab45
-#: colordialog.cpp:408
+#: colordialog.cpp:414
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "He&x:"
 msgstr "&თექვს:"
 
-#. @title:tab Same text as in QColorDialog
-#: colordialog.cpp:413
+#. @title:tab The tab contains a swatch book showing the basic colors like yellow, orange, red… Same text as in QColorDialog
+#: colordialog.cpp:421
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Basic colors"
 msgstr "&ძირითადი ფერები"
 
-#. @title:tab
-#: colordialog.cpp:418
+#. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
+#: colordialog.cpp:432
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Hue-based"
 msgstr "&ტონზე-ბაზირებული"
 
-#. @title:tab “lightness” is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:425
+#. @title:tab The tab contains a visual UI to choose first the lightness, and in a second step chroma and hue. “Lightness” is different from “brightness”/“value” and should therefore get a different translation.
+#: colordialog.cpp:446
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Lightness-based"
 msgstr "&განათებულობაზე-ბაზირებული"
 
-#. @title:tab
-#: colordialog.cpp:431
-msgctxt "PerceptualColor::ColorDialogPrivate|"
-msgid "From &screen"
-msgstr "&ეკრანიდან"
-
-#. @title:tab
-#: colordialog.cpp:437
+#. @title:tab The tab contains a UI to describe the color with numbers: Spin boxes and line edits containing values like “#2A7845” or “RGB 85 45 12”.
+#: colordialog.cpp:458
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Numeric"
 msgstr "&რიცხვობრივი"
 
 #. @label:spinbox HSL (hue, saturation, lightness)
-#: colordialog.cpp:441
+#: colordialog.cpp:466
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "HS&L:"
 msgstr "HS&L:"
 
 #. @label:spinbox HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model.
-#: colordialog.cpp:445
+#: colordialog.cpp:470
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "HS&V/HSB:"
 msgstr "HS&V/HSB:"
 
 #. @label:spinbox HWB (hue, whiteness, blackness)
-#: colordialog.cpp:448
+#: colordialog.cpp:473
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "H&WB:"
 msgstr "H&WB:"
 
 #. @action:button
-#: colordialog.cpp:451
+#: colordialog.cpp:476
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&OK"
 msgstr "&დიახ"
 
 #. @action:button
-#: colordialog.cpp:454
+#: colordialog.cpp:479
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Cancel"
 msgstr "&შეწყვეტა"
 
 #. @info:tooltip Help text for RGB spinbox.
-#: colordialog.cpp:458
+#: colordialog.cpp:483
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Red: 0⁠–⁠255</p><p>Green: 0⁠–⁠255</p><p>Blue: 0⁠–⁠255</p>"
 msgstr "<p>წითელი: 0⁠–⁠255</p><p>მწვანე: 0⁠–⁠255</p><p>ლურჯი: 0⁠–⁠255</p>"
 
 #. @info:tooltip Help text for hexadecimal code.
-#: colordialog.cpp:465
+#: colordialog.cpp:490
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hexadecimal color code, as used in HTML: #RRGGBB</p><p>RR: two-digit code "
@@ -268,7 +268,7 @@ msgstr ""
 "მწვანისთვის: 00⁠–⁠FF</p><p>ლლ: ორციფრიანი კოდი ლურჯისთვის: 00⁠–⁠FF</p>"
 
 #. @info:tooltip Help text for HSL (hue, saturation, lightness). Saturation: 0 means something on the grey axis; 255 means something between the grey axis and the most colorful color. This is different from “chroma” and should therefore get a different translation. Lightness: 0 means always black; 255 means always white. This is different from “brightness” and should therefore get a different translation.
-#: colordialog.cpp:478
+#: colordialog.cpp:503
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
@@ -276,13 +276,13 @@ msgstr ""
 "<p>ტონი: 0°⁠–⁠360°</p><p>HSL-გაჯერება: 0%⁠–⁠100%</p><p>განათებულობა: 0%⁠–⁠100%</p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
-#: colordialog.cpp:492
+#: colordialog.cpp:517
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Whiteness: 0%⁠–⁠100%</p><p>Blackness: 0%⁠–⁠100%</p>"
 msgstr "<p>ტონი: 0°⁠–⁠360°</p><p>სითეთრე: 0%⁠–⁠100%</p><p>სიშავე: 0%⁠–⁠100%</p>"
 
 #. @info:tooltip Help text for HSV/HSB. HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model. Saturation: 0 means something between black and white; 255 means something between black and the most colorful color. This is different from “chroma” and should therefore get a different translation. Brightness/value: 0 means always black; 255 means something between white and the most colorful color. This is different from “lightness” and should therefore get a different translation.
-#: colordialog.cpp:505
+#: colordialog.cpp:530
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
@@ -292,19 +292,19 @@ msgstr ""
 "მნიშვნელობა: 0%⁠–⁠100%</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:515
+#: colordialog.cpp:540
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Lightness"
 msgstr "სიკაშკაშე"
 
 #. @info:tooltip Help text for CIEHLC. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:520
+#: colordialog.cpp:545
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"
 msgstr "<p>ტონი: 0°⁠–⁠360°</p><p>სინათლის ძალა: 0%⁠–⁠100%</p><p>ქრომა: 0⁠–⁠%L1</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:529
+#: colordialog.cpp:554
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
@@ -314,19 +314,31 @@ msgstr ""
 "p>><p>თეთრი წერტილი: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
-#: colordialog.cpp:542
+#: colordialog.cpp:567
+#, fuzzy
+#| msgctxt "PerceptualColor::ColorDialogPrivate|"
+#| msgid "O&pacity:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
-msgid "O&pacity:"
+msgid "Op&acity:"
 msgstr "&გაუმჭვირვალობა:"
 
-#. @action:button Same text as in QColorDialog
-#: colordialog.cpp:655
+#. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
+#: colordialog.cpp:683
+#, fuzzy
+#| msgctxt "PerceptualColor::ColorDialogPrivate|"
+#| msgid "&Pick Screen Color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
-msgid "&Pick Screen Color"
+msgid "&Pick screen color"
 msgstr "&აირჩიეთ ეკრანის ფერი"
 
+#. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
+#: colordialog.cpp:696
+msgctxt "PerceptualColor::ColorDialogPrivate|"
+msgid "Click to snap to nearest in-&gamut color"
+msgstr ""
+
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:938
+#: colordialog.cpp:1154
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "ფერის არჩევა"
@@ -348,6 +360,10 @@ msgstr "sRGB ფერების სივრცე"
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
+
+#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
+#~ msgid "From &screen"
+#~ msgstr "&ეკრანიდან"
 
 #~ msgctxt "PerceptualColor::ColorDialogPrivate|"
 #~ msgid "%"
