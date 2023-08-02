@@ -1993,8 +1993,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         tempRgbFormLayout->addRow(m_hsvSpinBoxLabel, m_hsvSpinBox);
         m_rgbGroupBox = new QGroupBox();
         m_rgbGroupBox->setLayout(tempRgbFormLayout);
-        // Using the profile name as QGroupBox title. But the title
-        // is always shown completely, even if the text is extremly
+        // Using the profile name as QGroupBox title. But on some styles, the
+        // title is always shown completely, even if the text is extremly
         // long. As the text is out of our control, and some profiles
         // like Krita’s ITUR_2100_PQ_FULL.ICC have actually extremly
         // long names, we use eliding.
@@ -2002,8 +2002,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         const auto elidedProfileName = fontMetrics.elidedText( //
             m_rgbColorSpace->profileName(),
             Qt::TextElideMode::ElideRight,
-            340 // width (in device-independent pixels). Optimized for Breeze.
-        );
+            // width (in device-independent pixels!):
+            tempRgbFormLayout->minimumSize().width());
         m_rgbGroupBox->setTitle(elidedProfileName);
     }
 
