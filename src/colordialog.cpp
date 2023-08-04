@@ -722,6 +722,8 @@ void ColorDialogPrivate::retranslateUi()
 void ColorDialogPrivate::reloadIcons()
 {
     QScopedPointer<QLabel> label{new QLabel(q_pointer)};
+    label->setText(QStringLiteral("abc"));
+    label->resize(label->sizeHint()); // Smaller size means faster guess.
     ColorSchemeType newType = guessColorSchemeTypeFromWidget(label.data()) //
                                   .value_or(newType);
 

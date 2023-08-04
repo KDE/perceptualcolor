@@ -285,19 +285,41 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
     return result;
 }
 
-/** @brief If the the average lightness of a widget rendering is dark.
+/** @internal
  *
- * Takes a screenshot of a widget and calculates the average lightness
- * of this screenshot.
+ * @brief Guess the actual @ref ColorSchemeType of a given widget.
+ *
+ * It guesses the color scheme type actually used by the current widget style,
+ * and not the type of the current color palette. This makes a difference
+ * for example on the Windows Vista style, which might ignore the palette and
+ * use always a light theme instead.
  *
  * @param widget The widget to evaluate
  *
- * @returns <tt>std::nullopt</tt> if the widget is <tt>nullptr</tt> or
- * its size is empty. <tt>true</tt> if the average lightness is less than
- * rather dark. <tt>false</tt> otherwise.
+ * @returns The guessed schema, or <tt>std::nullopt</tt> if
+ * nothing could be guessed.
  *
- * @note The exact measurement of “lightness” and “dark” is not specified
- * and might change over time. */
+ * @note The exact implementation of the guess  might change over time.
+ *
+ * @internal
+ *
+ * The current implementation takes a screenshot of the widget and calculates
+ * the average lightness of this screenshot and determines the color schema
+ * type accordingly. It returns <tt>std::nullopt</tt> if the widget
+ * is <tt>nullptr</tt> or its size is empty.
+ *
+ * @note With Qt 6.5, there is
+ * <a href="https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5">
+ * better access to color themes</a>. Apparently, the Windows Vista style
+ * now seems to polish the widgets by setting a light color palette, so
+ * also on Windows Vista style we could simply rely on the color palette
+ * and test if the text color is lighter or darker than the background color
+ * to determine the color scheme type. This would also give us more reliable
+ * results with color schemes that have background colors around 50% lightness,
+ * which our currently implementation has problems to get right. But on
+ * the other hand, other styles like Kvantum might still chose to ignore
+ * the color palette, so it seems safer to stay with the current
+ * implementation. */
 std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
 {
     if (widget == nullptr) {

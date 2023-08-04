@@ -24,8 +24,8 @@ namespace PerceptualColor
 
 /** @brief Represents the appearance of a theme. */
 enum class ColorSchemeType {
-    Light, /**< Rather light appearance. */
-    Dark /**< Rather light appearance. */
+    Light, /**< Light theme. */
+    Dark /**< Dark theme. */
 };
 
 void drawQWidgetStyleSheetAware(QWidget *widget);
