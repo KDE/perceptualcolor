@@ -615,6 +615,120 @@ private Q_SLOTS:
 
         QCOMPARE(decimalPlaces(maxRange, significantFigures), expected);
     }
+
+    void testNormalizePolar360()
+    {
+        double radius;
+        double angleDegree;
+
+        // Value of 0, 0°
+        radius = 0;
+        angleDegree = 0;
+        normalizePolar360(radius, angleDegree);
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 0);
+
+        // Same for initialization with -0, 0
+        radius = -0;
+        angleDegree = 0;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 0);
+
+        // Yet normalized values are taken as-is
+        radius = 2;
+        angleDegree = 3;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 3);
+
+        // Negative radii are normalized (180° shift for angle)
+        radius = -2;
+        angleDegree = 183;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 3);
+
+        // Out-of-range angle is normalized
+        radius = 2;
+        angleDegree = 363;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 3);
+
+        radius = 2;
+        angleDegree = -357;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 3);
+
+        // Also when both radius and angle are
+        // out-of-range, normalization works
+        radius = -2;
+        angleDegree = -357;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 183);
+        radius = -2;
+        angleDegree = -717;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 183);
+        radius = -2;
+        angleDegree = 363;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 183);
+        radius = -2;
+        angleDegree = 723;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 2);
+        QCOMPARE(angleDegree, 183);
+
+        // When radius is 0, angle (while meaningless) is
+        // preserved (but normalized)
+        radius = 0;
+        angleDegree = 150;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 150);
+        radius = 0;
+        angleDegree = 370;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 10);
+
+        // When radius is -0, angle (while meaningless) is
+        // preserved (but normalized)
+        radius = -0;
+        angleDegree = 150;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 150);
+        radius = -0;
+        angleDegree = 370;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 10);
+
+        // Edge case: 360°
+        radius = -0;
+        angleDegree = 360;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 0);
+        radius = 0;
+        angleDegree = 360;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 0);
+        QCOMPARE(angleDegree, 0);
+        radius = 5;
+        angleDegree = 360;
+        normalizePolar360(radius, angleDegree);
+        QCOMPARE(radius, 5);
+        QCOMPARE(angleDegree, 0);
+    }
 };
 
 } // namespace PerceptualColor

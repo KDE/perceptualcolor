@@ -265,6 +265,30 @@ T normalizedAngle360(T value)
 
 /** @internal
  *
+ * @brief Normalizes polar coordinates.
+ *
+ * @param radius Reference to the radius. It will get normalized to value ≥ 0.
+ *        If it was < 0 (but not if it was 0 with a negative sign) its  sign
+ *        is changed and angleDegree is turned by 180°.
+ * @param angleDegree Reference to the angle (measured in degree). It will get
+ *        normalized to 0° ≤ value < 360° (see @ref normalizedAngle360() for
+ *        details)
+ *
+ * @note When the radius is 0, one could set by convention the (meaningless)
+ * angle also 0. However, note that this function does <em>not</em> do that! */
+template<typename T>
+void normalizePolar360(T &radius, T &angleDegree)
+{
+    if (radius < 0) {
+        radius *= (-1);
+        angleDegree = normalizedAngle360(angleDegree + 180);
+    } else {
+        angleDegree = normalizedAngle360(angleDegree);
+    }
+}
+
+/** @internal
+ *
  * @brief Round floating point numbers to a certain number of digits
  *
  * @tparam T a floating point type

@@ -5,7 +5,6 @@
 #define POLARPOINTF_H
 
 #include <qdebug.h>
-#include <qglobal.h>
 #include <qmetatype.h>
 #include <qpoint.h>
 
@@ -13,10 +12,21 @@ namespace PerceptualColor
 {
 /** @internal
  *
- * @brief A point in the polar coordinate system
+ * @brief A point in a
+ * <a href="https://en.wikipedia.org/wiki/Polar_coordinate_system">polar
+ * coordinate system</a>
  *
- * Defines a point in the two-dimensional polar coordinate system using
- * floating point precision.
+ * Polar coordinates are important for color
+ * handling because many color models use the
+ * <a href="https://en.wikipedia.org/wiki/Cylindrical_coordinate_system">
+ * cylindrical coordinate system</a> which extends the two-dimensional
+ * polar coordinate system to three dimensions by adding a (linear)
+ * <em>z</em> coordinate.
+ *
+ * Polar coordinate systems represent points by a radial coordinate
+ * (<em>radius</em>, also called <em>r</em> or <em>ρ</em>) and an angular
+ * coordinate (<em>angle</em>, also called <em>azimuth</em>, <em>φ</em>,
+ * <em>θ</em> or <em>t</em>).
  *
  * Polar coordinates allow multiple representations for a single point:
  * - An angle of 0° is the same as 360° is the same as 720° is the same
@@ -26,19 +36,11 @@ namespace PerceptualColor
  * - If the radius is 0, the angle is meaningless: A radius of 0 and an angle
  *   of 57° is the same as a radius of 0 and an angle of 233°.
  *
- * This class automatically normalizes the values:
- * @invariant
- * - the @ref radius() is normalized to value ≥ 0. If it was < 0 (but not if
- *   it was 0 with a negative sign) its  sign is changed and @ref angleDegree
- *   is turned by 180°.
- * - the @ref angleDegree() is normalized to 0° ≤ value < 360°
- *   (see @ref normalizedAngle360() for details)
+ * @invariant The polar coordinates are normalized. See @ref normalizePolar360
+ * for details.
  *
- * When the radius is 0, often by convention the (meaningless) angle is set
- * also 0. This class does <em>not</em> normalize the angle to 0 when the
- * radius is 0 as long as initialized with a radius and an angle. However,
- * when initialized with Cartesian coordinates (0, 0) then the result is
- * radius 0 and angle 0. See also @ref isSamePoint().
+ * To provide a clear API, there is no <em>equal</em> operator. Use
+ * @ref isSamePoint() instead..
  *
  * This type is declared as type to Qt’s type system via
  * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
@@ -67,7 +69,7 @@ public:
      * @param other the object to move */
     PolarPointF(PolarPointF &&other) noexcept = default;
 
-    explicit PolarPointF(const qreal newRadius, const qreal newAngleDegree);
+    explicit PolarPointF(const double newRadius, const double newAngleDegree);
 
     explicit PolarPointF(const QPointF cartesianCoordiantes);
 
@@ -94,20 +96,20 @@ public:
      * @param other the object to move-assign */
     PolarPointF &operator=(PolarPointF &&other) noexcept = default;
 
-    [[nodiscard]] qreal angleDegree() const;
+    [[nodiscard]] double angleDegree() const;
 
     [[nodiscard]] bool isSamePoint(const PolarPointF other) const;
 
-    [[nodiscard]] qreal radius() const;
+    [[nodiscard]] double radius() const;
 
     QPointF toCartesian() const;
 
 private:
     /** @brief Holds the @ref angleDegree() value. */
-    qreal m_angleDegree{0};
+    double m_angleDegree{0};
 
     /** @brief Holds the @ref radius() value. */
-    qreal m_radius{0};
+    double m_radius{0};
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value);

@@ -22,15 +22,11 @@ namespace PerceptualColor
  *
  * @param newRadius the @ref radius() value
  * @param newAngleDegree the @ref angleDegree() value */
-PolarPointF::PolarPointF(const qreal newRadius, const qreal newAngleDegree)
+PolarPointF::PolarPointF(const double newRadius, const double newAngleDegree)
+    : m_angleDegree(newAngleDegree)
+    , m_radius(newRadius)
 {
-    if (newRadius < 0) {
-        m_radius = newRadius * (-1);
-        m_angleDegree = normalizedAngle360(newAngleDegree + 180);
-    } else {
-        m_radius = newRadius;
-        m_angleDegree = normalizedAngle360(newAngleDegree);
-    }
+    normalizePolar360(m_radius, m_angleDegree);
 }
 
 /** @brief Constructor
@@ -43,7 +39,8 @@ PolarPointF::PolarPointF(const qreal newRadius, const qreal newAngleDegree)
  * @param cartesianCoordiantes the Cartesian coordinates */
 PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 {
-    m_radius = sqrt(pow(cartesianCoordiantes.x(), 2) + pow(cartesianCoordiantes.y(), 2));
+    m_radius = sqrt( //
+        pow(cartesianCoordiantes.x(), 2) + pow(cartesianCoordiantes.y(), 2));
     if (m_radius == 0) {
         m_angleDegree = 0;
         return;
@@ -55,9 +52,11 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
     // but need to add code for the range correction. Therefore, the current
     // approach seems fine.
     if (cartesianCoordiantes.y() >= 0) {
-        m_angleDegree = qRadiansToDegrees(acos(cartesianCoordiantes.x() / m_radius));
+        m_angleDegree = qRadiansToDegrees( //
+            acos(cartesianCoordiantes.x() / m_radius));
     } else {
-        m_angleDegree = qRadiansToDegrees(2 * pi - acos(cartesianCoordiantes.x() / m_radius));
+        m_angleDegree = qRadiansToDegrees( //
+            2 * pi - acos(cartesianCoordiantes.x() / m_radius));
     }
 }
 
@@ -83,7 +82,7 @@ bool PolarPointF::isSamePoint(const PolarPointF other) const
 /** @brief Normalized radius
  *
  * @returns the normalized radius value, guaranteed to be ≥ 0. */
-qreal PolarPointF::radius() const
+double PolarPointF::radius() const
 {
     return m_radius;
 }
@@ -92,7 +91,7 @@ qreal PolarPointF::radius() const
  *
  * @returns the normalized angle value (coordinates in degree), guaranteed to
  * be 0° ≤ value < 360° */
-qreal PolarPointF::angleDegree() const
+double PolarPointF::angleDegree() const
 {
     return m_angleDegree;
 }
@@ -102,7 +101,8 @@ qreal PolarPointF::angleDegree() const
  * @returns the corresponding Cartesian coordinates */
 QPointF PolarPointF::toCartesian() const
 {
-    return QPointF(m_radius * cos(qDegreesToRadians(m_angleDegree)), m_radius * sin(qDegreesToRadians(m_angleDegree)));
+    return QPointF(m_radius * cos(qDegreesToRadians(m_angleDegree)), //
+                   m_radius * sin(qDegreesToRadians(m_angleDegree)));
 }
 
 /** @internal
@@ -115,7 +115,12 @@ QPointF PolarPointF::toCartesian() const
  * @returns Debug object with value streamed in */
 QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
 {
-    dbg.nospace() << "PolarPointF(radius: " << value.radius() << ", angleDegree: " << value.angleDegree() << "°)";
+    dbg.nospace() //
+        << "PolarPointF(radius: " //
+        << value.radius() //
+        << ", angleDegree: " //
+        << value.angleDegree() //
+        << "°)";
     return dbg.maybeSpace();
 }
 

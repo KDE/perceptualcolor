@@ -18,7 +18,6 @@
 #include "initializetranslation.h"
 #include "iohandlerfactory.h"
 #include "lchdouble.h"
-#include "polarpointf.h"
 #include <algorithm>
 #include <limits>
 #include <optional>
@@ -743,17 +742,15 @@ QDateTime RgbColorSpacePrivate::getCreationDateTimeFromProfile(cmsHPROFILE profi
  * @returns An @ref isCielchD50InGamut color. */
 PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const
 {
-    // Normalize the LCH coordinates
     LchDouble referenceColor = cielchD50color;
-    {
-        const PolarPointF temp(referenceColor.c, referenceColor.h);
-        referenceColor.c = temp.radius();
-        referenceColor.h = temp.angleDegree();
-    }
+
+    // Normalize the LCH coordinates
+    normalizePolar360(referenceColor.c, referenceColor.h);
 
     // Bound to valid range:
-    referenceColor.c = qMin<decltype(referenceColor.c)>(referenceColor.c, //
-                                                        profileMaximumCielchD50Chroma());
+    referenceColor.c = qMin<decltype(referenceColor.c)>( //
+        referenceColor.c, //
+        profileMaximumCielchD50Chroma());
     referenceColor.l = qBound(d_pointer->m_cielabD50BlackpointL, //
                               referenceColor.l, //
                               d_pointer->m_cielabD50WhitepointL);
@@ -829,17 +826,15 @@ PerceptualColor::LchDouble RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(co
  * @returns An @ref isOklchInGamut color. */
 PerceptualColor::LchDouble RgbColorSpace::reduceOklchChromaToFitIntoGamut(const PerceptualColor::LchDouble &oklchColor) const
 {
-    // Normalize the LCH coordinates
     LchDouble referenceColor = oklchColor;
-    {
-        const PolarPointF temp(referenceColor.c, referenceColor.h);
-        referenceColor.c = temp.radius();
-        referenceColor.h = temp.angleDegree();
-    }
+
+    // Normalize the LCH coordinates
+    normalizePolar360(referenceColor.c, referenceColor.h);
 
     // Bound to valid range:
-    referenceColor.c = qMin<decltype(referenceColor.c)>(referenceColor.c, //
-                                                        profileMaximumOklchChroma());
+    referenceColor.c = qMin<decltype(referenceColor.c)>( //
+        referenceColor.c, //
+        profileMaximumOklchChroma());
     referenceColor.l = qBound(d_pointer->m_oklabBlackpointL,
                               referenceColor.l, //
                               d_pointer->m_oklabWhitepointL);
