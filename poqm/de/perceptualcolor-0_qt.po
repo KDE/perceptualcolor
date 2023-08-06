@@ -342,7 +342,7 @@ msgid "Click to snap to nearest in-&gamut color"
 msgstr ""
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1153
+#: colordialog.cpp:1155
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Farbauswahl"
