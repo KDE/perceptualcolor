@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-04-22 00:19+0200\n"
+"PO-Revision-Date: 2023-08-06 22:34+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -59,12 +59,9 @@ msgstr "%L1(예상됨)"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:233
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "Maximum CIELch chroma:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum CIELCh-D50 chroma:"
-msgstr "최대 CIELch 크로마:"
+msgstr "최대 CIELCh-D50 크로마:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:244
@@ -176,12 +173,9 @@ msgstr "CIEHLC D50(&C):"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:407
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "Oklch:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "O&klch:"
-msgstr "Oklch:"
+msgstr "Oklch(&K):"
 
 #. @label:spinbox Label for RGB color model, based on Red, Green, Blue.
 #: colordialog.cpp:410
@@ -313,18 +307,12 @@ msgstr ""
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:566
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "O&pacity:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Op&acity:"
-msgstr "불투명도(&P):"
+msgstr "불투명도(&A):"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:682
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Pick Screen Color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color"
 msgstr "화면 색상 선택(&P)"
@@ -333,7 +321,7 @@ msgstr "화면 색상 선택(&P)"
 #: colordialog.cpp:695
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
-msgstr ""
+msgstr "클릭하여 가장 가까운 색역 내 색상으로 고정(&G)"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1155
