@@ -4,6 +4,8 @@
 #ifndef HELPER_H
 #define HELPER_H
 
+#include "helpermath.h"
+#include "helperqttypes.h"
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -57,6 +59,118 @@ bool isIn(First &&first, T &&...t)
 [[nodiscard]] qreal standardWheelStepCount(QWheelEvent *event);
 
 [[nodiscard]] QImage transparencyBackground(qreal devicePixelRatioF);
+
+/** @internal
+ *
+ * @brief Two-dimensional array */
+template<typename T>
+class Array2D
+{
+public:
+    /** @brief Constructor.
+     *
+     * @param iCount size (first dimension)
+     * @param jCount size (second dimension)
+     *
+     * The elements are initialized with default-constructed values. */
+    Array2D(QListSizeType iCount, QListSizeType jCount)
+        : m_iCount(iCount)
+        , m_jCount(jCount)
+    {
+        if (m_iCount < 0) {
+            m_iCount = 0;
+        }
+        if (m_jCount < 0) {
+            m_jCount = 0;
+        }
+        const auto elementCount = m_iCount * m_jCount;
+        m_data.reserve(elementCount);
+        for (QListSizeType i = 0; i < elementCount; ++i) {
+            m_data.append(T());
+        }
+    }
+
+    /** @brief Constructor.
+     *
+     * @param iCount size (first dimension)
+     * @param jCount size (second dimension)
+     * @param init Initial values. Excess elements are ignored. Missing
+     *        elements are initialized with default-constructed values. */
+    Array2D(QListSizeType iCount, QListSizeType jCount, QList<T> init)
+        : m_iCount(iCount)
+        , m_jCount(jCount)
+    {
+        if (m_iCount < 0) {
+            m_iCount = 0;
+        }
+        if (m_jCount < 0) {
+            m_jCount = 0;
+        }
+        const auto elementCount = m_iCount * m_jCount;
+        m_data.reserve(elementCount);
+        for (QListSizeType i = 0; i < elementCount; ++i) {
+            if (i < init.count()) {
+                m_data.append(init.value(i));
+            } else {
+                m_data.append(T());
+            }
+        }
+    }
+
+    /** @brief Set value at a given index.
+     *
+     * @param i index (first dimension)
+     * @param j index (second dimension)
+     * @param value value to set */
+    void setValue(QListSizeType i, QListSizeType j, const T &value)
+    {
+        if (isInRange<QListSizeType>(0, i, m_iCount - 1) //
+            && isInRange<QListSizeType>(0, j, m_jCount - 1) //
+        ) {
+            m_data[i + m_iCount * j] = value;
+        }
+    }
+
+    /** @brief Get value at a given index.
+     *
+     * @param i index (first dimension)
+     * @param j index (second dimension)
+     * @returns If the indices are valid, the value at the given indeces.
+     * A default-constructed value otherwise. */
+    T value(QListSizeType i, QListSizeType j) const
+    {
+        if (isInRange<QListSizeType>(0, i, m_iCount - 1) //
+            && isInRange<QListSizeType>(0, j, m_jCount - 1) //
+        ) {
+            return m_data[i + m_iCount * j];
+        }
+        return T(); // Default value if indices are out of bounds
+    }
+
+    /** @brief Size of the first dimension.
+     *
+     * @returns Size of the first dimension. */
+    QListSizeType iCount() const
+    {
+        return m_iCount;
+    }
+
+    /** @brief Size of the second dimension.
+     *
+     * @returns Size of the second dimension. */
+    QListSizeType jCount() const
+    {
+        return m_jCount;
+    }
+
+private:
+    /** @brief Internal storage of the elements. */
+    QList<T> m_data;
+    /** @brief Internal storage of @ref iCount(). */
+    QListSizeType m_iCount;
+    /** @brief Internal storage of @ref jCount(). */
+    QListSizeType m_jCount;
+};
 
 /** @internal
  *

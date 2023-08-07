@@ -487,6 +487,61 @@ private Q_SLOTS:
             colors.value(3).value(3),
             QColor(0, 112, 50));
     }
+
+    void testArray2DConstructor()
+    {
+        Array2D<int> test01(1, 2);
+        Array2D<int> test02(0, 2);
+        Array2D<int> test03(0, 0);
+    }
+
+    void testArray2DConstructorInit()
+    {
+        Array2D<int> test(2,
+                          3,
+                          {
+                              // clang-format off
+                              1, 2,
+                              3, 4,
+                              5, 6,
+                              7 // excess element
+                                // clang-format on
+                          });
+        QCOMPARE(test.iCount(), 2);
+        QCOMPARE(test.jCount(), 3);
+        QCOMPARE(test.value(0, 0), 1);
+        QCOMPARE(test.value(1, 0), 2);
+        QCOMPARE(test.value(0, 1), 3);
+        QCOMPARE(test.value(1, 1), 4);
+        QCOMPARE(test.value(0, 2), 5);
+        QCOMPARE(test.value(1, 2), 6);
+        // Invalid indices should return default-constructed values, and
+        // not the excess element.
+        QCOMPARE(test.value(2, 2), 0);
+        QCOMPARE(test.value(1, 3), 0);
+
+        Array2D<int> testIncompleteInit(2,
+                                        3,
+                                        {
+                                            // clang-format off
+                                            1, 2,
+                                            3, 4,
+                                            5
+                                            // clang-format on
+                                        });
+        // Non-initialized indices should return default-constructed values.
+        QCOMPARE(testIncompleteInit.value(1, 2), 0);
+    }
+
+    void testArray2DSetValue()
+    {
+        Array2D<int> test(2, 3);
+        QCOMPARE(test.value(1, 2), 0);
+        test.setValue(1, 2, 10);
+        QCOMPARE(test.value(1, 2), 10);
+        test.setValue(1, 2, 20);
+        QCOMPARE(test.value(1, 2), 20);
+    }
 };
 
 } // namespace PerceptualColor

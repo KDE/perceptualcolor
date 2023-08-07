@@ -337,15 +337,16 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
     }
 
     // Calculate the average lightness of the screenshot
-    float totalLightness = 0;
-    const int pixelCount = screenshot.width() * screenshot.height();
+    QColorFloatType lightnessSum = 0;
     for (int y = 0; y < screenshot.height(); ++y) {
         for (int x = 0; x < screenshot.width(); ++x) {
-            totalLightness += QColor(screenshot.pixel(x, y)).lightnessF();
+            lightnessSum += QColor(screenshot.pixel(x, y)).lightnessF();
         }
     }
-    const bool isDark = totalLightness / static_cast<float>(pixelCount) < 0.5f;
-
+    const auto pixelCount = screenshot.width() * screenshot.height();
+    constexpr QColorFloatType threeshold = 0.5;
+    const bool isDark = //
+        (lightnessSum / static_cast<QColorFloatType>(pixelCount)) < threeshold;
     if (isDark) {
         return ColorSchemeType::Dark;
     }
