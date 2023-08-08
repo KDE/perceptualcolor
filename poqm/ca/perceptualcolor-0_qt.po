@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor\n"
-"PO-Revision-Date: 2023-08-01 18:35+0200\n"
+"PO-Revision-Date: 2023-08-07 17:56+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -328,7 +328,7 @@ msgstr "Selecció de color de la &pantalla"
 #: colordialog.cpp:695
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
-msgstr "Feu clic per ajustar al color dins la gama més proper"
+msgstr "Feu clic per ajustar al color més proper dins la gamma"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1155
@@ -337,13 +337,13 @@ msgid "Select color"
 msgstr "Selecció de color"
 
 #. @item Manufacturer information for the built-in sRGB color.
-#: rgbcolorspace.cpp:108
+#: rgbcolorspace.cpp:107
 msgctxt "PerceptualColor::RgbColorSpace|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
-#: rgbcolorspace.cpp:111
+#: rgbcolorspace.cpp:110
 msgctxt "PerceptualColor::RgbColorSpace|"
 msgid "sRGB color space"
 msgstr "Espai de color sRGB"
