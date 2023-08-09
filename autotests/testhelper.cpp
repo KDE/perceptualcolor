@@ -24,6 +24,7 @@
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qwidget.h>
+#include <rgbcolorspacefactory.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -474,6 +475,17 @@ private Q_SLOTS:
 
         myWidget.resize(1, 1);
         QCOMPARE(guessColorSchemeTypeFromWidget(&myWidget).has_value(), true);
+    }
+
+    void testWcsBasicColorPalette()
+    {
+        const auto colors = wcsBasicColorPalette( //
+            RgbColorSpaceFactory::createSrgb());
+        QCOMPARE(
+            // For test, choose a value that is not in the center neither
+            // horizontally nor vertically; this might detect mirroring bugs.
+            colors.value(3).value(3),
+            QColor(0, 112, 50));
     }
 };
 

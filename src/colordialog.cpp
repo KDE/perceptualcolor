@@ -828,8 +828,10 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // the button would be confusing.
     q_pointer->setWindowFlag(Qt::WindowContextHelpButtonHint, false);
 
-    // initialize color space
+    // initialize color space and its dependencies
     m_rgbColorSpace = colorSpace;
+    m_wcsBasicColors = wcsBasicColorPalette(colorSpace);
+    m_wcsBasicDefaultColor = m_wcsBasicColors.value(4).value(2);
 
     // create the graphical selectors
     m_swatchBook = new SwatchBook(m_rgbColorSpace);
@@ -1227,11 +1229,7 @@ ColorDialog::ColorDialog(QWidget *parent)
     , d_pointer(new ColorDialogPrivate(this))
 {
     d_pointer->initialize(RgbColorSpaceFactory::createSrgb());
-    setCurrentColor( //
-        d_pointer //
-            ->m_rgbColorSpace //
-            ->fromCielchD50ToQRgbBound(CielchD50Values::srgbVersatileInitialColor) //
-    );
+    setCurrentColor(d_pointer->m_wcsBasicDefaultColor);
 }
 
 /** @brief Constructor
@@ -1268,11 +1266,7 @@ ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &c
     , d_pointer(new ColorDialogPrivate(this))
 {
     d_pointer->initialize(colorSpace);
-    setCurrentColor( //
-        d_pointer //
-            ->m_rgbColorSpace //
-            ->fromCielchD50ToQRgbBound(CielchD50Values::srgbVersatileInitialColor) //
-    );
+    setCurrentColor(d_pointer->m_wcsBasicDefaultColor);
 }
 
 /** @brief Constructor

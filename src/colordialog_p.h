@@ -256,6 +256,19 @@ public:
     QHash<QPointer<QWidget> *, QString> m_tabTable;
     /** @brief Pointer to the tab widget. */
     QPointer<QTabWidget> m_tabWidget;
+    /** @brief @ref m_wcsBasicColors for @ref m_rgbColorSpace. */
+    QList<QList<QColor>> m_wcsBasicColors;
+    /** @brief A default color within @ref m_wcsBasicColors.
+     *
+     * Choosing the blue tone (no tint, no shade). Arguments in favor:
+     *
+     * - Blue seems to be harmonious and integrate well in many designs.
+     * - The blue color is quite chromatic, giving a vivid impression.
+     * - Blue does not “screem” like red.
+     * - Blue is exactly at the middle of the palette.
+     * - The tone (no tint, no shade)  is exactly at the middle of the
+     *   palette. */
+    QColor m_wcsBasicDefaultColor;
     /** @brief Pointer to the @ref WheelColorPicker widget. */
     QPointer<WheelColorPicker> m_wheelColorPicker;
 

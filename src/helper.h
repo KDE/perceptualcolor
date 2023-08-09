@@ -22,6 +22,8 @@ class QWidget;
 namespace PerceptualColor
 {
 
+class RgbColorSpace;
+
 /** @brief Represents the appearance of a theme. */
 enum class ColorSchemeType {
     Light, /**< Light theme. */
@@ -96,6 +98,8 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
         QCoreApplication::processEvents();
     }
 }
+
+[[nodiscard]] QList<QList<QColor>> wcsBasicColorPalette(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type);
 

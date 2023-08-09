@@ -55,7 +55,6 @@ public:
     void retranslateUi();
     void selectColorFromPalette(QListSizeType newCurrentBasicColor, QListSizeType newCurrentRow);
     [[nodiscard]] int verticalPatchSpacing() const;
-    [[nodiscard]] QList<QList<QColor>> wcsBasicColorPalette() const;
 
     /** @brief The colors of the palette.
      *
