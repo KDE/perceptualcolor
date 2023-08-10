@@ -36,7 +36,6 @@ set(library_SRC
     colorpatch.cpp
     colorwheel.cpp
     colorwheelimage.cpp
-    csscolor.cpp
     extendeddoublevalidator.cpp
     genericcolor.cpp
     gradientimageparameters.cpp
@@ -310,7 +309,10 @@ target_sources(
     ${INTERNAL_LIBRARY_NAME}
     PRIVATE
         ${library_SRC}
-        ${lib_PUBLICHEADERS})
+        ${lib_PUBLICHEADERS}
+        # Add code that is currently not used, but that should be kept working
+        # for possible use in the future.
+        csscolor.cpp)
 target_compile_definitions(
     ${INTERNAL_LIBRARY_NAME}
     PRIVATE PERCEPTUALCOLORINTERNAL)
