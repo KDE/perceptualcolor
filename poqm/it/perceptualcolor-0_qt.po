@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-03-26 10:07+0200\n"
+"PO-Revision-Date: 2023-08-01 14:58+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.04.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -59,12 +59,9 @@ msgstr "%L1 (stimato)"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:233
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "Maximum CIELch chroma:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum CIELCh-D50 chroma:"
-msgstr "Croma CIELch massima:"
+msgstr "Croma CIELCh-D50 massima:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:244
@@ -176,12 +173,9 @@ msgstr "CIEHL&C D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:407
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "Oklch:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "O&klch:"
-msgstr "Oklch:"
+msgstr "O&klch:"
 
 #. @label:spinbox Label for RGB color model, based on Red, Green, Blue.
 #: colordialog.cpp:410
@@ -316,18 +310,12 @@ msgstr ""
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:566
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "O&pacity:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Op&acity:"
-msgstr "O&pacità:"
+msgstr "Op&acità:"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:682
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Pick Screen Color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color"
 msgstr "&Scegli il colore dello schermo"
@@ -336,10 +324,10 @@ msgstr "&Scegli il colore dello schermo"
 #: colordialog.cpp:695
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
-msgstr ""
+msgstr "Fai clic per eseguire l'aggancio al colore in-&gamut più vicino"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1155
+#: colordialog.cpp:1160
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Seleziona il colore"
