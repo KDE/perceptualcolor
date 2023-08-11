@@ -338,7 +338,7 @@ msgid "Click to snap to nearest in-&gamut color"
 msgstr ""
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1160
+#: colordialog.cpp:1162
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Select colour"
@@ -356,7 +356,7 @@ msgid "sRGB color space"
 msgstr "sRGB colour space"
 
 #. @item Used to indicate the selected color in the palette. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:93
+#: swatchbook.cpp:94
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
