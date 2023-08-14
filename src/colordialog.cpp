@@ -730,10 +730,11 @@ void ColorDialogPrivate::reloadIcons()
     m_currentIconThemeType = newType;
 
     static const QStringList paletteIcons //
-        {
-            QStringLiteral("paint-swatch"),
-            QStringLiteral("palette-symbolic"),
-        };
+        {QStringLiteral("paint-swatch"),
+         // For “symbolic” (monochromatic) vs “full-color” icons, see
+         // https://pointieststick.com/2023/08/12/how-all-this-icon-stuff-is-going-to-work-in-plasma-6/
+         QStringLiteral("palette"),
+         QStringLiteral("palette-symbolic")};
     const int paletteIndex = //
         m_tabWidget->indexOf(m_paletteWrapperWidget);
     if (paletteIndex >= 0) {
