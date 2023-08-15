@@ -328,7 +328,7 @@ msgid "Click to snap to nearest in-&gamut color"
 msgstr "点击以吸附到最接近的色域内颜色(&G)"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1162
+#: colordialog.cpp:1163
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "选择颜色"
