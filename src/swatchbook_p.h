@@ -8,6 +8,7 @@
 // #include "swatchbook.h"
 
 #include "constpropagatingrawpointer.h"
+#include "helper.h"
 #include "helperqttypes.h"
 #include <qcolor.h>
 #include <qglobal.h>
@@ -39,7 +40,7 @@ class SwatchBookPrivate final : public QObject
     Q_OBJECT
 
 public:
-    explicit SwatchBookPrivate(SwatchBook *backLink);
+    explicit SwatchBookPrivate(SwatchBook *backLink, const Array2D<QColor> &swatches, Qt::Orientations wideSpacing);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -49,28 +50,35 @@ public:
     [[nodiscard]] QSize colorPatchesSizeWithMargin() const;
     [[nodiscard]] int horizontalPatchSpacing() const;
     void initStyleOption(QStyleOptionFrame *option) const;
+    [[nodiscard]] int normalPatchSpacing() const;
     [[nodiscard]] QPoint offset(const QStyleOptionFrame &styleOptionFrame) const;
     [[nodiscard]] QSize patchSizeInner() const;
     [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();
-    void selectColorFromPalette(QListSizeType newCurrentBasicColor, QListSizeType newCurrentRow);
+    void selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow);
     [[nodiscard]] int verticalPatchSpacing() const;
+    [[nodiscard]] int widePatchSpacing() const;
 
-    /** @brief The colors of the palette.
+    /** @brief Internal storage for property @ref SwatchBook::currentColor
      *
-     * This is a two-dimensional array. At the first level the
-     * basic color (red, green…). At the second level, a particular
-     * tint/shade of this basic color.
+     * QColor automatically initializes with an invalid color, just like it
+     * should be for the property @ref SwatchBook::currentColor, so no
+     * need to initialize here explicitly. */
+    QColor m_currentColor;
+    /** @brief Pointer to the RgbColorSpace object. */
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
+    /** @brief Selected column.
      *
-     * @sa @ref m_selectedBasicColor
-     * @sa @ref m_selectedTintShade */
-    QList<QList<QColor>> m_paletteColors;
-    /** @brief Selected basic color.
-     *
-     * If one of the colors in the palette is selected, this is
-     * the index of the basic color in @ref m_paletteColors.
+     * If one of the swatches in the book is selected, this is
+     * the index of the column.
      * Otherwise, its <tt>-1</tt>. */
-    int m_selectedBasicColor = -1;
+    QListSizeType m_selectedColumn = -1;
+    /** @brief Selected row.
+     *
+     * If one of the swatches in the book is selected, this is
+     * the index of the row.
+     * Otherwise, its <tt>-1</tt>. */
+    QListSizeType m_selectedRow = -1;
     /** @brief The selection mark to use, or an empty string if no
      * selection mark is available.
      *
@@ -82,20 +90,17 @@ public:
      *
      * The value is set by @ref retranslateUi(). */
     QString m_selectionMark;
-    /** @brief Internal storage for property @ref SwatchBook::currentColor
+    /** @brief The colors of the swatches.
      *
-     * QColor automatically initializes with an invalid color, just like it
-     * should be for the property @ref SwatchBook::currentColor, so no
-     * need to initialize here explicitly. */
-    QColor m_currentColor;
-    /** @brief Selected tint/shade.
+     * This is a two-dimensional array. At the first level the
+     * basic color (red, green…). At the second level, a particular
+     * tint/shade of this basic color.
      *
-     * If one of the colors in the palette is selected, this is
-     * the index of the tint/shade in @ref m_paletteColors.
-     * Otherwise, its <tt>-1</tt>. */
-    int m_selectedTintShade = -1;
-    /** @brief Pointer to the RgbColorSpace object. */
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
+     * @sa @ref m_selectedColumn
+     * @sa @ref m_selectedRow */
+    const Array2D<QColor> m_swatches;
+    /** @brief List of axis where @ref widePatchSpacing should be used. */
+    const Qt::Orientations m_wideSpacing;
 
 private:
     Q_DISABLE_COPY(SwatchBookPrivate)

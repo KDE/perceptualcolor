@@ -444,7 +444,9 @@ static void makeScreenshots()
     }
 
     {
-        SwatchBook m_swatchBook(m_colorSpace);
+        SwatchBook m_swatchBook(m_colorSpace, //
+                                wcsBasicColors(m_colorSpace),
+                                Qt::Orientation::Horizontal);
         m_swatchBook.setCurrentColor(defaultColorRgb);
         screenshot(&m_swatchBook);
     }

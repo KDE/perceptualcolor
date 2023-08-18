@@ -479,12 +479,12 @@ private Q_SLOTS:
 
     void testWcsBasicColorPalette()
     {
-        const auto colors = wcsBasicColorPalette( //
+        const auto colors = wcsBasicColors( //
             RgbColorSpaceFactory::createSrgb());
         QCOMPARE(
             // For test, choose a value that is not in the center neither
             // horizontally nor vertically; this might detect mirroring bugs.
-            colors.value(3).value(3),
+            colors.value(3, 3),
             QColor(0, 112, 50));
     }
 

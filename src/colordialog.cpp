@@ -831,11 +831,13 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
 
     // initialize color space and its dependencies
     m_rgbColorSpace = colorSpace;
-    m_wcsBasicColors = wcsBasicColorPalette(colorSpace);
-    m_wcsBasicDefaultColor = m_wcsBasicColors.value(4).value(2);
+    m_wcsBasicColors = wcsBasicColors(colorSpace);
+    m_wcsBasicDefaultColor = m_wcsBasicColors.value(4, 2);
 
     // create the graphical selectors
-    m_swatchBook = new SwatchBook(m_rgbColorSpace);
+    m_swatchBook = new SwatchBook(m_rgbColorSpace, //
+                                  m_wcsBasicColors, //
+                                  Qt::Orientation::Horizontal);
     QHBoxLayout *paletteInnerLayout = new QHBoxLayout();
     paletteInnerLayout->addWidget(m_swatchBook);
     paletteInnerLayout->addStretch();

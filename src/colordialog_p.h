@@ -257,7 +257,7 @@ public:
     /** @brief Pointer to the tab widget. */
     QPointer<QTabWidget> m_tabWidget;
     /** @brief @ref m_wcsBasicColors for @ref m_rgbColorSpace. */
-    QList<QList<QColor>> m_wcsBasicColors;
+    Array2D<QColor> m_wcsBasicColors;
     /** @brief A default color within @ref m_wcsBasicColors.
      *
      * Choosing the blue tone (no tint, no shade). Arguments in favor:

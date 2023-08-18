@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                            QLocale().uiLanguages());
 
-    // app.setLayoutDirection(Qt::RightToLeft);
+    app.setLayoutDirection(Qt::RightToLeft);
 
     // Initialize the color dialog
 

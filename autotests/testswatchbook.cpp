@@ -60,7 +60,8 @@ private:
         QTest::addColumn<QString>("styleName");
         const auto container = QStyleFactory::keys();
         for (const QString &currentStyleName : std::as_const(container)) {
-            QTest::newRow(currentStyleName.toUtf8().constData()) << currentStyleName;
+            QTest::newRow(currentStyleName.toUtf8().constData()) //
+                << currentStyleName;
         }
     }
 
@@ -87,16 +88,20 @@ private Q_SLOTS:
 
     void testConstructorDestructor()
     {
-        SwatchBook testObject(m_rgbColorSpace);
+        SwatchBook testObject(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace),
+                              {});
     }
 
     void testConstructorDefaultValues()
     {
-        SwatchBook testObject(m_rgbColorSpace);
+        SwatchBook testObject(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace),
+                              {});
         // Verify that initially one of the colors of the palette
         // is actually selected (no -1 as index):
-        QVERIFY(testObject.d_pointer->m_selectedBasicColor >= 0);
-        QVERIFY(testObject.d_pointer->m_selectedTintShade >= 0);
+        QVERIFY(testObject.d_pointer->m_selectedColumn >= 0);
+        QVERIFY(testObject.d_pointer->m_selectedRow >= 0);
         // Verify that the initial color conforms to QColorDialog
         QColorDialog reference;
         QCOMPARE(testObject.currentColor(), reference.currentColor());
@@ -104,18 +109,29 @@ private Q_SLOTS:
 
     void testMinimalSizeHint()
     {
-        SwatchBook testWidget(m_rgbColorSpace);
-        QVERIFY2(testWidget.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
-        QVERIFY2(testWidget.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace),
+                              {});
+        QVERIFY2(testWidget.minimumSizeHint().width() > 0, //
+                 "minimalSizeHint width is implemented.");
+        QVERIFY2(testWidget.minimumSizeHint().height() > 0, //
+                 "minimalSizeHint height is implemented.");
     }
 
     void testSizeHint()
     {
-        SwatchBook testWidget(m_rgbColorSpace);
-        QVERIFY2(testWidget.sizeHint().width() >= testWidget.minimumSizeHint().width(), "sizeHint width is bigger than or equal to minimalSizeHint width.");
-        QVERIFY2(testWidget.sizeHint().height() >= testWidget.minimumSizeHint().height(),
-                 "sizeHint height is bigger than or equal to minimalSizeHint "
-                 "height.");
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace),
+                              {});
+        QVERIFY2( //
+            testWidget.sizeHint().width() //
+                >= testWidget.minimumSizeHint().width(), //
+            "sizeHint width is bigger than or equal to minimalSizeHint width.");
+        QVERIFY2( //
+            testWidget.sizeHint().height() //
+                >= testWidget.minimumSizeHint().height(),
+            "sizeHint height is bigger than or equal to minimalSizeHint "
+            "height.");
     }
 
 #ifndef MSVC_DLL
@@ -127,7 +143,9 @@ private Q_SLOTS:
 
     void testCurrentColor()
     {
-        SwatchBook testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace),
+                              {});
         // Prepare test
         QObject scopeMarker;
         QColor lastSignalColor;
@@ -141,11 +159,11 @@ private Q_SLOTS:
                 ++signalCount;
             });
         // Initialize the palette widget and lastSignalColor to a defined state
-        testWidget.d_pointer->selectColorFromPalette(0, 0);
+        testWidget.d_pointer->selectSwatch(0, 0);
 
         // Test
         const QColor oldColor = lastSignalColor;
-        testWidget.d_pointer->selectColorFromPalette(0, 1);
+        testWidget.d_pointer->selectSwatch(0, 1);
         QVERIFY(oldColor != lastSignalColor); // Signal has been emitted
 
         testWidget.setCurrentColor(Qt::red);
@@ -174,23 +192,103 @@ private Q_SLOTS:
 
 #endif
 
-    void testPatchSpacing_data()
+    void testPatchSpacingH_data()
     {
         provideStyleNamesAsData();
     }
 
-    void testPatchSpacing()
+    void testPatchSpacingH()
     {
         QFETCH(QString, styleName);
         QStyle *style = QStyleFactory::create(styleName);
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_rgbColorSpace);
+            SwatchBook testWidget(m_rgbColorSpace, //
+                                  wcsBasicColors(m_rgbColorSpace),
+                                  Qt::Orientation::Horizontal);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
             QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
-            QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > testWidget.d_pointer->verticalPatchSpacing());
+            QVERIFY( //
+                testWidget.d_pointer->horizontalPatchSpacing() //
+                > testWidget.d_pointer->verticalPatchSpacing());
+        }
+        delete style;
+    }
+
+    void testPatchSpacingV_data()
+    {
+        provideStyleNamesAsData();
+    }
+
+    void testPatchSpacingV()
+    {
+        QFETCH(QString, styleName);
+        QStyle *style = QStyleFactory::create(styleName);
+        {
+            // Own block to make sure style will be deleted _after_ testWidget
+            // has been destroyed.
+            SwatchBook testWidget(m_rgbColorSpace, //
+                                  wcsBasicColors(m_rgbColorSpace),
+                                  Qt::Orientation::Vertical);
+            testWidget.setStyle(style);
+            QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
+            QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
+            QVERIFY( //
+                testWidget.d_pointer->horizontalPatchSpacing() //
+                < testWidget.d_pointer->verticalPatchSpacing());
+        }
+        delete style;
+    }
+
+    void testPatchSpacingNone_data()
+    {
+        provideStyleNamesAsData();
+    }
+
+    void testPatchSpacingNone()
+    {
+        QFETCH(QString, styleName);
+        QStyle *style = QStyleFactory::create(styleName);
+        {
+            // Own block to make sure style will be deleted _after_ testWidget
+            // has been destroyed.
+            SwatchBook testWidget(m_rgbColorSpace, //
+                                  wcsBasicColors(m_rgbColorSpace),
+                                  {});
+            testWidget.setStyle(style);
+            QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
+            QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
+            QVERIFY( //
+                testWidget.d_pointer->horizontalPatchSpacing() //
+                == testWidget.d_pointer->verticalPatchSpacing());
+        }
+        delete style;
+    }
+
+    void testPatchSpacingBoth_data()
+    {
+        provideStyleNamesAsData();
+    }
+
+    void testPatchSpacingBoth()
+    {
+        QFETCH(QString, styleName);
+        QStyle *style = QStyleFactory::create(styleName);
+        {
+            // Own block to make sure style will be deleted _after_ testWidget
+            // has been destroyed.
+            SwatchBook testWidget( //
+                m_rgbColorSpace, //
+                wcsBasicColors(m_rgbColorSpace), //
+                Qt::Orientation::Horizontal | Qt::Orientation::Vertical);
+            testWidget.setStyle(style);
+            QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
+            QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
+            QVERIFY( //
+                testWidget.d_pointer->horizontalPatchSpacing() //
+                == testWidget.d_pointer->verticalPatchSpacing());
         }
         delete style;
     }
@@ -207,30 +305,44 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_rgbColorSpace);
+            SwatchBook testWidget(m_rgbColorSpace, //
+                                  wcsBasicColors(m_rgbColorSpace), //
+                                  {});
             testWidget.setStyle(style);
             QVERIFY(!testWidget.d_pointer->patchSizeInner().isEmpty());
             QVERIFY(!testWidget.d_pointer->patchSizeOuter().isEmpty());
-            QVERIFY(testWidget.d_pointer->patchSizeOuter().width() >= testWidget.d_pointer->patchSizeInner().width());
-            QVERIFY(testWidget.d_pointer->patchSizeOuter().height() >= testWidget.d_pointer->patchSizeInner().height());
+            QVERIFY( //
+                testWidget.d_pointer->patchSizeOuter().width() //
+                >= testWidget.d_pointer->patchSizeInner().width());
+            QVERIFY( //
+                testWidget.d_pointer->patchSizeOuter().height() //
+                >= testWidget.d_pointer->patchSizeInner().height());
 
             // Test also some design properties:
-            QVERIFY(testWidget.d_pointer->patchSizeInner().width() >= testWidget.d_pointer->horizontalPatchSpacing());
-            QVERIFY(testWidget.d_pointer->patchSizeInner().height() >= testWidget.d_pointer->verticalPatchSpacing());
+            QVERIFY( //
+                testWidget.d_pointer->patchSizeInner().width() //
+                >= testWidget.d_pointer->horizontalPatchSpacing());
+            QVERIFY( //
+                testWidget.d_pointer->patchSizeInner().height() //
+                >= testWidget.d_pointer->verticalPatchSpacing());
         }
         delete style;
     }
 
     void testRetranslateUI()
     {
-        SwatchBook testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace), //
+                              {});
         // Test that function call does not crash:
         testWidget.d_pointer->retranslateUi();
     }
 
     void testInitStyleOptions()
     {
-        SwatchBook testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace), //
+                              {});
 
         // Test that function call does not crash with regular object:
         QStyleOptionFrame temp;
@@ -252,7 +364,9 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_rgbColorSpace);
+            SwatchBook testWidget(m_rgbColorSpace, //
+                                  wcsBasicColors(m_rgbColorSpace), //
+                                  {});
             testWidget.setStyle(style);
             QStyleOptionFrame temp;
             testWidget.d_pointer->initStyleOption(&temp);
@@ -264,10 +378,10 @@ private Q_SLOTS:
 
     void testKeyboard()
     {
-        SwatchBook testWidget(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, wcsBasicColors(m_rgbColorSpace), {});
         const QListSizeType count = //
-            qMax(testWidget.d_pointer->m_paletteColors.count(), //
-                 testWidget.d_pointer->m_paletteColors.at(0).count())
+            qMax(testWidget.d_pointer->m_swatches.iCount(), //
+                 testWidget.d_pointer->m_swatches.jCount())
             // Add 1 to exceed the possible number of fields (crash test)
             + 1;
 
@@ -276,37 +390,37 @@ private Q_SLOTS:
             // A color that is not in the palette:
             QColor(1, 2, 3));
         QTest::keyClick(&testWidget, Qt::Key_Left);
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, 0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
 
         // Test keys LTR
         testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Right);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
-                 testWidget.d_pointer->m_paletteColors.count() - 1);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatches.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Left);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_End);
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
-                 testWidget.d_pointer->m_paletteColors.count() - 1);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatches.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_Home);
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Left);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
 
         // Key tests RTL
@@ -314,52 +428,52 @@ private Q_SLOTS:
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Left);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
-                 testWidget.d_pointer->m_paletteColors.count() - 1);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatches.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Right);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_End);
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
-                 testWidget.d_pointer->m_paletteColors.count() - 1);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatches.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_Home);
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
 
         // Key tests vertical
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Down);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
-                 testWidget.d_pointer->m_paletteColors.at(0).count() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 testWidget.d_pointer->m_swatches.jCount() - 1);
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Up);
         }
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_PageDown);
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
-                 testWidget.d_pointer->m_paletteColors.at(0).count() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 testWidget.d_pointer->m_swatches.jCount() - 1);
         QTest::keyClick(&testWidget, Qt::Key_PageUp);
-        QCOMPARE(testWidget.d_pointer->m_selectedBasicColor, //
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
-        QCOMPARE(testWidget.d_pointer->m_selectedTintShade, //
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
     }
 };

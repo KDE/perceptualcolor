@@ -6,6 +6,7 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
+#include "helper.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qsharedpointer.h>
@@ -32,11 +33,14 @@ class RgbColorSpace;
 
 /** @internal
  *
- * @brief Shows the colors of a palette.
+ * @brief Shows colors swatches.
  *
  * @image html SwatchBook.png "SwatchBook"
  *
  * The user can select a color either by mouse click or by using the keyboard.
+ *
+ * The marker used to mark the currently selected color depends
+ * on the current translation; see @ref setTranslation for details.
  *
  * @internal
  *
@@ -52,11 +56,11 @@ class SwatchBook : public AbstractDiagram
     /** @brief The current color.
      *
      * This property can contain any valid color, including colors
-     * that are not in the palette.
+     * that are not in the swatch book.
      *
      * If you set this property exactly to an RGB color that is in the
-     * palette, this palette entry will show a selection mark. Otherwise, no
-     * selection mark will be visible.
+     * swatch book, this particular swatch will show a selection mark.
+     * Otherwise, no selection mark will be visible.
      *
      * @sa @ref currentColor() const
      * @sa @ref setCurrentColor()
@@ -64,7 +68,10 @@ class SwatchBook : public AbstractDiagram
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
 public:
-    Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+                                    const Array2D<QColor> &swatches,
+                                    Qt::Orientations wideSpacing,
+                                    QWidget *parent = nullptr);
     virtual ~SwatchBook() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */

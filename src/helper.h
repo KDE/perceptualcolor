@@ -69,6 +69,15 @@ class Array2D
 public:
     /** @brief Constructor.
      *
+     * Constructs an array with the size 0 × 0. */
+    Array2D()
+        : m_iCount(0)
+        , m_jCount(0)
+    {
+    }
+
+    /** @brief Constructor.
+     *
      * @param iCount size (first dimension)
      * @param jCount size (second dimension)
      *
@@ -213,7 +222,7 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
     }
 }
 
-[[nodiscard]] QList<QList<QColor>> wcsBasicColorPalette(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+[[nodiscard]] Array2D<QColor> wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type);
 

@@ -18,6 +18,7 @@
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
+#include "rgbcolorspacefactory.h"
 #include <algorithm>
 #include <array>
 #include <optional>
@@ -115,13 +116,24 @@ void SwatchBookPrivate::retranslateUi()
 
 /** @brief Constructor
  *
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
- *
+ * @param colorSpace The color space of the swatches.
+ * @param swatches The colors in the given color space. The first dimension
+ *        (@ref Array2D::iCount()) is interpreted as horizontal axis from
+ *        left to right on LTR layouts, and the other way around on RTL
+ *        layouts. The second dimension of the array (@ref Array2D::jCount())
+ *        is interpreted as vertical axis, from top to bottom.
+ * @param wideSpacing Set of axis where the spacing should be wider than
+ *        normal. This is useful to give some visual structure: When your
+ *        swatches are organized logically in columns, set
+ *        <tt>Qt::Orientation::Horizontal</tt> here. To use normal spacing
+ *        everywhere, simply set this parameter to <tt>{}</tt>.
  * @param parent The parent of the widget, if any */
-SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+                       const Array2D<QColor> &swatches,
+                       Qt::Orientations wideSpacing,
+                       QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new SwatchBookPrivate(this))
+    , d_pointer(new SwatchBookPrivate(this, swatches, wideSpacing))
 {
     d_pointer->m_rgbColorSpace = colorSpace;
 
@@ -133,11 +145,8 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     // (Important on some QStyle who might paint widgets different then.)
     setAttribute(Qt::WA_Hover);
 
-    d_pointer->m_paletteColors = //
-        wcsBasicColorPalette(d_pointer->m_rgbColorSpace);
-
     // Initialize the selection (and implicitly the currentColor property):
-    d_pointer->selectColorFromPalette(8, 0); // Same default as in QColorDialog
+    d_pointer->selectSwatch(8, 0); // Same default as in QColorDialog
 
     initializeTranslation(QCoreApplication::instance(),
                           // An empty std::optional means: If in initialization
@@ -156,9 +165,14 @@ SwatchBook::~SwatchBook() noexcept
 /** @brief Constructor
  *
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
-SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink)
-    : q_pointer(backLink)
+ * is the private implementation.
+ * @param swatches The swatches.
+ * @param wideSpacing Set of axis using @ref widePatchSpacing instead
+ *        of @ref normalPatchSpacing. */
+SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, const Array2D<QColor> &swatches, Qt::Orientations wideSpacing)
+    : m_swatches(swatches)
+    , m_wideSpacing(wideSpacing)
+    , q_pointer(backLink)
 {
 }
 
@@ -191,12 +205,14 @@ QSize SwatchBook::minimumSizeHint() const
                                                      &myOption,
                                                      contentSize,
                                                      this);
+
     // On some style like (for example the MacOS style), sizeFromContents()
     // for line edits returns a value that is less height than the content
     // size. Therefore, here comes some safety code:
     const auto lineWidth = myOption.lineWidth;
     QMargins margins{lineWidth, lineWidth, lineWidth, lineWidth};
     const QSize minimumSize = contentSize.grownBy(margins);
+
     return minimumSize.expandedTo(styleSize);
 }
 
@@ -236,15 +252,15 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
     d_pointer->m_currentColor = temp;
 
     bool colorFound = false;
-    const qsizetype myBasicColorCount = d_pointer->m_paletteColors.count();
-    const qsizetype myRowCount = d_pointer->m_paletteColors.at(0).count();
-    int basicColorIndex = 0;
+    const qsizetype myColumnCount = d_pointer->m_swatches.iCount();
+    const qsizetype myRowCount = d_pointer->m_swatches.jCount();
+    int columnIndex = 0;
     int rowIndex = 0;
-    for (basicColorIndex = 0; //
-         basicColorIndex < myBasicColorCount; //
-         ++basicColorIndex) {
+    for (columnIndex = 0; //
+         columnIndex < myColumnCount; //
+         ++columnIndex) {
         for (rowIndex = 0; rowIndex < myRowCount; ++rowIndex) {
-            if (d_pointer->m_paletteColors.at(basicColorIndex).at(rowIndex) == temp) {
+            if (d_pointer->m_swatches.value(columnIndex, rowIndex) == temp) {
                 colorFound = true;
                 break;
             }
@@ -254,11 +270,11 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
         }
     }
     if (colorFound) {
-        d_pointer->m_selectedBasicColor = basicColorIndex;
-        d_pointer->m_selectedTintShade = rowIndex;
+        d_pointer->m_selectedColumn = columnIndex;
+        d_pointer->m_selectedRow = rowIndex;
     } else {
-        d_pointer->m_selectedBasicColor = -1;
-        d_pointer->m_selectedTintShade = -1;
+        d_pointer->m_selectedColumn = -1;
+        d_pointer->m_selectedRow = -1;
     }
 
     Q_EMIT currentColorChanged(temp);
@@ -266,26 +282,31 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
     update();
 }
 
-/** @brief Selects a color of the palette.
+/** @brief Selects a swatch from the book.
  *
- * @pre Both parameters are valid indexes within @ref m_paletteColors.
+ * @pre Both parameters are valid indexes within @ref m_swatches.
  * (Otherwise there will likely be a crash.)
  *
- * @pre There are no duplicates within @ref m_paletteColors.
+ * @param newCurrentColomn Index of the column.
  *
- * @param newCurrentBasicColor Index of basic color.
+ * @param newCurrentRow Index of the row.
  *
- * @param newCurrentRow Index of the row (tint/shade).
- *
- * @post The given color is selected. The selection mark is visible.
- * @ref SwatchBook::currentColor has the value of this color. */
-void SwatchBookPrivate::selectColorFromPalette(QListSizeType newCurrentBasicColor, QListSizeType newCurrentRow)
+ * @post If the given swatch is empty, nothing happens. Otherwise, it is
+ * selected and the selection mark is visible and @ref SwatchBook::currentColor
+ * has the value of this color. */
+void SwatchBookPrivate::selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow)
 {
-    // As we assume there are no duplicates in the palette, it’s safe
-    // to let setCurrentColor do all the work: It will select the
-    // (only) correct color entry.
-    q_pointer->setCurrentColor( //
-        m_paletteColors.at(newCurrentBasicColor).at(newCurrentRow));
+    const auto newColor = m_swatches.value(newCurrentColomn, newCurrentRow);
+    if (!newColor.isValid()) {
+        return;
+    }
+    m_selectedColumn = newCurrentColomn;
+    m_selectedRow = newCurrentRow;
+    if (newColor != m_currentColor) {
+        m_currentColor = newColor;
+        Q_EMIT q_pointer->currentColorChanged(newColor);
+    }
+    q_pointer->update();
 }
 
 /** @brief Horizontal spacing between color patches.
@@ -294,10 +315,30 @@ void SwatchBookPrivate::selectColorFromPalette(QListSizeType newCurrentBasicColo
  * device-independent pixel. The value depends on the
  * current <tt>QStyle</tt>.
  *
- * @sa @ref verticalPatchSpacing
- */
+ * @sa @ref verticalPatchSpacing */
 int SwatchBookPrivate::horizontalPatchSpacing() const
 {
+    if (m_wideSpacing.testFlag(Qt::Orientation::Horizontal)) {
+        return widePatchSpacing();
+    }
+    return normalPatchSpacing();
+}
+
+/** @brief Value for a wide spacing between swatches.
+ *
+ * @returns Wide spacing between color patches, measured in
+ * device-independent pixel. The value depends on the
+ * current <tt>QStyle</tt>.
+ *
+ * @sa @ref normalPatchSpacing */
+int SwatchBookPrivate::widePatchSpacing() const
+{
+    // NOTE The value is derived from the current QStyle’s values for some
+    // horizontal spacings. This seems reasonable because some styles might
+    // have tighter metrics for vertical spacing, which might not look good
+    // here. The derived value is actually useful for both, horizontal and
+    // vertical metrics.
+
     int temp = q_pointer->style()->pixelMetric( //
         QStyle::PM_LayoutHorizontalSpacing,
         nullptr,
@@ -333,7 +374,21 @@ int SwatchBookPrivate::horizontalPatchSpacing() const
  * between patches is vertically stronger than horizontally. */
 int SwatchBookPrivate::verticalPatchSpacing() const
 {
-    return qMax(horizontalPatchSpacing() / 3, // ⅓ looks nice
+    if (m_wideSpacing.testFlag(Qt::Orientation::Vertical)) {
+        return widePatchSpacing();
+    }
+    return normalPatchSpacing();
+}
+
+/** @brief Normal spacing between color swatches.
+ *
+ * @returns Normal spacing between color patches, measured in
+ * device-independent pixel. The value is typically smaller than
+ * @ref widePatchSpacing(), to symbolize that the binding
+ * between patches is stronger. */
+int SwatchBookPrivate::normalPatchSpacing() const
+{
+    return qMax(widePatchSpacing() / 3, // ⅓ looks nice
                 1 // minimal useful value for a line visible as all scales
     );
 }
@@ -444,7 +499,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     }
 
     const int rowIndex = temp.y() / rowHeight;
-    if (!isInRange<qsizetype>(0, rowIndex, d_pointer->m_paletteColors.at(0).count() - 1)) {
+    if (!isInRange<qsizetype>(0, rowIndex, d_pointer->m_swatches.jCount() - 1)) {
         // The index is out of range. This might happen when the user
         // clicks very near to the border, where is no other patch
         // anymore, but which is still part of the widget.
@@ -452,14 +507,14 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     }
 
     const int visualColumnIndex = temp.x() / columnWidth;
-    QListSizeType basicColorIndex;
+    QListSizeType columnIndex;
     if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-        basicColorIndex = visualColumnIndex;
+        columnIndex = visualColumnIndex;
     } else {
-        basicColorIndex = //
-            d_pointer->m_paletteColors.count() - 1 - visualColumnIndex;
+        columnIndex = //
+            d_pointer->m_swatches.iCount() - 1 - visualColumnIndex;
     }
-    if (!isInRange<qsizetype>(0, basicColorIndex, d_pointer->m_paletteColors.count() - 1)) {
+    if (!isInRange<qsizetype>(0, columnIndex, d_pointer->m_swatches.iCount() - 1)) {
         // The index is out of range. This might happen when the user
         // clicks very near to the border, where is no other patch
         // anymore, but which is still part of the widget.
@@ -468,7 +523,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
 
     // If we reached here, the click must have been within a patch
     // and we have valid indexes.
-    d_pointer->selectColorFromPalette(basicColorIndex, rowIndex);
+    d_pointer->selectSwatch(columnIndex, rowIndex);
 }
 
 /** @brief The size of the color patches.
@@ -565,55 +620,61 @@ void SwatchBook::paintEvent(QPaintEvent *event)
 
     // Draw the color patches
     const QPoint offset = d_pointer->offset(frameStyleOption);
-    const QListSizeType basicColorCount = d_pointer->m_paletteColors.count();
+    const QListSizeType columnCount = d_pointer->m_swatches.iCount();
     QListSizeType visualColumn;
-    for (int basicColor = 0; basicColor < basicColorCount; ++basicColor) {
+    for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
         for (int row = 0; //
-             row < d_pointer->m_paletteColors.at(0).count(); //
+             row < d_pointer->m_swatches.jCount(); //
              ++row //
         ) {
-            widgetPainter.setBrush( //
-                d_pointer->m_paletteColors.at(basicColor).at(row));
-            widgetPainter.setPen(Qt::NoPen);
-            if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                visualColumn = basicColor;
-            } else {
-                visualColumn = basicColorCount - 1 - basicColor;
+            const auto swatchColor = //
+                d_pointer->m_swatches.value(columnIndex, row);
+            if (swatchColor.isValid()) {
+                widgetPainter.setBrush(swatchColor);
+                widgetPainter.setPen(Qt::NoPen);
+                if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
+                    visualColumn = columnIndex;
+                } else {
+                    visualColumn = columnCount - 1 - columnIndex;
+                }
+                widgetPainter.drawRect( //
+                    offset.x() //
+                        + (static_cast<int>(visualColumn) //
+                           * (patchWidthOuter + horizontalSpacing)),
+                    offset.y() //
+                        + row * (patchHeightOuter + verticalSpacing),
+                    patchWidthOuter,
+                    patchHeightOuter);
             }
-            widgetPainter.drawRect( //
-                offset.x() //
-                    + static_cast<int>(visualColumn) * (patchWidthOuter + horizontalSpacing),
-                offset.y() //
-                    + row * (patchHeightOuter + verticalSpacing),
-                patchWidthOuter,
-                patchHeightOuter);
         }
     }
 
     // If there is no selection mark to draw, nothing more to do: Return!
-    if (d_pointer->m_selectedBasicColor < 0 || d_pointer->m_selectedTintShade < 0) {
+    if (d_pointer->m_selectedColumn < 0 || d_pointer->m_selectedRow < 0) {
         return;
     }
 
     // Draw the selection mark (if any)
     const QListSizeType visualSelectedColumnIndex = //
         (layoutDirection() == Qt::LayoutDirection::LeftToRight) //
-        ? d_pointer->m_selectedBasicColor //
-        : d_pointer->m_paletteColors.count() - 1 - d_pointer->m_selectedBasicColor;
-    const LchDouble colorCielchD50 = d_pointer->m_rgbColorSpace->toCielchD50Double( //
-        d_pointer //
-            ->m_paletteColors //
-            .at(d_pointer->m_selectedBasicColor) //
-            .at(d_pointer->m_selectedTintShade) //
-            .rgba64() //
-    );
+        ? d_pointer->m_selectedColumn //
+        : d_pointer->m_swatches.iCount() - 1 - d_pointer->m_selectedColumn;
+    const LchDouble colorCielchD50 = //
+        d_pointer->m_rgbColorSpace->toCielchD50Double( //
+            d_pointer //
+                ->m_swatches //
+                .value(d_pointer->m_selectedColumn, d_pointer->m_selectedRow) //
+                .rgba64() //
+        );
     const QColor selectionMarkColor = //
         handleColorFromBackgroundLightness(colorCielchD50.l);
     const QPointF selectedPatchOffset = QPointF( //
         offset.x() //
-            + static_cast<int>(visualSelectedColumnIndex) * (patchWidthOuter + horizontalSpacing), //
+            + (static_cast<int>(visualSelectedColumnIndex) //
+               * (patchWidthOuter + horizontalSpacing)), //
         offset.y() //
-            + d_pointer->m_selectedTintShade * (patchHeightOuter + verticalSpacing));
+            + (static_cast<int>(d_pointer->m_selectedRow) //
+               * (patchHeightOuter + verticalSpacing)));
     const QSize patchSizeInner = d_pointer->patchSizeInner();
     const int patchWidthInner = patchSizeInner.width();
     const int patchHeightInner = patchSizeInner.height();
@@ -669,9 +730,11 @@ void SwatchBook::paintEvent(QPaintEvent *event)
             // Offset for the current patch
             textTransform.translate(
                 // x:
-                selectedPatchOffset.x() + (patchWidthOuter - patchWidthInner) / 2,
+                selectedPatchOffset.x() //
+                    + (patchWidthOuter - patchWidthInner) / 2,
                 // y:
-                selectedPatchOffset.y() + (patchHeightOuter - patchHeightInner) / 2);
+                selectedPatchOffset.y() //
+                    + (patchHeightOuter - patchHeightInner) / 2);
 
             // Scale to maximum and center within the margins
             const qreal scaleFactor = qMin(
@@ -710,7 +773,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
  * @param event the event */
 void SwatchBook::keyPressEvent(QKeyEvent *event)
 {
-    QListSizeType basicColorShift = 0;
+    QListSizeType columnShift = 0;
     QListSizeType rowShift = 0;
     const int writingDirection = //
         (layoutDirection() == Qt::LeftToRight) //
@@ -724,22 +787,22 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
         rowShift = 1;
         break;
     case Qt::Key_Left:
-        basicColorShift = -1 * writingDirection;
+        columnShift = -1 * writingDirection;
         break;
     case Qt::Key_Right:
-        basicColorShift = 1 * writingDirection;
+        columnShift = 1 * writingDirection;
         break;
     case Qt::Key_PageUp:
-        rowShift = (-1) * d_pointer->m_paletteColors.at(0).count();
+        rowShift = (-1) * d_pointer->m_swatches.jCount();
         break;
     case Qt::Key_PageDown:
-        rowShift = d_pointer->m_paletteColors.at(0).count();
+        rowShift = d_pointer->m_swatches.jCount();
         break;
     case Qt::Key_Home:
-        basicColorShift = (-1) * d_pointer->m_paletteColors.count();
+        columnShift = (-1) * d_pointer->m_swatches.iCount();
         break;
     case Qt::Key_End:
-        basicColorShift = d_pointer->m_paletteColors.count();
+        columnShift = d_pointer->m_swatches.iCount();
         break;
     default:
         // Quote from Qt documentation:
@@ -761,24 +824,24 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
 
     // If currently no color of the palette is selected, select the
     // first color as default.
-    if ((d_pointer->m_selectedBasicColor < 0) && (d_pointer->m_selectedTintShade < 0)) {
-        d_pointer->selectColorFromPalette(0, 0);
+    if ((d_pointer->m_selectedColumn < 0) && (d_pointer->m_selectedRow < 0)) {
+        d_pointer->selectSwatch(0, 0);
         return;
     }
 
     const int accelerationFactor = 2;
     if (event->modifiers().testFlag(Qt::ControlModifier)) {
-        basicColorShift *= accelerationFactor;
+        columnShift *= accelerationFactor;
         rowShift *= accelerationFactor;
     }
 
-    d_pointer->selectColorFromPalette( //
+    d_pointer->selectSwatch( //
         qBound<QListSizeType>(0, //
-                              d_pointer->m_selectedBasicColor + basicColorShift,
-                              d_pointer->m_paletteColors.count() - 1),
+                              d_pointer->m_selectedColumn + columnShift,
+                              d_pointer->m_swatches.iCount() - 1),
         qBound<QListSizeType>(0, //
-                              d_pointer->m_selectedTintShade + rowShift, //
-                              d_pointer->m_paletteColors.at(0).count() - 1));
+                              d_pointer->m_selectedRow + rowShift, //
+                              d_pointer->m_swatches.jCount() - 1));
 }
 
 /** @brief Handle state changes.
@@ -811,8 +874,8 @@ QSize SwatchBookPrivate::colorPatchesSizeWithMargin() const
 {
     q_pointer->ensurePolished();
     const QSize patchSize = patchSizeOuter();
-    const int columnCount = static_cast<int>(m_paletteColors.count());
-    const int rowCount = static_cast<int>(m_paletteColors.at(0).count());
+    const int columnCount = static_cast<int>(m_swatches.iCount());
+    const int rowCount = static_cast<int>(m_swatches.jCount());
     const int width = //
         q_pointer->style()->pixelMetric(QStyle::PM_LayoutLeftMargin) //
         + columnCount * patchSize.width() //

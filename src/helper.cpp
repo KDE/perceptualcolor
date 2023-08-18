@@ -386,9 +386,6 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
  * tint, pure color, and shade</a>. Following the saturated colors and
  * eventually the less saturated ones, the gray axis comes in last place.
  *
- * The marker used to mark the currently selected color depends
- * on the current translation; see @ref setTranslation for details.
- *
  * What exact colors are used? What exactly is a typical “red” or a
  * “green”? Doesn’t every human have a slightly different
  * feeling what a “typical” red or a “typical” blue is? We
@@ -452,9 +449,11 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
  * @param colorSpace The color space in which the return value is calculated.
  *
  * @returns Palette derived from the basic colors. Provides as a list of
- * colors; each color is a list of tints, tone, shades – ranging from light
- * to dark. */
-QList<QList<QColor>> wcsBasicColorPalette(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+ * basic colors (in this order: red, orange, yellow, green, blue, purple, pink,
+ * brown, gray axis). Each basic color is a list of 5 swatches (starting with
+ * the lightest and finishing with the darkest: 2 tints, the tone itself,
+ * 2 shades). */
+Array2D<QColor> wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     constexpr GenericColor red{41.22, 61.40, 17.92};
     constexpr GenericColor orange{61.70, 29.38, 64.40};
@@ -467,73 +466,75 @@ QList<QList<QColor>> wcsBasicColorPalette(const QSharedPointer<PerceptualColor::
     constexpr std::array<GenericColor, 8> chromaticCielabColors //
         {{red, orange, yellow, green, blue, purple, pink, brown}};
 
-    QList<QList<QColor>> result;
-    result.reserve(chromaticCielabColors.size() + 1); // + 1 for gray axis
+    // Lowest common denominator of QList‘s and std::array’s size types:
+    using MySizeType = quint8;
 
-    QList<QColor> rgbList;
+    constexpr MySizeType columnCount = //
+        chromaticCielabColors.size() + 1; // + 1 for gray axis
+    constexpr auto rowCount = 5;
+    Array2D<QColor> wcsSwatches{columnCount, rowCount};
 
     // Chromatic colors
     constexpr double strongTint = 0.46;
     constexpr double weakTint = 0.23;
     constexpr double weakShade = 0.18;
     constexpr double strongShade = 0.36;
-    for (const auto &cielabD50 : std::as_const(chromaticCielabColors)) { //
-        const auto oklch = AbsoluteColor::convert(ColorModel::CielabD50, //
-                                                  cielabD50, //
-                                                  ColorModel::OklchD65 //
-                                                  )
+    std::array<GenericColor, rowCount> tintsAndShades;
+    for (MySizeType i = 0; i < chromaticCielabColors.size(); ++i) { //
+        const auto oklch = AbsoluteColor::convert( //
+                               ColorModel::CielabD50, //
+                               chromaticCielabColors.at(i),
+                               ColorModel::OklchD65 //
+                               )
                                .value_or(GenericColor());
-        QList<GenericColor> tintsAndShades;
-        tintsAndShades << GenericColor //
+        tintsAndShades[0] = GenericColor //
             {oklch.first + (1 - oklch.first) * strongTint, //
              oklch.second * (1 - strongTint), //
              oklch.third};
-        tintsAndShades << GenericColor //
+        tintsAndShades[1] = GenericColor //
             {oklch.first + (1 - oklch.first) * weakTint, //
              oklch.second * (1 - weakTint), //
              oklch.third};
-        tintsAndShades << oklch;
-        tintsAndShades << GenericColor //
+        tintsAndShades[2] = oklch;
+        tintsAndShades[3] = GenericColor //
             {oklch.first * (1 - weakShade), //
              oklch.second * (1 - weakShade), //
              oklch.third};
-        tintsAndShades << GenericColor //
+        tintsAndShades[4] = GenericColor //
             {oklch.first * (1 - strongShade), //
              oklch.second * (1 - strongShade), //
              oklch.third};
-        rgbList.clear();
-        rgbList.reserve(tintsAndShades.count());
-        for (const auto &variation : std::as_const(tintsAndShades)) {
+        for (MySizeType j = 0; j < rowCount; ++j) {
             const auto variationCielchD50 = AbsoluteColor::convert( //
                                                 ColorModel::OklchD65, //
-                                                variation, //
+                                                tintsAndShades.at(j), //
                                                 ColorModel::CielchD50 //
                                                 )
                                                 .value_or(GenericColor());
-            rgbList << colorSpace->fromCielchD50ToQRgbBound( //
+            const auto variationRgb = colorSpace->fromCielchD50ToQRgbBound( //
                 variationCielchD50.reinterpretAsLchToLchDouble());
+            wcsSwatches.setValue(i, //
+                                 j,
+                                 variationRgb);
         }
-        result << rgbList;
     }
 
     // Gray axis
     QList<double> lightnesses{1, 0.75, 0.5, 0.25, 0};
-    rgbList.clear();
-    rgbList.reserve(lightnesses.count());
-    for (const auto &lightness : lightnesses) {
-        const GenericColor myOklab{lightness, 0, 0};
+    for (int j = 0; j < lightnesses.count(); ++j) {
+        const GenericColor myOklab{lightnesses.at(j), 0, 0};
         const auto cielabD50 = AbsoluteColor::convert( //
                                    ColorModel::OklabD65, //
                                    myOklab, //
                                    ColorModel::CielchD50 //
                                    )
                                    .value_or(GenericColor());
-        rgbList << colorSpace->fromCielchD50ToQRgbBound( //
+        const auto rgb = colorSpace->fromCielchD50ToQRgbBound( //
             cielabD50.reinterpretAsLchToLchDouble());
+        wcsSwatches.setValue(columnCount - 1, j, rgb);
     }
-    result << rgbList;
 
-    return result;
+    return wcsSwatches;
 }
 
 } // namespace PerceptualColor
