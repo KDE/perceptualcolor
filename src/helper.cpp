@@ -452,7 +452,9 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
  * basic colors (in this order: red, orange, yellow, green, blue, purple, pink,
  * brown, gray axis). Each basic color is a list of 5 swatches (starting with
  * the lightest and finishing with the darkest: 2 tints, the tone itself,
- * 2 shades). */
+ * 2 shades).
+ *
+ * @note The RGB value is rounded to full integers in the range [0, 255]. */
 Array2D<QColor> wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     constexpr GenericColor red{41.22, 61.40, 17.92};

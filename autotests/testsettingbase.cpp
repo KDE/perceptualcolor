@@ -3,36 +3,26 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "settings.h"
+#include "settingbase.h"
 
-#include "setting.h"
-#include <qcolor.h>
-#include <qglobal.h>
-#include <qlist.h>
-#include <qnamespace.h>
-#include <qobject.h>
-#include <qsignalspy.h>
-#include <qstring.h>
-#include <qstringliteral.h>
 #include <qtest.h>
-#include <qtest_gui.h>
 #include <qtestcase.h>
-#include <qvariant.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
 #else
 #include <qobjectdefs.h>
+#include <qstring.h>
 #endif
 
 namespace PerceptualColor
 {
-class TestSettings : public QObject
+class TestSettingBase : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestSettings(QObject *parent = nullptr)
+    explicit TestSettingBase(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -92,64 +82,50 @@ private Q_SLOTS:
         QFile(fileName).remove();
     }
 
-    void testConstructorDestructor()
+    void testConstuctorDestructor()
     {
-        // There should be no crash:
-        const Settings mySettings(QSettings::UserScope, //
-                                  organization, //
-                                  application);
-        Q_UNUSED(mySettings)
-    }
-
-#ifndef MSVC_DLL
-    // The automatic export of otherwise private symbols on MSVC
-    // shared libraries via CMake's WINDOWS_EXPORT_ALL_SYMBOLS property
-    // does not work well for Qt meta objects, resulting in non-functional
-    // signals. Since the following unit tests require signals, it cannot be
-    // built for MSVC shared libraries.
-
-    void testIntegration()
-    {
-        // Test integration with Setting and SettingBase.
         Settings mySettings(QSettings::UserScope, //
                             organization, //
                             application);
-
-        Setting<QString> tab(QStringLiteral("group/testSetting"), &mySettings);
-
-        const QString newTab1 = QStringLiteral("testTab");
-        tab.setValue(newTab1);
-        QCOMPARE(tab.value(), newTab1);
-
-        QSignalSpy spy(&tab, &PerceptualColor::SettingBase::valueChanged);
-
-        const QString newTab2 = QStringLiteral("differentTestTab");
-        tab.setValue(newTab2);
-        tab.setValue(newTab2); // Intentional duplicate
-        QCOMPARE(tab.value(), newTab2);
-        QVERIFY(spy.isValid());
-        // The second call to the setter with an identical value
-        // should not trigger a signal.
-        QCOMPARE(spy.count(), 1);
+        {
+            SettingBase mySettingBase(QStringLiteral("group/key"), //
+                                      &mySettings,
+                                      nullptr);
+        }
     }
-#endif
 
-    void testInternalQSettings()
+    void testParent()
     {
-        // Test integration with Setting and SettingBase.
         Settings mySettings(QSettings::UserScope, //
                             organization, //
                             application);
+        QPointer<SettingBase> mySettingBase;
+        {
+            QObject myParent;
+            mySettingBase = new SettingBase( //
+                QStringLiteral("group/key"), //
+                &mySettings,
+                &myParent);
+            QCOMPARE(mySettingBase.data()->parent(), &myParent);
+        }
+        QVERIFY(mySettingBase.isNull());
+    }
 
-        QCOMPARE(mySettings.m_qSettings.organizationName(), organization);
-        QCOMPARE(mySettings.m_qSettings.applicationName(), application);
-        QCOMPARE(mySettings.m_qSettings.scope(), QSettings::UserScope);
+    void testKey()
+    {
+        Settings mySettings(QSettings::UserScope, //
+                            organization, //
+                            application);
+        SettingBase mySettingBase(QStringLiteral("group/key"), //
+                                  &mySettings,
+                                  nullptr);
+        QCOMPARE(mySettingBase.m_key, QStringLiteral("group/key"));
     }
 };
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestSettings)
+QTEST_MAIN(PerceptualColor::TestSettingBase)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testsettings.moc"
+#include "testsettingbase.moc"

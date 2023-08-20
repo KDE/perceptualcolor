@@ -52,11 +52,13 @@ set(library_SRC
     lchdouble.cpp
     multispinbox.cpp
     multispinboxsection.cpp
+    perceptualsettings.cpp
     polarpointf.cpp
     rgbcolor.cpp
     rgbcolorspace.cpp
     rgbcolorspacefactory.cpp
     screencolorpicker.cpp
+    settingbase.cpp
     settings.cpp
     settranslation.cpp
     staticasserts.cpp

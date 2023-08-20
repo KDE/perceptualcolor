@@ -19,6 +19,7 @@
 #include "helperposixmath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
 #include "oklchvalues.h" // IWYU pragma: keep
+#include "perceptualsettings.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
 #include "rgbcolorspace.h" // IWYU pragma: keep
 #include "rgbcolorspacefactory.h" // IWYU pragma: keep
@@ -278,8 +279,8 @@ int main(int argc, char *argv[])
     );
     */
 
-    auto &mySettings = Settings::instance();
-    mySettings.setCustomColors(Settings::ColorList({Qt::black, Qt::green}));
+    auto &mySettings = PerceptualSettings::instance();
+    mySettings.customColors.setValue(PerceptualSettings::ColorList({Qt::black, Qt::green}));
 
 #ifndef MSVC_DLL
     // Just for testing purpose: Miss-use the customColor property to
@@ -288,13 +289,14 @@ int main(int argc, char *argv[])
                      &ColorDialog::currentColorChanged,
                      &mySettings,
                      [&](const QColor &color) {
-                         mySettings.setCustomColors(Settings::ColorList({color}));
+                         mySettings.customColors.setValue(PerceptualSettings::ColorList({color}));
                      });
-    QObject::connect(&mySettings, //
-                     &Settings::customColorsChanged,
+    QObject::connect(&mySettings.customColors, //
+                     &SettingBase::valueChanged,
                      &m_colorDialog,
-                     [&](const Settings::ColorList &customColors) {
-                         m_colorDialog.setCurrentColor(customColors.value(0));
+                     [&]() {
+                         m_colorDialog.setCurrentColor( //
+                             mySettings.customColors.value().value(0));
                      });
 #endif
 

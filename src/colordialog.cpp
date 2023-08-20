@@ -2459,18 +2459,18 @@ void ColorDialog::showEvent(QShowEvent *event)
         constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
         const bool exp = d_pointer->m_layoutDimensionsEffective == expValue;
         const auto tabString = exp //
-            ? d_pointer->m_settings.tabExpanded() //
-            : d_pointer->m_settings.tab();
+            ? d_pointer->m_settings.tabExpanded.value() //
+            : d_pointer->m_settings.tab.value();
         const auto key = d_pointer->m_tabTable.key(tabString, nullptr);
         if (key != nullptr) {
             d_pointer->m_tabWidget->setCurrentWidget(*key);
-            // Save the new tab explicitly. If setCurrentWidget() is not
-            // different from the default value, it does not trigger the
-            // QTabWidget::currentChanged() signal, resulting in the tab
-            // not being saved. However, we want to ensure that the tab
-            // is saved whenever the user has first seen it.
-            d_pointer->saveCurrentTab();
         }
+        // Save the new tab explicitly. If setCurrentWidget() is not
+        // different from the default value, it does not trigger the
+        // QTabWidget::currentChanged() signal, resulting in the tab
+        // not being saved. However, we want to ensure that the tab
+        // is saved whenever the user has first seen it.
+        d_pointer->saveCurrentTab();
         d_pointer->everShown = true;
     }
     QDialog::showEvent(event);
@@ -2493,9 +2493,9 @@ void ColorDialogPrivate::saveCurrentTab()
         const auto tabString = m_tabTable.value(*it);
         constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
         if (m_layoutDimensionsEffective == expValue) {
-            m_settings.setTabExpanded(tabString);
+            m_settings.tabExpanded.setValue(tabString);
         } else {
-            m_settings.setTab(tabString);
+            m_settings.tab.setValue(tabString);
         }
     }
 }

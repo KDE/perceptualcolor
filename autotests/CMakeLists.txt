@@ -137,6 +137,7 @@ if(BUILD_TESTING)
         testchromahueimageparameters
         testchromalightnessdiagram
         testchromalightnessimageparameters
+        testcielchd50values
         testcolordialog
         testcolorpatch
         testcolorwheel
@@ -161,16 +162,18 @@ if(BUILD_TESTING)
         testlanguagechangeeventfilter
         testlchadouble
         testlchdouble
-        testcielchd50values
         testmultispinbox
         testmultispinboxsection
         testoklchvalues
-        testsettings
+        testperceptualsettings
         testpolarpointf
         testrgbcolor
         testrgbcolorspace
         testrgbcolorspacefactory
         testscreencolorpicker
+        testsetting
+        testsettingbase
+        testsettings
         testsettranslation
         testswatchbook
         testversion

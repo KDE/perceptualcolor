@@ -21,66 +21,32 @@
 namespace PerceptualColor
 {
 
-/** @brief Private constructor to prevent instantiation. */
-Settings::Settings()
-{
-    // QSettings seems to use indirectly QMetaType::load() which requires
-    // to register all custom types as QMetaType.
-    qRegisterMetaType<ColorList>();
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    // Also stream operators are required. However, as long as ColorList is
-    // a QList<QColor> we do not need to actually provide an implementation.
-    // This might change if we change from QColor to another data type.
-    qRegisterMetaTypeStreamOperators<ColorList>();
-#endif
-
-    m_watcher.addPath(m_qSettings.fileName());
-
-    connect(&m_watcher, //
-            &QFileSystemWatcher::fileChanged, //
-            this, //
-            &PerceptualColor::Settings::updateFromFile //
-    );
-
-    // Initialize the properties with the values from the settings file.
-    updateFromFile();
-}
-
-// // Example stream operator
-// QDataStream& operator<<(QDataStream& out, const Settings::ColorList& colorList)
-// {
-//     out << static_cast<qint32>(colorList.size());
-//     for (const QColor& color : colorList) {
-//         out << color;
-//     }
-//     return out;
-// }
-//
-// // Example stream operator
-// QDataStream& operator>>(QDataStream& in, Settings::ColorList& colorList)
-// {
-//     colorList.clear();
-//     qint32 size;
-//     in >> size;
-//     for (int i = 0; i < size; ++i) {
-//         QColor color;
-//         in >> color;
-//         colorList.append(color);
-//     }
-//     return in;
-// }
-
-/** @brief Get a reference to the singleton instance.
+/** @brief Constructor.
  *
- * @pre There exists a QCoreApplication object. (Otherwise, this
- * function will throw an exception.)
- *
- * @returns A reference to the instance.
- *
- * To use it, assign the return value to a reference (not a normal variable):
- *
- * @snippet testsettings.cpp Settings Instance */
-Settings &Settings::instance()
+ * @param scope Passed to the underlying <tt>QSettings</tt> object’s
+ *        constructor.
+ * @param organization Passed to the underlying <tt>QSettings</tt> object’s
+ *        constructor.
+ * @param application Passed to the underlying <tt>QSettings</tt> object’s
+ *        constructor. */
+Settings::Settings(QSettings::Scope scope, const QString &organization, const QString &application)
+    // There are important reasons to use <tt>QSettings::IniFormat</tt>.
+    //
+    // - It makes <tt>QSettings</tt> behave identical on all platforms.
+    //   Though <tt>QSettings</tt> is an abstraction, it has still a lot
+    //   of platform-dependant behaviour, like the fact the numbers are
+    //   saved as numbers but read back as QString when using
+    //   <tt>QSettings::IniFormat</tt> or when using the native format
+    //   and the native platform uses Ini (like Linux); other platforms
+    //   preserve the type information. By using <tt>QSettings::IniFormat</tt>
+    //   the behaviour becomes at least predictable and is identical also
+    //   cross-platform.
+    //
+    // - <tt>QSettings::IniFormat</tt> is a file-based approach (while the
+    //   native approach for example on Windows is the Windows Registry
+    //   instead of a file). Using a file is necessary to be able to monitor
+    //   changes that other processes might make.
+    : m_qSettings(QSettings::IniFormat, scope, organization, application)
 {
     if (QCoreApplication::instance() == nullptr) {
         // A QCoreApplication object is required because otherwise
@@ -90,72 +56,29 @@ Settings &Settings::instance()
         // feedback:
         throw 0;
     }
-    static Settings myInstance;
-    return myInstance;
+
+    m_watcher.addPath(m_qSettings.fileName());
+
+    connect(&m_watcher, //
+            &QFileSystemWatcher::fileChanged, //
+            this, //
+            &PerceptualColor::Settings::updateFromFile //
+    );
+
+    // Initialize
+    updateFromFile();
 }
 
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QString Settings::tab() const
+/** @brief Destructor. */
+Settings::~Settings()
 {
-    return m_tab;
 }
 
-/** @brief Setter for @ref tab property.
+/** @brief Updates all @ref Setting values to the corresponding values from
+ * the underlying file of @ref m_qSettings.
  *
- * @param newTab the new property value */
-void Settings::setTab(const QString &newTab)
-{
-    if (newTab != m_tab) {
-        m_tab = newTab;
-        const auto newVariant = QVariant::fromValue<QString>(m_tab);
-        m_qSettings.setValue(keyTab, newVariant);
-        Q_EMIT tabChanged(m_tab);
-    }
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QString Settings::tabExpanded() const
-{
-    return m_tabExpanded;
-}
-
-/** @brief Setter for @ref tabExpanded property.
- *
- * @param newTab the new property value */
-void Settings::setTabExpanded(const QString &newTab)
-{
-    if (newTab != m_tabExpanded) {
-        m_tabExpanded = newTab;
-        const auto newVariant = QVariant::fromValue<QString>(m_tabExpanded);
-        m_qSettings.setValue(keyTabExpanded, newVariant);
-        Q_EMIT tabExpandedChanged(m_tabExpanded);
-    }
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-Settings::ColorList Settings::customColors() const
-{
-    return m_customColors;
-}
-
-/** @brief Setter for @ref customColors property.
- *
- * @param newCustomColors the new property value */
-void Settings::setCustomColors(const ColorList &newCustomColors)
-{
-    if (newCustomColors != m_customColors) {
-        m_customColors = newCustomColors;
-        const auto newVariant = QVariant::fromValue<ColorList>(m_customColors);
-        m_qSettings.setValue(keyCustomColors, newVariant);
-        Q_EMIT customColorsChanged(m_customColors);
-    }
-}
-
-/** @brief Updates all properties to the corresponding values in the
- * settings file. */
+ * This is done by emitting the @ref updatedAfterFileChange() signal, to which
+ * the @ref Setting objects are supposed to connect. */
 void Settings::updateFromFile()
 {
     // From Qt documentation:
@@ -171,27 +94,7 @@ void Settings::updateFromFile()
 
     m_qSettings.sync();
 
-    // WARNING: Do not use setters for properties, as this may trigger
-    // unnecessary file writes even if the property hasn't changed. If
-    // another instance tries to write to the same file at the same time,
-    // it could cause a deadlock since our code would perform two file
-    // access operations. Another process could potentially lock the file
-    // just in between the two writes, leading to a deadlock. To prevent
-    // such issues, our code only reads from QSettings and never writes
-    // back directly or indirectly. Instead, we modify the property's
-    // internal storage directly and emit the notify signal if necessary.
-
-    const auto newCustomColors = m_qSettings.value(keyCustomColors).value<ColorList>();
-    if (newCustomColors != m_customColors) {
-        m_customColors = newCustomColors;
-        Q_EMIT customColorsChanged(newCustomColors);
-    }
-
-    const auto newTab = m_qSettings.value(keyTab).toString();
-    if (newTab != m_tab) {
-        m_tab = newTab;
-        Q_EMIT tabChanged(newTab);
-    }
+    Q_EMIT updatedAfterFileChange();
 }
 
 } // namespace PerceptualColor
