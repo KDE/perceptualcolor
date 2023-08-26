@@ -8,11 +8,7 @@
 #include "colorpatch_p.h" // IWYU pragma: associated
 
 #include "constpropagatinguniquepointer.h"
-#include "csscolor.h"
-#include "genericcolor.h"
 #include "helper.h"
-#include "helperconversion.h"
-#include "helperqttypes.h"
 #include <algorithm>
 #include <qapplication.h>
 #include <qbrush.h>
@@ -32,7 +28,6 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include <qsizepolicy.h>
-#include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qvariant.h>

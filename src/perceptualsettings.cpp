@@ -6,16 +6,12 @@
 #include "perceptualsettings.h"
 
 #include <qcoreapplication.h>
-#include <qfilesystemwatcher.h>
-#include <qvariant.h>
+#include <qsettings.h>
+#include <qstringliteral.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#include <qdebug.h>
-#include <qlist.h>
 #else
 #include <qdatastream.h>
-#include <qstringlist.h>
 #endif
 
 namespace PerceptualColor

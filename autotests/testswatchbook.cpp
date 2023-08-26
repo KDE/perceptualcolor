@@ -8,6 +8,7 @@
 #include "swatchbook_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
+#include "helper.h"
 #include "helperqttypes.h"
 #include "rgbcolorspacefactory.h"
 #include <qbytearray.h>

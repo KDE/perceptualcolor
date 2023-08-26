@@ -7,20 +7,15 @@
 // Second, the private implementation.
 #include "swatchbook_p.h" // IWYU pragma: associated
 
-#include "absolutecolor.h"
 #include "abstractdiagram.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
-#include "genericcolor.h"
 #include "helper.h"
-#include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include "lchdouble.h"
 #include "rgbcolorspace.h"
-#include "rgbcolorspacefactory.h"
 #include <algorithm>
-#include <array>
 #include <optional>
 #include <qapplication.h>
 #include <qcoreapplication.h>
@@ -43,8 +38,6 @@
 #include <qstyleoption.h>
 #include <qtransform.h>
 #include <qwidget.h>
-#include <type_traits>
-#include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>

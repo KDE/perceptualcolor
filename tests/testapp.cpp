@@ -23,6 +23,8 @@
 #include "polarpointf.h" // IWYU pragma: keep
 #include "rgbcolorspace.h" // IWYU pragma: keep
 #include "rgbcolorspacefactory.h" // IWYU pragma: keep
+#include "setting.h" // IWYU pragma: keep
+#include "settingbase.h" // IWYU pragma: keep
 #include "settings.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep

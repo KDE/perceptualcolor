@@ -6,6 +6,7 @@
 #include "helper.h"
 
 #include <optional>
+#include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qevent.h>
 #include <qglobal.h>

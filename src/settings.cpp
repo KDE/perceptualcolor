@@ -7,11 +7,10 @@
 
 #include <qcoreapplication.h>
 #include <qfilesystemwatcher.h>
-#include <qvariant.h>
+#include <qglobal.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>
-#include <qdebug.h>
 #include <qlist.h>
 #else
 #include <qdatastream.h>

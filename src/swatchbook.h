@@ -6,9 +6,9 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
-#include "helper.h"
 #include <qcolor.h>
 #include <qglobal.h>
+#include <qnamespace.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
 class QEvent;
@@ -27,9 +27,11 @@ class QObject;
 
 namespace PerceptualColor
 {
-class SwatchBookPrivate;
 
+template<typename T>
+class Array2D;
 class RgbColorSpace;
+class SwatchBookPrivate;
 
 /** @internal
  *

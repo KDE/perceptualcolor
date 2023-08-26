@@ -4,18 +4,10 @@
 #ifndef SETTINGBASE_H
 #define SETTINGBASE_H
 
-#include "settings.h"
-#include <qcolor.h>
-#include <qdebug.h>
-#include <qfilesystemwatcher.h>
 #include <qglobal.h>
-#include <qlist.h>
-#include <qmetatype.h>
 #include <qobject.h>
 #include <qpointer.h>
-#include <qsettings.h>
 #include <qstring.h>
-#include <qstringliteral.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -23,8 +15,12 @@
 #include <qobjectdefs.h>
 #endif
 
+class QSettings;
+
 namespace PerceptualColor
 {
+
+class Settings;
 
 /** @internal
  *

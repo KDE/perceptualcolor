@@ -9,6 +9,7 @@
 #include "helperconversion.h"
 #include "initializelibraryresources.h"
 #include "rgbcolorspace.h"
+#include <array>
 #include <qchar.h>
 #include <qcolor.h>
 #include <qevent.h>

@@ -1,12 +1,20 @@
-﻿
-// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
 #include "setting.h"
 
+#include "settingbase.h"
+#include "settings.h"
+#include <qfile.h>
+#include <qglobal.h>
+#include <qobject.h>
+#include <qpointer.h>
+#include <qsettings.h>
 #include <qsignalspy.h>
+#include <qstring.h>
+#include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 

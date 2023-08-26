@@ -6,18 +6,16 @@
 #include "settings.h"
 
 #include "setting.h"
-#include <qcolor.h>
+#include "settingbase.h"
+#include <qfile.h>
 #include <qglobal.h>
-#include <qlist.h>
-#include <qnamespace.h>
 #include <qobject.h>
+#include <qsettings.h>
 #include <qsignalspy.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
-#include <qtest_gui.h>
 #include <qtestcase.h>
-#include <qvariant.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>

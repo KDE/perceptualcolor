@@ -5,9 +5,10 @@
 // this forces the header to be self-contained.
 #include "perceptualsettings.h"
 
+#include "setting.h"
+#include "settingbase.h"
 #include <qcolor.h>
 #include <qglobal.h>
-#include <qlist.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qsignalspy.h>
@@ -16,7 +17,6 @@
 #include <qtest.h>
 #include <qtest_gui.h>
 #include <qtestcase.h>
-#include <qvariant.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>

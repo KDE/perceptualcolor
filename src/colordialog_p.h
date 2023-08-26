@@ -14,7 +14,6 @@
 #include "languagechangeeventfilter.h"
 #include "perceptualsettings.h"
 #include "rgbcolor.h"
-#include "settings.h"
 #include <lcms2.h>
 #include <optional>
 #include <qbytearray.h>

@@ -5,6 +5,14 @@
 // this forces the header to be self-contained.
 #include "settingbase.h"
 
+#include "settings.h"
+#include <qfile.h>
+#include <qglobal.h>
+#include <qobject.h>
+#include <qpointer.h>
+#include <qsettings.h>
+#include <qstring.h>
+#include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 

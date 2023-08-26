@@ -12,7 +12,7 @@
 #include "helperqttypes.h"
 #include <qcolor.h>
 #include <qglobal.h>
-#include <qlist.h>
+#include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
 #include <qsharedpointer.h>

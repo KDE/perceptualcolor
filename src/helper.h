@@ -6,18 +6,21 @@
 
 #include "helpermath.h"
 #include "helperqttypes.h"
+#include <QtCore/qsharedpointer.h>
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qglobal.h>
 #include <qicon.h>
 #include <qimage.h>
+#include <qlist.h>
 #include <qmetaobject.h>
 #include <qpair.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qthread.h>
 
+class QColor;
 class QWheelEvent;
 class QWidget;
 

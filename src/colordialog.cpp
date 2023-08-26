@@ -28,6 +28,7 @@
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
 #include "screencolorpicker.h"
+#include "setting.h"
 #include "swatchbook.h"
 #include "wheelcolorpicker.h"
 #include <algorithm>
