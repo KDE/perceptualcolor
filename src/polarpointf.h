@@ -91,9 +91,9 @@ public:
 
     /** @brief Default move assignment operator
      *
-     * @returns The default implementation’s return value.
+     * @param other the object to move-assign
      *
-     * @param other the object to move-assign */
+     * @returns The default implementation’s return value. */
     PolarPointF &operator=(PolarPointF &&other) noexcept = default;
 
     [[nodiscard]] double angleDegree() const;

@@ -380,10 +380,12 @@ private Q_SLOTS:
 
     void testKeyboard()
     {
-        SwatchBook testWidget(m_rgbColorSpace, wcsBasicColors(m_rgbColorSpace), {});
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace),
+                              {});
         const QListSizeType count = //
-            qMax(testWidget.d_pointer->m_swatches.iCount(), //
-                 testWidget.d_pointer->m_swatches.jCount())
+            qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
+                 testWidget.d_pointer->m_swatchGrid.jCount())
             // Add 1 to exceed the possible number of fields (crash test)
             + 1;
 
@@ -401,7 +403,7 @@ private Q_SLOTS:
             QTest::keyClick(&testWidget, Qt::Key_Right);
         }
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
-                 testWidget.d_pointer->m_swatches.iCount() - 1);
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         for (int i = 0; i < count; ++i) {
@@ -413,7 +415,7 @@ private Q_SLOTS:
                  0);
         QTest::keyClick(&testWidget, Qt::Key_End);
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
-                 testWidget.d_pointer->m_swatches.iCount() - 1);
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_Home);
@@ -431,7 +433,7 @@ private Q_SLOTS:
             QTest::keyClick(&testWidget, Qt::Key_Left);
         }
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
-                 testWidget.d_pointer->m_swatches.iCount() - 1);
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         for (int i = 0; i < count; ++i) {
@@ -443,7 +445,7 @@ private Q_SLOTS:
                  0);
         QTest::keyClick(&testWidget, Qt::Key_End);
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
-                 testWidget.d_pointer->m_swatches.iCount() - 1);
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
         QTest::keyClick(&testWidget, Qt::Key_Home);
@@ -459,7 +461,7 @@ private Q_SLOTS:
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
-                 testWidget.d_pointer->m_swatches.jCount() - 1);
+                 testWidget.d_pointer->m_swatchGrid.jCount() - 1);
         for (int i = 0; i < count; ++i) {
             QTest::keyClick(&testWidget, Qt::Key_Up);
         }
@@ -471,7 +473,7 @@ private Q_SLOTS:
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
-                 testWidget.d_pointer->m_swatches.jCount() - 1);
+                 testWidget.d_pointer->m_swatchGrid.jCount() - 1);
         QTest::keyClick(&testWidget, Qt::Key_PageUp);
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
                  0);

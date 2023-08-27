@@ -8,6 +8,7 @@
 #include "helperqttypes.h"
 #include <QtCore/qsharedpointer.h>
 #include <optional>
+#include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qglobal.h>
@@ -15,12 +16,12 @@
 #include <qimage.h>
 #include <qlist.h>
 #include <qmetaobject.h>
+#include <qmetatype.h>
 #include <qpair.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qthread.h>
 
-class QColor;
 class QWheelEvent;
 class QWidget;
 
@@ -134,6 +135,48 @@ public:
         }
     }
 
+    // Define also these functions recommended by “rule of five”:
+    /** @brief Default copy assignment operator
+     * @param other the object to copy
+     * @returns The default implementation’s return value. */
+    Array2D &operator=(const Array2D &other) = default; // clazy:exclude=function-args-by-value
+    /** @brief Default move assignment operator
+     *
+     * @param other the object to move-assign
+     *
+     * @returns The default implementation’s return value. */
+    Array2D &operator=(Array2D &&other) = default;
+    /** @brief Default copy constructor
+     * @param other the object to copy */
+    Array2D(const Array2D &other) = default;
+    /** @brief Default move constructor
+     * @param other the object to move */
+    Array2D(Array2D &&other) = default;
+
+    /** @brief Equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
+    bool operator==(const Array2D &other) const
+    {
+        return ( //
+            (m_data == other.m_data) //
+            && (m_iCount == other.m_iCount) //
+            && (m_jCount == other.m_jCount) //
+        );
+    }
+
+    /** @brief Unequal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
+    bool operator!=(const Array2D &other) const
+    {
+        return !(*this == other);
+    }
+
     /** @brief Set value at a given index.
      *
      * @param i index (first dimension)
@@ -189,6 +232,15 @@ private:
     QListSizeType m_jCount;
 };
 
+/** @brief Swatches organized in a grid.
+ *
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use for <em>queued</em> signal-slot connections),
+ * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object. */
+using Swatches = Array2D<QColor>;
+
 /** @internal
  *
  * @brief Force processing of events in a delayed fashion.
@@ -230,7 +282,7 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
     }
 }
 
-[[nodiscard]] Array2D<QColor> wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+[[nodiscard]] Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type);
 
@@ -338,5 +390,9 @@ template<typename T>
 }
 
 } // namespace PerceptualColor
+
+// Use Q_DECLARE_METATYPE with this data type.
+// Attention: This must be done outside of all name-spaces.
+Q_DECLARE_METATYPE(PerceptualColor::Swatches)
 
 #endif // HELPER_H

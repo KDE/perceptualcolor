@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                            QLocale().uiLanguages());
 
-    app.setLayoutDirection(Qt::RightToLeft);
+    // app.setLayoutDirection(Qt::RightToLeft);
 
     // Initialize the color dialog
 
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
     myColor.setAlphaF(0.5);
     // m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-    // m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
+    m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
     // m_colorDialog.setEnabled(false);
     // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
     m_colorDialog.show();
@@ -284,6 +284,7 @@ int main(int argc, char *argv[])
     auto &mySettings = PerceptualSettings::instance();
     mySettings.customColors.setValue(PerceptualSettings::ColorList({Qt::black, Qt::green}));
 
+    /*
 #ifndef MSVC_DLL
     // Just for testing purpose: Miss-use the customColor property to
     // synchronize the current color of ColorDialog between various instances.
@@ -301,8 +302,10 @@ int main(int argc, char *argv[])
                              mySettings.customColors.value().value(0));
                      });
 #endif
+    */
 
-    m_colorDialog.setCurrentColor(QColor(50, 127, 206));
+    // m_colorDialog.setCurrentColor(QColor(50, 127, 206));
+    // m_colorDialog.setCurrentColor(QColor(0, 255, 0));
 
     // Run
     return app.exec();

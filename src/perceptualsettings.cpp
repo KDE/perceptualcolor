@@ -39,6 +39,7 @@ PerceptualSettings::PerceptualSettings()
     //   (This avoids typing errors.)
     , customColors(QStringLiteral("colordialog/customcolors"), this)
     , history(QStringLiteral("colordialog/history"), this)
+    , swatchBookPage(QStringLiteral("colordialog/swatchbookpage"), this)
     , tab(QStringLiteral("colordialog/tab"), this)
     , tabExpanded(QStringLiteral("colordialog/tabexpanded"), this)
 {

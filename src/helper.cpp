@@ -354,10 +354,10 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
     return ColorSchemeType::Light;
 }
 
-/** @brief Palette derived from the basic colors as by WCS (World color
+/** @brief Swatch grid derived from the basic colors as by WCS (World color
  * survey).
  *
- * The palette contains various tints and shades of the
+ * The swatch grid contains various tints and shades of the
  * basic colors. The choice of the basic colors is based on the
  * <a href="https://en.wikipedia.org/wiki/Basic_Color_Terms:_Their_Universality_and_Evolution">
  * study by Brent Berlin and Paul Kay</a>, who suggest that the
@@ -374,7 +374,7 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
  *
  * Additionally, people worldwide seem to agree quite well on the typical
  * values of each of these color terms. This theory is a fascinating one
- * and forms a good basis for choosing basic colors for this palette.
+ * and forms a good basis for choosing basic colors for this swatch grid.
  *
  * This widget's colors have been arranged largely according to the color
  * wheel of the perceptually uniform color space. We start with the saturated
@@ -438,7 +438,7 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
  *   <a href="https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new-README.txt">
  *   corresponding explanation</a>.
  *
- * From this data, the colors in our palette have been derived as follows:
+ * From this data, the colors in our swatch grid have been derived as follows:
  * - The gray axis has been defined manually, ignoring the WCS data. Chroma
  *   is 0. The lightness is 100% for white, 0% for black, and 75%, 50%,
  *   and 25% for the intermediate grays.
@@ -449,14 +449,14 @@ std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
  *
  * @param colorSpace The color space in which the return value is calculated.
  *
- * @returns Palette derived from the basic colors. Provides as a list of
+ * @returns Swatch grid derived from the basic colors. Provides as a list of
  * basic colors (in this order: red, orange, yellow, green, blue, purple, pink,
  * brown, gray axis). Each basic color is a list of 5 swatches (starting with
  * the lightest and finishing with the darkest: 2 tints, the tone itself,
  * 2 shades).
  *
  * @note The RGB value is rounded to full integers in the range [0, 255]. */
-Array2D<QColor> wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     constexpr GenericColor red{41.22, 61.40, 17.92};
     constexpr GenericColor orange{61.70, 29.38, 64.40};
@@ -475,7 +475,7 @@ Array2D<QColor> wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpa
     constexpr MySizeType columnCount = //
         chromaticCielabColors.size() + 1; // + 1 for gray axis
     constexpr auto rowCount = 5;
-    Array2D<QColor> wcsSwatches{columnCount, rowCount};
+    Swatches wcsSwatches{columnCount, rowCount};
 
     // Chromatic colors
     constexpr double strongTint = 0.46;

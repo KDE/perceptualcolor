@@ -277,17 +277,17 @@ class RgbColorSpace;
  * out-of-gamut colors in one of the profiles. How to represent this in the
  * UI?
  *
- * @todo Provide more palettes in our swatch books? Include there a palette
+ * @todo Provide more different swatch grids? Include there a swatch grid
  * with QColorDialog’s standard colors as RGB values without
  * a specific color space, with the name “Default”? Add
  * <a href="https://www.w3.org/TR/css-color-4/#named-colors">CSS colors</a>
  * as defined as sRGB values?
  * <a href="https://en.wikipedia.org/wiki/Web_colors#Web-safe_colors">
  * Web-safe colors</a> (but with another name, maybe “216 colors”)
- * as bigger palette, without a specific color space – does
+ * as bigger swatch grid, without a specific color space – does
  * not make sense, since we provide a perceptual color dialog,
  * which allows things much beyond 216 colors, and 216 colors
- * isn’t a useful standard anymore, and not a nice palette either.
+ * isn’t a useful standard anymore, and not a nice swatch grid either.
  *
  * @todo Discrete widgets, that have
  * a fixed (quite limited) number of fields to chose for the user?

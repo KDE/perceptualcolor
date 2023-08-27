@@ -11,6 +11,7 @@
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperconversion.h"
+#include "helperqttypes.h"
 #include "languagechangeeventfilter.h"
 #include "perceptualsettings.h"
 #include "rgbcolor.h"
@@ -26,6 +27,7 @@
 #include <qstring.h>
 #include <qstringliteral.h>
 class QAction;
+class QComboBox;
 class QDialogButtonBox;
 class QDoubleSpinBox;
 class QGroupBox;
@@ -34,6 +36,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QShortcut;
+class QStackedLayout;
 class QTabWidget;
 class QToolButton;
 class QWidget;
@@ -68,6 +71,14 @@ public:
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     virtual ~ColorDialogPrivate() noexcept override = default;
+
+    /** @brief Horizontal count of swatches for history. */
+    static constexpr QListSizeType historyHSwatchCount = 10;
+    /** @brief  Vertical count of swatches for history. */
+    static constexpr QListSizeType historyVSwatchCount = 4;
+    /** @brief  Total count of swatches for history. */
+    static constexpr QListSizeType historySwatchCount = //
+        historyHSwatchCount * historyVSwatchCount;
 
     /** @brief @ref GradientSlider widget for the alpha channel. */
     QPointer<GradientSlider> m_alphaGradientSlider;
@@ -207,6 +218,20 @@ public:
     QPointer<QLabel> m_oklchSpinBoxLabel;
     /** @brief Pointer to the basic colors widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookBasicColors;
+    /** @brief Choose @ref m_swatchBookBasicColors. */
+    QPointer<QAction> m_swatchBookBasicColorsAction;
+    /** @brief Pointer to the history widget. */
+    QPointer<PerceptualColor::SwatchBook> m_swatchBookHistory;
+    /** @brief Choose @ref m_swatchBookHistory. */
+    QPointer<QAction> m_swatchBookHistoryAction;
+    /** @brief The selector widget to choose which swatch book to show.
+     *
+     * @sa @ref m_swatchBookStack */
+    QPointer<QComboBox> m_swatchBookSelector;
+    /** @brief Stack containing the various @ref SwatchBook widgets.
+     *
+     * @sa @ref m_swatchBookSelector */
+    QPointer<QStackedLayout> m_swatchBookStack;
     /** @brief Shortcut to show the tab with @ref m_swatchBookWrapperWidget. */
     QPointer<QShortcut> m_swatchBookTabShortcut;
     /** @brief Pointer to the QWidget wrapper that contains
@@ -257,7 +282,7 @@ public:
     /** @brief Pointer to the tab widget. */
     QPointer<QTabWidget> m_tabWidget;
     /** @brief @ref m_wcsBasicColors for @ref m_rgbColorSpace. */
-    Array2D<QColor> m_wcsBasicColors;
+    Swatches m_wcsBasicColors;
     /** @brief A default color within @ref m_wcsBasicColors.
      *
      * Choosing the blue tone (no tint, no shade). Arguments in favor:
@@ -283,9 +308,11 @@ public:
     static constexpr quint8 okdecimals = decimals + 2;
 
     void applyLayoutDimensions();
+    [[nodiscard]] QColor defaultColor() const;
     void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializeScreenColorPicker();
+    void loadHistoryFromSettingsToSwatchBook();
     [[nodiscard]] QString translateColorModel(cmsColorSpaceSignature model);
 
 public Q_SLOTS:
@@ -300,6 +327,7 @@ public Q_SLOTS:
     void readRgbHexValues();
     void readRgbNumericValues();
     void readSwatchBookBasicColorsValue();
+    void readSwatchBookHistoryValue();
     void readWheelColorPickerValues();
     void reloadIcons();
     void retranslateUi();

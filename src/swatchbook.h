@@ -6,6 +6,7 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
+#include "helper.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qnamespace.h>
@@ -28,8 +29,6 @@ class QObject;
 namespace PerceptualColor
 {
 
-template<typename T>
-class Array2D;
 class RgbColorSpace;
 class SwatchBookPrivate;
 
@@ -69,9 +68,22 @@ class SwatchBook : public AbstractDiagram
      * @sa @ref currentColorChanged() */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
+    /** @brief The swatchGrid that is displayed in the swatch book.
+     *
+     * The colors are in the current color space. The first dimension
+     * (@ref Array2D::iCount()) is interpreted as horizontal axis from
+     * left to right on LTR layouts, and the other way around on RTL
+     * layouts. The second dimension of the array (@ref Array2D::jCount())
+     * is interpreted as vertical axis, from top to bottom.
+     *
+     * @sa @ref swatchGrid() const
+     * @sa @ref setSwatchGrid()
+     * @sa @ref swatchGridChanged() */
+    Q_PROPERTY(Swatches swatchGrid READ swatchGrid WRITE setSwatchGrid NOTIFY swatchGridChanged)
+
 public:
     Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-                                    const Array2D<QColor> &swatches,
+                                    const PerceptualColor::Swatches &swatchGrid,
                                     Qt::Orientations wideSpacing,
                                     QWidget *parent = nullptr);
     virtual ~SwatchBook() noexcept override;
@@ -79,16 +91,24 @@ public:
      *  @returns the property @ref currentColor */
     [[nodiscard]] QColor currentColor() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
+    /** @brief Getter for property @ref swatchGrid
+     *  @returns the property @ref swatchGrid */
+    [[nodiscard]] Swatches swatchGrid() const;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &newCurrentColor);
+    void setSwatchGrid(const PerceptualColor::Swatches &newSwatchGrid);
 
 Q_SIGNALS:
     /** @brief Notify signal for property @ref currentColor.
      *
      * @param newCurrentColor the new @ref currentColor */
     void currentColorChanged(const QColor &newCurrentColor);
+    /** @brief Notify signal for property @ref swatchGrid.
+     *
+     * @param newSwatchGrid the new @ref swatchGrid */
+    void swatchGridChanged(const PerceptualColor::Swatches &newSwatchGrid);
 
 protected:
     virtual void changeEvent(QEvent *event) override;

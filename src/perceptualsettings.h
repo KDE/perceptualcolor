@@ -46,11 +46,30 @@ public:
     static PerceptualSettings &instance();
 
     /** @brief Custom colors of @ref ColorDialog. */
-    Setting<ColorList> customColors;
+    Setting<PerceptualSettings::ColorList> customColors;
 
     /** @brief History of actually selected (confirmed by Okay button
      * respectively Enter key) colors of @ref ColorDialog. */
-    Setting<ColorList> history;
+    Setting<PerceptualSettings::ColorList> history;
+
+    /** @brief A specific page from the swatch book.
+     *
+     * This enum is declared to the meta-object system with <tt>Q_ENUM</tt>.
+     * This happens automatically. You do not need to make any manual calls.
+     *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object. */
+    enum class SwatchBookPage {
+        BasicColors, /**< @ref ColorDialogPrivate::m_swatchBookBasicColors */
+        History /**< @ref ColorDialogPrivate::m_swatchBookBasicColors */
+    };
+    Q_ENUM(SwatchBookPage)
+    /** @brief The swatch book page currently visible at
+     * @ref ColorDialogPrivate::m_swatchBookStack. */
+    Setting<SwatchBookPage> swatchBookPage;
 
     /** @brief The currently visible tab of @ref ColorDialog with
      * @ref ColorDialog::DialogLayoutDimensions::Collapsed. */
@@ -70,5 +89,6 @@ private:
 } // namespace PerceptualColor
 
 Q_DECLARE_METATYPE(PerceptualColor::PerceptualSettings::ColorList)
+Q_DECLARE_METATYPE(PerceptualColor::PerceptualSettings::SwatchBookPage)
 
 #endif // PERCEPTUALSETTINGS_H

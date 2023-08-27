@@ -6,6 +6,7 @@
 
 #include "settingbase.h"
 #include "settings.h"
+#include <QMetaEnum>
 #include <qcolor.h>
 #include <qdebug.h>
 #include <qfilesystemwatcher.h>
@@ -30,10 +31,12 @@ namespace PerceptualColor
  *
  * @brief A single setting within @ref Settings.
  *
- * @tparam T Type of the setting value. The type must qualify for
- *           registration as QMetaType and also provide a stream
- *           operator. @ref PerceptualSettings::ColorList and many
- *           build-in types qualify.) */
+ * @tparam T Type of the setting value. The type must qualify for registration
+ *           as <tt>QMetaType</tt> and also provide a stream operator.
+ *           @ref PerceptualSettings::ColorList and many build-in types
+ *           qualify. However, enum types only qualify if both, they are
+ *           declared with <tt>Q_ENUM</tt> <em>and</em> their underlying type
+ *           is <tt>int</tt>. */
 template<typename T>
 class Setting final : public SettingBase
 {
@@ -51,6 +54,12 @@ private:
     // to the instance are possible.
     Setting(const Setting &) = delete;
     Setting &operator=(const Setting &) = delete;
+
+    /** @brief If the type is an enum type or not. */
+    static constexpr bool m_isEnum = std::is_enum_v<T>;
+
+    /** @brief Meta data for enum types. */
+    QMetaEnum m_qMetaEnum;
 
     /** @brief Internal storage for the value. */
     T m_value = T();
@@ -92,6 +101,13 @@ template<typename T>
 Setting<T>::Setting(const QString &key, Settings *settings, QObject *parent)
     : SettingBase(key, settings, parent)
 {
+    if constexpr (m_isEnum) {
+        static_assert( //
+            std::is_same_v<std::underlying_type_t<T>, int>, //
+            // Reason: We do conversions using QMetaEnum, which uses “int”.
+            "If 'typename T' is an enum, its underlying type must be 'int'.");
+    }
+
     // QSettings seems to use indirectly QMetaType::load() which requires
     // to register all custom types as QMetaType.
     qRegisterMetaType<T>();
@@ -99,6 +115,10 @@ Setting<T>::Setting(const QString &key, Settings *settings, QObject *parent)
     // Also stream operators are required.
     qRegisterMetaTypeStreamOperators<T>();
 #endif
+
+    if constexpr (m_isEnum) {
+        m_qMetaEnum = QMetaEnum::fromType<T>();
+    }
 
     // Initialize the internal value:
     updateFromQSettings();
@@ -135,8 +155,18 @@ void Setting<T>::updateFromQSettings()
     // back directly or indirectly. Instead, we modify the property's
     // internal storage directly and emit the notify signal if necessary.
 
+    // Get new value.
     const QVariant newValueVariant = underlyingQSettings()->value(m_key);
-    const T newValue = newValueVariant.value<T>();
+    T newValue;
+    if constexpr (m_isEnum) {
+        const QByteArray byteArray = newValueVariant.toString().toUtf8();
+        const int enumInteger = m_qMetaEnum.keysToValue(byteArray.constData());
+        newValue = static_cast<T>(enumInteger);
+    } else {
+        newValue = newValueVariant.value<T>();
+    }
+
+    // Apply new value.
     if (newValue != m_value) {
         m_value = newValue;
         Q_EMIT valueChanged();
@@ -159,8 +189,16 @@ void Setting<T>::setValue(const T &newValue)
 {
     if (newValue != m_value) {
         m_value = newValue;
-        const auto newVariant = QVariant::fromValue<T>(m_value);
-        underlyingQSettings()->setValue(m_key, newVariant);
+        if constexpr (m_isEnum) {
+            const auto newValueUnderlying = //
+                static_cast<int>(newValue);
+            const QString string = QString::fromUtf8( //
+                m_qMetaEnum.valueToKeys(newValueUnderlying));
+            underlyingQSettings()->setValue(m_key, string);
+        } else {
+            const auto newVariant = QVariant::fromValue<T>(m_value);
+            underlyingQSettings()->setValue(m_key, newVariant);
+        }
         Q_EMIT valueChanged();
     }
 }

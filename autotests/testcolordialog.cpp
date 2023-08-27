@@ -1656,7 +1656,8 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
         myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first, 60);
+        const auto &color = myDialog->d_pointer->m_currentOpaqueColorAbs;
+        QCOMPARE(color.value(ColorModel::CielchD50).first, 60);
     }
 #endif
 
@@ -1698,7 +1699,7 @@ private Q_SLOTS:
     void testGamutIconOklch()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, QColor(50, 127, 206)));
 
         // On startup, the current color should be in-gamut, so no gamut action
         // should be visible.
@@ -1743,9 +1744,13 @@ private Q_SLOTS:
         myValues[2] = 12;
         myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).third, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).second, 12);
+        const auto &col1 = myDialog //
+                               ->d_pointer //
+                               ->m_currentOpaqueColorAbs.value( //
+                                   ColorModel::CielchD50);
+        QCOMPARE(col1.third, 10);
+        QCOMPARE(col1.first, 11);
+        QCOMPARE(col1.second, 12);
 
         // Test with an out-of-gamut value. Hue and lightness should not change.
         myValues[0] = 10;
@@ -1753,8 +1758,12 @@ private Q_SLOTS:
         myValues[2] = 50;
         myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).third, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first, 11);
+        const auto &col2 = myDialog //
+                               ->d_pointer //
+                               ->m_currentOpaqueColorAbs.value( //
+                                   ColorModel::CielchD50);
+        QCOMPARE(col2.third, 10);
+        QCOMPARE(col2.first, 11);
     }
 #endif
 
@@ -1772,9 +1781,11 @@ private Q_SLOTS:
         myValues[2] = 3;
         myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readOklchNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).first, 0.25);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).second, 0.05);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).third, 3);
+        const auto &col = myDialog->d_pointer->m_currentOpaqueColorAbs.value( //
+            ColorModel::OklchD65);
+        QCOMPARE(col.first, 0.25);
+        QCOMPARE(col.second, 0.05);
+        QCOMPARE(col.third, 3);
 
         // Test with an out-of-gamut value. Hue and lightness should not change.
         myValues[0] = 0.25;
@@ -1782,8 +1793,10 @@ private Q_SLOTS:
         myValues[2] = 3;
         myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readOklchNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).first, 0.25);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::OklchD65).third, 3);
+        const auto &color = myDialog->d_pointer->m_currentOpaqueColorAbs;
+        const auto &colorOklchD65 = color.value(ColorModel::OklchD65);
+        QCOMPARE(colorOklchD65.first, 0.25);
+        QCOMPARE(colorOklchD65.third, 3);
     }
 #endif
 
@@ -2257,8 +2270,9 @@ private Q_SLOTS:
         QTest::keyClick( //
             m_perceptualDialog->d_pointer->m_lchLightnessSelector, //
             Qt::Key_End);
-        QVERIFY( //
-            m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs.value(ColorModel::CielchD50).first > 95);
+        const auto &color = //
+            m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs;
+        QVERIFY(color.value(ColorModel::CielchD50).first > 95);
     }
 #endif
 
@@ -2300,10 +2314,10 @@ private Q_SLOTS:
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  d->m_tabWidget->indexOf(d->m_lightnessFirstWrapperWidget));
 
-        // Return to "Basic colors" tab
+        // Return to "Swatch book" tab
         d->m_tabWidget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
-                        Qt::Key_B, //
+                        Qt::Key_S, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
@@ -2343,7 +2357,7 @@ private Q_SLOTS:
 
         d->m_tabWidget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
-                        Qt::Key_B, //
+                        Qt::Key_S, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
@@ -2365,7 +2379,7 @@ private Q_SLOTS:
         // Return to "Basic colors" tab
         d->m_tabWidget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
-                        Qt::Key_B, //
+                        Qt::Key_S, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));

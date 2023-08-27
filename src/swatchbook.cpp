@@ -25,6 +25,7 @@
 #include <qline.h>
 #include <qlist.h>
 #include <qmargins.h>
+#include <qmetatype.h>
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qpainterpath.h>
@@ -110,11 +111,7 @@ void SwatchBookPrivate::retranslateUi()
 /** @brief Constructor
  *
  * @param colorSpace The color space of the swatches.
- * @param swatches The colors in the given color space. The first dimension
- *        (@ref Array2D::iCount()) is interpreted as horizontal axis from
- *        left to right on LTR layouts, and the other way around on RTL
- *        layouts. The second dimension of the array (@ref Array2D::jCount())
- *        is interpreted as vertical axis, from top to bottom.
+ * @param swatchGrid Initial value for property @ref swatchGrid
  * @param wideSpacing Set of axis where the spacing should be wider than
  *        normal. This is useful to give some visual structure: When your
  *        swatches are organized logically in columns, set
@@ -122,12 +119,14 @@ void SwatchBookPrivate::retranslateUi()
  *        everywhere, simply set this parameter to <tt>{}</tt>.
  * @param parent The parent of the widget, if any */
 SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-                       const Array2D<QColor> &swatches,
+                       const PerceptualColor::Swatches &swatchGrid,
                        Qt::Orientations wideSpacing,
                        QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new SwatchBookPrivate(this, swatches, wideSpacing))
+    , d_pointer(new SwatchBookPrivate(this, swatchGrid, wideSpacing))
 {
+    qRegisterMetaType<Swatches>();
+
     d_pointer->m_rgbColorSpace = colorSpace;
 
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -159,11 +158,11 @@ SwatchBook::~SwatchBook() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
- * @param swatches The swatches.
+ * @param swatchGrid The swatches.
  * @param wideSpacing Set of axis using @ref widePatchSpacing instead
  *        of @ref normalPatchSpacing. */
-SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, const Array2D<QColor> &swatches, Qt::Orientations wideSpacing)
-    : m_swatches(swatches)
+SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::Swatches &swatchGrid, Qt::Orientations wideSpacing)
+    : m_swatchGrid(swatchGrid)
     , m_wideSpacing(wideSpacing)
     , q_pointer(backLink)
 {
@@ -244,40 +243,46 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 
     d_pointer->m_currentColor = temp;
 
-    bool colorFound = false;
-    const qsizetype myColumnCount = d_pointer->m_swatches.iCount();
-    const qsizetype myRowCount = d_pointer->m_swatches.jCount();
-    int columnIndex = 0;
-    int rowIndex = 0;
-    for (columnIndex = 0; //
-         columnIndex < myColumnCount; //
-         ++columnIndex) {
-        for (rowIndex = 0; rowIndex < myRowCount; ++rowIndex) {
-            if (d_pointer->m_swatches.value(columnIndex, rowIndex) == temp) {
-                colorFound = true;
-                break;
-            }
-        }
-        if (colorFound) {
-            break;
-        }
-    }
-    if (colorFound) {
-        d_pointer->m_selectedColumn = columnIndex;
-        d_pointer->m_selectedRow = rowIndex;
-    } else {
-        d_pointer->m_selectedColumn = -1;
-        d_pointer->m_selectedRow = -1;
-    }
+    d_pointer->selectSwatchFromCurrentColor();
 
     Q_EMIT currentColorChanged(temp);
 
     update();
 }
 
+// No documentation here (documentation of properties
+// and its getters are in the header)
+Swatches SwatchBook::swatchGrid() const
+{
+    return d_pointer->m_swatchGrid;
+}
+
+/** @brief Setter for the @ref swatchGrid property.
+ *
+ * @param newSwatchGrid the new value */
+void SwatchBook::setSwatchGrid(const PerceptualColor::Swatches &newSwatchGrid)
+{
+    if (newSwatchGrid == d_pointer->m_swatchGrid) {
+        return;
+    }
+
+    d_pointer->m_swatchGrid = newSwatchGrid;
+
+    d_pointer->selectSwatchFromCurrentColor();
+
+    Q_EMIT swatchGridChanged(newSwatchGrid);
+
+    // As of Qt documentation:
+    //     “Notifies the layout system that this widget has changed and may
+    //      need to change geometry.”
+    updateGeometry();
+
+    update();
+}
+
 /** @brief Selects a swatch from the book.
  *
- * @pre Both parameters are valid indexes within @ref m_swatches.
+ * @pre Both parameters are valid indexes within @ref m_swatchGrid.
  * (Otherwise there will likely be a crash.)
  *
  * @param newCurrentColomn Index of the column.
@@ -289,7 +294,7 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
  * has the value of this color. */
 void SwatchBookPrivate::selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow)
 {
-    const auto newColor = m_swatches.value(newCurrentColomn, newCurrentRow);
+    const auto newColor = m_swatchGrid.value(newCurrentColomn, newCurrentRow);
     if (!newColor.isValid()) {
         return;
     }
@@ -300,6 +305,47 @@ void SwatchBookPrivate::selectSwatch(QListSizeType newCurrentColomn, QListSizeTy
         Q_EMIT q_pointer->currentColorChanged(newColor);
     }
     q_pointer->update();
+}
+
+/** @brief Selects a swatch from the grid.
+ *
+ * @post If the currently selected swatch corresponds to
+ * @ref SwatchBook::currentColor nothing happens. Otherwise, a swatch if
+ * selected if there is one that corresponds to @ref SwatchBook::currentColor,
+ * or none if there is no corresponding swatch. */
+void SwatchBookPrivate::selectSwatchFromCurrentColor()
+{
+    if (m_selectedColumn > 0 && m_selectedRow > 0) {
+        if (m_swatchGrid.value(m_selectedColumn, m_selectedRow) == m_currentColor) {
+            return;
+        }
+    }
+
+    bool colorFound = false;
+    const qsizetype myColumnCount = m_swatchGrid.iCount();
+    const qsizetype myRowCount = m_swatchGrid.jCount();
+    int columnIndex = 0;
+    int rowIndex = 0;
+    for (columnIndex = 0; //
+         columnIndex < myColumnCount; //
+         ++columnIndex) {
+        for (rowIndex = 0; rowIndex < myRowCount; ++rowIndex) {
+            if (m_swatchGrid.value(columnIndex, rowIndex) == m_currentColor) {
+                colorFound = true;
+                break;
+            }
+        }
+        if (colorFound) {
+            break;
+        }
+    }
+    if (colorFound) {
+        m_selectedColumn = columnIndex;
+        m_selectedRow = rowIndex;
+    } else {
+        m_selectedColumn = -1;
+        m_selectedRow = -1;
+    }
 }
 
 /** @brief Horizontal spacing between color patches.
@@ -492,7 +538,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     }
 
     const int rowIndex = temp.y() / rowHeight;
-    if (!isInRange<qsizetype>(0, rowIndex, d_pointer->m_swatches.jCount() - 1)) {
+    if (!isInRange<qsizetype>(0, rowIndex, d_pointer->m_swatchGrid.jCount() - 1)) {
         // The index is out of range. This might happen when the user
         // clicks very near to the border, where is no other patch
         // anymore, but which is still part of the widget.
@@ -505,9 +551,9 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
         columnIndex = visualColumnIndex;
     } else {
         columnIndex = //
-            d_pointer->m_swatches.iCount() - 1 - visualColumnIndex;
+            d_pointer->m_swatchGrid.iCount() - 1 - visualColumnIndex;
     }
-    if (!isInRange<qsizetype>(0, columnIndex, d_pointer->m_swatches.iCount() - 1)) {
+    if (!isInRange<qsizetype>(0, columnIndex, d_pointer->m_swatchGrid.iCount() - 1)) {
         // The index is out of range. This might happen when the user
         // clicks very near to the border, where is no other patch
         // anymore, but which is still part of the widget.
@@ -613,15 +659,15 @@ void SwatchBook::paintEvent(QPaintEvent *event)
 
     // Draw the color patches
     const QPoint offset = d_pointer->offset(frameStyleOption);
-    const QListSizeType columnCount = d_pointer->m_swatches.iCount();
+    const QListSizeType columnCount = d_pointer->m_swatchGrid.iCount();
     QListSizeType visualColumn;
     for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
         for (int row = 0; //
-             row < d_pointer->m_swatches.jCount(); //
+             row < d_pointer->m_swatchGrid.jCount(); //
              ++row //
         ) {
             const auto swatchColor = //
-                d_pointer->m_swatches.value(columnIndex, row);
+                d_pointer->m_swatchGrid.value(columnIndex, row);
             if (swatchColor.isValid()) {
                 widgetPainter.setBrush(swatchColor);
                 widgetPainter.setPen(Qt::NoPen);
@@ -651,11 +697,11 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const QListSizeType visualSelectedColumnIndex = //
         (layoutDirection() == Qt::LayoutDirection::LeftToRight) //
         ? d_pointer->m_selectedColumn //
-        : d_pointer->m_swatches.iCount() - 1 - d_pointer->m_selectedColumn;
+        : d_pointer->m_swatchGrid.iCount() - 1 - d_pointer->m_selectedColumn;
     const LchDouble colorCielchD50 = //
         d_pointer->m_rgbColorSpace->toCielchD50Double( //
             d_pointer //
-                ->m_swatches //
+                ->m_swatchGrid //
                 .value(d_pointer->m_selectedColumn, d_pointer->m_selectedRow) //
                 .rgba64() //
         );
@@ -786,16 +832,16 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
         columnShift = 1 * writingDirection;
         break;
     case Qt::Key_PageUp:
-        rowShift = (-1) * d_pointer->m_swatches.jCount();
+        rowShift = (-1) * d_pointer->m_swatchGrid.jCount();
         break;
     case Qt::Key_PageDown:
-        rowShift = d_pointer->m_swatches.jCount();
+        rowShift = d_pointer->m_swatchGrid.jCount();
         break;
     case Qt::Key_Home:
-        columnShift = (-1) * d_pointer->m_swatches.iCount();
+        columnShift = (-1) * d_pointer->m_swatchGrid.iCount();
         break;
     case Qt::Key_End:
-        columnShift = d_pointer->m_swatches.iCount();
+        columnShift = d_pointer->m_swatchGrid.iCount();
         break;
     default:
         // Quote from Qt documentation:
@@ -831,10 +877,10 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
     d_pointer->selectSwatch( //
         qBound<QListSizeType>(0, //
                               d_pointer->m_selectedColumn + columnShift,
-                              d_pointer->m_swatches.iCount() - 1),
+                              d_pointer->m_swatchGrid.iCount() - 1),
         qBound<QListSizeType>(0, //
                               d_pointer->m_selectedRow + rowShift, //
-                              d_pointer->m_swatches.jCount() - 1));
+                              d_pointer->m_swatchGrid.jCount() - 1));
 }
 
 /** @brief Handle state changes.
@@ -867,8 +913,8 @@ QSize SwatchBookPrivate::colorPatchesSizeWithMargin() const
 {
     q_pointer->ensurePolished();
     const QSize patchSize = patchSizeOuter();
-    const int columnCount = static_cast<int>(m_swatches.iCount());
-    const int rowCount = static_cast<int>(m_swatches.jCount());
+    const int columnCount = static_cast<int>(m_swatchGrid.iCount());
+    const int rowCount = static_cast<int>(m_swatchGrid.jCount());
     const int width = //
         q_pointer->style()->pixelMetric(QStyle::PM_LayoutLeftMargin) //
         + columnCount * patchSize.width() //

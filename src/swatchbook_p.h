@@ -40,7 +40,7 @@ class SwatchBookPrivate final : public QObject
     Q_OBJECT
 
 public:
-    explicit SwatchBookPrivate(SwatchBook *backLink, const Array2D<QColor> &swatches, Qt::Orientations wideSpacing);
+    explicit SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::Swatches &swatchGrid, Qt::Orientations wideSpacing);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -56,6 +56,7 @@ public:
     [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();
     void selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow);
+    void selectSwatchFromCurrentColor();
     [[nodiscard]] int verticalPatchSpacing() const;
     [[nodiscard]] int widePatchSpacing() const;
 
@@ -90,15 +91,8 @@ public:
      *
      * The value is set by @ref retranslateUi(). */
     QString m_selectionMark;
-    /** @brief The colors of the swatches.
-     *
-     * This is a two-dimensional array. At the first level the
-     * basic color (red, green…). At the second level, a particular
-     * tint/shade of this basic color.
-     *
-     * @sa @ref m_selectedColumn
-     * @sa @ref m_selectedRow */
-    const Array2D<QColor> m_swatches;
+    /** @brief Internal storage for property @ref SwatchBook::swatchGrid */
+    Swatches m_swatchGrid;
     /** @brief List of axis where @ref widePatchSpacing should be used. */
     const Qt::Orientations m_wideSpacing;
 
