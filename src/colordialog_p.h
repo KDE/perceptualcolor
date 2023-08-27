@@ -205,13 +205,13 @@ public:
     QPointer<QAction> m_oklchSpinBoxGamutAction;
     /** @brief Pointer to the label for @ref m_oklchSpinBox. */
     QPointer<QLabel> m_oklchSpinBoxLabel;
-    /** @brief Pointer to the palette widget. */
-    QPointer<PerceptualColor::SwatchBook> m_swatchBook;
-    /** @brief Shortcut to show the tab with @ref m_paletteWrapperWidget. */
-    QPointer<QShortcut> m_paletteTabShortcut;
+    /** @brief Pointer to the basic colors widget. */
+    QPointer<PerceptualColor::SwatchBook> m_swatchBookBasicColors;
+    /** @brief Shortcut to show the tab with @ref m_swatchBookWrapperWidget. */
+    QPointer<QShortcut> m_swatchBookTabShortcut;
     /** @brief Pointer to the QWidget wrapper that contains
-     * @ref m_swatchBook. */
-    QPointer<QWidget> m_paletteWrapperWidget;
+     * the swatch books. */
+    QPointer<QWidget> m_swatchBookWrapperWidget;
     /** @brief Holds the receiver object (if any) to be disconnected
      *  automatically after closing the dialog.
      *
@@ -265,9 +265,9 @@ public:
      * - Blue seems to be harmonious and integrate well in many designs.
      * - The blue color is quite chromatic, giving a vivid impression.
      * - Blue does not “screem” like red.
-     * - Blue is exactly at the middle of the palette.
+     * - Blue is exactly at the middle of the swatch book.
      * - The tone (no tint, no shade)  is exactly at the middle of the
-     *   palette. */
+     *   swatch book. */
     QColor m_wcsBasicDefaultColor;
     /** @brief Pointer to the @ref WheelColorPicker widget. */
     QPointer<WheelColorPicker> m_wheelColorPicker;
@@ -299,7 +299,7 @@ public Q_SLOTS:
     void readOklchNumericValues();
     void readRgbHexValues();
     void readRgbNumericValues();
-    void readSwatchBookValue();
+    void readSwatchBookBasicColorsValue();
     void readWheelColorPickerValues();
     void reloadIcons();
     void retranslateUi();

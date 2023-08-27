@@ -478,7 +478,7 @@ private Q_SLOTS:
         QCOMPARE(guessColorSchemeTypeFromWidget(&myWidget).has_value(), true);
     }
 
-    void testWcsBasicColorPalette()
+    void testWcsBasicColors()
     {
         const auto colors = wcsBasicColors( //
             RgbColorSpaceFactory::createSrgb());

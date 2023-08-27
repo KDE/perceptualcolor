@@ -77,7 +77,7 @@ void SwatchBookPrivate::retranslateUi()
     // However, this is only available for DirectWrite font rendering
     // on Windows. There does not seem to be a cross-platform solution
     // currently.
-    /*: @item Used to indicate the selected color in the palette. This symbol
+    /*: @item Indicate the selected color in the swatch book. This symbol
     should be translated to whatever symbol is most appropriate for “selected”
     in the translation language. Example symbols: ✓ U+2713 CHECK MARK.
     ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE.
@@ -815,7 +815,7 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
     // default branch of the switch statement, we would have passed the
     // keyPressEvent yet to the parent and returned.
 
-    // If currently no color of the palette is selected, select the
+    // If currently no color of the swatch book is selected, select the
     // first color as default.
     if ((d_pointer->m_selectedColumn < 0) && (d_pointer->m_selectedRow < 0)) {
         d_pointer->selectSwatch(0, 0);

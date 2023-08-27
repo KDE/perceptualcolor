@@ -2284,7 +2284,7 @@ private Q_SLOTS:
                         Qt::Key_B, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
-                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+                 d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
 
         d->m_tabWidget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
@@ -2306,7 +2306,7 @@ private Q_SLOTS:
                         Qt::Key_B, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
-                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+                 d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
 
         // The shortcut for the "Numerical" works.
         d->m_tabWidget->setFocus();
@@ -2314,11 +2314,11 @@ private Q_SLOTS:
                         Qt::Key_N, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
-                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+                 d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
 
-        const auto indexOfPaletteTab = //
-            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
-        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto indexOfSwatchBookTab = //
+            d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfSwatchBookTab);
         const auto toolTipContainsUnderline = //
             toolTip.contains(QStringLiteral("<u>"));
         QCOMPARE(toolTipContainsUnderline, true);
@@ -2346,7 +2346,7 @@ private Q_SLOTS:
                         Qt::Key_B, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
-                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+                 d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
 
         d->m_tabWidget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
@@ -2368,7 +2368,7 @@ private Q_SLOTS:
                         Qt::Key_B, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
-                 d->m_tabWidget->indexOf(d->m_paletteWrapperWidget));
+                 d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
 
         // The shortcut for the "Numerical" works.
         d->m_tabWidget->setFocus();
@@ -2378,9 +2378,9 @@ private Q_SLOTS:
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  d->m_tabWidget->indexOf(d->m_numericalWidget));
 
-        const auto indexOfPaletteTab = //
-            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
-        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto indexOfSwatchBookTab = //
+            d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfSwatchBookTab);
         const auto toolTipContainsUnderline = //
             toolTip.contains(QStringLiteral("<u>"));
         QCOMPARE(toolTipContainsUnderline, true);
@@ -2436,9 +2436,9 @@ private Q_SLOTS:
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  originalIndex);
 
-        const auto indexOfPaletteTab = //
-            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
-        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto indexOfSwatchBookTab = //
+            d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfSwatchBookTab);
         const auto toolTipContainsUnderline = //
             toolTip.contains(QStringLiteral("<u>"));
         QCOMPARE(toolTipContainsUnderline, false);
@@ -2494,9 +2494,9 @@ private Q_SLOTS:
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  originalIndex);
 
-        const auto indexOfPaletteTab = //
-            d->m_tabWidget->indexOf(d->m_paletteWrapperWidget);
-        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfPaletteTab);
+        const auto indexOfSwatchBookTab = //
+            d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget);
+        const auto toolTip = d->m_tabWidget->tabToolTip(indexOfSwatchBookTab);
         const auto toolTipContainsUnderline = //
             toolTip.contains(QStringLiteral("<u>"));
         QCOMPARE(toolTipContainsUnderline, false);

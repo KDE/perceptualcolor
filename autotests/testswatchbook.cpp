@@ -99,7 +99,7 @@ private Q_SLOTS:
         SwatchBook testObject(m_rgbColorSpace, //
                               wcsBasicColors(m_rgbColorSpace),
                               {});
-        // Verify that initially one of the colors of the palette
+        // Verify that initially one of the colors of the swatch book
         // is actually selected (no -1 as index):
         QVERIFY(testObject.d_pointer->m_selectedColumn >= 0);
         QVERIFY(testObject.d_pointer->m_selectedRow >= 0);
@@ -159,7 +159,8 @@ private Q_SLOTS:
                 lastSignalColor = newCurrentColor;
                 ++signalCount;
             });
-        // Initialize the palette widget and lastSignalColor to a defined state
+        // Initialize the swatch book widget and lastSignalColor to a
+        // defined state
         testWidget.d_pointer->selectSwatch(0, 0);
 
         // Test
@@ -386,9 +387,9 @@ private Q_SLOTS:
             // Add 1 to exceed the possible number of fields (crash test)
             + 1;
 
-        // Starting point is (0, 0) when no palette color was selected before
+        // Starting point is (0, 0) when no swatch was selected before
         testWidget.setCurrentColor(
-            // A color that is not in the palette:
+            // A color that is not in the swatch book:
             QColor(1, 2, 3));
         QTest::keyClick(&testWidget, Qt::Key_Left);
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);

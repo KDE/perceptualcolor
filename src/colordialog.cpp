@@ -413,16 +413,16 @@ void ColorDialogPrivate::retranslateUi()
     /*: @label:textbox Label for hexadecimal RGB representation like #12ab45 */
     m_rgbLineEditLabel->setText(tr("He&x:"));
 
-    const int paletteIndex = m_tabWidget->indexOf(m_paletteWrapperWidget);
-    if (paletteIndex >= 0) {
+    const int swatchBookIndex = m_tabWidget->indexOf(m_swatchBookWrapperWidget);
+    if (swatchBookIndex >= 0) {
         /*: @title:tab
         The tab contains a swatch book showing the basic colors like yellow,
         orange, red… Same text as in QColorDialog */
         const auto mnemonic = tr("&Basic colors");
         m_tabWidget->setTabToolTip( //
-            paletteIndex, //
+            swatchBookIndex, //
             richTextMarker + fromMnemonicToRichText(mnemonic));
-        m_paletteTabShortcut->setKey(QKeySequence::mnemonic(mnemonic));
+        m_swatchBookTabShortcut->setKey(QKeySequence::mnemonic(mnemonic));
     }
     const int hueFirstIndex = m_tabWidget->indexOf(m_hueFirstWrapperWidget);
     if (hueFirstIndex >= 0) {
@@ -730,17 +730,17 @@ void ColorDialogPrivate::reloadIcons()
 
     m_currentIconThemeType = newType;
 
-    static const QStringList paletteIcons //
+    static const QStringList swatchBookIcons //
         {QStringLiteral("paint-swatch"),
          // For “symbolic” (monochromatic) vs “full-color” icons, see
          // https://pointieststick.com/2023/08/12/how-all-this-icon-stuff-is-going-to-work-in-plasma-6/
          QStringLiteral("palette"),
          QStringLiteral("palette-symbolic")};
-    const int paletteIndex = //
-        m_tabWidget->indexOf(m_paletteWrapperWidget);
-    if (paletteIndex >= 0) {
-        m_tabWidget->setTabIcon(paletteIndex, //
-                                qIconFromTheme(paletteIcons, //
+    const int swatchBookIndex = //
+        m_tabWidget->indexOf(m_swatchBookWrapperWidget);
+    if (swatchBookIndex >= 0) {
+        m_tabWidget->setTabIcon(swatchBookIndex, //
+                                qIconFromTheme(swatchBookIcons, //
                                                QStringLiteral("color-swatch"),
                                                newType));
     }
@@ -836,17 +836,17 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_wcsBasicDefaultColor = m_wcsBasicColors.value(4, 2);
 
     // create the graphical selectors
-    m_swatchBook = new SwatchBook(m_rgbColorSpace, //
-                                  m_wcsBasicColors, //
-                                  Qt::Orientation::Horizontal);
-    QHBoxLayout *paletteInnerLayout = new QHBoxLayout();
-    paletteInnerLayout->addWidget(m_swatchBook);
-    paletteInnerLayout->addStretch();
-    QVBoxLayout *paletteOuterLayout = new QVBoxLayout();
-    paletteOuterLayout->addLayout(paletteInnerLayout);
-    paletteOuterLayout->addStretch();
-    m_paletteWrapperWidget = new QWidget();
-    m_paletteWrapperWidget->setLayout(paletteOuterLayout);
+    m_swatchBookBasicColors = new SwatchBook(m_rgbColorSpace, //
+                                             m_wcsBasicColors, //
+                                             Qt::Orientation::Horizontal);
+    QHBoxLayout *swatchBookInnerLayout = new QHBoxLayout();
+    swatchBookInnerLayout->addWidget(m_swatchBookBasicColors);
+    swatchBookInnerLayout->addStretch();
+    QVBoxLayout *swatchBookOuterLayout = new QVBoxLayout();
+    swatchBookOuterLayout->addLayout(swatchBookInnerLayout);
+    swatchBookOuterLayout->addStretch();
+    m_swatchBookWrapperWidget = new QWidget();
+    m_swatchBookWrapperWidget->setLayout(swatchBookOuterLayout);
 
     m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
     m_hueFirstWrapperWidget = new QWidget;
@@ -887,21 +887,21 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // of the tab bar to match the icon height. This causes larger icons to
     // simply overflow, which looks like a rendering issue. Therefore,
     // currently we stick with the default icons size for tab bars.
-    m_tabWidget->addTab(m_paletteWrapperWidget, QString());
-    m_paletteTabShortcut = new QShortcut(q_pointer);
-    connect(m_paletteTabShortcut, //
+    m_tabWidget->addTab(m_swatchBookWrapperWidget, QString());
+    m_swatchBookTabShortcut = new QShortcut(q_pointer);
+    connect(m_swatchBookTabShortcut, //
             &QShortcut::activated,
             this,
             [this]() {
                 m_tabWidget->setCurrentIndex( //
-                    m_tabWidget->indexOf(m_paletteWrapperWidget));
+                    m_tabWidget->indexOf(m_swatchBookWrapperWidget));
             });
-    connect(m_paletteTabShortcut, //
+    connect(m_swatchBookTabShortcut, //
             &QShortcut::activatedAmbiguously,
             this,
             [this]() {
                 m_tabWidget->setCurrentIndex( //
-                    m_tabWidget->indexOf(m_paletteWrapperWidget));
+                    m_tabWidget->indexOf(m_swatchBookWrapperWidget));
             });
 
     m_tabWidget->addTab(m_hueFirstWrapperWidget, QString());
@@ -938,7 +938,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
                     m_tabWidget->indexOf(m_lightnessFirstWrapperWidget));
             });
 
-    m_tabTable.insert(&m_paletteWrapperWidget, //
+    m_tabTable.insert(&m_swatchBookWrapperWidget, //
                       QStringLiteral("swatch"));
     m_tabTable.insert(&m_hueFirstWrapperWidget, //
                       QStringLiteral("hue-based"));
@@ -1063,10 +1063,10 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readColorPatchValue // slot
     );
-    connect(m_swatchBook, // sender
+    connect(m_swatchBookBasicColors, // sender
             &SwatchBook::currentColorChanged, // signal
             this, // receiver
-            &ColorDialogPrivate::readSwatchBookValue // slot
+            &ColorDialogPrivate::readSwatchBookBasicColorsValue // slot
     );
     connect(m_rgbSpinBox, // sender
             &MultiSpinBox::sectionValuesChanged, // signal
@@ -1465,9 +1465,9 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
     m_currentOpaqueColorAbs = abs;
     m_currentOpaqueColorRgb = rgb;
 
-    // Update palette
-    if (m_swatchBook != ignoreWidget) {
-        m_swatchBook->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
+    // Update basic colors swatch book
+    if (m_swatchBookBasicColors != ignoreWidget) {
+        m_swatchBookBasicColors->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
     }
 
     // Update RGB widget
@@ -1646,21 +1646,21 @@ void ColorDialogPrivate::readColorPatchValue()
     setCurrentOpaqueColor(myRgbColor, m_colorPatch);
 }
 
-/** @brief Reads the color of the palette widget, and (if any)
+/** @brief Reads the color of the basic colors widget, and (if any)
  * updates the dialog accordingly. */
-void ColorDialogPrivate::readSwatchBookValue()
+void ColorDialogPrivate::readSwatchBookBasicColorsValue()
 {
     if (m_isColorChangeInProgress) {
         // Nothing to do!
         return;
     }
-    const QColor temp = m_swatchBook->currentColor();
+    const QColor temp = m_swatchBookBasicColors->currentColor();
     if (!temp.isValid()) {
         // No color is currently selected!
         return;
     }
     const auto myRgbColor = RgbColor::fromRgbQColor(temp);
-    setCurrentOpaqueColor(myRgbColor, m_swatchBook);
+    setCurrentOpaqueColor(myRgbColor, m_swatchBookBasicColors);
 }
 
 /** @brief Reads the color of the @ref WheelColorPicker in the dialog and
@@ -2422,7 +2422,7 @@ void ColorDialog::changeEvent(QEvent *event)
         // Retranslate all child widgets that actually need to be retranslated:
         {
             QEvent eventForSwatchBook(QEvent::LanguageChange);
-            QApplication::sendEvent(d_pointer->m_swatchBook, //
+            QApplication::sendEvent(d_pointer->m_swatchBookBasicColors, //
                                     &eventForSwatchBook);
         }
         {

@@ -270,7 +270,7 @@ static void makeScreenshots()
     QSharedPointer<RgbColorSpace> m_colorSpace = //
         RgbColorSpaceFactory::createSrgb();
     // Chose a default color:
-    // — that is present in the palette (to show the selection mark)
+    // — that is present in the basic colors (to show the selection mark)
     // — is quite chromatic (which looks nice on screenshots)
     // — has nevertheless a little bit of distance to the outer
     //   hull (which  puts the marker somewhere in the inner of
