@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-03-20 14:20+0100\n"
+"PO-Revision-Date: 2023-08-07 16:55+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.04.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -79,7 +79,7 @@ msgstr ""
 #: colordialog.cpp:269
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Profile class:"
-msgstr ""
+msgstr "Třída profilu:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. The color model of the color space which is described by this profile.
 #: colordialog.cpp:278
@@ -127,7 +127,7 @@ msgstr ""
 #: colordialog.cpp:341
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Matrices"
-msgstr ""
+msgstr "Matice"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space. Wether the profile has a matrix shaper or a color lookup table (CLUT) or both.
 #: colordialog.cpp:348
@@ -301,18 +301,15 @@ msgstr ""
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:567
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "O&pacity:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Op&acity:"
-msgstr "Kry&tí:"
+msgstr "&Krytí:"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:683
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color"
-msgstr ""
+msgstr "Vy&berte barvu obrazovky"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:696
