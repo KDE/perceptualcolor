@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-04-02 16:31+0300\n"
+"PO-Revision-Date: 2023-08-28 15:23+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -59,12 +59,9 @@ msgstr "%1L1 (arvioitu)"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:234
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "Maximum CIELch chroma:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum CIELCh-D50 chroma:"
-msgstr "CIELch-enimmäiskroma:"
+msgstr "CIELch-D50-enimmäiskroma:"
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:245
@@ -176,12 +173,9 @@ msgstr "CIEHL&C D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:408
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "Oklch:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "O&klch:"
-msgstr "Oklch:"
+msgstr "Okl&ch:"
 
 #. @label:spinbox Label for RGB color model, based on Red, Green, Blue.
 #: colordialog.cpp:411
@@ -315,27 +309,21 @@ msgstr ""
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:567
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "O&pacity:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Op&acity:"
-msgstr "&Peittävyys:"
+msgstr "P&eittävyys:"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:683
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Pick Screen Color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color"
-msgstr "P&oimi näyttöväri"
+msgstr "&Poimi näyttöväri"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:696
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
-msgstr ""
+msgstr "Kiinnity &väriasteikon lähimpään väriin napsauttamalla"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1166
