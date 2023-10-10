@@ -322,7 +322,7 @@ msgstr "O&pacitat:"
 #: colordialog.cpp:683
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color"
-msgstr "Seleccioneu el color de la &pantalla"
+msgstr "Seleccioneu un color de la &pantalla"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:696
@@ -334,7 +334,7 @@ msgstr "Feu clic per a ajustar al color més proper dins la gamma"
 #: colordialog.cpp:1166
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
-msgstr "Seleccioneu el color"
+msgstr "Seleccioneu un color"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: rgbcolorspace.cpp:107
