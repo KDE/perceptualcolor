@@ -151,7 +151,7 @@ private Q_SLOTS:
 
     void testNonExisting()
     {
-        cmsIOHANDLER *myHandler = IOHandlerFactory::createReadOnly( //
+        const cmsIOHANDLER *myHandler = IOHandlerFactory::createReadOnly( //
             nullptr,
             QStringLiteral("../testbed/nonexistingname"));
         QVERIFY(myHandler == nullptr);
@@ -159,7 +159,7 @@ private Q_SLOTS:
 
     void testDirectory1()
     {
-        cmsIOHANDLER *myHandler = IOHandlerFactory::createReadOnly( //
+        const cmsIOHANDLER *myHandler = IOHandlerFactory::createReadOnly( //
             nullptr,
             // Try the name of a directory with trailing /
             QStringLiteral("../testbed/"));
@@ -168,7 +168,7 @@ private Q_SLOTS:
 
     void testDirectory2()
     {
-        cmsIOHANDLER *myHandler = IOHandlerFactory::createReadOnly( //
+        const cmsIOHANDLER *myHandler = IOHandlerFactory::createReadOnly( //
             nullptr,
             // Try the name of a directory without trailing /
             QStringLiteral("../testbed"));

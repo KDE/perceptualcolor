@@ -39,7 +39,7 @@ codecheck_cppcheck:
     - Linux
   interruptible: true
   before_script:
-    - git clone https://invent.kde.org/sysadmin/ci-utilities
+    - git clone https://invent.kde.org/sysadmin/ci-utilities.git --depth=1
   script:
     - python3 -u ci-utilities/run-cppcheck.py --project $CI_PROJECT_NAME --branch $CI_COMMIT_REF_NAME
     - if [ "$(cat cppcheck.json)" == "[]" ]; then

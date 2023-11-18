@@ -2322,6 +2322,7 @@ void ColorDialogPrivate::applyLayoutDimensions()
 {
     constexpr auto collapsed = ColorDialog::DialogLayoutDimensions::Collapsed;
     constexpr auto expanded = ColorDialog::DialogLayoutDimensions::Expanded;
+    // cppcheck-suppress unreadVariable // false positive
     constexpr auto screenSizeDependent = //
         ColorDialog::DialogLayoutDimensions::ScreenSizeDependent;
     int effectivelyAvailableScreenWidth;

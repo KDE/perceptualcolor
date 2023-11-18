@@ -27,7 +27,7 @@ Options:
   #ctest-arguments: '--extra-verbose'
   require-passing-tests-on: ['@all']
   run-cppcheck: True
-  cppcheck-arguments: '--enable=all --suppress=unusedFunction --inline-suppr --language=c++ --std=c++17'
+  cppcheck-arguments: '--enable=all --suppress=unusedFunction --suppress=missingInclude --suppress=missingIncludeSystem --inline-suppr --language=c++ --std=c++17'
   cppcheck-ignore-files: []
   #run-gcovr: True
   # TODO KDE’s CI sets BUILD_COVERAGE as CMake argument. Make it actually work!?
