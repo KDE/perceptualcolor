@@ -543,6 +543,37 @@ QString RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFILE profileHandl
         // for this):
         countryCode = QByteArrayLiteral("US");
     }
+    // NOTE Since LittleCMS ≥ 2.16, cmsNoLanguage and cmsNoCountry could be
+    // used instead of "en" and "US" and would return simply the first language
+    // in the profile, but that seems less predictable and less reliably than
+    // "en" and "US".
+    //
+    // NOTE Do only v4 profiles provide internationalization, while v2 profiles
+    // don’t? This seems to be implied in LittleCMS documentation:
+    //
+    //     “Since 2.16, a special setting for the lenguage and country allows
+    //      to access the unicode variant on V2 profiles.
+    //
+    //      For the language and country:
+    //
+    //      cmsV2Unicode
+    //
+    //      Many V2 profiles have this field empty or filled with bogus values.
+    //      Previous versions of Little CMS were ignoring it, but with
+    //      this additional setting, correct V2 profiles with two variants
+    //      can be honored now. By default, the ASCII variant is returned on
+    //      V2 profiles unless you specify this special setting. If you decide
+    //      to use it, check the result for empty strings and if this is the
+    //      case, repeat reading by using the normal path.”
+    //
+    // So maybe v2 profiles have just one ASCII and one Unicode string, and
+    // that’s all? If so, our approach seems fine: Our locale will be honored
+    // on v4 profiles, and it will be ignored on v2 profiles because we do not
+    // use cmsV2Unicode. This seems a wise choice, because otherwise we would
+    // need different code paths for v2 and v4 profiles, which would be even
+    // even more complex than the current code, and still potentially return
+    // “bogus values” (as LittleCMS the documentation states), so the result
+    // would be worse than the current code.
 
     // Calculate the expected maximum size of the return value that we have
     // to provide for cmsGetProfileInfo later on in order to return an
@@ -570,7 +601,7 @@ QString RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFILE profileHandl
     // calculates the buffer length in bytes and not in wchar_t. However,
     // the documentation (as of LittleCMS 2.9) is not clear about the
     // used encoding, and the buffer type must be wchar_t anyway, and
-    // wchar_t might have diffferent sizes (either 16 bit or 32 bit) on
+    // wchar_t might have different sizes (either 16 bit or 32 bit) on
     // different systems, and LittleCMS’ treatment of this situation is
     // not well documented. Therefore, we interpret the buffer length
     // as number of necessary wchart_t, which creates a greater buffer,
@@ -649,6 +680,13 @@ QString RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFILE profileHandl
     // undocumented behaviour of QString::fromWCharArray which means
     // it could change over time. Therefore, in the unit tests of this
     // class, we test if QString::fromWCharArray actually behaves as we want.
+    //
+    // NOTE Instead of cmsGetProfileInfo(), we could also use
+    // cmsGetProfileInfoUTF8() which returns directly an UTF-8 encoded
+    // string. We were no longer required to guess the encoding, but we
+    // would have a return value in a well-defined encoding. However,
+    // this would  also require LittleCMS ≥ 2.16, and we would still
+    // need the buffer.
     const QString result = QString::fromWCharArray(
         // Convert to string with these parameters:
         buffer, // read from this buffer
