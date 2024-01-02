@@ -266,9 +266,7 @@ private Q_SLOTS:
                                    -std::numeric_limits<double>::infinity()));
             QVERIFY(!isNearlyEqual(std::numeric_limits<double>::quiet_NaN(), //
                                    std::numeric_limits<double>::quiet_NaN()));
-        }
 
-        if constexpr (std::numeric_limits<double>::has_quiet_NaN) {
             // NaN should never compare equal to itself or any other value.
             QVERIFY( //
                 !isNearlyEqual(std::numeric_limits<double>::signaling_NaN(), //
@@ -414,9 +412,7 @@ private Q_SLOTS:
             QVERIFY(!isNearlyEqual(std::numeric_limits<double>::quiet_NaN(), //
                                    std::numeric_limits<double>::quiet_NaN(),
                                    std::numeric_limits<double>::infinity()));
-        }
 
-        if constexpr (std::numeric_limits<double>::has_quiet_NaN) {
             // NaN should never compare equal to itself or any other value.
             QVERIFY( //
                 !isNearlyEqual(std::numeric_limits<double>::signaling_NaN(), //

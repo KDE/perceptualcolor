@@ -26,6 +26,7 @@
 
 static void snippet01()
 {
+    // cppcheck-suppress constVariableReference // snippet for documentation
     //! [PerceptualSettings Instance]
     auto &mySettings = PerceptualColor::PerceptualSettings::instance();
     //! [PerceptualSettings Instance]

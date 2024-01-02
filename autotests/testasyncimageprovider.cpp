@@ -96,7 +96,7 @@ public:
     }
     static void render( //
         const QVariant &variantParameters, //
-        PerceptualColor::AsyncImageRenderCallback &callbackObject)
+        const PerceptualColor::AsyncImageRenderCallback &callbackObject)
     {
         Q_UNUSED(variantParameters)
         Q_UNUSED(callbackObject)
