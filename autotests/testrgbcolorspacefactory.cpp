@@ -88,9 +88,10 @@ private Q_SLOTS:
     {
         setTranslation(QCoreApplication::instance(), //
                        QLocale(QLocale::English).uiLanguages());
-        QSharedPointer<PerceptualColor::RgbColorSpace> temp = RgbColorSpaceFactory::createSrgb();
+        QSharedPointer<PerceptualColor::RgbColorSpace> temp = //
+            RgbColorSpaceFactory::createSrgb();
         QCOMPARE(temp.isNull(), false); // This is no nullptr!
-        // Make a random call, just to be sure that a method call will not crash:
+        // Make a random call, just to be sure that a method call won’t crash:
         Q_UNUSED(temp->profileName());
         // Make sure the returned value is actually the sRGB gamut.
         QCOMPARE(temp->profileName(), QStringLiteral("sRGB color space"));
