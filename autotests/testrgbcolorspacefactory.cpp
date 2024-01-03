@@ -10,6 +10,7 @@
 #include "rgbcolorspace.h"
 #include "settranslation.h"
 #include <qcoreapplication.h>
+#include <qdebug.h>
 #include <qglobal.h>
 #include <qlocale.h>
 #include <qobject.h>
@@ -104,9 +105,15 @@ private Q_SLOTS:
 
     void testColorProfileDirectories()
     {
-        // colorProfileDirectories() should not throw:
-        QStringList temp = RgbColorSpaceFactory::colorProfileDirectories();
+        // colorProfileDirectories() must not throw an exception:
+        const QStringList temp = //
+            RgbColorSpaceFactory::colorProfileDirectories();
         Q_UNUSED(temp)
+    }
+
+    void testColorProfileDirectoriesQInfo()
+    {
+        qInfo() << RgbColorSpaceFactory::colorProfileDirectories();
     }
 };
 
