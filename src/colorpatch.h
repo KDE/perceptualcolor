@@ -79,12 +79,12 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorPatch : public AbstractDiagram
      *
      * Default value is an invalid color.
      *
-     * - If the color is invalid, nothing is displayed. The frame is empty:
-     *   Only the default widget background is visible within the frame.
      * - If the color is valid, the widget frame is filled with this color.
      *   If this color is not fully opaque, the background behind the color
      *   will be a special background pattern (and <em>not</em> the default
      *   widget background).
+     * - If the color is invalid, this is represented by a a special
+     *   appearance of the widget.
      *
      * @note No color management is applied. The color is used as-is to
      * paint on the canvas provided by the operation system.
