@@ -96,15 +96,6 @@ static void screenshotInternal(QWidget *widget, const QString &comment = QString
         0);
 }
 
-static void screenshot(QWidget *widget, const QString &comment = QString())
-{
-    forceFont(widget);
-    // Set an acceptable widget size (important
-    // standalone-widgets without layout management):
-    widget->resize(widget->sizeHint());
-    screenshotInternal(widget, comment);
-}
-
 // Screenshots of widgets with asynchronous image processing.
 //
 // This function is not deterministic! If the delays are enough to
@@ -264,6 +255,27 @@ static void initFonts(QApplication *app, const QStringList &fontfiles)
     app->setFont(myFont);
 }
 
+static void setCurrentTab(ColorDialog *dialog, int index)
+{
+    QList<QTabWidget *> tabWidgets = dialog->findChildren<QTabWidget *>();
+    if (tabWidgets.count() != 1) {
+        throw 0;
+    }
+    QTabWidget *myTabWidget = tabWidgets.first();
+    const auto count = myTabWidget->count();
+    if (count > 1) {
+        // It seems that QTabWidget::setCurrentIndex() does not always repaint
+        // correctly when no event loop is running. Workaround:
+        // First, set a different index, and later the the actual index.
+        if (index == 0) {
+            myTabWidget->setCurrentIndex(1);
+        } else {
+            myTabWidget->setCurrentIndex(0);
+        }
+    }
+    myTabWidget->setCurrentIndex(index);
+}
+
 static void makeScreenshots()
 {
     // Variables
@@ -297,6 +309,7 @@ static void makeScreenshots()
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
+        setCurrentTab(&m_colorDialog, 0);
         screenshotDelayed(&m_colorDialog);
     }
 
@@ -305,8 +318,7 @@ static void makeScreenshots()
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
-        QTabWidget *myTabWidget = m_colorDialog.findChild<QTabWidget *>();
-        myTabWidget->setCurrentIndex(1);
+        setCurrentTab(&m_colorDialog, 1);
         screenshotDelayed(&m_colorDialog, QStringLiteral("Tab1"));
     }
 
@@ -315,8 +327,7 @@ static void makeScreenshots()
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
-        QTabWidget *myTabWidget = m_colorDialog.findChild<QTabWidget *>();
-        myTabWidget->setCurrentIndex(2);
+        setCurrentTab(&m_colorDialog, 2);
         screenshotDelayed(&m_colorDialog, QStringLiteral("Tab2"));
     }
 
@@ -325,8 +336,7 @@ static void makeScreenshots()
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
-        QTabWidget *myTabWidget = m_colorDialog.findChild<QTabWidget *>();
-        myTabWidget->setCurrentIndex(1);
+        setCurrentTab(&m_colorDialog, 1);
         m_colorDialog.setOption( //
             ColorDialog::ColorDialogOption::ShowAlphaChannel);
         myColor = m_colorDialog.currentColor();
@@ -340,8 +350,7 @@ static void makeScreenshots()
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
-        QTabWidget *myTabWidget = m_colorDialog.findChild<QTabWidget *>();
-        myTabWidget->setCurrentIndex(1);
+        setCurrentTab(&m_colorDialog, 1);
         m_colorDialog.setOption( //
             ColorDialog::ColorDialogOption::ShowAlphaChannel);
         myColor = m_colorDialog.currentColor();
@@ -355,8 +364,7 @@ static void makeScreenshots()
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         m_colorDialog.setCurrentColor(defaultColorRgb);
-        QTabWidget *myTabWidget = m_colorDialog.findChild<QTabWidget *>();
-        myTabWidget->setCurrentIndex(1);
+        setCurrentTab(&m_colorDialog, 1);
         m_colorDialog.setOption( //
             ColorDialog::ColorDialogOption::ShowAlphaChannel);
         myColor = m_colorDialog.currentColor();
@@ -369,18 +377,18 @@ static void makeScreenshots()
         ColorPatch m_colorPatch;
         myColor = defaultColorRgb;
         m_colorPatch.setColor(myColor);
-        screenshot(&m_colorPatch);
+        screenshotDelayed(&m_colorPatch);
         myColor.setAlphaF(0.5);
         m_colorPatch.setColor(myColor);
-        screenshot(&m_colorPatch, QStringLiteral("SemiTransparent"));
+        screenshotDelayed(&m_colorPatch, QStringLiteral("SemiTransparent"));
         m_colorPatch.setColor(QColor());
-        screenshot(&m_colorPatch, QStringLiteral("Invalid"));
+        screenshotDelayed(&m_colorPatch, QStringLiteral("Invalid"));
     }
 
     {
         ColorWheel m_colorWheel(m_colorSpace);
         m_colorWheel.setHue(defaultColorCielchD50.h);
-        screenshot(&m_colorWheel);
+        screenshotDelayed(&m_colorWheel);
     }
 
     {
@@ -414,7 +422,7 @@ static void makeScreenshots()
         values.append(100);
         m_multiSpinBox.setSectionConfigurations(hsvSectionConfigurations);
         m_multiSpinBox.setSectionValues(values);
-        screenshot(&m_multiSpinBox);
+        screenshotDelayed(&m_multiSpinBox);
 
         // Out-of-gamut button for the HLC spin box
         QAction *myAction = new QAction(
@@ -434,7 +442,7 @@ static void makeScreenshots()
         m_multiSpinBoxWithButton.addActionButton( //
             myAction, //
             QLineEdit::ActionPosition::TrailingPosition);
-        screenshot(&m_multiSpinBoxWithButton, QStringLiteral("WithButton"));
+        screenshotDelayed(&m_multiSpinBoxWithButton, QStringLiteral("WithButton"));
     }
 
     {
@@ -448,7 +456,7 @@ static void makeScreenshots()
                                 wcsBasicColors(m_colorSpace),
                                 Qt::Orientation::Horizontal);
         m_swatchBook.setCurrentColor(defaultColorRgb);
-        screenshot(&m_swatchBook);
+        screenshotDelayed(&m_swatchBook);
     }
 }
 
