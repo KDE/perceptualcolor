@@ -11,6 +11,7 @@
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
+#include <qpixmap.h>
 #include <qpoint.h>
 class QLabel;
 
@@ -50,8 +51,8 @@ public:
     /** @brief The QLabel widget that is used to display the color. */
     QLabel *m_label;
 
-    [[nodiscard]] int dragPixmapSize() const;
-    [[nodiscard]] QImage renderImage();
+    [[nodiscard]] QImage renderImage(const int width, const int height);
+    [[nodiscard]] QPixmap renderPixmap(const int width, const int height);
     void updatePixmap();
 
 private:

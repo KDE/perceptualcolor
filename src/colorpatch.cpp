@@ -109,12 +109,13 @@ QSize ColorPatch::minimumSizeHint() const
 /** @brief Updates the pixmap in @ref m_label and its alignment. */
 void ColorPatchPrivate::updatePixmap()
 {
-    QPixmap temp = QPixmap::fromImage(renderImage());
-    temp.setDevicePixelRatio(q_pointer->devicePixelRatioF());
+    const QRect qLabelContentsRect = m_label->contentsRect();
+    const QPixmap pixmap = renderPixmap(qLabelContentsRect.width(), //
+                                        qLabelContentsRect.height());
     // NOTE Kvantum was mistakenly scaling the pixmap (even though
     // QLabel::hasScaledContents() == false) for versions ≤ 1.0.2. This bug
     // has been fixed: https://github.com/tsujan/Kvantum/issues/804.
-    m_label->setPixmap(temp);
+    m_label->setPixmap(pixmap);
     // There were rendering artefacts under certain QStyle (Breeze, Plastik,
     // Windows): When selecting in the color dialog a new color with the
     // screen color picker using “Portal” under 125% scaling, the left and
@@ -165,28 +166,27 @@ void ColorPatch::setColor(const QColor &newColor)
 
 /** @brief Renders the image to be displayed.
  *
+ * @param width of the requested image, measured in device-independent pixels.
+ *
+ * @param height of the requested image, measured in device-independent pixels.
+ *
  * @returns An image containing the color of @ref m_color. If the color is
  * transparent or semi-transparent, background with small gray squares is
  * visible. If @ref ColorPatch has RTL layout, the image is mirrored. The
  * device-pixel-ratio is set accordingly to @ref ColorPatch. The size of
- * the image is equal or slightly bigger than necessary to paint the whole
- * @ref ColorPatch surface at the given device-pixel-ratio (but always at
- * least @ref dragPixmapSize). As @ref m_label
+ * the image is equal or (if rounding has to be done because of fractional
+ * scale factors) slightly bigger than necessary to paint the whole
+ * @ref ColorPatch surface at the given device-pixel-ratio. As @ref m_label
  * does <em>not</em> scale the image by default, it will be displayed with
  * the correct aspect ratio, while guaranteeing to be big enough whatever
- * QLabel’s frame size is with the currently used QStyle.*/
-QImage ColorPatchPrivate::renderImage()
+ * QLabel’s frame size is with the currently used QStyle. */
+QImage ColorPatchPrivate::renderImage(const int width, const int height)
 {
     // Initialization
     // Round up to the next integer to be sure to have a big-enough image:
-    const auto qLabelContentsRect = m_label->contentsRect();
-    const qreal imageWidthF = std::max<qreal>( //
-        qLabelContentsRect.width() * q_pointer->devicePixelRatioF(),
-        dragPixmapSize());
+    const qreal imageWidthF = width * q_pointer->devicePixelRatioF();
     const int imageWidth = qCeil(imageWidthF);
-    const qreal imageHeightF = std::max<qreal>( //
-        qLabelContentsRect.height() * q_pointer->devicePixelRatioF(),
-        dragPixmapSize());
+    const qreal imageHeightF = height * q_pointer->devicePixelRatioF();
     const int imageHeight = qCeil(imageHeightF);
     QImage myImage(imageWidth, //
                    imageHeight, //
@@ -290,6 +290,20 @@ QImage ColorPatchPrivate::renderImage()
     return myImage;
 }
 
+/** @brief Renders the image to be displayed.
+ *
+ * @param width of the requested image, measured in logical pixels.
+ *
+ * @param height of the requested image, measured in logical pixels.
+ *
+ * @returns Same as @ref renderImage but as QPixmap. */
+QPixmap ColorPatchPrivate::renderPixmap(const int width, const int height)
+{
+    QPixmap pixmap = QPixmap::fromImage(renderImage(width, height));
+    pixmap.setDevicePixelRatio(q_pointer->devicePixelRatioF());
+    return pixmap;
+}
+
 /** @brief React on a mouse move event.
  *
  * Reimplemented from base class.
@@ -316,40 +330,21 @@ void ColorPatch::mouseMoveEvent(QMouseEvent *event)
             + vector.y() * vector.y();
         const auto refSquare = QApplication::startDragDistance() //
             * QApplication::startDragDistance();
-        if (distanceSquare >= refSquare) {
+        if (d_pointer->m_color.isValid() && (distanceSquare >= refSquare)) {
             QDrag *drag = new QDrag(this); // Mandatory on heap and with parent
             QMimeData *mimeData = new QMimeData;
             mimeData->setColorData(d_pointer->m_color);
             drag->setMimeData(mimeData); // Takes ownership of mime data
-            const QPixmap originalPixmap = d_pointer->m_label->pixmap();
-            const int x = (layoutDirection() == Qt::RightToLeft) //
-                ? originalPixmap.width() - d_pointer->dragPixmapSize()
-                : 0;
-            const QPixmap clampedPixmap = originalPixmap.copy( //
-                x,
-                0,
-                d_pointer->dragPixmapSize(),
-                d_pointer->dragPixmapSize());
-            drag->setPixmap(clampedPixmap);
+            const auto finalSize = std::max({30, //
+                                             minimumSizeHint().width(), //
+                                             minimumSizeHint().height()});
+            drag->setPixmap(d_pointer->renderPixmap(finalSize, finalSize));
             drag->exec(Qt::CopyAction);
         }
     }
     // NOTE Intentionally not calling the parent’s class’ implementation to
     // avoid that on Breeze style, instead of drag-and-drop, sometimes
     // the window gets moved.
-}
-
-/** @brief Size of the pixmap glued to the cursor during drag-and-drop.
- *
- * @returns Size of the pixmap glued to the cursor during drag-and-drop,
- * measured in physical pixels. */
-int ColorPatchPrivate::dragPixmapSize() const
-{
-    const auto minSize = q_pointer->minimumSizeHint();
-    const auto deviceIndependant = std::max({30, //
-                                             minSize.width(), //
-                                             minSize.height()});
-    return qCeil(deviceIndependant * q_pointer->devicePixelRatioF());
 }
 
 /** @brief Accepts drag events for colors.
