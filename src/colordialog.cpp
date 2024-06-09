@@ -726,7 +726,7 @@ void ColorDialogPrivate::reloadIcons()
     label->setText(QStringLiteral("abc"));
     label->resize(label->sizeHint()); // Smaller size means faster guess.
     ColorSchemeType newType = guessColorSchemeTypeFromWidget(label.data()) //
-                                  .value_or(newType);
+                                  .value_or(ColorSchemeType::Light);
 
     m_currentIconThemeType = newType;
 

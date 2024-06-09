@@ -41,7 +41,7 @@ codecheck_cppcheck:
   before_script:
     - git clone https://invent.kde.org/sysadmin/ci-utilities.git --depth=1
   script:
-    - python3 -u ci-utilities/run-cppcheck.py --project $CI_PROJECT_NAME --branch $CI_COMMIT_REF_NAME
+    - python3 -u ci-utilities/run-cppcheck.py --project $CI_PROJECT_NAME
     - if [ "$(cat cppcheck.json)" == "[]" ]; then
     -     echo "cppcheck did not find any issues."
     -     exit 0

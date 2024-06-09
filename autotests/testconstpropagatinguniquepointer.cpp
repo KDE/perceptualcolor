@@ -84,7 +84,7 @@ private Q_SLOTS:
     // NOTE Should break on compile time when the function is const.
     void testBackCopy01()
     {
-        QRectF temp;
+        QRectF temp = QRectF(1, 2, 3, 4);
         *pointerToQRectF = temp;
     }
 

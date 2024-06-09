@@ -417,8 +417,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
             : ColorModel::CielabD50;
         rgbColorSpace = CssPredefinedRgbColorSpace::Invalid;
         std::array<double, 3> full = (ident == QStringLiteral("oklab")) //
-            ? std::array<double, 3>{1, 0.4, 0.4}
-            : std::array<double, 3>{100, 125, 125};
+            ? std::array<double, 3>{{1, 0.4, 0.4}}
+            : std::array<double, 3>{{100, 125, 125}};
         for (quint8 i = 0; i < 3; ++i) {
             const auto absValue = parseArgumentPercentNumberNone( //
                 arguments.value(i), //
@@ -437,8 +437,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
             : ColorModel::CielchD50;
         rgbColorSpace = CssPredefinedRgbColorSpace::Invalid;
         std::array<double, 2> full = (ident == QStringLiteral("oklch")) //
-            ? std::array<double, 2>{1, 0.4}
-            : std::array<double, 2>{100, 150};
+            ? std::array<double, 2>{{1, 0.4}}
+            : std::array<double, 2>{{100, 150}};
         for (quint8 i = 0; i < 2; ++i) {
             const auto absValue = parseArgumentPercentNumberNone( //
                 arguments.value(i), //
