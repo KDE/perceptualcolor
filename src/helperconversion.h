@@ -26,46 +26,54 @@ namespace PerceptualColor
 
 Q_NAMESPACE
 
-/** @brief Identifiers for color models. */
+/** @brief Identifiers for color models.
+ *
+ * @internal
+ *
+ * @note Maybe
+ * <a href="https://doc-snapshots.qt.io/qt6-dev/qcolorspace.html#ColorModel-enum">
+ * <tt>enum QColorSpace::NamedColorSpace</tt></a> might also be useful in
+ * the future.
+ */
 enum class ColorModel {
-    CielabD50, /**< Cielab color space using a D50 illuminant.
+    CielabD50, /**< The Cielab color space using a D50 illuminant.
         Lightness: [0, 100].<br/>
         a: unbound.<br/>
         b: unbound. */
-    CielchD50, /**< Cielch color space using a D50 illuminant.
+    CielchD50, /**< The Cielch color space using a D50 illuminant.
         Lightness: [0, 100].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Hsl360_1_1, /**< A HSL color space.
+    Hsl360_1_1, /**< Some color space using the HSL color model.
         Hue: [0, 360[.<br/>
         Saturation: [0, 1].<br/>
         Lightness: [0, 1]. */
-    Hwb360_1_1, /**< A HWB color space.
+    Hwb360_1_1, /**< Some color space using the HWB color model.
         Hue: [0, 360[.<br/>
         Whiteness: [0, 1].<br/>
         Blackness: [0, 1]. */
     Invalid, /**< Represents invalid data. */
-    OklabD65, /**< Oklab color space, which by definition always and
+    OklabD65, /**< The Oklab color space, which by definition always and
         exclusively uses a D65 illuminant.
 
         Lightness: [0, 1].<br/>
         a: unbound.<br/>
         b: unbound. */
-    OklchD65, /**< Oklch color space, which by definition always and
+    OklchD65, /**< The Oklch color space, which by definition always and
         exclusively uses a D65 illuminant.
 
         Lightness: [0, 1].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Rgb1, /**< An Rgb color space.
+    Rgb1, /**< Some color space using the Rgb color space.
         R: [0, 1].<br/>
         G: [0, 1].<br/>
         B: [0, 1]. */
-    XyzD50, /**< Xyz color space using a D50 illuminant.
+    XyzD50, /**< The Xyz color space using a D50 illuminant.
         X: unbound.<br/>
         Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>
         Z: unbound. */
-    XyzD65 /**< Xzy color space using a D65 illuminant.
+    XyzD65 /**< The Xzy color space using a D65 illuminant.
         X: unbound.<br/>
         Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>
         Z: unbound. */

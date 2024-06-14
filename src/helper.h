@@ -29,7 +29,12 @@ namespace PerceptualColor
 
 class RgbColorSpace;
 
-/** @brief Represents the appearance of a theme. */
+/** @brief Represents the appearance of a theme.
+ *
+ * @todo Substitute this by
+ * <a href="https://doc-snapshots.qt.io/qt6-dev/qt.html#ColorScheme-enum"><tt>
+ * enum class Qt::ColorScheme</tt></a> which is available since Qt 6.
+ */
 enum class ColorSchemeType {
     Light, /**< Light theme. */
     Dark /**< Dark theme. */
