@@ -327,7 +327,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     // TODO Detect an appropriate value for m_profileMaximumCielchD50Chroma.
 
     // Find blackpoint and whitepoint.
-    // For CielabD50 make sure that: 0 <= blackbpoint < whitepoint <= 100
+    // For CielabD50 make sure that: 0 <= blackpoint < whitepoint <= 100
     LchDouble candidate;
     candidate.c = 0;
     candidate.h = 0;

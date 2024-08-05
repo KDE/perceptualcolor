@@ -253,7 +253,7 @@ class RgbColorSpace : public QObject
      * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object.
      *
-     * @sa READ @ref profileName() const */
+     * @sa READ @ref profilePcsColorModel() const */
     Q_PROPERTY(cmsColorSpaceSignature profilePcsColorModel READ profilePcsColorModel CONSTANT)
 
     /** @brief The signatures of all tags actually present in the profile.
