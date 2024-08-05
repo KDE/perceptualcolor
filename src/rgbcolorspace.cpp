@@ -31,6 +31,7 @@
 #include <qrgba64.h>
 #include <qsharedpointer.h>
 #include <qstringliteral.h>
+#include <type_traits>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>
@@ -255,6 +256,18 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     m_profileName = getInformationFromProfile(rgbProfileHandle, //
                                               cmsInfoDescription);
     m_profilePcsColorModel = cmsGetPCS(rgbProfileHandle);
+    m_profileTagSignatures = profileTagSignatures(rgbProfileHandle);
+    // This is about the “vcgt” (video card gamma table) tag. It is not a
+    // “public tags” mentioned in the ICC specification itself, but a
+    // “private tags” registered at the ICC Signature Registry. It contains
+    // gamma tables which must mandatorily be applied after passing through
+    // the profile, otherwise you would get wrong colors. If the operation
+    // system applies them or not is however not always sure. Currently, we
+    // do not support this type of operation in our diagram generation.
+    // TODO Add support for vcgt tags.
+    if (m_profileTagSignatures.contains(QStringLiteral("vcgt"))) {
+        return false;
+    }
 
     {
         // Create an ICC v4 profile object for the CielabD50 color space.
@@ -505,6 +518,13 @@ QString RgbColorSpace::profileName() const
 cmsColorSpaceSignature RgbColorSpace::profilePcsColorModel() const
 {
     return d_pointer->m_profilePcsColorModel;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+QStringList RgbColorSpace::profileTagSignatures() const
+{
+    return d_pointer->m_profileTagSignatures;
 }
 
 /** @brief Get information from an ICC profile via LittleCMS
@@ -763,6 +783,37 @@ QDateTime RgbColorSpacePrivate::getCreationDateTimeFromProfile(cmsHPROFILE profi
         // Assuming UTC for the QDateTime because it’s the only choice
         // that will not change arbitrary.
         Qt::TimeSpec::UTC);
+}
+
+/** @brief List of tag signatures that are actually present in the profile.
+ *
+ * @param profileHandle handle to the ICC profile
+ * @returns A list of tag signatures actually present in the profile. Contains
+ * both, public and private signatures. See @ref profileTagSignatures for
+ * details. */
+QStringList RgbColorSpacePrivate::profileTagSignatures(cmsHPROFILE profileHandle)
+{
+    const cmsInt32Number count = cmsGetTagCount(profileHandle);
+    if (count < 0) {
+        return QStringList();
+    }
+    QStringList returnValue;
+    returnValue.reserve(count);
+    const cmsUInt32Number countUnsigned = static_cast<cmsUInt32Number>(count);
+    using underlyingType = std::underlying_type<cmsTagSignature>::type;
+    for (cmsUInt32Number i = 0; i < countUnsigned; ++i) {
+        const underlyingType value = cmsGetTagSignature(profileHandle, i);
+        QByteArray byteArray;
+        byteArray.reserve(4);
+        // Extract the 4 lowest bytes
+        byteArray.append(static_cast<char>((value >> 24) & 0xFF));
+        byteArray.append(static_cast<char>((value >> 16) & 0xFF));
+        byteArray.append(static_cast<char>((value >> 8) & 0xFF));
+        byteArray.append(static_cast<char>(value & 0xFF));
+        // Convert QByteArray to QString
+        returnValue.append(QString::fromLatin1(byteArray));
+    }
+    return returnValue;
 }
 
 /** @brief Reduces the chroma until the color fits into the gamut.

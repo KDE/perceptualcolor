@@ -12,8 +12,10 @@
 #include "helperconstants.h"
 #include "oklchvalues.h"
 #include <lcms2.h>
+#include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
+#include <qlist.h>
 #include <qmap.h>
 #include <qstring.h>
 #include <qversionnumber.h>
@@ -107,6 +109,9 @@ public:
     /** @brief Internal storage for property
      * @ref RgbColorSpace::profilePcsColorModel */
     cmsColorSpaceSignature m_profilePcsColorModel;
+    /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileTagSignatures */
+    QStringList m_profileTagSignatures;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformCielabD50ToRgb16Handle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
@@ -122,6 +127,7 @@ public:
     [[nodiscard]] static QVersionNumber getIccVersionFromProfile(cmsHPROFILE profileHandle);
     [[nodiscard]] static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
+    [[nodiscard]] QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
     /** @brief The rendering intents supported by the LittleCMS library.
      *

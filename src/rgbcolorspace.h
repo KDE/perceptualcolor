@@ -8,6 +8,7 @@
 #include "genericcolor.h"
 #include "lchdouble.h"
 #include <lcms2.h>
+#include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
 #include <qmetatype.h>
@@ -255,6 +256,17 @@ class RgbColorSpace : public QObject
      * @sa READ @ref profileName() const */
     Q_PROPERTY(cmsColorSpaceSignature profilePcsColorModel READ profilePcsColorModel CONSTANT)
 
+    /** @brief The signatures of all tags actually present in the profile.
+     *
+     * This contains both, “public tags” mentioned in the
+     * <a href="https://www.color.org/icc_specs2.xalter">ICC specification</a>
+     * itself, and “private tags” which should be registered at the
+     * <a href="https://www.color.org/signatures2.xalter">ICC Signature
+     * Registry</a>.
+     *
+     * @sa READ @ref profileTagSignatures() const */
+    Q_PROPERTY(QStringList profileTagSignatures READ profileTagSignatures CONSTANT)
+
 public: // Static factory functions
     [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createFromFile(const QString &fileName);
     [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createSrgb();
@@ -309,6 +321,9 @@ public:
     /** @brief Getter for property @ref profilePcsColorModel
      *  @returns the property @ref profilePcsColorModel */
     [[nodiscard]] cmsColorSpaceSignature profilePcsColorModel() const;
+    /** @brief Getter for property @ref profileTagSignatures
+     *  @returns the property @ref profileTagSignatures */
+    [[nodiscard]] QStringList profileTagSignatures() const;
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::LchDouble &cielchD50color) const;
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::LchDouble reduceOklchChromaToFitIntoGamut(const PerceptualColor::LchDouble &oklchColor) const;
     [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielabD50(const QRgba64 rgbColor) const;
