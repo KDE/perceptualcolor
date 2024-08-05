@@ -116,8 +116,7 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/krita/ACEScg-elle-V4-g10.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/cmyk.icm") //
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
-            // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
-            QStringLiteral("/home/tim/Downloads/VcgtProfiles/D.icc") //
+            QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
         );
     if (myColorSpace.isNull()) {
         myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();

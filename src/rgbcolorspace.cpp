@@ -232,10 +232,10 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 
     m_profileClass = cmsGetDeviceClass(rgbProfileHandle);
     m_profileColorModel = cmsGetColorSpace(rgbProfileHandle);
-    m_profileCopyright = getInformationFromProfile(rgbProfileHandle, //
-                                                   cmsInfoCopyright);
+    m_profileCopyright = profileInformation(rgbProfileHandle, //
+                                            cmsInfoCopyright);
     m_profileCreationDateTime = //
-        getCreationDateTimeFromProfile(rgbProfileHandle);
+        profileCreationDateTime(rgbProfileHandle);
     const bool inputUsesCLUT = cmsIsCLUT(rgbProfileHandle, //
                                          renderingIntent, //
                                          LCMS_USED_AS_INPUT);
@@ -248,13 +248,13 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     // we can discard this information.
     m_profileHasClut = inputUsesCLUT || outputUsesCLUT;
     m_profileHasMatrixShaper = cmsIsMatrixShaper(rgbProfileHandle);
-    m_profileIccVersion = getIccVersionFromProfile(rgbProfileHandle);
-    m_profileManufacturer = getInformationFromProfile(rgbProfileHandle, //
-                                                      cmsInfoManufacturer);
-    m_profileModel = getInformationFromProfile(rgbProfileHandle, //
-                                               cmsInfoModel);
-    m_profileName = getInformationFromProfile(rgbProfileHandle, //
-                                              cmsInfoDescription);
+    m_profileIccVersion = profileIccVersion(rgbProfileHandle);
+    m_profileManufacturer = profileInformation(rgbProfileHandle, //
+                                               cmsInfoManufacturer);
+    m_profileModel = profileInformation(rgbProfileHandle, //
+                                        cmsInfoModel);
+    m_profileName = profileInformation(rgbProfileHandle, //
+                                       cmsInfoDescription);
     m_profilePcsColorModel = cmsGetPCS(rgbProfileHandle);
     m_profileTagSignatures = profileTagSignatures(rgbProfileHandle);
     // This is about the “vcgt” (video card gamma table) tag. It is not a
@@ -537,7 +537,7 @@ QStringList RgbColorSpace::profileTagSignatures() const
  * available in this locale, LittleCMS silently falls back to another available
  * localization. Note that the returned <tt>QString</tt> might be empty if the
  * requested information is not available in the ICC profile. */
-QString RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType)
+QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType)
 {
     QByteArray languageCode;
     QByteArray countryCode;
@@ -724,7 +724,7 @@ QString RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFILE profileHandl
  *
  * @param profileHandle handle to the ICC profile
  * @returns The version number of the ICC format used in the profile. */
-QVersionNumber RgbColorSpacePrivate::getIccVersionFromProfile(cmsHPROFILE profileHandle)
+QVersionNumber RgbColorSpacePrivate::profileIccVersion(cmsHPROFILE profileHandle)
 {
     // cmsGetProfileVersion returns a floating point number. Apparently
     // the digits before the decimal separator are the major version,
@@ -757,7 +757,7 @@ QVersionNumber RgbColorSpacePrivate::getIccVersionFromProfile(cmsHPROFILE profil
  * @param profileHandle handle to the ICC profile
  * @returns Date and time of creation of the profile, if available. An invalid
  * date and time otherwise. */
-QDateTime RgbColorSpacePrivate::getCreationDateTimeFromProfile(cmsHPROFILE profileHandle)
+QDateTime RgbColorSpacePrivate::profileCreationDateTime(cmsHPROFILE profileHandle)
 {
     tm myDateTime; // The type “tm” as defined in C (time.h), as LittleCMS expects.
     const bool success = cmsGetHeaderCreationDateTime(profileHandle, &myDateTime);

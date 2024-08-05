@@ -123,10 +123,10 @@ public:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
     [[nodiscard]] double detectMaximumCielchD50Chroma() const;
     [[nodiscard]] double detectMaximumOklchChroma() const;
-    [[nodiscard]] static QDateTime getCreationDateTimeFromProfile(cmsHPROFILE profileHandle);
-    [[nodiscard]] static QVersionNumber getIccVersionFromProfile(cmsHPROFILE profileHandle);
-    [[nodiscard]] static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
+    [[nodiscard]] static QDateTime profileCreationDateTime(cmsHPROFILE profileHandle);
+    [[nodiscard]] static QVersionNumber profileIccVersion(cmsHPROFILE profileHandle);
+    [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType);
     [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
     /** @brief The rendering intents supported by the LittleCMS library.
