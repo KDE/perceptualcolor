@@ -127,7 +127,7 @@ public:
     [[nodiscard]] static QVersionNumber getIccVersionFromProfile(cmsHPROFILE profileHandle);
     [[nodiscard]] static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
-    [[nodiscard]] QStringList profileTagSignatures(cmsHPROFILE profileHandle);
+    [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
     /** @brief The rendering intents supported by the LittleCMS library.
      *
