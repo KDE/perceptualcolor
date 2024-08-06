@@ -1,8 +1,8 @@
-# Emir SARI <emir_sari@icloud.com>, 2023.
+# SPDX-FileCopyrightText: 2023, 2024 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-08-01 12:17+0300\n"
+"PO-Revision-Date: 2024-08-05 13:59+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.11.70\n"
+"X-Generator: Lokalize 24.11.70\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:108
@@ -193,7 +193,7 @@ msgstr "&Onaltılık:"
 #: colordialog.cpp:423
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
-msgstr ""
+msgstr "Ö&rnek Kitabı"
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
 #: colordialog.cpp:435
@@ -257,7 +257,7 @@ msgid ""
 "for red: 00⁠–⁠FF</p><p>GG: two-digit code for green: 00⁠–⁠FF</p><p>BB: two-digit "
 "code for blue: 00⁠–⁠FF</p>"
 msgstr ""
-"<p>HTML'de kullanıldığı üzere onaltılık renk kodu: #RRGGBB</p><p>RR: Kırmızı "
+"<p>HTML’de kullanıldığı üzere onaltılık renk kodu: #RRGGBB</p><p>RR: Kırmızı "
 "için iki rakamlı kod: 00–FF</p><p>GG: Yeşil için iki rakamlı kod: 00–FF</"
 "p><p>BB: Mavi için iki rakamlı kod: 00–FF</p>"
 
@@ -267,7 +267,7 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Ton: 0°⁠–⁠360°</p><p>HSL-Doygunluk: %​0⁠–⁠%​100</p><p>Açıklık: %​0⁠–⁠%​100</p>"
+"<p>Ton: 0°⁠–⁠360°</p><p>HSL doygunluğu: %​0⁠–⁠%​100</p><p>Açıklık: %​0⁠–⁠%​100</p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
 #: colordialog.cpp:520
@@ -282,7 +282,7 @@ msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
 "0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Ton: 0°⁠–⁠360°</p><p>HSV/HSB-Doygunluk: %​0⁠–⁠%​100</p><p>Parlaklık/Değer: %​0⁠–⁠%​"
+"<p>Ton: 0°⁠–⁠360°</p><p>HSV/HSB doygunluğu: %​0⁠–⁠%​100</p><p>Parlaklık/Değer: %​0⁠–⁠%​"
 "100</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
@@ -327,18 +327,15 @@ msgstr "En yakın &gam içi renge tutturmak için tıkla"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:711
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "Te&mel Renkler"
+msgstr "Temel renkler"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "Geçmiş"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1231
@@ -347,13 +344,13 @@ msgid "Select color"
 msgstr "Renk Seç"
 
 #. @item Manufacturer information for the built-in sRGB color.
-#: rgbcolorspace.cpp:107
+#: rgbcolorspace.cpp:108
 msgctxt "PerceptualColor::RgbColorSpace|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
-#: rgbcolorspace.cpp:110
+#: rgbcolorspace.cpp:111
 msgctxt "PerceptualColor::RgbColorSpace|"
 msgid "sRGB color space"
 msgstr "sRGB renk uzayı"
