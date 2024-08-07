@@ -1,8 +1,8 @@
-# Stefan Asserhäll <stefan.asserhall@gmail.com>, 2023.
+# SPDX-FileCopyrightText: 2023, 2024 Stefan Asserhäll <stefan.asserhall@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-08-04 09:05+0200\n"
+"PO-Revision-Date: 2024-08-06 07:52+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 20.08.1\n"
+"X-Generator: Lokalize 24.05.2\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:108
@@ -193,7 +193,7 @@ msgstr "He&x:"
 #: colordialog.cpp:423
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
-msgstr ""
+msgstr "&Färgprovsbok"
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
 #: colordialog.cpp:435
@@ -327,18 +327,15 @@ msgstr "Klicka för att låsa till närmaste färg i färgomfånget"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:711
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "&Grundfärger"
+msgstr "Grundfärger"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "Historik"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1231
