@@ -1,8 +1,8 @@
-# Vit Pelcak <vit@pelcak.org>, 2023.
+# SPDX-FileCopyrightText: 2023, 2024 Vit Pelcak <vit@pelcak.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-08-07 16:55+0200\n"
+"PO-Revision-Date: 2024-08-06 11:18+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 23.04.3\n"
+"X-Generator: Lokalize 24.05.2\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -321,13 +321,13 @@ msgstr ""
 #: colordialog.cpp:711
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr ""
+msgstr "Základní barvy"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "Historie"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1231
