@@ -48,6 +48,7 @@ public:
     ~SwatchBookPrivate() noexcept override = default;
 
     [[nodiscard]] QSize colorPatchesSizeWithMargin() const;
+    [[nodiscard]] int cornerRadius() const;
     [[nodiscard]] int horizontalPatchSpacing() const;
     void initStyleOption(QStyleOptionFrame *option) const;
     [[nodiscard]] int normalPatchSpacing() const;

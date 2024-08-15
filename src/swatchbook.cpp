@@ -576,15 +576,19 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
 QSize SwatchBookPrivate::patchSizeOuter() const
 {
     q_pointer->ensurePolished();
-    const QSize mySize = patchSizeInner();
+    const QSize myInnerSize = patchSizeInner();
     QStyleOptionToolButton myOptions;
     myOptions.initFrom(q_pointer.toPointerToConstObject());
-    myOptions.rect.setSize(mySize);
-    return q_pointer->style()->sizeFromContents( //
+    myOptions.rect.setSize(myInnerSize);
+    const auto myStyledOuterSize = q_pointer->style()->sizeFromContents( //
         QStyle::CT_ToolButton,
         &myOptions,
-        mySize,
+        myInnerSize,
         q_pointer.toPointerToConstObject());
+    // Ensure that the difference between patchInnerSize and patchOuterSize
+    // provides sufficient space for twice the cornerRadius.
+    const int extra = 2 * cornerRadius();
+    return myStyledOuterSize.expandedTo(myInnerSize + QSize(extra, extra));
 }
 
 /** @brief Size of the inner space of a color patch.
@@ -603,6 +607,16 @@ QSize SwatchBookPrivate::patchSizeInner() const
                                horizontalPatchSpacing(), //
                                verticalPatchSpacing()});
     return QSize(size, size);
+}
+
+/** @brief Corner radius for drawing rounded color patch rectangles
+ *
+ * Tries to guess a radius that matches well with the current QStyle.
+ *
+ * @returns Corner radius for drawing rounded color patch rectangles. */
+int SwatchBookPrivate::cornerRadius() const
+{
+    return q_pointer->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 }
 
 /** @brief Paint the widget.
@@ -660,6 +674,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     // Draw the color patches
     const QPoint offset = d_pointer->offset(frameStyleOption);
     const QListSizeType columnCount = d_pointer->m_swatchGrid.iCount();
+    const int myCornerRadius = d_pointer->cornerRadius();
     QListSizeType visualColumn;
     for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
         for (int row = 0; //
@@ -676,14 +691,16 @@ void SwatchBook::paintEvent(QPaintEvent *event)
                 } else {
                     visualColumn = columnCount - 1 - columnIndex;
                 }
-                widgetPainter.drawRect( //
+                widgetPainter.drawRoundedRect( //
                     offset.x() //
                         + (static_cast<int>(visualColumn) //
                            * (patchWidthOuter + horizontalSpacing)),
                     offset.y() //
                         + row * (patchHeightOuter + verticalSpacing),
                     patchWidthOuter,
-                    patchHeightOuter);
+                    patchHeightOuter,
+                    myCornerRadius,
+                    myCornerRadius);
             }
         }
     }
