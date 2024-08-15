@@ -480,6 +480,29 @@ private Q_SLOTS:
         QCOMPARE(testWidget.d_pointer->m_selectedRow, //
                  0);
     }
+
+    void testCornerRadius_data()
+    {
+        provideStyleNamesAsData();
+    }
+
+    void testCornerRadius()
+    {
+        QFETCH(QString, styleName);
+        QStyle *style = QStyleFactory::create(styleName);
+        {
+            // Own block to make sure style will be deleted _after_ testWidget
+            // has been destroyed.
+            SwatchBook testWidget(m_rgbColorSpace, //
+                                  wcsBasicColors(m_rgbColorSpace), //
+                                  {});
+            testWidget.setStyle(style);
+            QStyleOptionFrame temp;
+            testWidget.d_pointer->initStyleOption(&temp);
+            QVERIFY(testWidget.d_pointer->cornerRadius() >= 0);
+        }
+        delete style;
+    }
 };
 
 } // namespace PerceptualColor

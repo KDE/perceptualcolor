@@ -585,8 +585,9 @@ QSize SwatchBookPrivate::patchSizeOuter() const
         &myOptions,
         myInnerSize,
         q_pointer.toPointerToConstObject());
-    // Ensure that the difference between patchInnerSize and patchOuterSize
-    // provides sufficient space for twice the cornerRadius.
+    // Ensure that the difference between patchInnerSize and patchOuterSize is
+    // large enough to accommodate twice the cornerRadius. This accounts for
+    // one cornerRadius on each border of the rectangle.
     const int extra = 2 * cornerRadius();
     return myStyledOuterSize.expandedTo(myInnerSize + QSize(extra, extra));
 }
@@ -613,10 +614,13 @@ QSize SwatchBookPrivate::patchSizeInner() const
  *
  * Tries to guess a radius that matches well with the current QStyle.
  *
- * @returns Corner radius for drawing rounded color patch rectangles. */
+ * @returns Corner radius for drawing rounded color patch rectangles.
+ * Guarantied to be ≥ 0. */
 int SwatchBookPrivate::cornerRadius() const
 {
-    return q_pointer->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+    const auto defaultFrameWidth = //
+        q_pointer->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+    return qMax(defaultFrameWidth, 0);
 }
 
 /** @brief Paint the widget.
