@@ -98,7 +98,7 @@ private Q_SLOTS:
             isInRange<qreal>(0.99, myColorSpace->d_pointer->m_oklabWhitepointL, 1.00));
     }
 
-    void testCreateFromFile()
+    void testTryCreateFromFile()
     {
         QScopedPointer<QTemporaryFile> invalidFile(
             // Create a temporary actual file…
@@ -128,7 +128,7 @@ private Q_SLOTS:
 
         // Invalid file
         QVERIFY(QFileInfo::exists(invalidFile->fileName())); // assertion
-        myColorSpace = RgbColorSpace::createFromFile(invalidFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile(invalidFile->fileName());
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Non-existing file/directory name
@@ -136,22 +136,22 @@ private Q_SLOTS:
             QStringLiteral("/nonexistingfilename.txt");
         QCOMPARE(QFileInfo::exists(nonexistingfilename), false); // assertion
         QCOMPARE(QDir{nonexistingfilename}.exists(), false); // assertion
-        myColorSpace = RgbColorSpace::createFromFile(nonexistingfilename);
+        myColorSpace = RgbColorSpace::tryCreateFromFile(nonexistingfilename);
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Existing folder with trailing slash
-        myColorSpace = RgbColorSpace::createFromFile( //
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
             existingDirectoryWithoutTrailingSlash.path() + QStringLiteral("/"));
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Existing folder without trailing slash
-        myColorSpace = RgbColorSpace::createFromFile( //
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
             existingDirectoryWithoutTrailingSlash.path());
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Valid RGB profile (should load correctly)
         QVERIFY(QFileInfo::exists(validRgbFile->fileName())); // assertion
-        myColorSpace = RgbColorSpace::createFromFile(validRgbFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile(validRgbFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false);
     }
 
@@ -166,7 +166,7 @@ private Q_SLOTS:
             throw 0;
         }
 
-        auto myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         // assertion that maximum lightness is out-of-gamut for this profile:
         QCOMPARE(myColorSpace->isCielchD50InGamut(LchDouble{100, 0, 0}), false);
@@ -194,7 +194,7 @@ private Q_SLOTS:
         }
 
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
-        myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         const LchDouble referenceColor{100, 50, 0};
         QCOMPARE(myColorSpace->isCielchD50InGamut(referenceColor), false); // assertion
@@ -227,7 +227,7 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         LchDouble temp{100, 50, 0};
         QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).l > 95);
     }
@@ -244,7 +244,7 @@ private Q_SLOTS:
         }
 
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
-        myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         const LchDouble referenceColor{1, 0.151189, 359.374};
         QCOMPARE(myColorSpace->isOklchInGamut(referenceColor), false); // assertion
@@ -277,7 +277,7 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::createFromFile(wideGamutFile->fileName());
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
         const LchDouble temp{1, 0.151189, 359.374};
         QVERIFY(myColorSpace->reduceOklchChromaToFitIntoGamut(temp).l > 0.95);
     }
@@ -332,7 +332,7 @@ private Q_SLOTS:
 
         auto srgb = RgbColorSpace::createSrgb();
         QCOMPARE(srgb.isNull(), false); // assertion
-        auto widegamutrgb = RgbColorSpace::createFromFile( //
+        auto widegamutrgb = RgbColorSpace::tryCreateFromFile( //
             wideGamutFile->fileName());
         QCOMPARE(widegamutrgb.isNull(), false); // assertion
 

@@ -268,7 +268,7 @@ class RgbColorSpace : public QObject
     Q_PROPERTY(QStringList profileTagSignatures READ profileTagSignatures CONSTANT)
 
 public: // Static factory functions
-    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createFromFile(const QString &fileName);
+    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName);
     [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createSrgb();
 
 public:

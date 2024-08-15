@@ -132,7 +132,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * @returns A shared pointer to a newly created color space object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.
  *
- * @sa @ref RgbColorSpaceFactory::createFromFile()
+ * @sa @ref RgbColorSpaceFactory::tryCreateFromFile()
  *
  * @internal
  *
@@ -154,7 +154,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * a <a href="https://github.com/InternationalColorConsortium/DemoIccMAX">demo
  * implementation</a>, but this does not seem to be a complete color
  * management system. */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createFromFile(const QString &fileName)
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(const QString &fileName)
 {
     // TODO xxx Only accept Display Class profiles
 
@@ -223,7 +223,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createFromFile(con
  * individually calibrated monitors?)
  *
  * @todo This function is used in @ref RgbColorSpace::createSrgb()
- * and @ref RgbColorSpace::createFromFile(), but some of the initialization
+ * and @ref RgbColorSpace::tryCreateFromFile(), but some of the initialization
  * is changed afterwards (file name, file size, profile name, maximum chroma).
  * Is it possible to find a more elegant design? */
 bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)

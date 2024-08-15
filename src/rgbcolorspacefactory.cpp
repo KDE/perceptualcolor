@@ -54,9 +54,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb(
  *
  * @returns A shared pointer to a newly created color space object on success.
  * A shared pointer to <tt>nullptr</tt> on fail. */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createFromFile(const QString &fileName)
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::tryCreateFromFile(const QString &fileName)
 {
-    return RgbColorSpace::createFromFile(fileName);
+    return RgbColorSpace::tryCreateFromFile(fileName);
 }
 
 /** @brief List of directories where color profiles are typically

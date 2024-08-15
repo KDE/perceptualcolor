@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     // Initialize the color dialog
 
     auto myColorSpace = //
-        PerceptualColor::RgbColorSpaceFactory::createFromFile(
+        PerceptualColor::RgbColorSpaceFactory::tryCreateFromFile(
             // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
             // QStringLiteral("/usr/share/color/icc/test/PhotoGamutRGB_avg6c.icc")
             // QStringLiteral("WideGamutRGB.icc") //

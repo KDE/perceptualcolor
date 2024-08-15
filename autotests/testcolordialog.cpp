@@ -2262,7 +2262,7 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::createFromFile( //
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
             wideGamutProfile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         m_perceptualDialog.reset( //
