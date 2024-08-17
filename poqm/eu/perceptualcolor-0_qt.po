@@ -1,14 +1,14 @@
 # Translation for perceptualcolor-0_qt.po to Euskara/Basque (eu).
-# Copyright (C) 2023 This file is copyright:
+# Copyright (C) 2023-2024 This file is copyright:
 # This file is distributed under the same license as the original file.
-# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
+# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>
 #
 # Translators:
-# SPDX-FileCopyrightText: 2023 Iñigo Salvador Azurmendi <xalba@ni.eus>
+# SPDX-FileCopyrightText: 2023, 2024 Iñigo Salvador Azurmendi <xalba@ni.eus>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-10-25 20:17+0200\n"
+"PO-Revision-Date: 2024-08-16 19:04+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 23.08.2\n"
+"X-Generator: Lokalize 24.05.2\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:108
@@ -199,7 +199,7 @@ msgstr "&Hamas.:"
 #: colordialog.cpp:423
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
-msgstr ""
+msgstr "&Lagin-liburua"
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
 #: colordialog.cpp:435
@@ -335,18 +335,15 @@ msgstr "Egin klik gamako kolore hurbilenera doitzeko"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:711
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "&Oinarrizko koloreak"
+msgstr "Oinarrizko koloreak"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "Historia"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1231
