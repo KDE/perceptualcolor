@@ -65,7 +65,7 @@ enum class ColorModel {
         Lightness: [0, 1].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Rgb1, /**< Some color space using the Rgb color space.
+    Rgb1, /**< Some color space using the Rgb color model.
         R: [0, 1].<br/>
         G: [0, 1].<br/>
         B: [0, 1]. */
