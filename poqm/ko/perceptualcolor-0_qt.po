@@ -1,8 +1,8 @@
-# Shinjo Park <kde@peremen.name>, 2023.
+# SPDX-FileCopyrightText: 2023, 2024 Shinjo Park <kde@peremen.name>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-08-06 22:34+0200\n"
+"PO-Revision-Date: 2024-08-19 23:34+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.08.5\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -193,7 +193,7 @@ msgstr "16진수(&X):"
 #: colordialog.cpp:423
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
-msgstr ""
+msgstr "스와치 견본(&S)"
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
 #: colordialog.cpp:435
@@ -325,18 +325,15 @@ msgstr "클릭하여 가장 가까운 색역 내 색상으로 고정(&G)"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:711
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "기본 색상(&B)"
+msgstr "기본 색상"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "과거 기록"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1231
