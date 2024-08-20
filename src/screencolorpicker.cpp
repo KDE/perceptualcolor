@@ -61,8 +61,8 @@ bool ScreenColorPicker::isAvailable()
 /** @brief If “Portal” support is available.
  *
  * “Portal” is a Freedesktop (formerly XDG) service maintained by
- * Flatpack intended to provide access to desktop functionality for
- * sandboxed Flatpack applications.
+ * Flatpak intended to provide access to desktop functionality for
+ * sandboxed Flatpak applications.
  *
  * @returns If “Portal” support is available. */
 bool ScreenColorPicker::hasPortalSupport()
@@ -172,7 +172,7 @@ void ScreenColorPicker::initializeQColorDialogSupport()
                     const auto red = static_cast<double>(color.redF());
                     const auto green = static_cast<double>(color.greenF());
                     const auto blue = static_cast<double>(color.blueF());
-                    Q_EMIT newColor(red, green, blue);
+                    Q_EMIT newColor(red, green, blue, false);
                 });
     } else {
         delete m_qColorDialog;
@@ -184,6 +184,14 @@ void ScreenColorPicker::initializeQColorDialogSupport()
  *
  * @pre This widget has a parent widget which should be a widget within
  * the currently active window.
+ *
+ * @warning On some platforms, behind the scenes, QColorDialog is hijacked
+ * to perform the actual color picking. If so, this will have side effects:
+ * It might mix up the default button setting of the parent dialog, if any.
+ * Workaround: If using default buttons in a parent dialog, reimplement
+ * <tt>QWidget::setVisible()</tt> in this parent dialog: Call the
+ * parent’s class implementation, and <em>after</em> that, call
+ * <tt>QPushButton::setDefault(true)</tt> on the default button.
  *
  * @post If supported on the current platform, the screen color picking is
  * started. Results can be obtained via @ref newColor.
@@ -262,7 +270,8 @@ void ScreenColorPicker::pickWithPortal()
         }
     }
 
-    // “Portal” documentation: https://flatpak.github.io/xdg-desktop-portal
+    // “Portal” documentation:
+    // https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Screenshot.html#org-freedesktop-portal-screenshot-pickcolor
     QDBusMessage message = QDBusMessage::createMethodCall( //
         QStringLiteral("org.freedesktop.portal.Desktop"), // service
         QStringLiteral("/org/freedesktop/portal/desktop"), // path
@@ -320,7 +329,10 @@ void ScreenColorPicker::getPortalResponse(uint exitCode, const QVariantMap &resp
     }
     responseColor.endStructure();
     if (rgb.count() == 3) {
-        Q_EMIT newColor(rgb.at(0), rgb.at(1), rgb.at(2));
+        // The documentation of Portal claims to return always sRGB values,
+        // so if the screen has a different color space, portal is supposed
+        // to apply color management and return the sRGB correspondence.
+        Q_EMIT newColor(rgb.at(0), rgb.at(1), rgb.at(2), true);
     }
 }
 

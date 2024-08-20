@@ -30,15 +30,8 @@ namespace PerceptualColor
  *
  * Provides an interface to let the user pick a color from the screen.
  *
- * This feature is not available on all platforms. Use @ref isAvailable()
- * to check it.
- *
- * @warning On some platforms, QColorDialog is used to perform the color
- * picking. This might mix up the default button setting of the parent dialog.
- * Workaround: If using default buttons in a parent dialog, reimplement
- * <tt>QWidget::setVisible()</tt> in this parent dialog: Call the
- * parent’s class implementation, and <em>after</em> that, call
- * <tt>QPushButton::setDefault(true)</tt> on the default button. */
+ * This feature will not work on all platforms. Use @ref isAvailable()
+ * to check if it is actually available at runtime. */
 class ScreenColorPicker : public QWidget
 {
     Q_OBJECT
@@ -65,6 +58,9 @@ Q_SIGNALS:
      *            Range: <tt>[0, 255]</tt>
      * @param green Same for green.
      * @param blue Same for blue.
+     * @param isSRgbGuaranteed If <tt>true</tt>, the RGB values are guaranteed
+     * to be in the sRGB color space. If <tt>false</tt>, it is not guaranteed
+     * (but still likely) that the RGB values are in the sRGB color space.
      *
      * @internal
      *
@@ -73,10 +69,10 @@ Q_SIGNALS:
      * implementation: The QColorDialog implementation rounds on this
      * precision when the user pushes the ESC key, even if the previous
      * value was more exact. */
-    // Choosing thre “double” values as return type, as it makes clear
+    // Choosing three “double” values as return type, as it makes clear
     // what data type returns and as “Portal” actually provides
     // double-precision in its return values.
-    void newColor(double red, double green, double blue);
+    void newColor(double red, double green, double blue, bool isSRgbGuaranteed);
 
 private:
     /** @internal @brief Only for unit tests. */

@@ -1969,11 +1969,16 @@ void ColorDialogPrivate::initializeScreenColorPicker()
     connect(screenPicker, //
             &ScreenColorPicker::newColor, //
             q_pointer, //
-            [this](const double red, const double green, const double blue) {
+            [this](const double red, const double green, const double blue, const bool isSRgbGuaranteed) {
                 const GenericColor rgb255 //
                     {qBound<double>(0, red * 255, 255), //
                      qBound<double>(0, green * 255, 255),
                      qBound<double>(0, blue * 255, 255)};
+                // BUG Currently, there is no color management for the result
+                // of the screen color picking. Instead, we should assume
+                // probably that the value is sRGB and convert it into the
+                // actual working color space of this widget (which might
+                // happen to be also sRGB, but could also be different).
                 setCurrentOpaqueColor(RgbColor::fromRgb255(rgb255), nullptr);
             });
 }
