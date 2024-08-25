@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2024-05-24 19:14+0100\n"
+"PO-Revision-Date: 2024-08-24 12:18+0100\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
 "Language: en_GB\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.02.2\n"
+"X-Generator: Lokalize 24.05.2\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:108
@@ -193,7 +193,7 @@ msgstr "He&x:"
 #: colordialog.cpp:423
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
-msgstr ""
+msgstr "&Swatch book"
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
 #: colordialog.cpp:435
@@ -327,18 +327,15 @@ msgstr "Click to snap to nearest in-&gamut colour"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:711
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "&Basic colours"
+msgstr "Basic colours"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "History"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1231
