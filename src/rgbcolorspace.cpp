@@ -257,14 +257,35 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
                                        cmsInfoDescription);
     m_profilePcsColorModel = cmsGetPCS(rgbProfileHandle);
     m_profileTagSignatures = profileTagSignatures(rgbProfileHandle);
-    // This is about the “vcgt” (video card gamma table) tag. It is not a
-    // “public tags” mentioned in the ICC specification itself, but a
-    // “private tags” registered at the ICC Signature Registry. It contains
-    // gamma tables which must mandatorily be applied after passing through
-    // the profile, otherwise you would get wrong colors. If the operation
-    // system applies them or not is however not always sure. Currently, we
-    // do not support this type of operation in our diagram generation.
-    // TODO Add support for vcgt tags.
+    // Gamma Correction Overview:
+    //
+    // Modern display systems, which consist of a video card and a screen, have
+    // a gamma curve that determines how colors are rendered. Historically,
+    // CRT (Cathode Ray Tube) screens had a gamma curve inherently defined by
+    // their hardware properties. Contemporary LCD and LED screens often
+    // emulate this behavior, typically using the sRGB gamma curve, which was
+    // designed to closely match the natural gamma curve of CRT screens.
+    //
+    // ICC (International Color Consortium) profiles define color
+    // transformations that assume a specific gamma curve for the display
+    // system (the combination of video card and screen). For correct color
+    // reproduction, the display system's gamma curve must match the one
+    // expected by the ICC profile. Today, this usually means the sRGB gamma
+    // curve.
+    //
+    // However, in some cases, for example when a custom ICC profile is created
+    // using a colorimeter for screen calibration, it may assume a non-standard
+    // gamma curve. This  custom gamma curve is often embedded within the
+    // profile using the private “vcgt”  (Video Card Gamma Table) tag. While
+    // “vcgt” is registered as a private tag in the ICC Signature Registry, it
+    // is not a standard tag defined in the core ICC  specification.  The
+    // operating system is responsible for ensuring that the gamma curve
+    // specified in the ICC profile is applied, typically by loading it into
+    // the video card hardware. However, whether the operating system actually
+    // applies this gamma adjustment is not always guaranteed.
+    //
+    // Note: Our current codebase does not support the “vcgt” tag. If an
+    // ICC profile containing a “vcgt” tag is encountered, it will be rejected.
     if (m_profileTagSignatures.contains(QStringLiteral("vcgt"))) {
         return false;
     }
