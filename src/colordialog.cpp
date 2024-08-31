@@ -203,7 +203,17 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  * nothing when it’s clicked, but when hovering with the mouse, it shows
  * the tooltip?
  *
- * @todo How to make tooltip information available for touch-screen users? */
+ * @todo How to make tooltip information available for touch-screen users?
+ *
+ * @todo Provide the information
+ * of @ref RgbColorSpace::profileRenderingIntentDirections() in the tooltip of the
+ * color space. Example: Rendering intents: Perceptual (input, output, proof)
+ * [br] Relative (input, proof) [br] Saturation (output) [br]
+ * Absolute colorimetric (proof). Missing rendering intents are not displayed.
+ * Limiting ourself to these four standard rendering intents, leaving LittleCMS
+ * extensions out of scope. Providing i18n instead of using the rendering
+ * intent descriptions of LittleCMS.
+ */
 void ColorDialogPrivate::retranslateUi()
 {
     /*: @item/plain Percentage value in a spinbox. Range: 0%–100%. */

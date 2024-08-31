@@ -10,6 +10,7 @@
 #include "initializelibraryresources.h"
 #include "rgbcolorspace.h"
 #include <array>
+#include <lcms2.h>
 #include <qchar.h>
 #include <qcolor.h>
 #include <qevent.h>
@@ -537,6 +538,57 @@ Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &co
     }
 
     return wcsSwatches;
+}
+
+/**
+ * @brief The rendering intents supported by the LittleCMS library.
+ *
+ * Contains all rendering intents supported by the LittleCMS library
+ * against which this we are currently linking (or by one of the
+ * LittleCMS library plugigs). Each entry contains the code and the
+ * description (english-language, might be empty) just as
+ * provided by LittleCMS’ <tt>cmsGetSupportedIntents()</tt>.
+ *
+ * Note that LittleCMS supports as built-in intents the four official
+ * ICC intents and also some other, non-ICC intents. Furthermore,
+ * LittleCMS plugins can provide even more intents. As of LittleCMS 2.13
+ * the following built-in intents are available:
+ *
+ * | Type    | Macro name                                    | Code |
+ * | :------ | :-------------------------------------------- | ---: |
+ * | ICC     | INTENT_PERCEPTUAL                             |    0 |
+ * | ICC     | INTENT_RELATIVE_COLORIMETRIC                  |    1 |
+ * | ICC     | INTENT_SATURATION                             |    2 |
+ * | ICC     | INTENT_ABSOLUTE_COLORIMETRIC                  |    3 |
+ * | Non-ICC | INTENT_PRESERVE_K_ONLY_PERCEPTUAL             |   10 |
+ * | Non-ICC | INTENT_PRESERVE_K_ONLY_RELATIVE_COLORIMETRIC  |   11 |
+ * | Non-ICC | INTENT_PRESERVE_K_ONLY_SATURATION             |   12 |
+ * | Non-ICC | INTENT_PRESERVE_K_PLANE_PERCEPTUAL            |   13 |
+ * | Non-ICC | INTENT_PRESERVE_K_PLANE_RELATIVE_COLORIMETRIC |   14 |
+ * | Non-ICC | INTENT_PRESERVE_K_PLANE_SATURATION            |   15 |
+ *
+ * @returns A QMap of key-value pairs. The key is the code representing the
+ * rendering intent. The value is a QString with the description.
+ */
+QMap<cmsUInt32Number, QString> lcmsIntentList()
+{
+    // Thread-Safe Lazy Initialization: Starting with C++11, function-local
+    // static variables are guaranteed to be thread-safe during initialization.
+    static const QMap<cmsUInt32Number, QString> result = []() {
+        QMap<cmsUInt32Number, QString> lambdaResult;
+        const cmsUInt32Number intentCount = //
+            cmsGetSupportedIntents(0, nullptr, nullptr);
+        cmsUInt32Number *codeArray = new cmsUInt32Number[intentCount];
+        char **descriptionArray = new char *[intentCount];
+        cmsGetSupportedIntents(intentCount, codeArray, descriptionArray);
+        for (cmsUInt32Number i = 0; i < intentCount; ++i) {
+            lambdaResult.insert(codeArray[i], QString::fromUtf8(descriptionArray[i]));
+        }
+        delete[] codeArray;
+        delete[] descriptionArray;
+        return lambdaResult;
+    }();
+    return result;
 }
 
 } // namespace PerceptualColor

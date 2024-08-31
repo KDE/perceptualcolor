@@ -11,19 +11,18 @@
 #include "constpropagatingrawpointer.h"
 #include "helperconstants.h"
 #include "oklchvalues.h"
+#include "rgbcolorspace.h"
 #include <lcms2.h>
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
 #include <qlist.h>
-#include <qmap.h>
 #include <qstring.h>
 #include <qversionnumber.h>
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
 
 /** @internal
  *
@@ -31,9 +30,6 @@ class RgbColorSpace;
  *  implementation</em> idiom */
 class RgbColorSpacePrivate final
 {
-private:
-    [[nodiscard]] static QMap<cmsUInt32Number, QString> getIntentList();
-
 public:
     explicit RgbColorSpacePrivate(RgbColorSpace *backLink);
     /** @brief Default destructor
@@ -90,6 +86,9 @@ public:
      * @ref RgbColorSpace::profileHasMatrixShaper */
     bool m_profileHasMatrixShaper = false;
     /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileRenderingIntentDirections */
+    RgbColorSpace::RenderingIntentDirections m_profileRenderingIntentDirections;
+    /** @brief Internal storage for property
      * @ref RgbColorSpace::profileIccVersion */
     QVersionNumber m_profileIccVersion;
     /** @brief Internal storage for property
@@ -145,35 +144,6 @@ public:
     [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory);
     [[nodiscard]] static std::optional<cmsCIEXYZ> profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature);
     [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
-
-    /** @brief The rendering intents supported by the LittleCMS library.
-     *
-     * Contains all rendering intents supported by the LittleCMS library
-     * against which this we are currently linking. Each entry contains
-     * the code and the (english-language) description just as provided
-     * by LittleCMS.
-     *
-     * Note that LittleCMS supports as built-in intents the four official
-     * ICC intents and also some other, non-ICC intents. Furthermore,
-     * LittleCMS plugins can provide even more intents. As of LittleCMS 2.13
-     * the following built-in intents are available:
-     *
-     * | Type    | Macro name                                    | Code |
-     * | :------ | :-------------------------------------------- | ---: |
-     * | ICC     | INTENT_PERCEPTUAL                             |    0 |
-     * | ICC     | INTENT_RELATIVE_COLORIMETRIC                  |    1 |
-     * | ICC     | INTENT_SATURATION                             |    2 |
-     * | ICC     | INTENT_ABSOLUTE_COLORIMETRIC                  |    3 |
-     * | Non-ICC | INTENT_PRESERVE_K_ONLY_PERCEPTUAL             |   10 |
-     * | Non-ICC | INTENT_PRESERVE_K_ONLY_RELATIVE_COLORIMETRIC  |   11 |
-     * | Non-ICC | INTENT_PRESERVE_K_ONLY_SATURATION             |   12 |
-     * | Non-ICC | INTENT_PRESERVE_K_PLANE_PERCEPTUAL            |   13 |
-     * | Non-ICC | INTENT_PRESERVE_K_PLANE_RELATIVE_COLORIMETRIC |   14 |
-     * | Non-ICC | INTENT_PRESERVE_K_PLANE_SATURATION            |   15 |
-     *
-     * @todo Either actually <em>use</em> this code or <em>remove</em> this
-     * code. */
-    static inline const QMap<cmsUInt32Number, QString> intentList = getIntentList();
 
     /** @brief Precision of HSV hue during maximum-chroma detection.
      *

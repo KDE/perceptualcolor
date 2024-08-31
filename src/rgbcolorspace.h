@@ -11,6 +11,7 @@
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
+#include <qmap.h>
 #include <qmetatype.h>
 #include <qobject.h>
 #include <qrgb.h>
@@ -117,6 +118,46 @@ class RgbColorSpace : public QObject
 {
     Q_OBJECT
 
+public: // enums and flags
+    /**
+     * @brief Enum class representing the possible roles of an ICC profile in
+     * color management transforms.
+     *
+     * This enum class defines the directions in which a profile can be used
+     * for creating color transforms. Each flag represents a specific role that
+     * the profile can play.
+     *
+     * This enum is declared to the meta-object system with <tt>Q_ENUM</tt>.
+     * This happens automatically. You do not need to make any manual calls.
+     *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object.
+     */
+    enum class ProfileRole {
+        Input = 0x01, /**< The profile can be used as input profile. */
+        Output = 0x02, /**< The profile can be used as input profile. */
+        Proof = 0x04 /**< The profile can be used as input profile. */
+    };
+    Q_ENUM(ProfileRole)
+    /**
+     * @brief <tt>Q_DECLARE_FLAGS</tt> for @ref ProfileRole.
+     */
+    Q_DECLARE_FLAGS(ProfileRoles, ProfileRole)
+    /**
+     * @brief Type for property @ref profileRenderingIntentDirections
+     *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object.
+     */
+    using RenderingIntentDirections = QMap<cmsUInt32Number, RgbColorSpace::ProfileRoles>;
+
+private:
     /** @brief The absolute file path of the profile.
      *
      * @note This is empty for build-in profiles.
@@ -180,6 +221,19 @@ class RgbColorSpace : public QObject
      *
      * @sa READ @ref profileHasMatrixShaper() const */
     Q_PROPERTY(bool profileHasMatrixShaper READ profileHasMatrixShaper CONSTANT)
+
+    /**
+     * @brief Available transform directions of rendering intents.
+     *
+     * A mapping of all rendering intents supported by LittleCMS, indicating
+     * whether they are supported by the given profile and specifying
+     * the direction of support.
+     * - key: The code corresponding to the rendering intent. Refer
+     *   to @ref lcmsIntentList() for additional details.
+     * - value: The transformation directions available for each rendering
+     *   intent.
+     */
+    Q_PROPERTY(RenderingIntentDirections profileRenderingIntentDirections READ profileRenderingIntentDirections CONSTANT)
 
     /** @brief The ICC version of the profile.
      *
@@ -338,6 +392,9 @@ public:
     /** @brief Getter for property @ref profileIccVersion
      *  @returns the property @ref profileIccVersion */
     [[nodiscard]] QVersionNumber profileIccVersion() const;
+    /** @brief Getter for property @ref profileRenderingIntentDirections
+     *  @returns the property @ref profileRenderingIntentDirections */
+    [[nodiscard]] RenderingIntentDirections profileRenderingIntentDirections() const;
     /** @brief Getter for property @ref profileManufacturer
      *  @returns the property @ref profileManufacturer */
     [[nodiscard]] QString profileManufacturer() const;
@@ -414,5 +471,8 @@ private:
 };
 
 } // namespace PerceptualColor
+
+Q_DECLARE_METATYPE(PerceptualColor::RgbColorSpace::ProfileRole)
+Q_DECLARE_METATYPE(PerceptualColor::RgbColorSpace::RenderingIntentDirections)
 
 #endif // RGBCOLORSPACE_H

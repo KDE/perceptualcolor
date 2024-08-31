@@ -5,6 +5,7 @@
 // this forces the header to be self-contained.
 #include "helper.h"
 
+#include <lcms2.h>
 #include <optional>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
@@ -14,6 +15,7 @@
 #include <qimage.h>
 #include <qlist.h>
 #include <qlocale.h>
+#include <qmap.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpair.h>
@@ -542,6 +544,14 @@ private Q_SLOTS:
         QCOMPARE(test.value(1, 2), 10);
         test.setValue(1, 2, 20);
         QCOMPARE(test.value(1, 2), 20);
+    }
+
+    void testLcmsIntentList()
+    {
+        QVERIFY(lcmsIntentList().contains(INTENT_PERCEPTUAL));
+        QVERIFY(lcmsIntentList().contains(INTENT_RELATIVE_COLORIMETRIC));
+        QVERIFY(lcmsIntentList().contains(INTENT_SATURATION));
+        QVERIFY(lcmsIntentList().contains(INTENT_ABSOLUTE_COLORIMETRIC));
     }
 };
 

@@ -6,6 +6,7 @@
 
 #include "helpermath.h"
 #include "helperqttypes.h"
+#include "lcms2.h"
 #include <QtCore/qsharedpointer.h>
 #include <optional>
 #include <qcolor.h>
@@ -15,6 +16,7 @@
 #include <qicon.h>
 #include <qimage.h>
 #include <qlist.h>
+#include <qmap.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
 #include <qpair.h>
@@ -46,6 +48,8 @@ void drawQWidgetStyleSheetAware(QWidget *widget);
 QString fromMnemonicToRichText(const QString &mnemonicText);
 
 std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget);
+
+QMap<cmsUInt32Number, QString> lcmsIntentList();
 
 /** @internal
  *

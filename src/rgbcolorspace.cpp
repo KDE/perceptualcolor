@@ -11,6 +11,7 @@
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
+#include "helper.h"
 #include "helperconstants.h"
 #include "helpermath.h"
 #include "helperqttypes.h"
@@ -239,17 +240,49 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
                                             defaultLocaleName);
     m_profileCreationDateTime = //
         profileCreationDateTime(rgbProfileHandle);
-    const bool inputUsesCLUT = cmsIsCLUT(rgbProfileHandle, //
+    const auto renderingIntentIds = lcmsIntentList().keys();
+    for (cmsUInt32Number id : renderingIntentIds) {
+        RgbColorSpace::ProfileRoles directions;
+        directions.setFlag( //
+            RgbColorSpace::ProfileRole::Input, //
+            cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_INPUT));
+        directions.setFlag( //
+            RgbColorSpace::ProfileRole::Output, //
+            cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_OUTPUT));
+        directions.setFlag( //
+            RgbColorSpace::ProfileRole::Proof, //
+            cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_PROOF));
+        m_profileRenderingIntentDirections.insert(id, directions);
+    }
+    m_profileHasClut = false;
+    const auto intents = m_profileRenderingIntentDirections.keys();
+    for (auto intent : intents) {
+        const auto directions = m_profileRenderingIntentDirections.value(intent);
+        if (directions.testFlag(RgbColorSpace::ProfileRole::Input)) {
+            m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
                                          renderingIntent, //
                                          LCMS_USED_AS_INPUT);
-    const bool outputUsesCLUT = cmsIsCLUT(rgbProfileHandle, //
-                                          renderingIntent, //
-                                          LCMS_USED_AS_OUTPUT);
-    // There is a third value, LCMS_USED_AS_PROOF. This value seem to return
-    // always true, even for the sRGB built-in profile. Not sure if this is
-    // a bug? Anyway, as we do not actually use the profile in proof mode,
-    // we can discard this information.
-    m_profileHasClut = inputUsesCLUT || outputUsesCLUT;
+            if (m_profileHasClut) {
+                break;
+            }
+        }
+        if (directions.testFlag(RgbColorSpace::ProfileRole::Output)) {
+            m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
+                                         renderingIntent, //
+                                         LCMS_USED_AS_OUTPUT);
+            if (m_profileHasClut) {
+                break;
+            }
+        }
+        if (directions.testFlag(RgbColorSpace::ProfileRole::Proof)) {
+            m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
+                                         renderingIntent, //
+                                         LCMS_USED_AS_PROOF);
+            if (m_profileHasClut) {
+                break;
+            }
+        }
+    }
     m_profileHasMatrixShaper = cmsIsMatrixShaper(rgbProfileHandle);
     m_profileIccVersion = profileIccVersion(rgbProfileHandle);
     m_profileManufacturer = profileInformation(rgbProfileHandle, //
@@ -513,6 +546,13 @@ bool RgbColorSpace::profileHasMatrixShaper() const
 QVersionNumber RgbColorSpace::profileIccVersion() const
 {
     return d_pointer->m_profileIccVersion;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+RgbColorSpace::RenderingIntentDirections RgbColorSpace::profileRenderingIntentDirections() const
+{
+    return d_pointer->m_profileRenderingIntentDirections;
 }
 
 // No documentation here (documentation of properties
@@ -1413,28 +1453,6 @@ double RgbColorSpacePrivate::detectMaximumOklchChroma() const
     const auto result = qSqrt(chromaSquare) * chromaDetectionIncrementFactor //
         + oklabDeviationLimit;
     return std::min<double>(result, OklchValues::maximumChroma);
-}
-
-/** @brief Gets the rendering intents supported by the LittleCMS library.
- *
- * @returns The rendering intents supported by the LittleCMS library.
- *
- * @note Do not use this function. Instead, use @ref intentList. */
-QMap<cmsUInt32Number, QString> RgbColorSpacePrivate::getIntentList()
-{
-    // TODO xxx Actually use this (for translation, for example), or remove it…
-    QMap<cmsUInt32Number, QString> result;
-    const cmsUInt32Number intentCount = //
-        cmsGetSupportedIntents(0, nullptr, nullptr);
-    cmsUInt32Number *codeArray = new cmsUInt32Number[intentCount];
-    char **descriptionArray = new char *[intentCount];
-    cmsGetSupportedIntents(intentCount, codeArray, descriptionArray);
-    for (cmsUInt32Number i = 0; i < intentCount; ++i) {
-        result.insert(codeArray[i], QString::fromUtf8(descriptionArray[i]));
-    }
-    delete[] codeArray;
-    delete[] descriptionArray;
-    return result;
 }
 
 } // namespace PerceptualColor
