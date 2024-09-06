@@ -1,7 +1,7 @@
 # Frederik Schwarzer <schwarzer@kde.org>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: perceptualcolor-0_qt\n"
 "PO-Revision-Date: 2023-04-16 13:47+0200\n"
 "Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
