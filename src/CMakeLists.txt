@@ -168,11 +168,13 @@ file(
 qt_add_resources(
     library_SRC # existing source list
     ${qrc_file} # File with list of Qt resource to be added
-    # NOTE Starting with Qt6, it will no longer be necessary to have a
+    # TODO Starting with Qt6, it will no longer be necessary to have a
     # .qrc file, but the list of files can be passed in the very same
     # qt_add_resources() command. Problem: The attributes
     # threshold="100" compress-algo="none" (see explication above)
     # cannot be specified than.
+    #  See also https://www.basyskom.de/translating-qt-applications/
+    # for a detailed explanation.
 )
 
 

@@ -50,20 +50,15 @@ class ColorPatchPrivate;
  *
  * The default minimum size of this widget is similar to a
  * <tt>QToolButton</tt>. Depending on your use case, you might
- * set a bigger minimum size:
+ * want to set a bigger minimum size:
  * @snippet testcolorpatch.cpp ColorPatch Bigger minimum size
  *
- * This class’s API is similar to KColorPatch’s API.
+ * @note This class is API-compatible with the legacy
+ * <a href="https://api.kde.org/legacy/4.12-api/kdelibs-apidocs/kdeui/html/classKColorPatch.html">
+ * KColorPatch</a> class that was available in KDElibs4 (and still in KF5
+ * through KDELibs4Support).
  *
  * @internal
- *
- * @note A similar functionality is available as KColorPatch, but this is
- * part of KDELibs4Support which is available in KF5 but should not be used
- * for new code, but only for legacy code. Also, depending on KDELibs4Support
- * would pull-in another dependency. Furthermore, KColorPatch has support for
- * drag-and-drop, which is not desirable for our use case. Therefore, with
- * @ref ColorPatch there is a lightweight alternative (that, by the way,
- * implements the full  API of KColorPatch).
  *
  * @note This class intentionally does not reimplement the paint event,
  * but uses a child QLabel to display the color. QLabel integrates by

@@ -64,7 +64,7 @@ public:
      * this type, once you have a QApplication object. */
     enum class SwatchBookPage {
         BasicColors, /**< @ref ColorDialogPrivate::m_swatchBookBasicColors */
-        History /**< @ref ColorDialogPrivate::m_swatchBookBasicColors */
+        History /**< @ref ColorDialogPrivate::m_swatchBookHistory */
     };
     Q_ENUM(SwatchBookPage)
     /** @brief The swatch book page currently visible at
