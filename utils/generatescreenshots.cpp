@@ -22,6 +22,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcolor.h>
+#include <qcombobox.h>
 #include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
 #include <qcoreapplication.h>
@@ -264,9 +265,10 @@ static void setCurrentTab(ColorDialog *dialog, int index)
     QTabWidget *myTabWidget = tabWidgets.first();
     const auto count = myTabWidget->count();
     if (count > 1) {
-        // It seems that QTabWidget::setCurrentIndex() does not always repaint
-        // correctly when no event loop is running. Workaround:
-        // First, set a different index, and later the the actual index.
+        // After calling QTabWidget::setCurrentIndex(), the tab widget may not
+        // repaint properly if the event loop is not running.
+        // Workaround: temporarily switch to a different index, then set the
+        // desired index afterward.
         if (index == 0) {
             myTabWidget->setCurrentIndex(1);
         } else {
@@ -274,6 +276,28 @@ static void setCurrentTab(ColorDialog *dialog, int index)
         }
     }
     myTabWidget->setCurrentIndex(index);
+}
+
+static void setCurrentSwatchBookSelector(ColorDialog *dialog, int index)
+{
+    QList<QComboBox *> comboBoxes = dialog->findChildren<QComboBox *>();
+    if (comboBoxes.count() != 1) {
+        throw 0;
+    }
+    QComboBox *myComboBox = comboBoxes.first();
+    const auto count = myComboBox->count();
+    if (count > 1) {
+        // After calling QComboBox::setCurrentIndex(), the tab widget may not
+        // repaint properly if the event loop is not running.
+        // Workaround: temporarily switch to a different index, then set the
+        // desired index afterward.
+        if (index == 0) {
+            myComboBox->setCurrentIndex(1);
+        } else {
+            myComboBox->setCurrentIndex(0);
+        }
+    }
+    myComboBox->setCurrentIndex(index);
 }
 
 static void makeScreenshots()
@@ -310,6 +334,7 @@ static void makeScreenshots()
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
         setCurrentTab(&m_colorDialog, 0);
+        setCurrentSwatchBookSelector(&m_colorDialog, 0); // basic colors
         screenshotDelayed(&m_colorDialog);
     }
 
