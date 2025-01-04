@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: perceptualcolor\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-20 02:03+0100\n"
-"PO-Revision-Date: 2023-08-03 06:41+0100\n"
+"PO-Revision-Date: 2025-01-03 21:16+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -333,18 +333,15 @@ msgstr "Klaku por alkroĉi al plej proksima en-&gama koloro"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:709
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "&Bazaj koloroj"
+msgstr "Bazaj koloroj"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:714
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "Historio"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1229
@@ -369,7 +366,3 @@ msgstr "sRGB kolorspaco"
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "From &screen"
-#~ msgstr "De &ekrano"
