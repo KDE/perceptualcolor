@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2023, 2024 Xavier Besnard <xavier.besnard@kde.org>
+# SPDX-FileCopyrightText: 2023, 2024, 2025 Xavier Besnard <xavier.besnard@kde.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
-"PO-Revision-Date: 2024-08-06 08:50+0200\n"
+"PO-Revision-Date: 2025-01-08 12:02+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.12.0\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -311,7 +311,7 @@ msgid ""
 "p><p>Whitepoint: D65</p>"
 msgstr ""
 "<p>Luminosité : %L1⁠–⁠%L2</p><p>Chrominance : %L3⁠–⁠%L4</p><p>Teintes : "
-"0 °⁠– ⁠360 °</p><p>Point blanc : D65</p>"
+"0 °⁠– ⁠360 °</p><p>Point blanc : « D65 »</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:568
