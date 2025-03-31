@@ -83,6 +83,12 @@ void AsyncImageRenderThread::startRenderingAsync(const QVariant &parameters)
         m_syncIsIdle = false;
     }
     if (!isRunning()) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 9, 0))
+        // The scheduler should run this thread to a high-performance CPU core
+        // to get the image as fast as possible.
+        setServiceLevel(QThread::QualityOfService::High);
+#endif
+        // But avoid blocking other threads:
         start(LowPriority); // One priority level lower than normal priority.
     } else {
         m_loopRestart = true;
