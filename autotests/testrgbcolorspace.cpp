@@ -14,6 +14,7 @@
 #include "helperposixmath.h"
 #include "rgbcolorspacefactory.h"
 #include <lcms2.h>
+#include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qdatetime.h>
@@ -36,11 +37,13 @@
 #include <qversionnumber.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qcontainerfwd.h>
 #include <qstring.h>
 #include <qtmetamacros.h>
 #else
 #include <qobjectdefs.h>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qvector.h>
 #endif
 
@@ -488,6 +491,37 @@ private Q_SLOTS:
         }
         QVERIFY2(inGamutValueFound, //
                  "Test if profileMaximumOklchChroma is as small as possible");
+    }
+
+    void testProfileTagSignatures()
+    {
+        auto temp = RgbColorSpace::createSrgb();
+
+        const QStringList signatures = temp->profileTagSignatures();
+
+        QVERIFY2(signatures.contains(QStringLiteral("wtpt")), //
+                 "Test if wtpt tag of build-in profile is in tag list.");
+    }
+
+    void testProfileTagWhitepoint()
+    {
+        auto temp = RgbColorSpace::createSrgb();
+
+        const std::optional<cmsCIEXYZ> maybeWhitepoint = temp->profileTagWhitepoint();
+
+        QVERIFY2(maybeWhitepoint.has_value(), //
+                 "Test if wtpt tag of build-in profile is available.");
+
+        const cmsCIEXYZ whitepoint = maybeWhitepoint.value();
+
+        cmsCIEXYZ referenceWhitepoint;
+        referenceWhitepoint.X = 0.9642;
+        referenceWhitepoint.Y = 1;
+        referenceWhitepoint.Z = 0.8249;
+
+        QCOMPARE(whitepoint.X, referenceWhitepoint.X);
+        QCOMPARE(whitepoint.Y, referenceWhitepoint.Y);
+        QCOMPARE(whitepoint.Z, referenceWhitepoint.Z);
     }
 
     void testToCielchD50Double()

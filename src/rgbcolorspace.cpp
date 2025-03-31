@@ -287,6 +287,16 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     if (m_profileTagSignatures.contains(QStringLiteral("vcgt"))) {
         return false;
     }
+    m_profileTagWhitepoint = profileReadCmsciexyzTag(rgbProfileHandle, //
+                                                     cmsSigMediaWhitePointTag);
+    m_profileTagBlackpoint = profileReadCmsciexyzTag(rgbProfileHandle, //
+                                                     cmsSigMediaBlackPointTag);
+    m_profileTagRedPrimary = profileReadCmsciexyzTag(rgbProfileHandle, //
+                                                     cmsSigRedColorantTag);
+    m_profileTagGreenPrimary = profileReadCmsciexyzTag(rgbProfileHandle, //
+                                                       cmsSigGreenColorantTag);
+    m_profileTagBluePrimary = profileReadCmsciexyzTag(rgbProfileHandle, //
+                                                      cmsSigBlueColorantTag);
 
     {
         // Create an ICC v4 profile object for the CielabD50 color space.
@@ -541,9 +551,44 @@ cmsColorSpaceSignature RgbColorSpace::profilePcsColorModel() const
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
+std::optional<cmsCIEXYZ> RgbColorSpace::profileTagBlackpoint() const
+{
+    return d_pointer->m_profileTagBlackpoint;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+std::optional<cmsCIEXYZ> RgbColorSpace::profileTagBluePrimary() const
+{
+    return d_pointer->m_profileTagBluePrimary;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+std::optional<cmsCIEXYZ> RgbColorSpace::profileTagGreenPrimary() const
+{
+    return d_pointer->m_profileTagGreenPrimary;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+std::optional<cmsCIEXYZ> RgbColorSpace::profileTagRedPrimary() const
+{
+    return d_pointer->m_profileTagRedPrimary;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
 QStringList RgbColorSpace::profileTagSignatures() const
 {
     return d_pointer->m_profileTagSignatures;
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+std::optional<cmsCIEXYZ> RgbColorSpace::profileTagWhitepoint() const
+{
+    return d_pointer->m_profileTagWhitepoint;
 }
 
 /** @brief Get information from an ICC profile via LittleCMS
@@ -825,6 +870,9 @@ QStringList RgbColorSpacePrivate::profileTagSignatures(cmsHPROFILE profileHandle
         QByteArray byteArray;
         byteArray.reserve(4);
         // Extract the 4 lowest bytes
+        static_assert( //
+            sizeof(underlyingType) == 4, //
+            "cmsTagSignature must have 4 bytes for this code to work.");
         byteArray.append(static_cast<char>((value >> 24) & 0xFF));
         byteArray.append(static_cast<char>((value >> 16) & 0xFF));
         byteArray.append(static_cast<char>((value >> 8) & 0xFF));
@@ -833,6 +881,35 @@ QStringList RgbColorSpacePrivate::profileTagSignatures(cmsHPROFILE profileHandle
         returnValue.append(QString::fromLatin1(byteArray));
     }
     return returnValue;
+}
+
+/** @brief Reads a tag from a profile and converts to cmsCIEXYZ.
+ *
+ * @pre signature is a tag signature for which LittleCMS will return a
+ * pointer to an cmsCIEXYZ value (see LittleCMS documentation).
+ *
+ * @warning If the precondition is not fulfilled, this will produce undefined
+ * behaviour and possibly a segmentation fault.
+ *
+ * @param profileHandle handle to the ICC profile
+ * @param signature signature of the tag to search for
+ * @returns The value of the requested tag if present in the profile.
+ * An <tt>std::nullopt</tt> otherwise. */
+std::optional<cmsCIEXYZ> RgbColorSpacePrivate::profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature)
+{
+    if (!cmsIsTag(profileHandle, signature)) {
+        return std::nullopt;
+    }
+
+    void *voidPointer = cmsReadTag(profileHandle, signature);
+
+    if (voidPointer == nullptr) {
+        return std::nullopt;
+    }
+
+    const cmsCIEXYZ result = *static_cast<cmsCIEXYZ *>(voidPointer);
+
+    return result;
 }
 
 /** @brief Reduces the chroma until the color fits into the gamut.

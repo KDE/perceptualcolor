@@ -12,6 +12,7 @@
 #include "helperconstants.h"
 #include "oklchvalues.h"
 #include <lcms2.h>
+#include <optional>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
@@ -110,8 +111,23 @@ public:
      * @ref RgbColorSpace::profilePcsColorModel */
     cmsColorSpaceSignature m_profilePcsColorModel;
     /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileTagBlackpoint */
+    std::optional<cmsCIEXYZ> m_profileTagBlackpoint;
+    /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileTagBluePrimary */
+    std::optional<cmsCIEXYZ> m_profileTagBluePrimary;
+    /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileTagGreenPrimary */
+    std::optional<cmsCIEXYZ> m_profileTagGreenPrimary;
+    /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileTagRedPrimary */
+    std::optional<cmsCIEXYZ> m_profileTagRedPrimary;
+    /** @brief Internal storage for property
      * @ref RgbColorSpace::profileTagSignatures */
     QStringList m_profileTagSignatures;
+    /** @brief Internal storage for property
+     * @ref RgbColorSpace::profileTagWhitepoint */
+    std::optional<cmsCIEXYZ> m_profileTagWhitepoint;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformCielabD50ToRgb16Handle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
@@ -127,6 +143,7 @@ public:
     [[nodiscard]] static QDateTime profileCreationDateTime(cmsHPROFILE profileHandle);
     [[nodiscard]] static QVersionNumber profileIccVersion(cmsHPROFILE profileHandle);
     [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType);
+    [[nodiscard]] static std::optional<cmsCIEXYZ> profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature);
     [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
     /** @brief The rendering intents supported by the LittleCMS library.

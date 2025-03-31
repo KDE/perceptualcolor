@@ -7,6 +7,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include <lcms2.h>
+#include <optional>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
@@ -255,7 +256,35 @@ class RgbColorSpace : public QObject
      * @sa READ @ref profilePcsColorModel() const */
     Q_PROPERTY(cmsColorSpaceSignature profilePcsColorModel READ profilePcsColorModel CONSTANT)
 
-    /** @brief The signatures of all tags actually present in the profile.
+    /** @brief Value of the tag <tt>bkpt</tt> if present in the ICC profile,
+     *
+     * Is <tt>std::nullopt</tt> if the tag is not present in the ICC profile.
+     *
+     * @sa READ @ref profileTagBlackpoint() const */
+    Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagBlackpoint READ profileTagBlackpoint CONSTANT)
+
+    /** @brief Value of the tag <tt>bXYZ</tt> if present in the ICC profile,
+     *
+     * Is <tt>std::nullopt</tt> if the tag is not present in the ICC profile.
+     *
+     * @sa READ @ref profileTagBluePrimary() const */
+    Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagBluePrimary READ profileTagBluePrimary CONSTANT)
+
+    /** @brief Value of the tag <tt>gXYZ</tt> if present in the ICC profile,
+     *
+     * Is <tt>std::nullopt</tt> if the tag is not present in the ICC profile.
+     *
+     * @sa READ @ref profileTagGreenPrimary() const */
+    Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagGreenPrimary READ profileTagGreenPrimary CONSTANT)
+
+    /** @brief Value of the tag <tt>rXYZ</tt> if present in the ICC profile,
+     *
+     * Is <tt>std::nullopt</tt> if the tag is not present in the ICC profile.
+     *
+     * @sa READ @ref profileTagRedPrimary() const */
+    Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagRedPrimary READ profileTagRedPrimary CONSTANT)
+
+    /** @brief The signatures of all tags actually present in the ICC profile.
      *
      * This contains both, “public tags” mentioned in the
      * <a href="https://www.color.org/icc_specs2.xalter">ICC specification</a>
@@ -265,6 +294,13 @@ class RgbColorSpace : public QObject
      *
      * @sa READ @ref profileTagSignatures() const */
     Q_PROPERTY(QStringList profileTagSignatures READ profileTagSignatures CONSTANT)
+
+    /** @brief Value of the tag <tt>wtpt</tt> if present in the ICC profile,
+     *
+     * Is <tt>std::nullopt</tt> if the tag is not present in the ICC profile.
+     *
+     * @sa READ @ref profileTagWhitepoint() const */
+    Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagWhitepoint READ profileTagWhitepoint CONSTANT)
 
 public: // Static factory functions
     [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName);
@@ -320,9 +356,24 @@ public:
     /** @brief Getter for property @ref profilePcsColorModel
      *  @returns the property @ref profilePcsColorModel */
     [[nodiscard]] cmsColorSpaceSignature profilePcsColorModel() const;
+    /** @brief Getter for property @ref profileTagBlackpoint
+     *  @returns the property @ref profileTagBlackpoint */
+    [[nodiscard]] std::optional<cmsCIEXYZ> profileTagBlackpoint() const;
+    /** @brief Getter for property @ref profileTagBluePrimary
+     *  @returns the property @ref profileTagBluePrimary */
+    [[nodiscard]] std::optional<cmsCIEXYZ> profileTagBluePrimary() const;
+    /** @brief Getter for property @ref profileTagGreenPrimary
+     *  @returns the property @ref profileTagGreenPrimary */
+    [[nodiscard]] std::optional<cmsCIEXYZ> profileTagGreenPrimary() const;
+    /** @brief Getter for property @ref profileTagRedPrimary
+     *  @returns the property @ref profileTagRedPrimary */
+    [[nodiscard]] std::optional<cmsCIEXYZ> profileTagRedPrimary() const;
     /** @brief Getter for property @ref profileTagSignatures
      *  @returns the property @ref profileTagSignatures */
     [[nodiscard]] QStringList profileTagSignatures() const;
+    /** @brief Getter for property @ref profileTagWhitepoint
+     *  @returns the property @ref profileTagWhitepoint */
+    [[nodiscard]] std::optional<cmsCIEXYZ> profileTagWhitepoint() const;
     // The function declaration is kept on a single line to prevent issues
     // with Doxygen parsing.
     // clang-format is disabled here to prevent automatic line breaks.
