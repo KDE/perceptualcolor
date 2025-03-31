@@ -1,6 +1,15 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
+// We actually delete the PIMPL's copy constructor in the private header using
+// Q_DISABLE_COPY(ColorPatchPrivate)
+// Nevertheless, cppcheck worries about a default copy constructor:
+//     "Class 'ColorPatchPrivate' does not have a copy constructor which is
+//     recommended since it has dynamic memory/resource allocation(s).
+//     (CWE-398)"
+// So we suppress this warning:
+// cppcheck-suppress-file noCopyConstructor
+
 // Own headers
 // First the interface, which forces the header to be self-contained.
 #include "colorpatch.h"

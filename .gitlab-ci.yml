@@ -11,6 +11,7 @@
 # unnecessary work load. The Ubuntu-based jobs use an image that
 # does not come from KDE. Therefore we use them as less as possible.
 stages:
+  - validate
   - build
   - quality
   - iwyu
@@ -149,7 +150,6 @@ codecheck_quality:
 include:
   - project: sysadmin/ci-utilities
     file:
-      - /gitlab-templates/reuse-lint.yml
       - /gitlab-templates/freebsd-qt6.yml
       - /gitlab-templates/linux-qt6.yml
       - /gitlab-templates/linux-qt6-static.yml
