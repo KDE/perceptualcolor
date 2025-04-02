@@ -230,8 +230,13 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 
     m_profileClass = cmsGetDeviceClass(rgbProfileHandle);
     m_profileColorModel = cmsGetColorSpace(rgbProfileHandle);
+    // If we kept a copy of the original ICC file in a QByteArray, we
+    // could provide support for on-the-fly language changes. However, it seems
+    // that most ICC files do not provide different locales anyway.
+    const QString defaultLocaleName = QLocale().name();
     m_profileCopyright = profileInformation(rgbProfileHandle, //
-                                            cmsInfoCopyright);
+                                            cmsInfoCopyright,
+                                            defaultLocaleName);
     m_profileCreationDateTime = //
         profileCreationDateTime(rgbProfileHandle);
     const bool inputUsesCLUT = cmsIsCLUT(rgbProfileHandle, //
@@ -248,11 +253,14 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     m_profileHasMatrixShaper = cmsIsMatrixShaper(rgbProfileHandle);
     m_profileIccVersion = profileIccVersion(rgbProfileHandle);
     m_profileManufacturer = profileInformation(rgbProfileHandle, //
-                                               cmsInfoManufacturer);
+                                               cmsInfoManufacturer,
+                                               defaultLocaleName);
     m_profileModel = profileInformation(rgbProfileHandle, //
-                                        cmsInfoModel);
+                                        cmsInfoModel,
+                                        defaultLocaleName);
     m_profileName = profileInformation(rgbProfileHandle, //
-                                       cmsInfoDescription);
+                                       cmsInfoDescription,
+                                       defaultLocaleName);
     m_profilePcsColorModel = cmsGetPCS(rgbProfileHandle);
     m_profileTagSignatures = profileTagSignatures(rgbProfileHandle);
     // Gamma Correction Overview:
@@ -595,18 +603,23 @@ std::optional<cmsCIEXYZ> RgbColorSpace::profileTagWhitepoint() const
  *
  * @param profileHandle handle to the ICC profile in which will be searched
  * @param infoType the type of information that is searched
+ * @param languageTerritory A string of the form "language_territory", where
+ * language is a lowercase, two-letter ISO 639 language code, and territory is
+ * an uppercase, two- or three-letter ISO 3166 territory code. If the locale
+ * has no specified territory, only the language name is required. Leave empty
+ * to use the default locale of the profile.
  * @returns A QString with the information. It searches the
  * information in the current locale (language code and country code as
  * provided currently by <tt>QLocale</tt>). If the information is not
  * available in this locale, LittleCMS silently falls back to another available
  * localization. Note that the returned <tt>QString</tt> might be empty if the
  * requested information is not available in the ICC profile. */
-QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType)
+QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory)
 {
     QByteArray languageCode;
     QByteArray countryCode;
     // Update languageCode and countryCode to the actual locale (if possible)
-    const QStringList list = QLocale().name().split(QStringLiteral(u"_"));
+    const QStringList list = languageTerritory.split(QStringLiteral(u"_"));
     // The list of locale codes should be ASCII only.
     // Therefore QString::toUtf8() should return ASCII-only valid results.
     // (We do not know what character encoding LittleCMS expects,

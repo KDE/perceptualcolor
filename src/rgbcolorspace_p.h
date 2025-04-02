@@ -142,7 +142,7 @@ public:
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
     [[nodiscard]] static QDateTime profileCreationDateTime(cmsHPROFILE profileHandle);
     [[nodiscard]] static QVersionNumber profileIccVersion(cmsHPROFILE profileHandle);
-    [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType);
+    [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory);
     [[nodiscard]] static std::optional<cmsCIEXYZ> profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature);
     [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
