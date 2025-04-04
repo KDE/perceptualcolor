@@ -393,7 +393,7 @@ public:
      * example if you want to use for <em>queued</em> signal-slot connections),
      * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
-    typedef QColorDialog::ColorDialogOption ColorDialogOption;
+    using ColorDialogOption = QColorDialog::ColorDialogOption;
     /** @brief Local alias for QColorDialog::ColorDialogOptions
      *
      * This type is declared as type to Qt’s type system via
@@ -401,7 +401,7 @@ public:
      * example if you want to use for <em>queued</em> signal-slot connections),
      * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
-    typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
+    using ColorDialogOptions = QColorDialog::ColorDialogOptions;
     /** @brief Layout dimensions
      *
      * This enum is declared to the meta-object system with <tt>Q_ENUM</tt>.

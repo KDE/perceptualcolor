@@ -129,6 +129,15 @@ grep \
     $PUBLIC_HEADERS \
          | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
 
+# -> using versus typedef: Both methods for declaring aliases are equivalent,
+#    but the using statement is preferred as it is considered easier to read
+#    than the typedef statement.
+grep \
+    --recursive --exclude-dir=testbed \
+    --perl-regexp "(?<!\\S)typedef(?!\\S)" \
+    $ALL_CODE \
+         | sed 's/^/Prefer “using ALIAS = TYPE;” over “typedef TYPE ALIAS;”: /'
+
 # -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
 #    @snippet instead! That allows that the example code is actually compiled
 #    and that helps detecting errors.
