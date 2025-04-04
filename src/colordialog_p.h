@@ -104,12 +104,12 @@ public:
     QPointer<QPushButton> m_buttonOK;
     /** @brief Pointer to the @ref ChromaHueDiagram. */
     QPointer<ChromaHueDiagram> m_chromaHueDiagram;
-    /** @brief Pointer to the @ref MultiSpinBox for CIEHLC. */
-    QPointer<MultiSpinBox> m_ciehlcD50SpinBox;
-    /** @brief Pointer to the gamut action for @ref m_ciehlcD50SpinBox. */
-    QPointer<QAction> m_ciehlcD50SpinBoxGamutAction;
-    /** @brief Pointer to the label for @ref m_ciehlcD50SpinBox. */
-    QPointer<QLabel> m_ciehlcD50SpinBoxLabel;
+    /** @brief Pointer to the @ref MultiSpinBox for CIELCH. */
+    QPointer<MultiSpinBox> m_cielchD50SpinBox;
+    /** @brief Pointer to the gamut action for @ref m_cielchD50SpinBox. */
+    QPointer<QAction> m_cielchD50SpinBoxGamutAction;
+    /** @brief Pointer to the label for @ref m_cielchD50SpinBox. */
+    QPointer<QLabel> m_cielchD50SpinBoxLabel;
     /** @brief Pointer to the @ref ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
     /** @brief Holds the currently used icon theme.
@@ -210,7 +210,7 @@ public:
     /** @brief Pointer to the widget that holds the numeric color
      *         representation. */
     QPointer<QWidget> m_numericalWidget;
-    /** @brief Pointer to the @ref MultiSpinBox for CIEHLC. */
+    /** @brief Pointer to the @ref MultiSpinBox for Oklch. */
     QPointer<MultiSpinBox> m_oklchSpinBox;
     /** @brief Pointer to the gamut action for @ref m_oklchSpinBox. */
     QPointer<QAction> m_oklchSpinBoxGamutAction;
@@ -318,10 +318,10 @@ public:
 public Q_SLOTS:
     void readChromaHueDiagramValue();
     void readColorPatchValue();
-    void readHlcNumericValues();
     void readHslNumericValues();
     void readHsvNumericValues();
     void readHwbNumericValues();
+    void readLchNumericValues();
     void readLightnessValue();
     void readOklchNumericValues();
     void readRgbHexValues();
@@ -338,7 +338,7 @@ public Q_SLOTS:
                                const PerceptualColor::RgbColor &rgb,
                                QWidget *const ignoreWidget);
     void updateColorPatch();
-    void updateHlcButBlockSignals();
+    void updateLchButBlockSignals();
     void updateOklchButBlockSignals();
     void updateRgbHexButBlockSignals();
 

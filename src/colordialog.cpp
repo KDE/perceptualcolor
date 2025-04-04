@@ -410,9 +410,9 @@ void ColorDialogPrivate::retranslateUi()
                                       profileInfo.join(QString())));
     }
 
-    /*: @label:spinbox Label for CIE’s CIEHLC color model, based on Hue,
-    Lightness, Chroma, and using the D50 illuminant as white point.*/
-    m_ciehlcD50SpinBoxLabel->setText(tr("CIEHL&C D50:"));
+    /*: @label:spinbox Label for CIE’s CIELCH color model, based on Lightness,
+     * Chroma and Hue, and using the D50 illuminant as white point.*/
+    m_cielchD50SpinBoxLabel->setText(tr("&CIELCH D50:"));
 
     /*: @label:spinbox Label for Oklch color model, based on Lightness, Chroma,
     Hue, and using the D65 illuminant as white point. */
@@ -550,12 +550,12 @@ void ColorDialogPrivate::retranslateUi()
     translation. */
     m_lchLightnessSelector->setAccessibleName(tr("Lightness"));
 
-    /*: @info:tooltip Help text for CIEHLC. “lightness” is different from
+    /*: @info:tooltip Help text for CIELCH. “lightness” is different from
     “brightness”/“value” and should therefore get a different translation. */
-    m_ciehlcD50SpinBox->setToolTip(richTextMarker
-                                   + tr("<p>Hue: 0°⁠–⁠360°</p>"
-                                        "<p>Lightness: 0%⁠–⁠100%</p>"
-                                        "<p>Chroma: 0⁠–⁠%L1</p>")
+    m_cielchD50SpinBox->setToolTip(richTextMarker
+                                   + tr("<p>Lightness: 0%⁠–⁠100%</p>"
+                                        "<p>Chroma: 0⁠–⁠%L1</p>"
+                                        "<p>Hue: 0°⁠–⁠360°</p>")
                                          .arg(CielchD50Values::maximumChroma));
 
     constexpr double maxOklchChroma = OklchValues::maximumChroma;
@@ -646,25 +646,23 @@ void ColorDialogPrivate::retranslateUi()
         m_hsvSpinBox->setSectionConfigurations(hsvSections);
     }
 
-    // CIEHLC-D50 spin box
-    QList<MultiSpinBoxSection> ciehlcD50Sections = //
-        m_ciehlcD50SpinBox->sectionConfigurations();
-    if (ciehlcD50Sections.count() != 3) {
+    // CIELCH-D50 spin box
+    QList<MultiSpinBoxSection> cielchD50Sections = //
+        m_cielchD50SpinBox->sectionConfigurations();
+    if (cielchD50Sections.count() != 3) {
         qWarning() //
-            << "Expected 3 sections in HLC MultiSpinBox, but got" //
-            << ciehlcD50Sections.count() //
+            << "Expected 3 sections in CIELCH-D50 MultiSpinBox, but got" //
+            << cielchD50Sections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        ciehlcD50Sections[0].setPrefix(arcDegreeInSpinbox.first);
-        ciehlcD50Sections[0].setSuffix( //
-            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        ciehlcD50Sections[1].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        ciehlcD50Sections[1].setSuffix( //
+        cielchD50Sections[0].setPrefix(percentageInSpinbox.first);
+        cielchD50Sections[0].setSuffix( //
             percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        ciehlcD50Sections[2].setPrefix(m_multispinboxSectionSeparator);
-        ciehlcD50Sections[2].setSuffix(QString());
-        m_ciehlcD50SpinBox->setSectionConfigurations(ciehlcD50Sections);
+        cielchD50Sections[1].setPrefix(m_multispinboxSectionSeparator);
+        cielchD50Sections[1].setSuffix(m_multispinboxSectionSeparator);
+        cielchD50Sections[2].setPrefix(m_multispinboxSectionSeparator + arcDegreeInSpinbox.first);
+        cielchD50Sections[2].setSuffix(arcDegreeInSpinbox.second);
+        m_cielchD50SpinBox->setSectionConfigurations(cielchD50Sections);
     }
 
     // Oklch spin box
@@ -672,7 +670,7 @@ void ColorDialogPrivate::retranslateUi()
         m_oklchSpinBox->sectionConfigurations();
     if (oklchSections.count() != 3) {
         qWarning() //
-            << "Expected 3 sections in HLC MultiSpinBox, but got" //
+            << "Expected 3 sections in Oklch MultiSpinBox, but got" //
             << oklchSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
@@ -708,8 +706,8 @@ void ColorDialogPrivate::retranslateUi()
     const QString gamutTooltip = //
         richTextMarker + fromMnemonicToRichText(gamutMnemonic);
     const auto gamutShortcut = QKeySequence::mnemonic(gamutMnemonic);
-    m_ciehlcD50SpinBoxGamutAction->setToolTip(gamutTooltip);
-    m_ciehlcD50SpinBoxGamutAction->setShortcut(gamutShortcut);
+    m_cielchD50SpinBoxGamutAction->setToolTip(gamutTooltip);
+    m_cielchD50SpinBoxGamutAction->setShortcut(gamutShortcut);
     m_oklchSpinBoxGamutAction->setToolTip(gamutTooltip);
     m_oklchSpinBoxGamutAction->setShortcut(gamutShortcut);
 
@@ -814,7 +812,7 @@ void ColorDialogPrivate::reloadIcons()
     const QIcon gamutIcon = qIconFromTheme(gamutIconNames, //
                                            QStringLiteral("eye-exclamation"),
                                            newType);
-    m_ciehlcD50SpinBoxGamutAction->setIcon(gamutIcon);
+    m_cielchD50SpinBoxGamutAction->setIcon(gamutIcon);
     m_oklchSpinBoxGamutAction->setIcon(gamutIcon);
 
     static const QStringList candidates //
@@ -1171,15 +1169,15 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readHsvNumericValues // slot
     );
-    connect(m_ciehlcD50SpinBox, // sender
+    connect(m_cielchD50SpinBox, // sender
             &MultiSpinBox::sectionValuesChanged, // signal
             this, // receiver
-            &ColorDialogPrivate::readHlcNumericValues // slot
+            &ColorDialogPrivate::readLchNumericValues // slot
     );
-    connect(m_ciehlcD50SpinBox, // sender
+    connect(m_cielchD50SpinBox, // sender
             &MultiSpinBox::editingFinished, // signal
             this, // receiver
-            &ColorDialogPrivate::updateHlcButBlockSignals // slot
+            &ColorDialogPrivate::updateLchButBlockSignals // slot
     );
     connect(m_oklchSpinBox, // sender
             &MultiSpinBox::sectionValuesChanged, // signal
@@ -1256,11 +1254,11 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // The q_pointer’s object is still not fully initialized at this point,
     // but it’s base class constructor has fully run; this should be enough
     // to use functionality based on QWidget, so we can use it as parent.
-    m_ciehlcD50SpinBoxGamutAction = new QAction(q_pointer);
-    connect(m_ciehlcD50SpinBoxGamutAction, // sender
+    m_cielchD50SpinBoxGamutAction = new QAction(q_pointer);
+    connect(m_cielchD50SpinBoxGamutAction, // sender
             &QAction::triggered, // signal
             this, // receiver
-            &ColorDialogPrivate::updateHlcButBlockSignals // slot
+            &ColorDialogPrivate::updateLchButBlockSignals // slot
     );
     m_oklchSpinBoxGamutAction = new QAction(q_pointer);
     connect(m_oklchSpinBoxGamutAction, // sender
@@ -1271,9 +1269,9 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     // However, here we hide the action because initially the
     // current color should be in-gamut, so no need for the gamut action
     // to be visible.
-    m_ciehlcD50SpinBoxGamutAction->setVisible(false);
-    m_ciehlcD50SpinBox->addActionButton( //
-        m_ciehlcD50SpinBoxGamutAction, //
+    m_cielchD50SpinBoxGamutAction->setVisible(false);
+    m_cielchD50SpinBox->addActionButton( //
+        m_cielchD50SpinBoxGamutAction, //
         QLineEdit::ActionPosition::TrailingPosition);
     m_oklchSpinBoxGamutAction->setVisible(false);
     m_oklchSpinBox->addActionButton( //
@@ -1583,13 +1581,10 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
             m_currentOpaqueColorRgb.hsv.toQList3());
     }
 
-    // Update CIEHLC-D50 widget
-    const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
-    const auto ciehlcD50 = QList<double>{cielchD50.third, //
-                                         cielchD50.first,
-                                         cielchD50.second};
-    if (m_ciehlcD50SpinBox != ignoreWidget) {
-        m_ciehlcD50SpinBox->setSectionValues(ciehlcD50);
+    // Update CIELCH-D50 widget
+    const GenericColor cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
+    if (m_cielchD50SpinBox != ignoreWidget) {
+        m_cielchD50SpinBox->setSectionValues(cielchD50.toQList3());
     }
 
     // Update Oklch widget
@@ -1858,20 +1853,17 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     m_rgbLineEdit->setText(hexString);
 }
 
-/** @brief Updates the HLC spin box to @ref m_currentOpaqueColorAbs.
+/** @brief Updates the LCH spin box to @ref m_currentOpaqueColorAbs.
  *
- * @post The @ref m_ciehlcD50SpinBox gets the value of
+ * @post The @ref m_cielchD50SpinBox gets the value of
  * @ref m_currentOpaqueColorAbs. During this operation, all signals of
- * @ref m_ciehlcD50SpinBox are blocked. */
-void ColorDialogPrivate::updateHlcButBlockSignals()
+ * @ref m_cielchD50SpinBox are blocked. */
+void ColorDialogPrivate::updateLchButBlockSignals()
 {
-    QSignalBlocker mySignalBlocker(m_ciehlcD50SpinBox);
+    QSignalBlocker mySignalBlocker(m_cielchD50SpinBox);
     const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
-    const QList<double> ciehlcD50List{cielchD50.third, //
-                                      cielchD50.first,
-                                      cielchD50.second};
-    m_ciehlcD50SpinBox->setSectionValues(ciehlcD50List);
-    m_ciehlcD50SpinBoxGamutAction->setVisible(false);
+    m_cielchD50SpinBox->setSectionValues(cielchD50.toQList3());
+    m_cielchD50SpinBoxGamutAction->setVisible(false);
 }
 
 /** @brief Updates the Oklch spin box to @ref m_currentOpaqueColorAbs.
@@ -1887,30 +1879,26 @@ void ColorDialogPrivate::updateOklchButBlockSignals()
     m_oklchSpinBoxGamutAction->setVisible(false);
 }
 
-/** @brief If no @ref m_isColorChangeInProgress, reads the HLC numbers
+/** @brief If no @ref m_isColorChangeInProgress, reads the LCH numbers
  * in the dialog and updates the dialog accordingly. */
-void ColorDialogPrivate::readHlcNumericValues()
+void ColorDialogPrivate::readLchNumericValues()
 {
     if (m_isColorChangeInProgress) {
         // Nothing to do!
         return;
     }
-    QList<double> hlcValues = m_ciehlcD50SpinBox->sectionValues();
-    GenericColor lch;
-    lch.third = hlcValues.at(0);
-    lch.first = hlcValues.at(1);
-    lch.second = hlcValues.at(2);
-    if (m_rgbColorSpace->isCielchD50InGamut(lch)) {
-        m_ciehlcD50SpinBoxGamutAction->setVisible(false);
+    const GenericColor lchValues = GenericColor(m_cielchD50SpinBox->sectionValues());
+    if (m_rgbColorSpace->isCielchD50InGamut(lchValues)) {
+        m_cielchD50SpinBoxGamutAction->setVisible(false);
     } else {
-        m_ciehlcD50SpinBoxGamutAction->setVisible(true);
+        m_cielchD50SpinBoxGamutAction->setVisible(true);
     }
     const auto myColor = GenericColor( //
-        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch));
+        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lchValues));
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::CielchD50, myColor),
         // widget that will ignored during updating:
-        m_ciehlcD50SpinBox);
+        m_cielchD50SpinBox);
 }
 
 /** @brief If no @ref m_isColorChangeInProgress, reads the Oklch numbers
@@ -2138,29 +2126,29 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_rgbGroupBox->setTitle(elidedProfileName);
     }
 
-    // Create widget for the CIEHLC-D50 color representation
+    // Create widget for the CIELCH-D50 color representation
     {
-        QList<MultiSpinBoxSection> ciehlcD50Sections;
-        m_ciehlcD50SpinBox = new MultiSpinBox;
+        QList<MultiSpinBoxSection> cielchD50Sections;
+        m_cielchD50SpinBox = new MultiSpinBox;
         MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
-        // H
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
-        mySection.setWrapping(true);
-        ciehlcD50Sections.append(mySection);
         // L
         mySection.setMinimum(0);
         mySection.setMaximum(100);
         mySection.setWrapping(false);
-        ciehlcD50Sections.append(mySection);
+        cielchD50Sections.append(mySection);
         // C
         mySection.setMinimum(0);
         mySection.setMaximum(CielchD50Values::maximumChroma);
         mySection.setWrapping(false);
-        ciehlcD50Sections.append(mySection);
+        cielchD50Sections.append(mySection);
+        // H
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setWrapping(true);
+        cielchD50Sections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
-        m_ciehlcD50SpinBox->setSectionConfigurations(ciehlcD50Sections);
+        m_cielchD50SpinBox->setSectionConfigurations(cielchD50Sections);
     }
 
     // Create widget for the Oklch color representation
@@ -2199,12 +2187,12 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
     tempWidget->setLayout(tempMainLayout);
     tempWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     QFormLayout *cielabFormLayout = new QFormLayout;
-    m_ciehlcD50SpinBoxLabel = new QLabel();
-    m_ciehlcD50SpinBoxLabel->setBuddy(m_ciehlcD50SpinBox);
-    cielabFormLayout->addRow(m_ciehlcD50SpinBoxLabel, m_ciehlcD50SpinBox);
     m_oklchSpinBoxLabel = new QLabel();
     m_oklchSpinBoxLabel->setBuddy(m_oklchSpinBox);
     cielabFormLayout->addRow(m_oklchSpinBoxLabel, m_oklchSpinBox);
+    m_cielchD50SpinBoxLabel = new QLabel();
+    m_cielchD50SpinBoxLabel->setBuddy(m_cielchD50SpinBox);
+    cielabFormLayout->addRow(m_cielchD50SpinBoxLabel, m_cielchD50SpinBox);
     tempMainLayout->addLayout(cielabFormLayout);
     tempMainLayout->addWidget(m_rgbGroupBox);
     tempMainLayout->addStretch();

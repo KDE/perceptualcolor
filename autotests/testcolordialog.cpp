@@ -1095,7 +1095,7 @@ private Q_SLOTS:
                 ->m_chromaHueDiagram //
                 ->currentColorCielchD50());
         // We do not also control this here for
-        // m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox because this
+        // m_perceptualDialog->d_pointer->m_cielchD50SpinBox because this
         // widget rounds the given value to the current decimal precision
         // it’s using. Therefore, it’s pointless to control here
         // for rounding errors.
@@ -1658,7 +1658,7 @@ private Q_SLOTS:
     }
 #endif
 
-    void testGamutIconCiehlcD50()
+    void testGamutIconCielchD50()
     {
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
@@ -1666,7 +1666,7 @@ private Q_SLOTS:
         // On startup, the current color should be in-gamut, so no gamut action
         // should be visible.
         QCOMPARE( //
-            myDialog->d_pointer->m_ciehlcD50SpinBoxGamutAction->isVisible(), //
+            myDialog->d_pointer->m_cielchD50SpinBoxGamutAction->isVisible(), //
             false);
         QCOMPARE( //
             myDialog->d_pointer->m_oklchSpinBoxGamutAction->isVisible(), //
@@ -1674,22 +1674,21 @@ private Q_SLOTS:
 
         constexpr int iterations = 15;
 
-        auto &myCiehlcD50SpinBox = myDialog->d_pointer->m_ciehlcD50SpinBox;
-        myCiehlcD50SpinBox->setFocus();
-        QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_Tab);
-        QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_Tab);
+        auto &myCielchD50SpinBox = myDialog->d_pointer->m_cielchD50SpinBox;
+        myCielchD50SpinBox->setFocus();
+        QTest::keyClick(myCielchD50SpinBox, Qt::Key_Tab);
         // Now, the focus should be on the chroma value.
         for (int i = 0; i < iterations; ++i) {
-            QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_PageUp);
+            QTest::keyClick(myCielchD50SpinBox, Qt::Key_PageUp);
         }
         QCOMPARE( //
-            myDialog->d_pointer->m_ciehlcD50SpinBoxGamutAction->isVisible(), //
+            myDialog->d_pointer->m_cielchD50SpinBoxGamutAction->isVisible(), //
             true);
         for (int i = 0; i < iterations; ++i) {
-            QTest::keyClick(myCiehlcD50SpinBox, Qt::Key_PageDown);
+            QTest::keyClick(myCielchD50SpinBox, Qt::Key_PageDown);
         }
         QCOMPARE( //
-            myDialog->d_pointer->m_ciehlcD50SpinBoxGamutAction->isVisible(), //
+            myDialog->d_pointer->m_cielchD50SpinBoxGamutAction->isVisible(), //
             false);
     }
 
@@ -1728,39 +1727,39 @@ private Q_SLOTS:
     }
 
 #ifndef MSVC_DLL
-    void testReadHlcNumericValues()
+    void testReadLchNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         QList<double> myValues = //
-            myDialog->d_pointer->m_ciehlcD50SpinBox->sectionValues();
+            myDialog->d_pointer->m_cielchD50SpinBox->sectionValues();
 
         // Test with a normal value
         myValues[0] = 10;
         myValues[1] = 11;
         myValues[2] = 12;
-        myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
-        myDialog->d_pointer->readHlcNumericValues();
+        myDialog->d_pointer->m_cielchD50SpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->readLchNumericValues();
         const auto &col1 = myDialog //
                                ->d_pointer //
                                ->m_currentOpaqueColorAbs.value( //
                                    ColorModel::CielchD50);
-        QCOMPARE(col1.third, 10);
-        QCOMPARE(col1.first, 11);
-        QCOMPARE(col1.second, 12);
+        QCOMPARE(col1.first, 10);
+        QCOMPARE(col1.second, 11);
+        QCOMPARE(col1.third, 12);
 
         // Test with an out-of-gamut value. Hue and lightness should not change.
         myValues[0] = 10;
-        myValues[1] = 11;
-        myValues[2] = 50;
-        myDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues(myValues);
-        myDialog->d_pointer->readHlcNumericValues();
+        myValues[1] = 50;
+        myValues[2] = 12;
+        myDialog->d_pointer->m_cielchD50SpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->readLchNumericValues();
         const auto &col2 = myDialog //
                                ->d_pointer //
                                ->m_currentOpaqueColorAbs.value( //
                                    ColorModel::CielchD50);
-        QCOMPARE(col2.third, 10);
-        QCOMPARE(col2.first, 11);
+        QCOMPARE(col2.first, 10);
+        QCOMPARE(col2.third, 12);
     }
 #endif
 
@@ -2108,27 +2107,27 @@ private Q_SLOTS:
         // out-of-gamut, before going again in-gamut at even lower chroma
         // values.
         m_perceptualDialog->setCurrentColor(QColor(Qt::yellow));
-        // The value is also converted to HLC 100°, 98%, 95 (rounded)
-        // visible in the HLC spin box.
-        QList<double> hlc = //
-            m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox->sectionValues();
-        QVERIFY(hlc.at(0) >= 100 - toleranceRange); // assertion
-        QVERIFY(hlc.at(0) <= 100 + toleranceRange); // assertion
-        QVERIFY(hlc.at(1) >= 98 - toleranceRange); // assertion
-        QVERIFY(hlc.at(1) <= 98 + toleranceRange); // assertion
-        QVERIFY(hlc.at(2) >= 95 - toleranceRange); // assertion
-        QVERIFY(hlc.at(2) <= 95 + toleranceRange); // assertion
-        // Now, the user clicks on the “Apply” button within the HLC spin box.
+        // The value is also converted to LCH 98%, 95, 100° (rounded)
+        // visible in the LCH spin box.
+        QList<double> lch = //
+            m_perceptualDialog->d_pointer->m_cielchD50SpinBox->sectionValues();
+        QVERIFY(lch.at(0) >= 98 - toleranceRange); // assertion
+        QVERIFY(lch.at(0) <= 98 + toleranceRange); // assertion
+        QVERIFY(lch.at(1) >= 95 - toleranceRange); // assertion
+        QVERIFY(lch.at(1) <= 95 + toleranceRange); // assertion
+        QVERIFY(lch.at(2) >= 100 - toleranceRange); // assertion
+        QVERIFY(lch.at(2) <= 100 + toleranceRange); // assertion
+        // Now, the user clicks on the “Apply” button within the LCH spin box.
         // We simulate this by simply calling the slot that is connected
         // to this action:
-        m_perceptualDialog->d_pointer->readHlcNumericValues();
+        m_perceptualDialog->d_pointer->readLchNumericValues();
         // Now, during development there was a bug observed: The buggy
         // behaviour was that the chroma value was changed from 95 to 24.
         // The expected result was that the chroma value only changes
         // slightly because of rounding (or ideally not at all).
-        hlc = m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox->sectionValues();
-        QVERIFY(hlc.at(2) >= 95 - toleranceRange);
-        QVERIFY(hlc.at(2) <= 95 + toleranceRange);
+        lch = m_perceptualDialog->d_pointer->m_cielchD50SpinBox->sectionValues();
+        QVERIFY(lch.at(1) >= 95 - toleranceRange);
+        QVERIFY(lch.at(1) <= 95 + toleranceRange);
     }
 
     void testBlackHSV()
@@ -2165,14 +2164,14 @@ private Q_SLOTS:
         m_perceptualDialog.reset( //
             new ColorDialog(m_srgbBuildinColorSpace));
 
-        // The user puts into the HLC spin box the value 100° 98% 94:
-        m_perceptualDialog->d_pointer->m_ciehlcD50SpinBox->setSectionValues( //
-            QList<double>{100, 98, 94});
+        // The user puts into the LCH spin box the value 98% 94 100°:
+        m_perceptualDialog->d_pointer->m_cielchD50SpinBox->setSectionValues( //
+            QList<double>{98, 94, 100});
         // This is an out-of-gamut color which is not corrected until
         // the focus will leave the widget or the Return key is pressed.
-        // A nearby in-gamut color is around 100° 98% 24; this color
+        // A nearby in-gamut color is around 98% 24 100°; this color
         // is used internally to perform the conversion to RGB and other
-        // color spaces. (It is however still not visible in the HLC
+        // color spaces. (It is however still not visible in the LCH
         // spin box.)
         //
         // The RGB spin box becomes:
@@ -2183,7 +2182,7 @@ private Q_SLOTS:
         // Now, the user finishes the editing process (the focus leaves
         // the widget or the Return key is pressed or the action button
         // is clicked):
-        m_perceptualDialog->d_pointer->updateHlcButBlockSignals();
+        m_perceptualDialog->d_pointer->updateLchButBlockSignals();
         // The buggy result during development phase was an RGB value
         // of 252 254 4. Why?
         // - The internal value was around 100° 97% 94, but not exactly.
