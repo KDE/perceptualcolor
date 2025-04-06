@@ -1,8 +1,11 @@
-# SPDX-FileCopyrightText: 2023, 2024 Eloy Cuadra <ecuadra@eloihr.net>
+# Spanish translations for perceptualcolor-0_qt.po package.
+#
+# SPDX-FileCopyrightText: 2023, 2024, 2025 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
-"PO-Revision-Date: 2024-08-06 00:53+0200\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"PO-Revision-Date: 2025-04-05 11:08+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -11,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.05.2\n"
+"X-Generator: Lokalize 24.12.3\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:106
@@ -36,7 +39,7 @@ msgstr "RGB"
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
-msgstr "%1%"
+msgstr "%1 %"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
 #: colordialog.cpp:225
@@ -167,12 +170,9 @@ msgstr "Información del espacio de color"
 
 #. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
 #: colordialog.cpp:415
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "CIEHL&C D50:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr "CIEHL&C D50:"
+msgstr "&CIELCH D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:419
@@ -270,14 +270,14 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Matiz: 0°⁠–⁠360°</p><p>Saturación HSL: 0%⁠–⁠100%</p><p>Luminosidad: 0%⁠–⁠100%</"
+"<p>Matiz: 0°⁠–⁠360°</p><p>Saturación HSL: 0–⁠100 %</p><p>Luminosidad: 0⁠–⁠100 %</"
 "p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
 #: colordialog.cpp:528
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Whiteness: 0%⁠–⁠100%</p><p>Blackness: 0%⁠–⁠100%</p>"
-msgstr "<p>Matiz: 0°⁠–⁠360°</p><p>Blancura: 0%⁠–⁠100%</p><p>Negrura: 0%⁠–⁠100%</p>"
+msgstr "<p>Matiz: 0°⁠–⁠360°</p><p>Blancura: 0⁠–⁠100 %</p><p>Negrura: 0⁠–⁠100 %</p>"
 
 #. @info:tooltip Help text for HSV/HSB. HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model. Saturation: 0 means something between black and white; 255 means something between black and the most colorful color. This is different from “chroma” and should therefore get a different translation. Brightness/value: 0 means always black; 255 means something between white and the most colorful color. This is different from “lightness” and should therefore get a different translation.
 #: colordialog.cpp:541
@@ -286,8 +286,8 @@ msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
 "0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Matiz: 0°⁠–⁠360°</p><p>Saturación HSV/HSB: 0%⁠–⁠100%</p><p>Brillo/Valor: "
-"0%⁠–⁠100%</p>"
+"<p>Matiz: 0°⁠–⁠360°</p><p>Saturación HSV/HSB: 0⁠–⁠100 %</p><p>Brillo/Valor: "
+"0⁠–⁠100 %</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:551
@@ -297,16 +297,9 @@ msgstr "Luminosidad"
 
 #. @info:tooltip Help text for CIELCH. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:556
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid ""
-#| "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
-#| "p><p>Whitepoint: D65</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr ""
-"<p>Luminosidad: %L1⁠–⁠%L2</p><p>Croma: %L3⁠–⁠%L4</p><p>Matiz: 0°⁠–⁠360°</"
-"p><p>Punto blanco: D65</p>"
+msgstr "<p>Luminosidad: 0–⁠100%</p><p>Croma: 0⁠–⁠%L1</p><p>Matiz: 0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:565
@@ -371,15 +364,3 @@ msgstr "Espacio de color sRGB"
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"
-#~ msgstr "<p>Matiz: 0°⁠–⁠360°</p><p>Luminosidad: 0%⁠–⁠100%</p><p>Croma: 0⁠–⁠%L1</p>"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "From &screen"
-#~ msgstr "De la &pantalla"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "%"
-#~ msgstr "%"
