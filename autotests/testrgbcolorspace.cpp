@@ -819,6 +819,61 @@ private Q_SLOTS:
             QCOMPARE(result.toUcs4().at(0), 0x1F58C);
         }
     }
+
+    void testChromaticityBoundaryByCielchD50Hue360()
+    {
+        QSharedPointer<PerceptualColor::RgbColorSpace> temp =
+            // Create sRGB which is pretty much standard.
+            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+
+        const auto colorCount = //
+            temp->d_pointer->m_chromaticityBoundaryByCielchD50Hue360.size();
+        // Six 8-bit color blocks, minus 6 duplicates where the blocks touch
+        // each other, plus 2 duplicates at the lower and upper range.
+        QCOMPARE(colorCount, 256 * 6 - 6 + 2);
+    }
+
+    void testChromaticityBoundaryByOklabHue360()
+    {
+        QSharedPointer<PerceptualColor::RgbColorSpace> temp =
+            // Create sRGB which is pretty much standard.
+            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+
+        const auto colorCount = //
+            temp->d_pointer->m_chromaticityBoundaryByOklabHue360.size();
+        // Six 8-bit color blocks, minus 6 duplicates where the blocks touch
+        // each other, plus 2 duplicates at the lower and upper range.
+        QCOMPARE(colorCount, 256 * 6 - 6 + 2);
+    }
+
+    void testMaxChromaColorBy()
+    {
+        QSharedPointer<PerceptualColor::RgbColorSpace> tmp =
+            // Create sRGB which is pretty much standard.
+            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+
+        auto onChromaBoundary = [](const QColor& c) -> bool {
+            const bool has0 = //
+                (c.red() == 0) || (c.green() == 0) || (c.blue() == 0);
+            const bool has255 = //
+                (c.red() == 255) || (c.green() == 255) || (c.blue() == 255);
+            return has0 && has255;
+        };
+        QVERIFY2(onChromaBoundary(tmp->maxChromaColorByCielchD50Hue360(0)), //
+                 "Has to return a color on the chromaticity boundary.");
+        QVERIFY2(onChromaBoundary(tmp->maxChromaColorByCielchD50Hue360(180)), //
+                 "Has to return a color on the chromaticity boundary.");
+        QVERIFY2(onChromaBoundary(tmp->maxChromaColorByCielchD50Hue360(360)), //
+                 "Has to return a color on the chromaticity boundary.");
+
+        QVERIFY2(onChromaBoundary(tmp->maxChromaColorByOklabHue360(0)), //
+                 "Has to return a color on the chromaticity boundary.");
+        QVERIFY2(onChromaBoundary(tmp->maxChromaColorByOklabHue360(180)), //
+                 "Has to return a color on the chromaticity boundary.");
+        QVERIFY2(onChromaBoundary(tmp->maxChromaColorByOklabHue360(360)), //
+                 "Has to return a color on the chromaticity boundary.");
+    }
+
 };
 
 } // namespace PerceptualColor

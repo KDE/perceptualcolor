@@ -5,6 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimage.h"
 
+#include "absolutecolor.h"
 #include "cielchd50values.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
@@ -139,10 +140,7 @@ void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
  * is <tt>QSize(imageSize, imageSize)</tt>. All pixels
  * that do not belong to the wheel itself will be transparent.
  * Antialiasing is used, so there is no sharp border between
- * transparent and non-transparent parts. Depending on the
- * values for lightness and chroma and the available colors in
- * the current color space, there may be some hue who is out of
- *  gamut; if so, this part of the wheel will be transparent.
+ * transparent and non-transparent parts.
  *
  * @todo Out-of-gamut situations should automatically be handled. */
 QImage ColorWheelImage::getImage()
@@ -183,20 +181,12 @@ QImage ColorWheelImage::getImage()
     // defines an overlap for the wheel, so there are some more pixels that
     // are drawn at the outer and at the inner border of the wheel, to allow
     // later clipping with anti-aliasing
-    PolarPointF polarCoordinates;
     int x;
     int y;
-    QRgb rgbColor;
-    cmsCIELCh cielchD50;
     const qreal center = (m_imageSizePhysical - 1) / static_cast<qreal>(2);
     m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), //
                      QImage::Format_ARGB32_Premultiplied);
-    // Because there may be out-of-gamut colors for some hue (depending on the
-    // given lightness and chroma value) which are drawn transparent, it is
-    // important to initialize this image with a transparent background.
     m_image.fill(Qt::transparent);
-    cielchD50.L = CielchD50Values::neutralLightness;
-    cielchD50.C = CielchD50Values::srgbVersatileChroma;
     // minimumRadius: Adding "+ 1" would reduce the workload (less pixel to
     // process) and still work mostly, but not completely. It creates sometimes
     // artifacts in the anti-aliasing process. So we don't do that.
@@ -205,17 +195,17 @@ QImage ColorWheelImage::getImage()
     const qreal maximumRadius = center - m_borderPhysical + overlap;
     for (x = 0; x < m_imageSizePhysical; ++x) {
         for (y = 0; y < m_imageSizePhysical; ++y) {
-            polarCoordinates = PolarPointF(QPointF(x - center, center - y));
-            if (isInRange<qreal>(minimumRadius, polarCoordinates.radius(), maximumRadius)
-
-            ) {
-                // We are within the wheel
-                cielchD50.h = polarCoordinates.angleDegree();
-                rgbColor = m_rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
-                    toCmsLab(cielchD50));
-                if (qAlpha(rgbColor) != 0) {
-                    m_image.setPixelColor(x, y, rgbColor);
-                }
+            const PolarPointF polarCoordinates = //
+                PolarPointF(QPointF(x - center, center - y));
+            const bool inWheel = isInRange<qreal>(minimumRadius, //
+                                                  polarCoordinates.radius(), //
+                                                  maximumRadius);
+            if (inWheel) {
+                const auto hue = polarCoordinates.angleDegree();
+                m_image.setPixelColor( //
+                    x, //
+                    y, //
+                    m_rgbColorSpace->maxChromaColorByCielchD50Hue360(hue));
             }
         }
     }
@@ -225,7 +215,7 @@ QImage ColorWheelImage::getImage()
     // The natural way would be to simply draw a circle with
     // QPainter::CompositionMode_DestinationIn which should make transparent
     // everything that is not in the circle. Unfortunately, this does not
-    // seem to work. Therefore, we use a workaround and draw a very think
+    // seem to work. Therefore, we use a workaround and draw a very thick
     // circle outline around the circle with QPainter::CompositionMode_Clear.
     const qreal circleRadius = outerCircleDiameter / 2;
     const qreal cutOffThickness = //

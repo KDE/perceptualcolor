@@ -31,6 +31,17 @@ namespace PerceptualColor
 class RgbColorSpacePrivate final
 {
 public:
+    /**
+     * @brief Enum class representing possible color spaces in the Lch color
+     * models.
+     */
+    enum class LchSpace {
+        Oklch, /**< The Oklch color space, which uses by definition
+            always a D65 whitepoint. */
+        CielchD50 /**< The CielchD50 color space, assuming a chromatic
+            adaption to the D50 whitepoint. */
+    };
+
     explicit RgbColorSpacePrivate(RgbColorSpace *backLink);
     /** @brief Default destructor
      *
@@ -39,6 +50,40 @@ public:
     ~RgbColorSpacePrivate() noexcept = default;
 
     // Data members:
+    /**
+     * @brief All RGB colors located on the chromaticity boundary, ordered by
+     * CielchD50 hue.
+     *
+     * The chromaticity boundary consists of the spectral locus and the purple
+     * line.
+     *
+     * This dataset includes all integer RGB values (i.e., values representable
+     * with three one-byte channels) that lie on the chromaticity boundary.
+     * To ensure smooth cyclic transitions, the dataset includes duplicates
+     * of the lowest and highest hues positioned outside the [0, 360] boundary.
+     * For instance, the lowest original angle of 2° has a duplicate at 362°,
+     * and the highest original angle of 357° has a duplicate at -3°.
+     *
+     * The hue is normalized to the range [0, 360].
+     */
+    std::map<double, QColor> m_chromaticityBoundaryByCielchD50Hue360;
+    /**
+     * @brief All RGB colors located on the chromaticity boundary, ordered by
+     * Oklab hue.
+     *
+     * The chromaticity boundary consists of the spectral locus and the purple
+     * line.
+     *
+     * This dataset includes all integer RGB values (i.e., values representable
+     * with three one-byte channels) that lie on the chromaticity boundary.
+     * To ensure smooth cyclic transitions, the dataset includes duplicates
+     * of the lowest and highest hues positioned outside the [0, 360] boundary.
+     * For instance, the lowest original angle of 2° has a duplicate at 362°,
+     * and the highest original angle of 357° has a duplicate at -3°.
+     *
+     * The hue is normalized to the range [0, 360].
+     */
+    std::map<double, QColor> m_chromaticityBoundaryByOklabHue360;
     /** @brief The darkest in-gamut point on the L* axis.
      * @sa whitepointL
      *
@@ -136,34 +181,26 @@ public:
 
     // Functions:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
-    [[nodiscard]] double detectMaximumCielchD50Chroma() const;
-    [[nodiscard]] double detectMaximumOklchChroma() const;
+    void initializeChromaticityBoundaries();
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
+    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByHue360(double oklabHue360, RgbColorSpacePrivate::LchSpace type) const;
     [[nodiscard]] static QDateTime profileCreationDateTime(cmsHPROFILE profileHandle);
     [[nodiscard]] static QVersionNumber profileIccVersion(cmsHPROFILE profileHandle);
     [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory);
     [[nodiscard]] static std::optional<cmsCIEXYZ> profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature);
     [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
-    /** @brief Precision of HSV hue during maximum-chroma detection.
-     *
-     * @todo A value smaller than 0.001 does not make sense
-     * currently, because QColor has only a limited precision for
-     * HSV conversions. Furthermore, since Qt6 it’s floating point interface
-     * has been defined with “float”. For a more exact solution, we would
-     * have to implement our own HSV conversion first. */
-    static constexpr double chromaDetectionHuePrecision = gamutPrecisionCielab;
     /** @brief Increment factor for the maximum-chroma detection.
      *
-     * The maximum-chroma detection, regardless of the precision,
-     * might always return a value that is a bit too small. However,
-     * we want to have @ref RgbColorSpace::profileMaximumCielchD50Chroma and
-     * @ref RgbColorSpace::profileMaximumOklchChroma values that are equal
-     * or slightly bigger than the actual maximum-chroma, to make sure to
-     * not exclude valid values. Therefore, @ref detectMaximumCielchD50Chroma()
-     * and @ref detectMaximumOklchChroma use this increment factor to
-     * slightly increment the outcome of the chroma detection relative to
-     * the original value, as a safety margin. Note that additionally,
+     * The maximum-chroma detection, regardless of the precision, might
+     * always return a value that is a bit too small. However, we want
+     * to have @ref RgbColorSpace::profileMaximumCielchD50Chroma and
+     * @ref RgbColorSpace::profileMaximumOklchChroma values that
+     * are equal or slightly bigger than the actual maximum-chroma,
+     * to make sure to not exclude valid values. Therefore,
+     * @ref initializeChromaticityBoundaries() uses this increment factor
+     * to slightly increment the outcome of the chroma detection relative
+     * to the original value, as a safety margin. Note that additionally,
      * an absolute increment should also be added, because of limited
      * precision in floating point operations. */
     static constexpr double chromaDetectionIncrementFactor = 1.02;

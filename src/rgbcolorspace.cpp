@@ -219,7 +219,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
  * @todo LUT profiles should be detected and refused, as the actual diagram
  * results are currently bad. (LUT profiles for RGB are not common among
  * the usual standard profile files. But they might be more common among
- * individually calibrated monitors?)
+ * individually calibrated monitors? -> The color.org reference sRGB profile
+ * named sRGB_v4_ICC_preference.icc also uses them, and it works fine in
+ * our library.)
  *
  * @todo This function is used in @ref RgbColorSpace::createSrgb()
  * and @ref RgbColorSpace::tryCreateFromFile(), but some of the initialization
@@ -437,8 +439,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 
     // Now, calculate the properties who’s calculation depends on a fully
     // initialized object.
-    m_profileMaximumCielchD50Chroma = detectMaximumCielchD50Chroma();
-    m_profileMaximumOklchChroma = detectMaximumOklchChroma();
+    initializeChromaticityBoundaries();
 
     return true;
 }
@@ -1402,57 +1403,163 @@ PerceptualColor::GenericColor RgbColorSpace::fromCielchD50ToRgb1(const Perceptua
     return GenericColor(rgb[0], rgb[1], rgb[2]);
 }
 
-/** @brief Calculation of @ref RgbColorSpace::profileMaximumCielchD50Chroma
- *
- * @returns Calculation of @ref RgbColorSpace::profileMaximumCielchD50Chroma */
-double RgbColorSpacePrivate::detectMaximumCielchD50Chroma() const
+/**
+ * @brief Initialization for various data items related to the chromatic
+ * boundary.
+ */
+void RgbColorSpacePrivate::initializeChromaticityBoundaries()
 {
-    // Make sure chromaDetectionHuePrecision is big enough to make a difference
-    // when being added to floating point variable “hue” used in loop later.
-    static_assert(0. + chromaDetectionHuePrecision > 0.);
-    static_assert(360. + chromaDetectionHuePrecision > 360.);
+    QList<QColor> chromaticityBoundaryQColor;
+    chromaticityBoundaryQColor.reserve(256 * 6);
+    for (int value = 0; value <= 255; ++value) {
+        // This will create six duplicate values (at the borders between
+        // the six value groups). These will be filtered out later
+        // automatically, because std::map does not allow duplicates.
 
-    // Implementation
-    double result = 0;
-    double hue = 0;
-    while (hue < 360) {
-        const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
-        const auto color = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
-        result = qMax(result, q_pointer->toCielchD50(color).second);
-        hue += chromaDetectionHuePrecision;
+        // Red = 255
+        chromaticityBoundaryQColor.append(QColor(255, value, 0)); // Vary green
+        chromaticityBoundaryQColor.append(QColor(255, 0, value)); // Vary blue
+
+        // Green = 255
+        chromaticityBoundaryQColor.append(QColor(value, 255, 0)); // Vary red
+        chromaticityBoundaryQColor.append(QColor(0, 255, value)); // Vary blue
+
+        // Blue = 255
+        chromaticityBoundaryQColor.append(QColor(value, 0, 255)); // Vary red
+        chromaticityBoundaryQColor.append(QColor(0, value, 255)); // Vary green
     }
-    result = result * chromaDetectionIncrementFactor + cielabDeviationLimit;
-    return std::min<double>(result, CielchD50Values::maximumChroma);
-}
 
-/** @brief Calculation of @ref RgbColorSpace::profileMaximumOklchChroma
- *
- * @returns Calculation of @ref RgbColorSpace::profileMaximumOklchChroma */
-double RgbColorSpacePrivate::detectMaximumOklchChroma() const
-{
-    // Make sure chromaDetectionHuePrecision is big enough to make a difference
-    // when being added to floating point variable “hue” used in loop later.
-    static_assert(0. + chromaDetectionHuePrecision > 0.);
-    static_assert(360. + chromaDetectionHuePrecision > 360.);
+    m_profileMaximumCielchD50Chroma = 0;
+    m_profileMaximumOklchChroma = 0;
+    for (auto &color : chromaticityBoundaryQColor) {
+        const auto rgb = color.rgba64();
+        const auto cielabD50 = GenericColor(q_pointer->toCielabD50(rgb));
 
-    double chromaSquare = 0;
-    double hue = 0;
-    while (hue < 360) {
-        const auto qColorHue = static_cast<QColorFloatType>(hue / 360.);
-        const auto rgbColor = QColor::fromHsvF(qColorHue, 1, 1).rgba64();
-        const auto cielabD50Color = q_pointer->toCielabD50(rgbColor);
-        const auto cielabD50 = GenericColor(cielabD50Color);
+        const auto cielchD50 = AbsoluteColor::fromCartesianToPolar(cielabD50);
+        m_profileMaximumCielchD50Chroma = qMax( //
+            m_profileMaximumCielchD50Chroma, //
+            cielchD50.second);
+        m_chromaticityBoundaryByCielchD50Hue360[cielchD50.third] = color;
+
         const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
         const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
         const auto oklab = AbsoluteColor::fromXyzD65ToOklab(xyzD65);
-        chromaSquare = qMax( //
-            chromaSquare, //
-            oklab.second * oklab.second + oklab.third * oklab.third);
-        hue += chromaDetectionHuePrecision;
+        const auto oklch = AbsoluteColor::fromCartesianToPolar(oklab);
+        m_profileMaximumOklchChroma = qMax( //
+            m_profileMaximumOklchChroma, //
+            oklch.second);
+        m_chromaticityBoundaryByOklabHue360[oklch.third] = color;
     }
-    const auto result = qSqrt(chromaSquare) * chromaDetectionIncrementFactor //
-        + oklabDeviationLimit;
-    return std::min<double>(result, OklchValues::maximumChroma);
+
+    auto addDuplicates = [](auto &boundaryMap) {
+        const auto firstKey = boundaryMap.begin()->first;
+        const auto firstValue = boundaryMap.begin()->second;
+        const auto lastKey = boundaryMap.rbegin()->first;
+        const auto lastValue = boundaryMap.rbegin()->second;
+        // In our circle, we create duplicates for the lowest and highest
+        // angles beyond the [0, 360] boundary on the opposite side of the
+        // circle. For example, the lowest original key is 2° and its duplicate
+        // is placed at 362°, while the highest original key might be 357°,
+        // with its duplicate at -3°.
+        boundaryMap[firstKey + 360] = firstValue;
+        boundaryMap[lastKey - 360] = lastValue;
+    };
+    addDuplicates(m_chromaticityBoundaryByCielchD50Hue360);
+    addDuplicates(m_chromaticityBoundaryByOklabHue360);
+
+    m_profileMaximumCielchD50Chroma *= chromaDetectionIncrementFactor;
+    m_profileMaximumCielchD50Chroma += cielabDeviationLimit;
+    m_profileMaximumCielchD50Chroma = std::min<double>( //
+        m_profileMaximumCielchD50Chroma, //
+        CielchD50Values::maximumChroma);
+
+    m_profileMaximumOklchChroma *= chromaDetectionIncrementFactor;
+    m_profileMaximumOklchChroma += oklabDeviationLimit;
+    m_profileMaximumOklchChroma = std::min<double>( //
+        m_profileMaximumOklchChroma, //
+        OklchValues::maximumChroma);
+}
+
+/**
+ * @brief Returns the most chromatic color for the given hue.
+ *
+ * @param hue360 hue in the range [0, 360]
+ *
+ * @returns the most chromatic color for the given hue in the current
+ * RGB gamut.
+ */
+QColor RgbColorSpace::maxChromaColorByOklabHue360(double hue360) const
+{
+    return d_pointer->maxChromaColorByHue360( //
+        hue360, //
+        RgbColorSpacePrivate::LchSpace::Oklch);
+}
+
+/**
+ * @brief Returns the most chromatic color for the given hue.
+ *
+ * @param hue360 hue in the range [0, 360]
+ *
+ * @returns the most chromatic color for the given hue in the current
+ * RGB gamut.
+ */
+QColor RgbColorSpace::maxChromaColorByCielchD50Hue360(double hue360) const
+{
+    return d_pointer->maxChromaColorByHue360( //
+        hue360, //
+        RgbColorSpacePrivate::LchSpace::CielchD50);
+}
+
+/**
+ * @brief Returns the most chromatic color for the given hue.
+ *
+ * @param oklabHue360 Oklab hue in the range [0, 360]
+ * @param type The type of Lch color space.
+ *
+ * @returns the most chromatic color for the given Oklab hue in the current
+ * RGB gamut.
+ */
+QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, RgbColorSpacePrivate::LchSpace type) const
+{
+    const auto &table = (type == LchSpace::CielchD50) //
+        ? m_chromaticityBoundaryByCielchD50Hue360 //
+        : m_chromaticityBoundaryByOklabHue360;
+
+    // begin() points to the actual first key-value pair.
+    // end() points to a virtual key-value pair after the last actual
+    // key-value pair. Dereferencing is not allowed.
+
+    // lower_bound: Returns an iterator pointing to the first element that
+    // is not less than (i.e. greater or equal to) key.
+    auto greaterOrEqual = //
+        table.lower_bound(oklabHue360);
+
+    if (greaterOrEqual == table.begin()) {
+        // All available keys are greater than the search key. So the key
+        // at the begin is the closest match:
+        return greaterOrEqual->second; // "second" returns the value of
+                                       // the key-value pair.
+        // NOTE If the map is empty, begin() == end(), so we would get a
+        // crash. Therefore, we have to make sure that the map is initialized
+        // in the constructor.
+    }
+
+    auto lower = --greaterOrEqual; // Move to the lower key
+
+    if (greaterOrEqual == table.end()) {
+        // We are at the end of the map. greaterOrEqual is not a valid
+        // key-value pair. Return the value of the previous key-value pair.
+        return lower->second;
+    }
+
+    // Compare distances to find the closest key
+    const auto distanceToLower = std::abs(oklabHue360 - lower->first);
+    const auto distanceToHigher = std::abs(oklabHue360 - greaterOrEqual->first);
+    if (distanceToLower <= distanceToHigher) {
+        return lower->second;
+    } else {
+        return greaterOrEqual->second;
+    }
 }
 
 } // namespace PerceptualColor
