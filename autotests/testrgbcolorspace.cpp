@@ -852,7 +852,7 @@ private Q_SLOTS:
             // Create sRGB which is pretty much standard.
             PerceptualColor::RgbColorSpaceFactory::createSrgb();
 
-        auto onChromaBoundary = [](const QColor& c) -> bool {
+        auto onChromaBoundary = [](const QColor &c) -> bool {
             const bool has0 = //
                 (c.red() == 0) || (c.green() == 0) || (c.blue() == 0);
             const bool has255 = //
@@ -873,7 +873,6 @@ private Q_SLOTS:
         QVERIFY2(onChromaBoundary(tmp->maxChromaColorByOklabHue360(360)), //
                  "Has to return a color on the chromaticity boundary.");
     }
-
 };
 
 } // namespace PerceptualColor
