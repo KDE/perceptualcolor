@@ -172,7 +172,7 @@ msgstr "色彩空间信息"
 #: colordialog.cpp:415
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr ""
+msgstr "&CIELCH D50："
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:419
@@ -297,7 +297,7 @@ msgstr "亮度 (Lightness)"
 #: colordialog.cpp:556
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr ""
+msgstr "<p>亮度：0%⁠–⁠100%</p><p>色品：0⁠–⁠%L1</p><p>色相：0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:565
