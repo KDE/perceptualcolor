@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
-"PO-Revision-Date: 2025-01-08 12:02+0100\n"
+"PO-Revision-Date: 2025-04-06 12:20+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.12.0\n"
+"X-Generator: Lokalize 24.12.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -167,12 +167,9 @@ msgstr "Informations relatives à l'espace colorimétrique"
 
 #. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
 #: colordialog.cpp:415
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "CIEHL&C D50:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr "CIEHL&C D50 :"
+msgstr "&CIELCH D50 :"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:419
@@ -300,16 +297,11 @@ msgstr "Luminosité"
 
 #. @info:tooltip Help text for CIELCH. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:556
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid ""
-#| "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
-#| "p><p>Whitepoint: D65</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
 msgstr ""
-"<p>Luminosité : %L1⁠–⁠%L2</p><p>Chrominance : %L3⁠–⁠%L4</p><p>Teintes : "
-"0 °⁠– ⁠360 °</p><p>Point blanc : « D65 »</p>"
+"<p>Luminosité : 0 % ⁠– ⁠100 %</p><p>Chrominance : 0 ⁠– ⁠%L1</p><p>Teintes : "
+"0 °⁠– ⁠360 °</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:565
