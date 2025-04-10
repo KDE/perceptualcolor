@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2024 Kisaragi Hiu <mail@kisaragi-hiu.com>
+# SPDX-FileCopyrightText: 2024, 2025 Kisaragi Hiu <mail@kisaragi-hiu.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2024-08-18 01:10+0900\n"
+"PO-Revision-Date: 2025-04-09 17:53+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 24.04.70\n"
+"X-Generator: Lokalize 24.12.3\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:106
@@ -167,12 +167,9 @@ msgstr "色彩空間資訊"
 
 #. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
 #: colordialog.cpp:415
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "CIEHL&C D50:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr "CIEHL&C D50："
+msgstr "&CIELCH D50："
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:419
@@ -293,15 +290,9 @@ msgstr "明度"
 
 #. @info:tooltip Help text for CIELCH. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:556
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid ""
-#| "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
-#| "p><p>Whitepoint: D65</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr ""
-"<p>明度：%L1⁠–⁠%L2</p><p>色度：%L3⁠–⁠%L4</p><p>色相：0°⁠–⁠360°</p><p>白點：D65</p>"
+msgstr "<p>明度：0%⁠–⁠100%</p><p>色度：0⁠–⁠%L1</p><p>色相：0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:565
