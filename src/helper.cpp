@@ -15,6 +15,7 @@
 #include <qcolor.h>
 #include <qevent.h>
 #include <qkeysequence.h>
+#include <qlabel.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qpoint.h>
@@ -302,17 +303,16 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  *
  * @param widget The widget to evaluate
  *
- * @returns The guessed schema, or <tt>std::nullopt</tt> if
- * nothing could be guessed.
+ * @returns The guessed scheme.
  *
  * @note The exact implementation of the guess  might change over time.
  *
  * @internal
  *
- * The current implementation takes a screenshot of the widget and calculates
+ * The current implementation creates a QLabel as child widget of the current
+ * widget, than takes a screenshot of the QLabel and calculates
  * the average lightness of this screenshot and determines the color schema
- * type accordingly. It returns <tt>std::nullopt</tt> if the widget
- * is <tt>nullptr</tt> or its size is empty.
+ * type accordingly.
  *
  * @note With Qt 6.5, there is
  * <a href="https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5">
@@ -326,16 +326,21 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  * the other hand, other styles like Kvantum might still chose to ignore
  * the color palette, so it seems safer to stay with the current
  * implementation. */
-std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget)
+ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
 {
     if (widget == nullptr) {
-        return std::nullopt;
+        return ColorSchemeType::Light;
     }
 
-    // Take a screenshot of the widget
-    const QImage screenshot = widget->grab().toImage();
+    // Create a QLabel
+    QScopedPointer<QLabel> label{new QLabel(widget)};
+    label->setText(QStringLiteral("abc"));
+    label->resize(label->sizeHint()); // Smaller size means faster guess.
+
+    // Take a screenshot of the QLabel
+    const QImage screenshot = label->grab().toImage();
     if (screenshot.size().isEmpty()) {
-        return std::nullopt;
+        return ColorSchemeType::Light;
     }
 
     // Calculate the average lightness of the screenshot

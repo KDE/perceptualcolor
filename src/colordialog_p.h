@@ -80,6 +80,14 @@ public:
     static constexpr QListSizeType historySwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
 
+    /** @brief Horizontal count of swatches for custom colors. */
+    static constexpr QListSizeType customColorsHSwatchCount = 9;
+    /** @brief  Vertical count of swatches for custom colors. */
+    static constexpr QListSizeType customColorsVSwatchCount = 4;
+    /** @brief  Total count of swatches for custom colors. */
+    static constexpr QListSizeType customColorsSwatchCount = //
+        historyHSwatchCount * historyVSwatchCount;
+
     /** @brief @ref GradientSlider widget for the alpha channel. */
     QPointer<GradientSlider> m_alphaGradientSlider;
     /** @brief Pointer to the QLabel for the alpha value.
@@ -114,9 +122,9 @@ public:
     QPointer<ColorPatch> m_colorPatch;
     /** @brief Holds the currently used icon theme.
      *
-     * Initially this is <tt>std::nullopt</tt>. Once @ref reloadIcons() has
+     * Initially this is set to an arbitrary value. Once @ref reloadIcons() has
      * been called, it has an actual value. */
-    std::optional<ColorSchemeType> m_currentIconThemeType = std::nullopt;
+    ColorSchemeType m_currentIconThemeType = ColorSchemeType::Light;
     /** @brief Current color without alpha information
      *
      * Holds the color in absolutely defined color models.
@@ -218,12 +226,10 @@ public:
     QPointer<QLabel> m_oklchSpinBoxLabel;
     /** @brief Pointer to the basic colors widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookBasicColors;
-    /** @brief Choose @ref m_swatchBookBasicColors. */
-    QPointer<QAction> m_swatchBookBasicColorsAction;
+    /** @brief Pointer to the basic colors widget. */
+    QPointer<PerceptualColor::SwatchBook> m_swatchBookCustomColors;
     /** @brief Pointer to the history widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookHistory;
-    /** @brief Choose @ref m_swatchBookHistory. */
-    QPointer<QAction> m_swatchBookHistoryAction;
     /** @brief The selector widget to choose which swatch book to show.
      *
      * @sa @ref m_swatchBookStack */
@@ -312,6 +318,7 @@ public:
     void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializeScreenColorPicker();
+    void loadCustomColorsFromSettingsToSwatchBook();
     void loadHistoryFromSettingsToSwatchBook();
     [[nodiscard]] QString translateColorModel(cmsColorSpaceSignature model);
 
@@ -327,6 +334,7 @@ public Q_SLOTS:
     void readRgbHexValues();
     void readRgbNumericValues();
     void readSwatchBookBasicColorsValue();
+    void readSwatchBookCustomColorsValue();
     void readSwatchBookHistoryValue();
     void readWheelColorPickerValues();
     void reloadIcons();

@@ -483,6 +483,20 @@ static void makeScreenshots()
         m_swatchBook.setCurrentColor(defaultColorRgb);
         screenshotDelayed(&m_swatchBook);
     }
+
+    {
+        QList<QColor> myColorList;
+        myColorList.append(Qt::red);
+        myColorList.append(Qt::green);
+        myColorList.append(Qt::blue);
+        const Swatches mySwatches(4, 4, myColorList);
+        SwatchBook m_swatchBook(m_colorSpace, //
+                                mySwatches,
+                                Qt::Orientation::Horizontal);
+        m_swatchBook.setCurrentColor(defaultColorRgb);
+        m_swatchBook.setEditable(true);
+        screenshotDelayed(&m_swatchBook, QStringLiteral("Editable"));
+    }
 }
 
 // Creates a set of screenshots of the library and saves these

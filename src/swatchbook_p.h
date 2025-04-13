@@ -40,6 +40,16 @@ class SwatchBookPrivate final : public QObject
     Q_OBJECT
 
 public:
+    /**
+     * @brief Marks (symbols) for use in @ref SwatchBook.
+     */
+    enum class Mark {
+        Selection, /**< A mark that indicates the a given patch is the selected
+            one. */
+        Add /**< A mark that indicated that by clicking on the given empty
+            patch, a new color is added to this patch. */
+    };
+
     explicit SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::Swatches &swatchGrid, Qt::Orientations wideSpacing);
     /** @brief Default destructor
      *
@@ -49,8 +59,15 @@ public:
 
     [[nodiscard]] QSize colorPatchesSizeWithMargin() const;
     [[nodiscard]] int cornerRadius() const;
+    void drawMark(const QPoint offset,
+                  QPainter *widgetPainter,
+                  const QColor color,
+                  const SwatchBookPrivate::Mark markSymbol,
+                  const QListSizeType row,
+                  const QListSizeType column) const;
     [[nodiscard]] int horizontalPatchSpacing() const;
     void initStyleOption(QStyleOptionFrame *option) const;
+    [[nodiscard]] std::pair<QListSizeType, QListSizeType> logicalColumnRowFromPosition(const QPoint position) const;
     [[nodiscard]] int normalPatchSpacing() const;
     [[nodiscard]] QPoint offset(const QStyleOptionFrame &styleOptionFrame) const;
     [[nodiscard]] QSize patchSizeInner() const;
@@ -58,15 +75,35 @@ public:
     void retranslateUi();
     void selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow);
     void selectSwatchFromCurrentColor();
+    void updateColorSchemeCache();
     [[nodiscard]] int verticalPatchSpacing() const;
     [[nodiscard]] int widePatchSpacing() const;
 
+    /** @brief The add mark to use, or an empty string if no
+     * add mark is available.
+     *
+     * The add mark is drawn above an empty patch.
+     *
+     * This variable contains the localized add mark string (if all its
+     * characters are available in the default font of this widget). An
+     * empty string otherwise.
+     *
+     * The value is set by @ref retranslateUi(). */
+    QString m_addMark;
     /** @brief Internal storage for property @ref SwatchBook::currentColor
      *
      * QColor automatically initializes with an invalid color, just like it
      * should be for the property @ref SwatchBook::currentColor, so no
      * need to initialize here explicitly. */
     QColor m_currentColor;
+    /**
+     * @brief Cache for the current color scheme of this widget.
+     *
+     * @sa @ref updateColorSchemeCache()
+     */
+    ColorSchemeType m_colorSchemeCache = ColorSchemeType::Light;
+    /** @brief Internal storage for property @ref SwatchBook::editable */
+    bool m_editable = false;
     /** @brief Pointer to the RgbColorSpace object. */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** @brief Selected column.
@@ -87,7 +124,7 @@ public:
      * The selection mark is drawn above the patch that is currently selected.
      *
      * This variable contains the localized selection mark string (if all its
-     * characters are) available in the default font of this widget. An
+     * characters are available in the default font of this widget). An
      * empty string otherwise.
      *
      * The value is set by @ref retranslateUi(). */

@@ -107,9 +107,9 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/test/PhotoGamutRGB_avg6c.icc")
             // QStringLiteral("WideGamutRGB.icc") //
             // QStringLiteral("/usr/share/color/icc/compatibleWithAdobeRGB1998.icc")
-            // QStringLiteral("invalid")
+            QStringLiteral("invalid")
             // QStringLiteral("/usr/share/color/icc/sRGB.icc")
-            QStringLiteral("/usr/share/color/icc/sRGB_v4_ICC_preference.icc")
+            // QStringLiteral("/usr/share/color/icc/sRGB_v4_ICC_preference.icc")
             // QStringLiteral("/usr/share/color/icc/krita/Rec2020-elle-V4-g10.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/LargeRGB-elle-V2-g22.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/WideRGB-elle-V2-g22.icc") //
@@ -282,9 +282,6 @@ int main(int argc, char *argv[])
                        } //
     );
     */
-
-    auto &mySettings = PerceptualSettings::instance();
-    mySettings.customColors.setValue(PerceptualSettings::ColorList({Qt::black, Qt::green}));
 
     /*
 #ifndef MSVC_DLL

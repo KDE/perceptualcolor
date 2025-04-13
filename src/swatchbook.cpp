@@ -22,9 +22,11 @@
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qfontmetrics.h>
+#include <qlabel.h>
 #include <qline.h>
 #include <qlist.h>
 #include <qmargins.h>
+#include <qmenu.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
 #include <qpainter.h>
@@ -64,6 +66,21 @@ namespace PerceptualColor
  * uic-generated code</a>. */
 void SwatchBookPrivate::retranslateUi()
 {
+    const QFontMetricsF myFontMetrics(q_pointer->font());
+    auto validateWithFont = [&myFontMetrics](const QString &string) -> QString {
+        // Test if all characters of the translated string are actually
+        // available in the given font.
+        auto ucs4 = string.toUcs4();
+        bool okay = true;
+        for (int i = 0; okay && (i < ucs4.count()); ++i) {
+            okay = myFontMetrics.inFontUcs4(ucs4.at(i));
+        }
+        if (okay) {
+            return string;
+        }
+        return QString();
+    };
+
     // Which symbol is appropriate as selection mark? This might depend on
     // culture and language. For more information, see also
     // https://en.wikipedia.org/w/index.php?title=Check_mark&oldid=1030853305#International_differences
@@ -78,6 +95,7 @@ void SwatchBookPrivate::retranslateUi()
     // However, this is only available for DirectWrite font rendering
     // on Windows. There does not seem to be a cross-platform solution
     // currently.
+
     /*: @item Indicate the selected color in the swatch book. This symbol
     should be translated to whatever symbol is most appropriate for “selected”
     in the translation language. Example symbols: ✓ U+2713 CHECK MARK.
@@ -86,23 +104,16 @@ void SwatchBookPrivate::retranslateUi()
     colorful on some systems, so they will ignore the automatically chosen
     color which is used get best contrast with the background. (Also
     U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.) */
-    const QString translation = tr("✓");
+    m_selectionMark = validateWithFont(tr("✓"));
 
-    // Test if all characters of the translated string are actually
-    // available in the given font.
-    auto ucs4 = translation.toUcs4();
-    bool okay = true;
-    QFontMetricsF myFontMetrics(q_pointer->font());
-    for (int i = 0; okay && (i < ucs4.count()); ++i) {
-        okay = myFontMetrics.inFontUcs4(ucs4.at(i));
-    }
-
-    // Return
-    if (okay) {
-        m_selectionMark = translation;
-    } else {
-        m_selectionMark = QString();
-    }
+    /*: @item Indicate that you can click on this empty patch to add a new
+    color to it. This symbol should be translated to whatever symbol is most
+    appropriate for “add” in the translation language. Do not use emoji
+    characters as they may render colorful on some systems, so they will ignore
+    the automatically chosen color which is used get best contrast with the
+    background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful
+    rendering.) */
+    m_addMark = validateWithFont(tr("+"));
 
     // Schedule a paint event to make the changes visible.
     q_pointer->update();
@@ -147,6 +158,8 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
                           // values.
                           std::optional<QStringList>());
     d_pointer->retranslateUi();
+
+    d_pointer->updateColorSchemeCache();
 }
 
 /** @brief Destructor */
@@ -315,7 +328,7 @@ void SwatchBookPrivate::selectSwatch(QListSizeType newCurrentColomn, QListSizeTy
  * or none if there is no corresponding swatch. */
 void SwatchBookPrivate::selectSwatchFromCurrentColor()
 {
-    if (m_selectedColumn > 0 && m_selectedRow > 0) {
+    if ((m_selectedColumn > 0) && (m_selectedRow > 0)) {
         if (m_swatchGrid.value(m_selectedColumn, m_selectedRow) == m_currentColor) {
             return;
         }
@@ -496,6 +509,72 @@ QPoint SwatchBookPrivate::offset(const QStyleOptionFrame &styleOptionFrame) cons
     return (frameOffset + innerMarginOffset).toPoint();
 }
 
+/**
+ * @brief Calculates the logical column and row based on a position relative to
+ * the widget.
+ *
+ * The logical column and row may differ from the visual column and row
+ * in environments with right-to-left text direction, where color patches are
+ * mirrored.
+ *
+ * @param position The position in logical pixels relative to the widget.
+ *
+ * @returns The logical column and row corresponding to the given position,
+ * or <tt>(-1, -1)</tt> if the position does not correspond to any color patch.
+ * Empty color patches are treated as active color patches.
+ */
+std::pair<QListSizeType, QListSizeType> SwatchBookPrivate::logicalColumnRowFromPosition(const QPoint position) const
+{
+    constexpr std::pair<QListSizeType, QListSizeType> invalid(-1, -1);
+
+    const QSize myColorPatchSize = patchSizeOuter();
+    const int myPatchWidth = myColorPatchSize.width();
+    const int myPatchHeight = myColorPatchSize.height();
+    QStyleOptionFrame myFrameStyleOption;
+    initStyleOption(&myFrameStyleOption);
+    const QPoint temp = position - offset(myFrameStyleOption);
+
+    if ((temp.x() < 0) || (temp.y() < 0)) {
+        return invalid; // Click position too much leftwards or upwards.
+    }
+
+    const auto columnWidth = myPatchWidth + horizontalPatchSpacing();
+    const int xWithinPatch = temp.x() % columnWidth;
+    if (xWithinPatch >= myPatchWidth) {
+        return invalid; // Click position horizontally between two patch columns
+    }
+
+    const auto rowHeight = myPatchHeight + verticalPatchSpacing();
+    const int yWithinPatch = temp.y() % rowHeight;
+    if (yWithinPatch >= myPatchHeight) {
+        return invalid; // Click position vertically between two patch rows
+    }
+
+    const int rowIndex = temp.y() / rowHeight;
+    if (!isInRange<qsizetype>(0, rowIndex, m_swatchGrid.jCount() - 1)) {
+        // The index is out of range. This might happen when the user
+        // clicks very near to the border, where is no other patch
+        // anymore, but which is still part of the widget.
+        return invalid;
+    }
+
+    const int visualColumnIndex = temp.x() / columnWidth;
+    QListSizeType columnIndex;
+    if (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) {
+        columnIndex = visualColumnIndex;
+    } else {
+        columnIndex = m_swatchGrid.iCount() - 1 - visualColumnIndex;
+    }
+    if (!isInRange<qsizetype>(0, columnIndex, m_swatchGrid.iCount() - 1)) {
+        // The index is out of range. This might happen when the user
+        // clicks very near to the border, where is no other patch
+        // anymore, but which is still part of the widget.
+        return invalid;
+    }
+
+    return std::pair<QListSizeType, QListSizeType>(columnIndex, rowIndex);
+}
+
 /** @brief React on a mouse press event.
  *
  * Reimplemented from base class.
@@ -514,55 +593,58 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     //   does not allow moving the window with a left-click within the
     //   field. We should be consistent with this behaviour.
 
-    const QSize myColorPatchSize = d_pointer->patchSizeOuter();
-    const int myPatchWidth = myColorPatchSize.width();
-    const int myPatchHeight = myColorPatchSize.height();
-    QStyleOptionFrame myFrameStyleOption;
-    d_pointer->initStyleOption(&myFrameStyleOption);
-    const QPoint temp = event->pos() - d_pointer->offset(myFrameStyleOption);
-
-    if ((temp.x() < 0) || (temp.y() < 0)) {
-        return; // Click position too much leftwards or upwards.
-    }
-
-    const auto columnWidth = myPatchWidth + d_pointer->horizontalPatchSpacing();
-    const int xWithinPatch = temp.x() % columnWidth;
-    if (xWithinPatch >= myPatchWidth) {
-        return; // Click position horizontally between two patch columns
-    }
-
-    const auto rowHeight = myPatchHeight + d_pointer->verticalPatchSpacing();
-    const int yWithinPatch = temp.y() % rowHeight;
-    if (yWithinPatch >= myPatchHeight) {
-        return; // Click position vertically between two patch rows
-    }
-
-    const int rowIndex = temp.y() / rowHeight;
-    if (!isInRange<qsizetype>(0, rowIndex, d_pointer->m_swatchGrid.jCount() - 1)) {
-        // The index is out of range. This might happen when the user
-        // clicks very near to the border, where is no other patch
-        // anymore, but which is still part of the widget.
-        return;
-    }
-
-    const int visualColumnIndex = temp.x() / columnWidth;
-    QListSizeType columnIndex;
-    if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-        columnIndex = visualColumnIndex;
-    } else {
-        columnIndex = //
-            d_pointer->m_swatchGrid.iCount() - 1 - visualColumnIndex;
-    }
-    if (!isInRange<qsizetype>(0, columnIndex, d_pointer->m_swatchGrid.iCount() - 1)) {
-        // The index is out of range. This might happen when the user
-        // clicks very near to the border, where is no other patch
-        // anymore, but which is still part of the widget.
+    const auto logicalColumnRow = d_pointer->logicalColumnRowFromPosition(event->pos());
+    const auto logicalColumn = logicalColumnRow.first;
+    const auto logicalRow = logicalColumnRow.second;
+    if ((logicalColumn < 0) || (logicalRow < 0)) {
         return;
     }
 
     // If we reached here, the click must have been within a patch
     // and we have valid indexes.
-    d_pointer->selectSwatch(columnIndex, rowIndex);
+
+    const bool swatchIsEmpty = //
+        !d_pointer->m_swatchGrid.value(logicalColumn, logicalRow).isValid();
+
+    if (event->button() == Qt::MouseButton::RightButton) {
+        if (!swatchIsEmpty) {
+            QMenu *menu = new QMenu(this);
+            // Ensure proper cleanup when menu is closed
+            menu->setAttribute(Qt::WA_DeleteOnClose);
+            /*: action:inmenu Appears in the context menu of swatches within
+            the swatch book and provides the option to remove a swatch from the
+            swatch book. */
+            QAction *deleteAction = menu->addAction(tr("Delete"));
+            connect(deleteAction, //
+                    &QAction::triggered, //
+                    this, //
+                    [this, logicalColumn, logicalRow]() {
+                        d_pointer->m_swatchGrid.setValue(logicalColumn, //
+                                                         logicalRow, //
+                                                         QColor());
+                        // If the deleted swatch was the currently selected
+                        // swatch, the selection mark needs an update:
+                        d_pointer->selectSwatchFromCurrentColor();
+                        Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
+                    });
+            menu->popup(mapToGlobal(event->pos())); // Display asynchronously
+            return;
+        }
+        return;
+    }
+
+    if (event->button() == Qt::MouseButton::LeftButton) {
+        if (swatchIsEmpty) {
+            d_pointer->m_swatchGrid.setValue(logicalColumn, //
+                                             logicalRow, //
+                                             d_pointer->m_currentColor);
+            d_pointer->selectSwatch(logicalColumn, logicalRow);
+            Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
+        } else {
+            d_pointer->selectSwatch(logicalColumn, logicalRow);
+        }
+        return;
+    }
 }
 
 /** @brief The size of the color patches.
@@ -594,7 +676,7 @@ QSize SwatchBookPrivate::patchSizeOuter() const
 
 /** @brief Size of the inner space of a color patch.
  *
- * This is typically smaller than @ref patchSizeOuter.
+ * This is typically smaller than @ref patchSizeOuter().
  *
  * @returns Size of the inner space of a color patch, measured in
  * device-independent pixel. */
@@ -623,125 +705,62 @@ int SwatchBookPrivate::cornerRadius() const
     return qMax(defaultFrameWidth, 0);
 }
 
-/** @brief Paint the widget.
+/**
+ * @brief Draws some mark somewhere on a paint surface.
  *
- * Reimplemented from base class.
+ * Meant for @ref SwatchBook::paintEvent()
  *
- * @param event the paint event */
-void SwatchBook::paintEvent(QPaintEvent *event)
+ * @param offset Offset from the origin of the coordinate system
+ * @param widgetPainter Pointer to a painter that will paint on the surface.
+ *        The state of the painter will be saved before modifying it, and
+ *        restored before this function returns.
+ * @param color Color used to draw the mark
+ * @param markSymbol Which mark to draw.
+ * @param row in @ref m_swatchGrid
+ * @param column in @ref m_swatchGrid
+ */
+void SwatchBookPrivate::drawMark(const QPoint offset,
+                                 QPainter *widgetPainter,
+                                 const QColor color,
+                                 const SwatchBookPrivate::Mark markSymbol,
+                                 const QListSizeType row,
+                                 const QListSizeType column) const
 {
-    Q_UNUSED(event)
-
-    // Initialization
-    QPainter widgetPainter(this);
-    widgetPainter.setRenderHint(QPainter::Antialiasing);
-    QStyleOptionFrame frameStyleOption;
-    d_pointer->initStyleOption(&frameStyleOption);
-    const int horizontalSpacing = d_pointer->horizontalPatchSpacing();
-    const int verticalSpacing = d_pointer->verticalPatchSpacing();
-    const QSize patchSizeOuter = d_pointer->patchSizeOuter();
-    const int patchWidthOuter = patchSizeOuter.width();
-    const int patchHeightOuter = patchSizeOuter.height();
-
-    // Draw the background
-    {
-        // We draw the frame slightly shrunk on windowsvista style. Otherwise,
-        // when the windowsvista style is used on 125% scale factor and with
-        // a multi-monitor setup, the frame would sometimes not render on some
-        // of the borders on some of the screens.
-        const bool vistaStyle = QString::compare( //
-                                    QApplication::style()->objectName(),
-                                    QStringLiteral("windowsvista"),
-                                    Qt::CaseInsensitive)
-            == 0;
-        const int shrink = vistaStyle ? 1 : 0;
-        const QMargins margins(shrink, shrink, shrink, shrink);
-        auto shrunkFrameStyleOption = frameStyleOption;
-        shrunkFrameStyleOption.rect = frameStyleOption.rect - margins;
-        // NOTE On ukui style, drawing this primitive results in strange
-        // rendering on mouse hover. Actual behaviour: The whole panel
-        // background is drawn blue. Expected behaviour: Only the frame is
-        // drawn blue (as ukui actually does when rendering a QLineEdit).
-        // Playing around with PE_FrameLineEdit instead of or additional to
-        // PE_PanelLineEdit did not give better results either.
-        // As ukui has many, many graphical glitches and bugs (up to
-        // crashed unfixed for years), we assume that this is a problem of
-        // ukui, and not of our code. Furthermore, while the behavior is
-        // unexpected, the rendering doesn’t look completely terrible; we
-        // can live with that.
-        style()->drawPrimitive(QStyle::PE_PanelLineEdit, //
-                               &shrunkFrameStyleOption,
-                               &widgetPainter,
-                               this);
-    }
-
-    // Draw the color patches
-    const QPoint offset = d_pointer->offset(frameStyleOption);
-    const QListSizeType columnCount = d_pointer->m_swatchGrid.iCount();
-    const int myCornerRadius = d_pointer->cornerRadius();
-    QListSizeType visualColumn;
-    for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
-        for (int row = 0; //
-             row < d_pointer->m_swatchGrid.jCount(); //
-             ++row //
-        ) {
-            const auto swatchColor = //
-                d_pointer->m_swatchGrid.value(columnIndex, row);
-            if (swatchColor.isValid()) {
-                widgetPainter.setBrush(swatchColor);
-                widgetPainter.setPen(Qt::NoPen);
-                if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                    visualColumn = columnIndex;
-                } else {
-                    visualColumn = columnCount - 1 - columnIndex;
-                }
-                widgetPainter.drawRoundedRect( //
-                    offset.x() //
-                        + (static_cast<int>(visualColumn) //
-                           * (patchWidthOuter + horizontalSpacing)),
-                    offset.y() //
-                        + row * (patchHeightOuter + verticalSpacing),
-                    patchWidthOuter,
-                    patchHeightOuter,
-                    myCornerRadius,
-                    myCornerRadius);
-            }
-        }
-    }
-
-    // If there is no selection mark to draw, nothing more to do: Return!
-    if (d_pointer->m_selectedColumn < 0 || d_pointer->m_selectedRow < 0) {
-        return;
-    }
+    widgetPainter->save(); // We'll do a restore() at the end of this function.
 
     // Draw the selection mark (if any)
     const QListSizeType visualSelectedColumnIndex = //
-        (layoutDirection() == Qt::LayoutDirection::LeftToRight) //
-        ? d_pointer->m_selectedColumn //
-        : d_pointer->m_swatchGrid.iCount() - 1 - d_pointer->m_selectedColumn;
-    const auto colorCielchD50 = //
-        d_pointer->m_rgbColorSpace->toCielchD50( //
-            d_pointer //
-                ->m_swatchGrid //
-                .value(d_pointer->m_selectedColumn, d_pointer->m_selectedRow) //
-                .rgba64() //
-        );
-    const QColor selectionMarkColor = //
-        handleColorFromBackgroundLightness(colorCielchD50.first);
+        (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) //
+        ? column //
+        : m_swatchGrid.iCount() - 1 - column;
+    const int patchWidthOuter = patchSizeOuter().width();
+    const int patchHeightOuter = patchSizeOuter().height();
+
     const QPointF selectedPatchOffset = QPointF( //
         offset.x() //
             + (static_cast<int>(visualSelectedColumnIndex) //
-               * (patchWidthOuter + horizontalSpacing)), //
+               * (patchWidthOuter + horizontalPatchSpacing())), //
         offset.y() //
-            + (static_cast<int>(d_pointer->m_selectedRow) //
-               * (patchHeightOuter + verticalSpacing)));
-    const QSize patchSizeInner = d_pointer->patchSizeInner();
-    const int patchWidthInner = patchSizeInner.width();
-    const int patchHeightInner = patchSizeInner.height();
-    if (d_pointer->m_selectionMark.isEmpty()) {
+            + (static_cast<int>(row) //
+               * (patchHeightOuter + verticalPatchSpacing())));
+    const int patchWidthInner = patchSizeInner().width();
+    const int patchHeightInner = patchSizeInner().height();
+
+    QString myMark;
+    switch (markSymbol) {
+    case Mark::Selection:
+        myMark = m_selectionMark;
+        break;
+    case Mark::Add:
+        myMark = m_addMark;
+        break;
+    default:
+        break;
+    }
+    if (myMark.isEmpty()) {
         // If no selection mark is available for the current translation in
         // the current font, we will draw a hard-coded fallback mark.
-        const QSize sizeDifference = patchSizeOuter - patchSizeInner;
+        const QSize sizeDifference = patchSizeOuter() - patchSizeInner();
         // Offset of the selection mark to the border of the patch:
         QPointF selectionMarkOffset = QPointF( //
             sizeDifference.width() / 2.0,
@@ -759,25 +778,48 @@ void SwatchBook::paintEvent(QPaintEvent *event)
             patchWidthInner);
         qreal penWidth = effectiveSquareSize * 0.08;
         QPen pen;
-        pen.setColor(selectionMarkColor);
+        pen.setColor(color);
         pen.setCapStyle(Qt::PenCapStyle::RoundCap);
         pen.setWidthF(penWidth);
-        widgetPainter.setPen(pen);
-        QPointF point1 = QPointF(penWidth, //
-                                 0.7 * effectiveSquareSize);
-        point1 += selectedPatchOffset + selectionMarkOffset;
-        QPointF point2(0.35 * effectiveSquareSize, //
-                       1 * effectiveSquareSize - penWidth);
-        point2 += selectedPatchOffset + selectionMarkOffset;
-        QPointF point3(1 * effectiveSquareSize - penWidth, //
-                       penWidth);
-        point3 += selectedPatchOffset + selectionMarkOffset;
-        widgetPainter.drawLine(QLineF(point1, point2));
-        widgetPainter.drawLine(QLineF(point2, point3));
+        widgetPainter->setPen(pen);
+
+        switch (markSymbol) {
+        case Mark::Selection: {
+            QPointF point1 = QPointF(penWidth, //
+                                     0.7 * effectiveSquareSize);
+            point1 += selectedPatchOffset + selectionMarkOffset;
+            QPointF point2(0.35 * effectiveSquareSize, //
+                           1 * effectiveSquareSize - penWidth);
+            point2 += selectedPatchOffset + selectionMarkOffset;
+            QPointF point3(1 * effectiveSquareSize - penWidth, //
+                           penWidth);
+            point3 += selectedPatchOffset + selectionMarkOffset;
+            widgetPainter->drawLine(QLineF(point1, point2));
+            widgetPainter->drawLine(QLineF(point2, point3));
+        } break;
+        case Mark::Add: {
+            QPointF point1 = QPointF(penWidth, //
+                                     0.5 * effectiveSquareSize);
+            point1 += selectedPatchOffset + selectionMarkOffset;
+            QPointF point2 = QPointF(1 * effectiveSquareSize - penWidth, //
+                                     0.5 * effectiveSquareSize);
+            point2 += selectedPatchOffset + selectionMarkOffset;
+            QPointF point3(0.5 * effectiveSquareSize, //
+                           penWidth);
+            point3 += selectedPatchOffset + selectionMarkOffset;
+            QPointF point4(0.5 * effectiveSquareSize, //
+                           1 * effectiveSquareSize - penWidth);
+            point4 += selectedPatchOffset + selectionMarkOffset;
+            widgetPainter->drawLine(QLineF(point1, point2));
+            widgetPainter->drawLine(QLineF(point3, point4));
+        } break;
+        default:
+            break;
+        }
     } else {
         QPainterPath textPath;
         // Render the selection mark string in the path
-        textPath.addText(0, 0, font(), d_pointer->m_selectionMark);
+        textPath.addText(0, 0, q_pointer->font(), myMark);
         // Align the path top-left to the path’s virtual coordinate system
         textPath.translate(textPath.boundingRect().x() * (-1), //
                            textPath.boundingRect().y() * (-1));
@@ -805,17 +847,137 @@ void SwatchBook::paintEvent(QPaintEvent *event)
             QSizeF scaledSelectionMarkSize = //
                 boundingRectangleSize * scaleFactor;
             const QSizeF temp = //
-                (patchSizeInner - scaledSelectionMarkSize) / 2;
+                (patchSizeInner() - scaledSelectionMarkSize) / 2;
             textTransform.translate(temp.width(), temp.height());
             textTransform.scale(scaleFactor, scaleFactor);
 
             // Draw
-            widgetPainter.setTransform(textTransform);
-            widgetPainter.setPen(Qt::NoPen);
-            widgetPainter.setBrush(selectionMarkColor);
-            widgetPainter.drawPath(textPath);
+            widgetPainter->setTransform(textTransform);
+            widgetPainter->setPen(Qt::NoPen);
+            widgetPainter->setBrush(color);
+            widgetPainter->drawPath(textPath);
         }
     }
+
+    widgetPainter->restore(); // restore from initial save() function.
+}
+
+/** @brief Paint the widget.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event the paint event */
+void SwatchBook::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event)
+
+    // Initialization
+    QPainter widgetPainter(this);
+    widgetPainter.setRenderHint(QPainter::Antialiasing);
+    QStyleOptionFrame frameStyleOption;
+    d_pointer->initStyleOption(&frameStyleOption);
+    const int patchWidthOuter = d_pointer->patchSizeOuter().width();
+    const int patchHeightOuter = d_pointer->patchSizeOuter().height();
+
+    // Draw the background
+    {
+        // We draw the frame slightly shrunk on windowsvista style. Otherwise,
+        // when the windowsvista style is used on 125% scale factor and with
+        // a multi-monitor setup, the frame would sometimes not render on some
+        // of the borders on some of the screens.
+        const bool vistaStyle = QString::compare( //
+                                    QApplication::style()->objectName(),
+                                    QStringLiteral("windowsvista"),
+                                    Qt::CaseInsensitive)
+            == 0;
+        const int shrink = vistaStyle ? 1 : 0;
+        const QMargins margins(shrink, shrink, shrink, shrink);
+        auto shrunkFrameStyleOption = frameStyleOption;
+        shrunkFrameStyleOption.rect = frameStyleOption.rect - margins;
+        // NOTE On ukui style, drawing this primitive results in strange
+        // rendering on mouse hover. Actual behaviour: The whole panel
+        // background is drawn blue. Expected behaviour: Only the frame is
+        // drawn blue (as ukui actually does when rendering a QLineEdit).
+        // Playing around with PE_FrameLineEdit instead of or additional to
+        // PE_PanelLineEdit did not give better results either.
+        // As ukui has many, many graphical glitches and bugs (up to crashs not
+        // having been fixed for years), we assume that this is a problem of
+        // ukui, and not of our code. Furthermore, while the behavior is
+        // unexpected, the rendering doesn’t look completely terrible; we
+        // can live with that.
+        style()->drawPrimitive(QStyle::PE_PanelLineEdit, //
+                               &shrunkFrameStyleOption,
+                               &widgetPainter,
+                               this);
+    }
+
+    // Draw the color patches
+    const QPoint offset = d_pointer->offset(frameStyleOption);
+    const QListSizeType columnCount = d_pointer->m_swatchGrid.iCount();
+    const int myCornerRadius = d_pointer->cornerRadius();
+    QListSizeType visualColumn;
+    const auto currentScheme = d_pointer->m_colorSchemeCache;
+    const QColor addMarkColor = (currentScheme == ColorSchemeType::Dark) //
+        ? Qt::white
+        : Qt::black;
+    for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+        for (int row = 0; //
+             row < d_pointer->m_swatchGrid.jCount(); //
+             ++row //
+        ) {
+            const auto swatchColor = //
+                d_pointer->m_swatchGrid.value(columnIndex, row);
+            if (swatchColor.isValid()) {
+                widgetPainter.setBrush(swatchColor);
+                widgetPainter.setPen(Qt::NoPen);
+                if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
+                    visualColumn = columnIndex;
+                } else {
+                    visualColumn = columnCount - 1 - columnIndex;
+                }
+                widgetPainter.drawRoundedRect( //
+                    offset.x() //
+                        + (static_cast<int>(visualColumn) //
+                           * (patchWidthOuter + d_pointer->horizontalPatchSpacing())),
+                    offset.y() //
+                        + row * (patchHeightOuter + d_pointer->verticalPatchSpacing()),
+                    patchWidthOuter,
+                    patchHeightOuter,
+                    myCornerRadius,
+                    myCornerRadius);
+            } else {
+                if (d_pointer->m_editable) {
+                    d_pointer->drawMark(offset, //
+                                        &widgetPainter, //
+                                        addMarkColor, //
+                                        SwatchBookPrivate::Mark::Add, //
+                                        row, //
+                                        columnIndex);
+                }
+            }
+        }
+    }
+
+    // If there is no selection mark to draw, nothing more to do: Return!
+    if (d_pointer->m_selectedColumn < 0 || d_pointer->m_selectedRow < 0) {
+        return;
+    }
+
+    // Draw the selection mark (if any)
+    const auto selectedColor = d_pointer->m_swatchGrid.value( //
+        d_pointer->m_selectedColumn,
+        d_pointer->m_selectedRow);
+    // TODO Use Oklab instead of CielchD50
+    const auto colorCielchD50 = d_pointer->m_rgbColorSpace->toCielchD50( //
+        selectedColor.rgba64());
+    const QColor selectionMarkColor = //
+        handleColorFromBackgroundLightness(colorCielchD50.first);
+    d_pointer->drawMark(offset, //
+                        &widgetPainter, //
+                        selectionMarkColor, //
+                        SwatchBookPrivate::Mark::Selection, //
+                        d_pointer->m_selectedRow, //
+                        d_pointer->m_selectedColumn);
 }
 
 /** @brief React on key press events.
@@ -913,7 +1075,9 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
  * @param event The event. */
 void SwatchBook::changeEvent(QEvent *event)
 {
-    if (event->type() == QEvent::LanguageChange) {
+    const auto type = event->type();
+
+    if (type == QEvent::LanguageChange) {
         // From QCoreApplication documentation:
         //     “Installing or removing a QTranslator, or changing an installed
         //      QTranslator generates a LanguageChange event for the
@@ -923,7 +1087,20 @@ void SwatchBook::changeEvent(QEvent *event)
         d_pointer->retranslateUi();
     }
 
+    if ((type == QEvent::PaletteChange) || (type == QEvent::StyleChange)) {
+        d_pointer->updateColorSchemeCache();
+        update();
+    }
+
     QWidget::changeEvent(event);
+}
+
+/**
+ * @brief Updates @ref m_colorSchemeCache
+ */
+void SwatchBookPrivate::updateColorSchemeCache()
+{
+    m_colorSchemeCache = guessColorSchemeTypeFromWidget(q_pointer);
 }
 
 /** @brief Size necessary to render the color patches, including a margin.
@@ -947,6 +1124,21 @@ QSize SwatchBookPrivate::colorPatchesSizeWithMargin() const
         + (rowCount - 1) * verticalPatchSpacing() //
         + q_pointer->style()->pixelMetric(QStyle::PM_LayoutBottomMargin);
     return QSize(width, height);
+}
+
+bool SwatchBook::isEditable() const
+{
+    return d_pointer->m_editable;
+}
+
+/** @brief Setter for the @ref editable property.
+ *
+ * @param newEditable the new value */
+void SwatchBook::setEditable(const bool newEditable)
+{
+    d_pointer->m_editable = newEditable;
+    update(); // Schedule a paint event to make the changes visible.
+    Q_EMIT editableChanged(newEditable);
 }
 
 } // namespace PerceptualColor

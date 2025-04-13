@@ -15,6 +15,7 @@
 #include <qcolor.h>
 #include <qcolordialog.h>
 #include <qglobal.h>
+#include <qlayout.h>
 #include <qlist.h>
 #include <qnamespace.h>
 #include <qobject.h>
@@ -366,14 +367,36 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_rgbColorSpace, //
-                                  wcsBasicColors(m_rgbColorSpace), //
-                                  {});
-            testWidget.setStyle(style);
+
+            // Encapsulating our widget within a parent widget that uses a
+            // layout. This ensures proper handling of resize events, as some
+            // styles struggle with such events. While this issue might cause
+            // unit test failures, it does not pose a problem in real-world
+            // usage scenarios.
+            QWidget *mainWidget = new QWidget;
+            QVBoxLayout *mainLayout = new QVBoxLayout;
+            SwatchBook *testWidget = new SwatchBook( //
+                m_rgbColorSpace, //
+                wcsBasicColors(m_rgbColorSpace), //
+                {},
+                mainWidget);
+            QHBoxLayout *topLayout = new QHBoxLayout;
+            topLayout->addWidget(testWidget);
+            topLayout->addStretch();
+            mainLayout->addLayout(topLayout);
+            mainLayout->addStretch();
+            mainWidget->setLayout(mainLayout);
+            mainWidget->setStyle(style);
+            mainWidget->adjustSize();
+            mainWidget->resize(400, 300);
+            mainWidget->show();
+
             QStyleOptionFrame temp;
-            testWidget.d_pointer->initStyleOption(&temp);
-            QVERIFY(testWidget.d_pointer->offset(temp).x() >= 0);
-            QVERIFY(testWidget.d_pointer->offset(temp).y() >= 0);
+            testWidget->d_pointer->initStyleOption(&temp);
+            QVERIFY(testWidget->d_pointer->offset(temp).x() >= 0);
+            QVERIFY(testWidget->d_pointer->offset(temp).y() >= 0);
+
+            delete mainWidget;
         }
         delete style;
     }
@@ -502,6 +525,16 @@ private Q_SLOTS:
             QVERIFY(testWidget.d_pointer->cornerRadius() >= 0);
         }
         delete style;
+    }
+
+    void testSwatchGrid()
+    {
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              wcsBasicColors(m_rgbColorSpace), //
+                              {});
+        QCOMPARE(testWidget.swatchGrid(), wcsBasicColors(m_rgbColorSpace));
+        testWidget.setSwatchGrid(Swatches());
+        QCOMPARE(testWidget.swatchGrid(), Swatches());
     }
 };
 

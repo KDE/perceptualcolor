@@ -47,7 +47,7 @@ void drawQWidgetStyleSheetAware(QWidget *widget);
 
 QString fromMnemonicToRichText(const QString &mnemonicText);
 
-std::optional<ColorSchemeType> guessColorSchemeTypeFromWidget(QWidget *widget);
+ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget);
 
 QMap<cmsUInt32Number, QString> lcmsIntentList();
 
@@ -193,6 +193,22 @@ public:
         ) {
             m_data[i + m_iCount * j] = value;
         }
+    }
+
+    /**
+     * @brief Converts the array to a QList.
+     *
+     * @return Converts the array to a QList. */
+    // Disable cppcheck's returnByReference warning.
+    // Note: cppcheck is giving bad advice here. Returning by (const)
+    // reference can lead to unexpected behavior: the underlying data might
+    // be modified later by the original owner, making it a risky practice.
+    // Anyway, we return a QList. Since QList uses implicit sharing,
+    // creating a copy from it is efficient and inexpensive.
+    // cppcheck-suppress returnByReference
+    QList<T> toQList() const
+    {
+        return m_data;
     }
 
     /** @brief Get value at a given index.

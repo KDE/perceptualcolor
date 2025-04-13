@@ -714,12 +714,17 @@ void ColorDialogPrivate::retranslateUi()
     /*: @item:inlistbox
     The swatch grid showing the basic colors like yellow,
     orange, red… Same text as in QColorDialog */
-    m_swatchBookSelector->setItemText(0, tr("Basic colors")); // TODO xxx Short cut? /pain or /richtext or how is the correct context mareker?
+    m_swatchBookSelector->setItemText(0, tr("Basic colors")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
 
     /*: @item:inlistbox
     The swatch grid showing the history of
     previously selected colors. */
-    m_swatchBookSelector->setItemText(1, tr("History")); // TODO xxx Short cut? /pain or /richtext or how is the correct context mareker?
+    m_swatchBookSelector->setItemText(1, tr("History")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
+
+    /*: @item:inlistbox
+    The swatch grid showing the history of
+    previously selected colors. */
+    m_swatchBookSelector->setItemText(2, tr("Custom Colors")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
 
     // NOTE No need to call
     //
@@ -741,13 +746,7 @@ void ColorDialogPrivate::retranslateUi()
  * widget style. */
 void ColorDialogPrivate::reloadIcons()
 {
-    QScopedPointer<QLabel> label{new QLabel(q_pointer)};
-    label->setText(QStringLiteral("abc"));
-    label->resize(label->sizeHint()); // Smaller size means faster guess.
-    ColorSchemeType newType = guessColorSchemeTypeFromWidget(label.data()) //
-                                  .value_or(ColorSchemeType::Light);
-
-    m_currentIconThemeType = newType;
+    m_currentIconThemeType = guessColorSchemeTypeFromWidget(q_pointer);
 
     static const QStringList swatchBookIcons //
         {QStringLiteral("paint-swatch"),
@@ -761,7 +760,7 @@ void ColorDialogPrivate::reloadIcons()
         m_tabWidget->setTabIcon(swatchBookIndex, //
                                 qIconFromTheme(swatchBookIcons, //
                                                QStringLiteral("color-swatch"),
-                                               newType));
+                                               m_currentIconThemeType));
     }
 
     static const QStringList hueFirstIcons //
@@ -774,7 +773,7 @@ void ColorDialogPrivate::reloadIcons()
         m_tabWidget->setTabIcon(hueFirstIndex, //
                                 qIconFromTheme(hueFirstIcons, //
                                                QStringLiteral("steering-wheel"),
-                                               newType));
+                                               m_currentIconThemeType));
     }
 
     static const QStringList lightnessFirstIcons //
@@ -787,7 +786,7 @@ void ColorDialogPrivate::reloadIcons()
         m_tabWidget->setTabIcon(lightnessFirstIndex, //
                                 qIconFromTheme(lightnessFirstIcons, //
                                                QStringLiteral("brightness-2"),
-                                               newType));
+                                               m_currentIconThemeType));
     }
 
     static const QStringList numericIcons //
@@ -800,7 +799,7 @@ void ColorDialogPrivate::reloadIcons()
         m_tabWidget->setTabIcon(numericIndex, //
                                 qIconFromTheme(numericIcons, //
                                                QStringLiteral("123"),
-                                               newType));
+                                               m_currentIconThemeType));
     }
 
     // Gamut button for some spin boxes
@@ -811,7 +810,7 @@ void ColorDialogPrivate::reloadIcons()
         };
     const QIcon gamutIcon = qIconFromTheme(gamutIconNames, //
                                            QStringLiteral("eye-exclamation"),
-                                           newType);
+                                           m_currentIconThemeType);
     m_cielchD50SpinBoxGamutAction->setIcon(gamutIcon);
     m_oklchSpinBoxGamutAction->setIcon(gamutIcon);
 
@@ -825,7 +824,7 @@ void ColorDialogPrivate::reloadIcons()
         m_screenColorPickerButton->setIcon( //
             qIconFromTheme(candidates, //
                            QStringLiteral("color-picker"),
-                           newType));
+                           m_currentIconThemeType));
     }
 }
 
@@ -867,7 +866,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     swatchBookBasicColorsLayout->setRowStretch(1, 1);
     swatchBookBasicColorsLayout->setColumnStretch(1, 1);
     m_swatchBookHistory = new SwatchBook(m_rgbColorSpace, //
-                                         m_wcsBasicColors, //
+                                         Swatches(), //
                                          Qt::Orientation::Vertical);
     auto swatchBookHistoryLayout = new QGridLayout();
     auto swatchBookHistoryLayoutWidget = new QWidget();
@@ -878,14 +877,36 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     swatchBookHistoryLayout->setRowStretch(1, 1);
     swatchBookHistoryLayout->setColumnStretch(1, 1);
     loadHistoryFromSettingsToSwatchBook();
+    m_swatchBookCustomColors = new SwatchBook( //
+        m_rgbColorSpace, //
+        Swatches(), //
+        Qt::Orientation::Horizontal | Qt::Orientation::Vertical);
+    m_swatchBookCustomColors->setEditable(true);
+    auto swatchBookCustomColorsLayout = new QGridLayout();
+    auto swatchBookCustomColorsLayoutWidget = new QWidget();
+    swatchBookCustomColorsLayoutWidget->setLayout(swatchBookCustomColorsLayout);
+    swatchBookCustomColorsLayoutWidget->setContentsMargins(0, 0, 0, 0);
+    swatchBookCustomColorsLayout->setContentsMargins(0, 0, 0, 0);
+    swatchBookCustomColorsLayout->addWidget(m_swatchBookCustomColors);
+    swatchBookCustomColorsLayout->setRowStretch(1, 1);
+    swatchBookCustomColorsLayout->setColumnStretch(1, 1);
+    loadCustomColorsFromSettingsToSwatchBook();
+    connect(m_swatchBookCustomColors, // sender
+            &SwatchBook::swatchGridChanged, // signal
+            this, // receiver
+            [this](const Swatches &newSwatches) {
+                m_settings.customColors.setValue(newSwatches.toQList());
+            });
     m_swatchBookStack = new QStackedLayout();
     m_swatchBookStack->addWidget(swatchBookBasicColorsLayoutWidget);
     m_swatchBookStack->addWidget(swatchBookHistoryLayoutWidget);
+    m_swatchBookStack->addWidget(swatchBookCustomColorsLayoutWidget);
     QHBoxLayout *swatchBookInnerLayout = new QHBoxLayout();
     swatchBookInnerLayout->addLayout(m_swatchBookStack);
     swatchBookInnerLayout->addStretch();
     QVBoxLayout *swatchBookOuterLayout = new QVBoxLayout();
     m_swatchBookSelector = new QComboBox();
+    m_swatchBookSelector->addItem(QString());
     m_swatchBookSelector->addItem(QString());
     m_swatchBookSelector->addItem(QString());
     connect(m_swatchBookSelector, //
@@ -903,6 +924,11 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
                     m_settings.swatchBookPage.setValue( //
                         PerceptualSettings::SwatchBookPage::History);
                     break;
+                case 2:
+                    m_swatchBookStack->setCurrentIndex(2);
+                    m_settings.swatchBookPage.setValue( //
+                        PerceptualSettings::SwatchBookPage::CustomColors);
+                    break;
                 };
             });
     swatchBookOuterLayout->addWidget(m_swatchBookSelector);
@@ -914,6 +940,10 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &Setting<PerceptualSettings::ColorList>::valueChanged,
             this,
             &ColorDialogPrivate::loadHistoryFromSettingsToSwatchBook);
+    connect(&m_settings.customColors, //
+            &Setting<PerceptualSettings::ColorList>::valueChanged,
+            this,
+            &ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook);
     m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
     m_hueFirstWrapperWidget = new QWidget;
     QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
@@ -1138,6 +1168,11 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &SwatchBook::currentColorChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readSwatchBookHistoryValue // slot
+    );
+    connect(m_swatchBookCustomColors, // sender
+            &SwatchBook::currentColorChanged, // signal
+            this, // receiver
+            &ColorDialogPrivate::readSwatchBookCustomColorsValue // slot
     );
     connect(m_rgbSpinBox, // sender
             &MultiSpinBox::sectionValuesChanged, // signal
@@ -1557,6 +1592,11 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
         m_swatchBookHistory->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
     }
 
+    // Update custom colors swatch book
+    if (m_swatchBookCustomColors != ignoreWidget) {
+        m_swatchBookCustomColors->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
+    }
+
     // Update RGB widget
     if (m_rgbSpinBox != ignoreWidget) {
         m_rgbSpinBox->setSectionValues( //
@@ -1759,6 +1799,25 @@ void ColorDialogPrivate::readSwatchBookHistoryValue()
     }
     const auto myRgbColor = RgbColor::fromRgbQColor(temp);
     setCurrentOpaqueColor(myRgbColor, m_swatchBookHistory);
+}
+
+/**
+ * @brief Reads the color of the custom colors widget, and (if any)
+ * updates the dialog accordingly.
+ */
+void ColorDialogPrivate::readSwatchBookCustomColorsValue()
+{
+    if (m_isColorChangeInProgress) {
+        // Nothing to do!
+        return;
+    }
+    const QColor temp = m_swatchBookCustomColors->currentColor();
+    if (!temp.isValid()) {
+        // No color is currently selected!
+        return;
+    }
+    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
+    setCurrentOpaqueColor(myRgbColor, m_swatchBookCustomColors);
 }
 
 /** @brief Reads the color of the @ref WheelColorPicker in the dialog and
@@ -2381,7 +2440,7 @@ void ColorDialog::done(int result)
         while (history.count() > maxHistoryLenght) {
             history.removeLast();
         }
-        d_pointer->m_settings.history.setValue(history); // TODO xxx Sync with concurrent processes?
+        d_pointer->m_settings.history.setValue(history);
         Q_EMIT colorSelected(d_pointer->m_selectedColor);
     } else {
         d_pointer->m_selectedColor = QColor();
@@ -2541,6 +2600,11 @@ void ColorDialog::changeEvent(QEvent *event)
                                     &eventForSwatchBookHistory);
         }
         {
+            QEvent eventForSwatchBookCustomColors(QEvent::LanguageChange);
+            QApplication::sendEvent(d_pointer->m_swatchBookCustomColors, //
+                                    &eventForSwatchBookCustomColors);
+        }
+        {
             QEvent eventForButtonOk(QEvent::LanguageChange);
             QApplication::sendEvent(d_pointer->m_buttonOK, //
                                     &eventForButtonOk);
@@ -2589,18 +2653,24 @@ void ColorDialog::showEvent(QShowEvent *event)
         d_pointer->saveCurrentTab();
 
         switch (d_pointer->m_settings.swatchBookPage.value()) {
-        case PerceptualSettings::SwatchBookPage::History:
-            d_pointer->m_settings.swatchBookPage.setValue( //
-                PerceptualSettings::SwatchBookPage::History);
-            d_pointer->m_swatchBookSelector->setCurrentIndex(1);
-            d_pointer->m_swatchBookStack->setCurrentIndex(1);
-            break;
         case PerceptualSettings::SwatchBookPage::BasicColors:
         default:
             d_pointer->m_settings.swatchBookPage.setValue( //
                 PerceptualSettings::SwatchBookPage::BasicColors);
             d_pointer->m_swatchBookSelector->setCurrentIndex(0);
             d_pointer->m_swatchBookStack->setCurrentIndex(0);
+            break;
+        case PerceptualSettings::SwatchBookPage::History:
+            d_pointer->m_settings.swatchBookPage.setValue( //
+                PerceptualSettings::SwatchBookPage::History);
+            d_pointer->m_swatchBookSelector->setCurrentIndex(1);
+            d_pointer->m_swatchBookStack->setCurrentIndex(1);
+            break;
+        case PerceptualSettings::SwatchBookPage::CustomColors:
+            d_pointer->m_settings.swatchBookPage.setValue( //
+                PerceptualSettings::SwatchBookPage::History);
+            d_pointer->m_swatchBookSelector->setCurrentIndex(2);
+            d_pointer->m_swatchBookStack->setCurrentIndex(2);
             break;
         }
 
@@ -2637,10 +2707,20 @@ void ColorDialogPrivate::saveCurrentTab()
  * @ref m_swatchBookHistory. */
 void ColorDialogPrivate::loadHistoryFromSettingsToSwatchBook()
 {
-    Swatches historyArray(historyHSwatchCount, //
-                          historyVSwatchCount, //
-                          m_settings.history.value());
+    const Swatches historyArray(historyHSwatchCount, //
+                                historyVSwatchCount, //
+                                m_settings.history.value());
     m_swatchBookHistory->setSwatchGrid(historyArray);
+}
+
+/** @brief Loads @ref PerceptualSettings::customColors into
+ * @ref m_swatchBookCustomColors. */
+void ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook()
+{
+    const Swatches customColorsArray(customColorsHSwatchCount, //
+                                     customColorsVSwatchCount, //
+                                     m_settings.customColors.value());
+    m_swatchBookCustomColors->setSwatchGrid(customColorsArray);
 }
 
 } // namespace PerceptualColor

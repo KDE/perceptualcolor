@@ -34,7 +34,7 @@ class SwatchBookPrivate;
 
 /** @internal
  *
- * @brief Shows colors swatches.
+ * @brief Shows colors patches.
  *
  * @image html SwatchBook.png "SwatchBook"
  *
@@ -42,14 +42,7 @@ class SwatchBookPrivate;
  *
  * The marker used to mark the currently selected color depends
  * on the current translation; see @ref setTranslation for details.
- *
- * @internal
- *
- * @todo A design question: Should we draw margins around each individual
- * color patch? Maybe rely on @ref ColorPatch somehow?
- *
- * @todo A design question: Should the size of the individual color patches
- * be responsive, adopting the the widget size? */
+ */
 class SwatchBook : public AbstractDiagram
 {
     Q_OBJECT
@@ -60,13 +53,32 @@ class SwatchBook : public AbstractDiagram
      * that are not in the swatch book.
      *
      * If you set this property exactly to an RGB color that is in the
-     * swatch book, this particular swatch will show a selection mark.
+     * swatch book, this particular color patch will show a selection mark.
      * Otherwise, no selection mark will be visible.
      *
      * @sa @ref currentColor() const
      * @sa @ref setCurrentColor()
      * @sa @ref currentColorChanged() */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
+
+    /**
+     * @brief Indicates whether the user can add or remove colors in the swatch
+     * book.
+     *
+     * When editable, the user can, for example, assign the @ref currentColor
+     * to empty color patches by a left mouse click or remove colors from
+     * existing patches by a right mouse click.
+     *
+     * @image html SwatchBookEditable.png "Editable SwatchBook"
+     *
+     * When not editable, the user can still select different colors, but
+     * modifications to the color patches are disabled.
+     *
+     * @sa @ref isEditable() const
+     * @sa @ref setEditable()
+     * @sa @ref editableChanged()
+     */
+    Q_PROPERTY(bool editable READ isEditable WRITE setEditable NOTIFY editableChanged)
 
     /** @brief The swatchGrid that is displayed in the swatch book.
      *
@@ -90,6 +102,9 @@ public:
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     [[nodiscard]] QColor currentColor() const;
+    /** @brief Getter for property @ref editable
+     *  @returns the property @ref editable */
+    [[nodiscard]] bool isEditable() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     /** @brief Getter for property @ref swatchGrid
      *  @returns the property @ref swatchGrid */
@@ -98,6 +113,7 @@ public:
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &newCurrentColor);
+    void setEditable(const bool newEditable);
     void setSwatchGrid(const PerceptualColor::Swatches &newSwatchGrid);
 
 Q_SIGNALS:
@@ -105,6 +121,10 @@ Q_SIGNALS:
      *
      * @param newCurrentColor the new @ref currentColor */
     void currentColorChanged(const QColor &newCurrentColor);
+    /** @brief Notify signal for property @ref editable.
+     *
+     * @param newEditable the new @ref editable */
+    void editableChanged(const bool newEditable);
     /** @brief Notify signal for property @ref swatchGrid.
      *
      * @param newSwatchGrid the new @ref swatchGrid */
