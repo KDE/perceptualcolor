@@ -73,7 +73,7 @@ codecheck_iwyu:
     - Linux
   interruptible: true
   rules:
-    - when: on_success
+    - when: manual
       allow_failure: true
   artifacts:
     expire_in: 20 weeks
