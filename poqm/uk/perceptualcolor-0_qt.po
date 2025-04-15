@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-04-05 14:30+0300\n"
+"PO-Revision-Date: 2025-04-14 09:58+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -345,7 +345,7 @@ msgstr "Журнал"
 #: colordialog.cpp:727
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "Нетипові кольори"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1272
@@ -375,13 +375,13 @@ msgstr "✓"
 #: swatchbook.cpp:116
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:617
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "Вилучити"
 
 #~ msgctxt "PerceptualColor::ColorDialogPrivate|"
 #~ msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"

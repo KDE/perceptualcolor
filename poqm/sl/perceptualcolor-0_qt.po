@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-04-05 08:20+0200\n"
+"PO-Revision-Date: 2025-04-14 06:41+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100>=3 && n"
 "%100<=4 ? 2 : 3);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:106
@@ -343,7 +343,7 @@ msgstr "Zgodovina"
 #: colordialog.cpp:727
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "Barve po meri"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1272
@@ -373,13 +373,13 @@ msgstr "✓"
 #: swatchbook.cpp:116
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:617
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "Zbriši"
 
 #~ msgctxt "PerceptualColor::ColorDialogPrivate|"
 #~ msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"

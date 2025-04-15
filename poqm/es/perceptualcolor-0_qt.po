@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2025-04-05 11:08+0100\n"
+"PO-Revision-Date: 2025-04-15 01:20+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -345,7 +345,7 @@ msgstr "Historial"
 #: colordialog.cpp:727
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "Colores personalizados"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1272
@@ -375,10 +375,10 @@ msgstr "✓"
 #: swatchbook.cpp:116
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:617
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
