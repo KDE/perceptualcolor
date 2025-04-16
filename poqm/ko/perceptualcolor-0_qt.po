@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-04-07 00:11+0200\n"
+"PO-Revision-Date: 2025-04-16 00:09+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -339,7 +339,7 @@ msgstr "과거 기록"
 #: colordialog.cpp:727
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "사용자 정의 색상"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1272
@@ -369,13 +369,13 @@ msgstr "✓"
 #: swatchbook.cpp:116
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:617
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "삭제"
 
 #~ msgctxt "PerceptualColor::ColorDialogPrivate|"
 #~ msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"
