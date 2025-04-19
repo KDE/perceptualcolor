@@ -207,7 +207,7 @@ private Q_SLOTS:
     void testOnExampleImplementationNoCrashProcessInterlacingPassResult()
     {
         AsyncImageProvider<MockupParameters> image;
-        image.processInterlacingPassResult(QImage{});
+        image.processInterlacingPassResult(QImage{}, QImage{});
     }
 
     void testImageParameters()

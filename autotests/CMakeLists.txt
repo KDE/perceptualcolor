@@ -152,6 +152,7 @@ if(BUILD_TESTING)
         testhelper
         testhelperconstants
         testhelperconversion
+        testhelperimage
         testhelpermath
         testhelperposixmath
         testhelperqttypes

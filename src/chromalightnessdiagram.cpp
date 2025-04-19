@@ -784,14 +784,15 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
 std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition(const QPoint originalPixelPosition)
 {
     m_chromaLightnessImage.refreshSync();
-    const auto upToDateImage = m_chromaLightnessImage.getCache();
+    const auto upToDateMask = m_chromaLightnessImage.getMaskCache();
 
-    auto isOpaqueFunction = [&upToDateImage](const QPoint point) -> bool {
-        return (qAlpha(upToDateImage.pixel(point)) != 0);
+    auto isOpaqueFunction = [&upToDateMask](const QPoint point) -> bool {
+        return (upToDateMask.pixelColor(point) == Qt::black);
     };
-    return nearestNeighborSearch(originalPixelPosition, //
-                                 QRect(QPoint(0, 0), upToDateImage.size()), //
-                                 isOpaqueFunction);
+    return nearestNeighborSearch( //
+        originalPixelPosition, //
+        QRect(QPoint(0, 0), upToDateMask.size()), //
+        isOpaqueFunction);
 }
 
 /** @brief Find the nearest in-gamut pixel.

@@ -69,7 +69,10 @@ public:
     explicit AsyncImageRenderThread(const pointerToRenderFunction &renderFunction, QObject *parent = nullptr);
     virtual ~AsyncImageRenderThread() override;
 
-    virtual void deliverInterlacingPass(const QImage &image, const QVariant &parameters, const AsyncImageRenderCallback::InterlacingState state) override;
+    virtual void deliverInterlacingPass(const QImage &image,
+                                        const QImage &mask,
+                                        const QVariant &parameters,
+                                        const AsyncImageRenderCallback::InterlacingState state) override;
     void startRenderingAsync(const QVariant &parameters);
     [[nodiscard]] virtual bool shouldAbort() const override;
     void waitForIdle();
@@ -87,6 +90,17 @@ Q_SIGNALS:
      * will finally emit this signal.
      *
      * @param image The image
+     * @param mask The alpha mask, if provided. Renderers may choose whether
+     * to supply an alpha mask. Alpha masks are 1-bit images where white
+     * represents transparency and black represents opacity, defining the
+     * transparency state <i>before</i> any anti-aliasing is applied. This
+     * differs from the potentially anti-aliased image itself, which may
+     * contain partial transparency, making it difficult to determine the
+     * original transparency before anti-aliasing. Typically, fully transparent
+     * pixels will have an alpha value greater than 50% after anti-aliasing,
+     * but in some cases, they may fall below this threshold. The alpha mask,
+     * however, provides a clear and definitive indication of each pixel’s
+     * validity.
      * @param parameters The parameters of the image
      * @param state The interlacing state of the image. A render function
      * must first return zero or more images with intermediate state. After
@@ -97,7 +111,10 @@ Q_SIGNALS:
      * thread in which this object itself lives. Therefore, use only
      * <tt>Qt::AutoConnection</tt> or <tt>Qt::QueuedConnection</tt>
      * when connecting to this signal. */
-    void interlacingPassCompleted(const QImage &image, const QVariant &parameters, const PerceptualColor::AsyncImageRenderCallback::InterlacingState state);
+    void interlacingPassCompleted(const QImage &image,
+                                  const QImage &mask,
+                                  const QVariant &parameters,
+                                  const PerceptualColor::AsyncImageRenderCallback::InterlacingState state);
 
 protected:
     virtual void run() override;

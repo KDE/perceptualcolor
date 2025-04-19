@@ -7,6 +7,7 @@
 
 #include "asyncimagerendercallback.h"
 #include "helperconversion.h"
+#include "helperimage.h"
 #include "helpermath.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
@@ -81,18 +82,13 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     // Create a new QImage with correct image size.
     QImage myImage(QSize(parameters.imageSizePhysical), //
                    QImage::Format_ARGB32_Premultiplied);
-    // A mask for the gamut.
-    // In-gamut pixel are true, out-of-gamut pixel are false.
-    QBitArray m_mask(parameters.imageSizePhysical.width() //
-                         * parameters.imageSizePhysical.height(),
-                     // Initial boolean value of all bits (true/false):
-                     false);
     // Test if image size is empty.
     if (myImage.size().isEmpty()) {
         // The image must be non-empty (otherwise, our algorithm would
         // crash because of a division by 0).
         callbackObject.deliverInterlacingPass( //
             myImage, //
+            QImage(), //
             QVariant::fromValue(parameters), //
             AsyncImageRenderCallback::InterlacingState::Final);
         return;
@@ -109,7 +105,8 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     const auto imageWidth = parameters.imageSizePhysical.width();
 
     // Paint the gamut.
-    cielchD50.h = normalizedAngle360(parameters.hue);
+    const auto normalizedHue = normalizedAngle360(parameters.hue);
+    cielchD50.h = normalizedHue;
     for (y = 0; y < imageHeight; ++y) {
         if (callbackObject.shouldAbort()) {
             return;
@@ -125,8 +122,6 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             if (qAlpha(rgbColor) != 0) {
                 // The pixel is within the gamut
                 myImage.setPixelColor(x, y, rgbColor);
-                m_mask.setBit(maskIndex(x, y, parameters.imageSizePhysical), //
-                              true);
                 // If color is out-of-gamut: We have chroma on the x axis and
                 // lightness on the y axis. We are drawing the pixmap line per
                 // line, so we go for given lightness from low chroma to high
@@ -140,8 +135,51 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             }
         }
     }
+
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    // A 1-bit mask for the gamut.
+    // transparent = white
+    // opaque = black
+    const auto myMask = myImage.createAlphaMask();
+
     callbackObject.deliverInterlacingPass( //
         myImage, //
+        myMask, //
+        QVariant::fromValue(parameters), //
+        AsyncImageRenderCallback::InterlacingState::Intermediate);
+
+    // cppcheck-suppress knownConditionTrueFalse // false positive
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    QList<QPoint> antiAliasCoordinates = findBoundary(myImage);
+
+    // cppcheck-suppress knownConditionTrueFalse // false positive
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    const auto myColorFunction = [normalizedHue, imageHeight, parameters](const double colorFunctionX, const double colorFunctionY) -> QRgb {
+        cmsCIELCh myCielchD50;
+        myCielchD50.h = normalizedHue;
+        myCielchD50.L = 100 - (colorFunctionY + 0.5) * 100.0 / imageHeight;
+        myCielchD50.C = (colorFunctionX + 0.5) * 100.0 / imageHeight;
+        return parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+            toCmsLab(myCielchD50));
+    };
+    doAntialias(myImage, antiAliasCoordinates, myColorFunction);
+
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    callbackObject.deliverInterlacingPass( //
+        myImage, //
+        myMask, //
         QVariant::fromValue(parameters), //
         AsyncImageRenderCallback::InterlacingState::Final);
 }

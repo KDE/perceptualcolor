@@ -51,12 +51,23 @@ public:
      * This function is thread-safe.
      *
      * @param image The image
+     * @param mask The alpha mask, if provided. Renderers may choose whether
+     * to supply an alpha mask. Alpha masks are 1-bit images where white
+     * represents transparency and black represents opacity, defining the
+     * transparency state <i>before</i> any anti-aliasing is applied. This
+     * differs from the potentially anti-aliased image itself, which may
+     * contain partial transparency, making it difficult to determine the
+     * original transparency before anti-aliasing. Typically, fully transparent
+     * pixels will have an alpha value greater than 50% after anti-aliasing,
+     * but in some cases, they may fall below this threshold. The alpha mask,
+     * however, provides a clear and definitive indication of each pixel’s
+     * validity.
      * @param parameters The parameters of the image
      * @param state The interlacing state of the image. A render function
      * must first return zero or more images with intermediate state. After
      * that, it must return exactly one image with final state (unless it
      * was aborted). After that, it must not return any more images. */
-    virtual void deliverInterlacingPass(const QImage &image, const QVariant &parameters, const InterlacingState state) = 0;
+    virtual void deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state) = 0;
 
     /** @brief If the render function should abort.
      *

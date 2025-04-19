@@ -176,17 +176,31 @@ void AsyncImageRenderThread::run()
  * This function is thread-safe.
  *
  * @param image The image
+ * @param mask The alpha mask, if provided. Renderers may choose
+ * whether to supply an alpha mask. Alpha masks are 1-bit images where white
+ * represents transparency and black represents opacity, defining the
+ * transparency state <i>before</i> any anti-aliasing is applied. This
+ * differs from the potentially anti-aliased image itself, which may
+ * contain partial transparency, making it difficult to determine the
+ * original transparency before anti-aliasing. Typically, fully transparent
+ * pixels will have an alpha value greater than 50% after anti-aliasing,
+ * but in some cases, they may fall below this threshold. The alpha mask,
+ * however, provides a clear and definitive indication of each pixel’s
+ * validity.
  * @param parameters The parameters of the image
  * @param state The interlacing state of the image. A render function
  * must first return zero or more images with intermediate state. After
  * that, it must return exactly one image with final state (unless it
  * was aborted). After that, it must not return any more images. */
-void AsyncImageRenderThread::deliverInterlacingPass(const QImage &image, const QVariant &parameters, const AsyncImageRenderCallback::InterlacingState state)
+void AsyncImageRenderThread::deliverInterlacingPass(const QImage &image,
+                                                    const QImage &mask,
+                                                    const QVariant &parameters,
+                                                    const AsyncImageRenderCallback::InterlacingState state)
 {
     // interlacingPassCompleted() is documented as being possibly emitted
     // by different threads, so this call is thread-safe within the
     // restrictions mentioned in the documentation.
-    Q_EMIT interlacingPassCompleted(image, parameters, state);
+    Q_EMIT interlacingPassCompleted(image, mask, parameters, state);
 }
 
 /** @brief If the render function should abort.

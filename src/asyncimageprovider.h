@@ -155,6 +155,7 @@ public:
     explicit AsyncImageProvider(QObject *parent = nullptr);
     virtual ~AsyncImageProvider() noexcept override;
 
+    [[nodiscard]] QImage getMaskCache() const;
     [[nodiscard]] QImage getCache() const;
     [[nodiscard]] T imageParameters() const;
     void refreshAsync();
@@ -167,8 +168,10 @@ private:
     /** @internal @brief Only for unit tests. */
     friend class TestAsyncImageProvider;
 
-    void processInterlacingPassResult(const QImage &deliveredImage);
+    void processInterlacingPassResult(const QImage &deliveredImage, const QImage &deliveredMask);
 
+    /** @brief The mask cache. */
+    QImage m_maskCache;
     /** @brief The image cache. */
     QImage m_cache;
     /** @brief Internal storage for the image parameters.
@@ -215,16 +218,28 @@ AsyncImageProvider<T>::~AsyncImageProvider() noexcept
 {
 }
 
-/** @brief Provides the content of the cache.
+/** @brief Provides the content of the image cache.
  *
- * @returns The content of the cache. Note that a cached image might
- * be out-of-date. The cache might also be empty, which is represented
+ * @returns The content of the image cache. Note that a cached image
+ * might be out-of-date. The cache might also be empty, which is represented
  * by a null image. */
 template<typename T>
 QImage AsyncImageProvider<T>::getCache() const
 {
     // m_cache is supposed to be a null image if the cache is empty.
     return m_cache;
+}
+
+/** @brief Provides the content of the alpha mask cache.
+ *
+ * @returns The content of the alpha mask cache. Note that a cached alpha mask
+ * might be out-of-date. The cache might also be empty, which is represented
+ * by a null image. */
+template<typename T>
+QImage AsyncImageProvider<T>::getMaskCache() const
+{
+    // m_maskCache is supposed to be a null image if the cache is empty.
+    return m_maskCache;
 }
 
 /** @brief Setter for the image parameters.
@@ -270,9 +285,20 @@ T AsyncImageProvider<T>::imageParameters() const
  * delivered from the background render process.
  *
  * @param deliveredImage The image (either interlaced or full-quality)
+ * @param deliveredMask The alpha mask, if provided. Renderers may choose
+ * whether to supply an alpha mask. Alpha masks are 1-bit images where white
+ * represents transparency and black represents opacity, defining the
+ * transparency state <i>before</i> any anti-aliasing is applied. This
+ * differs from the potentially anti-aliased image itself, which may
+ * contain partial transparency, making it difficult to determine the
+ * original transparency before anti-aliasing. Typically, fully transparent
+ * pixels will have an alpha value greater than 50% after anti-aliasing,
+ * but in some cases, they may fall below this threshold. The alpha mask,
+ * however, provides a clear and definitive indication of each pixel’s
+ * validity.
  *
- * @post The new image will be put into the cache and the signal
- * @ref interlacingPassCompleted() is emitted.
+ * @post The new image, and if available the alpha mask, will be put into the
+ * cache and the signal @ref interlacingPassCompleted() is emitted.
  *
  * This function is meant to be called by the background render process to
  * deliver more data. It <em>must</em> be called after each interlacing pass
@@ -286,9 +312,12 @@ T AsyncImageProvider<T>::imageParameters() const
  * the functor-based <tt>Qt::connect()</tt> syntax to connect to this function
  * as long as the connection type is not direct, but queued. */
 template<typename T>
-void AsyncImageProvider<T>::processInterlacingPassResult(const QImage &deliveredImage)
+void AsyncImageProvider<T>::processInterlacingPassResult(const QImage &deliveredImage, const QImage &deliveredMask)
 {
     m_cache = deliveredImage;
+    if (!deliveredMask.isNull()) {
+        m_maskCache = deliveredMask;
+    }
     Q_EMIT interlacingPassCompleted();
 }
 

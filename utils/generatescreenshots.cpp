@@ -116,7 +116,7 @@ static void screenshotDelayed(QWidget *widget, const QString &comment = QString(
     // standalone-widgets without layout management):
     widget->resize(widget->sizeHint());
     widget->show(); // Necessary to receive and process events like paintEvent()
-    delayedEventProcessing();
+    delayedEventProcessing(50, 50, 8);
     screenshotInternal(widget, comment);
     widget->hide();
     widget->setParent(oldParent);

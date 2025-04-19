@@ -42,6 +42,7 @@ set(library_SRC
     gradientslider.cpp
     helper.cpp
     helperconversion.cpp
+    helperimage.cpp
     helpermath.cpp
     initializelibraryresources.cpp
     initializetranslation.cpp

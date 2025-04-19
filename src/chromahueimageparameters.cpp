@@ -8,7 +8,9 @@
 #include "asyncimagerendercallback.h"
 #include "cielchd50values.h"
 #include "helperconstants.h"
+#include "helperimage.h"
 #include "helpermath.h"
+#include "helperqttypes.h"
 #include "interlacingpass.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
@@ -108,6 +110,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
         callbackObject.deliverInterlacingPass( //
             myImage, //
+            QImage(), //
             variantParameters, //
             AsyncImageRenderCallback::InterlacingState::Final);
         return;
@@ -115,20 +118,15 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
 
     // If we continue, the circle will at least be visible.
 
-    const QColor myNeutralGray = //
-        parameters.rgbColorSpace->fromCielchD50ToQRgbBound(CielchD50Values::neutralGray);
-
-    // Initialize the hole image background to the background color
-    // of the circle:
-    myImage.fill(myNeutralGray);
+    // Initialize the hole image background:
+    myImage.fill(Qt::transparent);
 
     // Prepare for gamut painting
     cmsCIELab cielabD50;
     cielabD50.L = parameters.lightness;
-    int x;
-    int y;
     QRgb tempColor;
-    const auto chromaRange = parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
+    const auto chromaRange = //
+        parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
         // The following line will never be 0 because we have have
         // tested above that circleRadius is > 0, so this line will
@@ -146,6 +144,8 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // the pixel.
     constexpr qreal pixelOffset = 0.5;
 
+    const auto shift = pixelOffset - parameters.borderPhysical;
+
     // The reference size (assumed to be a typical/common size) for the image:
     constexpr double referenceSizePhysical = 343;
     const auto factor = parameters.imageSizePhysical / referenceSizePhysical;
@@ -162,7 +162,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     QPainter myPainter(&myImage);
     myPainter.setRenderHint(QPainter::Antialiasing, false);
     while (true) {
-        for (y = currentPass.lineOffset; //
+        for (int y = currentPass.lineOffset; //
              y < parameters.imageSizePhysical; //
              y += currentPass.lineFrequency) //
         {
@@ -170,21 +170,22 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
                 return;
             }
             cielabD50.b = chromaRange //
-                - (y + pixelOffset - parameters.borderPhysical) * scaleFactor;
-            for (x = currentPass.columnOffset; //
+                - (y + shift) * scaleFactor;
+            for (int x = currentPass.columnOffset; //
                  x < parameters.imageSizePhysical; //
                  x += currentPass.columnFrequency //
             ) {
                 cielabD50.a = //
-                    (x + pixelOffset - parameters.borderPhysical) * scaleFactor //
+                    (x + shift) * scaleFactor //
                     - chromaRange;
                 if ( //
                     (qPow(cielabD50.a, 2) + qPow(cielabD50.b, 2)) //
                     <= (qPow(chromaRange + overlap, 2)) //
                 ) {
-                    tempColor = parameters //
-                                    .rgbColorSpace //
-                                    ->fromCielabD50ToQRgbOrTransparent(cielabD50);
+                    tempColor = //
+                        parameters
+                            .rgbColorSpace //
+                            ->fromCielabD50ToQRgbOrTransparent(cielabD50);
                     if (qAlpha(tempColor) != 0) {
                         // The pixel is within the gamut!
                         myPainter.fillRect(
@@ -195,33 +196,95 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
                             currentPass.rectangleSize.height(), //
                             QColor(tempColor));
                     } else {
+                        myPainter.save();
+                        myPainter.setCompositionMode(
+                            // Allow making the background transparent.
+                            QPainter::CompositionMode_Clear);
                         myPainter.fillRect(
                             //
                             x, //
                             y, //
                             currentPass.rectangleSize.width(), //
                             currentPass.rectangleSize.height(), //
-                            myNeutralGray);
+                            Qt::transparent);
+                        myPainter.restore();
                     }
                 }
             }
         }
 
-        const AsyncImageRenderCallback::InterlacingState state = //
-            (currentPass.countdown > 1) //
-            ? AsyncImageRenderCallback::InterlacingState::Intermediate //
-            : AsyncImageRenderCallback::InterlacingState::Final;
-
         myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
-        callbackObject.deliverInterlacingPass(myImage, variantParameters, state);
+        callbackObject.deliverInterlacingPass( //
+            myImage, //
+            QImage(), //
+            variantParameters, //
+            // We return the state “Intermediate” even when the final
+            // interlacing step of the Adam-interlacing has finished.
+            // This is because we will still to some antialiasing in a
+            // final step, which is independent from the Adam-interlacing.
+            AsyncImageRenderCallback::InterlacingState::Intermediate);
         myImage.setDevicePixelRatio(1);
 
-        if (state == AsyncImageRenderCallback::InterlacingState::Intermediate) {
+        if (currentPass.countdown > 1) {
             currentPass.switchToNextPass();
         } else {
-            return;
+            break;
         }
     }
+
+    // cppcheck-suppress knownConditionTrueFalse // false positive
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    // Anti-aliasing
+
+    // The drawn gamut body has a sharp, non-anti-aliased border against the
+    // background, which looks unappealing. While recalculating the entire
+    // image at a higher resolution and then downscaling would provide
+    // anti-aliasing, this approach is computationally expensive. Instead, we
+    // take an optimized approach: we detect all pixels located at the border
+    // between the gamut body and the background (on both sides of the
+    // boundary) and store their coordinates in a duplicate-free container.
+    // Anti-aliased values are then computed exclusively for these pixels,
+    // reducing overhead while improving visual quality.
+
+    // NOTE: Outside the circle, artefacts from previous rendering steps may
+    // persist, as subsequent steps clean up artefacts only within the circle
+    // for performance reasons. When detecting boundary pixels, some artefact
+    // pixels might be included in the search results. However, this does not
+    // negatively impact the image, as it only affects pixels outside the
+    // defined circle. While performing unnecessary rendering operations is
+    // inefficient, filtering out these artefacts beforehand would be complex.
+    // Thus, for now, we leave the code as-is.
+
+    QList<QPoint> antiAliasCoordinates = findBoundary(myImage);
+
+    // cppcheck-suppress knownConditionTrueFalse // false positive
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    const auto myColorFunction = [parameters, shift, scaleFactor, chromaRange](const double x, const double y) -> QRgb {
+        cmsCIELab myCielabD50;
+        myCielabD50.L = parameters.lightness;
+        myCielabD50.b = chromaRange - (y + shift) * scaleFactor;
+        myCielabD50.a = (x + shift) * scaleFactor - chromaRange;
+        return parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+            myCielabD50);
+    };
+    doAntialias(myImage, antiAliasCoordinates, myColorFunction);
+
+    if (callbackObject.shouldAbort()) {
+        return;
+    }
+
+    myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
+    callbackObject.deliverInterlacingPass( //
+        myImage, //
+        QImage(), //
+        variantParameters, //
+        AsyncImageRenderCallback::InterlacingState::Final);
 }
 
 static_assert(std::is_standard_layout_v<ChromaHueImageParameters>);

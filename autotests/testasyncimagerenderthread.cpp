@@ -35,10 +35,12 @@ public:
     {
         callbackObject.deliverInterlacingPass( //
             QImage(),
+            QImage(),
             variantParameters,
             AsyncImageRenderCallback::InterlacingState::Intermediate);
         if (!callbackObject.shouldAbort()) {
             callbackObject.deliverInterlacingPass( //
+                QImage(),
                 QImage(),
                 variantParameters,
                 AsyncImageRenderCallback::InterlacingState::Intermediate);
@@ -92,6 +94,7 @@ private Q_SLOTS:
         AsyncImageRenderThread test( //
             &TestAsyncImageRenderThread::renderEmptyImage);
         test.deliverInterlacingPass( //
+            QImage(), //
             QImage(), //
             QVariant(), //
             AsyncImageRenderCallback::InterlacingState::Intermediate);

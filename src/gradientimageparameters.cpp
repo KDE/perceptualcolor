@@ -202,6 +202,7 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
 
     callbackObject.deliverInterlacingPass( //
         result, //
+        QImage(), //
         variantParameters, //
         AsyncImageRenderCallback::InterlacingState::Final);
 }

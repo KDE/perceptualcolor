@@ -35,12 +35,14 @@ class Mockup : public AsyncImageRenderCallback
 {
 public:
     virtual bool shouldAbort() const override;
-    virtual void deliverInterlacingPass(const QImage &image, const QVariant &parameters, const InterlacingState state) override;
+    virtual void deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state) override;
     QImage lastDeliveredImage() const;
+    QImage lastDeliveredMask() const;
     QVariant lastDeliveredParameters() const;
 
 private:
     QImage m_lastDeliveredImage;
+    QImage m_lastDeliveredMask;
     QVariant m_lastDeliveredParameters;
 };
 
@@ -49,16 +51,22 @@ bool Mockup::shouldAbort() const
     return false;
 }
 
-void Mockup::deliverInterlacingPass(const QImage &image, const QVariant &parameters, const InterlacingState state)
+void Mockup::deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state)
 {
     Q_UNUSED(state)
     m_lastDeliveredImage = image;
+    m_lastDeliveredMask = mask;
     m_lastDeliveredParameters = parameters;
 }
 
 QImage Mockup::lastDeliveredImage() const
 {
     return m_lastDeliveredImage;
+}
+
+QImage Mockup::lastDeliveredMask() const
+{
+    return m_lastDeliveredMask;
 }
 
 QVariant Mockup::lastDeliveredParameters() const
@@ -133,6 +141,7 @@ private Q_SLOTS:
         // problems in the algorithm (division by zero, offset by 1…)
         testProperties.render(QVariant::fromValue(testProperties), myMockup);
         QCOMPARE(myMockup.lastDeliveredImage().size(), QSize(0, 0));
+        QCOMPARE(myMockup.lastDeliveredMask().size(), QSize(0, 0));
 
         testProperties.imageSizePhysical = 1;
         testProperties.render(QVariant::fromValue(testProperties), myMockup);

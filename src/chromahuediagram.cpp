@@ -693,6 +693,18 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         (maximumWidgetSquareSize() - 2 * d_pointer->diagramBorder()) / 2.0;
     bufferPainter.setRenderHint(QPainter::Antialiasing, true);
     bufferPainter.setPen(QPen(Qt::NoPen));
+    const QColor myNeutralGray = //
+        d_pointer->m_rgbColorSpace->fromCielchD50ToQRgbBound( //
+            CielchD50Values::neutralGray);
+    bufferPainter.setBrush(myNeutralGray);
+    bufferPainter.drawEllipse(
+        // center:
+        QPointF(maximumWidgetSquareSize() / 2.0, //
+                maximumWidgetSquareSize() / 2.0),
+        // width:
+        circleRadius,
+        // height:
+        circleRadius);
     bufferPainter.setBrush(d_pointer->m_chromaHueImage.getCache());
     bufferPainter.drawEllipse(
         // center:
