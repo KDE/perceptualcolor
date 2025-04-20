@@ -145,7 +145,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // the pixel.
     constexpr qreal pixelOffset = 0.5;
     // The number of interlacing passes at a devicePixelRatioF of 1:
-    constexpr auto numberOfPassesAtScale1 = 11;
+    constexpr auto numberOfPassesAtScale1 = 7;
     static_assert(isOdd(numberOfPassesAtScale1));
     // The number of passes at the actual devicePixelRatioF
     const auto numberOfPasses = numberOfPassesAtScale1 //
