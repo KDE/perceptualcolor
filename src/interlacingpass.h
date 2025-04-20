@@ -36,7 +36,7 @@ namespace PerceptualColor
 class InterlacingPass final
 {
 public:
-    InterlacingPass(const double passCount);
+    explicit InterlacingPass(const double passCount);
 
     /**
      * @brief Factory constructor
