@@ -144,11 +144,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // can convert from the pixel position to the point in the middle of
     // the pixel.
     constexpr qreal pixelOffset = 0.5;
-    // TODO Could this be further optimized? For example not go from zero
-    // up to imageSizePhysical, but exclude the border (and add the
-    // tolerance)? Thought anyway the color transform (which is the heavy
-    // work) is only done when within a given diameter, reducing loop runs
-    // itself might also increase performance at least a little bit…
     constexpr auto numberOfPasses = 11;
     static_assert(isOdd(numberOfPasses));
     InterlacingPass currentPass = InterlacingPass::make<numberOfPasses>();
