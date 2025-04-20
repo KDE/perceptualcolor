@@ -11,31 +11,43 @@
 
 namespace PerceptualColor
 {
+/**
+ * @brief Rounds to the nearest positive odd integer.
+ *
+ * @param value The value to be rounded.
+ *
+ * @returns Rounds to the nearest positive odd integer.
+ */
+int InterlacingPass::roundToNearestPositiveOdd(const double value)
+{
+    // Round to next odd integer.
+    int rounded = qRound((value - 1.0) / 2.0) * 2 + 1;
+    return qMax(1, rounded); // Smallest existing odd integer is: 1
+}
+
 /** @brief Constructor
  *
  * Constructs an object for a new interlacing cycle.
  *
- * @param passCount Number of passes within this interlacing cycle. This MUST
- * be a positive odd number (otherwise an exception is thrown). Use <tt>7</tt>
+ * @param passCount Number of passes within this interlacing cycle.
+ * This should be a positive odd number. If it isn’t, it will be
+ * rounded to the next valid number. Use <tt>7</tt>
  * for <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>
  * interlacing, or any other positive odd number for
  * <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>-like
  * interlacing, but with a different number of steps.
  *
- * @exception int Thrown when the parameter is not a positive odd number. */
-InterlacingPass::InterlacingPass(const int passCount)
+ * @sa @ref make() provides compile-time checking for valid <tt>passCount</tt>
+ * numbers.
+ */
+InterlacingPass::InterlacingPass(const double passCount)
 {
-    if (!isOdd(passCount)) {
-        throw 0;
-    }
-    if (passCount < 1) {
-        throw 0;
-    }
+    const int roundedPassCount = roundToNearestPositiveOdd(passCount);
 
-    const int floorOfHalfCoundown = qFloor(passCount / 2.0);
+    const int floorOfHalfCoundown = qFloor(roundedPassCount / 2.0);
     const int baseSize = qRound(qPow(2, floorOfHalfCoundown));
 
-    countdown = passCount;
+    countdown = roundedPassCount;
     rectangleSize.setWidth(baseSize);
     rectangleSize.setHeight(baseSize);
     columnFrequency = baseSize;

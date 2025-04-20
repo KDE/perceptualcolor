@@ -53,16 +53,19 @@ private Q_SLOTS:
 
     void testConstructorDestructor()
     {
-        QVERIFY_EXCEPTION_THROWN(InterlacingPass test{2}, int);
-        QVERIFY_EXCEPTION_THROWN(InterlacingPass test{0}, int);
-        QVERIFY_EXCEPTION_THROWN(InterlacingPass test{-0}, int);
-        QVERIFY_EXCEPTION_THROWN(InterlacingPass test{-1}, int);
-        QVERIFY_EXCEPTION_THROWN(InterlacingPass test{-2}, int);
+        // valid passCount
         InterlacingPass testA{3};
         InterlacingPass testB{5};
         InterlacingPass testC{7};
         InterlacingPass testD{9};
         InterlacingPass testE{11};
+
+        // invalid passCount
+        InterlacingPass testF{2};
+        InterlacingPass testG{0};
+        InterlacingPass testH{-0};
+        InterlacingPass testI{-1};
+        InterlacingPass testJ{-2};
     }
 
     void testMake()
@@ -107,6 +110,50 @@ private Q_SLOTS:
         QCOMPARE(test.columnOffset, 0);
         QCOMPARE(test.lineFrequency, 2);
         QCOMPARE(test.lineOffset, 1);
+    }
+
+    void testRoundToNearestPositiveOdd()
+    {
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-6.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-6.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-6.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-5.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-5.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-5.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-4.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-4.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-4.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-3.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-3.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-3.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-2.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-2.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-2.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-1.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-1.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-1.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-0.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-0.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(-0.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(0.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(+0.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(0.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(0.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(1.0), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(1.1), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(1.9), 1);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(2.1), 3);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(2.9), 3);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(3.0), 3);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(3.1), 3);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(3.9), 3);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(4.1), 5);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(4.9), 5);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(5.0), 5);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(5.1), 5);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(5.9), 5);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(6.1), 7);
+        QCOMPARE(InterlacingPass::roundToNearestPositiveOdd(6.9), 7);
     }
 };
 

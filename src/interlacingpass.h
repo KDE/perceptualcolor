@@ -36,18 +36,28 @@ namespace PerceptualColor
 class InterlacingPass final
 {
 public:
-    /** @brief Constructor
+    InterlacingPass(const double passCount);
+
+    /**
+     * @brief Factory constructor
      *
      * Constructs an object for a new interlacing cycle.
      *
      * @tparam passCount Number of passes within this interlacing
-     * cycle. This MUST be a positive odd number. Use <tt>7</tt>
+     * cycle. Use <tt>7</tt>
      * for <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>
      * interlacing, or any other positive odd number for
      * <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>-like
      * interlacing, but with a different number of steps.
+     * The value must be an integer type, a <tt>constexpr</tt> and
+     * a positive odd number.
      *
-     * @returns A corresponding object. */
+     * @returns A corresponding object.
+     *
+     * This function checks for valid parameters at compile time.
+     *
+     * @sa @ref InterlacingPass(const double passCount)
+     */
     template<int passCount>
     static InterlacingPass make()
     {
@@ -87,10 +97,10 @@ public:
     int countdown;
 
 private:
-    explicit InterlacingPass(const int passCount);
-
     /** @internal @brief Only for unit tests. */
     friend class TestInterlacingPass;
+
+    [[nodiscard]] static int roundToNearestPositiveOdd(const double value);
 };
 
 } // namespace PerceptualColor

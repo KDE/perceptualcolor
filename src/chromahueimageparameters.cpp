@@ -144,9 +144,13 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // can convert from the pixel position to the point in the middle of
     // the pixel.
     constexpr qreal pixelOffset = 0.5;
-    constexpr auto numberOfPasses = 11;
-    static_assert(isOdd(numberOfPasses));
-    InterlacingPass currentPass = InterlacingPass::make<numberOfPasses>();
+    // The number of interlacing passes at a devicePixelRatioF of 1:
+    constexpr auto numberOfPassesAtScale1 = 11;
+    static_assert(isOdd(numberOfPassesAtScale1));
+    // The number of passes at the actual devicePixelRatioF
+    const auto numberOfPasses = numberOfPassesAtScale1 //
+        + 2 * std::log2(parameters.devicePixelRatioF);
+    InterlacingPass currentPass{numberOfPasses};
     QPainter myPainter(&myImage);
     myPainter.setRenderHint(QPainter::Antialiasing, false);
     while (true) {
