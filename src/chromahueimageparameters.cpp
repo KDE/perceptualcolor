@@ -136,6 +136,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         / (parameters.imageSizePhysical - 2 * parameters.borderPhysical);
 
     // Paint the gamut.
+
     // The pixel at position QPoint(x, y) is the square with the top-left
     // edge at coordinate point QPoint(x, y) and the bottom-right edge at
     // coordinate point QPoint(x+1, y+1). This pixel is supposed to have
@@ -144,13 +145,20 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // can convert from the pixel position to the point in the middle of
     // the pixel.
     constexpr qreal pixelOffset = 0.5;
-    // The number of interlacing passes at a devicePixelRatioF of 1:
-    constexpr auto numberOfPassesAtScale1 = 7;
-    static_assert(isOdd(numberOfPassesAtScale1));
-    // The number of passes at the actual devicePixelRatioF
-    const auto numberOfPasses = numberOfPassesAtScale1 //
-        + 2 * std::log2(parameters.devicePixelRatioF);
-    InterlacingPass currentPass{numberOfPasses};
+
+    // The reference size (assumed to be a typical/common size) for the image:
+    constexpr double referenceSizePhysical = 343;
+    const auto factor = parameters.imageSizePhysical / referenceSizePhysical;
+    // The number of appropriate interlacing passes at the reference size:
+    constexpr int numberOfPassesAtReferenceSize = 5;
+    static_assert(isOdd(numberOfPassesAtReferenceSize));
+    // The number of actual passes
+    const auto numberOfPasses = //
+        numberOfPassesAtReferenceSize //
+        // qMax makes sure std::log2() is never called with a parameter ≤ 0
+        + 2 * std::log2(qMax(0.01, factor));
+    InterlacingPass currentPass(numberOfPasses);
+
     QPainter myPainter(&myImage);
     myPainter.setRenderHint(QPainter::Antialiasing, false);
     while (true) {
