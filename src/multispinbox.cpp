@@ -269,7 +269,7 @@ void MultiSpinBox::changeEvent(QEvent *event)
  * The icon of the action will be displayed as button. If the action has
  * no icon, just an empty space will be displayed.
  *
- * @image html MultiSpinBoxWithButton.png "MultiSpinBox with action button" width=200
+ * @image html MultiSpinBoxWithButton.png "MultiSpinBox with action button"
  *
  * It is possible to add more than one action.
  *

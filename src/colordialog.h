@@ -45,9 +45,9 @@ class RgbColorSpace;
  * anything about LCH at all, because the graphical representations is
  * intuitive.
  *
- * @image html ColorDialog.png "ColorDialog" width=500
- * @image html ColorDialogTab1.png "ColorDialog" width=500
- * @image html ColorDialogTab2.png "ColorDialog" width=500
+ * @image html ColorDialog.png "ColorDialog"
+ * @image html ColorDialogTab1.png "ColorDialog"
+ * @image html ColorDialogTab2.png "ColorDialog"
  *
  * It is an @ref qdialogsourceompatibility "mostly source-compatible"
  * replacement for QColorDialog. It also adds some extra functionality
@@ -65,7 +65,7 @@ class RgbColorSpace;
  *
  * @snippet testcolordialog.cpp ColorDialog Get color with alpha channel
  *
- * @image html ColorDialogAlpha.png "ColorDialog with alpha channel" width=500
+ * @image html ColorDialogAlpha.png "ColorDialog with alpha channel"
  *
  * More features:
  *
@@ -327,8 +327,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * tab widgets, while for the expanded variant, more elements are
      * visible at the same time.
      *
-     * @image html ColorDialogCollapsed.png "collapsed" height=300
-     * @image html ColorDialogExpanded.png "expanded" height=300
+     * @image html ColorDialogCollapsed.png "collapsed"
+     * @image html ColorDialogExpanded.png "expanded"
      *
      * Default value:
      * @snippet src/colordialog_p.h layoutDimensionsDefaultValue

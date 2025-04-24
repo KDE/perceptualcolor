@@ -46,7 +46,7 @@ namespace PerceptualColor
  * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
  * Lab color model</a>) at a given lightness.
  *
- * @image html ChromaHueDiagram.png "ChromaHueDiagram" width=250
+ * @image html ChromaHueDiagram.png "ChromaHueDiagram"
  *
  * The widget allows the user to select a color (chroma and hue) within the
  * specified gamut at a given lightness. It reacts on mouse events and on

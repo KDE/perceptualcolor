@@ -36,7 +36,7 @@ class RgbColorSpace;
 
 /** @brief A slider who’s groove displays an LCH color gradient.
  *
- * @image html GradientSlider.png "GradientSlider" width=200
+ * @image html GradientSlider.png "GradientSlider"
  *
  * The groove of this slider that displays a gradient between two LCH
  * colors. The gradient is an equal gradient calculated independently

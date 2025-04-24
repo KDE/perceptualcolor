@@ -36,17 +36,16 @@ class ColorPatchPrivate;
  * Example:
  * @snippet testcolorpatch.cpp ColorPatch Create widget
  *
- * @image html ColorPatch.png "ColorPatch" width=50
+ * @image html ColorPatch.png "ColorPatch"
  *
  * This widget is also able to display transparency (the pattern will be
  * mirrored on right-to-left layouts):
  *
- * @image html ColorPatchSemiTransparent.png "ColorPatch with 50% transparency" width=50
- *
+ * @image html ColorPatchSemiTransparent.png "ColorPatch with 50% transparency"
  * There is also a simple representation
  * for <tt>QColor::isValid() == false</tt>:
  *
- * @image html ColorPatchInvalid.png "ColorPatch with invalid color" width=50
+ * @image html ColorPatchInvalid.png "ColorPatch with invalid color"
  *
  * The default minimum size of this widget is similar to a
  * <tt>QToolButton</tt>. Depending on your use case, you might

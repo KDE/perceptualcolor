@@ -37,7 +37,7 @@ class RgbColorSpace;
  *
  * This widget displays a chroma-lightness diagram for a given hue.
  *
- * @image html ChromaLightnessDiagram.png "ChromaLightnessDiagram" width=250
+ * @image html ChromaLightnessDiagram.png "ChromaLightnessDiagram"
  *
  * The widget shows the chroma-lightness diagram at the whole widget extend.
  * - Vertically the lightness from 0 (bottom) to 100 (top).

@@ -43,7 +43,7 @@ class MultiSpinBoxPrivate;
  * However, <em>this</em> widget is flexible. You can define on your own
  * the behaviour of each section.
  *
- * @image html MultiSpinBox.png "MultiSpinBox" width=200
+ * @image html MultiSpinBox.png "MultiSpinBox"
  *
  * This widget works with floating point precision. You can set
  * the number of decimal places for each section individually,

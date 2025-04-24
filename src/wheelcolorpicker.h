@@ -33,7 +33,7 @@ class WheelColorPickerPrivate;
  * It is composed of a @ref ColorWheel and, in the middle of the wheel,
  * a chroma-lightness diagram.
  *
- * @image html WheelColorPicker.png "WheelColorPicker" width=200
+ * @image html WheelColorPicker.png "WheelColorPicker"
  *
  * @internal
  *
