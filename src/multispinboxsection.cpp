@@ -180,18 +180,11 @@ void MultiSpinBoxSection::setMinimum(double newMinimum)
  *
  * @returns The property value.
  *
- * @sa @ref setPrefix */
+ * @sa @ref setFormatString
+ */
 QString MultiSpinBoxSection::prefix() const
 {
     return d_pointer->m_prefix;
-}
-
-/** @brief Setter for @ref prefix property.
- *
- * @param newPrefix The new prefix value. */
-void MultiSpinBoxSection::setPrefix(const QString &newPrefix)
-{
-    d_pointer->m_prefix = newPrefix;
 }
 
 /** @brief A smaller of two natural steps.
@@ -222,18 +215,11 @@ void MultiSpinBoxSection::setSingleStep(double newSingleStep)
  *
  * @returns The property value.
  *
- * @sa @ref setSuffix */
+ * @sa @ref setFormatString
+ */
 QString MultiSpinBoxSection::suffix() const
 {
     return d_pointer->m_suffix;
-}
-
-/** @brief Setter for @ref suffix property.
- *
- * @param newSuffix The new suffix value. */
-void MultiSpinBoxSection::setSuffix(const QString &newSuffix)
-{
-    d_pointer->m_suffix = newSuffix;
 }
 
 /** @brief Adds QDebug() support for data type
@@ -245,6 +231,7 @@ void MultiSpinBoxSection::setSuffix(const QString &newSuffix)
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
 {
     dbg.nospace() << "\nMultiSpinBoxSection(" // Opening line
+                  << "\n    formatString: " << value.formatString() //
                   << "\n    prefix: " << value.prefix() //
                   << "\n    minimum: " << value.minimum() //
                   << "\n    decimals: " << value.decimals() //
@@ -254,6 +241,48 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
                   << "\n)" // Closing line
         ;
     return dbg.maybeSpace();
+}
+
+/**
+ * @brief Setter for the @ref prefix(), @ref suffix() and @ref formatString()
+ * properties.
+ *
+ * @param formatString A string in the format "prefix%1suffix". It
+ * should contain exactly <em>one</em> place marker as described in
+ * <tt>QString::arg()</tt> like <tt>\%1</tt> or <tt>\%L2</tt>. This place
+ * marker represents the value. Example: “Prefix\%1Suffix”. Prefix and suffix
+ * may be empty.
+ */
+void MultiSpinBoxSection::setFormatString(const QString &formatString)
+{
+    d_pointer->m_formatString = formatString;
+
+    // QString::arg() support for %L2, %5 etc which translators might expect:
+    const auto parts = formatString //
+                           .arg(QStringLiteral("%1")) //
+                           .split(QStringLiteral("%1"));
+
+    if (parts.count() == 2) {
+        d_pointer->m_prefix = parts.at(0);
+        d_pointer->m_suffix = parts.at(1);
+    } else {
+        d_pointer->m_prefix = QString();
+        d_pointer->m_suffix = QString();
+    }
+}
+
+/**
+ * @brief A string in the format "PREFIX%vSUFFIX".
+ *
+ * @returns The property value.
+ *
+ * @sa @ref setFormatString()
+ * @sa @ref prefix()
+ * @sa @ref suffix()
+ */
+QString MultiSpinBoxSection::formatString() const
+{
+    return d_pointer->m_formatString;
 }
 
 } // namespace PerceptualColor

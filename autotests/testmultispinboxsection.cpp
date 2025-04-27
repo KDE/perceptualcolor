@@ -43,9 +43,8 @@ private:
         myConfig.setWrapping(true);
         myConfig.setMaximum(3);
         myConfig.setMinimum(2);
-        myConfig.setPrefix(QStringLiteral("a"));
+        myConfig.setFormatString(QStringLiteral("a%1b"));
         myConfig.setSingleStep(4);
-        myConfig.setSuffix(QStringLiteral("b"));
         return myConfig;
     }
 
@@ -93,31 +92,32 @@ private Q_SLOTS:
         myConfig.setWrapping(true);
         myConfig.setMaximum(3);
         myConfig.setMinimum(2);
-        myConfig.setPrefix(QStringLiteral("a"));
+        myConfig.setFormatString(QStringLiteral("a%1b"));
         myConfig.setSingleStep(4);
-        myConfig.setSuffix(QStringLiteral("b"));
 
         // Test copy constructor
         MultiSpinBoxSection copyContructed(myConfig);
-        QCOMPARE(myConfig.decimals(), 1);
-        QCOMPARE(myConfig.isWrapping(), true);
-        QCOMPARE(myConfig.maximum(), 3);
-        QCOMPARE(myConfig.minimum(), 2);
-        QCOMPARE(myConfig.prefix(), QStringLiteral("a"));
-        QCOMPARE(myConfig.singleStep(), 4);
-        QCOMPARE(myConfig.suffix(), QStringLiteral("b"));
+        QCOMPARE(copyContructed.decimals(), 1);
+        QCOMPARE(copyContructed.isWrapping(), true);
+        QCOMPARE(copyContructed.maximum(), 3);
+        QCOMPARE(copyContructed.minimum(), 2);
+        QCOMPARE(copyContructed.formatString(), QStringLiteral("a%1b"));
+        QCOMPARE(copyContructed.prefix(), QStringLiteral("a"));
+        QCOMPARE(copyContructed.suffix(), QStringLiteral("b"));
+        QCOMPARE(copyContructed.singleStep(), 4);
 
         // Test copy assignment operator
         MultiSpinBoxSection copyAssigned;
         copyAssigned.setMaximum(9); // Change arbitrary some value
         copyAssigned = myConfig;
-        QCOMPARE(myConfig.decimals(), 1);
-        QCOMPARE(myConfig.isWrapping(), true);
-        QCOMPARE(myConfig.maximum(), 3);
-        QCOMPARE(myConfig.minimum(), 2);
-        QCOMPARE(myConfig.prefix(), QStringLiteral("a"));
-        QCOMPARE(myConfig.singleStep(), 4);
-        QCOMPARE(myConfig.suffix(), QStringLiteral("b"));
+        QCOMPARE(copyAssigned.decimals(), 1);
+        QCOMPARE(copyAssigned.isWrapping(), true);
+        QCOMPARE(copyAssigned.maximum(), 3);
+        QCOMPARE(copyAssigned.minimum(), 2);
+        QCOMPARE(copyAssigned.formatString(), QStringLiteral("a%1b"));
+        QCOMPARE(copyAssigned.prefix(), QStringLiteral("a"));
+        QCOMPARE(copyAssigned.suffix(), QStringLiteral("b"));
+        QCOMPARE(copyAssigned.singleStep(), 4);
     }
 
     void testMoveConstructor()
@@ -127,9 +127,8 @@ private Q_SLOTS:
         testObjectToMove.setWrapping(true);
         testObjectToMove.setMaximum(3);
         testObjectToMove.setMinimum(2);
-        testObjectToMove.setPrefix(QStringLiteral("a"));
+        testObjectToMove.setFormatString(QStringLiteral("a%1b"));
         testObjectToMove.setSingleStep(4);
-        testObjectToMove.setSuffix(QStringLiteral("b"));
         MultiSpinBoxSection myConfig(
             // Trigger the move constructor
             std::move(testObjectToMove));
@@ -137,9 +136,10 @@ private Q_SLOTS:
         QCOMPARE(myConfig.isWrapping(), true);
         QCOMPARE(myConfig.maximum(), 3);
         QCOMPARE(myConfig.minimum(), 2);
+        QCOMPARE(myConfig.formatString(), QStringLiteral("a%1b"));
         QCOMPARE(myConfig.prefix(), QStringLiteral("a"));
-        QCOMPARE(myConfig.singleStep(), 4);
         QCOMPARE(myConfig.suffix(), QStringLiteral("b"));
+        QCOMPARE(myConfig.singleStep(), 4);
     }
 
     void testMoveAssignment()
@@ -153,9 +153,8 @@ private Q_SLOTS:
         testObjectToMove.setWrapping(true);
         testObjectToMove.setMaximum(3);
         testObjectToMove.setMinimum(2);
-        testObjectToMove.setPrefix(QStringLiteral("a"));
+        testObjectToMove.setFormatString(QStringLiteral("a%1b"));
         testObjectToMove.setSingleStep(4);
-        testObjectToMove.setSuffix(QStringLiteral("b"));
 
         // Move assignment:
         myConfig = std::move(testObjectToMove);
@@ -164,9 +163,10 @@ private Q_SLOTS:
         QCOMPARE(myConfig.isWrapping(), true);
         QCOMPARE(myConfig.maximum(), 3);
         QCOMPARE(myConfig.minimum(), 2);
+        QCOMPARE(myConfig.formatString(), QStringLiteral("a%1b"));
         QCOMPARE(myConfig.prefix(), QStringLiteral("a"));
-        QCOMPARE(myConfig.singleStep(), 4);
         QCOMPARE(myConfig.suffix(), QStringLiteral("b"));
+        QCOMPARE(myConfig.singleStep(), 4);
     }
 
     void testDecimals()
@@ -202,7 +202,7 @@ private Q_SLOTS:
     void testPrefix()
     {
         MultiSpinBoxSection myConfig;
-        myConfig.setPrefix(QStringLiteral("a"));
+        myConfig.setFormatString(QStringLiteral("a%1b"));
         QCOMPARE(myConfig.prefix(), QStringLiteral("a"));
     }
 
@@ -216,8 +216,15 @@ private Q_SLOTS:
     void testSuffix()
     {
         MultiSpinBoxSection myConfig;
-        myConfig.setSuffix(QStringLiteral("a"));
-        QCOMPARE(myConfig.suffix(), QStringLiteral("a"));
+        myConfig.setFormatString(QStringLiteral("a%1b"));
+        QCOMPARE(myConfig.suffix(), QStringLiteral("b"));
+    }
+
+    void testFormatString()
+    {
+        MultiSpinBoxSection myConfig;
+        myConfig.setFormatString(QStringLiteral("a%1b"));
+        QCOMPARE(myConfig.formatString(), QStringLiteral("a%1b"));
     }
 
     void testComplianceDecimals()

@@ -175,7 +175,24 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  * @returns If the <tt>formatString</tt> parameter has the correct format,
  * the prefix will be returned at <tt>QPair::first</tt> and the suffix will
  * be returned at <tt>QPair::second</tt>. Otherwise, they will be set to an
- * empty string. */
+ * empty string.
+ *
+ * @note The functionality implemented here served as the inspiration for
+ * <a href="https://api.kde.org/frameworks/ki18n/html/namespaceKLocalization.html">
+ * KLocalization::setupSpinBoxFormatString()</a>. However, there are key
+ * differences.
+ * <a href="https://api.kde.org/frameworks/ki18n/html/namespaceKLocalization.html">
+ * KLocalization::setupSpinBoxFormatString()</a> extends this approach to
+ * include support for plural handling, specifically for integers (but not
+ * floating-point numbers). It uses %v as a placeholder instead of %1.
+ * Because %v is not compatible with the translation system, this design allows
+ * the string to be translated while enabling the selection of the appropriate
+ * plural form by passing the relevant integer – without actually replacing the
+ * placeholder with an actual value. Despite its broader functionality, it is
+ * limited to handling QSpinBox and QDoubleSpinBox. Since this project does
+ * not link to KLocalization, and our implementation already meets our specific
+ * requirements, we continue to use our own approach.
+ */
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString)
 {
     // QString::arg() support for %L2, %5 etc which translators might expect:

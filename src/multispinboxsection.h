@@ -45,16 +45,16 @@ public:
     MultiSpinBoxSection &operator=(MultiSpinBoxSection &&other) noexcept;
 
     [[nodiscard]] int decimals() const;
+    [[nodiscard]] QString formatString() const;
     [[nodiscard]] bool isWrapping() const;
     [[nodiscard]] double maximum() const;
     [[nodiscard]] double minimum() const;
     [[nodiscard]] QString prefix() const;
     void setDecimals(int newDecimals);
+    void setFormatString(const QString &formatString);
     void setMaximum(double newMaximum);
     void setMinimum(double newMinimum);
-    void setPrefix(const QString &newPrefix);
     void setSingleStep(double newSingleStep);
-    void setSuffix(const QString &newSuffix);
     void setWrapping(bool newIsWrapping);
     [[nodiscard]] double singleStep() const;
     [[nodiscard]] QString suffix() const;

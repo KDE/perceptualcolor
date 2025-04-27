@@ -22,6 +22,9 @@ public:
      * @ref MultiSpinBoxSection::decimals() property */
     int m_decimals = 2;
     /** @brief Internal storage of the
+     * @ref MultiSpinBoxSection::formatString() property */
+    QString m_formatString;
+    /** @brief Internal storage of the
      * @ref MultiSpinBoxSection::isWrapping() property */
     bool m_isWrapping = false;
     /** @brief Internal storage of the

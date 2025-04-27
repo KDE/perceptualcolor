@@ -55,21 +55,19 @@ static void snippet02()
 
     myConfiguration.setDecimals(1);
 
-    myConfiguration.setPrefix(QString());
     myConfiguration.setMinimum(0);
     myConfiguration.setWrapping(true);
     myConfiguration.setMaximum(360);
-    myConfiguration.setSuffix(QStringLiteral(u"° "));
+    myConfiguration.setFormatString(QStringLiteral(u"%1° "));
     hsvConfigurations.append(myConfiguration);
 
-    myConfiguration.setPrefix(QStringLiteral(u" "));
     myConfiguration.setMinimum(0);
     myConfiguration.setMaximum(255);
     myConfiguration.setWrapping(false);
-    myConfiguration.setSuffix(QStringLiteral(u" "));
+    myConfiguration.setFormatString(QStringLiteral(u" %1 "));
     hsvConfigurations.append(myConfiguration);
 
-    myConfiguration.setSuffix(QString());
+    myConfiguration.setFormatString(QStringLiteral("%1"));
     hsvConfigurations.append(myConfiguration);
 
     myHsvSpinBox->setSectionConfigurations(hsvConfigurations);
@@ -194,16 +192,13 @@ private Q_SLOTS:
         mySection.setDecimals(0);
         mySection.setMinimum(0);
         mySection.setMaximum(360);
-        mySection.setPrefix(QString());
-        mySection.setSuffix(QStringLiteral(u"°"));
+        mySection.setFormatString(QStringLiteral(u"%1°"));
         exampleConfigurations.append(mySection);
         mySection.setMaximum(100);
-        mySection.setPrefix(QStringLiteral(u"  "));
-        mySection.setSuffix(QStringLiteral(u"%"));
+        mySection.setFormatString(QStringLiteral(u"  %1%"));
         exampleConfigurations.append(mySection);
         mySection.setMaximum(255);
-        mySection.setPrefix(QStringLiteral(u"  "));
-        mySection.setSuffix(QString());
+        mySection.setFormatString(QStringLiteral(u"  %1"));
         exampleConfigurations.append(mySection);
     }
 
@@ -453,8 +448,7 @@ private Q_SLOTS:
         MultiSpinBoxSection section;
         section.setMinimum(1);
         section.setMaximum(9);
-        section.setPrefix(QStringLiteral(u"abcdefghij"));
-        section.setSuffix(QStringLiteral(u"abcdefghij"));
+        section.setFormatString(QStringLiteral(u"abcdefghij%1abcdefghij"));
         config.append(section);
         myMulti.setSectionConfigurations(config);
         const int referenceWidth = myMulti.sizeHint().width();
@@ -463,8 +457,7 @@ private Q_SLOTS:
 
         section.setMinimum(-1);
         section.setMaximum(9);
-        section.setPrefix(QStringLiteral(u"abcdefghij"));
-        section.setSuffix(QStringLiteral(u"abcdefghij"));
+        section.setFormatString(QStringLiteral(u"abcdefghij%1abcdefghij"));
         config.clear();
         config.append(section);
         myMulti.setSectionConfigurations(config);
@@ -472,8 +465,7 @@ private Q_SLOTS:
 
         section.setMinimum(1);
         section.setMaximum(19);
-        section.setPrefix(QStringLiteral(u"abcdefghij"));
-        section.setSuffix(QStringLiteral(u"abcdefghij"));
+        section.setFormatString(QStringLiteral(u"abcdefghij%1abcdefghij"));
         config.clear();
         config.append(section);
         myMulti.setSectionConfigurations(config);
@@ -481,8 +473,7 @@ private Q_SLOTS:
 
         section.setMinimum(-1);
         section.setMaximum(9);
-        section.setPrefix(QStringLiteral(u"abcdefghijh"));
-        section.setSuffix(QStringLiteral(u"abcdefghij"));
+        section.setFormatString(QStringLiteral(u"abcdefghijh%1abcdefghij"));
         config.clear();
         config.append(section);
         myMulti.setSectionConfigurations(config);
@@ -490,8 +481,7 @@ private Q_SLOTS:
 
         section.setMinimum(-1);
         section.setMaximum(9);
-        section.setPrefix(QStringLiteral(u"abcdefghij"));
-        section.setSuffix(QStringLiteral(u"abcdefghijh"));
+        section.setFormatString(QStringLiteral(u"abcdefghij%1abcdefghijh"));
         config.clear();
         config.append(section);
         myMulti.setSectionConfigurations(config);
@@ -510,15 +500,13 @@ private Q_SLOTS:
         myConfiguration.setDecimals(0);
         myConfiguration.setMinimum(1);
         myConfiguration.setMaximum(9);
-        myConfiguration.setPrefix(QStringLiteral(u"abc"));
-        myConfiguration.setSuffix(QStringLiteral(u"def"));
+        myConfiguration.setFormatString(QStringLiteral(u"abc%1def"));
         myConfigurations.append(myConfiguration);
         myValues.append(8);
 
         myConfiguration.setMinimum(10);
         myConfiguration.setMaximum(90);
-        myConfiguration.setPrefix(QStringLiteral(u"ghi"));
-        myConfiguration.setSuffix(QStringLiteral(u"jkl"));
+        myConfiguration.setFormatString(QStringLiteral(u"ghi%1jkl"));
         myConfigurations.append(myConfiguration);
         myValues.append(80);
 
@@ -543,15 +531,13 @@ private Q_SLOTS:
 
         myConfiguration.setMinimum(1);
         myConfiguration.setMaximum(9);
-        myConfiguration.setPrefix(QStringLiteral(u"abc"));
-        myConfiguration.setSuffix(QStringLiteral(u"def"));
+        myConfiguration.setFormatString(QStringLiteral(u"abc%1def"));
         myConfigurations.append(myConfiguration);
         myValues.append(8);
 
         myConfiguration.setMinimum(10);
         myConfiguration.setMaximum(90);
-        myConfiguration.setPrefix(QStringLiteral(u"ghi"));
-        myConfiguration.setSuffix(QStringLiteral(u"jkl"));
+        myConfiguration.setFormatString(QStringLiteral(u"ghi%1jkl"));
         myConfigurations.append(myConfiguration);
         myValues.append(80);
 
@@ -584,15 +570,13 @@ private Q_SLOTS:
 
         myConfiguration.setMinimum(1);
         myConfiguration.setMaximum(9);
-        myConfiguration.setPrefix(QStringLiteral(u"abc"));
-        myConfiguration.setSuffix(QStringLiteral(u"def"));
+        myConfiguration.setFormatString(QStringLiteral(u"abc%1def"));
         myConfigurations.append(myConfiguration);
         myValues.append(8);
 
         myConfiguration.setMinimum(10);
         myConfiguration.setMaximum(90);
-        myConfiguration.setPrefix(QStringLiteral(u"ghi"));
-        myConfiguration.setSuffix(QStringLiteral(u"jkl"));
+        myConfiguration.setFormatString(QStringLiteral(u"ghi%1jkl"));
         myConfigurations.append(myConfiguration);
         myValues.append(80);
 
@@ -616,8 +600,7 @@ private Q_SLOTS:
         myConfigurations.clear();
         myConfiguration.setMinimum(1);
         myConfiguration.setMaximum(9);
-        myConfiguration.setPrefix(QStringLiteral(u"abc"));
-        myConfiguration.setSuffix(QStringLiteral(u"def"));
+        myConfiguration.setFormatString(QStringLiteral(u"abc%1def"));
         myConfigurations.append(myConfiguration);
         myMulti.setSectionConfigurations(myConfigurations);
         myValues.clear();
@@ -756,8 +739,7 @@ private Q_SLOTS:
         MultiSpinBoxSection section;
         section.setMinimum(1);
         section.setMaximum(9);
-        section.setPrefix(QStringLiteral(u"abc"));
-        section.setSuffix(QStringLiteral(u"def"));
+        section.setFormatString(QStringLiteral(u"abc%1def"));
         config.append(section);
         myMulti.setSectionConfigurations(config);
         QCOMPARE(myMulti.sectionConfigurations().count(), 1);

@@ -217,12 +217,10 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
 void ColorDialogPrivate::retranslateUi()
 {
     /*: @item/plain Percentage value in a spinbox. Range: 0%–100%. */
-    const QPair<QString, QString> percentageInSpinbox = //
-        getPrefixSuffix(tr("%1%"));
+    const QString percentageInSpinbox = tr("%1%");
 
     /*: @item/plain Arc-degree value in a spinbox. Range: 0°–360°. */
-    const QPair<QString, QString> arcDegreeInSpinbox = //
-        getPrefixSuffix(tr("%1°"));
+    const QString arcDegreeInSpinbox = tr("%1°");
 
     QStringList profileInfo;
     const QString name = //
@@ -542,8 +540,9 @@ void ColorDialogPrivate::retranslateUi()
                                   "<p>HSV/HSB-Saturation: 0%⁠–⁠100%</p>"
                                   "<p>Brightness/Value: 0%⁠–⁠100%</p>"));
 
-    m_alphaSpinBox->setPrefix(percentageInSpinbox.first);
-    m_alphaSpinBox->setSuffix(percentageInSpinbox.second);
+    const auto myPercentagePrefixSuffix = getPrefixSuffix(percentageInSpinbox);
+    m_alphaSpinBox->setPrefix(myPercentagePrefixSuffix.first);
+    m_alphaSpinBox->setSuffix(myPercentagePrefixSuffix.second);
 
     /*: @label:slider Accessible name for lightness slider. This is different
     from “brightness”/“value” and should therefore get a different
@@ -588,16 +587,13 @@ void ColorDialogPrivate::retranslateUi()
             << hslSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        hslSections[0].setPrefix(arcDegreeInSpinbox.first);
-        hslSections[0].setSuffix( //
-            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        hslSections[1].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        hslSections[1].setSuffix( //
-            percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        hslSections[2].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        hslSections[2].setSuffix(percentageInSpinbox.second);
+        hslSections[0].setFormatString( //
+            arcDegreeInSpinbox + m_multispinboxSectionSeparator);
+        hslSections[1].setFormatString( //
+            m_multispinboxSectionSeparator + percentageInSpinbox //
+            + m_multispinboxSectionSeparator);
+        hslSections[2].setFormatString( //
+            m_multispinboxSectionSeparator + percentageInSpinbox);
         m_hslSpinBox->setSectionConfigurations(hslSections);
     }
 
@@ -610,17 +606,13 @@ void ColorDialogPrivate::retranslateUi()
             << hwbSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        hwbSections[0].setPrefix(arcDegreeInSpinbox.first);
-        hwbSections[0].setSuffix( //
-            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        hwbSections[1].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        hwbSections[1].setSuffix( //
-            percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        hwbSections[2].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        hwbSections[2].setSuffix( //
-            percentageInSpinbox.second);
+        hwbSections[0].setFormatString( //
+            arcDegreeInSpinbox + m_multispinboxSectionSeparator);
+        hwbSections[1].setFormatString( //
+            m_multispinboxSectionSeparator + percentageInSpinbox //
+            + m_multispinboxSectionSeparator);
+        hwbSections[2].setFormatString( //
+            m_multispinboxSectionSeparator + percentageInSpinbox);
         m_hwbSpinBox->setSectionConfigurations(hwbSections);
     }
 
@@ -633,16 +625,14 @@ void ColorDialogPrivate::retranslateUi()
             << hsvSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        hsvSections[0].setPrefix(arcDegreeInSpinbox.first);
-        hsvSections[0].setSuffix( //
-            arcDegreeInSpinbox.second + m_multispinboxSectionSeparator);
-        hsvSections[1].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        hsvSections[1].setSuffix( //
-            percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        hsvSections[2].setPrefix( //
-            m_multispinboxSectionSeparator + percentageInSpinbox.first);
-        hsvSections[2].setSuffix(percentageInSpinbox.second);
+        hsvSections[0].setFormatString( //
+            arcDegreeInSpinbox + m_multispinboxSectionSeparator);
+        hsvSections[1].setFormatString( //
+            m_multispinboxSectionSeparator //
+            + percentageInSpinbox //
+            + m_multispinboxSectionSeparator);
+        hsvSections[2].setFormatString( //
+            m_multispinboxSectionSeparator + percentageInSpinbox);
         m_hsvSpinBox->setSectionConfigurations(hsvSections);
     }
 
@@ -655,13 +645,14 @@ void ColorDialogPrivate::retranslateUi()
             << cielchD50Sections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        cielchD50Sections[0].setPrefix(percentageInSpinbox.first);
-        cielchD50Sections[0].setSuffix( //
-            percentageInSpinbox.second + m_multispinboxSectionSeparator);
-        cielchD50Sections[1].setPrefix(m_multispinboxSectionSeparator);
-        cielchD50Sections[1].setSuffix(m_multispinboxSectionSeparator);
-        cielchD50Sections[2].setPrefix(m_multispinboxSectionSeparator + arcDegreeInSpinbox.first);
-        cielchD50Sections[2].setSuffix(arcDegreeInSpinbox.second);
+        cielchD50Sections[0].setFormatString( //
+            percentageInSpinbox + m_multispinboxSectionSeparator);
+        cielchD50Sections[1].setFormatString( //
+            m_multispinboxSectionSeparator //
+            + QStringLiteral("%1") //
+            + m_multispinboxSectionSeparator);
+        cielchD50Sections[2].setFormatString( //
+            m_multispinboxSectionSeparator + arcDegreeInSpinbox);
         m_cielchD50SpinBox->setSectionConfigurations(cielchD50Sections);
     }
 
@@ -674,13 +665,13 @@ void ColorDialogPrivate::retranslateUi()
             << oklchSections.count() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        oklchSections[0].setPrefix(QString());
-        oklchSections[0].setSuffix(m_multispinboxSectionSeparator);
-        oklchSections[1].setPrefix(m_multispinboxSectionSeparator);
-        oklchSections[1].setSuffix(m_multispinboxSectionSeparator);
-        oklchSections[2].setPrefix( //
-            m_multispinboxSectionSeparator + arcDegreeInSpinbox.first);
-        oklchSections[2].setSuffix(arcDegreeInSpinbox.second);
+        oklchSections[0].setFormatString( //
+            QStringLiteral("%1") + m_multispinboxSectionSeparator);
+        oklchSections[1].setFormatString( //
+            m_multispinboxSectionSeparator + QStringLiteral("%1") //
+            + m_multispinboxSectionSeparator);
+        oklchSections[2].setFormatString( //
+            m_multispinboxSectionSeparator + arcDegreeInSpinbox);
         m_oklchSpinBox->setSectionConfigurations(oklchSections);
     }
 
@@ -2049,16 +2040,17 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setMinimum(0);
         mySection.setMaximum(255);
         // R
-        mySection.setPrefix(QString());
-        mySection.setSuffix(m_multispinboxSectionSeparator);
+        mySection.setFormatString( //
+            QStringLiteral("%1") + m_multispinboxSectionSeparator);
         rgbSections.append(mySection);
         // G
-        mySection.setPrefix(m_multispinboxSectionSeparator);
-        mySection.setSuffix(m_multispinboxSectionSeparator);
+        mySection.setFormatString( //
+            m_multispinboxSectionSeparator + QStringLiteral("%1") //
+            + m_multispinboxSectionSeparator);
         rgbSections.append(mySection);
         // B
-        mySection.setPrefix(m_multispinboxSectionSeparator);
-        mySection.setSuffix(QString());
+        mySection.setFormatString( //
+            m_multispinboxSectionSeparator + QStringLiteral("%1"));
         rgbSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
         m_rgbSpinBox->setSectionConfigurations(rgbSections);
@@ -2070,9 +2062,8 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_rgbLineEdit->setMaxLength(7);
         QRegularExpression tempRegularExpression( //
             QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
-        QRegularExpressionValidator *validator = new QRegularExpressionValidator( //
-            tempRegularExpression, //
-            q_pointer);
+        QRegularExpressionValidator *validator = //
+            new QRegularExpressionValidator(tempRegularExpression, q_pointer);
         m_rgbLineEdit->setValidator(validator);
     }
 

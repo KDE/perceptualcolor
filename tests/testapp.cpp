@@ -18,6 +18,8 @@
 #include "helpermath.h" // IWYU pragma: keep
 #include "helperposixmath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
+#include "multispinbox.h" // IWYU pragma: keep
+#include "multispinboxsection.h" // IWYU pragma: keep
 #include "oklchvalues.h" // IWYU pragma: keep
 #include "perceptualsettings.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
