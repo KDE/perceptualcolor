@@ -2291,7 +2291,7 @@ private Q_SLOTS:
 
         d->m_tabWidget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
-                        Qt::Key_B, //
+                        Qt::Key_S, //
                         Qt::AltModifier);
         QCOMPARE(d->m_tabWidget->currentIndex(), //
                  d->m_tabWidget->indexOf(d->m_swatchBookWrapperWidget));
