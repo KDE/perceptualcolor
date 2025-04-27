@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.5\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:106
@@ -167,12 +167,9 @@ msgstr "ფერების სივრცის ინფორმაცი�
 
 #. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
 #: colordialog.cpp:415
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "CIEHL&C D50:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr "CIEHL&C D50:"
+msgstr "&CIELCH D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:419
@@ -196,7 +193,7 @@ msgstr "&თექვს:"
 #: colordialog.cpp:431
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
-msgstr ""
+msgstr "&სვოჩის წიგნი"
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
 #: colordialog.cpp:443
@@ -296,16 +293,9 @@ msgstr "სიკაშკაშე"
 
 #. @info:tooltip Help text for CIELCH. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:556
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid ""
-#| "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
-#| "p><p>Whitepoint: D65</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr ""
-"<p>განათებულობა: %L1⁠–⁠%L2</p><p>ქრომა: %L3⁠–⁠%L4</p><p>ტონი: 0°⁠–⁠360°</"
-"p>><p>თეთრი წერტილი: D65</p>"
+msgstr "<p>განათებულობა: 0%⁠–⁠100%</p><p>ქრომა: 0⁠–⁠%L1</p><p>ტონი: 0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:565
@@ -337,24 +327,21 @@ msgstr "დააწკაპუნეთ უახლოეს &სკალი
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:717
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Basic colors"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
-msgstr "&ძირითადი ფერები"
+msgstr "ძირითადი ფერები"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:722
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
-msgstr ""
+msgstr "ისტორია"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:727
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "მომხმარებლის ფერები"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1272
@@ -384,13 +371,13 @@ msgstr "✓"
 #: swatchbook.cpp:116
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:617
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "წაშლა"
 
 #~ msgctxt "PerceptualColor::ColorDialogPrivate|"
 #~ msgid "<p>Hue: 0°⁠–⁠360°</p><p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p>"
