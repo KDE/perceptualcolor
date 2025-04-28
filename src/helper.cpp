@@ -216,8 +216,17 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  * @param type Type of widget color scheme for which the fallback icon (if
  *             used) should be suitable.
  *
- * @returns An icon from the system icons and or a fallback icons. If none is
- * available, an empty icon. */
+ * @returns An icon from the system icons or a fallback icons. If none is
+ * available, an empty icon.
+ *
+ * @internal
+ *
+ * @note Defining PERCEPTUALCOLORINTERNAL bypasses the platform's
+ * icon theme, relying exclusively on the fallback. This behavior
+ * is primarily intended to ensure that utils/generatescreenshots.cpp,
+ * used for generating documentation screenshots, produces results
+ * that are independent of the platform.
+ */
 QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type)
 {
 #ifdef PERCEPTUALCOLORINTERNAL
