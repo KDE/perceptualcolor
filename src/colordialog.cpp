@@ -713,8 +713,8 @@ void ColorDialogPrivate::retranslateUi()
     m_swatchBookSelector->setItemText(1, tr("History")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
 
     /*: @item:inlistbox
-    The swatch grid showing the history of
-    previously selected colors. */
+    The swatch grid showing custom colors, allowing users to add or remove
+    colors as desired. */
     m_swatchBookSelector->setItemText(2, tr("Custom Colors")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
 
     // NOTE No need to call
