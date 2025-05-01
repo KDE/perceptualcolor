@@ -415,7 +415,7 @@ int SwatchBookPrivate::widePatchSpacing() const
             q_pointer.toPointerToConstObject());
     }
     // A last-resort fallback:
-    return qMax(temp, 2);
+    return qMax(temp, 5);
 }
 
 /** @brief Vertical spacing between color patches.
@@ -440,8 +440,8 @@ int SwatchBookPrivate::verticalPatchSpacing() const
  * between patches is stronger. */
 int SwatchBookPrivate::normalPatchSpacing() const
 {
-    return qMax(widePatchSpacing() / 3, // ⅓ looks nice
-                1 // minimal useful value for a line visible as all scales
+    return qMax(widePatchSpacing() / 2, // ½ looks nice
+                3 // minimal useful value for a line visible as all scales
     );
 }
 
