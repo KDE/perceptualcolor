@@ -347,7 +347,7 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
 msgstr "History"
 
-#. @item:inlistbox The swatch grid showing the history of previously selected colors.
+#. @item:inlistbox The swatch grid showing custom colors, allowing users to add or remove colors as desired.
 #: colordialog.cpp:718
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
