@@ -12,9 +12,10 @@
 # does not come from KDE. Therefore we use them as less as possible.
 stages:
   - validate
+  - check1
   - build
-  - quality
-  - iwyu
+  - check2
+  - check3
 
 
 
@@ -34,7 +35,7 @@ codecheck_cppcheck:
   # on if issues have been found or not. And it runs always, and not only
   # when C++ code has changed. And it provides its results directly as
   # well-formatted JSON.
-  stage: build
+  stage: check1
   image: invent-registry.kde.org/sysadmin/ci-images/suse-qt515:latest
   tags:
     - Linux
@@ -80,7 +81,7 @@ codecheck_iwyu:
     when: always
     paths:
       - artifact_iwyu.txt
-  stage: iwyu
+  stage: check3
   dependencies:
     - codecheck_quality
   script:
@@ -109,7 +110,7 @@ codecheck_quality:
       - build_qch/perceptualcolor.qch
       - build_qch/perceptualcolor.tags
       - build_qch/perceptualcolor-0_QCHTargets.cmake
-  stage: quality
+  stage: check2
   before_script:
     - apt-get update --assume-yes
     # NOTE For some obscure reason, iwyu does not print anything if clazy
