@@ -609,7 +609,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
         !d_pointer->m_swatchGrid.value(logicalColumn, logicalRow).isValid();
 
     if (event->button() == Qt::MouseButton::RightButton) {
-        if (!swatchIsEmpty) {
+        if (d_pointer->m_isEditable && (!swatchIsEmpty)) {
             QMenu *menu = new QMenu(this);
             // Ensure proper cleanup when menu is closed
             menu->setAttribute(Qt::WA_DeleteOnClose);
@@ -636,7 +636,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     }
 
     if (event->button() == Qt::MouseButton::LeftButton) {
-        if (swatchIsEmpty) {
+        if (d_pointer->m_isEditable && swatchIsEmpty) {
             d_pointer->m_swatchGrid.setValue(logicalColumn, //
                                              logicalRow, //
                                              d_pointer->m_currentColor);
@@ -948,7 +948,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
                     myCornerRadius,
                     myCornerRadius);
             } else {
-                if (d_pointer->m_editable) {
+                if (d_pointer->m_isEditable) {
                     d_pointer->drawMark(offset, //
                                         &widgetPainter, //
                                         addMarkColor, //
@@ -1130,7 +1130,7 @@ QSize SwatchBookPrivate::colorPatchesSizeWithMargin() const
 
 bool SwatchBook::isEditable() const
 {
-    return d_pointer->m_editable;
+    return d_pointer->m_isEditable;
 }
 
 /** @brief Setter for the @ref editable property.
@@ -1138,7 +1138,7 @@ bool SwatchBook::isEditable() const
  * @param newEditable the new value */
 void SwatchBook::setEditable(const bool newEditable)
 {
-    d_pointer->m_editable = newEditable;
+    d_pointer->m_isEditable = newEditable;
     update(); // Schedule a paint event to make the changes visible.
     Q_EMIT editableChanged(newEditable);
 }

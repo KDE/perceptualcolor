@@ -103,7 +103,7 @@ public:
      */
     ColorSchemeType m_colorSchemeCache = ColorSchemeType::Light;
     /** @brief Internal storage for property @ref SwatchBook::editable */
-    bool m_editable = false;
+    bool m_isEditable = false;
     /** @brief Pointer to the RgbColorSpace object. */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** @brief Selected column.
