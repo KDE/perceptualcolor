@@ -51,6 +51,9 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
                           static_cast<double>(color.blueF() * 255));
 
     rgbQColor = color.toRgb();
+    if (rgbQColor.alphaF() != 1) {
+        rgbQColor.setAlphaF(1);
+    }
 
     // The hue is identical for HSL, HSV and HWB.
     const double hueDegree = hue.value_or( //
@@ -111,11 +114,13 @@ RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> h
  * constructed from the given color.
  *
  * @param color Original color.
+ * Note that the opacity (alpha channel) is ignored.
+ *
  * @returns A @ref RgbColor object representing this color. */
 RgbColor RgbColor::fromRgbQColor(const QColor &color)
 {
     RgbColor result;
-    result.fillAll(color, std::optional<double>());
+    result.fillAll(color, std::nullopt);
 
     return result;
 }

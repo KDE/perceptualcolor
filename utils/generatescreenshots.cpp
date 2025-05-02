@@ -487,7 +487,7 @@ static void makeScreenshots()
         myColorList.append(Qt::red);
         myColorList.append(Qt::green);
         myColorList.append(Qt::blue);
-        const Swatches mySwatches(4, 4, myColorList);
+        const QColorArray2D mySwatches(4, 4, myColorList);
         SwatchBook m_swatchBook(m_colorSpace, //
                                 mySwatches,
                                 Qt::Orientation::Horizontal);

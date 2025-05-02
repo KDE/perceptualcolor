@@ -91,11 +91,11 @@ class SwatchBook : public AbstractDiagram
      * @sa @ref swatchGrid() const
      * @sa @ref setSwatchGrid()
      * @sa @ref swatchGridChanged() */
-    Q_PROPERTY(Swatches swatchGrid READ swatchGrid WRITE setSwatchGrid NOTIFY swatchGridChanged)
+    Q_PROPERTY(QColorArray2D swatchGrid READ swatchGrid WRITE setSwatchGrid NOTIFY swatchGridChanged)
 
 public:
     Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-                                    const PerceptualColor::Swatches &swatchGrid,
+                                    const PerceptualColor::QColorArray2D &swatchGrid,
                                     Qt::Orientations wideSpacing,
                                     QWidget *parent = nullptr);
     virtual ~SwatchBook() noexcept override;
@@ -108,13 +108,13 @@ public:
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     /** @brief Getter for property @ref swatchGrid
      *  @returns the property @ref swatchGrid */
-    [[nodiscard]] Swatches swatchGrid() const;
+    [[nodiscard]] QColorArray2D swatchGrid() const;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &newCurrentColor);
     void setEditable(const bool newEditable);
-    void setSwatchGrid(const PerceptualColor::Swatches &newSwatchGrid);
+    void setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGrid);
 
 Q_SIGNALS:
     /** @brief Notify signal for property @ref currentColor.
@@ -128,7 +128,7 @@ Q_SIGNALS:
     /** @brief Notify signal for property @ref swatchGrid.
      *
      * @param newSwatchGrid the new @ref swatchGrid */
-    void swatchGridChanged(const PerceptualColor::Swatches &newSwatchGrid);
+    void swatchGridChanged(const PerceptualColor::QColorArray2D &newSwatchGrid);
 
 protected:
     virtual void changeEvent(QEvent *event) override;

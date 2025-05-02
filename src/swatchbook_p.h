@@ -50,7 +50,7 @@ public:
             patch, a new color is added to this patch. */
     };
 
-    explicit SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::Swatches &swatchGrid, Qt::Orientations wideSpacing);
+    explicit SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -130,7 +130,7 @@ public:
      * The value is set by @ref retranslateUi(). */
     QString m_selectionMark;
     /** @brief Internal storage for property @ref SwatchBook::swatchGrid */
-    Swatches m_swatchGrid;
+    QColorArray2D m_swatchGrid;
     /** @brief List of axis where @ref widePatchSpacing should be used. */
     const Qt::Orientations m_wideSpacing;
 

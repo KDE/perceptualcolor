@@ -222,7 +222,7 @@ public:
         if (isInRange<QListSizeType>(0, i, m_iCount - 1) //
             && isInRange<QListSizeType>(0, j, m_jCount - 1) //
         ) {
-            return m_data[i + m_iCount * j];
+            return m_data.at(i + m_iCount * j);
         }
         return T(); // Default value if indices are out of bounds
     }
@@ -259,7 +259,11 @@ private:
  * example if you want to use for <em>queued</em> signal-slot connections),
  * you might consider calling <tt>qRegisterMetaType()</tt> for
  * this type, once you have a QApplication object. */
-using Swatches = Array2D<QColor>;
+using QColorArray2D = Array2D<QColor>;
+
+QColor toOpaque(const QColor &color);
+
+QColorArray2D toOpaque(const QColorArray2D &array);
 
 /** @internal
  *
@@ -302,7 +306,7 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
     }
 }
 
-[[nodiscard]] Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+[[nodiscard]] QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type);
 
@@ -413,6 +417,6 @@ template<typename T>
 
 // Use Q_DECLARE_METATYPE with this data type.
 // Attention: This must be done outside of all name-spaces.
-Q_DECLARE_METATYPE(PerceptualColor::Swatches)
+Q_DECLARE_METATYPE(PerceptualColor::QColorArray2D)
 
 #endif // HELPER_H

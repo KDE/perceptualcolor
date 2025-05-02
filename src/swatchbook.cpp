@@ -130,13 +130,13 @@ void SwatchBookPrivate::retranslateUi()
  *        everywhere, simply set this parameter to <tt>{}</tt>.
  * @param parent The parent of the widget, if any */
 SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-                       const PerceptualColor::Swatches &swatchGrid,
+                       const PerceptualColor::QColorArray2D &swatchGrid,
                        Qt::Orientations wideSpacing,
                        QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new SwatchBookPrivate(this, swatchGrid, wideSpacing))
 {
-    qRegisterMetaType<Swatches>();
+    qRegisterMetaType<QColorArray2D>();
 
     d_pointer->m_rgbColorSpace = colorSpace;
 
@@ -174,7 +174,7 @@ SwatchBook::~SwatchBook() noexcept
  * @param swatchGrid The swatches.
  * @param wideSpacing Set of axis using @ref widePatchSpacing instead
  *        of @ref normalPatchSpacing. */
-SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::Swatches &swatchGrid, Qt::Orientations wideSpacing)
+SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing)
     : m_swatchGrid(swatchGrid)
     , m_wideSpacing(wideSpacing)
     , q_pointer(backLink)
@@ -265,15 +265,17 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-Swatches SwatchBook::swatchGrid() const
+QColorArray2D SwatchBook::swatchGrid() const
 {
     return d_pointer->m_swatchGrid;
 }
 
 /** @brief Setter for the @ref swatchGrid property.
  *
+ * @pre The colors are fully opaque (alpha = 100%).
+ *
  * @param newSwatchGrid the new value */
-void SwatchBook::setSwatchGrid(const PerceptualColor::Swatches &newSwatchGrid)
+void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGrid)
 {
     if (newSwatchGrid == d_pointer->m_swatchGrid) {
         return;
@@ -328,7 +330,7 @@ void SwatchBookPrivate::selectSwatch(QListSizeType newCurrentColomn, QListSizeTy
  * or none if there is no corresponding swatch. */
 void SwatchBookPrivate::selectSwatchFromCurrentColor()
 {
-    if ((m_selectedColumn > 0) && (m_selectedRow > 0)) {
+    if ((m_selectedColumn >= 0) && (m_selectedRow >= 0)) {
         if (m_swatchGrid.value(m_selectedColumn, m_selectedRow) == m_currentColor) {
             return;
         }

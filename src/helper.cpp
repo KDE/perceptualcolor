@@ -488,7 +488,7 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * 2 shades).
  *
  * @note The RGB value is rounded to full integers in the range [0, 255]. */
-Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     constexpr GenericColor red{41.22, 61.40, 17.92};
     constexpr GenericColor orange{61.70, 29.38, 64.40};
@@ -507,7 +507,7 @@ Swatches wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &co
     constexpr MySizeType columnCount = //
         chromaticCielabColors.size() + 1; // + 1 for gray axis
     constexpr auto rowCount = 5;
-    Swatches wcsSwatches{columnCount, rowCount};
+    QColorArray2D wcsSwatches{columnCount, rowCount};
 
     // Chromatic colors
     constexpr double strongTint = 0.46;
@@ -619,6 +619,42 @@ QMap<cmsUInt32Number, QString> lcmsIntentList()
         delete[] descriptionArray;
         return lambdaResult;
     }();
+    return result;
+}
+
+/**
+ * @brief Sets the opacity of a color to fully opaque.
+ *
+ * @param color The input color.
+ *
+ * @return The same color with its alpha channel set to maximum opacity.
+ */
+QColor toOpaque(const QColor &color)
+{
+    auto temp = color;
+    if (temp.alphaF() != 1) {
+        temp.setAlphaF(1);
+    }
+    return temp;
+}
+
+/**
+ * @brief Makes all colors in the array fully opaque.
+ *
+ * @param array The input array of colors.
+ *
+ * @return The same array with the alpha channel of each valid color set to
+ * full opacity.
+ */
+QColorArray2D toOpaque(const QColorArray2D &array)
+{
+    auto result = array;
+    for (QListSizeType i = 0; i < result.iCount(); ++i) {
+        for (QListSizeType j = 0; j < result.iCount(); ++j) {
+            const auto temp = result.value(i, j);
+            result.setValue(i, j, toOpaque(temp));
+        }
+    }
     return result;
 }
 

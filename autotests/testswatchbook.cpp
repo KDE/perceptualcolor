@@ -533,8 +533,8 @@ private Q_SLOTS:
                               wcsBasicColors(m_rgbColorSpace), //
                               {});
         QCOMPARE(testWidget.swatchGrid(), wcsBasicColors(m_rgbColorSpace));
-        testWidget.setSwatchGrid(Swatches());
-        QCOMPARE(testWidget.swatchGrid(), Swatches());
+        testWidget.setSwatchGrid(QColorArray2D());
+        QCOMPARE(testWidget.swatchGrid(), QColorArray2D());
     }
 };
 

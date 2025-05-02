@@ -551,6 +551,29 @@ private Q_SLOTS:
         QVERIFY(lcmsIntentList().contains(INTENT_SATURATION));
         QVERIFY(lcmsIntentList().contains(INTENT_ABSOLUTE_COLORIMETRIC));
     }
+
+    void testToOpaqueColorValidColor()
+    {
+        const QColor red = Qt::red;
+        QColorArray2D myArray(1, 1);
+
+        myArray.setValue(0, 0, red);
+        QCOMPARE(toOpaque(myArray).value(0, 0), red);
+
+        QColor temp = red;
+        temp.setAlphaF(0.5);
+        myArray.setValue(0, 0, temp);
+        QCOMPARE(toOpaque(myArray).value(0, 0), red);
+    }
+
+    void testToOpaqueColorInvalidColor()
+    {
+        QColorArray2D myArray(1, 1);
+
+        myArray.setValue(0, 0, QColor());
+        QVERIFY2(!toOpaque(myArray).value(0, 0).isValid(), //
+                 "Invalid input colors must stay invalid after processing.");
+    }
 };
 
 } // namespace PerceptualColor

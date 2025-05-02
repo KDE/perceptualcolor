@@ -48,8 +48,24 @@ public:
     /** @brief Custom colors of @ref ColorDialog. */
     Setting<PerceptualSettings::ColorList> customColors;
 
+    /**
+     * @brief Last actually selected (confirmed by Okay button
+     * respectively Enter key) color of @ref ColorDialog.
+     *
+     * @note This contains also the alpha channel.
+     *
+     * @sa @ref history
+     */
+    Setting<QColor> lastColor;
+
     /** @brief History of actually selected (confirmed by Okay button
-     * respectively Enter key) colors of @ref ColorDialog. */
+     * respectively Enter key) colors of @ref ColorDialog.
+     *
+     * @note This alpha channel (opacity) is stripped. All colors are fully
+     * opaque.
+     *
+     * @sa @ref lastColor
+     */
     Setting<PerceptualSettings::ColorList> history;
 
     /** @brief A specific page from the swatch book.

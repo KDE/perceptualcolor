@@ -307,6 +307,10 @@ int main(int argc, char *argv[])
 
     // m_colorDialog.setCurrentColor(QColor(50, 127, 206));
     // m_colorDialog.setCurrentColor(QColor(0, 255, 0));
+    // m_colorDialog.setCurrentColor(QColor(0, 255, 255, 50));
+
+    // QColorDialog myQColorDialog;
+    // myQColorDialog.show();
 
     // Run
     return app.exec();

@@ -38,6 +38,7 @@ PerceptualSettings::PerceptualSettings()
     //   manually typing the key strings.
     //   (This avoids typing errors.)
     , customColors(QStringLiteral("colordialog/customcolors"), this)
+    , lastColor(QStringLiteral("colordialog/lastcolor"), this)
     , history(QStringLiteral("colordialog/history"), this)
     , swatchBookPage(QStringLiteral("colordialog/swatchbookpage"), this)
     , tab(QStringLiteral("colordialog/tab"), this)

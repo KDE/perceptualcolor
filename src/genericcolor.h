@@ -15,8 +15,7 @@ namespace PerceptualColor
 
 /** @internal
  *
- * @brief Numeric representation of an opaque color with up to four components
- * without specifying the color space or the opacity/alpha.
+ * @brief Numeric representation of an opaque color with up to four components.
  *
  * This type is declared as type to Qt’s type system via
  * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
@@ -119,10 +118,7 @@ public:
     double second = 0;
     /** @brief Third value. */
     double third = 0;
-    /** @brief Forth value.
-     *
-     * Note that is is for color spaces that have four components (like CMYK).
-     * It must <em>never</em> be used for opacity/alpha values. */
+    /** @brief Forth value. */
     double fourth = 0;
 };
 
