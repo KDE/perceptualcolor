@@ -181,6 +181,21 @@ public:
         return !(*this == other);
     }
 
+    /** @brief If a given indices combination is in range.
+     *
+     * @param i index (first dimension)
+     * @param j index (second dimension)
+     * @returns If the indices combination is in range.
+     */
+    bool isInRange(QListSizeType i, QListSizeType j) const
+    {
+        const bool iOkay = //
+            PerceptualColor::isInRange<QListSizeType>(0, i, m_iCount - 1);
+        const bool jOkay = //
+            PerceptualColor::isInRange<QListSizeType>(0, j, m_jCount - 1);
+        return (iOkay && jOkay);
+    }
+
     /** @brief Set value at a given index.
      *
      * @param i index (first dimension)
@@ -188,9 +203,7 @@ public:
      * @param value value to set */
     void setValue(QListSizeType i, QListSizeType j, const T &value)
     {
-        if (isInRange<QListSizeType>(0, i, m_iCount - 1) //
-            && isInRange<QListSizeType>(0, j, m_jCount - 1) //
-        ) {
+        if (isInRange(i, j)) {
             m_data[i + m_iCount * j] = value;
         }
     }
@@ -219,9 +232,7 @@ public:
      * A default-constructed value otherwise. */
     T value(QListSizeType i, QListSizeType j) const
     {
-        if (isInRange<QListSizeType>(0, i, m_iCount - 1) //
-            && isInRange<QListSizeType>(0, j, m_jCount - 1) //
-        ) {
+        if (isInRange(i, j)) {
             return m_data.at(i + m_iCount * j);
         }
         return T(); // Default value if indices are out of bounds

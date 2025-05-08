@@ -544,6 +544,18 @@ private Q_SLOTS:
         QCOMPARE(test.value(1, 2), 20);
     }
 
+    void testArray2DIsInRange()
+    {
+        Array2D<int> test(2, 3);
+        QCOMPARE(test.isInRange(-1, -1), false);
+        QCOMPARE(test.isInRange(-1, 0), false);
+        QCOMPARE(test.isInRange(0, -1), false);
+        QCOMPARE(test.isInRange(0, 0), true);
+        QCOMPARE(test.isInRange(1, 2), true);
+        QCOMPARE(test.isInRange(1, 3), false);
+        QCOMPARE(test.isInRange(2, 2), false);
+    }
+
     void testLcmsIntentList()
     {
         QVERIFY(lcmsIntentList().contains(INTENT_PERCEPTUAL));

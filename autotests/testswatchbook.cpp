@@ -100,13 +100,10 @@ private Q_SLOTS:
         SwatchBook testObject(m_rgbColorSpace, //
                               wcsBasicColors(m_rgbColorSpace),
                               {});
-        // Verify that initially one of the colors of the swatch book
-        // is actually selected (no -1 as index):
-        QVERIFY(testObject.d_pointer->m_selectedColumn >= 0);
-        QVERIFY(testObject.d_pointer->m_selectedRow >= 0);
-        // Verify that the initial color conforms to QColorDialog
-        QColorDialog reference;
-        QCOMPARE(testObject.currentColor(), reference.currentColor());
+        // Verify that initially by default no color is selected:
+        QCOMPARE(testObject.d_pointer->m_selectedRow, -1);
+        QCOMPARE(testObject.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testObject.d_pointer->m_selectedRow, -1);
     }
 
     void testMinimalSizeHint()
@@ -162,11 +159,11 @@ private Q_SLOTS:
             });
         // Initialize the swatch book widget and lastSignalColor to a
         // defined state
-        testWidget.d_pointer->selectSwatch(0, 0);
+        testWidget.d_pointer->selectSwatchByLogicalCoordinates(0, 0);
 
         // Test
         const QColor oldColor = lastSignalColor;
-        testWidget.d_pointer->selectSwatch(0, 1);
+        testWidget.d_pointer->selectSwatchByLogicalCoordinates(0, 1);
         QVERIFY(oldColor != lastSignalColor); // Signal has been emitted
 
         testWidget.setCurrentColor(Qt::red);
@@ -401,10 +398,389 @@ private Q_SLOTS:
         delete style;
     }
 
-    void testKeyboard()
+    void testSetCurrentColor()
     {
+        QColorArray2D array = QColorArray2D(4, 1);
+        array.setValue(0, 0, Qt::red);
+        array.setValue(1, 0, Qt::green);
+        array.setValue(2, 0, Qt::blue);
+        array.setValue(3, 0, QColor()); // invalid color
         SwatchBook testWidget(m_rgbColorSpace, //
-                              wcsBasicColors(m_rgbColorSpace),
+                              array,
+                              {});
+        testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+
+        testWidget.setCurrentColor(Qt::red);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(Qt::green);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(Qt::blue);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 2);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(QColor());
+        // Setting an invalid current color means: No color selected.
+        // There might be individual color patches carrying the value of
+        // an invalid color, but here it means that the color patch is empty.
+        // So setting an invalid current color should never select an empty
+        // swatch (if any).
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1); // And not 3.
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1); // And not 0.
+    }
+
+    void testKeyboardStartLTR()
+    {
+        // If no color patch is currently selected, but a key is pressed
+        // to move the selection (e.g., left arrow, page up, etc.),
+        // the first selected color patch should be (0, 0) in
+        // left-to-right (LTR) layouts.
+
+        const auto myBasicColors = wcsBasicColors(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              myBasicColors,
+                              {});
+        testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Right);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Up);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Down);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_PageUp);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_PageDown);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Home);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_End);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        QColorArray2D array = QColorArray2D(3, 3);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, Qt::red);
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, Qt::red);
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 2);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, Qt::red);
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 1);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, Qt::red);
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 2);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 1);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+    }
+
+    void testKeyboardStartRTL()
+    {
+        // If no color patch is currently selected, but a key is pressed
+        // to move the selection (e.g., left arrow, page up, etc.),
+        // the first selected color patch should be the top-right patch in
+        // right-to-left (RTL) layouts.
+
+        const auto myBasicColors = wcsBasicColors(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              myBasicColors,
+                              {});
+        testWidget.setLayoutDirection(Qt::LayoutDirection::RightToLeft);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Right);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Up);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Down);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_PageUp);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_PageDown);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_Home);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QTest::keyClick(&testWidget, Qt::Key_End);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        QColorArray2D array = QColorArray2D(3, 3);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, Qt::red);
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, Qt::red);
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 2);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, Qt::red);
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 1);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, Qt::red);
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 2);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 1);
+
+        // Set some invalid values
+        array.setValue(0, 0, QColor());
+        array.setValue(1, 0, QColor());
+        array.setValue(2, 0, QColor());
+        array.setValue(0, 1, QColor());
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 1, QColor());
+        array.setValue(0, 2, QColor());
+        array.setValue(1, 2, QColor());
+        array.setValue(2, 2, QColor());
+        testWidget.setSwatchGrid(array);
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            QColor(1, 2, 3));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+        QTest::keyClick(&testWidget, Qt::Key_Left);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1);
+    }
+
+    void testKeyboardMove()
+    {
+        const auto myBasicColors = wcsBasicColors(m_rgbColorSpace);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              myBasicColors,
                               {});
         const QListSizeType count = //
             qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
@@ -412,11 +788,122 @@ private Q_SLOTS:
             // Add 1 to exceed the possible number of fields (crash test)
             + 1;
 
-        // Starting point is (0, 0) when no swatch was selected before
+        // Starting point is (0, 0) on LTR layout
         testWidget.setCurrentColor(
             // A color that is not in the swatch book:
-            QColor(1, 2, 3));
-        QTest::keyClick(&testWidget, Qt::Key_Left);
+            wcsBasicColors(m_rgbColorSpace).value(0, 0));
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        // Test keys LTR
+        testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Right);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Left);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        QTest::keyClick(&testWidget, Qt::Key_End);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        QTest::keyClick(&testWidget, Qt::Key_Home);
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Left);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+
+        // Key tests RTL
+        testWidget.setLayoutDirection(Qt::LayoutDirection::RightToLeft);
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Left);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Right);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        QTest::keyClick(&testWidget, Qt::Key_End);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 testWidget.d_pointer->m_swatchGrid.iCount() - 1);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        QTest::keyClick(&testWidget, Qt::Key_Home);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+
+        // Key tests vertical
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Down);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 testWidget.d_pointer->m_swatchGrid.jCount() - 1);
+        for (int i = 0; i < count; ++i) {
+            QTest::keyClick(&testWidget, Qt::Key_Up);
+        }
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+        QTest::keyClick(&testWidget, Qt::Key_PageDown);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 testWidget.d_pointer->m_swatchGrid.jCount() - 1);
+        QTest::keyClick(&testWidget, Qt::Key_PageUp);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, //
+                 0);
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, //
+                 0);
+    }
+
+    void testKeyboardMoveWithHoles()
+    {
+        // There might be holes in the swatch book (patches that are empty).
+        // The keyboard should react correctly nevertheless.
+        const auto myBasicColors = wcsBasicColors(m_rgbColorSpace);
+        QColorArray2D array = myBasicColors;
+        // Set some invalid values
+        array.setValue(1, 1, QColor());
+        array.setValue(2, 2, QColor());
+        array.setValue(3, 3, QColor());
+        array.setValue(4, 4, QColor());
+        array.setValue(9, 5, QColor());
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              array,
+                              {});
+        const QListSizeType count = //
+            qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
+                 testWidget.d_pointer->m_swatchGrid.jCount())
+            // Add 1 to exceed the possible number of fields (crash test)
+            + 1;
+
+        // Starting point is (0, 0) on LTR layout
+        testWidget.setCurrentColor(
+            // A color that is not in the swatch book:
+            wcsBasicColors(m_rgbColorSpace).value(0, 0));
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
 

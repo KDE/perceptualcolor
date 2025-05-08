@@ -148,9 +148,6 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     // (Important on some QStyle who might paint widgets different then.)
     setAttribute(Qt::WA_Hover);
 
-    // Initialize the selection (and implicitly the currentColor property):
-    d_pointer->selectSwatch(8, 0); // Same default as in QColorDialog
-
     initializeTranslation(QCoreApplication::instance(),
                           // An empty std::optional means: If in initialization
                           // had been done yet, repeat this initialization.
@@ -235,9 +232,6 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 {
     // Convert to RGB:
     QColor temp = newCurrentColor;
-    if (!temp.isValid()) {
-        temp = Qt::black; // Conformance with QColorDialog
-    }
     if (temp.spec() != QColor::Spec::Rgb) {
         // Make sure that the QColor::spec() is QColor::Spec::Rgb.
         // QColorDialog apparently calls QColor.rgb() within its
@@ -297,23 +291,33 @@ void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGr
 
 /** @brief Selects a swatch from the book.
  *
- * @pre Both parameters are valid indexes within @ref m_swatchGrid.
- * (Otherwise there will likely be a crash.)
+ * @pre Both parameters must be valid indexes within @ref m_swatchGrid.
+ *      Providing invalid indexes may result in a crash.
  *
- * @param newCurrentColomn Index of the column.
+ * @param newCurrentColumn Index of the column, corresponding to the first
+ *        index in @ref m_swatchGrid.
  *
- * @param newCurrentRow Index of the row.
+ * @param newCurrentRow Index of the row, corresponding to the second
+ *        index in @ref m_swatchGrid.
  *
- * @post If the given swatch is empty, nothing happens. Otherwise, it is
- * selected and the selection mark is visible and @ref SwatchBook::currentColor
- * has the value of this color. */
-void SwatchBookPrivate::selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow)
+ * @note The coordinates are <em>logical</em>, not physically visible
+ *       coordinates. In left-to-right (LTR) layouts, the logical
+ *       coordinate (0, 0) represents the top-left swatch. In right-to-left
+ *       (RTL) layouts, the logical coordinate (0, 0) corresponds to the
+ *       top-right swatch, though the physical screen representation is
+ *       mirrored.
+ *
+ * @post If the specified swatch is empty, no action is taken. Otherwise, the
+ *       swatch is selected, the selection mark becomes visible, and
+ *       @ref SwatchBook::currentColor is updated to reflect the selected color.
+ */
+void SwatchBookPrivate::selectSwatchByLogicalCoordinates(QListSizeType newCurrentColumn, QListSizeType newCurrentRow)
 {
-    const auto newColor = m_swatchGrid.value(newCurrentColomn, newCurrentRow);
+    const auto newColor = m_swatchGrid.value(newCurrentColumn, newCurrentRow);
     if (!newColor.isValid()) {
         return;
     }
-    m_selectedColumn = newCurrentColomn;
+    m_selectedColumn = newCurrentColumn;
     m_selectedRow = newCurrentRow;
     if (newColor != m_currentColor) {
         m_currentColor = newColor;
@@ -640,10 +644,12 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
             d_pointer->m_swatchGrid.setValue(logicalColumn, //
                                              logicalRow, //
                                              d_pointer->m_currentColor);
-            d_pointer->selectSwatch(logicalColumn, logicalRow);
+            d_pointer->selectSwatchByLogicalCoordinates(logicalColumn, //
+                                                        logicalRow);
             Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
         } else {
-            d_pointer->selectSwatch(logicalColumn, logicalRow);
+            d_pointer->selectSwatchByLogicalCoordinates(logicalColumn, //
+                                                        logicalRow);
         }
         return;
     }
@@ -997,36 +1003,49 @@ void SwatchBook::paintEvent(QPaintEvent *event)
  * @param event the event */
 void SwatchBook::keyPressEvent(QKeyEvent *event)
 {
-    QListSizeType columnShift = 0;
-    QListSizeType rowShift = 0;
-    const int writingDirection = //
-        (layoutDirection() == Qt::LeftToRight) //
-        ? 1 //
-        : -1;
+    QListSizeType steps = 0;
+    const QListSizeType stepWidth = //
+        (event->modifiers().testFlag(Qt::ControlModifier)) //
+        ? 2 //
+        : 1;
+    QListSizeType shiftColumn = 0;
+    QListSizeType shiftRow = 0;
     switch (event->key()) {
     case Qt::Key_Up:
-        rowShift = -1;
+        steps = stepWidth;
+        shiftRow = -1;
         break;
     case Qt::Key_Down:
-        rowShift = 1;
+        steps = stepWidth;
+        shiftRow = 1;
         break;
     case Qt::Key_Left:
-        columnShift = -1 * writingDirection;
+        steps = stepWidth;
+        shiftColumn = (layoutDirection() == Qt::LeftToRight) //
+            ? -1 //
+            : 1;
         break;
     case Qt::Key_Right:
-        columnShift = 1 * writingDirection;
+        steps = stepWidth;
+        shiftColumn = (layoutDirection() == Qt::LeftToRight) //
+            ? 1
+            : -1;
         break;
     case Qt::Key_PageUp:
-        rowShift = (-1) * d_pointer->m_swatchGrid.jCount();
+        steps = d_pointer->m_swatchGrid.jCount() - 1;
+        shiftRow = -1;
         break;
     case Qt::Key_PageDown:
-        rowShift = d_pointer->m_swatchGrid.jCount();
+        steps = d_pointer->m_swatchGrid.jCount() - 1;
+        shiftRow = 1;
         break;
     case Qt::Key_Home:
-        columnShift = (-1) * d_pointer->m_swatchGrid.iCount();
+        steps = d_pointer->m_swatchGrid.iCount() - 1;
+        shiftColumn = -1;
         break;
     case Qt::Key_End:
-        columnShift = d_pointer->m_swatchGrid.iCount();
+        steps = d_pointer->m_swatchGrid.iCount() - 1;
+        shiftColumn = 1;
         break;
     default:
         // Quote from Qt documentation:
@@ -1047,25 +1066,46 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
     // keyPressEvent yet to the parent and returned.
 
     // If currently no color of the swatch book is selected, select the
-    // first color as default.
-    if ((d_pointer->m_selectedColumn < 0) && (d_pointer->m_selectedRow < 0)) {
-        d_pointer->selectSwatch(0, 0);
-        return;
+    // first color as default, then return.
+    if ((d_pointer->m_selectedColumn < 0) || (d_pointer->m_selectedRow < 0)) {
+        for (int j = 0; j < d_pointer->m_swatchGrid.iCount(); ++j) {
+            for (int i = 0; i < d_pointer->m_swatchGrid.jCount(); ++i) {
+                if (d_pointer->m_swatchGrid.value(i, j).isValid()) {
+                    d_pointer->selectSwatchByLogicalCoordinates(i, j);
+                    return;
+                }
+            }
+        }
     }
 
-    const int accelerationFactor = 2;
-    if (event->modifiers().testFlag(Qt::ControlModifier)) {
-        columnShift *= accelerationFactor;
-        rowShift *= accelerationFactor;
-    }
+    // At this point, we can assume that currently a valid swatch is yet
+    // selected.
 
-    d_pointer->selectSwatch( //
-        qBound<QListSizeType>(0, //
-                              d_pointer->m_selectedColumn + columnShift,
-                              d_pointer->m_swatchGrid.iCount() - 1),
-        qBound<QListSizeType>(0, //
-                              d_pointer->m_selectedRow + rowShift, //
-                              d_pointer->m_swatchGrid.jCount() - 1));
+    QListSizeType newLogicalColumn = d_pointer->m_selectedColumn;
+    QListSizeType newLogicalRow = d_pointer->m_selectedRow;
+    QListSizeType tempLogicalColumn = newLogicalColumn;
+    QListSizeType tempLogicalRow = newLogicalRow;
+    bool isTempLogicalPositionInRange = true;
+    QListSizeType completedSteps = 0;
+    while (isTempLogicalPositionInRange && (completedSteps < steps)) {
+        tempLogicalColumn += shiftColumn;
+        tempLogicalRow += shiftRow;
+        isTempLogicalPositionInRange = //
+            d_pointer->m_swatchGrid.isInRange(tempLogicalColumn, //
+                                              tempLogicalRow);
+        if (isTempLogicalPositionInRange) {
+            const auto swatch = //
+                d_pointer->m_swatchGrid.value(tempLogicalColumn, //
+                                              tempLogicalRow);
+            if (swatch.isValid()) {
+                newLogicalColumn = tempLogicalColumn;
+                newLogicalRow = tempLogicalRow;
+                ++completedSteps;
+            }
+        }
+    }
+    d_pointer->selectSwatchByLogicalCoordinates(newLogicalColumn, //
+                                                newLogicalRow);
 }
 
 /** @brief Handle state changes.

@@ -73,7 +73,7 @@ public:
     [[nodiscard]] QSize patchSizeInner() const;
     [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();
-    void selectSwatch(QListSizeType newCurrentColomn, QListSizeType newCurrentRow);
+    void selectSwatchByLogicalCoordinates(QListSizeType newCurrentColumn, QListSizeType newCurrentRow);
     void selectSwatchFromCurrentColor();
     void updateColorSchemeCache();
     [[nodiscard]] int verticalPatchSpacing() const;
@@ -110,13 +110,33 @@ public:
      *
      * If one of the swatches in the book is selected, this is
      * the index of the column.
-     * Otherwise, its <tt>-1</tt>. */
+     * Otherwise, its <tt>-1</tt>.
+     *
+     * @note The coordinates are <em>logical</em>, not physically visible
+     *       coordinates. In left-to-right (LTR) layouts, the logical
+     *       coordinate (0, 0) represents the top-left swatch. In right-to-left
+     *       (RTL) layouts, the logical coordinate (0, 0) corresponds to the
+     *       top-right swatch, though the physical screen representation is
+     *       mirrored.
+     *
+     * @sa @ref m_selectedRow
+     */
     QListSizeType m_selectedColumn = -1;
     /** @brief Selected row.
      *
      * If one of the swatches in the book is selected, this is
      * the index of the row.
-     * Otherwise, its <tt>-1</tt>. */
+     * Otherwise, its <tt>-1</tt>.
+     *
+     * @note The coordinates are <em>logical</em>, not physically visible
+     *       coordinates. In left-to-right (LTR) layouts, the logical
+     *       coordinate (0, 0) represents the top-left swatch. In right-to-left
+     *       (RTL) layouts, the logical coordinate (0, 0) corresponds to the
+     *       top-right swatch, though the physical screen representation is
+     *       mirrored.
+     *
+     * @sa @ref m_selectedColumn
+     */
     QListSizeType m_selectedRow = -1;
     /** @brief The selection mark to use, or an empty string if no
      * selection mark is available.
