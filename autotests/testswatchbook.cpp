@@ -1023,6 +1023,47 @@ private Q_SLOTS:
         testWidget.setSwatchGrid(QColorArray2D());
         QCOMPARE(testWidget.swatchGrid(), QColorArray2D());
     }
+
+    void testInitSwatchGridTransparency()
+    {
+        // The widget does not support transparency. When assigning a swatch
+        // grid, all colors should bet treated as opaque, even if the
+        // assigned values might contain transparency.
+        QColorArray2D array = QColorArray2D(1, 1);
+        const QColor myColor = QColor(50, 100, 150, 200);
+        array.setValue(0, 0, myColor);
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              array,
+                              {});
+        QCOMPARE(testWidget.swatchGrid().value(0, 0).alphaF(), 1);
+    }
+
+    void testSetSwatchGridTransparency()
+    {
+        // The widget does not support transparency. When assigning a swatch
+        // grid, all colors should bet treated as opaque, even if the
+        // assigned values might contain transparency.
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              {},
+                              {});
+        QColorArray2D array = QColorArray2D(1, 1);
+        const QColor myColor = QColor(50, 100, 150, 200);
+        array.setValue(0, 0, myColor);
+        testWidget.setSwatchGrid(array);
+        QCOMPARE(testWidget.swatchGrid().value(0, 0).alphaF(), 1);
+    }
+
+    void testSetSwatchGridInvalid()
+    {
+        // An invalid color in the grid should be preserved and
+        // means "empty swatch".
+        QColorArray2D array = QColorArray2D(1, 1);
+        array.setValue(0, 0, QColor());
+        SwatchBook testWidget(m_rgbColorSpace, //
+                              array,
+                              {});
+        QVERIFY(!testWidget.swatchGrid().value(0, 0).isValid());
+    }
 };
 
 } // namespace PerceptualColor

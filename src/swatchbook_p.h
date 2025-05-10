@@ -50,7 +50,7 @@ public:
             patch, a new color is added to this patch. */
     };
 
-    explicit SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing);
+    explicit SwatchBookPrivate(SwatchBook *backLink, Qt::Orientations wideSpacing);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because

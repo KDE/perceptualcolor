@@ -208,7 +208,7 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
                        Qt::Orientations wideSpacing,
                        QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new SwatchBookPrivate(this, swatchGrid, wideSpacing))
+    , d_pointer(new SwatchBookPrivate(this, wideSpacing))
 {
     qRegisterMetaType<QColorArray2D>();
 
@@ -231,6 +231,8 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     d_pointer->retranslateUi();
 
     d_pointer->updateColorSchemeCache();
+
+    setSwatchGrid(swatchGrid);
 }
 
 /** @brief Destructor */
@@ -242,12 +244,10 @@ SwatchBook::~SwatchBook() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
- * @param swatchGrid The swatches.
  * @param wideSpacing Set of axis using @ref widePatchSpacing instead
  *        of @ref normalPatchSpacing. */
-SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing)
-    : m_swatchGrid(swatchGrid)
-    , m_wideSpacing(wideSpacing)
+SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, Qt::Orientations wideSpacing)
+    : m_wideSpacing(wideSpacing)
     , q_pointer(backLink)
 {
 }
@@ -345,15 +345,26 @@ QColorArray2D SwatchBook::swatchGrid() const
  * @param newSwatchGrid the new value */
 void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGrid)
 {
-    if (newSwatchGrid == d_pointer->m_swatchGrid) {
+    QColorArray2D newOpaqueSwatchGrid = newSwatchGrid;
+    for (int i = 0; i < newOpaqueSwatchGrid.iCount(); ++i) {
+        for (int j = 0; j < newOpaqueSwatchGrid.jCount(); ++j) {
+            QColor temp = newOpaqueSwatchGrid.value(i, j);
+            if (temp.isValid() && (temp.alphaF() != 1)) {
+                temp.setAlphaF(1);
+                newOpaqueSwatchGrid.setValue(i, j, temp);
+            }
+        }
+    }
+
+    if (newOpaqueSwatchGrid == d_pointer->m_swatchGrid) {
         return;
     }
 
-    d_pointer->m_swatchGrid = newSwatchGrid;
+    d_pointer->m_swatchGrid = newOpaqueSwatchGrid;
 
     d_pointer->selectSwatchFromCurrentColor();
 
-    Q_EMIT swatchGridChanged(newSwatchGrid);
+    Q_EMIT swatchGridChanged(newOpaqueSwatchGrid);
 
     // As of Qt documentation:
     //     “Notifies the layout system that this widget has changed and may
