@@ -119,6 +119,80 @@ void SwatchBookPrivate::retranslateUi()
     q_pointer->update();
 }
 
+/** @brief React on a mouse press event.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The corresponding mouse event */
+void SwatchBook::mousePressEvent(QMouseEvent *event)
+{
+    // NOTE We will not actively ignore the event, even if we didn’t actually
+    // react on it. Therefore, Breeze and other styles cannot move
+    // the window when clicking in the middle between two patches.
+    // This is intentional, because allowing it would be confusing:
+    // - The space between the patches is quite limited anyway, so
+    //   it’s not worth the pain and could be surprising because somebody
+    //   can click there by mistake.
+    // - We use the same background as QLineEdit, which at its turn also
+    //   does not allow moving the window with a left-click within the
+    //   field. We should be consistent with this behaviour.
+
+    const auto logicalColumnRow = d_pointer->logicalColumnRowFromPosition(event->pos());
+    const auto logicalColumn = logicalColumnRow.first;
+    const auto logicalRow = logicalColumnRow.second;
+    if ((logicalColumn < 0) || (logicalRow < 0)) {
+        return;
+    }
+
+    // If we reached here, the click must have been within a patch
+    // and we have valid indexes.
+
+    const bool swatchIsEmpty = //
+        !d_pointer->m_swatchGrid.value(logicalColumn, logicalRow).isValid();
+
+    if (event->button() == Qt::MouseButton::RightButton) {
+        if (d_pointer->m_isEditable && (!swatchIsEmpty)) {
+            QMenu *menu = new QMenu(this);
+            // Ensure proper cleanup when menu is closed
+            menu->setAttribute(Qt::WA_DeleteOnClose);
+            /*: action:inmenu Appears in the context menu of swatches within
+            the swatch book and provides the option to remove a swatch from the
+            swatch book. */
+            QAction *deleteAction = menu->addAction(tr("Delete"));
+            connect(deleteAction, //
+                    &QAction::triggered, //
+                    this, //
+                    [this, logicalColumn, logicalRow]() {
+                        d_pointer->m_swatchGrid.setValue(logicalColumn, //
+                                                         logicalRow, //
+                                                         QColor());
+                        // If the deleted swatch was the currently selected
+                        // swatch, the selection mark needs an update:
+                        d_pointer->selectSwatchFromCurrentColor();
+                        Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
+                    });
+            menu->popup(mapToGlobal(event->pos())); // Display asynchronously
+            return;
+        }
+        return;
+    }
+
+    if (event->button() == Qt::MouseButton::LeftButton) {
+        if (d_pointer->m_isEditable && swatchIsEmpty) {
+            d_pointer->m_swatchGrid.setValue(logicalColumn, //
+                                             logicalRow, //
+                                             d_pointer->m_currentColor);
+            d_pointer->selectSwatchByLogicalCoordinates(logicalColumn, //
+                                                        logicalRow);
+            Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
+        } else {
+            d_pointer->selectSwatchByLogicalCoordinates(logicalColumn, //
+                                                        logicalRow);
+        }
+        return;
+    }
+}
+
 /** @brief Constructor
  *
  * @param colorSpace The color space of the swatches.
@@ -579,80 +653,6 @@ std::pair<QListSizeType, QListSizeType> SwatchBookPrivate::logicalColumnRowFromP
     }
 
     return std::pair<QListSizeType, QListSizeType>(columnIndex, rowIndex);
-}
-
-/** @brief React on a mouse press event.
- *
- * Reimplemented from base class.
- *
- * @param event The corresponding mouse event */
-void SwatchBook::mousePressEvent(QMouseEvent *event)
-{
-    // NOTE We will not actively ignore the event, even if we didn’t actually
-    // react on it. Therefore, Breeze and other styles cannot move
-    // the window when clicking in the middle between two patches.
-    // This is intentional, because allowing it would be confusing:
-    // - The space between the patches is quite limited anyway, so
-    //   it’s not worth the pain and could be surprising because somebody
-    //   can click there by mistake.
-    // - We use the same background as QLineEdit, which at its turn also
-    //   does not allow moving the window with a left-click within the
-    //   field. We should be consistent with this behaviour.
-
-    const auto logicalColumnRow = d_pointer->logicalColumnRowFromPosition(event->pos());
-    const auto logicalColumn = logicalColumnRow.first;
-    const auto logicalRow = logicalColumnRow.second;
-    if ((logicalColumn < 0) || (logicalRow < 0)) {
-        return;
-    }
-
-    // If we reached here, the click must have been within a patch
-    // and we have valid indexes.
-
-    const bool swatchIsEmpty = //
-        !d_pointer->m_swatchGrid.value(logicalColumn, logicalRow).isValid();
-
-    if (event->button() == Qt::MouseButton::RightButton) {
-        if (d_pointer->m_isEditable && (!swatchIsEmpty)) {
-            QMenu *menu = new QMenu(this);
-            // Ensure proper cleanup when menu is closed
-            menu->setAttribute(Qt::WA_DeleteOnClose);
-            /*: action:inmenu Appears in the context menu of swatches within
-            the swatch book and provides the option to remove a swatch from the
-            swatch book. */
-            QAction *deleteAction = menu->addAction(tr("Delete"));
-            connect(deleteAction, //
-                    &QAction::triggered, //
-                    this, //
-                    [this, logicalColumn, logicalRow]() {
-                        d_pointer->m_swatchGrid.setValue(logicalColumn, //
-                                                         logicalRow, //
-                                                         QColor());
-                        // If the deleted swatch was the currently selected
-                        // swatch, the selection mark needs an update:
-                        d_pointer->selectSwatchFromCurrentColor();
-                        Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
-                    });
-            menu->popup(mapToGlobal(event->pos())); // Display asynchronously
-            return;
-        }
-        return;
-    }
-
-    if (event->button() == Qt::MouseButton::LeftButton) {
-        if (d_pointer->m_isEditable && swatchIsEmpty) {
-            d_pointer->m_swatchGrid.setValue(logicalColumn, //
-                                             logicalRow, //
-                                             d_pointer->m_currentColor);
-            d_pointer->selectSwatchByLogicalCoordinates(logicalColumn, //
-                                                        logicalRow);
-            Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
-        } else {
-            d_pointer->selectSwatchByLogicalCoordinates(logicalColumn, //
-                                                        logicalRow);
-        }
-        return;
-    }
 }
 
 /** @brief The size of the color patches.
