@@ -384,7 +384,7 @@ msgid "+"
 msgstr ""
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
-#: swatchbook.cpp:623
+#: swatchbook.cpp:161
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr ""
