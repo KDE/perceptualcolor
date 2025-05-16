@@ -1,8 +1,7 @@
-# SPDX-FileCopyrightText: 2023, 2024 Tommi Nieminen <tommi.nieminen@legisign.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2024-10-17 10:48+0300\n"
+"PO-Revision-Date: 2025-04-20 16:42+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -167,12 +166,9 @@ msgstr "Väriavaruustiedot"
 
 #. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
 #: colordialog.cpp:413
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "CIEHL&C D50:"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr "CIEHL&C D50:"
+msgstr "&CIELCH D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:417
@@ -296,16 +292,9 @@ msgstr "Valoisuus"
 
 #. @info:tooltip Help text for CIELCH. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:555
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid ""
-#| "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
-#| "p><p>Whitepoint: D65</p>"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr ""
-"<p>Valoisuus: %L1⁠–⁠%L2</p><p>Krominanssi: %L3⁠–⁠%L4</p><p>Sävy: 0°⁠–⁠360°</"
-"p><p>Valkopiste: D65</p>"
+msgstr "<p>Valoisuus: 0–100 %</p><p>Krominanssi: 0–%L1</p><p>Sävy: 0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:564
