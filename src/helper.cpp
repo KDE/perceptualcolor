@@ -226,6 +226,15 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  * is primarily intended to ensure that utils/generatescreenshots.cpp,
  * used for generating documentation screenshots, produces results
  * that are independent of the platform.
+ *
+ * @note Since Qt 6.7, we can use QIcon::fromTheme() along with the new
+ * QIcon::ThemeIcon enum to access various icons from the current platform,
+ * including non-FreeDesktop platforms. However, none of the available icons
+ * suit our needs. QIcon::ThemeIcon::DialogWarning could potentially be
+ * (mis)used for the out-of-gamut warning, but all other necessary
+ * icons—mostly color-related—are unavailable. Until Qt provides more
+ * color-related icons, we will continue using FreeDesktop icon names and
+ * bundled built-in icons as our traditional approach.
  */
 QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type)
 {

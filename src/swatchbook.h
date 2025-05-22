@@ -42,6 +42,10 @@ class SwatchBookPrivate;
  *
  * The marker used to mark the currently selected color depends
  * on the current translation; see @ref setTranslation for details.
+ *
+ * @internal
+ *
+ * @todo Is it useful to Qt's use Model/View instead of @ref QColorArray2D?
  */
 class SwatchBook : public AbstractDiagram
 {

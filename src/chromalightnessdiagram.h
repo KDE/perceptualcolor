@@ -56,6 +56,11 @@ class RgbColorSpace;
  * that is widthForHeight-dependent to allow the library user to
  * comfortably make use of this!
  *
+ * @todo RGB 0 28 253: When moving the curser outside the gamut, below the
+ * dark blue shadows, but still near to the gamut, the selection marker
+ * “jumps” where the gamut boundary in nearly horizontal and there are
+ * one-pixel stairs. That's not that nice.
+ *
  * @todo What to do if a gamut allows lightness < 0 or lightness > 100 ???
  * What if a part of the gamut at the right is not displayed? (Thought
  * this means that @ref RgbColorSpace has a bug.) Shouldn’t this be
