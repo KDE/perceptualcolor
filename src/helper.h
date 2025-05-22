@@ -424,6 +424,86 @@ template<typename T>
     return QStringLiteral("%1(%2)").arg(keys).arg(value);
 }
 
+/**
+ * @brief Splits a given number of elements into equal segments.
+ *
+ * This function divides <tt>elementCount</tt> elements (indices from
+ * <tt>[0..(elementCount - 1)]</tt>) into <tt>segmentCount</tt> segments,
+ * ensuring that each segment has a start and end index. If
+ * <tt>segmentCount</tt> is greater than <tt>elementCount</tt>, fewer segments
+ * will be created.
+ *
+ * @tparam T Numeric type of the elements (e.g., int, long, size_t).
+ * @param elementCount Total number of elements. Should be ≥ 1.
+ * @param segmentCount Number of segments to split into. Should be ≥ 1.
+ * @return A list of pairs representing the start and end indices of each
+ * segment.
+ */
+template<typename T>
+QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
+{
+    static_assert(std::is_integral_v<T>, //
+                  "Template splitElements() only works with integer types.");
+
+    if (elementCount <= 0) {
+        return {}; // Return empty list if elements are available
+    }
+    if (segmentCount <= 1) {
+        segmentCount = 1;
+    }
+    if (segmentCount > elementCount) {
+        segmentCount = elementCount; // Restrict segments to available elements
+    }
+
+    QList<QPair<T, T>> result;
+    T baseSize = elementCount / segmentCount;
+    // baseSize is guaranteed to be ≥ 1! Because elementCount ≥ segmentCount!
+    T remainder = elementCount % segmentCount;
+
+    T start = 0;
+    for (T i = 0; i < segmentCount; ++i) {
+        T end = start + baseSize - 1;
+        if (i < remainder) {
+            end++; // Distribute remaining elements evenly
+        }
+
+        result.append(QPair<T, T>{start, end});
+        start = end + 1;
+    }
+
+    return result;
+}
+
+/**
+ * @brief Splits a <tt>QList&lt;T&gt;</tt> into a specified number of parts.
+ *
+ * This function divides the elements of a <tt>QList&lt;T&gt;</tt> as evenly as
+ * possible into a given number of sublists. If <tt>numParts</tt> is greater
+ * than <tt>originalList.count()</tt>, fewer parts will be created.
+ *
+ * @tparam T The type of elements in the list.
+ * @param originalList The original <tt>QList&lt;T&gt;</tt> to be split.
+ * @param numParts The desired number of parts. Should be ≥ 1.
+ * @return <tt>QList&lt;QList&lt;T&gt;&gt;</tt> A list of sublists containing
+ * the divided data.
+ */
+template<typename T>
+QList<QList<T>> splitList(const QList<T> &originalList, QListSizeType numParts)
+{
+    if (originalList.isEmpty()) {
+        return {};
+    }
+
+    QList<QList<T>> result;
+    const auto segments = splitElements(originalList.count(), numParts);
+    for (const auto segment : segments) {
+        result.append( //
+            originalList.mid(segment.first, //
+                             segment.second - segment.first + 1));
+    }
+    return result;
+}
+
 } // namespace PerceptualColor
 
 // Use Q_DECLARE_METATYPE with this data type.

@@ -28,9 +28,9 @@ static void snippet01()
 {
     // cppcheck-suppress constVariableReference // snippet for documentation
     //! [PerceptualSettings Instance]
-    auto &mySettings = PerceptualColor::PerceptualSettings::instance();
+    auto &settingsRef = PerceptualColor::PerceptualSettings::getInstance();
     //! [PerceptualSettings Instance]
-    Q_UNUSED(mySettings)
+    Q_UNUSED(settingsRef)
 }
 
 namespace PerceptualColor
@@ -80,7 +80,7 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         // There should be no crash:
-        const auto &mySettings = PerceptualSettings::instance();
+        const auto &mySettings = PerceptualSettings::getInstance();
         Q_UNUSED(mySettings)
     }
 
@@ -93,7 +93,7 @@ private Q_SLOTS:
 
     void testCustomColors()
     {
-        auto &mySettings = PerceptualSettings::instance();
+        auto &mySettings = PerceptualSettings::getInstance();
 
         const PerceptualColor::PerceptualSettings::ColorList newColors1 = {QColor(Qt::red), QColor(Qt::green), QColor(Qt::blue)};
         mySettings.customColors.setValue(newColors1);
@@ -113,7 +113,7 @@ private Q_SLOTS:
 
     void testTab()
     {
-        auto &mySettings = PerceptualSettings::instance();
+        auto &mySettings = PerceptualSettings::getInstance();
 
         const QString newTab1 = QStringLiteral("testTab");
         mySettings.tab.setValue(newTab1);
@@ -136,8 +136,8 @@ private Q_SLOTS:
         // As this is implemented as singleton, calling the singleton function
         // various times should still produce interchangeable results.
 
-        auto &mySettings1 = PerceptualSettings::instance();
-        auto &mySettings2 = PerceptualSettings::instance();
+        auto &mySettings1 = PerceptualSettings::getInstance();
+        auto &mySettings2 = PerceptualSettings::getInstance();
 
         const QString newTab1 = QStringLiteral("testTabInstance");
         mySettings1.tab.setValue(newTab1);
@@ -164,7 +164,7 @@ private Q_SLOTS:
 
     void testTabExpanded()
     {
-        auto &mySettings = PerceptualSettings::instance();
+        auto &mySettings = PerceptualSettings::getInstance();
 
         const QString newTab1 = QStringLiteral("testTabExpanded");
         mySettings.tabExpanded.setValue(newTab1);
@@ -184,8 +184,8 @@ private Q_SLOTS:
 
     void testInstancesAreIdenticalForTabExpanded()
     {
-        auto &mySettings1 = PerceptualSettings::instance();
-        auto &mySettings2 = PerceptualSettings::instance();
+        auto &mySettings1 = PerceptualSettings::getInstance();
+        auto &mySettings2 = PerceptualSettings::getInstance();
 
         const QString newTabExpanded1 = QStringLiteral("testTabExpandedInstance");
         mySettings1.tabExpanded.setValue(newTabExpanded1);

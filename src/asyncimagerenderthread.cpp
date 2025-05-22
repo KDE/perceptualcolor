@@ -5,6 +5,8 @@
 // First the interface, which forces the header to be self-contained.
 #include "asyncimagerenderthread.h"
 
+#include "helperimage.h"
+
 #include <qglobal.h>
 #include <qmetatype.h>
 
@@ -89,7 +91,7 @@ void AsyncImageRenderThread::startRenderingAsync(const QVariant &parameters)
         setServiceLevel(QThread::QualityOfService::High);
 #endif
         // But avoid blocking other threads:
-        start(LowPriority); // One priority level lower than normal priority.
+        start(imageThreadPriority); // One priority level lower than normal priority.
     } else {
         m_loopRestart = true;
         m_loopCondition.wakeOne();

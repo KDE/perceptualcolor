@@ -61,8 +61,9 @@ PerceptualSettings::~PerceptualSettings()
  * To use it, assign the return value to a reference (not a normal variable):
  *
  * @snippet testperceptualsettings.cpp PerceptualSettings Instance */
-PerceptualSettings &PerceptualSettings::instance()
+PerceptualSettings &PerceptualSettings::getInstance()
 {
+    // Pattern: Meyer's singleton.
     if (QCoreApplication::instance() == nullptr) {
         // A QCoreApplication object is required because otherwise
         // the QFileSystemWatcher will not do anything and print the

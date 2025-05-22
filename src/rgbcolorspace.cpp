@@ -1315,15 +1315,17 @@ bool RgbColorSpace::isCielabD50InGamut(const cmsCIELab &lab) const
 /** @brief Conversion to QRgb.
  *
  * @pre
- * - Input Lightness: 0 ≤ lightness ≤ 100
+ * - Input Lightness: 0 ≤ lightness ≤ 100
  * @pre
- * - Input Chroma: - @ref RgbColorSpace::profileMaximumCielchD50Chroma ≤ chroma ≤
+ * - Input Chroma: − @ref RgbColorSpace::profileMaximumCielchD50Chroma ≤ chroma ≤
  *   @ref RgbColorSpace::profileMaximumCielchD50Chroma
  *
  * @param lab the original color
  *
- * @returns The corresponding opaque color if the original color is in-gamut.
- * A transparent color otherwise.
+ * @returns An opaque color matching the original if it is within the gamut.
+ *          Otherwise, returns a fully transparent color (alpha and RGB
+ *          channels set to 0 to ensure compatibility with both premultiplied
+ *          and non-premultiplied formats).
  *
  * @sa @ref fromCielchD50ToQRgbBound */
 QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
@@ -1331,6 +1333,14 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
     constexpr QRgb transparentValue = 0;
     static_assert(qAlpha(transparentValue) == 0, //
                   "The alpha value of a transparent QRgb must be 0.");
+    // Also all RGB channels must be 0 in order to be compatible with both
+    // premultiplied and non-premultiplied (straight) QRgb values.
+    static_assert(qRed(transparentValue) == 0, //
+                  "The red value of a transparent QRgb must be 0.");
+    static_assert(qGreen(transparentValue) == 0, //
+                  "The greem value of a transparent QRgb must be 0.");
+    static_assert(qBlue(transparentValue) == 0, //
+                  "The blue value of a transparent QRgb must be 0.");
 
     double rgb[3];
     cmsDoTransform(

@@ -43,7 +43,7 @@ public:
     PerceptualSettings(const PerceptualSettings &) = delete;
     PerceptualSettings &operator=(const PerceptualSettings &) = delete;
 
-    static PerceptualSettings &instance();
+    static PerceptualSettings &getInstance();
 
     /** @brief Custom colors of @ref ColorDialog. */
     Setting<PerceptualSettings::ColorList> customColors;

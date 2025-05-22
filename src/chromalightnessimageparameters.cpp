@@ -6,6 +6,7 @@
 #include "chromalightnessimageparameters.h"
 
 #include "asyncimagerendercallback.h"
+#include "helper.h"
 #include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
@@ -15,6 +16,7 @@
 #include <qimage.h>
 #include <qnamespace.h>
 #include <qrgb.h>
+#include <qsemaphore.h>
 
 namespace PerceptualColor
 {
@@ -97,43 +99,83 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     myImage.fill(Qt::transparent); // Initialize background color
 
     // Initialization
-    cmsCIELCh cielchD50;
-    QRgb rgbColor;
-    int x;
-    int y;
     const auto imageHeight = parameters.imageSizePhysical.height();
     const auto imageWidth = parameters.imageSizePhysical.width();
+    const PerceptualColor::RgbColorSpace *const colorSpacePtr = //
+        parameters.rgbColorSpace.data();
+    auto &poolReference = getLibraryQThreadPoolInstance();
+    const auto threadCount = qMax(1, poolReference.maxThreadCount());
 
     // Paint the gamut.
     const auto normalizedHue = normalizedAngle360(parameters.hue);
-    cielchD50.h = normalizedHue;
-    for (y = 0; y < imageHeight; ++y) {
+    uchar *const bytesPtr = myImage.bits();
+    const auto bytesPerLine = myImage.bytesPerLine();
+
+    { // Multi-threaded image calculation
+        auto imageLambda = [&bytesPtr, //
+                            normalizedHue,
+                            imageWidth,
+                            imageHeight,
+                            &colorSpacePtr,
+                            bytesPerLine,
+                            &callbackObject](int firstRow, int lastRow) -> void {
+            QRgb rgbColor;
+            cmsCIELCh cielchD50;
+            cielchD50.h = normalizedHue;
+            for (int y = firstRow; y <= lastRow; ++y) {
+                if (callbackObject.shouldAbort()) {
+                    return;
+                }
+                QRgb *line = //
+                    reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
+                cielchD50.L = 100 - (y + 0.5) * 100.0 / imageHeight;
+                for (int x = 0; x < imageWidth; ++x) {
+                    // Using the same scale as on the y axis. floating point
+                    // division thanks to 100 which is a "cmsFloat64Number"
+                    cielchD50.C = (x + 0.5) * 100.0 / imageHeight;
+                    rgbColor = //
+                        colorSpacePtr->fromCielabD50ToQRgbOrTransparent( //
+                            toCmsLab(cielchD50));
+                    if (qAlpha(rgbColor) != 0) {
+                        // The pixel is within the gamut
+                        line[x] = rgbColor;
+                        // If color is out-of-gamut: We have chroma on the
+                        // x axis and lightness on the y axis. We are drawing
+                        // the pixmap line per line, so we go for given
+                        // lightness from low chroma to high chroma. Because of
+                        // the nature of many gamuts, if once in a line we have
+                        // an out-of-gamut value, often all other pixels that
+                        // are more at the right will be out-of-gamut also. So
+                        // we could optimize our code and break here. But as we
+                        // are not sure about this: It’s just likely, but not
+                        // always correct. We do not know the gamut at compile
+                        // time, so for the moment we do not optimize the code.
+                    }
+                }
+            }
+        };
+        const auto segments = splitElements(imageHeight, threadCount);
+        // The narrowing static_cast<int>() is okay because parts.count() is a
+        // result of threadCount, which is also int.
+        static_assert( //
+            std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
+        const int segmentsCount = static_cast<int>(segments.count());
+        QSemaphore semaphore(0);
         if (callbackObject.shouldAbort()) {
             return;
         }
-        cielchD50.L = 100 - (y + 0.5) * 100.0 / imageHeight;
-        for (x = 0; x < imageWidth; ++x) {
-            // Using the same scale as on the y axis. floating point
-            // division thanks to 100 which is a "cmsFloat64Number"
-            cielchD50.C = (x + 0.5) * 100.0 / imageHeight;
-            rgbColor = //
-                parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
-                    toCmsLab(cielchD50));
-            if (qAlpha(rgbColor) != 0) {
-                // The pixel is within the gamut
-                myImage.setPixelColor(x, y, rgbColor);
-                // If color is out-of-gamut: We have chroma on the x axis and
-                // lightness on the y axis. We are drawing the pixmap line per
-                // line, so we go for given lightness from low chroma to high
-                // chroma. Because of the nature of many gamuts, if once in a
-                // line we have an out-of-gamut value, often all other pixels
-                // that are more at the right will be out-of-gamut also. So we
-                // could optimize our code and break here. But as we are not
-                // sure about this: It’s just likely, but not always correct.
-                // We do not know the gamut at compile time, so
-                // for the moment we do not optimize the code.
-            }
+        for (const auto &segment : segments) {
+            const auto myLambda = [imageLambda, segment, &semaphore]() {
+                imageLambda(segment.first, segment.second);
+                semaphore.release();
+            };
+            const auto myRunnablePtr = QRunnable::create(myLambda);
+            poolReference.start(myRunnablePtr, imageThreadPriority);
         }
+        // Intentionally acquiring segments.count() and not treadCount, because
+        // they might differ and segments.count() is mandatory for thread
+        // execution.
+        semaphore.acquire(segmentsCount); // Wait for all threads to finish.
     }
 
     if (callbackObject.shouldAbort()) {
@@ -156,14 +198,16 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
         return;
     }
 
+    // Anti-aliasing
     QList<QPoint> antiAliasCoordinates = findBoundary(myImage);
-
     // cppcheck-suppress knownConditionTrueFalse // false positive
     if (callbackObject.shouldAbort()) {
         return;
     }
-
-    const auto myColorFunction = [normalizedHue, imageHeight, parameters](const double colorFunctionX, const double colorFunctionY) -> QRgb {
+    const auto myColorFunction = [normalizedHue, //
+                                  imageHeight,
+                                  parameters] //
+        (const double colorFunctionX, const double colorFunctionY) -> QRgb {
         cmsCIELCh myCielchD50;
         myCielchD50.h = normalizedHue;
         myCielchD50.L = 100 - (colorFunctionY + 0.5) * 100.0 / imageHeight;

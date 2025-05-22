@@ -586,6 +586,296 @@ private Q_SLOTS:
         QVERIFY2(!toOpaque(myArray).value(0, 0).isValid(), //
                  "Invalid input colors must stay invalid after processing.");
     }
+
+    void testSplitElements()
+    {
+        // -2 elements
+        // If there are no elements, the list of segments is also empty.
+        auto result = splitElements(-2, -2);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-2, -1);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-2, 0);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-2, 1);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-2, 2);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-2, 3);
+        QCOMPARE(result.size(), 0);
+
+        // -1 element
+        // If there are no elements, the list of segments is also empty.
+        result = splitElements(-1, -2);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-1, -1);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-1, 0);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-1, 1);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-1, 2);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(-1, 3);
+        QCOMPARE(result.size(), 0);
+
+        // 0 elements
+        // If there are no elements, the list of segments is also empty.
+        result = splitElements(0, -2);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(0, -1);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(0, 0);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(0, 1);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(0, 2);
+        QCOMPARE(result.size(), 0);
+        result = splitElements(0, 3);
+        QCOMPARE(result.size(), 0);
+
+        // 1 element
+        result = splitElements(1, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        result = splitElements(1, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        result = splitElements(1, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        result = splitElements(1, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        result = splitElements(1, 2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        result = splitElements(1, 3);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+
+        // 2 elements
+        result = splitElements(2, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        result = splitElements(2, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        result = splitElements(2, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        result = splitElements(2, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        result = splitElements(2, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        QCOMPARE(result.at(1).first, 1);
+        QCOMPARE(result.at(1).second, 1);
+        result = splitElements(2, 3);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        QCOMPARE(result.at(1).first, 1);
+        QCOMPARE(result.at(1).second, 1);
+
+        // 3 elements
+        result = splitElements(3, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 2);
+        result = splitElements(3, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 2);
+        result = splitElements(3, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 2);
+        result = splitElements(3, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 2);
+        result = splitElements(3, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        QCOMPARE(result.at(1).first, 2);
+        QCOMPARE(result.at(1).second, 2);
+        result = splitElements(3, 3);
+        QCOMPARE(result.size(), 3);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 0);
+        QCOMPARE(result.at(1).first, 1);
+        QCOMPARE(result.at(1).second, 1);
+        QCOMPARE(result.at(2).first, 2);
+        QCOMPARE(result.at(2).second, 2);
+
+        // 4 elements
+        result = splitElements(4, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 3);
+        result = splitElements(4, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 3);
+        result = splitElements(4, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 3);
+        result = splitElements(4, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 3);
+        result = splitElements(4, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        QCOMPARE(result.at(1).first, 2);
+        QCOMPARE(result.at(1).second, 3);
+        result = splitElements(4, 3);
+        QCOMPARE(result.size(), 3);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 1);
+        QCOMPARE(result.at(1).first, 2);
+        QCOMPARE(result.at(1).second, 2);
+        QCOMPARE(result.at(2).first, 3);
+        QCOMPARE(result.at(2).second, 3);
+    }
+
+    void testSplitList()
+    {
+        QList<int> myList;
+
+        // If the original list is empty, the list of parts is also empty.
+        auto result = splitList(myList, -2);
+        QCOMPARE(result.size(), 0);
+        result = splitList(myList, -1);
+        QCOMPARE(result.size(), 0);
+        result = splitList(myList, 0);
+        QCOMPARE(result.size(), 0);
+        result = splitList(myList, 1);
+        QCOMPARE(result.size(), 0);
+        result = splitList(myList, 2);
+        QCOMPARE(result.size(), 0);
+
+        myList.append(100);
+        result = splitList(myList, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 2);
+        // Splitting 1 element into 2 parts not possible, resulting in only
+        // one element.
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0).at(0), 100);
+
+        myList.append(101);
+        result = splitList(myList, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).size(), 1);
+        QCOMPARE(result.at(0).at(0), 100);
+        QCOMPARE(result.at(1).size(), 1);
+        QCOMPARE(result.at(1).at(0), 101);
+
+        myList.append(102);
+        result = splitList(myList, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).size(), 2);
+        QCOMPARE(result.at(0).at(0), 100);
+        QCOMPARE(result.at(0).at(1), 101);
+        QCOMPARE(result.at(1).size(), 1);
+        QCOMPARE(result.at(1).at(0), 102);
+
+        myList.append(103);
+        result = splitList(myList, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).size(), 2);
+        QCOMPARE(result.at(0).at(0), 100);
+        QCOMPARE(result.at(0).at(1), 101);
+        QCOMPARE(result.at(1).size(), 2);
+        QCOMPARE(result.at(1).at(0), 102);
+        QCOMPARE(result.at(1).at(1), 103);
+
+        myList.append(104);
+        result = splitList(myList, -2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, -1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 0);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 1);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.at(0), myList);
+        result = splitList(myList, 2);
+        QCOMPARE(result.size(), 2);
+        QCOMPARE(result.at(0).size(), 3);
+        QCOMPARE(result.at(0).at(0), 100);
+        QCOMPARE(result.at(0).at(1), 101);
+        QCOMPARE(result.at(0).at(2), 102);
+        QCOMPARE(result.at(1).size(), 2);
+        QCOMPARE(result.at(1).at(0), 103);
+        QCOMPARE(result.at(1).at(1), 104);
+    }
 };
 
 } // namespace PerceptualColor

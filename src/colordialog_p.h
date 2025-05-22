@@ -270,7 +270,7 @@ public:
     /** @brief Layout that holds the graphical and numeric selectors. */
     QPointer<QHBoxLayout> m_selectorLayout;
     /** @brief Access to the @ref Settings singleton. */
-    PerceptualSettings &m_settings = PerceptualSettings::instance();
+    PerceptualSettings &m_settings = PerceptualSettings::getInstance();
     /** @brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
     QPointer<QToolButton> m_screenColorPickerButton;

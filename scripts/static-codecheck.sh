@@ -232,6 +232,20 @@ grep \
     $ALL_CODE \
          | sed 's/^/QLatin1String or QLatin1Char: If emtpy, use substitute by QString(), otherwise by QStringLiteral.: /'
 
+# -> volatile: Do not use volatile. For multi-threading, volatile is not enough
+#    because it only guaranties that access to the variable is not optimized
+#    away. It still lacks the necessary memory barriers and atomic behaviour
+#    for multi-threading. On the other hand, std::atomic and mutexes provide
+#    all this, and they also guarantee that access to the variable is not
+#    optimized away. Therefore, the only use case for “volatile” is hardware
+#    register programming, which we do not need here. Therefore: Do not use
+#    “volatile”. See https://stackoverflow.com/a/2485177 for details.
+grep \
+    --recursive --exclude-dir=testbed \
+    --perl-regexp "(?<!\\S)volatile(?!\\S)" \
+    $ALL_CODE \
+         | sed 's/^/Never use the “volatile” keyword: /'
+
 # When using Doxygen snippets, don’t do this within a namespace. As they are
 # meant for documentation, they should always contain fully-qualified
 # names to make sure that they always work.

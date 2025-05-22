@@ -22,6 +22,15 @@
 #include <qobjectdefs.h>
 #endif
 
+static void snippet01()
+{
+    // cppcheck-suppress constVariableReference // snippet for documentation
+    //! [PerceptualSettings Instance]
+    auto &poolReference = PerceptualColor::getLibraryQThreadPoolInstance();
+    //! [PerceptualSettings Instance]
+    Q_UNUSED(poolReference)
+}
+
 namespace PerceptualColor
 {
 
@@ -72,6 +81,11 @@ private Q_SLOTS:
         QImage myImage;
         // Does not crash on empty image
         doAntialias(myImage, QList<QPoint>(), myColorFunction);
+    }
+
+    void testSnippet01()
+    {
+        snippet01();
     }
 };
 

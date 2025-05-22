@@ -46,6 +46,9 @@ class RgbColorSpacePrivate;
  * range are considered out-of-gamut, even if the profile
  * itself would accept them.
  *
+ * This class is reentrant. Furthermore, it is thread-save to use only
+ * <tt>const</tt> functions simultaneously from various threads.
+ *
  * @todo Unit tests for @ref RgbColorSpace, especially the to…() functions.
  *
  * @todo Unit tests for @ref profileMaximumCielchD50Chroma and
