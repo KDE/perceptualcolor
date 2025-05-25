@@ -328,7 +328,7 @@ msgstr "Seleccioneu un color de la &pantalla"
 #: colordialog.cpp:696
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
-msgstr "Feu clic per a ajustar al color més proper dins la gamma"
+msgstr "Cliqueu per a ajustar al color més proper dins la gamma"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:708
