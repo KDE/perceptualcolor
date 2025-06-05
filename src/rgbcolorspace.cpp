@@ -13,6 +13,7 @@
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperconstants.h"
+#include "helperimage.h"
 #include "helpermath.h"
 #include "helperqttypes.h"
 #include "initializetranslation.h"
@@ -1324,24 +1325,11 @@ bool RgbColorSpace::isCielabD50InGamut(const cmsCIELab &lab) const
  *
  * @returns An opaque color matching the original if it is within the gamut.
  *          Otherwise, returns a fully transparent color (alpha and RGB
- *          channels set to 0 to ensure compatibility with both premultiplied
- *          and non-premultiplied formats).
+ *          channels set to 0 to ensure ).
  *
  * @sa @ref fromCielchD50ToQRgbBound */
 QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
 {
-    constexpr QRgb transparentValue = 0;
-    static_assert(qAlpha(transparentValue) == 0, //
-                  "The alpha value of a transparent QRgb must be 0.");
-    // Also all RGB channels must be 0 in order to be compatible with both
-    // premultiplied and non-premultiplied (straight) QRgb values.
-    static_assert(qRed(transparentValue) == 0, //
-                  "The red value of a transparent QRgb must be 0.");
-    static_assert(qGreen(transparentValue) == 0, //
-                  "The greem value of a transparent QRgb must be 0.");
-    static_assert(qBlue(transparentValue) == 0, //
-                  "The blue value of a transparent QRgb must be 0.");
-
     double rgb[3];
     cmsDoTransform(
         // Parameters:
@@ -1357,7 +1345,7 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
         && isInRange<double>(0, rgb[1], 1) //
         && isInRange<double>(0, rgb[2], 1);
     if (!colorIsValid) {
-        return transparentValue;
+        return qRgbTransparent;
     }
 
     // Detect deviation:
@@ -1381,7 +1369,7 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
 
     // If deviation is too big, return a transparent color.
     if (!actualDeviationIsOkay) {
-        return transparentValue;
+        return qRgbTransparent;
     }
 
     // If in-gamut, return an opaque color.

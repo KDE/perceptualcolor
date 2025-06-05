@@ -4,6 +4,7 @@
 // Own header
 #include "helpermath.h"
 
+#include "helperposixmath.h"
 #include <optional>
 #include <qgenericmatrix.h>
 #include <qmath.h>
@@ -112,6 +113,27 @@ int decimalPlaces(const int rangeMax, const int significantFigures)
         ? 1 // special case
         : qFloor(myLog10Value) + 1;
     return qMax(0, significantFigures - wholeNumberDigits);
+}
+
+/**
+ * @brief Rounds a given floating point value to the nearest multiple of a
+ * specified integer.
+ *
+ * This function takes a floating point value and rounds it to the nearest
+ * multiple of an integer. If the multiple is zero, the original number is
+ * returned (rounded).
+ *
+ * @param num The integer to be rounded.
+ * @param multiple The multiple to which the number will be rounded.
+ *
+ * @return The rounded integer.
+ */
+int roundToNearestMultiple(double num, int multiple)
+{
+    if (multiple == 0) {
+        return qRound(num);
+    }
+    return qRound(num / multiple) * multiple;
 }
 
 } // namespace PerceptualColor

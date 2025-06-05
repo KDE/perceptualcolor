@@ -87,6 +87,30 @@ private Q_SLOTS:
     {
         snippet01();
     }
+
+    void testQRgbTransparent()
+    {
+        // The alpha value of a transparent QRgb must be 0."
+        QCOMPARE(qAlpha(qRgbTransparent), 0);
+
+        // Also all RGB channels must be 0 in order to be compatible with both
+        // premultiplied and non-premultiplied (straight) QRgb values.
+        QCOMPARE(qRed(qRgbTransparent), 0);
+        QCOMPARE(qGreen(qRgbTransparent), 0);
+        QCOMPARE(qBlue(qRgbTransparent), 0);
+    }
+
+    void testFillRect()
+    {
+        QImage image{QSize(3, 3), QImage::Format_ARGB32_Premultiplied};
+        image.fill(Qt::red);
+
+        QCOMPARE(image.pixelColor(2, 2), Qt::red);
+
+        fillRect(image.bits(), image.bytesPerLine(), QRect(2, 2, 1, 1), qRgbTransparent);
+
+        QCOMPARE(image.pixelColor(2, 2).alpha(), 0);
+    }
 };
 
 } // namespace PerceptualColor

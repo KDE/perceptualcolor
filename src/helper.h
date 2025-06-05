@@ -69,6 +69,8 @@ bool isIn(First &&first, T &&...t)
     return ((first == t) || ...);
 }
 
+QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, int alignment, double peak);
+
 [[nodiscard]] qreal standardWheelStepCount(QWheelEvent *event);
 
 [[nodiscard]] QImage transparencyBackground(qreal devicePixelRatioF);

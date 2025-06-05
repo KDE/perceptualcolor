@@ -7,6 +7,7 @@
 
 #include "asyncimagerendercallback.h"
 #include "cielchd50values.h"
+#include "helper.h"
 #include "helperconstants.h"
 #include "helperimage.h"
 #include "helpermath.h"
@@ -20,6 +21,7 @@
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qrgb.h>
+#include <qsemaphore.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
 #include <type_traits>
@@ -50,6 +52,120 @@ bool ChromaHueImageParameters::operator==(const ChromaHueImageParameters &other)
 bool ChromaHueImageParameters::operator!=(const ChromaHueImageParameters &other) const
 {
     return !(*this == other);
+}
+
+/**
+ * @brief A new interlacing object with an appropriate number of interlacing
+ * steps.
+ *
+ * @param imageSizePhysical The size of the image, measured in physical pixels.
+ *
+ * @returns A new interlacing object with an appropriate number of interlacing
+ * steps.
+ */
+InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSize imageSizePhysical)
+{
+    // The reference size
+    constexpr auto size = 2000;
+    constexpr QSize referenceSizePhysical = QSize(size, size);
+    constexpr int numberOfPassesAtReferenceSize = 5;
+
+    // Calculate
+    static_assert(isOdd(numberOfPassesAtReferenceSize));
+
+    const auto pixelCountImage = //
+        imageSizePhysical.width() * imageSizePhysical.height();
+    constexpr double pixelCountReference = //
+        referenceSizePhysical.width() * referenceSizePhysical.height();
+    const double factor = pixelCountImage / pixelCountReference;
+    // The number of actual passes
+    const auto numberOfPasses = //
+        numberOfPassesAtReferenceSize //
+        // qMax makes sure std::log2() is never called with a parameter ≤ 0
+        + std::log2(qMax(0.01, factor));
+    return InterlacingPass(numberOfPasses);
+}
+
+/**
+ * @brief Render some rows of the image directly to the buffer.
+ *
+ * @param callbackObject Used to stop rendering when an abort is requested
+ * @param bytesPtr Pointer to the image data.
+ * @param bytesPerLine Bytes per line of the image data (can be obtained by
+ *        QImage)
+ * @param parameters The parameters
+ * @param shift Shift value
+ * @param scaleFactor Scale factor
+ * @param currentPass The object providing metrics for the current interlacing
+ *        pass
+ * @param firstRow Index of the first row to render. Must be a valid index.
+ * @param lastRow Index of the last row to render. Must be a valid index.
+ *
+ * @pre The parameters must be valid within the image. As this function
+ * operates directly on the image data, out-of-bound values will cause
+ * undefined behaviour.
+ *
+ * @pre The parameter firstRow must be aligned to the interlacing pass steps.
+ * If the interlacing starts for example with 8 x 8 pixels, valid values for
+ * the firstRow index are: 0, 8, 16, 32 etc.
+ */
+// Disable Clazy checks for passing large objects by value. In this function,
+// designed for threaded execution, we avoid passing by reference whenever
+// possible to prevent potential pitfalls, even though copying by value may
+// introduce slight overhead.
+void ChromaHueImageParameters::renderByRow( //
+    const AsyncImageRenderCallback &callbackObject,
+    uchar *const bytesPtr,
+    const qsizetype bytesPerLine,
+    const ChromaHueImageParameters parameters, // clazy:exclude=function-args-by-ref
+    const qreal shift,
+    const qreal scaleFactor,
+    const InterlacingPass currentPass, // clazy:exclude=function-args-by-ref
+    int firstRow,
+    int lastRow)
+{
+    const auto chromaRange = //
+        parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
+    cmsCIELab cielabD50;
+    cielabD50.L = parameters.lightness;
+    QRgb tempColor;
+    const auto threshold = qPow(chromaRange + overlap, 2);
+    for (int y = firstRow + currentPass.lineOffset; //
+         y <= lastRow; //
+         y += currentPass.lineFrequency) //
+    {
+        if (callbackObject.shouldAbort()) {
+            return;
+        }
+        cielabD50.b = chromaRange //
+            - (y + shift) * scaleFactor;
+        const auto rectangleHeight = // Make sure to stay within the image
+            qMin(currentPass.rectangleSize.height(), //
+                 lastRow + 1 - y);
+        for (int x = currentPass.columnOffset; //
+             x < parameters.imageSizePhysical; //
+             x += currentPass.columnFrequency //
+        ) {
+            cielabD50.a = (x + shift) * scaleFactor - chromaRange;
+            if (qPow(cielabD50.a, 2) + qPow(cielabD50.b, 2) <= threshold) {
+                tempColor = //
+                    parameters
+                        .rgbColorSpace //
+                        ->fromCielabD50ToQRgbOrTransparent(cielabD50);
+                const auto rectangleWidth =
+                    // Make sure to stay within the image
+                    qMin(currentPass.rectangleSize.width(), //
+                         parameters.imageSizePhysical - x);
+                const QRect rect{x, y, rectangleWidth, rectangleHeight};
+                if (qAlpha(tempColor) != 0) {
+                    // The pixel is within the gamut!
+                    fillRect(bytesPtr, bytesPerLine, rect, tempColor);
+                } else {
+                    fillRect(bytesPtr, bytesPerLine, rect, qRgbTransparent);
+                }
+            }
+        }
+    }
 }
 
 /** @brief Render an image.
@@ -124,7 +240,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // Prepare for gamut painting
     cmsCIELab cielabD50;
     cielabD50.L = parameters.lightness;
-    QRgb tempColor;
     const auto chromaRange = //
         parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
@@ -144,74 +259,73 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // the pixel.
     constexpr qreal pixelOffset = 0.5;
 
-    const auto shift = pixelOffset - parameters.borderPhysical;
+    const qreal shift = pixelOffset - parameters.borderPhysical;
 
-    // The reference size (assumed to be a typical/common size) for the image:
-    constexpr double referenceSizePhysical = 343;
-    const auto factor = parameters.imageSizePhysical / referenceSizePhysical;
-    // The number of appropriate interlacing passes at the reference size:
-    constexpr int numberOfPassesAtReferenceSize = 5;
-    static_assert(isOdd(numberOfPassesAtReferenceSize));
-    // The number of actual passes
-    const auto numberOfPasses = //
-        numberOfPassesAtReferenceSize //
-        // qMax makes sure std::log2() is never called with a parameter ≤ 0
-        + 2 * std::log2(qMax(0.01, factor));
-    InterlacingPass currentPass(numberOfPasses);
+    InterlacingPass currentPass = createInterlacingPassObject( //
+        QSize(parameters.imageSizePhysical, parameters.imageSizePhysical));
+    const auto interlacingMaxRasterSize = currentPass.columnFrequency;
 
-    QPainter myPainter(&myImage);
-    myPainter.setRenderHint(QPainter::Antialiasing, false);
+    auto &poolReference = getLibraryQThreadPoolInstance();
+    const auto threadCount = qMax(1, poolReference.maxThreadCount());
+
     while (true) {
-        for (int y = currentPass.lineOffset; //
-             y < parameters.imageSizePhysical; //
-             y += currentPass.lineFrequency) //
-        {
-            if (callbackObject.shouldAbort()) {
-                return;
-            }
-            cielabD50.b = chromaRange //
-                - (y + shift) * scaleFactor;
-            for (int x = currentPass.columnOffset; //
-                 x < parameters.imageSizePhysical; //
-                 x += currentPass.columnFrequency //
-            ) {
-                cielabD50.a = //
-                    (x + shift) * scaleFactor //
-                    - chromaRange;
-                if ( //
-                    (qPow(cielabD50.a, 2) + qPow(cielabD50.b, 2)) //
-                    <= (qPow(chromaRange + overlap, 2)) //
-                ) {
-                    tempColor = //
-                        parameters
-                            .rgbColorSpace //
-                            ->fromCielabD50ToQRgbOrTransparent(cielabD50);
-                    if (qAlpha(tempColor) != 0) {
-                        // The pixel is within the gamut!
-                        myPainter.fillRect(
-                            //
-                            x, //
-                            y, //
-                            currentPass.rectangleSize.width(), //
-                            currentPass.rectangleSize.height(), //
-                            QColor(tempColor));
-                    } else {
-                        myPainter.save();
-                        myPainter.setCompositionMode(
-                            // Allow making the background transparent.
-                            QPainter::CompositionMode_Clear);
-                        myPainter.fillRect(
-                            //
-                            x, //
-                            y, //
-                            currentPass.rectangleSize.width(), //
-                            currentPass.rectangleSize.height(), //
-                            Qt::transparent);
-                        myPainter.restore();
-                    }
-                }
-            }
+        if (callbackObject.shouldAbort()) {
+            return;
         }
+
+        // Get an up-to-date pointer to the raw image data. It is
+        // mandatory to do this again in each loop run, because
+        // delivering the intermediate image will likely create shallow
+        // and later also deep copies, which may affect where the
+        // actual image data is located. By running QImage::bits(), we
+        // make sure that the implicit sharing of QImage is detached.
+        uchar *const bytesPtr = myImage.bits();
+        const qsizetype bytesPerLine = myImage.bytesPerLine();
+
+        const auto segments = splitElementsTapered( //
+            parameters.imageSizePhysical, //
+            threadCount, //
+            interlacingMaxRasterSize,
+            0.5 // normalized position of the peak. 0.5 means: in the middle.
+        );
+        // The narrowing static_cast<int>() is okay because parts.count() is a
+        // result of threadCount, which is also int.
+        static_assert( //
+            std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
+        const int segmentsCount = static_cast<int>(segments.count());
+        QSemaphore semaphore(0);
+        if (callbackObject.shouldAbort()) {
+            return;
+        }
+        for (const auto &segment : segments) {
+            const auto myLambda = [&callbackObject, //
+                                   bytesPtr,
+                                   bytesPerLine,
+                                   parameters,
+                                   shift,
+                                   scaleFactor,
+                                   currentPass,
+                                   segment,
+                                   &semaphore]() {
+                renderByRow(callbackObject,
+                            bytesPtr,
+                            bytesPerLine,
+                            parameters, //
+                            shift,
+                            scaleFactor,
+                            currentPass,
+                            segment.first, // first row
+                            segment.second // last row
+                );
+                semaphore.release();
+            };
+            const auto myRunnablePtr = QRunnable::create(myLambda);
+            poolReference.start(myRunnablePtr, imageThreadPriority);
+        }
+        // Intentionally acquiring segments.count() and not
+        // treadCount,  because they might differ and
+        // segments.count() is mandatory for thread execution.
+        semaphore.acquire(segmentsCount); // Wait for all threads to finish.
 
         myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
         callbackObject.deliverInterlacingPass( //
@@ -265,7 +379,11 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         return;
     }
 
-    const auto myColorFunction = [parameters, shift, scaleFactor, chromaRange](const double x, const double y) -> QRgb {
+    const auto myColorFunction = [parameters,
+                                  shift,
+                                  scaleFactor,
+                                  chromaRange] //
+        (const double x, const double y) -> QRgb {
         cmsCIELab myCielabD50;
         myCielabD50.L = parameters.lightness;
         myCielabD50.b = chromaRange - (y + shift) * scaleFactor;

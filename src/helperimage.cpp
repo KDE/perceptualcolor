@@ -261,4 +261,34 @@ QThreadPool &getLibraryQThreadPoolInstance()
     return myInstance;
 }
 
+/**
+ * @brief Paints a rectangle.
+ *
+ * The function replaces the values in the given rectangle directly by the new
+ * color value, without any blending.
+ *
+ * @param bytesPtr Pointer to the QRgb array with the image.
+ * @param bytesPerLine Number of bytes per line of the image.
+ * @param rectangle The rectangle to draw.
+ * @param color The color to draw.
+ *
+ * @pre The given rectangle must be completely within the boundary of the
+ * image.
+ *
+ * @pre The image raw data must be 32 bit QRgb data.
+ */
+void fillRect(uchar *const bytesPtr, const qsizetype bytesPerLine, const QRect rectangle, const QRgb color)
+{
+    const auto xFirst = rectangle.x();
+    const auto xLast = xFirst + rectangle.width() - 1;
+    const auto yFirst = rectangle.y();
+    const auto yLast = yFirst + rectangle.height() - 1;
+    for (int y = yFirst; y <= yLast; ++y) {
+        QRgb *line = reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
+        for (int x = xFirst; x <= xLast; ++x) {
+            line[x] = color;
+        }
+    }
+}
+
 } // namespace PerceptualColor

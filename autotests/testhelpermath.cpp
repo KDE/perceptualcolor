@@ -725,6 +725,47 @@ private Q_SLOTS:
         QCOMPARE(radius, 5);
         QCOMPARE(angleDegree, 0);
     }
+
+    void testRoundToNearestMultiple()
+    {
+        QCOMPARE(roundToNearestMultiple(-4.6, 3), -6);
+        QCOMPARE(roundToNearestMultiple(-4.4, 3), -3);
+        QCOMPARE(roundToNearestMultiple(-1.6, 3), -3);
+        QCOMPARE(roundToNearestMultiple(-1.4, 3), 0);
+        QCOMPARE(roundToNearestMultiple(1.4, 3), 0);
+        QCOMPARE(roundToNearestMultiple(1.6, 3), 3);
+        QCOMPARE(roundToNearestMultiple(4.4, 3), 3);
+        QCOMPARE(roundToNearestMultiple(4.6, 3), 6);
+
+        QCOMPARE(roundToNearestMultiple(-4.6, 1), -5);
+        QCOMPARE(roundToNearestMultiple(-4.4, 1), -4);
+        QCOMPARE(roundToNearestMultiple(-1.6, 1), -2);
+        QCOMPARE(roundToNearestMultiple(-1.4, 1), -1);
+        QCOMPARE(roundToNearestMultiple(1.4, 1), 1);
+        QCOMPARE(roundToNearestMultiple(1.6, 1), 2);
+        QCOMPARE(roundToNearestMultiple(4.4, 1), 4);
+        QCOMPARE(roundToNearestMultiple(4.6, 1), 5);
+
+        QCOMPARE(roundToNearestMultiple(4.6, 0), 5);
+
+        QCOMPARE(roundToNearestMultiple(-4.6, -3), -6);
+        QCOMPARE(roundToNearestMultiple(-4.4, -3), -3);
+        QCOMPARE(roundToNearestMultiple(-1.6, -3), -3);
+        QCOMPARE(roundToNearestMultiple(-1.4, -3), 0);
+        QCOMPARE(roundToNearestMultiple(1.4, -3), 0);
+        QCOMPARE(roundToNearestMultiple(1.6, -3), 3);
+        QCOMPARE(roundToNearestMultiple(4.4, -3), 3);
+        QCOMPARE(roundToNearestMultiple(4.6, -3), 6);
+
+        QCOMPARE(roundToNearestMultiple(-4.6, -1), -5);
+        QCOMPARE(roundToNearestMultiple(-4.4, -1), -4);
+        QCOMPARE(roundToNearestMultiple(-1.6, -1), -2);
+        QCOMPARE(roundToNearestMultiple(-1.4, -1), -1);
+        QCOMPARE(roundToNearestMultiple(1.4, -1), 1);
+        QCOMPARE(roundToNearestMultiple(1.6, -1), 2);
+        QCOMPARE(roundToNearestMultiple(4.4, -1), 4);
+        QCOMPARE(roundToNearestMultiple(4.6, -1), 5);
+    }
 };
 
 } // namespace PerceptualColor

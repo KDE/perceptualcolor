@@ -45,6 +45,69 @@ bool ChromaLightnessImageParameters::operator!=(const ChromaLightnessImageParame
     return !(*this == other);
 }
 
+/**
+ * @brief Render some rows of the image directly to the buffer.
+ *
+ * @param callbackObject Used to stop rendering when an abort is requested
+ * @param bytesPtr Pointer to the image data.
+ * @param bytesPerLine Bytes per line of the image data (can be obtained by
+ *        QImage)
+ * @param parameters The parameters
+ * @param firstRow Index of the first row to render. Must be a valid index.
+ * @param lastRow Index of the last row to render. Must be a valid index.
+ *
+ * @pre The parameters must be valid within the image. As this function
+ * operates directly on the image data, out-of-bound values will cause
+ * undefined behaviour.
+ */
+// Disable Clazy checks for passing large objects by value. In this function,
+// designed for threaded execution, we avoid passing by reference whenever
+// possible to prevent potential pitfalls, even though copying by value may
+// introduce slight overhead.
+void ChromaLightnessImageParameters::renderByRow( //
+    const AsyncImageRenderCallback &callbackObject,
+    uchar *const bytesPtr,
+    const qsizetype bytesPerLine,
+    const ChromaLightnessImageParameters parameters, // clazy:exclude=function-args-by-ref
+    int firstRow,
+    int lastRow)
+{
+    QRgb rgbColor;
+    cmsCIELCh cielchD50;
+    cielchD50.h = normalizedAngle360(parameters.hue);
+    for (int y = firstRow; y <= lastRow; ++y) {
+        if (callbackObject.shouldAbort()) {
+            return;
+        }
+        QRgb *line = //
+            reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
+        cielchD50.L = 100 - (y + 0.5) * 100.0 / parameters.imageSizePhysical.height();
+        for (int x = 0; x < parameters.imageSizePhysical.width(); ++x) {
+            // Using the same scale as on the y axis. floating point
+            // division thanks to 100 which is a "cmsFloat64Number"
+            cielchD50.C = (x + 0.5) * 100.0 / parameters.imageSizePhysical.height();
+            rgbColor = //
+                parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+                    toCmsLab(cielchD50));
+            if (qAlpha(rgbColor) != 0) {
+                // The pixel is within the gamut
+                line[x] = rgbColor;
+                // If color is out-of-gamut: We have chroma on the
+                // x axis and lightness on the y axis. We are drawing
+                // the pixmap line per line, so we go for given
+                // lightness from low chroma to high chroma. Because of
+                // the nature of many gamuts, if once in a line we have
+                // an out-of-gamut value, often all other pixels that
+                // are more at the right will be out-of-gamut also. So
+                // we could optimize our code and break here. But as we
+                // are not sure about this: It’s just likely, but not
+                // always correct. We do not know the gamut at compile
+                // time, so for the moment we do not optimize the code.
+            }
+        }
+    }
+}
+
 /** @brief Render an image.
  *
  * The function will render the image with the given parameters,
@@ -99,61 +162,17 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     myImage.fill(Qt::transparent); // Initialize background color
 
     // Initialization
-    const auto imageHeight = parameters.imageSizePhysical.height();
-    const auto imageWidth = parameters.imageSizePhysical.width();
-    const PerceptualColor::RgbColorSpace *const colorSpacePtr = //
-        parameters.rgbColorSpace.data();
+    const int imageHeight = parameters.imageSizePhysical.height();
+    const auto colorSpace = parameters.rgbColorSpace;
     auto &poolReference = getLibraryQThreadPoolInstance();
     const auto threadCount = qMax(1, poolReference.maxThreadCount());
 
     // Paint the gamut.
-    const auto normalizedHue = normalizedAngle360(parameters.hue);
+    const double normalizedHue = normalizedAngle360(parameters.hue);
     uchar *const bytesPtr = myImage.bits();
-    const auto bytesPerLine = myImage.bytesPerLine();
+    const qsizetype bytesPerLine = myImage.bytesPerLine();
 
-    { // Multi-threaded image calculation
-        auto imageLambda = [&bytesPtr, //
-                            normalizedHue,
-                            imageWidth,
-                            imageHeight,
-                            &colorSpacePtr,
-                            bytesPerLine,
-                            &callbackObject](int firstRow, int lastRow) -> void {
-            QRgb rgbColor;
-            cmsCIELCh cielchD50;
-            cielchD50.h = normalizedHue;
-            for (int y = firstRow; y <= lastRow; ++y) {
-                if (callbackObject.shouldAbort()) {
-                    return;
-                }
-                QRgb *line = //
-                    reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
-                cielchD50.L = 100 - (y + 0.5) * 100.0 / imageHeight;
-                for (int x = 0; x < imageWidth; ++x) {
-                    // Using the same scale as on the y axis. floating point
-                    // division thanks to 100 which is a "cmsFloat64Number"
-                    cielchD50.C = (x + 0.5) * 100.0 / imageHeight;
-                    rgbColor = //
-                        colorSpacePtr->fromCielabD50ToQRgbOrTransparent( //
-                            toCmsLab(cielchD50));
-                    if (qAlpha(rgbColor) != 0) {
-                        // The pixel is within the gamut
-                        line[x] = rgbColor;
-                        // If color is out-of-gamut: We have chroma on the
-                        // x axis and lightness on the y axis. We are drawing
-                        // the pixmap line per line, so we go for given
-                        // lightness from low chroma to high chroma. Because of
-                        // the nature of many gamuts, if once in a line we have
-                        // an out-of-gamut value, often all other pixels that
-                        // are more at the right will be out-of-gamut also. So
-                        // we could optimize our code and break here. But as we
-                        // are not sure about this: It’s just likely, but not
-                        // always correct. We do not know the gamut at compile
-                        // time, so for the moment we do not optimize the code.
-                    }
-                }
-            }
-        };
+    {
         const auto segments = splitElements(imageHeight, threadCount);
         // The narrowing static_cast<int>() is okay because parts.count() is a
         // result of threadCount, which is also int.
@@ -165,16 +184,26 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             return;
         }
         for (const auto &segment : segments) {
-            const auto myLambda = [imageLambda, segment, &semaphore]() {
-                imageLambda(segment.first, segment.second);
+            const auto myLambda = [&callbackObject, //
+                                   bytesPtr,
+                                   bytesPerLine,
+                                   parameters,
+                                   segment,
+                                   &semaphore]() {
+                renderByRow(callbackObject, //
+                            bytesPtr,
+                            bytesPerLine,
+                            parameters,
+                            segment.first,
+                            segment.second);
                 semaphore.release();
             };
             const auto myRunnablePtr = QRunnable::create(myLambda);
             poolReference.start(myRunnablePtr, imageThreadPriority);
         }
-        // Intentionally acquiring segments.count() and not treadCount, because
-        // they might differ and segments.count() is mandatory for thread
-        // execution.
+        // Intentionally acquiring segments.count() and not
+        // treadCount,  because they might differ and
+        // segments.count() is mandatory for thread execution.
         semaphore.acquire(segmentsCount); // Wait for all threads to finish.
     }
 

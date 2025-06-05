@@ -42,12 +42,10 @@ int InterlacingPass::roundToNearestPositiveOdd(const double value)
  */
 InterlacingPass::InterlacingPass(const double passCount)
 {
-    const int roundedPassCount = roundToNearestPositiveOdd(passCount);
+    countdown = roundToNearestPositiveOdd(passCount);
 
-    const int floorOfHalfCoundown = qFloor(roundedPassCount / 2.0);
-    const int baseSize = qRound(qPow(2, floorOfHalfCoundown));
+    const int baseSize = qRound(qPow(2, qFloor(countdown / 2.0)));
 
-    countdown = roundedPassCount;
     rectangleSize.setWidth(baseSize);
     rectangleSize.setHeight(baseSize);
     columnFrequency = baseSize;
@@ -68,8 +66,7 @@ void InterlacingPass::switchToNextPass()
 
     countdown--;
 
-    const int floorOfHalfCoundown = qFloor(countdown / 2.0);
-    const int baseSize = qRound(qPow(2, floorOfHalfCoundown));
+    const int baseSize = qRound(qPow(2, qFloor(countdown / 2.0)));
 
     if (isOdd(countdown)) {
         rectangleSize.setWidth(baseSize);

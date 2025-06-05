@@ -4,6 +4,7 @@
 #ifndef CHROMAHUEIMAGEPARAMETERS_H
 #define CHROMAHUEIMAGEPARAMETERS_H
 
+#include "interlacingpass.h"
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qsharedpointer.h>
@@ -88,6 +89,19 @@ public:
     [[nodiscard]] bool operator!=(const ChromaHueImageParameters &other) const;
 
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
+
+private:
+    static InterlacingPass createInterlacingPassObject(const QSize imageSizePhysical);
+
+    static void renderByRow(const AsyncImageRenderCallback &callbackObject,
+                            uchar *const bytesPtr,
+                            const qsizetype bytesPerLine,
+                            const ChromaHueImageParameters parameters,
+                            const qreal shift,
+                            const qreal scaleFactor,
+                            const InterlacingPass currentPass,
+                            int firstRow,
+                            int lastRow);
 };
 
 } // namespace PerceptualColor

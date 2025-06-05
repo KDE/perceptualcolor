@@ -753,6 +753,15 @@ private Q_SLOTS:
         QCOMPARE(result.at(1).second, 2);
         QCOMPARE(result.at(2).first, 3);
         QCOMPARE(result.at(2).second, 3);
+
+        // further tests
+        result = splitElements(15, 3);
+        QCOMPARE(result.at(0).first, 0);
+        QCOMPARE(result.at(0).second, 4);
+        QCOMPARE(result.at(1).first, 5);
+        QCOMPARE(result.at(1).second, 9);
+        QCOMPARE(result.at(2).first, 10);
+        QCOMPARE(result.at(2).second, 14);
     }
 
     void testSplitList()
@@ -875,6 +884,57 @@ private Q_SLOTS:
         QCOMPARE(result.at(1).size(), 2);
         QCOMPARE(result.at(1).at(0), 103);
         QCOMPARE(result.at(1).at(1), 104);
+    }
+
+    void testSplitElementsTaperedValidInput()
+    {
+        QList<QPair<int, int>> result = splitElementsTapered(100, 5, 1, 0.1);
+        QCOMPARE(result.size(), 5);
+
+        int totalElements = 0;
+        for (const auto &segment : result) {
+            // cppcheck-suppress useStlAlgorithm
+            totalElements += segment.second - segment.first + 1;
+        }
+        QCOMPARE(totalElements, 100); // Ensure all elements are used
+    }
+
+    void testSplitElementsTaperedSingleSegment()
+    {
+        QList<QPair<int, int>> result = splitElementsTapered(100, 1, 1, 0.2);
+        QCOMPARE(result.size(), 1);
+        QCOMPARE(result.first().first, 0);
+        QCOMPARE(result.first().second, 99); // Should span entire range
+    }
+
+    void testSplitElementsTaperedAlignmentEnforcement()
+    {
+        QList<QPair<int, int>> result = splitElementsTapered(100, 7, 10, 0.3);
+
+        for (const auto &segment : result) {
+            QCOMPARE(segment.first % 10, 0); // Start index must be a multiple of alignment
+        }
+    }
+
+    void testSplitElementsTaperedEdgeCases()
+    {
+        // Zero elements
+        QList<QPair<int, int>> result = splitElementsTapered(0, 5, 1, 0.4);
+        QVERIFY(result.isEmpty());
+        result = splitElementsTapered(0, 0, 0, 0.5);
+        QVERIFY(result.isEmpty());
+
+        // Zero segments
+        result = splitElementsTapered(100, 0, 1, 0.6);
+        QCOMPARE(result.size(), 1); // Should default to one segment
+        QCOMPARE(result.first().first, 0);
+        QCOMPARE(result.first().second, 99); // Should span entire range
+
+        // Zero alignment
+        result = splitElementsTapered(100, 5, 0, 0.7);
+        QCOMPARE(result.size(), 5); // Should default to alignment of 1
+        QCOMPARE(result.first().first, 0);
+        QCOMPARE(result.last().second, 99); // Should span entire range
     }
 };
 

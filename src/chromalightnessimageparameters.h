@@ -77,6 +77,13 @@ private:
     {
         return x + y * imageSizePhysical.width();
     }
+
+    static void renderByRow(const AsyncImageRenderCallback &callbackObject,
+                            uchar *const bytesPtr,
+                            const qsizetype bytesPerLine,
+                            const ChromaLightnessImageParameters parameters,
+                            int firstRow,
+                            int lastRow);
 };
 
 } // namespace PerceptualColor

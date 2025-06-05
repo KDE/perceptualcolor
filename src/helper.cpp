@@ -7,6 +7,7 @@
 #include "absolutecolor.h"
 #include "genericcolor.h"
 #include "helperconversion.h"
+#include "helperposixmath.h"
 #include "initializelibraryresources.h"
 #include "rgbcolorspace.h"
 #include <array>
@@ -664,6 +665,108 @@ QColorArray2D toOpaque(const QColorArray2D &array)
             result.setValue(i, j, toOpaque(temp));
         }
     }
+    return result;
+}
+
+/**
+ * @brief Splits a number of elements into segments with a tapered
+ * distribution.
+ *
+ * Divides a total of <tt>elementCount</tt> elements (indexed from 0
+ * to elementCount - 1) into <tt>segmentCount</tt> contiguous segments. The
+ * distribution produces larger segments near the beginning and end of the
+ * range, and smaller segments near the center, based on a piecewise linear
+ * weighting function.
+ *
+ * Segment sizes are determined proportionally to a linear slope that decreases
+ * toward <tt>peak</tt> from both ends. The center point of this tapering
+ * effect is defined by <tt>peak</tt>. All segment start indices are aligned to
+ * multiples of <tt>alignment</tt>, and all elements are covered without gaps
+ * or overlap.
+ *
+ * This method is fast, deterministic, and suitable for scenarios where a
+ * non-uniform but predictable distribution is desired.
+ *
+ * @param elementCount Total number of elements to divide. Must be ≥ 0.
+ * @param segmentCount Number of segments to produce. Must be ≥ 1.
+ * @param alignment Alignment step for the start index of each segment. Each
+ *        segment starts at a multiple of this value. Must be ≥ 1.
+ * @param peak Normalized center point of the distribution (0 < peak < 1),
+ *        where segment size reaches its minimum. Use 0.5 for a symmetric
+ *        tapering. Values closer to 0 or 1 shift the smallest segments
+ *        accordingly.
+ *
+ * @return A list of segment ranges, where each pair represents the
+ *         [start, end] index (inclusive) of a segment. The ranges are
+ *         disjoint, aligned, and collectively span the full element range.
+ */
+QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, int alignment, double peak)
+{
+    QList<QPair<int, int>> result;
+
+    // Enforce preconditions
+    if (elementCount < 1) {
+        return result;
+    }
+    if (segmentCount < 1) {
+        segmentCount = 1;
+    }
+    if (alignment < 1) {
+        alignment = 1;
+    }
+    if ((peak <= 0) || (peak >= 1)) {
+        peak = 0.5;
+    }
+
+    const double firstFactor = -1 / peak;
+    constexpr double firstOffset = 1;
+    const double secondFactor = 1 / (1 - peak);
+    const double secondOffset = secondFactor * peak * (-1);
+
+    QList<double> relativeSegmentSize;
+    relativeSegmentSize.reserve(segmentCount);
+    for (int i = 0; i < segmentCount; ++i) {
+        const double x = (i + 0.5) / segmentCount;
+        if (x < peak) {
+            relativeSegmentSize.append(x * firstFactor + firstOffset);
+        } else if (x > peak) {
+            relativeSegmentSize.append(x * secondFactor + secondOffset);
+        } else {
+            relativeSegmentSize.append(0);
+        }
+    }
+    double total = 0;
+    for (const auto value : std::as_const(relativeSegmentSize)) {
+        // cppcheck-suppress useStlAlgorithm
+        total += value;
+    }
+    // NOTE “total” might be 0 if we have only 1 element which takes ist value
+    // exactly from the peak, which has value 0 (or maybe if the
+    // floating point precision is not enough to distinguish the value from 0).
+
+    const double factor = (total > 0.0000001) ? elementCount / total : 1;
+
+    int nextFirstElement = 0;
+    for (int i = 0; i < segmentCount; ++i) {
+        const int firstElement = nextFirstElement;
+        nextFirstElement = roundToNearestMultiple( //
+            firstElement + relativeSegmentSize[i] * factor,
+            alignment);
+        if (nextFirstElement <= firstElement) {
+            // Make sure to not have an empty segment.
+            nextFirstElement = firstElement + alignment;
+        }
+        const int lastElement = qMin(nextFirstElement - 1, elementCount - 1);
+        if (lastElement < firstElement) {
+            break;
+        }
+        result.append(QPair<int, int>(firstElement, lastElement));
+    }
+    if (result.last().second < elementCount - 1) {
+        // Might happen is “total” was 0.
+        result.last().second = elementCount - 1;
+    }
+
     return result;
 }
 

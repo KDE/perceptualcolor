@@ -499,7 +499,7 @@ private Q_SLOTS:
         }
     }
 
-    void benchmarkGetImage()
+    void benchmarkRender()
     {
         ChromaHueImageParameters testProperties;
         testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
@@ -507,12 +507,7 @@ private Q_SLOTS:
         testProperties.borderPhysical = 0;
         testProperties.lightness = 50;
         testProperties.imageSizePhysical = 1000; // an even number
-        testProperties.render(QVariant::fromValue(testProperties), myMockup);
         QBENCHMARK {
-            testProperties.lightness = 51;
-            testProperties.render(QVariant::fromValue(testProperties), //
-                                  myMockup);
-            testProperties.lightness = 50;
             testProperties.render(QVariant::fromValue(testProperties), //
                                   myMockup);
         }

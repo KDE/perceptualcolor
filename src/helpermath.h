@@ -86,6 +86,8 @@ int decimalPlaces(const int rangeMax, const int significantFigures);
 
 std::optional<SquareMatrix3> inverseMatrix(const SquareMatrix3 &matrix);
 
+int roundToNearestMultiple(double num, int multiple);
+
 /** @internal
  *
  * @brief Template function to test if a value is within a certain range
