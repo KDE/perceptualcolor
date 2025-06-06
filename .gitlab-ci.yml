@@ -154,12 +154,7 @@ include:
       - /gitlab-templates/freebsd-qt6.yml
       - /gitlab-templates/linux-qt6.yml
       - /gitlab-templates/linux-qt6-static.yml
-      # NOTE The following line adds Linux build. Furthermore, it adds a job
-      # for cppcheck, but only if there were actual changes to CPP code since
-      # last time.
-      - /gitlab-templates/linux.yml
       # NOTE The following line runs reuse-lint on everything
       # except translations.
       - /gitlab-templates/reuse-lint.yml
       - /gitlab-templates/windows-qt6.yml
-      - /gitlab-templates/windows-static.yml
