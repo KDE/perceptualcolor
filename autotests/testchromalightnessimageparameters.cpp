@@ -29,6 +29,49 @@ namespace PerceptualColor
 {
 class RgbColorSpace;
 
+class Mockup : public AsyncImageRenderCallback
+{
+public:
+    virtual bool shouldAbort() const override;
+    virtual void deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state) override;
+    QImage lastDeliveredImage() const;
+    QImage lastDeliveredMask() const;
+    QVariant lastDeliveredParameters() const;
+
+private:
+    QImage m_lastDeliveredImage;
+    QImage m_lastDeliveredMask;
+    QVariant m_lastDeliveredParameters;
+};
+
+bool Mockup::shouldAbort() const
+{
+    return false;
+}
+
+void Mockup::deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state)
+{
+    Q_UNUSED(state)
+    m_lastDeliveredImage = image;
+    m_lastDeliveredMask = mask;
+    m_lastDeliveredParameters = parameters;
+}
+
+QImage Mockup::lastDeliveredImage() const
+{
+    return m_lastDeliveredImage;
+}
+
+QImage Mockup::lastDeliveredMask() const
+{
+    return m_lastDeliveredMask;
+}
+
+QVariant Mockup::lastDeliveredParameters() const
+{
+    return m_lastDeliveredParameters;
+}
+
 class TestChromaLightnessImageParameters : public QObject
 {
     Q_OBJECT
@@ -254,6 +297,19 @@ private Q_SLOTS:
         m_imageProvider.setImageParameters(m_imageParameters);
         m_imageProvider.refreshSync();
         Q_UNUSED(m_imageProvider.getCache())
+    }
+
+    void benchmarkRender()
+    {
+        ChromaLightnessImageParameters testProperties;
+        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        Mockup myMockup;
+        testProperties.hue = 0;
+        testProperties.imageSizePhysical = QSize(1000, 1000); // an even number
+        QBENCHMARK {
+            testProperties.render(QVariant::fromValue(testProperties), //
+                                  myMockup);
+        }
     }
 
 #endif
