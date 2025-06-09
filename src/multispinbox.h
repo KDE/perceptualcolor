@@ -180,7 +180,35 @@ class MultiSpinBoxPrivate;
  * @todo If exposing this class as public API of this library, would
  * it make sense to implement the complete public API of QAbstractSpinBox
  * from which we inherit? Currently, some parts of the QAbstractSpinBox API
- * are nor (properly) implemented by this class… */
+ * are nor (properly) implemented by this class…
+ *
+ * @todo Strg+A selects the whole text of the MultiSpinBox. The text cursor
+ * position is at the beginning. It's the first section that will react on
+ * Page-up and Page-down events. This is conform to the behaviour
+ * of QTimeDateEdit.
+ *
+ * @todo If entering the MultiSpinBox via Tab key, always the first section
+ * gets selected. On Shift-Tab, always the last section. This applies
+ * regardless of the last previously selected section. This is conform to the
+ * behaviour of QTimeDateEdit.
+ *
+ * @todo It is possible to select (either with the left mouse click + mouse
+ * move, or with Shift key + the arrow keys) arbitrary parts of the line edit,
+ * including partial and complete selection of prefixes, suffixes and
+ * separators. It's possible to copy this text (both, by Ctrl+C and by
+ * insertion by middle mouse click on Linux).
+ *
+ * @todo If decimals is 0, treat it like an integer-only spinbox and provide
+ * support for localization with plural handling, maybe via callback because
+ * KLocalizedString isn't available. But: It is necessary to know for us every
+ * possible plural-handling-translation for sizeHint() caluculation. By the
+ * way: for sizeHint() calculation, do not only consider the highest, but also
+ * the lowest number, including a maybe preceding minus sign!
+ *
+ * @todo Use format string instead of prefix/suffix.
+ *
+ * @todo Translate separators.
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
