@@ -297,6 +297,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         if (callbackObject.shouldAbort()) {
             return;
         }
+        std::atomic_thread_fence(std::memory_order_seq_cst);
         for (const auto &segment : segments) {
             const auto myLambda = [&callbackObject, //
                                    bytesPtr,
