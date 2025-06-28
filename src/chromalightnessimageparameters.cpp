@@ -183,7 +183,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
         if (callbackObject.shouldAbort()) {
             return;
         }
-        std::atomic_thread_fence(std::memory_order_seq_cst);
+        std::atomic_thread_fence(std::memory_order_seq_cst); // memory barrier
         for (const auto &segment : segments) {
             const auto myLambda = [&callbackObject, //
                                    bytesPtr,
