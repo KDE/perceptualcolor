@@ -237,8 +237,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     myImage.fill(Qt::transparent);
 
     // Prepare for gamut painting
-    cmsCIELab cielabD50;
-    cielabD50.L = parameters.lightness;
     const auto chromaRange = //
         parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)

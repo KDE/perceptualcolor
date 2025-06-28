@@ -498,7 +498,7 @@ QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
     QList<QList<T>> result;
     const auto segments = splitElements<qsizetype>(originalList.count(), //
                                                    numParts);
-    for (const auto segment : segments) {
+    for (const auto &segment : segments) {
         result.append( //
             originalList.mid(segment.first, //
                              segment.second - segment.first + 1));
