@@ -294,7 +294,7 @@ void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition po
  * @param index The index of the section
  * @returns The value of the given section, formatted (without prefix or
  * suffix), as text. */
-QString MultiSpinBoxPrivate::formattedValue(QListSizeType index) const
+QString MultiSpinBoxPrivate::formattedValue(qsizetype index) const
 {
     return q_pointer->locale().toString(
         // The value to be formatted:
@@ -314,7 +314,7 @@ QString MultiSpinBoxPrivate::formattedValue(QListSizeType index) const
  * on @ref m_currentIndex. */
 void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
 {
-    QListSizeType i;
+    qsizetype i;
 
     // Update m_currentSectionTextBeforeValue
     m_textBeforeCurrentValue = QString();
@@ -360,7 +360,7 @@ void MultiSpinBoxPrivate::setCurrentIndexToZeroAndUpdateTextAndSelectValue()
  *
  * @sa @ref setCurrentIndexToZeroAndUpdateTextAndSelectValue
  * @sa @ref setCurrentIndexWithoutUpdatingText */
-void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(QListSizeType newIndex)
+void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex)
 {
     QSignalBlocker myBlocker(q_pointer->lineEdit());
     setCurrentIndexWithoutUpdatingText(newIndex);
@@ -392,7 +392,7 @@ void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(QListSizeTy
  * @param newIndex The index of the new current section. Must be a valid index.
  *
  * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue */
-void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(QListSizeType newIndex)
+void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
 {
     if (!isInRange<qsizetype>(0, newIndex, m_sectionConfigurations.count() - 1)) {
         qWarning() << "The function" << __func__ //
@@ -473,7 +473,10 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
     }
 
     // Make sure that m_currentIndex will not run out-of-bound.
-    d_pointer->m_currentIndex = qBound(0, d_pointer->m_currentIndex, newSectionConfigurations.count());
+    d_pointer->m_currentIndex = qBound<qsizetype>( //
+        0, //
+        d_pointer->m_currentIndex, //
+        newSectionConfigurations.count());
 
     // Set new section configuration
     d_pointer->m_sectionConfigurations = newSectionConfigurations;
@@ -531,7 +534,7 @@ void MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(const QList<dou
         return;
     }
 
-    const QListSizeType sectionCount = m_sectionConfigurations.count();
+    const auto sectionCount = m_sectionConfigurations.count();
 
     QList<double> fixedNewSectionValues = newSectionValues;
 
@@ -752,7 +755,7 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
  * the @ref MultiSpinBoxSection::singleStep of the current section. */
 void MultiSpinBox::stepBy(int steps)
 {
-    const QListSizeType currentIndex = d_pointer->m_currentIndex;
+    const auto currentIndex = d_pointer->m_currentIndex;
     QList<double> myValues = sectionValues();
     myValues[currentIndex] += steps * d_pointer->m_sectionConfigurations.at(currentIndex).singleStep();
     // As explained in QAbstractSpinBox documentation:
@@ -882,13 +885,13 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     // have been. So maybe we have to correct the value, which might change
     // its length. If the new cursor position is after this value, it will
     // have to be adapted (if the value had been changed or alternated).
-    const QListSizeType oldTextLength = q_pointer->lineEdit()->text().length();
+    const auto oldTextLength = q_pointer->lineEdit()->text().length();
     const bool mustAdjustCursorPosition = //
         (newPos > (oldTextLength - m_textAfterCurrentValue.length()));
 
     // Calculate in which section the cursor is
     int sectionOfTheNewCursorPosition;
-    QStringLength reference = 0;
+    qsizetype reference = 0;
     for (sectionOfTheNewCursorPosition = 0; //
          sectionOfTheNewCursorPosition < m_sectionConfigurations.count() - 1; //
          ++sectionOfTheNewCursorPosition //

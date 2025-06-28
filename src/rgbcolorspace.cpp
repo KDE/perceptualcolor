@@ -15,7 +15,6 @@
 #include "helperconstants.h"
 #include "helperimage.h"
 #include "helpermath.h"
-#include "helperqttypes.h"
 #include "initializetranslation.h"
 #include "iohandlerfactory.h"
 #include <algorithm>
@@ -1373,9 +1372,7 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
     }
 
     // If in-gamut, return an opaque color.
-    QColor temp = QColor::fromRgbF(static_cast<QColorFloatType>(rgb[0]), //
-                                   static_cast<QColorFloatType>(rgb[1]), //
-                                   static_cast<QColorFloatType>(rgb[2]));
+    QColor temp = qColorFromRgbDouble(rgb[0], rgb[1], rgb[2]);
     return temp.rgb();
 }
 

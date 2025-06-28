@@ -7,7 +7,6 @@
 
 #include "asyncimagerendercallback.h"
 #include "helper.h"
-#include "helperqttypes.h"
 #include "rgbcolorspace.h"
 #include <cmath>
 #include <qbrush.h>
@@ -154,7 +153,7 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
         temp = parameters.rgbColorSpace->fromCielchD50ToQRgbBound(cielchD50);
         temp.setAlphaF(
             // Reduce floating point precision if necessary.
-            static_cast<QColorFloatType>(color.fourth));
+            static_cast<float>(color.fourth));
         onePixelLine.setPixelColor(i, 0, temp);
     }
     if (callbackObject.shouldAbort()) {

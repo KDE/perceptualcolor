@@ -5,7 +5,6 @@
 #define HELPER_H
 
 #include "helpermath.h"
-#include "helperqttypes.h"
 #include "lcms2.h"
 #include <QtCore/qsharedpointer.h>
 #include <optional>
@@ -97,7 +96,7 @@ public:
      * @param jCount size (second dimension)
      *
      * The elements are initialized with default-constructed values. */
-    Array2D(QListSizeType iCount, QListSizeType jCount)
+    Array2D(qsizetype iCount, qsizetype jCount)
         : m_iCount(iCount)
         , m_jCount(jCount)
     {
@@ -109,7 +108,7 @@ public:
         }
         const auto elementCount = m_iCount * m_jCount;
         m_data.reserve(elementCount);
-        for (QListSizeType i = 0; i < elementCount; ++i) {
+        for (qsizetype i = 0; i < elementCount; ++i) {
             m_data.append(T());
         }
     }
@@ -120,7 +119,7 @@ public:
      * @param jCount size (second dimension)
      * @param init Initial values. Excess elements are ignored. Missing
      *        elements are initialized with default-constructed values. */
-    Array2D(QListSizeType iCount, QListSizeType jCount, QList<T> init)
+    Array2D(qsizetype iCount, qsizetype jCount, QList<T> init)
         : m_iCount(iCount)
         , m_jCount(jCount)
     {
@@ -132,7 +131,7 @@ public:
         }
         const auto elementCount = m_iCount * m_jCount;
         m_data.reserve(elementCount);
-        for (QListSizeType i = 0; i < elementCount; ++i) {
+        for (qsizetype i = 0; i < elementCount; ++i) {
             if (i < init.count()) {
                 m_data.append(init.value(i));
             } else {
@@ -189,12 +188,12 @@ public:
      * @param j index (second dimension)
      * @returns If the indices combination is in range.
      */
-    bool isInRange(QListSizeType i, QListSizeType j) const
+    bool isInRange(qsizetype i, qsizetype j) const
     {
         const bool iOkay = //
-            PerceptualColor::isInRange<QListSizeType>(0, i, m_iCount - 1);
+            PerceptualColor::isInRange<qsizetype>(0, i, m_iCount - 1);
         const bool jOkay = //
-            PerceptualColor::isInRange<QListSizeType>(0, j, m_jCount - 1);
+            PerceptualColor::isInRange<qsizetype>(0, j, m_jCount - 1);
         return (iOkay && jOkay);
     }
 
@@ -203,7 +202,7 @@ public:
      * @param i index (first dimension)
      * @param j index (second dimension)
      * @param value value to set */
-    void setValue(QListSizeType i, QListSizeType j, const T &value)
+    void setValue(qsizetype i, qsizetype j, const T &value)
     {
         if (isInRange(i, j)) {
             m_data[i + m_iCount * j] = value;
@@ -232,7 +231,7 @@ public:
      * @param j index (second dimension)
      * @returns If the indices are valid, the value at the given indeces.
      * A default-constructed value otherwise. */
-    T value(QListSizeType i, QListSizeType j) const
+    T value(qsizetype i, qsizetype j) const
     {
         if (isInRange(i, j)) {
             return m_data.at(i + m_iCount * j);
@@ -243,7 +242,7 @@ public:
     /** @brief Size of the first dimension.
      *
      * @returns Size of the first dimension. */
-    QListSizeType iCount() const
+    qsizetype iCount() const
     {
         return m_iCount;
     }
@@ -251,7 +250,7 @@ public:
     /** @brief Size of the second dimension.
      *
      * @returns Size of the second dimension. */
-    QListSizeType jCount() const
+    qsizetype jCount() const
     {
         return m_jCount;
     }
@@ -260,9 +259,9 @@ private:
     /** @brief Internal storage of the elements. */
     QList<T> m_data;
     /** @brief Internal storage of @ref iCount(). */
-    QListSizeType m_iCount;
+    qsizetype m_iCount;
     /** @brief Internal storage of @ref jCount(). */
-    QListSizeType m_jCount;
+    qsizetype m_jCount;
 };
 
 /** @brief Swatches organized in a grid.
@@ -490,14 +489,15 @@ QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
  * the divided data.
  */
 template<typename T>
-QList<QList<T>> splitList(const QList<T> &originalList, QListSizeType numParts)
+QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
 {
     if (originalList.isEmpty()) {
         return {};
     }
 
     QList<QList<T>> result;
-    const auto segments = splitElements(originalList.count(), numParts);
+    const auto segments = splitElements<qsizetype>(originalList.count(), //
+                                                   numParts);
     for (const auto segment : segments) {
         result.append( //
             originalList.mid(segment.first, //

@@ -4,7 +4,6 @@
 // Own header
 #include "rgbcolor.h"
 
-#include "helperqttypes.h"
 #include <qglobal.h>
 #include <type_traits>
 
@@ -96,11 +95,11 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
 RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> hue)
 {
     RgbColor result;
-    const auto red = static_cast<QColorFloatType>(color.first / 255.0);
-    const auto green = static_cast<QColorFloatType>(color.second / 255.0);
-    const auto blue = static_cast<QColorFloatType>(color.third / 255.0);
-    constexpr auto zero = static_cast<QColorFloatType>(0);
-    constexpr auto one = static_cast<QColorFloatType>(1);
+    const float red = static_cast<float>(color.first / 255.0);
+    const float green = static_cast<float>(color.second / 255.0);
+    const float blue = static_cast<float>(color.third / 255.0);
+    constexpr float zero = 0;
+    constexpr float one = 1;
     const QColor newRgbQColor = QColor::fromRgbF(qBound(zero, red, one), //
                                                  qBound(zero, green, one), //
                                                  qBound(zero, blue, one));
@@ -134,14 +133,14 @@ RgbColor RgbColor::fromHsl(const GenericColor &color)
 {
     RgbColor result;
 
-    constexpr auto zero = static_cast<QColorFloatType>(0);
-    constexpr auto one = static_cast<QColorFloatType>(1);
+    constexpr float zero = 0;
+    constexpr float one = 1;
     const auto hslHue = //
-        qBound(zero, static_cast<QColorFloatType>(color.first / 360.0), one);
+        qBound(zero, static_cast<float>(color.first / 360.0), one);
     const auto hslSaturation = //
-        qBound(zero, static_cast<QColorFloatType>(color.second / 100.0), one);
+        qBound(zero, static_cast<float>(color.second / 100.0), one);
     const auto hslLightness = //
-        qBound(zero, static_cast<QColorFloatType>(color.third / 100.0), one);
+        qBound(zero, static_cast<float>(color.third / 100.0), one);
     const QColor newRgbQColor = //
         QColor::fromHslF(hslHue, hslSaturation, hslLightness).toRgb();
     result.fillAll(newRgbQColor, color.first);
@@ -165,14 +164,14 @@ RgbColor RgbColor::fromHsl(const GenericColor &color)
 RgbColor RgbColor::fromHsv(const GenericColor &color)
 {
     RgbColor result;
-    constexpr auto zero = static_cast<QColorFloatType>(0);
-    constexpr auto one = static_cast<QColorFloatType>(1);
+    constexpr float zero = 0;
+    constexpr float one = 1;
     const auto hsvHue = //
-        qBound(zero, static_cast<QColorFloatType>(color.first / 360.0), one);
+        qBound(zero, static_cast<float>(color.first / 360.0), one);
     const auto hsvSaturation = //
-        qBound(zero, static_cast<QColorFloatType>(color.second / 100.0), one);
+        qBound(zero, static_cast<float>(color.second / 100.0), one);
     const auto hsvValue = //
-        qBound(zero, static_cast<QColorFloatType>(color.third / 100.0), one);
+        qBound(zero, static_cast<float>(color.third / 100.0), one);
     const QColor newRgbQColor = //
         QColor::fromHsvF(hsvHue, hsvSaturation, hsvValue);
     result.fillAll(newRgbQColor, color.first);
@@ -218,9 +217,9 @@ RgbColor RgbColor::fromHwb(const GenericColor &color)
                                              newHsvValue);
     const QColor newRgbQColor = //
         QColor::fromHsvF( //
-            static_cast<QColorFloatType>(newHsv.first / 360), //
-            static_cast<QColorFloatType>(newHsv.second / 100), //
-            static_cast<QColorFloatType>(newHsv.third / 100));
+            static_cast<float>(newHsv.first / 360), //
+            static_cast<float>(newHsv.second / 100), //
+            static_cast<float>(newHsv.third / 100));
     result.fillAll(newRgbQColor, normalizedHwb.first);
     // Override again with the original value:
     result.hsv = newHsv;

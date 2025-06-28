@@ -470,12 +470,17 @@ find_package(
     LCMS2
     REQUIRED)
 find_package(
-    ECM 5.82 # Version 5.82 required for QtVersionOption
+    ECM 5.82
     REQUIRED
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-include(QtVersionOption) # Provides ${QT_MAJOR_VERSION}
+option(BUILD_WITH_QT6 "ON = build with Qt6. OFF = build with Qt5." ON)
+if(BUILD_WITH_QT6)
+    set(QT_MAJOR_VERSION 6)
+else()
+    set(QT_MAJOR_VERSION 5)
+endif()
 # CheckAtomic: “Sometimes linking against libatomic is required for atomic ops,
 #               if the platform doesn’t support lock-free atomics.”
 #              “Check if the compiler supports std:atomic out of the box or if

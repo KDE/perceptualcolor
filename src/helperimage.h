@@ -5,7 +5,6 @@
 #define HELPERIMAGE_H
 
 #include "genericcolor.h"
-#include "helperqttypes.h"
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>

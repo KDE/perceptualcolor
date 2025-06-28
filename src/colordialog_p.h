@@ -11,7 +11,6 @@
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperconversion.h"
-#include "helperqttypes.h"
 #include "languagechangeeventfilter.h"
 #include "perceptualsettings.h"
 #include "rgbcolor.h"
@@ -73,19 +72,19 @@ public:
     virtual ~ColorDialogPrivate() noexcept override = default;
 
     /** @brief Horizontal count of swatches for history. */
-    static constexpr QListSizeType historyHSwatchCount = 10;
+    static constexpr qsizetype historyHSwatchCount = 10;
     /** @brief  Vertical count of swatches for history. */
-    static constexpr QListSizeType historyVSwatchCount = 4;
+    static constexpr qsizetype historyVSwatchCount = 4;
     /** @brief  Total count of swatches for history. */
-    static constexpr QListSizeType historySwatchCount = //
+    static constexpr qsizetype historySwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
 
     /** @brief Horizontal count of swatches for custom colors. */
-    static constexpr QListSizeType customColorsHSwatchCount = 9;
+    static constexpr qsizetype customColorsHSwatchCount = 9;
     /** @brief  Vertical count of swatches for custom colors. */
-    static constexpr QListSizeType customColorsVSwatchCount = 4;
+    static constexpr qsizetype customColorsVSwatchCount = 4;
     /** @brief  Total count of swatches for custom colors. */
-    static constexpr QListSizeType customColorsSwatchCount = //
+    static constexpr qsizetype customColorsSwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
 
     /** @brief @ref GradientSlider widget for the alpha channel. */

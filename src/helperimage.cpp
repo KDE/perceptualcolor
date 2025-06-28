@@ -9,7 +9,6 @@
 #include "helper.h"
 #include "helperconstants.h"
 #include "helpermath.h"
-#include "helperqttypes.h"
 #include "interlacingpass.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
@@ -148,8 +147,8 @@ static void doAntialiasHelper(uchar *const bytesPtr,
             }
         }
         if (opaqueColors.count() > 0) {
-            const QColorFloatType countF = //
-                static_cast<QColorFloatType>(opaqueColors.count());
+            const float countF = //
+                static_cast<float>(opaqueColors.count());
             QRgb &pixelRef = *( //
                 reinterpret_cast<QRgb *>(bytesPtr + point.y() * bytesPerLine) //
                 + point.x());
@@ -160,9 +159,9 @@ static void doAntialiasHelper(uchar *const bytesPtr,
                 // anti-aliasing, we need an actual color, so we calculate the
                 // mean color of all other data points within the pixel that
                 // actually are in-gamut.
-                QColorFloatType r = 0;
-                QColorFloatType g = 0;
-                QColorFloatType b = 0;
+                float r = 0;
+                float g = 0;
+                float b = 0;
                 for (const QColor &myColor : opaqueColors) {
                     r += myColor.redF();
                     g += myColor.greenF();

@@ -9,7 +9,6 @@
 
 #include "constpropagatingrawpointer.h"
 #include "helper.h"
-#include "helperqttypes.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qnamespace.h>
@@ -63,17 +62,17 @@ public:
                   QPainter *widgetPainter,
                   const QColor color,
                   const SwatchBookPrivate::Mark markSymbol,
-                  const QListSizeType row,
-                  const QListSizeType column) const;
+                  const qsizetype row,
+                  const qsizetype column) const;
     [[nodiscard]] int horizontalPatchSpacing() const;
     void initStyleOption(QStyleOptionFrame *option) const;
-    [[nodiscard]] std::pair<QListSizeType, QListSizeType> logicalColumnRowFromPosition(const QPoint position) const;
+    [[nodiscard]] std::pair<qsizetype, qsizetype> logicalColumnRowFromPosition(const QPoint position) const;
     [[nodiscard]] int normalPatchSpacing() const;
     [[nodiscard]] QPoint offset(const QStyleOptionFrame &styleOptionFrame) const;
     [[nodiscard]] QSize patchSizeInner() const;
     [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();
-    void selectSwatchByLogicalCoordinates(QListSizeType newCurrentColumn, QListSizeType newCurrentRow);
+    void selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow);
     void selectSwatchFromCurrentColor();
     void updateColorSchemeCache();
     [[nodiscard]] int verticalPatchSpacing() const;
@@ -121,7 +120,7 @@ public:
      *
      * @sa @ref m_selectedRow
      */
-    QListSizeType m_selectedColumn = -1;
+    qsizetype m_selectedColumn = -1;
     /** @brief Selected row.
      *
      * If one of the swatches in the book is selected, this is
@@ -137,7 +136,7 @@ public:
      *
      * @sa @ref m_selectedColumn
      */
-    QListSizeType m_selectedRow = -1;
+    qsizetype m_selectedRow = -1;
     /** @brief The selection mark to use, or an empty string if no
      * selection mark is available.
      *

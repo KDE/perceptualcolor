@@ -396,7 +396,7 @@ void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGr
  *       swatch is selected, the selection mark becomes visible, and
  *       @ref SwatchBook::currentColor is updated to reflect the selected color.
  */
-void SwatchBookPrivate::selectSwatchByLogicalCoordinates(QListSizeType newCurrentColumn, QListSizeType newCurrentRow)
+void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow)
 {
     const auto newColor = m_swatchGrid.value(newCurrentColumn, newCurrentRow);
     if (!newColor.isValid()) {
@@ -614,9 +614,9 @@ QPoint SwatchBookPrivate::offset(const QStyleOptionFrame &styleOptionFrame) cons
  * or <tt>(-1, -1)</tt> if the position does not correspond to any color patch.
  * Empty color patches are treated as active color patches.
  */
-std::pair<QListSizeType, QListSizeType> SwatchBookPrivate::logicalColumnRowFromPosition(const QPoint position) const
+std::pair<qsizetype, qsizetype> SwatchBookPrivate::logicalColumnRowFromPosition(const QPoint position) const
 {
-    constexpr std::pair<QListSizeType, QListSizeType> invalid(-1, -1);
+    constexpr std::pair<qsizetype, qsizetype> invalid(-1, -1);
 
     const QSize myColorPatchSize = patchSizeOuter();
     const int myPatchWidth = myColorPatchSize.width();
@@ -650,7 +650,7 @@ std::pair<QListSizeType, QListSizeType> SwatchBookPrivate::logicalColumnRowFromP
     }
 
     const int visualColumnIndex = temp.x() / columnWidth;
-    QListSizeType columnIndex;
+    qsizetype columnIndex;
     if (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) {
         columnIndex = visualColumnIndex;
     } else {
@@ -663,7 +663,7 @@ std::pair<QListSizeType, QListSizeType> SwatchBookPrivate::logicalColumnRowFromP
         return invalid;
     }
 
-    return std::pair<QListSizeType, QListSizeType>(columnIndex, rowIndex);
+    return std::pair<qsizetype, qsizetype>(columnIndex, rowIndex);
 }
 
 /** @brief The size of the color patches.
@@ -742,13 +742,13 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
                                  QPainter *widgetPainter,
                                  const QColor color,
                                  const SwatchBookPrivate::Mark markSymbol,
-                                 const QListSizeType row,
-                                 const QListSizeType column) const
+                                 const qsizetype row,
+                                 const qsizetype column) const
 {
     widgetPainter->save(); // We'll do a restore() at the end of this function.
 
     // Draw the selection mark (if any)
-    const QListSizeType visualSelectedColumnIndex = //
+    const qsizetype visualSelectedColumnIndex = //
         (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) //
         ? column //
         : m_swatchGrid.iCount() - 1 - column;
@@ -932,9 +932,9 @@ void SwatchBook::paintEvent(QPaintEvent *event)
 
     // Draw the color patches
     const QPoint offset = d_pointer->offset(frameStyleOption);
-    const QListSizeType columnCount = d_pointer->m_swatchGrid.iCount();
+    const qsizetype columnCount = d_pointer->m_swatchGrid.iCount();
     const int myCornerRadius = d_pointer->cornerRadius();
-    QListSizeType visualColumn;
+    qsizetype visualColumn;
     const auto currentScheme = d_pointer->m_colorSchemeCache;
     const QColor addMarkColor = (currentScheme == ColorSchemeType::Dark) //
         ? Qt::white
@@ -1014,13 +1014,13 @@ void SwatchBook::paintEvent(QPaintEvent *event)
  * @param event the event */
 void SwatchBook::keyPressEvent(QKeyEvent *event)
 {
-    QListSizeType steps = 0;
-    const QListSizeType stepWidth = //
+    qsizetype steps = 0;
+    const qsizetype stepWidth = //
         (event->modifiers().testFlag(Qt::ControlModifier)) //
         ? 2 //
         : 1;
-    QListSizeType shiftColumn = 0;
-    QListSizeType shiftRow = 0;
+    qsizetype shiftColumn = 0;
+    qsizetype shiftRow = 0;
     switch (event->key()) {
     case Qt::Key_Up:
         steps = stepWidth;
@@ -1092,12 +1092,12 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
     // At this point, we can assume that currently a valid swatch is yet
     // selected.
 
-    QListSizeType newLogicalColumn = d_pointer->m_selectedColumn;
-    QListSizeType newLogicalRow = d_pointer->m_selectedRow;
-    QListSizeType tempLogicalColumn = newLogicalColumn;
-    QListSizeType tempLogicalRow = newLogicalRow;
+    auto newLogicalColumn = d_pointer->m_selectedColumn;
+    auto newLogicalRow = d_pointer->m_selectedRow;
+    auto tempLogicalColumn = newLogicalColumn;
+    auto tempLogicalRow = newLogicalRow;
     bool isTempLogicalPositionInRange = true;
-    QListSizeType completedSteps = 0;
+    qsizetype completedSteps = 0;
     while (isTempLogicalPositionInRange && (completedSteps < steps)) {
         tempLogicalColumn += shiftColumn;
         tempLogicalRow += shiftRow;

@@ -9,7 +9,6 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
-#include "helperqttypes.h"
 #include "rgbcolorspacefactory.h"
 #include <qbytearray.h>
 #include <qcolor.h>
@@ -782,7 +781,7 @@ private Q_SLOTS:
         SwatchBook testWidget(m_rgbColorSpace, //
                               myBasicColors,
                               {});
-        const QListSizeType count = //
+        const auto count = //
             qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
                  testWidget.d_pointer->m_swatchGrid.jCount())
             // Add 1 to exceed the possible number of fields (crash test)
@@ -894,7 +893,7 @@ private Q_SLOTS:
         SwatchBook testWidget(m_rgbColorSpace, //
                               array,
                               {});
-        const QListSizeType count = //
+        const auto count = //
             qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
                  testWidget.d_pointer->m_swatchGrid.jCount())
             // Add 1 to exceed the possible number of fields (crash test)

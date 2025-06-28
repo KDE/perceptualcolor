@@ -380,16 +380,16 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
     }
 
     // Calculate the average lightness of the screenshot
-    QColorFloatType lightnessSum = 0;
+    float lightnessSum = 0;
     for (int y = 0; y < screenshot.height(); ++y) {
         for (int x = 0; x < screenshot.width(); ++x) {
             lightnessSum += QColor(screenshot.pixel(x, y)).lightnessF();
         }
     }
     const auto pixelCount = screenshot.width() * screenshot.height();
-    constexpr QColorFloatType threeshold = 0.5;
+    constexpr float threeshold = 0.5;
     const bool isDark = //
-        (lightnessSum / static_cast<QColorFloatType>(pixelCount)) < threeshold;
+        (lightnessSum / static_cast<float>(pixelCount)) < threeshold;
     if (isDark) {
         return ColorSchemeType::Dark;
     }
@@ -659,8 +659,8 @@ QColor toOpaque(const QColor &color)
 QColorArray2D toOpaque(const QColorArray2D &array)
 {
     auto result = array;
-    for (QListSizeType i = 0; i < result.iCount(); ++i) {
-        for (QListSizeType j = 0; j < result.iCount(); ++j) {
+    for (qsizetype i = 0; i < result.iCount(); ++i) {
+        for (qsizetype j = 0; j < result.iCount(); ++j) {
             const auto temp = result.value(i, j);
             result.setValue(i, j, toOpaque(temp));
         }

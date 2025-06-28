@@ -78,14 +78,14 @@ scripts/static-codecheck.sh
 # but unfortunately breaks the Qt Linguist, so we don’t do it.
 (
 while true; do
-    read -p "Delete existing build and build from scratch with additional warnings? (yes/NO) " yn
+    read -p "Delete existing build and build from scratch with additional warnings? (YES/no) " yn
     case $yn in
-        yes ) mkdir --parents build \
+        no ) exit;;
+        * ) mkdir --parents build \
                 && rm --recursive --force build/* \
                 && cd build \
                 && cmake -DADDITIONAL_WARNINGS=ON .. > /dev/null
             exit;;
-        * ) exit;;
     esac
 done
 )

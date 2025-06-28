@@ -14,7 +14,6 @@
 #include "genericcolor.h"
 #include "gradientslider.h"
 #include "helperconversion.h"
-#include "helperqttypes.h"
 #include "initializetranslation.h"
 #include "multispinbox.h"
 #include "rgbcolor.h"
@@ -2019,9 +2018,9 @@ private Q_SLOTS:
     {
         QTest::addColumn<QColor>("color");
         QTest::newRow("Qt::yellow") << QColor(Qt::yellow);
-        QColorFloatType red = 1;
-        QColorFloatType green = 1;
-        QColorFloatType blue = 0;
+        float red = 1;
+        float green = 1;
+        float blue = 0;
         while (blue < 1) {
             QTest::newRow( //
                 QStringLiteral("RGB %1 %2 %3") //

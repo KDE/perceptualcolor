@@ -5,7 +5,6 @@
 #define HELPERCONVERSION_H
 
 #include "genericcolor.h"
-#include "helperqttypes.h"
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -132,9 +131,9 @@ template<typename T>
     static_assert( //
         std::is_floating_point<T>::value, //
         "Template fromFloatingToEightBit() only works with floating point types");
-    return QColor::fromRgbF(static_cast<QColorFloatType>(red), //
-                            static_cast<QColorFloatType>(green), //
-                            static_cast<QColorFloatType>(blue));
+    return QColor::fromRgbF(static_cast<float>(red), //
+                            static_cast<float>(green), //
+                            static_cast<float>(blue));
 }
 
 [[nodiscard]] cmsCIELab toCmsLab(const cmsCIELCh &value);

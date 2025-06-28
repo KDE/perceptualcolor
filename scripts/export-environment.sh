@@ -27,15 +27,15 @@ PARALLEL_PROCESSES=`nproc --all`
 # number of warnings). Specific checks can be disabled. Example:
 # no-qproperty-without-notify will disable the qproperty-without-notify
 # check. Currently disabled are:
-# • no-inefficient-qlist-soft: In Qt6, QList and QVector will be aliases
-#   anyway. And, in Qt6 QList will be the default type. So we will follow
+# • no-inefficient-qlist-soft: In Qt6, QList and QVector are aliases
+#   anyway. And, in Qt6 QList is the default type. So we will follow
 #   this recommendation and always use QList.
 #
 # There are some more checks that are not part of any level and have to be
 # enabled manually. We enable all of them (that are available at the time
 # when writing this script), with the following exceptions:
-# • inefficient-qlist: In Qt6, QList and QVector will be aliases
-#   anyway. And, in Qt6 QList will be the default type. So we will follow
+# • inefficient-qlist: In Qt6, QList and QVector are aliases
+#   anyway. And, in Qt6 QList is the default type. So we will follow
 #   this recommendation and always use QList. Anyway, in newer clazy
 #   versions it is not available anymore anyway.
 # • jni-signatures: When enabling this check, the whole build won’t work

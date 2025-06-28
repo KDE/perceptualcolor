@@ -17,7 +17,6 @@
 #include "helper.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
-#include "helperqttypes.h"
 #include "initializetranslation.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
@@ -1433,7 +1432,7 @@ QColor ColorDialog::currentColor() const
 {
     QColor temp = d_pointer->m_currentOpaqueColorRgb.rgbQColor;
     temp.setAlphaF( //
-        static_cast<QColorFloatType>( //
+        static_cast<float>( //
             d_pointer->m_alphaGradientSlider->value()));
     return temp;
 }
@@ -1503,7 +1502,7 @@ void ColorDialogPrivate::updateColorPatch()
 {
     QColor tempRgbQColor = m_currentOpaqueColorRgb.rgbQColor;
     tempRgbQColor.setAlphaF( //
-        static_cast<QColorFloatType>(m_alphaGradientSlider->value()));
+        static_cast<float>(m_alphaGradientSlider->value()));
     m_colorPatch->setColor(tempRgbQColor);
 }
 
@@ -1523,10 +1522,10 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, QWidget *const ignoreWidget)
 {
     const auto temp = rgb.rgb255;
-    const QColor myQColor = QColor::fromRgbF( //
-        static_cast<QColorFloatType>(temp.first / 255.), //
-        static_cast<QColorFloatType>(temp.second / 255.), //
-        static_cast<QColorFloatType>(temp.third / 255.));
+    const QColor myQColor = qColorFromRgbDouble( //
+        temp.first / 255., //
+        temp.second / 255., //
+        temp.third / 255.);
     const auto cielchD50 = GenericColor( //
         m_rgbColorSpace->toCielchD50(myQColor.rgba64()));
     setCurrentOpaqueColor( //
@@ -2431,8 +2430,9 @@ void ColorDialog::done(int result)
         // Update settings: history
         const auto newHistoryColor = toOpaque(d_pointer->m_selectedColor);
         auto history = d_pointer->m_settings.history.value();
-        const auto maxHistoryLenght = std::max(d_pointer->historySwatchCount, //
-                                               history.count());
+        const qsizetype maxHistoryLenght = std::max<qsizetype>( //
+            d_pointer->historySwatchCount, //
+            history.count());
         // Remove duplicates of the new value that might exist yet in the list.
         history.removeAll(newHistoryColor);
         // Add the new value at the very beginning.

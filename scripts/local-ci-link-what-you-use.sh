@@ -28,7 +28,7 @@ mkdir --parents build \
     && cd build \
     \
     && echo "LWYU (link what you use) started." \
-    && cmake -DCMAKE_LINK_WHAT_YOU_USE=TRUE .. > /dev/null \
+    && cmake -DBUILD_WITH_QT6=ON -DCMAKE_LINK_WHAT_YOU_USE=TRUE .. > /dev/null \
     && nice --adjustment 19 \
         make --jobs 1 all 2>&1 \
         | grep --invert-match --perl-regexp "^\[ *[0-9]*\%\] [^L]" \

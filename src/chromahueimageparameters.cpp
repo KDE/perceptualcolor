@@ -11,7 +11,6 @@
 #include "helperconstants.h"
 #include "helperimage.h"
 #include "helpermath.h"
-#include "helperqttypes.h"
 #include "interlacingpass.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>

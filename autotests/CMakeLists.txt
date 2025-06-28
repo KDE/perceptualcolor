@@ -155,7 +155,6 @@ if(BUILD_TESTING)
         testhelperimage
         testhelpermath
         testhelperposixmath
-        testhelperqttypes
         testimportexport
         testinitializetranslation
         testinterlacingpass

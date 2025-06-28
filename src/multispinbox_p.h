@@ -8,7 +8,6 @@
 // #include "multispinbox.h"
 
 #include "constpropagatingrawpointer.h"
-#include "helperqttypes.h"
 #include "multispinboxsection.h"
 #include <qaccessiblewidget.h>
 #include <qglobal.h>
@@ -58,7 +57,7 @@ public:
     /** @brief Holds the index of the currently selected section.
      * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
      * @sa @ref setCurrentIndexWithoutUpdatingText */
-    QListSizeType m_currentIndex = 0;
+    qsizetype m_currentIndex = 0;
     /** @brief Holds the data for the sections.
      *
      * This list is guaranteed to contain at least <em>one</em> section.
@@ -101,11 +100,11 @@ public:
     QPointer<ExtendedDoubleValidator> m_validator;
 
     // Functions
-    [[nodiscard]] QString formattedValue(QListSizeType index) const;
+    [[nodiscard]] QString formattedValue(qsizetype index) const;
     [[nodiscard]] bool isCursorTouchingCurrentSectionValue() const;
-    void setCurrentIndexAndUpdateTextAndSelectValue(QListSizeType newIndex);
+    void setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex);
     void setCurrentIndexToZeroAndUpdateTextAndSelectValue();
-    void setCurrentIndexWithoutUpdatingText(QListSizeType newIndex);
+    void setCurrentIndexWithoutUpdatingText(qsizetype newIndex);
     void setSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
     void updatePrefixValueSuffixText();
 
