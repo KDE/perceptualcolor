@@ -14,7 +14,7 @@
 set -euo pipefail
 errorcount=0
 
-echo "Dynamic codecheck against Qt6 started."
+echo "iwyu (include what you use) against Qt6 started."
 # The “.” command will execute the given script within the context of
 # the current script, which is necessary in order to preserve the
 # environment variables that are set by the given script.
@@ -46,7 +46,7 @@ cmake \
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_iwyu.txt
 cd ..
 [ -s artifact_iwyu.txt ] && ((errorcount++))
-echo "Dynamic codecheck against Qt6 finished."
+echo "iwyu (include what you use) against Qt6 finished."
 
 echo Terminating continuous integration with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.

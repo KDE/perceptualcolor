@@ -96,7 +96,7 @@ echo "doxygen: $exitcode_doxygen"
 echo "ipo_lto: $exitcode_ipo_lto"
 echo "qch: $exitcode_qch"
 echo "warnings: $exitcode_warnings"
-echo "qt5 $exitcode_qt5"
+echo "qt5: $exitcode_qt5"
 echo "iwyu: $exitcode_iwyu (ignored)"
 echo
 echo "Terminating ci.sh with exit code $totalerrors."

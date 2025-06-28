@@ -42,7 +42,7 @@ cmake \
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_warnings_ipo_lto.txt
 cd ..
 [ -s artifact_warnings_ipo_lto.txt ] && ((errorcount++))
-echo "Dynamic codecheck against Qt6 finished."
+echo "Build with IPO/LTO against Qt6 finished."
 
 echo Terminating continuous integration with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.
