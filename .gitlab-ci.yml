@@ -120,6 +120,8 @@ codecheck_quality:
     # The following commands are necessary for the qch build. And
     # it seems that ecm_add_qch() has still some explicit Qt5 dependencies:
     - apt-get install --assume-yes --no-install-recommends qt6-documentation-tools texlive-latex-base qtbase5-dev qtbase5-dev-tools qttools5-dev
+    # The following commands are necessary for Qt5 builds:
+    - apt-get install --assume-yes --no-install-recommends qtbase5-dev libqt5svg5-dev
     # Version information about installed software:
     - echo "pip version:" && pip --version
     - pip install cmakelint

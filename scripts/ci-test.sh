@@ -60,6 +60,13 @@ totalerrors=$((totalerrors + exitcode))
 echo "ci-warnings.sh finished with exit code $exitcode."
 exitcode_warnings=$exitcode
 
+echo "Starting ci-qt5 …"
+scripts/ci-qt5.sh
+exitcode=$?
+totalerrors=$((totalerrors + exitcode))
+echo "ci-qt5 finished with exit code $exitcode."
+exitcode_qt5=$exitcode
+
 echo "Starting ci-iwyu.sh …"
 scripts/ci-iwyu.sh
 exitcode=$?
@@ -89,6 +96,7 @@ echo "doxygen: $exitcode_doxygen"
 echo "ipo_lto: $exitcode_ipo_lto"
 echo "qch: $exitcode_qch"
 echo "warnings: $exitcode_warnings"
+echo "qt5 $exitcode_qt5"
 echo "iwyu: $exitcode_iwyu (ignored)"
 echo
 echo "Terminating ci.sh with exit code $totalerrors."
