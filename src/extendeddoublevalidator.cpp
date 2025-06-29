@@ -19,6 +19,13 @@ ExtendedDoubleValidator::ExtendedDoubleValidator(QObject *parent)
     : QDoubleValidator(parent)
     , d_pointer(new ExtendedDoubleValidatorPrivate)
 {
+    // NOTE decimals(): QDoubleValidator’s default behavior changed in
+    // Qt 6.3. In Qt ≤ 6.2, QDoubleValidator::decimals() returned 1000 by
+    // default. From Qt 6.3 onward, the default was changed to -1, breaking
+    // API stability. To guarantee consistent behaviour across all
+    // Qt versions, this class explicitly sets the default decimals value
+    // to -1 during initialization.
+    setDecimals(-1);
 }
 
 /** @brief Destructor */

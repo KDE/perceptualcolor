@@ -25,9 +25,33 @@ class ExtendedDoubleValidatorPrivate;
  *  @brief The @ref ExtendedDoubleValidator class provides range checking
  * of floating-point numbers with support for prefix and/or suffix.
  *
- * This class behaves exactly like its base class <tt>QDoubleValidator</tt>
+ * This class behaves mostly like its base class <tt>QDoubleValidator</tt>
  * with the difference that is allows to specify prefixes and/or suffixed
- * that are considered by @ref validate(). */
+ * that are considered by @ref validate().
+ *
+ * @note decimals(): QDoubleValidator’s default behavior changed in
+ * Qt 6.3. In Qt ≤ 6.2, QDoubleValidator::decimals() returned 1000 by
+ * default. From Qt 6.3 onward, the default was changed to -1, breaking
+ * API stability. To guarantee consistent behaviour across all
+ * Qt versions, this class explicitly sets the default decimals value
+ * to -1 during initialization.
+ *
+ * @note setRange(): QDoubleValidator’s default behavior changed in Qt 6.3.
+ * Prior to Qt 6.3, QDoubleValidator::setRange() was defined as:<br/>
+ * <tt>void setRange(double minimum, double maximum, int decimals = 0);</tt>
+ * <br/>Starting with Qt 6.3, it is overloaded as follows:<br/>
+ * <tt>void setRange(double minimum, double maximum, int decimals);<br/>
+ * void setRange(double minimum, double maximum);</tt><br/>
+ * The two-argument overload (introduced in Qt 6.3) preserves the existing
+ * number of decimal digits, as per the documentation: <em>“Sets the validator
+ * to accept doubles from minimum to maximum inclusive without changing the
+ * number of digits after the decimal point.”</em>
+ * This constitutes a breaking change: calling <tt>setRange(min, max)</tt>
+ * in Qt ≤ 6.2 implicitly sets decimals to 0, whereas in Qt ≥ 6.3, it
+ * retains the current decimal setting. To ensure consistent and
+ * predictable behavior across Qt versions, always invoke setRange()
+ * with all three arguments explicitly.
+ */
 class ExtendedDoubleValidator : public QDoubleValidator
 {
     Q_OBJECT

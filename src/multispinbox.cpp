@@ -990,12 +990,32 @@ void MultiSpinBoxPrivate::updateValidator()
 {
     m_validator->setPrefix(m_textBeforeCurrentValue);
     m_validator->setSuffix(m_textAfterCurrentValue);
-    m_validator->setRange(
-        // Minimum:
+
+    // WARNING
+    //
+    // setRange(): QDoubleValidator’s default behavior changed in Qt 6.3.
+    // Prior to Qt 6.3, QDoubleValidator::setRange() was defined as:
+    //
+    //     void setRange(double minimum, double maximum, int decimals = 0);
+    //
+    // Starting with Qt 6.3, it is overloaded as follows:
+    //
+    //     void setRange(double minimum, double maximum, int decimals);
+    //     void setRange(double minimum, double maximum);
+    //
+    // The two-argument overload (introduced in Qt 6.3) preserves the existing
+    // number of decimal digits, as per the documentation: “Sets the validator
+    // to accept doubles from minimum to maximum inclusive without changing the
+    // number of digits after the decimal point.”
+    //
+    // This constitutes a breaking change: calling setRange(min, max)
+    // in Qt ≤ 6.2 implicitly sets decimals to 0, whereas in Qt ≥ 6.3, it
+    // retains the current decimal setting. To ensure consistent and
+    // predictable behavior across Qt versions, always invoke setRange()
+    // with all three arguments explicitly.
+    m_validator->setRange( //
         m_sectionConfigurations.at(m_currentIndex).minimum(),
-        // Maximum:
-        m_sectionConfigurations.at(m_currentIndex).maximum());
-    m_validator->setDecimals( //
+        m_sectionConfigurations.at(m_currentIndex).maximum(),
         m_sectionConfigurations.at(m_currentIndex).decimals());
 }
 
