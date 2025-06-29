@@ -89,7 +89,6 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
 {
     // Set up the m_validator
     d_pointer->m_validator = new ExtendedDoubleValidator(this);
-    d_pointer->m_validator->setLocale(locale());
     lineEdit()->setValidator(d_pointer->m_validator);
 
     // Initialize the configuration (default: only one section).
@@ -116,7 +115,9 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
     connect(this, // sender
             &QAbstractSpinBox::editingFinished, // signal
             d_pointer.get(), // receiver
-            &MultiSpinBoxPrivate::setCurrentIndexToZeroAndUpdateTextAndSelectValue // slot
+            [this]() {
+                d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
+            } // slot
     );
 
     // Initialize accessibility support
@@ -257,6 +258,8 @@ void MultiSpinBox::changeEvent(QEvent *event)
         // would only call update, not updateGeometry…
         || (event->type() == QEvent::LayoutDirectionChange) //
     ) {
+        d_pointer->updateValidator();
+        // TODO BUG Here, we have to re-calculate the string that is displayed (new number formatting!!)
         // Updates the widget content and its geometry
         update();
         updateGeometry();
@@ -337,16 +340,8 @@ void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
         m_textAfterCurrentValue.append(formattedValue(i));
         m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).suffix());
     }
-}
 
-/** @brief Sets the current section index to <tt>0</tt>.
- *
- * Convenience function that simply calls
- * @ref setCurrentIndexAndUpdateTextAndSelectValue with the
- * argument <tt>0</tt>. */
-void MultiSpinBoxPrivate::setCurrentIndexToZeroAndUpdateTextAndSelectValue()
-{
-    setCurrentIndexAndUpdateTextAndSelectValue(0);
+    updateValidator();
 }
 
 /** @brief Sets the current section index.
@@ -358,7 +353,6 @@ void MultiSpinBoxPrivate::setCurrentIndexToZeroAndUpdateTextAndSelectValue()
  * index. The update will be done even if this argument is identical to
  * the @ref m_currentIndex.
  *
- * @sa @ref setCurrentIndexToZeroAndUpdateTextAndSelectValue
  * @sa @ref setCurrentIndexWithoutUpdatingText */
 void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex)
 {
@@ -411,13 +405,7 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
     // Apply the changes
     m_currentIndex = newIndex;
     updatePrefixValueSuffixText();
-    m_validator->setPrefix(m_textBeforeCurrentValue);
-    m_validator->setSuffix(m_textAfterCurrentValue);
-    m_validator->setRange(
-        // Minimum:
-        m_sectionConfigurations.at(m_currentIndex).minimum(),
-        // Maximum:
-        m_sectionConfigurations.at(m_currentIndex).maximum());
+    updateValidator();
 
     // The state (enabled/disabled) of the buttons “Step up” and “Step down”
     // has to be updated. To force this, update() is called manually here:
@@ -480,6 +468,7 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
 
     // Set new section configuration
     d_pointer->m_sectionConfigurations = newSectionConfigurations;
+    d_pointer->updateValidator();
 
     // Make sure the value list has the correct length and the
     // values are updated to the new configuration:
@@ -842,13 +831,7 @@ bool MultiSpinBox::event(QEvent *event)
 {
     if (event->type() == QEvent::Type::LocaleChange) {
         d_pointer->updatePrefixValueSuffixText();
-        d_pointer->m_validator->setPrefix(d_pointer->m_textBeforeCurrentValue);
-        d_pointer->m_validator->setSuffix(d_pointer->m_textAfterCurrentValue);
-        d_pointer->m_validator->setRange(
-            // Minimum
-            d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex).minimum(),
-            // Maximum
-            d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex).maximum());
+        d_pointer->updateValidator();
         lineEdit()->setText(d_pointer->m_textBeforeCurrentValue + d_pointer->m_textOfCurrentValue + d_pointer->m_textAfterCurrentValue);
     }
     return QAbstractSpinBox::event(event);
@@ -998,6 +981,22 @@ QAccessibleInterface *AccessibleMultiSpinBox::factory(const QString &classname, 
  * of <tt>QAbstractSpinBox</tt>, applies. */
 void MultiSpinBox::clear()
 {
+}
+
+/**
+ * @brief Updates @ref m_validator according the the current state.
+ */
+void MultiSpinBoxPrivate::updateValidator()
+{
+    m_validator->setPrefix(m_textBeforeCurrentValue);
+    m_validator->setSuffix(m_textAfterCurrentValue);
+    m_validator->setRange(
+        // Minimum:
+        m_sectionConfigurations.at(m_currentIndex).minimum(),
+        // Maximum:
+        m_sectionConfigurations.at(m_currentIndex).maximum());
+    m_validator->setDecimals( //
+        m_sectionConfigurations.at(m_currentIndex).decimals());
 }
 
 } // namespace PerceptualColor

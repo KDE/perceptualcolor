@@ -88,25 +88,26 @@ public:
      *
      * This validator allows changes only to the <em>current</em> section.
      *
-     * If the current section changes, also this validator’s configuration
-     * will be adapted to cover the new current section.
+     * If the section configuration, the current section index or the locale
+     * changes, @ref updateValidator() must be called to update this value.
      *
      * @note It is <em>not</em> possible to change various values at the
      * same time, for example by marking all the current text and use
      * Ctrl-V to past a complete new value from the clipboard. This would
      * be impossible to parse reliably, because the prefixes and suffixes
      * of each section might contain (localized) digits that would be
-     * difficult to differentiate from the actual value. */
+     * difficult to differentiate from the actual value.
+     */
     QPointer<ExtendedDoubleValidator> m_validator;
 
     // Functions
     [[nodiscard]] QString formattedValue(qsizetype index) const;
     [[nodiscard]] bool isCursorTouchingCurrentSectionValue() const;
     void setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex);
-    void setCurrentIndexToZeroAndUpdateTextAndSelectValue();
     void setCurrentIndexWithoutUpdatingText(qsizetype newIndex);
     void setSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
     void updatePrefixValueSuffixText();
+    void updateValidator();
 
 public Q_SLOTS:
     void reactOnCursorPositionChange(const int oldPos, const int newPos);
