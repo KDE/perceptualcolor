@@ -750,33 +750,34 @@
 
 /** @page hidpisupport High DPI support
  *
- * This library supports High DPI out of the box.
+ * This library provides native support for High DPI displays.
  *
- * The only thing that requires special attention are icons.
+ * It uses vector-based drawing, which scales seamlessly and delivers crisp
+ * rendering, even at fractional scale factors such as 1.25 or 1.5.
  *
- * @section iconsupport Icon support
- *
- * This library uses by default a possibly existing icon theme
- * if available in Qt. Windows and Mac do not provide icon themes by
- * default, while Linux usually provides them. SVG is pretty much the standard
- * nowadays and the only reliably way to have crisp icons also on desktop
- * scales like 1.25 or 1.5. If high-DPI icons are available depends finally
- * on your operation system. Only if no icon at all is provided by the
- * operation system, the library falls back to built-in high-DPI SVG icons.
+ * The only aspect that may require special consideration is icon rendering.
+ * <a href="https://bugreports.qt.io/browse/QTBUG-89279">As of Qt6</a>,
+ * icons are always rendered in high DPI if available.
+ * By default, the library leverages any available icon
+ * theme supported by Qt. On Linux, such themes are typically
+ * present. Support for Windows, macOS, iOS, and Android was
+ * <a href="https://doc.qt.io/qt-6/whatsnew67.html#qt-gui-module">
+ * introduced only in Qt 6.7</a> via a
+ * <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">new
+ * enum</a> and by <a href="https://www.qt.io/blog/qt-6.7-released">
+ * mapping XDG icon names to platform-native symbols</a>. Icon themes
+ * may include either pixel-based icons (which can appear blurry at scales
+ * if not High DPI) or scalable vector icons, typically in SVG format,
+ * which has become the de facto standard. SVG-based icons are the most
+ * reliable way to ensure visual fidelity at intermediate scale factors
+ * like 1.25 or 1.5. Ultimately, the quality of icon rendering above
+ * 1.0 scaling depends on the operating system and its available icon set.
+ * If no appropriate icon is provided by the system, the library falls back
+ * to its own built-in scalable icons.
  *
  * Note that QSvgIconEnginePlugin is a mandatory run-time
  * dependency (see @ref build for details).
- *
- * @section qt5icons Qt5 legacy
- *
- * While <a href="https://bugreports.qt.io/browse/QTBUG-89279">Qt6
- * renders icons always with high-DPI</a> (if available),
- * Qt5 renders icons by default in low resolution. This applies even
- * for SVG icons on high-DPI displays! Application developers have to enable
- * high-DPI icon rendering manually with the following code (which should be
- * put by convention <em>before</em> creating the <tt>QCoreApplication</tt>
- * object):
- * <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt> */
+ */
 
 /** @page howtogetstarted How to get started
  *
