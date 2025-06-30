@@ -228,14 +228,20 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  * used for generating documentation screenshots, produces results
  * that are independent of the platform.
  *
- * @note Since Qt 6.7, we can use QIcon::fromTheme() along with the new
- * QIcon::ThemeIcon enum to access various icons from the current platform,
- * including non-FreeDesktop platforms. However, none of the available icons
+ * @note By default, the library leverages any available icon
+ * theme supported by Qt. On Linux, such themes are typically
+ * present. Support for Windows, macOS, iOS, and Android was
+ * <a href="https://doc.qt.io/qt-6/whatsnew67.html#qt-gui-module">
+ * introduced only in Qt 6.7</a> via a
+ * <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">new
+ * enum</a> and by <a href="https://www.qt.io/blog/qt-6.7-released">
+ * mapping XDG icon names to platform-native symbols</a>.
+ * However, none of the icons available via the new enum does
  * suit our needs. QIcon::ThemeIcon::DialogWarning could potentially be
  * (mis)used for the out-of-gamut warning, but all other necessary
  * icons—mostly color-related—are unavailable. Until Qt provides more
- * color-related icons, we will continue using FreeDesktop icon names and
- * bundled built-in icons as our traditional approach.
+ * color-related icons in this enum, we will continue using FreeDesktop
+ * icon names and bundled built-in icons as our traditional approach.
  */
 QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type)
 {
