@@ -7,23 +7,19 @@
 
 #include "colordialog.h"
 #include "rgbcolorspacefactory.h"
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qglobal.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qobject.h>
+#include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#include <qlist.h>
-#include <qstring.h>
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
-#include <qstring.h>
-#include <qstringlist.h>
 #endif
 
 namespace PerceptualColor

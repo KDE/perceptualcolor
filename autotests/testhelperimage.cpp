@@ -5,21 +5,21 @@
 // this forces the header to be self-contained.
 #include "helperimage.h"
 
+#include <qcolor.h>
 #include <qglobal.h>
+#include <qimage.h>
+#include <qlist.h>
+#include <qnamespace.h>
 #include <qobject.h>
-#include <qscopedpointer.h>
-#include <qstring.h>
-#include <qstringbuilder.h>
-#include <qstringliteral.h>
+#include <qpoint.h>
+#include <qrect.h>
+#include <qrgb.h>
+#include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>
-#include <qtextdocument.h>
-#include <qwidget.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
 #endif
 
 static void snippet01()

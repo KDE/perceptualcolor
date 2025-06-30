@@ -5,14 +5,10 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimage.h"
 
-#include "absolutecolor.h"
-#include "cielchd50values.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
 #include "helpermath.h"
 #include "polarpointf.h"
 #include "rgbcolorspace.h"
-#include <lcms2.h>
 #include <qbrush.h>
 #include <qmath.h>
 #include <qnamespace.h>
@@ -20,7 +16,6 @@
 #include <qpen.h>
 #include <qpoint.h>
 #include <qrect.h>
-#include <qrgb.h>
 #include <qsize.h>
 
 namespace PerceptualColor

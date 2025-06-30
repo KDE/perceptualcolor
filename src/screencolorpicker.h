@@ -5,6 +5,7 @@
 #define SCREENCOLORPICKER
 
 #include <optional>
+#include <qcontainerfwd.h>
 #include <qglobal.h>
 #include <qpointer.h>
 #include <qstring.h>
@@ -13,12 +14,7 @@ class QColorDialog;
 class QPushButton;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
 #include <qtmetamacros.h>
-#else
-#include <qmetatype.h>
-#include <qobjectdefs.h>
-class QObject;
 #endif
 
 namespace PerceptualColor

@@ -7,35 +7,28 @@
 #include "absolutecolor.h"
 #include "genericcolor.h"
 #include "helperconversion.h"
-#include "helperposixmath.h"
 #include "initializelibraryresources.h"
 #include "rgbcolorspace.h"
 #include <array>
 #include <lcms2.h>
+#include <optional>
 #include <qchar.h>
 #include <qcolor.h>
 #include <qevent.h>
 #include <qkeysequence.h>
 #include <qlabel.h>
+#include <qlist.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qpoint.h>
+#include <qscopedpointer.h>
 #include <qsize.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qwidget.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qlist.h>
-#else
-#include <qstringlist.h>
-#endif
-
-#ifndef PERCEPTUALCOLORINTERNAL
 #include <type_traits>
 #include <utility>
-#endif
 
 namespace PerceptualColor
 {

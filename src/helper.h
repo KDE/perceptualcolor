@@ -7,7 +7,6 @@
 #include "helpermath.h"
 #include "lcms2.h"
 #include <QtCore/qsharedpointer.h>
-#include <optional>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>

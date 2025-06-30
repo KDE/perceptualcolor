@@ -5,20 +5,16 @@
 // this forces the header to be self-contained.
 #include "screencolorpicker.h"
 
+#include <qcontainerfwd.h>
 #include <qglobal.h>
+#include <qmap.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qtest.h>
 #include <qtestcase.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#include <qmap.h>
 #include <qtmetamacros.h>
-#else
-#include <qmetatype.h>
-#include <qobjectdefs.h>
-#include <qstring.h>
 #endif
 
 #ifdef PERCEPTUALCOLORLIB_STATIC

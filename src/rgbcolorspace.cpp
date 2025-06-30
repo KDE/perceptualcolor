@@ -13,6 +13,7 @@
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperconstants.h"
+#include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
@@ -22,22 +23,19 @@
 #include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qfileinfo.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmath.h>
 #include <qnamespace.h>
 #include <qrgba64.h>
 #include <qsharedpointer.h>
 #include <qstringliteral.h>
+#include <stdlib.h>
 #include <type_traits>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#include <qlist.h>
-#else
-#include <qstringlist.h>
-#endif
+#include <utility>
 
 // Include the type “tm” as defined in the C standard (time.h), as LittleCMS
 // expects, preventing IWYU < 0.19 to produce false-positives.

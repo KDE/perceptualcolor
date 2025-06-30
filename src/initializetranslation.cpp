@@ -9,6 +9,7 @@
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmutex.h>
 #include <qpointer.h>
@@ -16,12 +17,6 @@
 #include <qstringliteral.h>
 #include <qthread.h>
 #include <qtranslator.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qlist.h>
-#else
-#include <qstringlist.h>
-#endif
 
 /** @internal @file
  *

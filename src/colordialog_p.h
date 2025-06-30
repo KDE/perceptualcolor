@@ -15,7 +15,6 @@
 #include "perceptualsettings.h"
 #include "rgbcolor.h"
 #include <lcms2.h>
-#include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -42,8 +41,6 @@ class QWidget;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
 #endif
 
 namespace PerceptualColor

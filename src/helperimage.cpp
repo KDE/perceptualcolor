@@ -4,23 +4,15 @@
 // Own header
 #include "helperimage.h"
 
-#include "asyncimagerendercallback.h"
-#include "cielchd50values.h"
 #include "helper.h"
-#include "helperconstants.h"
-#include "helpermath.h"
-#include "interlacingpass.h"
-#include "rgbcolorspace.h"
-#include <lcms2.h>
 #include <qcolor.h>
 #include <qimage.h>
-#include <qmath.h>
-#include <qnamespace.h>
-#include <qpainter.h>
+#include <qpoint.h>
+#include <qrect.h>
 #include <qrgb.h>
+#include <qrunnable.h>
 #include <qsemaphore.h>
-#include <qsharedpointer.h>
-#include <qsize.h>
+#include <qthreadpool.h>
 #include <type_traits>
 
 namespace PerceptualColor

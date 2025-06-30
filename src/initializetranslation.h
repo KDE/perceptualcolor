@@ -6,12 +6,7 @@
 
 #include <optional>
 
-#include <qglobal.h>
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qcontainerfwd.h>
-#else
-class QStringList;
-#endif
 
 class QCoreApplication;
 

@@ -6,30 +6,23 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
+// Including multispinboxsection.h is necessary on Qt6,
+// otherwise moc will fail. (IWYU does not detect this dependency.)
+#include "multispinboxsection.h" // IWYU pragma: keep
 #include <qabstractspinbox.h>
 #include <qglobal.h>
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qsize.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#endif
+
 class QAction;
 class QEvent;
 class QFocusEvent;
 class QWidget;
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-// Including multispinboxsection.h is necessary on Qt6,
-// otherwise moc will fail. (IWYU does not detect this dependency.)
-#include "multispinboxsection.h" // IWYU pragma: keep
-#include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
-#include <qstring.h>
-namespace PerceptualColor
-{
-class MultiSpinBoxSection;
-}
-class QObject;
-#endif
 
 namespace PerceptualColor
 {

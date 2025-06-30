@@ -10,6 +10,8 @@
 #include <qsharedpointer.h>
 #include <qvariant.h>
 
+class QSize;
+
 namespace PerceptualColor
 {
 class AsyncImageRenderCallback;

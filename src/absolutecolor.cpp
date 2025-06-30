@@ -13,11 +13,6 @@
 #include <qglobal.h>
 #include <qmath.h>
 
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-#include <qhashfunctions.h>
-#include <type_traits>
-#endif
-
 namespace PerceptualColor
 {
 

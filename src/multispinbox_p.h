@@ -19,8 +19,6 @@ class QAccessibleInterface;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
 #endif
 
 namespace PerceptualColor

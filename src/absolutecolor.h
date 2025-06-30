@@ -8,14 +8,8 @@
 #include "helperconversion.h"
 #include <array>
 #include <optional>
-#include <qglobal.h>
 #include <qhash.h>
 #include <qlist.h>
-
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-#include <qobjectdefs.h>
-#include <qstring.h>
-#endif
 
 namespace PerceptualColor
 {

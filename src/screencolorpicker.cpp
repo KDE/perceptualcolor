@@ -13,6 +13,7 @@
 #include <qglobal.h>
 #include <qguiapplication.h>
 #include <qlist.h>
+#include <qmap.h>
 #include <qobjectdefs.h>
 #include <qpushbutton.h>
 #include <qstring.h>
@@ -22,12 +23,6 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qmap.h>
-#else
-#include <qmetatype.h>
-#endif
 
 namespace PerceptualColor
 {

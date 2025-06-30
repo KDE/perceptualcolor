@@ -11,12 +11,18 @@
 #include "helperimage.h"
 #include "helpermath.h"
 #include "rgbcolorspace.h"
+#include <atomic>
 #include <lcms2.h>
-#include <qbitarray.h>
 #include <qimage.h>
+#include <qlist.h>
 #include <qnamespace.h>
+#include <qpoint.h>
 #include <qrgb.h>
+#include <qrunnable.h>
 #include <qsemaphore.h>
+#include <qthreadpool.h>
+#include <type_traits>
+#include <utility>
 
 namespace PerceptualColor
 {

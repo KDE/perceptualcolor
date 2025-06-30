@@ -14,9 +14,11 @@
 #include "helperposixmath.h"
 #include "rgbcolorspacefactory.h"
 #include <lcms2.h>
+#include <map>
 #include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
+#include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qdir.h>
 #include <qfileinfo.h>
@@ -28,6 +30,7 @@
 #include <qrgba64.h>
 #include <qscopedpointer.h>
 #include <qsharedpointer.h>
+#include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qtemporarydir.h>
@@ -37,14 +40,7 @@
 #include <qversionnumber.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#include <qstring.h>
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qvector.h>
 #endif
 
 namespace PerceptualColor

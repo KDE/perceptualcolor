@@ -5,17 +5,10 @@
 // First the interface, which forces the header to be self-contained.
 #include "settings.h"
 
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qfilesystemwatcher.h>
-#include <qglobal.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
 #include <qlist.h>
-#else
-#include <qdatastream.h>
-#include <qstringlist.h>
-#endif
 
 namespace PerceptualColor
 {

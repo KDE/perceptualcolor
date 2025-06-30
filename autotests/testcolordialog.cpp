@@ -27,6 +27,7 @@
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qdebug.h>
@@ -38,6 +39,7 @@
 #include <qmetaobject.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpair.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
@@ -45,6 +47,7 @@
 #include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qspinbox.h>
+#include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qtabwidget.h>
@@ -55,19 +58,10 @@
 #include <qtestkeyboard.h>
 #include <qwidget.h>
 #include <type_traits>
+#include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#include <qobjectdefs.h>
-#include <qstring.h>
 #include <qtmetamacros.h>
-#include <utility>
-#else
-#include <qobjectdefs.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qvector.h>
-#include <utility>
 #endif
 
 // From Qt documentation:

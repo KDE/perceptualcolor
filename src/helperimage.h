@@ -4,17 +4,15 @@
 #ifndef HELPERIMAGE_H
 #define HELPERIMAGE_H
 
-#include "genericcolor.h"
-#include <lcms2.h>
-#include <qcolor.h>
+#include <functional>
 #include <qglobal.h>
+#include <qlist.h>
+#include <qrgb.h>
 #include <qthread.h>
-#include <qthreadpool.h>
-#include <type_traits>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
+class QImage;
+class QPoint;
+class QRect;
+class QThreadPool;
 
 /** @internal
  *

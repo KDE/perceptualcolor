@@ -24,7 +24,6 @@
 #include <qpen.h>
 #include <qpoint.h>
 #include <qrect.h>
-#include <qrgb.h>
 #include <qsharedpointer.h>
 #include <qsizepolicy.h>
 #include <qwidget.h>

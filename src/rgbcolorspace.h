@@ -8,6 +8,7 @@
 #include "genericcolor.h"
 #include <lcms2.h>
 #include <optional>
+#include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
@@ -22,8 +23,6 @@ class QRgba64;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
 #endif
 
 Q_DECLARE_METATYPE(cmsColorSpaceSignature)

@@ -7,16 +7,14 @@
 #include "genericcolor.h"
 #include "helperconversion.h"
 #include <optional>
+#include <qcontainerfwd.h>
 #include <qglobal.h>
 #include <qhash.h>
 #include <qrgb.h>
 #include <qstring.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
 #include <qtmetamacros.h>
-#else
-#include <qstringlist.h>
 #endif
 
 namespace PerceptualColor

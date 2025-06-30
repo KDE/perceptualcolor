@@ -17,12 +17,13 @@
 #include "rgbcolorspace.h"
 #include <algorithm>
 #include <optional>
+#include <qaction.h>
 #include <qapplication.h>
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qfontmetrics.h>
-#include <qlabel.h>
 #include <qline.h>
 #include <qlist.h>
 #include <qmargins.h>
@@ -41,13 +42,6 @@
 #include <qstyleoption.h>
 #include <qtransform.h>
 #include <qwidget.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#else
-#include <qstringlist.h>
-#include <qvector.h>
-#endif
 
 namespace PerceptualColor
 {

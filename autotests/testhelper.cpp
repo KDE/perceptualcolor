@@ -6,7 +6,6 @@
 #include "helper.h"
 
 #include <lcms2.h>
-#include <optional>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qevent.h>
@@ -28,11 +27,10 @@
 #include <qtestcase.h>
 #include <qwidget.h>
 #include <rgbcolorspacefactory.h>
+#include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
 #endif
 
 // From Qt documentation:

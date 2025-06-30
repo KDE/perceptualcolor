@@ -18,17 +18,17 @@
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyleoption.h>
+#include <utility>
+class QPainter;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
 #endif
 
 namespace PerceptualColor
 {
-class SwatchBook;
 class RgbColorSpace;
+class SwatchBook;
 
 /** @internal
  *

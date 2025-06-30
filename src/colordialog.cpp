@@ -37,6 +37,7 @@
 #include <qbytearray.h>
 #include <qchar.h>
 #include <qcombobox.h>
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qdatetime.h>
@@ -54,11 +55,9 @@
 #include <qlist.h>
 #include <qlocale.h>
 #include <qobject.h>
-#include <qpair.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qregularexpression.h>
-#include <qscopedpointer.h>
 #include <qscreen.h>
 #include <qsharedpointer.h>
 #include <qshortcut.h>
@@ -77,10 +76,7 @@
 class QShowEvent;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
 #include <qobjectdefs.h>
-#else
-#include <qstringlist.h>
 #endif
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))

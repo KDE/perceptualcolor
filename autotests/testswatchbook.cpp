@@ -10,11 +10,11 @@
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "rgbcolorspacefactory.h"
+#include <qboxlayout.h>
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
 #include <qglobal.h>
-#include <qlayout.h>
 #include <qlist.h>
 #include <qnamespace.h>
 #include <qobject.h>
@@ -29,14 +29,12 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
+#include <qwidget.h>
 #include <type_traits>
 #include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#else
-#include <qobjectdefs.h>
-#include <qstringlist.h>
 #endif
 
 namespace PerceptualColor

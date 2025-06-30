@@ -4,7 +4,6 @@
 // Own header
 #include "helpermath.h"
 
-#include "helperposixmath.h"
 #include <optional>
 #include <qgenericmatrix.h>
 #include <qmath.h>

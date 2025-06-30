@@ -9,17 +9,22 @@
 
 #include "cielchd50values.h"
 #include "constpropagatingrawpointer.h"
-#include "helperconstants.h"
 #include "oklchvalues.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
+#include <map>
 #include <optional>
+#include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qglobal.h>
 #include <qlist.h>
 #include <qstring.h>
 #include <qversionnumber.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#endif
 
 namespace PerceptualColor
 {

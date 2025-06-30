@@ -24,18 +24,15 @@
 #include <qlocale.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qwidget.h>
+#include <utility>
 class QAction;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qobjectdefs.h>
-#else
-#endif
 
 namespace PerceptualColor
 {
