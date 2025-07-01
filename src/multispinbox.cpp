@@ -86,6 +86,9 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
 {
     // Set up the m_validator
     d_pointer->m_validator = new ExtendedDoubleValidator(this);
+    // QDoubleSpinBox does not accept QDoubleValidator::ScientificNotation,
+    // so we don't either.
+    d_pointer->m_validator->setNotation(QDoubleValidator::StandardNotation);
     lineEdit()->setValidator(d_pointer->m_validator);
 
     // Initialize the configuration (default: only one section).
