@@ -26,6 +26,7 @@
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qfileinfo.h>
+#include <qglobal.h>
 #include <qlist.h>
 #include <qlocale.h>
 #include <qmath.h>
@@ -33,7 +34,6 @@
 #include <qrgba64.h>
 #include <qsharedpointer.h>
 #include <qstringliteral.h>
-#include <stdlib.h>
 #include <type_traits>
 #include <utility>
 
@@ -1546,8 +1546,8 @@ QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, RgbColor
     }
 
     // Compare distances to find the closest key
-    const auto distanceToLower = std::abs(oklabHue360 - lower->first);
-    const auto distanceToHigher = std::abs(oklabHue360 - greaterOrEqual->first);
+    const auto distanceToLower = qAbs(oklabHue360 - lower->first);
+    const auto distanceToHigher = qAbs(oklabHue360 - greaterOrEqual->first);
     if (distanceToLower <= distanceToHigher) {
         return lower->second;
     } else {
