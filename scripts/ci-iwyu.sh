@@ -44,6 +44,24 @@ cmake \
     -DBUILD_WITH_QT6=ON \
     ../examples
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_iwyu.txt
+
+# Remove noise from the iwyu result.
+#
+# “sed -i” modified the file directly.
+#
+# Remove from the line with “The full include-list for” up to the line before
+# the line that contains “---”.
+sed -i '/^The full include-list for \//,/^---$/ { /^---$/!d }' ../artifact_iwyu.txt
+# Remove comments for correct files.
+sed -i '/(.*has correct #includes\/fwd-decls)/d' ../artifact_iwyu.txt
+# Remove noisy text.
+sed -i '/^Warning: include-what-you-use reported diagnostics:$/d' ../artifact_iwyu.txt
+# Keep “should add/remove these lines” only if the next line is not empty.
+sed -i '/should \(add\|remove\) these lines:$/{
+N
+/^\(.*\)\n$/d
+}' ../artifact_iwyu.txt
+
 cd ..
 [ -s artifact_iwyu.txt ] && ((errorcount++))
 echo "iwyu (include what you use) against Qt6 finished."
