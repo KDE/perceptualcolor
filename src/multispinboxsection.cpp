@@ -233,12 +233,12 @@ QString MultiSpinBoxSection::suffix() const
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
 {
     dbg.nospace() << "\nMultiSpinBoxSection(" // Opening line
-                  << "\n    formatString: " << value.formatString() //
-                  << "\n    prefix: " << value.prefix() //
-                  << "\n    minimum: " << value.minimum() //
                   << "\n    decimals: " << value.decimals() //
+                  << "\n    formatString: " << value.formatString() //
                   << "\n    isWrapping: " << value.isWrapping() //
                   << "\n    maximum: " << value.maximum() //
+                  << "\n    minimum: " << value.minimum() //
+                  << "\n    prefix: " << value.prefix() //
                   << "\n    suffix: " << value.suffix() //
                   << "\n)" // Closing line
         ;
