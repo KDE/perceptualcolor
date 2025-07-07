@@ -14,6 +14,7 @@
 #include <qapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
+#include <qicon.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
@@ -76,86 +77,63 @@ static void snippet02()
     delete myHsvSpinBox;
 }
 
-class testSnippet02 : public PerceptualColor::MultiSpinBox
+class testSnippet02 : public QObject
 {
     Q_OBJECT
-
-    //! [MultiSpinBox Full-featured interface]
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(int sectionCount READ sectionCount NOTIFY sectionCountChanged)
+    //! [MultiSpinBox Full-featured MultiSpinBoxSection]
+    // API extension for MultiSpinBoxSection
+    // for feature parity with QDoubleSpinBox
 
 public:
-    void addSection(PerceptualColor::MultiSpinBoxSection newSection);
-    void addSections(QList<PerceptualColor::MultiSpinBoxSection> newSections);
-    void append(PerceptualColor::MultiSpinBoxSection newSection);
-    void append(QList<PerceptualColor::MultiSpinBoxSection> newSections);
-    QString cleanText(int index) const; // See also “cleanText”
-    void clearSections();
-    int currentIndex() const;
-    PerceptualColor::MultiSpinBoxSection currentSection() const;
-    PerceptualColor::MultiSpinBoxSection firstSection() const;
-    void insertSection(int index, PerceptualColor::MultiSpinBoxSection newSection);
-    void insertSection(int index, QList<PerceptualColor::MultiSpinBoxSection> newSections);
-    PerceptualColor::MultiSpinBoxSection lastSection() const;
-    void moveSection(int from, int to);
-    void prependSection(PerceptualColor::MultiSpinBoxSection newSection);
-    void prependSections(QList<PerceptualColor::MultiSpinBoxSection> newSections);
-    void removeFirstSection();
-    void removeLastSection();
-    void removeSection(int index);
-    void replaceSection(int index, PerceptualColor::MultiSpinBoxSection newSection);
-    PerceptualColor::MultiSpinBoxSection sectionAt(int index) const;
-    int sectionCount() const; // Somewhat redundant with MultiSpinBox::sections().count()
-    QList<PerceptualColor::MultiSpinBoxSection> sectionConfigurations() const;
-    QString sectionText(int index) const; // See also “cleanText”
-    void setSelectedSection(int index); // A better name might be “selectSection”
-    void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSections);
-    void swapSections(int i, int j);
+    // range convenance function:
+    void setRange(double newMinimum, double newMaximum); // convenance
 
-    // What about these functions? They…
-    // …are public in QDoubleSpinBox
-    // …are protected in QSpinBox
-    // …do not exist in QDateTimeEdit
-    // …do not exist in QAbstractSpinBox:
-    QString textFromValue(double value) const;
-    double valueFromText(const QString &text) const;
+    // specialValueText property (Note that QDateTimeEdit, different from
+    // QDoubleSpinBox, does not provide this.)
+    void setSpecialValueText(const QString &newSpecialValueText);
+    QString specialValueText() const;
+
+    // stepType property
+    void setStepType(QAbstractSpinBox::StepType newStepType);
+    QAbstractSpinBox::StepType stepType() const;
+
+    // showGroupSeparator property
+    bool isGroupSeparatorShown() const;
+    void setGroupSeparatorShown(bool shown);
+    //! [MultiSpinBox Full-featured MultiSpinBoxSection]
+
+    //! [MultiSpinBox Full-featured MultiSpinBox]
+    // API extension for MultiSpinBox
+
+public:
+    // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
+
+    // For feature parity with QDateTimeEdit
+
+    int currentSectionIndex() const;
+    void setCurrentSectionIndex(int newIndex);
+
+    int sectionCount() const; // convenance for sectionConfigurations().count()
+
+    QString sectionText(int index) const;
+
+    void setSelectedSection(int newIndex);
+
+    // For feature parity with QLineEdit
+    // Analogous to QLineEdit: Only QAction related API because
+    // QAbstractSpinBox and its child classes to not expose QLineEdit at all,
+    // and MultiSpinBox itself does only expose the QAction related API.
+
+    // Ownership should be handled analogous to QLineEdit!
+    QAction *addAction(const QIcon &icon, QLineEdit::ActionPosition position);
 
 Q_SIGNALS:
-    void currentIndexChanged(int newCurrentIndex);
-    void sectionCountChanged(int newSectionCount);
-
-    // The following signal in Qt 5.15 seems to not always be emitted
-    // when actually text changes, but instead only if actually the value
-    // changes. So if the text changes from  “0.1” to “0.10” this signal
-    // is not emitted because the value itself did not change. This is
-    // counter-intuitive because the behaviour does not correspond to the
-    // name of the signal. It’s therefore better not no implement this
-    // signal.
-    void textChanged(const QString &newText);
-
-    // The following signal is emitted always when the value changes.
-    // If we separate the section configuration from the section value,
-    // we could provide the new value of type QList<double> as an
-    // argument of this signal and also declare a property corresponding
-    // to this signal.
-    void valueChanged();
-
-public Q_SLOTS:
-    void setCurrentIndex(int newIndex);
-    //! [MultiSpinBox Full-featured interface]
+    // For feature parity with QDoubleSpinBox
+    // The behaviour of textChanged() depends on
+    // QAbstractSpinBox::keyboardTracking()!
+    void textChanged(const QString &text);
+    //! [MultiSpinBox Full-featured MultiSpinBox]
 };
-int testSnippet02::currentIndex() const
-{
-    return 0;
-}
-void testSnippet02::setCurrentIndex(int newIndex)
-{
-    Q_UNUSED(newIndex)
-}
-int testSnippet02::sectionCount() const
-{
-    return 0;
-}
 
 namespace PerceptualColor
 {

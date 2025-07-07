@@ -29,109 +29,110 @@ namespace PerceptualColor
 class MultiSpinBoxPrivate;
 
 /** @brief A spin box that can hold multiple sections (each with its own
- * value) at the same time.
+ * value) simultaneously.
  *
- * This widget is similar to <tt>QDateTimeEdit</tt> which also provides
- * multiple sections (day, month, year…) within a single spin box.
- * However, <em>this</em> widget is flexible. You can define on your own
- * the behaviour of each section.
+ * This widget is conceptually similar to <tt>QDateTimeEdit</tt>, which also
+ * displays multiple editable sections (e.g., day, month, year) within a
+ * single spin box. However, <em>this</em> widget offers significantly more
+ * flexibility—you can define an arbitrary number of sections, each with its
+ * own behavior, formatting, and constraints.
  *
  * @image html MultiSpinBox.png "MultiSpinBox"
  *
- * This widget works with floating point precision. You can set
- * the number of decimal places for each section individually,
- * via @ref MultiSpinBoxSection::decimals. (This
- * value can also be <tt>0</tt> to get integer-like behaviour.)
+ * This widget uses floating-point precision. You can configure the
+ * number of decimal places individually for each section via
+ * @ref MultiSpinBoxSection::decimals. Use <tt>0</tt> for integer-like input.
  *
- * Example code to create a @ref MultiSpinBox for a HSV color value
- * (Hue 0°–360°, Saturation 0–255, Value 0–255) comes here:
+ * Additional buttons can be embedded in the spin box
+ * using @ref addActionButton().
+ *
+ * For example, you can use @ref MultiSpinBox to represent an HSV color:
+ * - Hue: 0°–360°
+ * - Saturation: 0–255
+ * - Value: 0–255
+ *
  * @snippet testmultispinbox.cpp MultiSpinBox Basic example
  *
- * You can also have additional buttons within the spin box via the
- * @ref addActionButton() function.
+ * @note This class inherits from <tt>QAbstractSpinBox</tt> and supports most
+ * of its API, with a few key exceptions:
+ * - <b><tt>wrapping</tt>, <tt>specialValueText</tt>,
+ *   <tt>showGroupSeparator</tt>:</b><br/>
+ *   These properties are ignored at the @ref MultiSpinBox level because they
+ *   need to be defined individually for each section. Instead:
+ *   - Use @ref MultiSpinBoxSection::setWrapping() to enable wrapping per
+ *     section.
+ *   - <tt>specialValueText</tt> and <tt>showGroupSeparator</tt> are not
+ *     currently supported.
  *
- * @note This class inherits from <tt>QAbstractSpinBox</tt>, but some
- * parts of the parent class’s API are not supported in <em>this</em>
- * class. Do not use them:
- * - <tt>selectAll()</tt> does not work as expected.
- * - <tt>wrapping()</tt> is ignored. Instead, you can configures
- *   the <em>wrapping</em> individually for each section via
- *   @ref MultiSpinBoxSection::isWrapping.
- * - <tt>specialValue()</tt> is not supported.
- *   <!-- Just as in QDateTimeEdit! -->
- * - <tt>hasAcceptableInput()</tt> is not guaranteed to obey to a particular
- *   and stable semantic.
- * - <tt>fixup()</tt>, <tt>interpretText()</tt>, <tt>validate()</tt> are
- *   not used nor do they anything.
- * - <tt>keyboardTracking()</tt> is ignored. See the signal
- *   @ref sectionValuesChanged for details.
- * - <tt>correctionMode()</tt> is ignored.
- * - <tt>isGroupSeparatorShown</tt> is ignored.
+ * - <b><tt>keyboardTracking()</tt>:</b><br/>
+ *   This property is ignored—keyboard tracking is always enabled in
+ *   @ref MultiSpinBox.
+ *   <br><i>(In Qt’s own widgets, disabling keyboardTracking defers updates:
+ *   user input via the keyboard (excluding Tab and Enter) doesn’t modify the
+ *   value property or emit signals like <tt>valueChanged()</tt> or
+ *   <tt>textChanged()</tt>. Changes are applied only when the widget loses
+ *   focus, the user presses Enter or Tab, or uses the arrow buttons. That
+ *   deferred behavior is not implemented here.)</i>
+ *
+ * - <b><tt>interpretText()</tt>:</b><br/>
+ *   Although <tt>QAbstractSpinBox</tt> defines this method, it has no effect
+ *   in the base class itself or in non-Qt subclasses like this one. In Qt’s
+ *   own derived classes, it performs meaningful parsing and updates—but this
+ *   relies on private internal APIs inaccessible to external or custom
+ *   subclasses. As a result, <tt>interpretText()</tt> in this context is
+ *   effectively a placeholder with no functional impact. It appears more like
+ *   a leaked implementation detail than a truly extensible public API.
+ *
+ * - <b><tt>fixup()</tt>, <tt>validate()</tt>:</b><br/>
+ *   Those are not used nor do they anything in QAbstractSpinBox itself
+ *   or in custom subclasses. (Only in Qt's own subclasses, they get
+ *   actually used.) As long as we do not  interact with the private API of
+ *   <tt>QAbstractSpinBox</tt> (which we cannot do because
+ *   there is no stability guarantee), those functions  are never
+ *   called by <tt>QAbstractSpinBox</tt> nor does their default
+ *   implementation do anything. (They seem rather like an implementation
+ *   detail of Qt that was leaked to the public API accidentally.) We don’t
+ *   use them ourselves either.
  *
  * @internal
  *
- * Further remarks on inherited API of <tt>QAbstractSpinBox</tt>:
- * - <tt>selectAll()</tt>:
+ * @todo When setReadOnly(true), then the stepUp and stepDown buttons should
+ * not be enabled: This will prevent the user from changing the value.
+ *
+ * @todo Unit test for the yet correctly working text() function.
+ *
+ * @todo <tt>selectAll()</tt>:
  *   This slot has a default behaviour that relies on internal
  *   <tt>QAbstractSpinBox</tt> private implementations, which we cannot use
  *   because they are not part of the public API and can therefore change
  *   at any moment. As it isn’t virtual, we cannot reimplement it either.
- * - <tt>fixup(), interpretText(), validate()</tt>:
- *   As long as we do not  interact with the private API of
- *   <tt>QAbstractSpinBox</tt> (which we  cannot do because
- *   there is no stability guaranteed), those functions  are never
- *   called by <tt>QAbstractSpinBox</tt> nor does their default
- *   implementation do anything. (They seem rather like an implementation
- *   detail of Qt that was leaked to the public API.) We don’t use them
- *   either.
- * - <tt>isGroupSeparatorShown</tt>:
- *   Implementing this seems complicate. In the base class, the setter
- *   is  not virtual, and this property does not have a notify signal
- *   either.  But we would have to react on a changes in this property:
- *   The content of the <tt>QLineEdit</tt> has to be updated. And the
- *   @ref minimumSizeHint and the @ref sizeHint will change, therefore
- *   <tt>updateGeometry</tt> has to be called. It seems better not to
- *   implement this. Alternatively, it could be implemented with a
- *   per-section approach via  @ref MultiSpinBoxSection.
+ *   (Does this shortcut
+ *   trigger <tt>selectAll()</tt>?)
+ *   Strg+A selects the whole text of the MultiSpinBox. The text cursor
+ *   position is at the beginning. It's the first section that will react on
+ *   Page-up and Page-down events. This is conform to the behaviour
+ *   of QTimeDateEdit. The underlying problem is however that we should make
+ *   the normal text selection work as expected:
+ *   It is possible to select (either with the left mouse click + mouse
+ *   move, or with Shift key + the arrow keys) arbitrary parts of the line
+ *   edit, including partial and complete selection of prefixes, suffixes and
+ *   separators. It's possible to copy this text (both, by Ctrl+C and by
+ *   insertion by middle mouse click on Linux).
  *
- * @note The interface of this class could theoretically
- * be similar to other Qt classes that offer similar concepts of various
- * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
- * course with consistent naming. But usually you will not modify a single
- * section configuration, but the hole set of configurations. Therefore we do
- * the configuration by @ref MultiSpinBoxSection objects, similar
- * to <tt>QNetworkConfiguration</tt> objects. Allowing changes to individual
- * sections would require a lot of additional code to make sure that after
- * such a change, the text cursor is set the the appropriate position and
- * the text selection is also appropriate. This might be problematic,
- * and gives also little benefit.
- * However, a full-featured interface could look like that:
- * @snippet testmultispinbox.cpp MultiSpinBox Full-featured interface
+ * @todo <tt>fixup(), validate()</tt>: Maybe
+ * called by the line edit's validator that QSpinBox sets? If so, we have
+ * to correct our documentation about them. We could maybe use
+ * them when we do not install our validator on the line edit and instead call
+ * our validator in those two functions? Anyway: Update documentation about
+ * them.
  *
- * @todo i18n bug: Use a MultiSpinBox with a locale that uses “,” as decimal
- * separator, and with a value with some decimals. Try to type “0,1”. It will
- * not be accepted. However, “0.1” will be accepted (and, when moving on,
- * corrected to “0,1”). This is not the expected behaviour.
+ * @todo Oklch second value, German localization, set it to 0,10.
+ * Then change it to 0.10 (with dot as decimal separator).
+ * It should then either jump to 2.00 (nearest value) or to 0.10 (previous
+ * value). But it jumps to 0.00 instead.
  *
- * @todo i18n bug: Enter HLC values like “<tt>80.</tt>” or “<tt>80,</tt>”
- * or “<tt>80e</tt>”. Depending on the locale, it is possible to
- * actually enter these characters, but apparently on validation it
- * is not accepted and the value is replaced by <tt>0</tt>.
- * MultiSpinBox should never become 0 because the validator
- * allows something that the converter cannot convert!
- *
- * @todo In @ref ColorDialog go to the HLC @ref MultiSpinBox and place
- * the text cursor behind the degree sign, than press the ⌫ (backspace) key.
- * Actual behaviour: An error message is printed on the console: “The function
- * updateCurrentValueFromText in file […]multispinbox.cpp near […] was called
- * with the invalid “lineEditText“ argument […].  The call is ignored.
- * This is a bug.” Expected behaviour: No error message is printed.
- *
- * @todo <tt>Ctrl-A</tt> support for this class. (Does this shortcut
- * trigger <tt>selectAll()</tt>?) <tt>Ctrl-U</tt> support for this class?
- * If so, do it via @ref clear(). And: If the user tries to delete
- * everything, delete instead only the current value!? (By the way:
- * How does QDateTimeEdit handle this?)
+ * @todo <tt>clear()</tt> and <tt>Ctrl-U</tt> support for this class.
+ * Like for QDateTimeEdit, it should clear only the current section.
  *
  * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
  * Then, switch back the the “numeric“ tab. Expected behaviour: When
@@ -141,6 +142,10 @@ class MultiSpinBoxPrivate;
  * (While <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt> don’t do that
  * either, <tt>QDateTimeEdit</tt> indeed <em>does</em>, and that seems
  * appropriate also for @ref MultiSpinBox.
+ * On the other hand: QLineEdit
+ * leaves the curser where it is (as long as no diagram widget was clicked and
+ * the values changed)
+ * and that seems practical for small switches?
  *
  * @todo Now, @ref setSectionValues does not select automatically the first
  * section anymore. Is this in conformance with <tt>QDateTimeEdit</tt>?
@@ -149,58 +154,49 @@ class MultiSpinBoxPrivate;
  * the one in the middle (you can try this by using your mouse wheel on
  * the widget).
  *
- * @todo Currently, if the widget has <em>not</em> the focus but the
- * mouse moves over it and the scroll wheel is used, it’s the first
- * section that will be changed, and not the one where the mouse is,
- * as the user might expect. Even QDateTimeEdit does the same thing
- * (thus they do not change the first section, but the last one that
- * was editing before). But it would be great if we could do better here.
- * But: Is this realistic and will the required code work on all
- * platforms?
- *
  * @todo When adding Bengali digits (for example by copy and paste) to a
  * @ref MultiSpinBox that was localized to en_US, than sometimes this is
  * accepted (thought later “corrected” to 0), and sometimes not. This
  * behaviour is inconsistent and wrong.
  *
- * @todo Apparently, the validator doesn’t restrict the input actually to the
- * given range. For QDoubleSpinBox however, the line edit <em>is</em>
- * restricted! Example: even if 100 is maximum, it is possible to write 444.
- * Maybe our @ref ExtendedDoubleValidator should not rely on Qt’s validator,
- * but on if QLocale is able to convert (result: valid) or not (result:
- * invalid)?!.
- *
- * @todo If exposing this class as public API of this library, would
- * it make sense to implement the complete public API of QAbstractSpinBox
- * from which we inherit? Currently, some parts of the QAbstractSpinBox API
- * are nor (properly) implemented by this class…
- *
- * @todo Strg+A selects the whole text of the MultiSpinBox. The text cursor
- * position is at the beginning. It's the first section that will react on
- * Page-up and Page-down events. This is conform to the behaviour
- * of QTimeDateEdit.
- *
- * @todo If entering the MultiSpinBox via Tab key, always the first section
- * gets selected. On Shift-Tab, always the last section. This applies
- * regardless of the last previously selected section. This is conform to the
- * behaviour of QTimeDateEdit.
- *
- * @todo It is possible to select (either with the left mouse click + mouse
- * move, or with Shift key + the arrow keys) arbitrary parts of the line edit,
- * including partial and complete selection of prefixes, suffixes and
- * separators. It's possible to copy this text (both, by Ctrl+C and by
- * insertion by middle mouse click on Linux).
- *
- * @todo If decimals is 0, treat it like an integer-only spinbox and provide
- * support for localization with plural handling, maybe via callback because
- * KLocalizedString isn't available. But: It is necessary to know for us every
- * possible plural-handling-translation for sizeHint() caluculation. By the
- * way: for sizeHint() calculation, do not only consider the highest, but also
+ * @todo for sizeHint() calculation, do not only consider the highest, but also
  * the lowest number, including a maybe preceding minus sign!
  *
- * @todo Use format string instead of prefix/suffix.
+ * @todo @ref addActionButton() should make the action also visible
+ * in the action list of this widget itself (like QLineEdit does) at
+ * the correct position in the action list with the same behaviour as
+ * QLineEdit::addAciton(). The statement in the documentation of
+ * @ref addActionButton() about failing to add the action to the action
+ * list should be corrected. And QWidget::removeAction() should remove
+ * the action from this widget itself AND the QLineEdit; this behaviour
+ * should get documented.
  *
- * @todo Translate separators.
+ * @todo Validation behaviour of MultiSpinBox differs from QDoubleSpinBox.
+ * The latter is much strikter: It seems to not even allow intermediate
+ * states that do not directly translate (after fixup(), I suppose?) to a
+ * valid value in the valid range. We have to test
+ * correctionMode/setCorrectionMode which seems quite impossible in these
+ * conditions. Can we get indirectly information by observing how value()
+ * changes (in lambdas connected to valueChanged or textChanged)?
+ *
+ * @todo Right-click context menu behaves strange: When used, it changes
+ * the cursor position. And increment/decrement is applied to the wrong
+ * section (not the original one, the always the first one - while
+ * QDateTimeEdit applies it correctly to the current one).
+ *
+ * @todo Before publishing the public API, ensure its stability.
+ * The API does not need to be feature-complete, but its current shape must
+ * remain unchanged going forward. In short: implement keyboardTracking before
+ * release.
+ *
+ * For feature parity with QAbstractSpinBox, QDoubleSpinBox, QDateTimeEdit and
+ * the relevant parts of QLineEdit, the API could be extended.
+ *
+ * Full-featured @ref MultiSpinBoxSection API:
+ * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBoxSection
+ *
+ * Full-featured @ref MultiSpinBox API:
+ * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBox
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
@@ -252,11 +248,7 @@ Q_SIGNALS:
      * example if you want to use for <em>queued</em> signal-slot connections),
      * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object.
-     *
-     * @note The property <tt>keyboardTracking()</tt> of the base class
-     * is currently ignored. Keyboard tracking is <em>always</em> enabled:
-     * The spinbox emits this signal while the new value is being entered
-     * from the keyboard – one signal for each key stroke. */
+     */
     void sectionValuesChanged(const QList<double> &newSectionValues);
 
 protected:

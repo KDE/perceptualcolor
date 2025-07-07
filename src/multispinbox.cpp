@@ -280,8 +280,6 @@ void MultiSpinBox::changeEvent(QEvent *event)
  * (The ownership of the action object remains unchanged.)
  * @param position The position of the button within the widget (left
  * or right)
- * @note See @ref hidpisupport "High DPI support" about how to enable
- * support for high-DPI icons.
  * @note The action will <em>not</em> appear in the
  * <tt>QWidget::actions()</tt> function of this class. */
 void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition position)

@@ -37,9 +37,7 @@ class MultiSpinBoxPrivate final : public QObject
 public:
     explicit MultiSpinBoxPrivate(MultiSpinBox *backLink);
     /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
+     */
     virtual ~MultiSpinBoxPrivate() noexcept override = default;
 
     /** @brief Only for unit tests. */

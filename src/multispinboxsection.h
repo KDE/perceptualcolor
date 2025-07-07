@@ -14,11 +14,11 @@ namespace PerceptualColor
 {
 class MultiSpinBoxSectionPrivate;
 
-/** @brief The configuration of a single section
+/** @brief Configuration of a single section
  * within a @ref MultiSpinBox.
  *
- * For a specific section within a @ref MultiSpinBox, this configuration
- * contains various settings.
+ * This class encapsulates the configuration settings for an individual
+ * section of a @ref MultiSpinBox widget.
  *
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
@@ -31,9 +31,12 @@ class MultiSpinBoxSectionPrivate;
  *
  * @internal
  *
- * Also Qt itself uses this configuration-object-based approach with its
- * QNetworkConfiguration class (including @ref pimpl and
- * copy-constructors). */
+ * The design of this configuration class is similar to Qt’s
+ * QNetworkConfiguration: an fully copyable object that can be
+ * passed to other classes, which then interpret its settings.
+ * Internally, the class uses the @ref pimpl idiom to hide implementation
+ * details and allow for future binary-compatible extensions.
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBoxSection
 {
 public:
@@ -76,7 +79,7 @@ private:
     /** @internal
      * @brief Internal friend declaration.
      *
-     * This class is used as configuration for @ref MultiSpinBox. Thought
+     * @note This class is used as configuration for @ref MultiSpinBox. Thought
      * currently there is no need for this <tt>friend</tt> declaration,
      * it is done nevertheless. (If it would become necessary later,
      * adding it would break the binary API, which we want to avoid.) */
