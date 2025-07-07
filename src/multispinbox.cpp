@@ -220,7 +220,8 @@ QSize MultiSpinBox::sizeHint() const
         this // optional widget argument (for better calculations)
     );
 
-    if (d_pointer->m_actionButtonCount > 0) {
+    const auto buttonCount = lineEdit()->actions().count();
+    if (buttonCount > 0) {
         // Determine the size of icons for actions similar to what Qt
         // does in QLineEditPrivate::sideWidgetParameters() and than
         // add this to the size hint.
@@ -232,7 +233,9 @@ QSize MultiSpinBox::sizeHint() const
         const int actionButtonWidth = actionButtonIconSize + 6;
         // Only 1 margin per button:
         const int actionButtonSpace = actionButtonWidth + actionButtonMargin;
-        result.setWidth(result.width() + d_pointer->m_actionButtonCount * actionButtonSpace);
+        result.setWidth( //
+            result.width() //
+            + static_cast<int>(buttonCount) * actionButtonSpace);
     }
 
     return result;
@@ -279,12 +282,13 @@ void MultiSpinBox::changeEvent(QEvent *event)
  * (The ownership of the action object remains unchanged.)
  * @param position The position of the button within the widget (left
  * or right)
- * @note The action will <em>not</em> appear in the
- * <tt>QWidget::actions()</tt> function of this class. */
+ *
+ * The action can be removed with <tt>QWidget::remove()</tt>.
+ */
 void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition position)
 {
+    addAction(action);
     lineEdit()->addAction(action, position);
-    d_pointer->m_actionButtonCount += 1;
     // The size hints have changed, because an additional button needs
     // more space.
     updateGeometry();
@@ -1049,6 +1053,24 @@ void MultiSpinBox::fixup(QString &input) const
 QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
 {
     return d_pointer->m_validator->validate(input, pos);
+}
+
+/**
+ * @brief Event handler for action events.
+ *
+ * Reimplemented from base class.
+ *
+ * Makes sure that actions added by @ref addActionButton are handled as
+ * expected.
+ *
+ * @param event The action event
+ */
+void MultiSpinBox::actionEvent(QActionEvent *event)
+{
+    if (event->type() == QEvent::ActionRemoved) {
+        lineEdit()->removeAction(event->action());
+    }
+    QAbstractSpinBox::actionEvent(event);
 }
 
 } // namespace PerceptualColor

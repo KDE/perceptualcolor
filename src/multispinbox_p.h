@@ -47,9 +47,6 @@ public:
     /** @brief Default value of a section */
     static constexpr double defaultSectionValue = 0;
 
-    /** @brief Counter for all actions added
-     * by @ref MultiSpinBox::addActionButton. */
-    int m_actionButtonCount = 0;
     /** @brief Holds the index of the currently selected section.
      * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
      * @sa @ref setCurrentIndexWithoutUpdatingText */

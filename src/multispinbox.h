@@ -21,6 +21,7 @@
 #endif
 
 class QAction;
+class QActionEvent;
 class QEvent;
 class QFocusEvent;
 class QString;
@@ -141,15 +142,6 @@ class MultiSpinBoxPrivate;
  * @todo for sizeHint() calculation, do not only consider the highest, but also
  * the lowest number, including a maybe preceding minus sign!
  *
- * @todo @ref addActionButton() should make the action also visible
- * in the action list of this widget itself (like QLineEdit does) at
- * the correct position in the action list with the same behaviour as
- * QLineEdit::addAciton(). The statement in the documentation of
- * @ref addActionButton() about failing to add the action to the action
- * list should be corrected. And QWidget::removeAction() should remove
- * the action from this widget itself AND the QLineEdit; this behaviour
- * should get documented.
- *
  * @todo Validation behaviour of MultiSpinBox differs from QDoubleSpinBox.
  * The latter is much strikter: It seems to not even allow intermediate
  * states that do not directly translate (after fixup(), I suppose?) to a
@@ -201,6 +193,7 @@ public:
     Q_INVOKABLE explicit MultiSpinBox(QWidget *parent = nullptr);
     /** @brief Default destructor */
     virtual ~MultiSpinBox() noexcept override;
+    virtual void actionEvent(QActionEvent *event) override;
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual void clear() override;
     virtual void fixup(QString &input) const override;

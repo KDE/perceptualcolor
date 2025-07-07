@@ -1297,16 +1297,18 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-    void testAddActionButton()
+    void testAddActionButtonSizeHint()
     {
+        // Adding an action button necessarily changes the size hint of the
+        // widget.
         MultiSpinBox mySpinBox;
         int oldWidth = 0;
-        QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 0);
+        QCOMPARE(mySpinBox.lineEdit()->actions().count(), 0);
         oldWidth = mySpinBox.sizeHint().width();
         mySpinBox.addActionButton( //
             new QAction(QStringLiteral(u"test"), &mySpinBox), //
             QLineEdit::ActionPosition::TrailingPosition);
-        QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 1);
+        QCOMPARE(mySpinBox.lineEdit()->actions().count(), 1);
         QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
                  "Verify: After adding an action button, "
                  "the size hint has a bigger width than before.");
@@ -1314,10 +1316,34 @@ private Q_SLOTS:
         mySpinBox.addActionButton( //
             new QAction(QStringLiteral(u"test"), &mySpinBox), //
             QLineEdit::ActionPosition::TrailingPosition);
-        QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 2);
+        QCOMPARE(mySpinBox.lineEdit()->actions().count(), 2);
         QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
                  "Verify: After adding an action button, "
                  "the size hint has a bigger width than before.");
+    }
+
+    void testActions()
+    {
+        // addAction() should make the action also visible in the action
+        // list of our widget, and QWidget::removeAction on our widget
+        // should also remove it from the QLineEdit child widget.
+        MultiSpinBox mySpinBox;
+        QCOMPARE(mySpinBox.actions(), {});
+        QCOMPARE(mySpinBox.lineEdit()->actions(), {});
+        QAction *action1 = new QAction();
+        mySpinBox.addAction(action1); // QWidget::addAction()
+        QAction *action2 = new QAction();
+        mySpinBox.addActionButton(action2, QLineEdit::LeadingPosition);
+        QAction *action3 = new QAction();
+        mySpinBox.addAction(action3); // QWidget::addAction()
+        const auto actionList123 = QList<QAction *>{action1, action2, action3};
+        const auto actionList2 = QList<QAction *>{action2};
+        const auto actionList13 = QList<QAction *>{action1, action3};
+        QCOMPARE(mySpinBox.actions(), actionList123);
+        QCOMPARE(mySpinBox.lineEdit()->actions(), actionList2);
+        mySpinBox.removeAction(action2);
+        QCOMPARE(mySpinBox.actions(), actionList13);
+        QCOMPARE(mySpinBox.lineEdit()->actions(), {});
     }
 
     void testFixSectionValue_data()
