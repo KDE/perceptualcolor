@@ -139,9 +139,6 @@ class MultiSpinBoxPrivate;
  * accepted (thought later “corrected” to 0), and sometimes not. This
  * behaviour is inconsistent and wrong.
  *
- * @todo for sizeHint() calculation, do not only consider the highest, but also
- * the lowest number, including a maybe preceding minus sign!
- *
  * @todo Validation behaviour of MultiSpinBox differs from QDoubleSpinBox.
  * The latter is much strikter: It seems to not even allow intermediate
  * states that do not directly translate (after fixup(), I suppose?) to a
