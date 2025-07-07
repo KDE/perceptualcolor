@@ -1831,6 +1831,22 @@ private Q_SLOTS:
         QTest::newRow("720.1") << 720.1;
     }
 
+    void testReadOnly()
+    {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget( //
+            new PerceptualColor::MultiSpinBox());
+        widget->setSectionConfigurations(exampleConfigurations);
+        widget->setSectionValues({1, 1, 1});
+        // Assert that the setup is okay.
+        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"1°  1%  1"));
+        QCOMPARE( //
+            widget->stepEnabled(), //
+            QAbstractSpinBox::StepUpEnabled | QAbstractSpinBox::StepDownEnabled);
+        // Actual test:
+        widget->setReadOnly(true);
+        QCOMPARE(widget->stepEnabled(), QAbstractSpinBox::StepNone);
+    }
+
     void testMaximumWrappingRounding()
     {
         // When using wrapping, the MultiSpinBox is supposed to never

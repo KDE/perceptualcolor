@@ -418,6 +418,10 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
  * @returns whether stepping up and down is legal */
 QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 {
+    if (isReadOnly()) {
+        return QAbstractSpinBox::StepNone;
+    }
+
     const MultiSpinBoxSection currentSectionConfiguration = d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex);
     const double currentSectionValue = sectionValues().at(d_pointer->m_currentIndex);
 
