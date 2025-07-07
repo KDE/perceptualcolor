@@ -126,12 +126,6 @@ public:
 
     // Ownership should be handled analogous to QLineEdit!
     QAction *addAction(const QIcon &icon, QLineEdit::ActionPosition position);
-
-Q_SIGNALS:
-    // For feature parity with QDoubleSpinBox
-    // The behaviour of textChanged() depends on
-    // QAbstractSpinBox::keyboardTracking()!
-    void textChanged(const QString &text);
     //! [MultiSpinBox Full-featured MultiSpinBox]
 };
 
@@ -271,9 +265,8 @@ private Q_SLOTS:
         // Select “45”
         QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
         QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
-        // Copy to clipboard
-        // TODO The following line that copies to clipboard
-        // is surprisingly extremly slow.
+        // Copy to clipboard (The following line that copies to clipboard
+        // is surprisingly extremly slow.)
         QTest::keyClick(widget.data(), Qt::Key_C, Qt::ControlModifier, 0);
         // Go to the left
         QTest::keyClick(widget.data(), Qt::Key_Left);
@@ -501,7 +494,7 @@ private Q_SLOTS:
         myMulti.d_pointer->updatePrefixValueSuffixText();
         QCOMPARE(myMulti.d_pointer->m_textBeforeCurrentValue, //
                  QStringLiteral(u"abc8defghi"));
-        QCOMPARE(myMulti.d_pointer->m_textOfCurrentValue, //
+        QCOMPARE(myMulti.d_pointer->m_textOfCurrentPendingValue, //
                  QStringLiteral(u"80"));
         QCOMPARE(myMulti.d_pointer->m_textAfterCurrentValue, //
                  QStringLiteral(u"jkl"));
@@ -1553,34 +1546,52 @@ private Q_SLOTS:
         myConfigs.append(myConfig);
         myMulti.setSectionConfigurations(myConfigs);
         myMulti.show();
-        QSignalSpy spyMulti(&myMulti, //
-                            &MultiSpinBox::sectionValuesChanged);
+        QSignalSpy spyMulti( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChanged);
+        QSignalSpy spyMultiAsQString //
+            (&myMulti, //
+             &MultiSpinBox::sectionValuesChangedAsQString);
         QDoubleSpinBox myDouble;
         myDouble.show();
         QSignalSpy spyDouble( //
             &myDouble, //
             QOverload<double>::of(&QDoubleSpinBox::valueChanged));
+        // QDoubleSpinBox::textChanged is a bad name. Effectively, it is
+        // the counterpart of MultiSpinBox::sectionValuesChangedAsQString
+        QSignalSpy spyDoubleAsQString( //
+            &myDouble, //
+            &QDoubleSpinBox::textChanged);
+
+        // Make sure MultiSpinBox behaves correctly and analogous to
+        // QDoubleSpinBox
 
         // Set a value different from the default
         myMulti.setSectionValues(QList<double>{2, 2});
         myDouble.setValue(2);
         QCOMPARE(spyMulti.count(), 1);
         QCOMPARE(spyMulti.count(), spyDouble.count());
+        QCOMPARE(spyMultiAsQString.count(), 1);
+        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
 
         // Setting the same value again should not call again the signal
         myMulti.setSectionValues(QList<double>{2, 2});
         myDouble.setValue(2);
         QCOMPARE(spyMulti.count(), 1);
         QCOMPARE(spyMulti.count(), spyDouble.count());
+        QCOMPARE(spyMultiAsQString.count(), 1);
+        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
 
         // Setting a value list which has only one different element triggers:
         myMulti.setSectionValues(QList<double>{2, 3});
         myDouble.setValue(3);
         QCOMPARE(spyMulti.count(), 2);
         QCOMPARE(spyMulti.count(), spyDouble.count());
+        QCOMPARE(spyMultiAsQString.count(), 2);
+        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
     }
 
-    void testSectionValuesChangedSignalKeyboardTracking()
+    void testSectionValuesChangedSignalKeyboardTrackingEnabled()
     {
         // Initialize
         MultiSpinBox myMulti;
@@ -1589,26 +1600,36 @@ private Q_SLOTS:
             // with QDoubleSpinBox
             QList<MultiSpinBoxSection>{MultiSpinBoxSection()});
         myMulti.show();
-        QSignalSpy spyMulti(&myMulti, //
-                            &MultiSpinBox::sectionValuesChanged);
+        QSignalSpy spyMulti( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChanged);
+        QSignalSpy spyMultiAsQString( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChangedAsQString);
+        myMulti.show();
         QDoubleSpinBox myDouble;
         myDouble.show();
         QSignalSpy spyDouble( //
             &myDouble, //
             QOverload<double>::of(&QDoubleSpinBox::valueChanged));
+        QSignalSpy spyDoubleAsQString( //
+            &myDouble, //
+            &QDoubleSpinBox::textChanged);
 
-        // Test with keyboard tracking
+        // Test with keyboard tracking enabled
         myMulti.setKeyboardTracking(true);
         myDouble.setKeyboardTracking(true);
 
         // Get test data
         QApplication::setActiveWindow(&myMulti);
+        myMulti.setSectionValues({8});
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
         QTest::keyClick(&myMulti, Qt::Key::Key_5);
         QTest::keyClick(&myMulti, Qt::Key::Key_4);
         QCOMPARE(myMulti.sectionValues().at(0), 54); // Assertion
 
         // Get reference data
+        myDouble.setValue(8);
         QApplication::setActiveWindow(&myDouble);
         QTest::keyClick(&myDouble, Qt::Key_Up);
         QTest::keyClick(&myDouble, Qt::Key::Key_5);
@@ -1617,18 +1638,208 @@ private Q_SLOTS:
 
         // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
         QCOMPARE(spyMulti.count(), spyDouble.count());
+        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
         for (int i = 0; i < spyMulti.count(); ++i) {
-            QCOMPARE(spyMulti // Get value of first section of MultiSpinBox…
+            QCOMPARE(spyMulti
                          .at(i) // Signal at position i
                          .at(0) // First argument of this signal
                          .value<QList<double>>() // Convert to original type
                          .at(0), // First section of the MultiSpinBox
-                     spyDouble // Get value of QSpinBox…
+                     spyDouble
                          .at(i) // Signal at position i
                          .at(0) // First argument of this signal
                          .toDouble() // Convert to original type
             );
+            QCOMPARE(spyMultiAsQString
+                         .at(i) // Signal at position i
+                         .at(0) // First argument of this signal
+                         .toString(), // Convert to original type
+                     spyDoubleAsQString
+                         .at(i) // Signal at position i
+                         .at(0) // First argument of this signal
+                         .toString() // Convert to original type
+            );
         }
+    }
+
+    void testSectionValuesChangedSignalKeyboardTrackingDisabled()
+    {
+        // Initialize
+        QWidget helper;
+        helper.show();
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(
+            // Use only one section to allow to compare easily
+            // with QDoubleSpinBox
+            QList<MultiSpinBoxSection>{MultiSpinBoxSection()});
+        myMulti.show();
+        QSignalSpy spyMulti( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChanged);
+        QSignalSpy spyMultiAsQString( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChangedAsQString);
+        QSignalSpy spyMultiEditingFinished( //
+            &myMulti, //
+            &MultiSpinBox::editingFinished);
+        QDoubleSpinBox myDouble;
+        myDouble.show();
+        QSignalSpy spyDouble( //
+            &myDouble, //
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged));
+        QSignalSpy spyDoubleAsQString( //
+            &myDouble, //
+            &QDoubleSpinBox::textChanged);
+
+        // Test with keyboard tracking disabled
+        myMulti.setKeyboardTracking(false);
+        myDouble.setKeyboardTracking(false);
+
+        // Get test data
+        myMulti.setSectionValues({8});
+        QApplication::setActiveWindow(&myMulti);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QTest::keyClick(&myMulti, Qt::Key::Key_5);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QTest::keyClick(&myMulti, Qt::Key::Key_4);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QTest::keyClick(&myMulti, Qt::Key::Key_Return);
+        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QTest::keyClick(&myMulti, Qt::Key::Key_3);
+        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QTest::keyClick(&myMulti, Qt::Key::Key_2);
+        myMulti.stepUp();
+        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QApplication::setActiveWindow(&helper); // Make spinbox loose focus
+        QCOMPARE(spyMultiEditingFinished.count(), 2);
+
+        // Get reference data
+        myDouble.setValue(8);
+        QApplication::setActiveWindow(&myDouble);
+        QTest::keyClick(&myDouble, Qt::Key_Up);
+        QTest::keyClick(&myDouble, Qt::Key::Key_5);
+        QTest::keyClick(&myDouble, Qt::Key::Key_4);
+        QTest::keyClick(&myDouble, Qt::Key::Key_Return);
+        QTest::keyClick(&myDouble, Qt::Key::Key_3);
+        QTest::keyClick(&myDouble, Qt::Key::Key_2);
+        myDouble.stepUp();
+        QApplication::setActiveWindow(&helper); // Make spinbox loose focus
+
+        // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
+        QCOMPARE(spyMulti.count(), spyDouble.count());
+        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
+        for (int i = 0; i < spyMulti.count(); ++i) {
+            QCOMPARE(spyMulti
+                         .at(i) // Signal at position i
+                         .at(0) // First argument of this signal
+                         .value<QList<double>>() // Convert to original type
+                         .at(0), // First section of the MultiSpinBox
+                     spyDouble
+                         .at(i) // Signal at position i
+                         .at(0) // First argument of this signal
+                         .toDouble() // Convert to original type
+            );
+            QCOMPARE(spyMultiAsQString
+                         .at(i) // Signal at position i
+                         .at(0) // First argument of this signal
+                         .toString(), // Convert to original type
+                     spyDoubleAsQString
+                         .at(i) // Signal at position i
+                         .at(0) // First argument of this signal
+                         .toString() // Convert to original type
+            );
+        }
+    }
+
+    void signalsOnTabWhithoutKeyboardTracking()
+    {
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        MultiSpinBox *widget2 = //
+            new MultiSpinBox(parentWidget.data());
+        widget2->setKeyboardTracking(false);
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget2->setSectionConfigurations(exampleConfigurations);
+        QSignalSpy spyMultiEditingFinished( //
+            widget2, //
+            &MultiSpinBox::editingFinished);
+        QSignalSpy spyMultiValueChanged( //
+            widget2, //
+            &MultiSpinBox::sectionValuesChanged);
+        QSpinBox *widget3 = new QSpinBox(parentWidget.data());
+        widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        QLabel *label2 = new QLabel(QStringLiteral(u"&Test"), //
+                                    parentWidget.data());
+        label2->setBuddy(widget2);
+        widget2->setFocus();
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+
+        // It is necessary to show the widget and make it active
+        // to make focus and widget events working within unit tests.
+        parentWidget->show();
+        QApplication::setActiveWindow(parentWidget.data());
+        if (!widget2->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget3->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (QApplication::focusWidget() != widget2) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+
+        // Start actual testing
+
+        // Apparently it isn’t possible to call simply the key click
+        // on the parent widget. This code fails sometimes:
+        // QTest::keyClick(parentWidget, Qt::Key::Key_Tab);
+        // Therefore, we call QTest::keyClick() on
+        // QApplication::focusWidget()
+
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->sectionValues().at(0), 0);
+        QCOMPARE(spyMultiValueChanged.count(), 0);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
+        QCOMPARE(widget2->sectionValues().at(0), 1);
+        QCOMPARE(spyMultiValueChanged.count(), 1);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_2);
+        QCOMPARE(widget2->sectionValues().at(0), 1);
+        QCOMPARE(spyMultiValueChanged.count(), 1);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        // Move focus from widget2/section0 to widget2/section1
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(widget2->sectionValues().at(0), 2);
+        QCOMPARE(spyMultiValueChanged.count(), 2);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        // Move focus from widget2/section1 to widget2/section2
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(widget2->sectionValues().at(0), 2);
+        QCOMPARE(spyMultiValueChanged.count(), 2);
+        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        // Move focus from widget2/section2 to widget3
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(widget2->sectionValues().at(0), 2);
+        QCOMPARE(spyMultiValueChanged.count(), 2);
+        QCOMPARE(spyMultiEditingFinished.count(), 1);
+
+        // Cleanup
+        delete widget2;
+        delete widget3;
+        delete label2;
     }
 
     void testRoundingBehaviourCompliance()

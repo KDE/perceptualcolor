@@ -29,6 +29,7 @@
 #include "settingbase.h" // IWYU pragma: keep
 #include "settings.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
+#include <qaction.h> // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
 #include <qcolor.h> // IWYU pragma: keep
 #include <qcolordialog.h> // IWYU pragma: keep
@@ -36,6 +37,7 @@
 #include <qcontainerfwd.h> // IWYU pragma: keep
 #include <qcoreapplication.h> // IWYU pragma: keep
 #include <qcoreevent.h> // IWYU pragma: keep
+#include <qdatetimeedit.h> // IWYU pragma: keep
 #include <qdebug.h> // IWYU pragma: keep
 #include <qdialogbuttonbox.h> // IWYU pragma: keep
 #include <qfileinfo.h> // IWYU pragma: keep
@@ -63,6 +65,7 @@
 #include <qsharedpointer.h> // IWYU pragma: keep
 #include <qsize.h> // IWYU pragma: keep
 #include <qsizepolicy.h> // IWYU pragma: keep
+#include <qspinbox.h> // IWYU pragma: keep
 #include <qstring.h> // IWYU pragma: keep
 #include <qstringlist.h> // IWYU pragma: keep
 #include <qstringliteral.h> // IWYU pragma: keep
@@ -73,7 +76,16 @@
 #include <qtranslator.h> // IWYU pragma: keep
 #include <utility> // IWYU pragma: keep
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h> // IWYU pragma: keep
+#endif
+
 using namespace PerceptualColor;
+
+namespace test
+{
+Q_NAMESPACE
+}
 
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
@@ -87,9 +99,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // QLocale::setDefault(QLocale::Bengali);
-    // QLocale::setDefault(QLocale(QLocale::German, QLocale::Country::Germany));
+    QLocale::setDefault(QLocale(QLocale::German, QLocale::Country::Germany));
     // QLocale::setDefault(QLocale(QLocale::Georgian));
-    QLocale::setDefault(QLocale::English);
+    // QLocale::setDefault(QLocale::English);
     // QLocale::setDefault(QLocale::French);
     // QLocale::setDefault(QLocale::Spanish);
     // QLocale::setDefault(QLocale::Ukrainian);
@@ -136,7 +148,7 @@ int main(int argc, char *argv[])
     myColor.setAlphaF(0.5);
     // m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-    m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
+    // m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
     // m_colorDialog.setEnabled(false);
     // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
     m_colorDialog.show();
@@ -222,16 +234,6 @@ int main(int argc, char *argv[])
     */
 
     /*
-    QColorDialog *defaultColorDialog = new QColorDialog;
-    defaultColorDialog->setOption(QColorDialog::ShowAlphaChannel);
-    // For session management, according to https://doc.qt.io/qt-6/session.html
-    //     “you must identify your top level widgets with
-    //      unique application-wide object names”
-    defaultColorDialog->setObjectName(QStringLiteral("Default Qt color dialog"));
-    defaultColorDialog->show();
-    */
-
-    /*
     QScopedPointer<QTranslator> myTranslator;
     QTimer::singleShot(5000, // delay in milliseconds
                        QCoreApplication::instance(), // context object
@@ -286,31 +288,72 @@ int main(int argc, char *argv[])
     */
 
     /*
-#ifndef MSVC_DLL
-    // Just for testing purpose: Miss-use the customColor property to
-    // synchronize the current color of ColorDialog between various instances.
-    QObject::connect(&m_colorDialog, //
-                     &ColorDialog::currentColorChanged,
-                     &mySettings,
-                     [&](const QColor &color) {
-                         mySettings.customColors.setValue(PerceptualSettings::ColorList({color}));
+    QDoubleSpinBox dbox;
+    dbox.show();
+    dbox.setKeyboardTracking(false);
+    dbox.setPrefix(QStringLiteral("prefix"));
+    dbox.setSuffix(QStringLiteral("suffix"));
+    QTimer* timer = new QTimer();
+    QObject::connect(timer, //
+                     &QTimer::timeout, //
+                     &dbox, //
+                     [&dbox]() {
+                         qDebug() << "text" << dbox.text();
+                         qDebug() << "value" << dbox.value();
                      });
-    QObject::connect(&mySettings.customColors, //
-                     &SettingBase::valueChanged,
-                     &m_colorDialog,
-                     [&]() {
-                         m_colorDialog.setCurrentColor( //
-                             mySettings.customColors.value().value(0));
+    timer->start(5000); // 5000 ms = 5 Sekunden
+    qDebug() << "Tracking" << dbox.keyboardTracking();
+    QObject::connect(&dbox, //
+                     &QDoubleSpinBox::textChanged, //
+                     [=](const QString &v) {
+                         qDebug() << "textChanged()" << v;
                      });
-#endif
+    QObject::connect(&dbox, //
+                     &QDoubleSpinBox::valueChanged, //
+                     [=](double d) {
+                         qDebug() << "valueChanged()" << d;
+                     });
+    QObject::connect(&dbox, //
+                     &QDoubleSpinBox::editingFinished, //
+                     [=]() {
+                         qDebug() << "editingFinished";
+                     });
     */
 
-    // m_colorDialog.setCurrentColor(QColor(50, 127, 206));
-    // m_colorDialog.setCurrentColor(QColor(0, 255, 0));
-    // m_colorDialog.setCurrentColor(QColor(0, 255, 255, 50));
-
-    // QColorDialog myQColorDialog;
-    // myQColorDialog.show();
+    /*
+    MultiSpinBox box;
+    MultiSpinBoxSection section;
+    section.setMaximum(1);
+    section.setFormatString(QStringLiteral("קְדׇם%1קְדׇם"));
+    section.setFormatString(QStringLiteral("prefix%1suffix"));
+    section.setSingleStep(4);
+    box.setSectionConfigurations({section, section});
+    box.setAccelerated(true);
+    box.stepBy(3);
+    box.stepBy(-1);
+    // qDebug() << "box" << box.text();
+    // box.setButtonSymbols(QAbstractSpinBox::NoButtons);
+    box.setFrame(true);
+    box.setReadOnly(false);
+    // box.setAlignment(Qt::AlignRight);
+    box.setKeyboardTracking(false);
+    box.show();
+    QObject::connect(&box, //
+                     &MultiSpinBox::sectionValuesChangedAsQString, //
+                     [=](const QString &v) {
+                         qDebug() << "textChanged()" << v;
+                     });
+    QObject::connect(&box, //
+                     &MultiSpinBox::sectionValuesChanged, //
+                     [=](const QList<double> &newSectionValues) {
+                         qDebug() << "valueChanged()" << newSectionValues;
+                     });
+    QObject::connect(&box, //
+                     &MultiSpinBox::editingFinished, //
+                     [=]() {
+                         qDebug() << "Editing finished!";
+                     });
+    */
 
     // Run
     return app.exec();

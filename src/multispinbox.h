@@ -24,6 +24,7 @@ class QAction;
 class QActionEvent;
 class QEvent;
 class QFocusEvent;
+class QKeyEvent;
 class QString;
 class QWidget;
 
@@ -66,16 +67,6 @@ class MultiSpinBoxPrivate;
  *     section.
  *   - <tt>specialValueText</tt> and <tt>showGroupSeparator</tt> are not
  *     currently supported.
- *
- * - <b><tt>keyboardTracking()</tt>:</b><br/>
- *   This property is ignored—keyboard tracking is always enabled in
- *   @ref MultiSpinBox.
- *   <br><i>(In Qt’s own widgets, disabling keyboardTracking defers updates:
- *   user input via the keyboard (excluding Tab and Enter) doesn’t modify the
- *   value property or emit signals like <tt>valueChanged()</tt> or
- *   <tt>textChanged()</tt>. Changes are applied only when the widget loses
- *   focus, the user presses Enter or Tab, or uses the arrow buttons. That
- *   deferred behavior is not implemented here.)</i>
  *
  * - <b><tt>interpretText()</tt>:</b><br/>
  *   Although <tt>QAbstractSpinBox</tt> defines this method, it has no effect
@@ -167,20 +158,29 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 
-    /** @brief A list containing the values of all sections.
+    /** @brief A list containing the current values for all sections.
      *
-     * @note It is not this property, but @ref sectionConfigurations
-     * which determines the actually available count of sections in this
-     * widget. If you want to change the number of available sections,
-     * call <em>first</em> @ref setSectionConfigurations and only
-     * <em>after</em> that adapt this property.
+     * @note The number of available sections is not determined by this
+     * property, but by @ref sectionConfigurations. To modify the section
+     * count, you must call @ref setSectionConfigurations first, then update
+     * this property.
      *
-     * @invariant This property contains always as many elements as
+     * @note If the <tt>QAbstractSpinBox::keyboardTracking</tt> property is
+     * set to <tt>false</tt>, updates to the property triggered by keyboard
+     * input are deferred until editing is complete (when the Return/Enter key
+     * or Tab key is pressed, when keyboard focus is lost, or when other
+     * spinbox functionality is used, e.g. pressing an arrow key or a button).
+     * In contrast, the <tt>QAbstractSpinBox::text</tt> property always
+     * reflects the current visible content of the editor.
+     *
+     * @invariant This property always contains the same number of elements as
      * @ref sectionConfigurations contains.
      *
      * @sa READ @ref sectionValues() const
      * @sa WRITE @ref setSectionValues()
-     * @sa NOTIFY @ref sectionValuesChanged() */
+     * @sa NOTIFY @ref sectionValuesChanged()
+     * @sa Alternative notify signal: @ref sectionValuesChangedAsQString()
+     */
     Q_PROPERTY(QList<double> sectionValues READ sectionValues WRITE setSectionValues NOTIFY sectionValuesChanged USER true)
 
 public:
@@ -205,12 +205,14 @@ public Q_SLOTS:
     void setSectionValues(const QList<double> &newSectionValues);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref sectionValues.
+    /**
+     * @brief Notifier signal for the @ref sectionValues property.
      *
-     * This signal is emitted whenever the value in one or more sections
-     * changes.
+     * This signal is emitted simultaneously with
+     * @ref sectionValuesChangedAsQString whenever the values in one or more
+     * sections of the @ref sectionValues property change.
      *
-     * @param newSectionValues the new @ref sectionValues
+     * @param newSectionValues The updated @ref sectionValues
      *
      * Depending on your use case (for
      * example if you want to use for <em>queued</em> signal-slot connections),
@@ -218,6 +220,52 @@ Q_SIGNALS:
      * this type, once you have a QApplication object.
      */
     void sectionValuesChanged(const QList<double> &newSectionValues);
+    /**
+     * @brief Alternative notifier signal for the @ref sectionValues property
+     *        with a QString argument.
+     *
+     * This signal is emitted simultaneously with
+     * @ref sectionValuesChanged  whenever the values in one or more
+     * sections of the @ref sectionValues property change, but provides the
+     * values as a QString representation.
+     *
+     * @param newSectionValuesQString The updated @ref sectionValues as a
+     *        QString. This string reflects the current textual representation
+     *        visible to the user in the widget. It may also include
+     *        intermediate editing states, such as <tt>01</tt> instead of
+     *        <tt>1</tt>, depending on the user’s input and formatting at the
+     *        time the signal is emitted.
+     *
+     * @internal
+     *
+     * @note This signal serves as the counterpart to
+     * <tt>QDoubleSpinBox::textChanged(const QString &)</tt>,
+     * but intentionally uses a distinct and more descriptive name.
+     * <br/>
+     * Qt’s design history provides helpful context: QDoubleSpinBox has the
+     * <tt>value</tt> property, with the signal <tt>valueChanged(double)</tt>
+     * as its notifier. In earlier versions of Qt, an overload
+     * <tt>valueChanged(const QString &)</tt> existed alongside
+     * <tt>valueChanged(double)</tt>, emitting the same value in string form.
+     * However, overloaded signals complicate usage, especially in
+     * <tt>QObject::connect()</tt>, as they require disambiguation through
+     * constructs like <tt>QOverload<double>::of()</tt>. To resolve this,
+     * Qt 5.14 introduced a new signal <tt>textChanged(const QString &)</tt>,
+     * and subsequently deprecated the overload—removing it in Qt 6.
+     * <br/>
+     * Unfortunately, the name <tt>textChanged</tt> is misleading: it suggests
+     * a notifier for the <tt>QAbstractSpinBox::text</tt> property, which it
+     * is not. In reality, it responds to changes in the <tt>value</tt>
+     * property and is deferred just like <tt>valueChanged()</tt> when
+     * <tt>QAbstractSpinBox::keyboardTracking</tt> is set to <tt>false</tt>;
+     * whereas the <tt>text</tt> property itself is never deferred.
+     * <br/>
+     * To avoid ambiguity, @ref MultiSpinBox uses a name that clearly reflects
+     * the signal’s true nature: it is a string-based alternative notifier
+     * for the @ref sectionValues property, and has no relation to
+     * <tt>QAbstractSpinBox::text</tt>.
+     */
+    void sectionValuesChangedAsQString(const QString &newSectionValuesQString);
 
 protected:
     virtual void changeEvent(QEvent *event) override;
@@ -225,6 +273,7 @@ protected:
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual bool focusNextPrevChild(bool next) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
     [[nodiscard]] virtual QAbstractSpinBox::StepEnabled stepEnabled() const override;
 
 private:

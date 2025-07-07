@@ -51,6 +51,14 @@ public:
      * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
      * @sa @ref setCurrentIndexWithoutUpdatingText */
     qsizetype m_currentIndex = 0;
+    /**
+     * @brief Section values pending to be applied to @ref m_sectionValues.
+     *
+     * If QAbstractSpinBox::keyboardTracking is disabled, changes to
+     * @ref m_sectionValues caused by keyboard input are deferred. This
+     * variable helps to keep track.
+     */
+    QList<double> m_pendingSectionValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
     /** @brief Holds the data for the sections.
      *
      * This list is guaranteed to contain at least <em>one</em> section.
@@ -58,8 +66,11 @@ public:
      * @sa @ref MultiSpinBox::sectionConfigurations()
      * @sa @ref MultiSpinBox::setSectionConfigurations() */
     QList<MultiSpinBoxSection> m_sectionConfigurations;
-    /** @brief Internal storage for
-     * property @ref MultiSpinBox::sectionValues. */
+    /**
+     * @brief Internal storage for property @ref MultiSpinBox::sectionValues.
+     *
+     * @sa @ref m_pendingSectionValues
+     */
     QList<double> m_sectionValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
     /** @brief The string of everything <em>after</em> the value of the
      * current section.
@@ -75,8 +86,8 @@ public:
      * sections that come before the current section, and the prefix
      * of the current section. */
     QString m_textBeforeCurrentValue;
-    /** @brief The string of the value of the current section. */
-    QString m_textOfCurrentValue;
+    /** @brief The string of the pending value of the current section. */
+    QString m_textOfCurrentPendingValue;
     /** @brief The validator for the <tt>QLineEdit</tt>.
      *
      * This validator allows changes only to the <em>current</em> section.
@@ -94,11 +105,12 @@ public:
     QPointer<ExtendedDoubleValidator> m_validator;
 
     // Functions
-    [[nodiscard]] QString formattedValue(qsizetype index) const;
+    void applyPendingSectionValuesAndEmitSignals();
+    [[nodiscard]] QString formattedPendingValue(qsizetype index) const;
     [[nodiscard]] bool isCursorTouchingCurrentSectionValue() const;
     void setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex);
     void setCurrentIndexWithoutUpdatingText(qsizetype newIndex);
-    void setSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
+    void setPendingSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
     void updatePrefixValueSuffixText();
     void updateValidator();
 
