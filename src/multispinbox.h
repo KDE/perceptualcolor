@@ -14,6 +14,7 @@
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qsize.h>
+#include <qvalidator.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -22,6 +23,7 @@
 class QAction;
 class QEvent;
 class QFocusEvent;
+class QString;
 class QWidget;
 
 namespace PerceptualColor
@@ -76,23 +78,12 @@ class MultiSpinBoxPrivate;
  *
  * - <b><tt>interpretText()</tt>:</b><br/>
  *   Although <tt>QAbstractSpinBox</tt> defines this method, it has no effect
- *   in the base class itself or in non-Qt subclasses like this one. In Qt’s
+ *   in the base class itself or in non-Qt subclasses like this one. (In Qt’s
  *   own derived classes, it performs meaningful parsing and updates—but this
  *   relies on private internal APIs inaccessible to external or custom
- *   subclasses. As a result, <tt>interpretText()</tt> in this context is
+ *   subclasses.) As a result, <tt>interpretText()</tt> in this context is
  *   effectively a placeholder with no functional impact. It appears more like
  *   a leaked implementation detail than a truly extensible public API.
- *
- * - <b><tt>fixup()</tt>, <tt>validate()</tt>:</b><br/>
- *   Those are not used nor do they anything in QAbstractSpinBox itself
- *   or in custom subclasses. (Only in Qt's own subclasses, they get
- *   actually used.) As long as we do not  interact with the private API of
- *   <tt>QAbstractSpinBox</tt> (which we cannot do because
- *   there is no stability guarantee), those functions  are never
- *   called by <tt>QAbstractSpinBox</tt> nor does their default
- *   implementation do anything. (They seem rather like an implementation
- *   detail of Qt that was leaked to the public API accidentally.) We don’t
- *   use them ourselves either.
  *
  * @internal
  *
@@ -113,13 +104,6 @@ class MultiSpinBoxPrivate;
  *   edit, including partial and complete selection of prefixes, suffixes and
  *   separators. It's possible to copy this text (both, by Ctrl+C and by
  *   insertion by middle mouse click on Linux).
- *
- * @todo <tt>fixup(), validate()</tt>: Maybe
- * called by the line edit's validator that QSpinBox sets? If so, we have
- * to correct our documentation about them. We could maybe use
- * them when we do not install our validator on the line edit and instead call
- * our validator in those two functions? Anyway: Update documentation about
- * them.
  *
  * @todo Oklch second value, German localization, set it to 0,10.
  * Then change it to 0.10 (with dot as decimal separator).
@@ -219,6 +203,7 @@ public:
     virtual ~MultiSpinBox() noexcept override;
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual void clear() override;
+    virtual void fixup(QString &input) const override;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> sectionConfigurations() const;
     /** @brief Getter for property @ref sectionValues
@@ -227,6 +212,7 @@ public:
     Q_INVOKABLE void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations);
     [[nodiscard]] virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
+    virtual QValidator::State validate(QString &input, int &pos) const override;
 
 public Q_SLOTS:
     void setSectionValues(const QList<double> &newSectionValues);

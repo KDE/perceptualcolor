@@ -89,7 +89,6 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
     // QDoubleSpinBox does not accept QDoubleValidator::ScientificNotation,
     // so we don't either.
     d_pointer->m_validator->setNotation(QDoubleValidator::StandardNotation);
-    lineEdit()->setValidator(d_pointer->m_validator);
 
     // Initialize the configuration (default: only one section).
     // This will also change section values to exactly one element.
@@ -1019,6 +1018,37 @@ void MultiSpinBoxPrivate::updateValidator()
         m_sectionConfigurations.at(m_currentIndex).minimum(),
         m_sectionConfigurations.at(m_currentIndex).maximum(),
         m_sectionConfigurations.at(m_currentIndex).decimals());
+}
+
+/**
+ * @brief Applies corrections to user input for the current section.
+ *
+ * Reimplemented from base class.
+ *
+ * @param input The input string to be modified in-place.
+ *
+ * @sa @ref validate()
+ */
+void MultiSpinBox::fixup(QString &input) const
+{
+    d_pointer->m_validator->fixup(input);
+}
+
+/**
+ * @brief Validates the user input for the currently active section.
+ *
+ * Reimplemented from base class.
+ *
+ * @param input The input to validate (may be modified/fixed during processing)
+ * @param pos The current text cursor position (may be modified/fixed during
+ *        processing)
+ * @returns A validation state indicating whether the input is acceptable.
+ *
+ * @sa @ref fixup()
+ */
+QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
+{
+    return d_pointer->m_validator->validate(input, pos);
 }
 
 } // namespace PerceptualColor
