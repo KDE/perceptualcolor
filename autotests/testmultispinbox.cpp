@@ -233,6 +233,15 @@ private Q_SLOTS:
                  "Make sure the default configuration has at least 1 section.");
     }
 
+    void testText()
+    {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget( //
+            new PerceptualColor::MultiSpinBox());
+        widget->setSectionConfigurations(exampleConfigurations);
+        // Assert that the setup is okay.
+        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
+    }
+
     void testInteraction()
     {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget( //

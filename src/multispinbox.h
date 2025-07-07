@@ -99,8 +99,6 @@ class MultiSpinBoxPrivate;
  * @todo When setReadOnly(true), then the stepUp and stepDown buttons should
  * not be enabled: This will prevent the user from changing the value.
  *
- * @todo Unit test for the yet correctly working text() function.
- *
  * @todo <tt>selectAll()</tt>:
  *   This slot has a default behaviour that relies on internal
  *   <tt>QAbstractSpinBox</tt> private implementations, which we cannot use
