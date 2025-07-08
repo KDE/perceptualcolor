@@ -956,36 +956,23 @@ QAccessibleInterface *AccessibleMultiSpinBox::factory(const QString &classname, 
     return interface;
 }
 
-/** @brief Current implementation does nothing.
- *
- * Reimplemented from base class.
- *
- * @internal
- *
- * This class has to be necessarily reimplemented because the base
- * class’s implementation is incompatible with <em>this</em> class
- * and could produce undefined behaviour.
- *
- * If this function would be reimplemented in the future, here
- * is the specification:
- *
- * @note Qt’s own child classes use this function to implement <tt>Ctrl-U</tt>.
- * But this not relevant here, because this class has its own implementation
- * for keyboard event handling (and currently does not even handle
- * <tt>Ctrl-U</tt> at all).
- *
- * <tt>brief</tt> Clears the value of the current section.
+/**
+ * @brief Clears the value of the current section.
  *
  * The other sections and also the prefix and suffix of the current
  * section stay visible.
  *
- * The base class is documented as:
- * <em>Clears the lineedit of all text but prefix and suffix.</em> The
- * semantic of this reimplementation is slightly different; it is however
- * the same semantic that also QDateTimeEdit, another child class
- * of <tt>QAbstractSpinBox</tt>, applies. */
+ * Reimplemented from base class.
+ */
 void MultiSpinBox::clear()
 {
+    // Update the content of the QLineEdit and select the current
+    // value (as cursor text selection):
+    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+        d_pointer->m_currentIndex);
+    // Substitute currently selected text with an empty string.
+    lineEdit()->insert(QStringLiteral(""));
+    update(); // Make sure the buttons for step-up and step-down are updated.
 }
 
 /**

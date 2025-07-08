@@ -1891,6 +1891,58 @@ private Q_SLOTS:
         QTest::newRow("720.1") << 720.1;
     }
 
+    void testClear()
+    {
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        PerceptualColor::MultiSpinBox *widget2 = //
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget2->setSectionConfigurations(exampleConfigurations);
+        widget2->setFocus();
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        parentWidget->show();
+        widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(parentWidget.data());
+        // Assert that the setup is okay.
+        if (!widget2->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (QApplication::focusWidget() != widget2) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->lineEdit()->text() != QStringLiteral(u"0°  0%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+
+        // Assert that the setup is okay.
+        widget2->setSectionValues({1, 1, 1});
+        QCOMPARE(widget2->lineEdit()->text(), QStringLiteral(u"1°  1%  1"));
+        widget2->lineEdit()->setCursorPosition(5);
+        QCOMPARE( //
+            widget2->stepEnabled(), //
+            QAbstractSpinBox::StepUpEnabled | QAbstractSpinBox::StepDownEnabled);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+
+        // Start actual testing
+        widget2->clear();
+        QCOMPARE(widget2->lineEdit()->text(), QStringLiteral(u"1°  %  1"));
+
+        // Cleanup
+        delete widget2;
+    }
+
     void testReadOnly()
     {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget( //

@@ -111,9 +111,6 @@ class MultiSpinBoxPrivate;
  * It should then either jump to 2.00 (nearest value) or to 0.10 (previous
  * value). But it jumps to 0.00 instead.
  *
- * @todo <tt>clear()</tt> and <tt>Ctrl-U</tt> support for this class.
- * Like for QDateTimeEdit, it should clear only the current section.
- *
  * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
  * Then, switch back the the “numeric“ tab. Expected behaviour: When
  * a @ref MultiSpinBox gets back the focus, always the first section should
