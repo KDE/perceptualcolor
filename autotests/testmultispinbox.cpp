@@ -813,6 +813,12 @@ private Q_SLOTS:
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+
+        // Cleanup
+        delete widget1;
+        delete widget2;
+        delete widget3;
+        delete label2;
     }
 
     void testFocusIntegrationBackwardTab()
@@ -890,6 +896,12 @@ private Q_SLOTS:
                         Qt::KeyboardModifier::ShiftModifier);
         QCOMPARE(QApplication::focusWidget(), widget1);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+
+        // Cleanup
+        delete widget1;
+        delete widget2;
+        delete widget3;
+        delete label2;
     }
 
     void testFocusIntegrationIntegrationWithMnemonicBuddy()
@@ -975,6 +987,13 @@ private Q_SLOTS:
                         Qt::KeyboardModifier::AltModifier);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+
+        // Cleanup
+        delete widget1;
+        delete widget2;
+        delete widget3;
+        delete label2;
+        delete label3;
     }
 
     void testFocusIntegrationFocusPolicy()
@@ -1051,6 +1070,13 @@ private Q_SLOTS:
         }
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
+
+        // Cleanup
+        delete widget1;
+        delete widget2;
+        delete widget3;
+        delete label2;
+        delete label3;
     }
 
     void testStepBy()
@@ -1285,6 +1311,9 @@ private Q_SLOTS:
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
         QCOMPARE(widget2->sectionValues().at(1), 1);
         QCOMPARE(widget2->lineEdit()->text(), QStringLiteral(u"0°  1%  0"));
+
+        // Cleanup
+        delete widget2;
     }
 
     void testSectionConfigurationDebug()
@@ -1344,6 +1373,11 @@ private Q_SLOTS:
         mySpinBox.removeAction(action2);
         QCOMPARE(mySpinBox.actions(), actionList13);
         QCOMPARE(mySpinBox.lineEdit()->actions(), {});
+
+        // Cleanup
+        delete action1;
+        delete action2;
+        delete action3;
     }
 
     void testFixSectionValue_data()
