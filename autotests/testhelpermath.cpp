@@ -169,6 +169,12 @@ private Q_SLOTS:
         }
     }
 
+    void testIsInRangeIsConstexpr()
+    {
+        constexpr bool value = isInRange(1, 2, 3);
+        static_assert(value == true);
+    }
+
     void testRounding()
     {
         QCOMPARE(roundToDigits(12.3456, 6), 12.345600);
@@ -214,6 +220,15 @@ private Q_SLOTS:
         }
     }
 
+    void testRoundToDigitsIsConstexpr()
+    {
+#if __cplusplus >= 202302L
+        // C++23 or newer
+        constexpr auto myValue = roundToDigits(1.2345, 2);
+        static_assert(myValue == 1.23);
+#endif
+    }
+
     void testIsOdd()
     {
         QCOMPARE(isOdd(-2), false);
@@ -222,6 +237,12 @@ private Q_SLOTS:
         QCOMPARE(isOdd(0), false);
         QCOMPARE(isOdd(1), true);
         QCOMPARE(isOdd(2), false);
+    }
+
+    void testIsOddIsConstexpr()
+    {
+        constexpr bool value = isOdd(5);
+        static_assert(value == true);
     }
 
     void testIsNearlyEqual()
@@ -466,6 +487,18 @@ private Q_SLOTS:
                                std::numeric_limits<double>::quiet_NaN(),
                                std::numeric_limits<double>::infinity()));
         }
+    }
+
+    void testIsNearlyEqualIsConstexpr()
+    {
+        constexpr bool value = isNearlyEqual(3.1, 5.2);
+        static_assert(value == false);
+    }
+
+    void testIsNearlyEqualEpsilonIsConstexpr()
+    {
+        constexpr bool value = isNearlyEqual(3.1, 5.2, 0.1);
+        static_assert(value == false);
     }
 
     void testNormalizeAngle()

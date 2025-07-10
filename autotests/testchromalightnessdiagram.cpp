@@ -778,6 +778,13 @@ private Q_SLOTS:
         }
     }
 
+    void testDistanceFromRangeIsConstexpr()
+    {
+        constexpr auto value = //
+            ChromaLightnessDiagramPrivate::distanceFromRange(1, 2, 3);
+        static_assert(value == 0);
+    }
+
     void testNearestNeighborSearch()
     {
         // Setup

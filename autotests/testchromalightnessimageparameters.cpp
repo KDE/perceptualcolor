@@ -111,6 +111,13 @@ private Q_SLOTS:
         ChromaLightnessImageParameters test;
     }
 
+    void testMaskIndexIsConstexpr()
+    {
+        constexpr auto value = //
+            ChromaLightnessImageParameters::maskIndex(0, 0, QSize(1, 1));
+        static_assert(value == 0);
+    }
+
 #ifndef MSVC_DLL
     // The automatic export of otherwise private symbols on MSVC
     // shared libraries via CMake's WINDOWS_EXPORT_ALL_SYMBOLS property

@@ -10,7 +10,6 @@
 #include <qgenericmatrix.h>
 #include <qglobal.h>
 #include <qmetatype.h>
-#include <stdlib.h>
 #include <type_traits>
 
 /** @internal
@@ -169,7 +168,7 @@ template<typename T>
     const auto norm = qMin<T>( //
         qAbs(a) + qAbs(b), //
         std::numeric_limits<T>::max());
-    return std::abs(a - b) < std::max(actualEpsilon, actualEpsilon * norm);
+    return qAbs(a - b) < std::max(actualEpsilon, actualEpsilon * norm);
 }
 
 /** @internal
@@ -296,17 +295,33 @@ void normalizePolar360(T &radius, T &angleDegree)
  * @tparam T a floating point type
  * @param value the value that will be rounded
  * @param precision the number of decimal places to which rounding takes place
- * @returns the rounded value */
+ * @returns the rounded value
+ *
+ * @note This function is constexpr only starting with C++26.
+ */
 template<typename T>
 [[nodiscard]] constexpr T roundToDigits(T value, int precision)
 {
     static_assert( //
         std::is_floating_point<T>::value, //
         "Template roundToDigits() only works with floating point types");
-    const T multiplier = std::pow(
-        // Make sure that pow returns a T:
-        static_cast<T>(10),
-        precision);
+
+    // Compute 10^precision manually. It would be easier to use
+    // const T multiplier = std::pow(static_cast<T>(10), precision);
+    // but std::pow() is not constexpr before probably C++26, and qPow() is
+    // also not constexpr.
+    T multiplier = static_cast<T>(1);
+    if (precision > 0) {
+        for (int i = 0; i < precision; ++i)
+            multiplier *= static_cast<T>(10);
+    } else if (precision < 0) {
+        for (int i = 0; i < -precision; ++i)
+            multiplier /= static_cast<T>(10);
+    }
+
+    // std::round is constexpr starting with C++23
+    // constexpr qRound() is less exact, returns integers instead of floating
+    // point value, and therefore not an alternative.
     return std::round(value * multiplier) / multiplier;
 }
 

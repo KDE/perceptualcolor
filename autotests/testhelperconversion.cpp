@@ -3,14 +3,13 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-// #include "helperconversion.h" // TODO Write actual unit tests for this
+#include "helperconversion.h" // TODO Write actual unit tests for this
 
 #include <lcms2.h>
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qobject.h>
 #include <qtest.h>
-// #include <qtestcase.h> // TODO Write actual unit tests for this
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -50,6 +49,12 @@ private Q_SLOTS:
     void cleanup()
     {
         // Called after every test function
+    }
+
+    void testFromFloatingToEightBit()
+    {
+        constexpr quint8 value = fromFloatingToEightBit(1.0);
+        static_assert(value == 255);
     }
 };
 
