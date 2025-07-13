@@ -343,7 +343,7 @@ msgstr "历史记录"
 #: colordialog.cpp:713
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "自定义颜色"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1258
@@ -373,10 +373,10 @@ msgstr "✓"
 #: swatchbook.cpp:110
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:155
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "删除"
