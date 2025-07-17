@@ -49,7 +49,8 @@ namespace PerceptualColor
 bool MultiSpinBoxPrivate::isCursorTouchingCurrentSectionValue() const
 {
     const auto cursorPosition = q_pointer->lineEdit()->cursorPosition();
-    const bool highEnough = (cursorPosition >= m_textBeforeCurrentValue.length());
+    const bool highEnough = //
+        (cursorPosition >= m_textBeforeCurrentValue.length());
     const auto after = q_pointer->lineEdit()->text().length() //
         - m_textAfterCurrentValue.length();
     const bool lowEnough = (cursorPosition <= after);
@@ -92,7 +93,8 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
 
     // Initialize the configuration (default: only one section).
     // This will also change section values to exactly one element.
-    setSectionConfigurations(QList<MultiSpinBoxSection>{MultiSpinBoxSection()});
+    setSectionConfigurations( //
+        QList<MultiSpinBoxSection>{MultiSpinBoxSection()});
     setSectionValues(QList<double>{MultiSpinBoxPrivate::defaultSectionValue});
     d_pointer->m_currentIndex = -1; // This will force
     // setCurrentIndexAndUpdateTextAndSelectValue()
@@ -165,7 +167,8 @@ QSize MultiSpinBox::sizeHint() const
     ensurePolished();
 
     const QFontMetrics myFontMetrics(fontMetrics());
-    QList<MultiSpinBoxSection> myConfiguration = d_pointer->m_sectionConfigurations;
+    QList<MultiSpinBoxSection> myConfiguration = //
+        d_pointer->m_sectionConfigurations;
     const int height = lineEdit()->sizeHint().height();
     int width = 0;
     QString completeString;
@@ -187,7 +190,11 @@ QSize MultiSpinBox::sizeHint() const
             'f', // format
             myConfiguration.at(i).decimals() // precision
         );
-        if (myFontMetrics.horizontalAdvance(textOfMinimumValue) > myFontMetrics.horizontalAdvance(textOfMaximumValue)) {
+        const auto minValueAdvance = //
+            myFontMetrics.horizontalAdvance(textOfMinimumValue);
+        const auto maxValueAdvance = //
+            myFontMetrics.horizontalAdvance(textOfMaximumValue);
+        if (minValueAdvance > maxValueAdvance) {
             completeString += textOfMinimumValue;
         } else {
             completeString += textOfMaximumValue;
@@ -225,9 +232,10 @@ QSize MultiSpinBox::sizeHint() const
         // Determine the size of icons for actions similar to what Qt
         // does in QLineEditPrivate::sideWidgetParameters() and than
         // add this to the size hint.
-        const int actionButtonIconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, // pixel metric type
-                                                              nullptr, // style options
-                                                              lineEdit() // widget (optional)
+        const int actionButtonIconSize = style()->pixelMetric( //
+            QStyle::PM_SmallIconSize, // pixel metric type
+            nullptr, // style options
+            lineEdit() // widget (optional)
         );
         const int actionButtonMargin = actionButtonIconSize / 4;
         const int actionButtonWidth = actionButtonIconSize + 6;
@@ -261,7 +269,8 @@ void MultiSpinBox::changeEvent(QEvent *event)
         || (event->type() == QEvent::LayoutDirectionChange) //
     ) {
         d_pointer->updateValidator();
-        // TODO BUG Here, we have to re-calculate the string that is displayed (new number formatting!!)
+        // TODO BUG Here, we have to re-calculate the string that is displayed
+        // (new number formatting after locale change!)
         // Updates the widget content and its geometry
         update();
         updateGeometry();
@@ -330,18 +339,22 @@ void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     // Update m_currentSectionTextBeforeValue
     m_textBeforeCurrentValue = QString();
     for (i = 0; i < m_currentIndex; ++i) {
-        m_textBeforeCurrentValue.append(m_sectionConfigurations.at(i).prefix());
+        m_textBeforeCurrentValue.append( //
+            m_sectionConfigurations.at(i).prefix());
         m_textBeforeCurrentValue.append(formattedPendingValue(i));
-        m_textBeforeCurrentValue.append(m_sectionConfigurations.at(i).suffix());
+        m_textBeforeCurrentValue.append( //
+            m_sectionConfigurations.at(i).suffix());
     }
-    m_textBeforeCurrentValue.append(m_sectionConfigurations.at(m_currentIndex).prefix());
+    m_textBeforeCurrentValue.append( //
+        m_sectionConfigurations.at(m_currentIndex).prefix());
 
     // Update m_currentSectionTextOfTheValue
     m_textOfCurrentPendingValue = formattedPendingValue(m_currentIndex);
 
     // Update m_currentSectionTextAfterValue
     m_textAfterCurrentValue = QString();
-    m_textAfterCurrentValue.append(m_sectionConfigurations.at(m_currentIndex).suffix());
+    m_textAfterCurrentValue.append( //
+        m_sectionConfigurations.at(m_currentIndex).suffix());
     for (i = m_currentIndex + 1; i < m_sectionConfigurations.count(); ++i) {
         m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).prefix());
 
@@ -400,8 +413,13 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
         qWarning() << "The function" << __func__ //
                    << "in file" << __FILE__ //
                    << "near to line" << __LINE__ //
-                   << "was called with an invalid “newIndex“ argument of" << newIndex //
-                   << "thought the valid range is currently [" << 0 << ", " << m_sectionConfigurations.count() - 1 << "]. This is a bug.";
+                   << "was called with an invalid “newIndex“ argument of" //
+                   << newIndex //
+                   << "thought the valid range is currently [" //
+                   << 0 //
+                   << ", " //
+                   << m_sectionConfigurations.count() - 1 //
+                   << "]. This is a bug.";
         throw 0;
     }
 
@@ -490,7 +508,8 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
 
     // As the configuration has changed, the text selection might be
     // undefined. Define it:
-    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(d_pointer->m_currentIndex);
+    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+        d_pointer->m_currentIndex);
 
     // Make sure that the buttons for step up and step down are updated.
     update();
@@ -673,7 +692,8 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
 {
     if (next == true) { // Move focus forward (Tab)
         if (d_pointer->m_currentIndex < (d_pointer->m_sectionConfigurations.count() - 1)) {
-            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(d_pointer->m_currentIndex + 1);
+            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+                d_pointer->m_currentIndex + 1);
             d_pointer->applyPendingSectionValuesAndEmitSignals();
             // Make sure that the buttons for step up and step down
             // are updated.
@@ -682,7 +702,8 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
         }
     } else { // Move focus backward (Shift+Tab)
         if (d_pointer->m_currentIndex > 0) {
-            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(d_pointer->m_currentIndex - 1);
+            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+                d_pointer->m_currentIndex - 1);
             d_pointer->applyPendingSectionValuesAndEmitSignals();
             // Make sure that the buttons for step up and step down
             // are updated.
@@ -755,7 +776,8 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
         update();
         return;
     case Qt::BacktabFocusReason:
-        d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(d_pointer->m_sectionConfigurations.count() - 1);
+        d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+            d_pointer->m_sectionConfigurations.count() - 1);
         // Make sure that the buttons for step up and step down
         // are updated.
         update();
@@ -813,7 +835,8 @@ void MultiSpinBox::stepBy(int steps)
 {
     const auto currentIndex = d_pointer->m_currentIndex;
     QList<double> myValues = d_pointer->m_pendingSectionValues;
-    myValues[currentIndex] += steps * d_pointer->m_sectionConfigurations.at(currentIndex).singleStep();
+    myValues[currentIndex] += steps //
+        * d_pointer->m_sectionConfigurations.at(currentIndex).singleStep();
     // As explained in QAbstractSpinBox documentation:
     //    “Note that this function is called even if the resulting value will
     //     be outside the bounds of minimum and maximum. It’s this function’s
@@ -853,8 +876,10 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
         qWarning() << "The function" << __func__ //
                    << "in file" << __FILE__ //
                    << "near to line" << __LINE__ //
-                   << "was called with the invalid “lineEditText“ argument “" << lineEditText //
-                   << "” that does not start with the expected character sequence “" << m_textBeforeCurrentValue << ". " //
+                   << "was called with the invalid “lineEditText“ argument “" //
+                   << lineEditText //
+                   << "” that does not start with the expected character sequence “" //
+                   << m_textBeforeCurrentValue << ". " //
                    << "The call is ignored. This is a bug.";
         return;
     }
@@ -866,8 +891,10 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
         qWarning() << "The function" << __func__ //
                    << "in file" << __FILE__ //
                    << "near to line" << __LINE__ //
-                   << "was called with the invalid “lineEditText“ argument “" << lineEditText //
-                   << "” that does not end with the expected character sequence “" << m_textAfterCurrentValue << ". " //
+                   << "was called with the invalid “lineEditText“ argument “" //
+                   << lineEditText //
+                   << "” that does not end with the expected character sequence “" //
+                   << m_textAfterCurrentValue << ". " //
                    << "The call is ignored. This is a bug.";
         return;
     }
