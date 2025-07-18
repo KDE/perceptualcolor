@@ -340,11 +340,6 @@
  * there is no good German translation, and for “getrübte Farben”, there is
  * no good English translation.
  *
- * @todo A design question: Following KDE’s HIG, if the command requires
- * additional user interaction to complete, at the end its label there
- * should be an elipsis sfs (…). Currently, this only seems to apply
- * to @ref PerceptualColor::ColorDialogPrivate::m_screenColorPickerButton.
- *
  * @todo https://invent.kde.org/plasma/kdeplasma-addons/-/merge_requests/249
  * allows the user to drag and drop an image file. The image’s average color
  * is calculated and set as current color of Plasma’s color picker widget.

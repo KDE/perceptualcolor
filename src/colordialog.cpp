@@ -671,11 +671,14 @@ void ColorDialogPrivate::retranslateUi()
     }
 
     if (m_screenColorPickerButton) {
+        // Following KDE’s HIG, if the command requires additional user
+        // interaction to complete, at the end of its label there should be an
+        // elipsis (…)
         /*: @action:button (eye dropper/pipette).
         A click on the button transforms the mouse cursor to a cross and lets
         the user choose a color from the screen by doing a left-click.
         Same text as in QColorDialog */
-        const auto mnemonic = tr("&Pick screen color");
+        const auto mnemonic = tr("&Pick screen color…");
         m_screenColorPickerButton->setToolTip( //
             richTextMarker + fromMnemonicToRichText(mnemonic));
         m_screenColorPickerButton->setShortcut( //
