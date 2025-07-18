@@ -1591,6 +1591,23 @@ private Q_SLOTS:
         QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
     }
 
+    void testLocaleChange()
+    {
+        MultiSpinBoxSection mySection;
+        mySection.setDecimals(2);
+        mySection.setMinimum(0);
+        mySection.setMaximum(10);
+        MultiSpinBox mySpinBox;
+        mySpinBox.setSectionConfigurations({mySection});
+        mySpinBox.setSectionValues({3});
+        mySpinBox.setLocale( //
+            QLocale(QLocale::English, QLocale::Country::UnitedKingdom));
+        QCOMPARE(mySpinBox.text(), QStringLiteral("3.00"));
+        mySpinBox.setLocale( //
+            QLocale(QLocale::German, QLocale::Country::Germany));
+        QCOMPARE(mySpinBox.text(), QStringLiteral("3,00"));
+    }
+
     void testSectionValuesChangedSignalKeyboardTrackingEnabled()
     {
         // Initialize

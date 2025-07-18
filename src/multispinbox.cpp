@@ -268,10 +268,12 @@ void MultiSpinBox::changeEvent(QEvent *event)
         // would only call update, not updateGeometry…
         || (event->type() == QEvent::LayoutDirectionChange) //
     ) {
+        d_pointer->updatePrefixValueSuffixText();
         d_pointer->updateValidator();
-        // TODO BUG Here, we have to re-calculate the string that is displayed
-        // (new number formatting after locale change!)
-        // Updates the widget content and its geometry
+        lineEdit()->setText( //
+            d_pointer->m_textBeforeCurrentValue //
+            + d_pointer->m_textOfCurrentPendingValue //
+            + d_pointer->m_textAfterCurrentValue);
         update();
         updateGeometry();
     }
@@ -917,23 +919,16 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
  *
  * Reimplemented from base class.
  *
- * On <tt>QEvent::Type::LocaleChange</tt> it updates the spinbox content
- * accordingly. Apart from that, it calls the implementation in the parent
- * class.
+ * @param event the event to be handled.
  *
  * @returns The base class’s return value.
  *
- * @param event the event to be handled. */
+ * @internal
+ *
+ * @note For future extensions.
+ */
 bool MultiSpinBox::event(QEvent *event)
 {
-    if (event->type() == QEvent::Type::LocaleChange) {
-        d_pointer->updatePrefixValueSuffixText();
-        d_pointer->updateValidator();
-        lineEdit()->setText( //
-            d_pointer->m_textBeforeCurrentValue //
-            + d_pointer->m_textOfCurrentPendingValue //
-            + d_pointer->m_textAfterCurrentValue);
-    }
     return QAbstractSpinBox::event(event);
 }
 
