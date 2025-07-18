@@ -122,11 +122,6 @@ class MultiSpinBoxPrivate;
  * the one in the middle (you can try this by using your mouse wheel on
  * the widget).
  *
- * @todo When adding Bengali digits (for example by copy and paste) to a
- * @ref MultiSpinBox that was localized to en_US, than sometimes this is
- * accepted (thought later “corrected” to 0), and sometimes not. This
- * behaviour is inconsistent and wrong.
- *
  * @todo Validation behaviour of MultiSpinBox differs from QDoubleSpinBox.
  * The latter is much strikter: It seems to not even allow intermediate
  * states that do not directly translate (after fixup(), I suppose?) to a
@@ -139,11 +134,6 @@ class MultiSpinBoxPrivate;
  * the cursor position. And increment/decrement is applied to the wrong
  * section (not the original one, the always the first one - while
  * QDateTimeEdit applies it correctly to the current one).
- *
- * @todo Before publishing the public API, ensure its stability.
- * The API does not need to be feature-complete, but its current shape must
- * remain unchanged going forward. In short: implement keyboardTracking before
- * release.
  *
  * For feature parity with QAbstractSpinBox, QDoubleSpinBox, QDateTimeEdit and
  * the relevant parts of QLineEdit, the API could be extended.

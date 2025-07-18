@@ -104,11 +104,9 @@ public:
 
     //! [MultiSpinBox Full-featured MultiSpinBox]
     // API extension for MultiSpinBox
+    // for feature parity with QDateTimeEdit
 
-public:
-    // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
-
-    // For feature parity with QDateTimeEdit
+public: // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
 
     int currentSectionIndex() const;
     void setCurrentSectionIndex(int newIndex);
@@ -118,14 +116,6 @@ public:
     QString sectionText(int index) const;
 
     void setSelectedSection(int newIndex);
-
-    // For feature parity with QLineEdit
-    // Analogous to QLineEdit: Only QAction related API because
-    // QAbstractSpinBox and its child classes to not expose QLineEdit at all,
-    // and MultiSpinBox itself does only expose the QAction related API.
-
-    // Ownership should be handled analogous to QLineEdit!
-    QAction *addAction(const QIcon &icon, QLineEdit::ActionPosition position);
     //! [MultiSpinBox Full-featured MultiSpinBox]
 };
 
