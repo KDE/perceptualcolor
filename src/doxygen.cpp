@@ -362,9 +362,6 @@
  * as thick as (normal) buttons. Qt6 replaces QTouchDevice by
  * QInputDevice::devices()…
  *
- * @todo For all diagram images: No abort during first interlacing pass. (See
- * @ref PerceptualColor::AsyncImageProvider for details.)
- *
  * @todo All scripts (both, local and CI scripts) should break and stop
  * on every error. When implementing this, be beware of side effects
  * (some local scripts are also called from the CI and so on…).
@@ -380,9 +377,6 @@
  * different behaviour of two visually identical elements confusing?
  *
  * @todo A design question: Should we use
- * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum">
- * <tt>Qt::CrossCursor</tt></a> for two-dimensional selections like
- * @ref PerceptualColor::ChromaHueDiagram? And should we use
  * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum"><tt>
  * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
  * @ref PerceptualColor::GradientSlider?
@@ -418,13 +412,6 @@
  * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
  * (PM_DefaultFrameWidth seems to be used yet in ColorPatch.)
  *
- * @todo QColor is ambiguous: It allows different types of color system,
- * or even various versions of the same color system at different
- * precisions (RGB). This makes it difficult to communicate in the API
- * which is the type of color (model) it contains. Therefore, we should
- * eliminate all its usage within this library (except where it is necessary
- * for API compatibility with Qt).
- *
  * @todo If using the Motif style, the @ref PerceptualColor::ChromaHueDiagram
  * widget, which has circular look-and-feel, has a rectangular focus
  * indicator corresponding the rectangular widget geometry, which looks
@@ -445,10 +432,6 @@
  * public? If so, this would not be good…
  *
  * @todo Dual-Licence with Apache2 and/or Boost licence?
- *
- * @todo Reduce number of exported symbols.
- *
- * @todo Rename main.cpp.
  *
  * @todo Currently, we consider that a mouse clicks click a pixel, but mean
  * the coordinate point in the middle of this pixel. This seems an approach
@@ -478,10 +461,7 @@
  * @ref PerceptualColor::drawQWidgetStyleSheetAware() from
  * this library.
  *
- * @todo Unit tests for endianess. Maybe QtEndian can help…
- *
  * @todo General library properties:
- * - test cross-platform support and different byte-orders
  * - Could we integrate more with QStyle? Apparently
  *   <a href="https://api.kde.org/frameworks/frameworkintegration/html/classKStyle.html">
  *   KStyle</a> is a QCommonStyle-based class that provides
@@ -521,19 +501,6 @@
  * @todo Following the recommendation of the C++ core guidelines, all
  * destructors should be noexcept.
  *
- * @todo Make genereatescreenshots and the unit tests run on hardware
- * without graphic card. This would be good for Continuous Integration.
- * The XVFB Virtual framebuffer (https://de.m.wikipedia.org/wiki/Xvfb)
- * can do this for X apps. Also, it is possible to start X apps on
- * terminal without a window manager, see
- * https://linuxconfig.org/how-to-run-x-applications-without-a-desktop-or-a-wm
- * but I suppose an X server is still required? There seem to exist also
- * possibilities for Wayland
- * https://unix.stackexchange.com/questions/653672/virtual-wayland-display-server-possible
- * Also, there seems to be a Qt Platform Abstraction called “minimal”
- * (https://doc.qt.io/qt-6/qpa.html) for testing purposes. Elsewhere,
- * if I remember correctly, it was described as useful for testing without X.
- *
  * @todo The missing 3rd diagram (hue-lightness? But: Impossible to model
  * the circular behaviour of the LCH color space: It cannot be a cut through
  * the gamut body, but has to be a curve within the gamut body – not so
@@ -562,28 +529,10 @@
  * @ref PerceptualColor::ColorWheelImage,
  * @ref PerceptualColor::GradientImageParameters.
  *
- * @todo Test also on Windows. (Does it work well with VisualStudio?)
- *
- * @todo Test also Big-Endian compatibility using s390x Linux via Qemu?
- * KDE Invent does not support this out-of-the-box, but with a custom
- * script?
- *
- * @todo Test opaque RGB color space object with a non-export-all version
- * of this library to make sure it actually works for third-party developers.
- *
  * @todo Sometimes, on dual-screen setup, one screen has another DPI than
  * the other screen. Does this library behave correctly in these situations?
  *
- * @todo Would it make sense for @ref PerceptualColor::ChromaHueDiagram and
- * @ref PerceptualColor::ChromaLightnessDiagram to split up their property
- * <tt>currentColor</tt> into two properties: A two-dimensional property
- * for what the user can change, and a one-dimensional property
- * for what only the programmer can change? Or at least provide
- * a Q_INVOKABLE getter and maybe also setter support? So
- * @ref PerceptualColor::WheelColorPicker could use this
- * instead of a lambda expression to set the hue of the
- * @ref PerceptualColor::ChromaLightnessDiagram. And: Also when we don’t do
- * that: When setting <tt>currentColor</tt> to an out-of-gamut color,
+ * @todo When setting <tt>currentColor</tt> to an out-of-gamut color,
  * what happens? Does @ref PerceptualColor::ChromaHueDiagram preserve
  * lightness, while @ref PerceptualColor::ChromaLightnessDiagram preserves
  * hue? Would this make sense?
@@ -609,11 +558,7 @@
  * @todo Multi-licensing? Add Boost licence and Unlicense as an additional
  * choice?
  *
- * @todo The image cache for the gamut widgets should be updated
- * asynchronously (in its own thread or even various own threads
- * in parallel). While waiting for the result, an empty image could be used.
- * Or it might be useful to provide first a low-resolution version, and only
- * later-on a high-resolution version. Anyway, KDE provides an interesting
+ * @todo KDE provides an interesting
  * recommendation: <tt>int Units::humanMoment = 2000;</tt> <em>Time in
  * milliseconds equivalent to the theoretical human moment, which can be
  * used to determine whether how long to wait until the user should be
@@ -624,29 +569,13 @@
  * When loading data which would commonly arrive rapidly enough to not
  * require interaction, wait this long before showing a spinner</em> See
  * https://api.kde.org/frameworks/plasma-framework/html/classUnits.html#ab22ad7033b2e3d00a862650e82f5ba5e
- * for details.
- *
- * @todo HLC @ref PerceptualColor::MultiSpinBox Allow entering (on the
- * keyboard) of too big hues (361°), negative hues (-1°), negative chroma (-20)
- * and too big chroma (201 or 256) – but do not allow this with the arrows
- * (and how do the arrows react when currently one of these values is
- * shown?). Does this make sense? Anyway do <em>not</em> allow this for
- * lightness, because the lightness is <em>by definition</em> bound
- * to <tt>[0, 100]</tt>.
- *
- * @todo Multi-threaded application of color transforms. It seems okay to
- * create the color transforms in one thread and use the same color
- * transform (once created) from various other threads at the same time
- * as long as the flag <tt>cmsFLAGS_NOCACHE</tt> is used to create the
- * transform.
+ * for details. Use this instead of interlacing big images?
  *
  * @todo Automatically scale the thickness of the wheel (and maybe even the
  * handle) with varying widget size?
  *
  * @todo Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
- *
- * @todo Export less symbols?
  *
  * @todo Check in all classes that take a @ref PerceptualColor::RgbColorSpace
  * that the shared pointer is actually not a <tt>nullptr</tt>. If is
@@ -668,7 +597,6 @@
  * to 360 values (degrees in step by 1)? Or should the steps simply be bigger?
  *
  * @todo KDE Frameworks / https://marketplace.qt.io/ ?
- * https://community.kde.org/Incubator
  *
  * @todo Provide property bindings as described in
  * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
@@ -719,20 +647,10 @@
  * @todo Test linking against lcms.h in version 2.0.0 for compatibility
  * (or require more recent version?)
  *
- * @todo Require (by static cast additional to CMake conditions) a minimum
- * Qt version?
- *
  * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
  * also https://phabricator.kde.org/T12359
  *
  * @todo Better design on small widget sizes for the whole library.
- *
- * @todo Anti-aliasing the gamut diagrams? Wouldn't this be bad for
- * performance?
- *
- * @todo Use a cross-hair cursor on @ref PerceptualColor::ChromaHueDiagram
- * and @ref PerceptualColor::ChromaLightnessDiagram when the mouse is
- * hovering over the gamut, to show that this surface can be clicked?
  *
  * @todo Touch-friendly interface: Would it be good to have buttons for
  * plus and minus on the various LCH axis which would be companions
@@ -834,8 +752,7 @@
  * execution). This affects also @ref PerceptualColor::MultiSpinBox and
  * the <tt>QSpinBox</tt> in @ref PerceptualColor::ColorDialog that is
  * used for the opacity and maybe also the RGB-Hex-LineEdit.
- *
- * @todo Provide more localizations! */
+ */
 
 /** @page licenseinfo License
  *
