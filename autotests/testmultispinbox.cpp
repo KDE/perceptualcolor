@@ -14,7 +14,6 @@
 #include <qapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
-#include <qicon.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
@@ -107,7 +106,6 @@ public:
     // for feature parity with QDateTimeEdit
 
 public: // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
-
     int currentSectionIndex() const;
     void setCurrentSectionIndex(int newIndex);
 
