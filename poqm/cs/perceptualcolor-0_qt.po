@@ -306,37 +306,40 @@ msgid "Op&acity:"
 msgstr "&Krytí:"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
-#: colordialog.cpp:678
+#: colordialog.cpp:681
+#, fuzzy
+#| msgctxt "PerceptualColor::ColorDialogPrivate|"
+#| msgid "&Pick screen color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
-msgid "&Pick screen color"
+msgid "&Pick screen color…"
 msgstr "Vy&berte barvu obrazovky"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
-#: colordialog.cpp:691
+#: colordialog.cpp:694
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
 msgstr ""
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
-#: colordialog.cpp:703
+#: colordialog.cpp:706
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
 msgstr "Základní barvy"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
-#: colordialog.cpp:708
+#: colordialog.cpp:711
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
 msgstr "Historie"
 
 #. @item:inlistbox The swatch grid showing custom colors, allowing users to add or remove colors as desired.
-#: colordialog.cpp:713
+#: colordialog.cpp:716
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
 msgstr ""
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1258
+#: colordialog.cpp:1261
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Zvolte barvu"
