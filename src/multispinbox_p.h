@@ -12,6 +12,7 @@
 #include <qaccessiblewidget.h>
 #include <qglobal.h>
 #include <qlist.h>
+#include <qlocale.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>
@@ -111,6 +112,7 @@ public:
     void setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex);
     void setCurrentIndexWithoutUpdatingText(qsizetype newIndex);
     void setPendingSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
+    [[nodiscard]] static QString textFromValue(const double value, const int decimals, const bool showGroupSeparator, const QLocale &locale);
     void updatePrefixValueSuffixText();
     void updateValidator();
 

@@ -178,6 +178,31 @@ void MultiSpinBoxSection::setMinimum(double newMinimum)
     }
 }
 
+/**
+ * @brief This property holds whether the group separator (thousands separator)
+ * is enabled.
+ *
+ * By default this property is false.
+ *
+ * @returns The property value.
+ *
+ * @sa @ref setGroupSeparatorShown
+ */
+bool MultiSpinBoxSection::isGroupSeparatorShown() const
+{
+    return d_pointer->m_isGroupSeparatorShown;
+}
+
+/**
+ * @brief Setter for @ref isGroupSeparatorShown property.
+ *
+ * @param shown The new value.
+ */
+void MultiSpinBoxSection::setGroupSeparatorShown(bool shown)
+{
+    d_pointer->m_isGroupSeparatorShown = shown;
+}
+
 /** @brief A prefix to be displayed before the value.
  *
  * @returns The property value.

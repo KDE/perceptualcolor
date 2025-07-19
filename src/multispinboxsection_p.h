@@ -25,6 +25,9 @@ public:
      * @ref MultiSpinBoxSection::formatString() property */
     QString m_formatString;
     /** @brief Internal storage of the
+     * @ref MultiSpinBoxSection::isGroupSeparatorShown() property */
+    bool m_isGroupSeparatorShown = false;
+    /** @brief Internal storage of the
      * @ref MultiSpinBoxSection::isWrapping() property */
     bool m_isWrapping = false;
     /** @brief Internal storage of the

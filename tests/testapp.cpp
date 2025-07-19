@@ -320,15 +320,16 @@ int main(int argc, char *argv[])
                      });
     */
 
-    /*
     MultiSpinBox box;
     MultiSpinBoxSection section;
-    section.setMaximum(1);
+    section.setMaximum(10000);
     section.setFormatString(QStringLiteral("קְדׇם%1קְדׇם"));
     section.setFormatString(QStringLiteral("prefix%1suffix"));
+    // section.setGroupSeparatorShown(true);
     section.setSingleStep(4);
     box.setSectionConfigurations({section, section});
     box.setAccelerated(true);
+    box.setSectionValues({1234, 5678});
     box.stepBy(3);
     box.stepBy(-1);
     // qDebug() << "box" << box.text();
@@ -336,7 +337,7 @@ int main(int argc, char *argv[])
     box.setFrame(true);
     box.setReadOnly(false);
     // box.setAlignment(Qt::AlignRight);
-    box.setKeyboardTracking(false);
+    box.setKeyboardTracking(true);
     box.show();
     QObject::connect(&box, //
                      &MultiSpinBox::sectionValuesChangedAsQString, //
@@ -353,7 +354,6 @@ int main(int argc, char *argv[])
                      [=]() {
                          qDebug() << "Editing finished!";
                      });
-    */
 
     // Run
     return app.exec();

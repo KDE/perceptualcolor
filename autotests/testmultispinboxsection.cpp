@@ -184,6 +184,18 @@ private Q_SLOTS:
         QCOMPARE(myConfig.isWrapping(), false);
     }
 
+    void testIsGroupSeparatorShown()
+    {
+        MultiSpinBoxSection myConfig;
+        // isGroupSeparatorShown() is off by default, analogous
+        // to QDoubleSpinBox
+        QCOMPARE(myConfig.isGroupSeparatorShown(), false);
+        myConfig.setGroupSeparatorShown(true);
+        QCOMPARE(myConfig.isGroupSeparatorShown(), true);
+        myConfig.setGroupSeparatorShown(false);
+        QCOMPARE(myConfig.isGroupSeparatorShown(), false);
+    }
+
     void testMaximum()
     {
         MultiSpinBoxSection myConfig;

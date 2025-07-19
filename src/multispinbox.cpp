@@ -180,16 +180,16 @@ QSize MultiSpinBox::sizeHint() const
         // For each section, test if the minimum value or the maximum
         // takes more space (width). Choose the one that takes more place
         // (width).
-        const QString textOfMinimumValue = locale().toString( //
+        const QString textOfMinimumValue = d_pointer->textFromValue( //
             myConfiguration.at(i).minimum(), // value
-            'f', // format
-            myConfiguration.at(i).decimals() // precision
-        );
-        const QString textOfMaximumValue = locale().toString( //
+            myConfiguration.at(i).decimals(), //
+            myConfiguration.at(i).isGroupSeparatorShown(), //
+            locale());
+        const QString textOfMaximumValue = d_pointer->textFromValue( //
             myConfiguration.at(i).maximum(), // value
-            'f', // format
-            myConfiguration.at(i).decimals() // precision
-        );
+            myConfiguration.at(i).decimals(),
+            myConfiguration.at(i).isGroupSeparatorShown(), //
+            locale());
         const auto minValueAdvance = //
             myFontMetrics.horizontalAdvance(textOfMinimumValue);
         const auto maxValueAdvance = //
@@ -268,6 +268,7 @@ void MultiSpinBox::changeEvent(QEvent *event)
         // would only call update, not updateGeometry…
         || (event->type() == QEvent::LayoutDirectionChange) //
     ) {
+        d_pointer->m_validator->setLocale(locale());
         d_pointer->updatePrefixValueSuffixText();
         d_pointer->updateValidator();
         lineEdit()->setText( //
@@ -278,6 +279,27 @@ void MultiSpinBox::changeEvent(QEvent *event)
         updateGeometry();
     }
     QAbstractSpinBox::changeEvent(event);
+}
+
+/**
+ * @brief Formats a floating-point value into a localized string.
+ *
+ * @param value The floating-point number to be formatted.
+ * @param decimals The number of digits to appear after the decimal point.
+ * @param showGroupSeparator Determines whether group separators (e. g.,
+ *        thousands separators) should be included in the output.
+ *        QLocale::numberOptions().testFlag(QLocale::OmitGroupSeparator) is
+ *        ignored.
+ * @param locale The locale used for the formatting.
+ * @return A localized string representation of the input value.
+ */
+QString MultiSpinBoxPrivate::textFromValue(const double value, const int decimals, const bool showGroupSeparator, const QLocale &locale)
+{
+    QLocale adaptedLocale = locale;
+    auto options = adaptedLocale.numberOptions();
+    options.setFlag(QLocale::OmitGroupSeparator, !showGroupSeparator);
+    adaptedLocale.setNumberOptions(options);
+    return adaptedLocale.toString(value, 'f', decimals);
 }
 
 /** @brief Adds to the widget a button associated with the given action.
@@ -317,13 +339,11 @@ void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition po
  */
 QString MultiSpinBoxPrivate::formattedPendingValue(qsizetype index) const
 {
-    return q_pointer->locale().toString(
-        // The value to be formatted:
+    return textFromValue( //
         m_pendingSectionValues.at(index),
-        // Format as floating point with decimal digits
-        'f',
-        // Number of decimal digits
-        m_sectionConfigurations.at(index).decimals());
+        m_sectionConfigurations.at(index).decimals(),
+        m_sectionConfigurations.at(index).isGroupSeparatorShown(), //
+        q_pointer->locale());
 }
 
 /** @brief Updates prefix, value and suffix text
@@ -861,8 +881,10 @@ void MultiSpinBox::stepBy(int steps)
  * @param lineEditText The text of the <tt>lineEdit()</tt>. The value
  * will be updated according to this parameter. Only changes in
  * the <em>current</em> section’s value are expected, no changes in
- * other sections. (If this parameter has an invalid value, a warning will
- * be printed to stderr and the function returns without further action.) */
+ * other sections. If this parameter cannot be interpreted, the function
+ * returns without further action. If it can be interpreted, but is out of
+ * range, it behaves according to <tt>QAbstractSpinBox::correctionMode</tt>.
+ */
 void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText)
 {
     // Get the clean test. That means, we start with “text”, but
@@ -901,11 +923,35 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
         return;
     }
 
+    // Remove trailing and leading whitespace and replace whitespace in
+    // the middle by a single whitespace:
+    cleanText = cleanText.simplified();
+    // Remove maybe existing group separators before further processing,
+    // because group separators at bad positions do not pass validation nor
+    // conversion to floating point numbers.
+    cleanText.remove(q_pointer->locale().groupSeparator());
+    m_validator->fixup(cleanText);
+
     // Update…
     bool ok;
-    QList<double> temp = m_pendingSectionValues;
-    temp[m_currentIndex] = q_pointer->locale().toDouble(cleanText, &ok);
-    setPendingSectionValuesWithoutFurtherUpdating(temp);
+    const auto newValue = q_pointer->locale().toDouble(cleanText, &ok);
+    if (!ok) {
+        return;
+    }
+
+    const auto min = m_sectionConfigurations.value(m_currentIndex).minimum();
+    const auto max = m_sectionConfigurations.value(m_currentIndex).maximum();
+    const bool doCorrectToPrevious = q_pointer->correctionMode() //
+        == QAbstractSpinBox::CorrectionMode::CorrectToPreviousValue;
+    const bool outOfRange = !isInRange(min, newValue, max);
+    if (outOfRange && doCorrectToPrevious) {
+        return;
+    }
+
+    QList<double> newPendingSectionValues = m_pendingSectionValues;
+    newPendingSectionValues[m_currentIndex] = newValue;
+    // This also clamps value to valid range:
+    setPendingSectionValuesWithoutFurtherUpdating(newPendingSectionValues);
     if (q_pointer->keyboardTracking()) {
         applyPendingSectionValuesAndEmitSignals();
     }
@@ -1103,9 +1149,11 @@ void MultiSpinBoxPrivate::updateValidator()
 }
 
 /**
- * @brief Applies corrections to user input for the current section.
+ * @brief Reimplementation from the base class.
  *
- * Reimplemented from base class.
+ * Intended to apply input corrections. This mechanism is commonly used in Qt’s
+ * subclasses of <tt>QAbstractSpinBox</tt>, but it is not utilized in this
+ * class.
  *
  * @param input The input string to be modified in-place.
  *
@@ -1113,7 +1161,7 @@ void MultiSpinBoxPrivate::updateValidator()
  */
 void MultiSpinBox::fixup(QString &input) const
 {
-    d_pointer->m_validator->fixup(input);
+    Q_UNUSED(input);
 }
 
 /**
@@ -1124,7 +1172,8 @@ void MultiSpinBox::fixup(QString &input) const
  * @param input The input to validate (may be modified/fixed during processing)
  * @param pos The current text cursor position (may be modified/fixed during
  *        processing)
- * @returns A validation state indicating whether the input is acceptable.
+ * @returns A validation state indicating whether the input is acceptable
+ *          with regard to the current section.
  *
  * @sa @ref fixup()
  */

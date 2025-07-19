@@ -95,10 +95,6 @@ public:
     // stepType property
     void setStepType(QAbstractSpinBox::StepType newStepType);
     QAbstractSpinBox::StepType stepType() const;
-
-    // showGroupSeparator property
-    bool isGroupSeparatorShown() const;
-    void setGroupSeparatorShown(bool shown);
     //! [MultiSpinBox Full-featured MultiSpinBoxSection]
 
     //! [MultiSpinBox Full-featured MultiSpinBox]
@@ -108,12 +104,11 @@ public:
 public: // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
     int currentSectionIndex() const;
     void setCurrentSectionIndex(int newIndex);
+    void setSelectedSection(int newIndex);
 
     int sectionCount() const; // convenance for sectionConfigurations().count()
 
     QString sectionText(int index) const;
-
-    void setSelectedSection(int newIndex);
     //! [MultiSpinBox Full-featured MultiSpinBox]
 };
 
@@ -800,6 +795,149 @@ private Q_SLOTS:
         delete widget2;
         delete widget3;
         delete label2;
+    }
+
+    void testIsGroupSeparatorShown()
+    {
+        MultiSpinBoxSection myConfig;
+        myConfig.setDecimals(3);
+        myConfig.setMinimum(5);
+        myConfig.setMaximum(10000);
+        myConfig.setGroupSeparatorShown(true);
+        MultiSpinBox myMulti;
+        myMulti.setLocale(QLocale::German);
+        myMulti.setSectionConfigurations({myConfig});
+        myMulti.setSectionValues({6789.123});
+        QCOMPARE(myMulti.text(), QStringLiteral("6.789,123"));
+        myConfig.setGroupSeparatorShown(false);
+        myMulti.setSectionConfigurations({myConfig});
+        QCOMPARE(myMulti.text(), QStringLiteral("6789,123"));
+        // All locales except QLocale::C enabled group separators by
+        // default. Therefore, testing QLocale::C as a special case.
+        myMulti.setLocale(QLocale::C);
+        QCOMPARE(myMulti.text(), QStringLiteral("6789.123"));
+        myConfig.setGroupSeparatorShown(true);
+        myMulti.setSectionConfigurations({myConfig});
+        QCOMPARE(myMulti.text(), QStringLiteral("6,789.123"));
+    }
+
+    void testInputWhileGroupSeparatorShown()
+    {
+        MultiSpinBoxSection myConfig;
+        myConfig.setDecimals(3);
+        myConfig.setMinimum(0);
+        myConfig.setMaximum(10000);
+        myConfig.setGroupSeparatorShown(true);
+        MultiSpinBox myMulti;
+        myMulti.setLocale(QLocale::German);
+        myMulti.setSectionConfigurations({myConfig});
+        myMulti.lineEdit()->setText(QStringLiteral("2"));
+        QCOMPARE(myMulti.sectionValues().at(0), 2);
+        // Test correctly placed group separator
+        myMulti.lineEdit()->setText(QStringLiteral("2.345,6"));
+        QCOMPARE(myMulti.sectionValues().at(0), 2345.6);
+        // Test wrongly placed group separator: should be accepted nevertheless
+        myMulti.lineEdit()->setText(QStringLiteral("73.45,6"));
+        QCOMPARE(myMulti.sectionValues().at(0), 7345.6);
+    }
+
+    void testInputWhileNotGroupSeparatorShown()
+    {
+        MultiSpinBoxSection myConfig;
+        myConfig.setDecimals(3);
+        myConfig.setMinimum(0);
+        myConfig.setMaximum(10000);
+        myConfig.setGroupSeparatorShown(false);
+        MultiSpinBox myMulti;
+        myMulti.setLocale(QLocale::German);
+        myMulti.setSectionConfigurations({myConfig});
+        myMulti.lineEdit()->setText(QStringLiteral("2"));
+        QCOMPARE(myMulti.sectionValues().at(0), 2);
+        // Test correctly placed group separator
+        myMulti.lineEdit()->setText(QStringLiteral("2.345,6"));
+        QCOMPARE(myMulti.sectionValues().at(0), 2345.6);
+        // Test wrongly placed group separator: should be accepted nevertheless
+        myMulti.lineEdit()->setText(QStringLiteral("73.45,6"));
+        QCOMPARE(myMulti.sectionValues().at(0), 7345.6);
+    }
+
+    void testTextFromValue()
+    {
+        QCOMPARE( //
+            MultiSpinBoxPrivate::textFromValue(6789.123, 4, true, QLocale::German),
+            QStringLiteral("6.789,1230"));
+        QCOMPARE( //
+            MultiSpinBoxPrivate::textFromValue(6789.123, 4, false, QLocale::German),
+            QStringLiteral("6789,1230"));
+        QCOMPARE( //
+            MultiSpinBoxPrivate::textFromValue(6789.123, 4, true, QLocale::C),
+            QStringLiteral("6,789.1230"));
+        QCOMPARE( //
+            MultiSpinBoxPrivate::textFromValue(6789.123, 4, false, QLocale::C),
+            QStringLiteral("6789.1230"));
+    }
+
+    void testCorrectToPreviousValue()
+    {
+        MultiSpinBoxSection myConfig;
+        myConfig.setDecimals(3);
+        myConfig.setMinimum(3);
+        myConfig.setMaximum(6);
+        myConfig.setGroupSeparatorShown(false);
+        MultiSpinBox myMulti;
+        myMulti.setLocale(QLocale::German);
+        myMulti.setCorrectionMode(QAbstractSpinBox::CorrectToPreviousValue);
+        myMulti.setSectionConfigurations({myConfig});
+        myMulti.lineEdit()->setText(QStringLiteral("3"));
+        QCOMPARE(myMulti.sectionValues().at(0), 3);
+        myMulti.lineEdit()->setText(QStringLiteral("6"));
+        QCOMPARE(myMulti.sectionValues().at(0), 6);
+        myMulti.lineEdit()->setText(QStringLiteral("4"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        // Value too high
+        myMulti.lineEdit()->setText(QStringLiteral("7"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        // Value too low
+        myMulti.lineEdit()->setText(QStringLiteral("2"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        // Value invalid
+        myMulti.lineEdit()->setText(QStringLiteral("xyz"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
+    }
+
+    void testCorrectToNearestValue()
+    {
+        MultiSpinBoxSection myConfig;
+        myConfig.setDecimals(3);
+        myConfig.setMinimum(3);
+        myConfig.setMaximum(6);
+        myConfig.setGroupSeparatorShown(false);
+        MultiSpinBox myMulti;
+        myMulti.setLocale(QLocale::German);
+        myMulti.setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
+        myMulti.setSectionConfigurations({myConfig});
+
+        // Value is valid
+        myMulti.lineEdit()->setText(QStringLiteral("3"));
+        QCOMPARE(myMulti.sectionValues().at(0), 3);
+        myMulti.lineEdit()->setText(QStringLiteral("6"));
+        QCOMPARE(myMulti.sectionValues().at(0), 6);
+        myMulti.lineEdit()->setText(QStringLiteral("4"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
+
+        // Value too high
+        myMulti.lineEdit()->setText(QStringLiteral("7"));
+        QCOMPARE(myMulti.sectionValues().at(0), 6);
+
+        // Value too low
+        myMulti.lineEdit()->setText(QStringLiteral("2"));
+        QCOMPARE(myMulti.sectionValues().at(0), 3);
+
+        // Value invalid
+        myMulti.lineEdit()->setText(QStringLiteral("4"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        myMulti.lineEdit()->setText(QStringLiteral("xyz"));
+        QCOMPARE(myMulti.sectionValues().at(0), 4);
     }
 
     void testFocusIntegrationBackwardTab()
@@ -1584,16 +1722,24 @@ private Q_SLOTS:
         MultiSpinBoxSection mySection;
         mySection.setDecimals(2);
         mySection.setMinimum(0);
-        mySection.setMaximum(10);
+        mySection.setMaximum(10000);
+        mySection.setGroupSeparatorShown(true);
         MultiSpinBox mySpinBox;
+        mySpinBox.setLocale( //
+            QLocale(QLocale::English));
         mySpinBox.setSectionConfigurations({mySection});
-        mySpinBox.setSectionValues({3});
+        mySpinBox.setSectionValues({3456.78});
+        QCOMPARE(mySpinBox.sectionValues(), {3456.78});
+        QCOMPARE(mySpinBox.text(), QStringLiteral("3,456.78"));
         mySpinBox.setLocale( //
-            QLocale(QLocale::English, QLocale::Country::UnitedKingdom));
-        QCOMPARE(mySpinBox.text(), QStringLiteral("3.00"));
-        mySpinBox.setLocale( //
-            QLocale(QLocale::German, QLocale::Country::Germany));
-        QCOMPARE(mySpinBox.text(), QStringLiteral("3,00"));
+            QLocale(QLocale::German));
+        QCOMPARE(mySpinBox.sectionValues(), {3456.78});
+        QCOMPARE(mySpinBox.text(), QStringLiteral("3.456,78"));
+        // Sort of a special case: QLocale::C is a simplified English locale
+        // with quirks (e.g. group separators are off by default).
+        mySpinBox.setLocale(QLocale(QLocale::C));
+        QCOMPARE(mySpinBox.sectionValues(), {3456.78});
+        QCOMPARE(mySpinBox.text(), QStringLiteral("3,456.78"));
     }
 
     void testSectionValuesChangedSignalKeyboardTrackingEnabled()

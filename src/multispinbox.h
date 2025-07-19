@@ -63,19 +63,22 @@ class MultiSpinBoxPrivate;
  *   <tt>showGroupSeparator</tt>:</b><br/>
  *   These properties are ignored at the @ref MultiSpinBox level because they
  *   need to be defined individually for each section. Instead:
- *   - Use @ref MultiSpinBoxSection::setWrapping() to enable wrapping per
- *     section.
- *   - <tt>specialValueText</tt> and <tt>showGroupSeparator</tt> are not
- *     currently supported.
+ *   - Configure section-level behavior using
+ *     @ref MultiSpinBoxSection::setWrapping() and
+ *     @ref MultiSpinBoxSection::setGroupSeparatorShown().
+ *   - <tt>specialValueText</tt> is currently not supported.
  *
- * - <b><tt>interpretText()</tt>:</b><br/>
- *   Although <tt>QAbstractSpinBox</tt> defines this method, it has no effect
- *   in the base class itself or in non-Qt subclasses like this one. (In Qt’s
- *   own derived classes, it performs meaningful parsing and updates—but this
- *   relies on private internal APIs inaccessible to external or custom
- *   subclasses.) As a result, <tt>interpretText()</tt> in this context is
- *   effectively a placeholder with no functional impact. It appears more like
- *   a leaked implementation detail than a truly extensible public API.
+ * - <b><tt>@ref fixup()</tt>,
+ *   <tt>QAbstractSpinBox::interpretText()</tt>:</b><br/>
+ *   Although <tt>QAbstractSpinBox</tt> defines these methods, they have no
+ *   effect in the base class itself or in non-Qt subclasses like this one.
+ *   (In Qt’s own derived classes, <tt>QAbstractSpinBox::interpretText()</tt>
+ *   performs meaningful parsing and updates—but this relies on private
+ *   internal APIs inaccessible to external or custom subclasses.) As a result,
+ *   <tt>@ref fixup()</tt> and <tt>QAbstractSpinBox::interpretText()</tt> in
+ *   this context are effectively placeholders with no functional impact. They
+ *   appears more like leaked implementation details than a truly extensible
+ *   public API.
  *
  * @internal
  *
@@ -96,11 +99,6 @@ class MultiSpinBoxPrivate;
  *   edit, including partial and complete selection of prefixes, suffixes and
  *   separators. It's possible to copy this text (both, by Ctrl+C and by
  *   insertion by middle mouse click on Linux).
- *
- * @todo Oklch second value, German localization, set it to 0,10.
- * Then change it to 0.10 (with dot as decimal separator).
- * It should then either jump to 2.00 (nearest value) or to 0.10 (previous
- * value). But it jumps to 0.00 instead.
  *
  * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
  * Then, switch back the the “numeric“ tab. Expected behaviour: When
@@ -125,10 +123,16 @@ class MultiSpinBoxPrivate;
  * @todo Validation behaviour of MultiSpinBox differs from QDoubleSpinBox.
  * The latter is much strikter: It seems to not even allow intermediate
  * states that do not directly translate (after fixup(), I suppose?) to a
- * valid value in the valid range. We have to test
+ * valid value in the valid range. On the other hand, it handles nicely when
+ * the user types a decimal separator with the text cursor being placed before
+ * an existing decimal separator (resulting in a text cursor movement to the
+ * right). We have to test
  * correctionMode/setCorrectionMode which seems quite impossible in these
  * conditions. Can we get indirectly information by observing how value()
  * changes (in lambdas connected to valueChanged or textChanged)?
+ * It would be nice to get the decimal-separator support, but it is not
+ * sure if it's a good idea to use just an invisible <tt>QDoubleSpinBox</tt> in
+ * the background and abuse its <tt>QDoubleSpinBox::validate()</tt> method?
  *
  * @todo Right-click context menu behaves strange: When used, it changes
  * the cursor position. And increment/decrement is applied to the wrong

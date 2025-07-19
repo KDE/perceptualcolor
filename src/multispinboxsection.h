@@ -49,12 +49,14 @@ public:
 
     [[nodiscard]] int decimals() const;
     [[nodiscard]] QString formatString() const;
+    [[nodiscard]] bool isGroupSeparatorShown() const;
     [[nodiscard]] bool isWrapping() const;
     [[nodiscard]] double maximum() const;
     [[nodiscard]] double minimum() const;
     [[nodiscard]] QString prefix() const;
     void setDecimals(int newDecimals);
     void setFormatString(const QString &formatString);
+    void setGroupSeparatorShown(bool shown);
     void setMaximum(double newMaximum);
     void setMinimum(double newMinimum);
     void setSingleStep(double newSingleStep);
