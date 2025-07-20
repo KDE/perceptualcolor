@@ -317,12 +317,9 @@ msgstr "不透明度(&A)："
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:681
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Pick screen color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color…"
-msgstr "拾取屏幕颜色(&P)"
+msgstr ""
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:694
