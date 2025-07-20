@@ -169,6 +169,8 @@ private Q_SLOTS:
     void testDecimals()
     {
         MultiSpinBoxSection myConfig;
+        // decimals() is 2 by default, analogous to QDoubleSpinBox
+        QCOMPARE(myConfig.decimals(), 2);
         myConfig.setDecimals(5);
         QCOMPARE(myConfig.decimals(), 5);
     }
