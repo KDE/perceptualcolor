@@ -123,11 +123,11 @@ std::optional<QStringList> CssColor::parseAllFunctionArguments(const QString &ar
             }
             auto result = arguments.split(QStringLiteral(","), //
                                           Qt::KeepEmptyParts);
-            if (result.count() == count - 1) {
+            if (result.size() == count - 1) {
                 // Add implicit alpha argument
                 result.append(QStringLiteral("none"));
             }
-            if (result.count() != count) {
+            if (result.size() != count) {
                 return std::nullopt;
             }
             return validateArguments(result);
@@ -144,16 +144,16 @@ std::optional<QStringList> CssColor::parseAllFunctionArguments(const QString &ar
     }
     const auto parts = arguments.split(QStringLiteral("/"), //
                                        Qt::KeepEmptyParts);
-    if (parts.count() > 2) {
+    if (parts.size() > 2) {
         // Not more than one slash allowed.
         return std::nullopt;
     }
-    const QString alphaArgument = (parts.count() == 2) //
+    const QString alphaArgument = (parts.size() == 2) //
         ? parts.value(1) //
         : QStringLiteral("none");
     auto result = parts.value(0).simplified().split(QStringLiteral(" "));
     result.append(alphaArgument);
-    if (result.count() != count) {
+    if (result.size() != count) {
         // Wrong number of arguments
         return std::nullopt;
     }
@@ -454,7 +454,7 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
         }
     }
 
-    if (list1.count() != 3) {
+    if (list1.size() != 3) {
         // One or more of the first three arguments were invalid.
         return CssColorValue();
     }

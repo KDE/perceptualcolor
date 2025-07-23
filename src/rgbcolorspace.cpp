@@ -663,7 +663,7 @@ QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsI
     // Therefore QString::toUtf8() should return ASCII-only valid results.
     // (We do not know what character encoding LittleCMS expects,
     // but ASCII seems a safe choice.)
-    if (list.count() == 2) {
+    if (list.size() == 2) {
         languageCode = list.at(0).toUtf8();
         countryCode = list.at(1).toUtf8();
     }

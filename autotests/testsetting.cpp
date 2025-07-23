@@ -148,7 +148,7 @@ private Q_SLOTS:
         QVERIFY(spy.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
     }
 
     void testUpdateFromSettings()

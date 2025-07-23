@@ -131,7 +131,7 @@ public:
         const auto elementCount = m_iCount * m_jCount;
         m_data.reserve(elementCount);
         for (qsizetype i = 0; i < elementCount; ++i) {
-            if (i < init.count()) {
+            if (i < init.size()) {
                 m_data.append(init.value(i));
             } else {
                 m_data.append(T());
@@ -479,7 +479,7 @@ QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
  *
  * This function divides the elements of a <tt>QList&lt;T&gt;</tt> as evenly as
  * possible into a given number of sublists. If <tt>numParts</tt> is greater
- * than <tt>originalList.count()</tt>, fewer parts will be created.
+ * than <tt>originalList.size()</tt>, fewer parts will be created.
  *
  * @tparam T The type of elements in the list.
  * @param originalList The original <tt>QList&lt;T&gt;</tt> to be split.
@@ -495,7 +495,7 @@ QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
     }
 
     QList<QList<T>> result;
-    const auto segments = splitElements<qsizetype>(originalList.count(), //
+    const auto segments = splitElements<qsizetype>(originalList.size(), //
                                                    numParts);
     for (const auto &segment : segments) {
         result.append( //

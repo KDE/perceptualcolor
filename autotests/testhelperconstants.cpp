@@ -102,7 +102,7 @@ private Q_SLOTS:
     void testRichTextMarkerIsRecognized()
     {
         const QString myMarker = richTextMarker;
-        QVERIFY(myMarker.count() > 0);
+        QVERIFY(myMarker.size() > 0);
         QVERIFY(Qt::mightBeRichText(myMarker));
 
         const QString myText = QStringLiteral(u"abc");

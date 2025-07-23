@@ -106,7 +106,7 @@ public: // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
     void setCurrentSectionIndex(int newIndex);
     void setSelectedSection(int newIndex);
 
-    int sectionCount() const; // convenance for sectionConfigurations().count()
+    int sectionCount() const; // convenance for sectionConfigurations().size()
 
     QString sectionText(int index) const;
     //! [MultiSpinBox Full-featured MultiSpinBox]
@@ -324,15 +324,15 @@ private Q_SLOTS:
         myConfigurations.append(MultiSpinBoxSection());
         myConfigurations.append(MultiSpinBoxSection());
         MultiSpinBox test;
-        QCOMPARE(test.sectionConfigurations().count(), 1);
+        QCOMPARE(test.sectionConfigurations().size(), 1);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
         test.setSectionConfigurations(myConfigurations);
-        QCOMPARE(test.sectionConfigurations().count(), 3);
+        QCOMPARE(test.sectionConfigurations().size(), 3);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
 
         // Empty configurations shall be ignored
         test.setSectionConfigurations(QList<MultiSpinBoxSection>());
-        QCOMPARE(test.sectionConfigurations().count(), 3);
+        QCOMPARE(test.sectionConfigurations().size(), 3);
 
         // Invalid values should be adapted
         myConfigurations.clear();
@@ -646,7 +646,7 @@ private Q_SLOTS:
         QList<MultiSpinBoxSection> specialConfigurations = //
             exampleConfigurations;
         QList<double> myValues;
-        while (myValues.count() < specialConfigurations.count()) {
+        while (myValues.size() < specialConfigurations.size()) {
             myValues.append(0);
         }
         const quint8 sampleSectionNumber = 1;
@@ -703,7 +703,7 @@ private Q_SLOTS:
         section.setFormatString(QStringLiteral(u"abc%1def"));
         config.append(section);
         myMulti.setSectionConfigurations(config);
-        QCOMPARE(myMulti.sectionConfigurations().count(), 1);
+        QCOMPARE(myMulti.sectionConfigurations().size(), 1);
         QCOMPARE(myMulti.sectionConfigurations().at(0).minimum(), 1);
         QCOMPARE(myMulti.sectionConfigurations().at(0).maximum(), 9);
         QCOMPARE(myMulti.sectionConfigurations().at(0).prefix(), //
@@ -759,7 +759,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -984,7 +984,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1071,7 +1071,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1162,7 +1162,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1261,7 +1261,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         widget->setSectionConfigurations(specialConfiguration);
         QList<double> myValues;
-        while (myValues.count() < specialConfiguration.count()) {
+        while (myValues.size() < specialConfiguration.size()) {
             myValues.append(0);
         }
         myValues[sampleSectionNumber] = sampleValue;
@@ -1300,7 +1300,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         widget->setSectionConfigurations(specialConfiguration);
         QList<double> myValues;
-        while (myValues.count() < specialConfiguration.count()) {
+        while (myValues.size() < specialConfiguration.size()) {
             myValues.append(0);
         }
         myValues[sampleSectionNumber] = sampleValue;
@@ -1348,7 +1348,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         widget->setSectionConfigurations(specialConfiguration);
         QList<double> myValues;
-        while (myValues.count() < specialConfiguration.count()) {
+        while (myValues.size() < specialConfiguration.size()) {
             myValues.append(0);
         }
         myValues[sampleSectionNumber] = sampleValue;
@@ -1415,7 +1415,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1451,12 +1451,12 @@ private Q_SLOTS:
         // widget.
         MultiSpinBox mySpinBox;
         int oldWidth = 0;
-        QCOMPARE(mySpinBox.lineEdit()->actions().count(), 0);
+        QCOMPARE(mySpinBox.lineEdit()->actions().size(), 0);
         oldWidth = mySpinBox.sizeHint().width();
         mySpinBox.addActionButton( //
             new QAction(QStringLiteral(u"test"), &mySpinBox), //
             QLineEdit::ActionPosition::TrailingPosition);
-        QCOMPARE(mySpinBox.lineEdit()->actions().count(), 1);
+        QCOMPARE(mySpinBox.lineEdit()->actions().size(), 1);
         QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
                  "Verify: After adding an action button, "
                  "the size hint has a bigger width than before.");
@@ -1464,7 +1464,7 @@ private Q_SLOTS:
         mySpinBox.addActionButton( //
             new QAction(QStringLiteral(u"test"), &mySpinBox), //
             QLineEdit::ActionPosition::TrailingPosition);
-        QCOMPARE(mySpinBox.lineEdit()->actions().count(), 2);
+        QCOMPARE(mySpinBox.lineEdit()->actions().size(), 2);
         QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
                  "Verify: After adding an action button, "
                  "the size hint has a bigger width than before.");
@@ -1591,9 +1591,9 @@ private Q_SLOTS:
 
     void testValuesSetterAndConfigurationsSetter()
     {
-        // Both, sectionValues() and sectionConfigurations() have a count()
+        // Both, sectionValues() and sectionConfigurations() have a size()
         // that has to be identical. The count of sectionConfigurations() is
-        // mandatory. Make sure that different setters let the count()s
+        // mandatory. Make sure that different setters let the size()s
         // in a correct state. Our reference for default values is
         // QDoubleSpinBox.
         MultiSpinBox myMulti;
@@ -1602,8 +1602,8 @@ private Q_SLOTS:
         QList<double> myValues;
 
         // Section count should be 1 (by default):
-        QCOMPARE(myMulti.sectionConfigurations().count(), 1);
-        QCOMPARE(myMulti.sectionValues().count(), 1);
+        QCOMPARE(myMulti.sectionConfigurations().size(), 1);
+        QCOMPARE(myMulti.sectionValues().size(), 1);
         // Control that sections has default value:
         QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
 
@@ -1628,22 +1628,22 @@ private Q_SLOTS:
         QCOMPARE(myMulti.sectionValues().at(1), 11);
         QCOMPARE(myMulti.sectionValues().at(2), 12);
         // The last value has to be ignored (as there are not so many sections):
-        QCOMPARE(myMulti.sectionConfigurations().count(), 3);
-        QCOMPARE(myMulti.sectionValues().count(), 3);
+        QCOMPARE(myMulti.sectionConfigurations().size(), 3);
+        QCOMPARE(myMulti.sectionValues().size(), 3);
 
         // Apply a configuration with less sections
         myConfigurations.removeLast();
-        QCOMPARE(myConfigurations.count(), 2); // Assertion
+        QCOMPARE(myConfigurations.size(), 2); // Assertion
         myMulti.setSectionConfigurations(myConfigurations);
-        QCOMPARE(myMulti.sectionConfigurations().count(), 2);
-        QCOMPARE(myMulti.sectionValues().count(), 2);
+        QCOMPARE(myMulti.sectionConfigurations().size(), 2);
+        QCOMPARE(myMulti.sectionValues().size(), 2);
         // The values that survive should not be changed:
         QCOMPARE(myMulti.sectionValues().at(0), 10);
         QCOMPARE(myMulti.sectionValues().at(1), 11);
 
         // Set sectionValues that has not enough values
-        QCOMPARE(myMulti.sectionConfigurations().count(), 2); // Assertion
-        QCOMPARE(myMulti.sectionValues().count(), 2); // Assertion
+        QCOMPARE(myMulti.sectionConfigurations().size(), 2); // Assertion
+        QCOMPARE(myMulti.sectionValues().size(), 2); // Assertion
         QCOMPARE(myMulti.sectionValues().at(0), 10); // Assertion
         QCOMPARE(myMulti.sectionValues().at(1), 11); // Assertion
         myValues.clear();
@@ -1652,8 +1652,8 @@ private Q_SLOTS:
         myMulti.setSectionValues(myValues);
         QCOMPARE(myMulti.sectionValues().at(0), 20); // This values was applied
         // Section count has not been altered:
-        QCOMPARE(myMulti.sectionConfigurations().count(), 2);
-        QCOMPARE(myMulti.sectionValues().count(), 2);
+        QCOMPARE(myMulti.sectionConfigurations().size(), 2);
+        QCOMPARE(myMulti.sectionValues().size(), 2);
         // The last section, that got no particular value assigned,
         // has been changed to the default value. (This behaviour
         // is not documented, so not part of the public API, but
@@ -1695,26 +1695,26 @@ private Q_SLOTS:
         // Set a value different from the default
         myMulti.setSectionValues(QList<double>{2, 2});
         myDouble.setValue(2);
-        QCOMPARE(spyMulti.count(), 1);
-        QCOMPARE(spyMulti.count(), spyDouble.count());
-        QCOMPARE(spyMultiAsQString.count(), 1);
-        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
+        QCOMPARE(spyMulti.size(), 1);
+        QCOMPARE(spyMulti.size(), spyDouble.size());
+        QCOMPARE(spyMultiAsQString.size(), 1);
+        QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
 
         // Setting the same value again should not call again the signal
         myMulti.setSectionValues(QList<double>{2, 2});
         myDouble.setValue(2);
-        QCOMPARE(spyMulti.count(), 1);
-        QCOMPARE(spyMulti.count(), spyDouble.count());
-        QCOMPARE(spyMultiAsQString.count(), 1);
-        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
+        QCOMPARE(spyMulti.size(), 1);
+        QCOMPARE(spyMulti.size(), spyDouble.size());
+        QCOMPARE(spyMultiAsQString.size(), 1);
+        QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
 
         // Setting a value list which has only one different element triggers:
         myMulti.setSectionValues(QList<double>{2, 3});
         myDouble.setValue(3);
-        QCOMPARE(spyMulti.count(), 2);
-        QCOMPARE(spyMulti.count(), spyDouble.count());
-        QCOMPARE(spyMultiAsQString.count(), 2);
-        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
+        QCOMPARE(spyMulti.size(), 2);
+        QCOMPARE(spyMulti.size(), spyDouble.size());
+        QCOMPARE(spyMultiAsQString.size(), 2);
+        QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
     }
 
     void testLocaleChange()
@@ -1788,9 +1788,9 @@ private Q_SLOTS:
         QCOMPARE(myDouble.value(), 54); // Assertion
 
         // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
-        QCOMPARE(spyMulti.count(), spyDouble.count());
-        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
-        for (int i = 0; i < spyMulti.count(); ++i) {
+        QCOMPARE(spyMulti.size(), spyDouble.size());
+        QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
+        for (int i = 0; i < spyMulti.size(); ++i) {
             QCOMPARE(spyMulti
                          .at(i) // Signal at position i
                          .at(0) // First argument of this signal
@@ -1849,22 +1849,22 @@ private Q_SLOTS:
         // Get test data
         myMulti.setSectionValues({8});
         QApplication::setActiveWindow(&myMulti);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(&myMulti, Qt::Key::Key_5);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(&myMulti, Qt::Key::Key_4);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(&myMulti, Qt::Key::Key_Return);
-        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QCOMPARE(spyMultiEditingFinished.size(), 1);
         QTest::keyClick(&myMulti, Qt::Key::Key_3);
-        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QCOMPARE(spyMultiEditingFinished.size(), 1);
         QTest::keyClick(&myMulti, Qt::Key::Key_2);
         myMulti.stepUp();
-        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QCOMPARE(spyMultiEditingFinished.size(), 1);
         QApplication::setActiveWindow(&helper); // Make spinbox loose focus
-        QCOMPARE(spyMultiEditingFinished.count(), 2);
+        QCOMPARE(spyMultiEditingFinished.size(), 2);
 
         // Get reference data
         myDouble.setValue(8);
@@ -1879,9 +1879,9 @@ private Q_SLOTS:
         QApplication::setActiveWindow(&helper); // Make spinbox loose focus
 
         // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
-        QCOMPARE(spyMulti.count(), spyDouble.count());
-        QCOMPARE(spyMultiAsQString.count(), spyDoubleAsQString.count());
-        for (int i = 0; i < spyMulti.count(); ++i) {
+        QCOMPARE(spyMulti.size(), spyDouble.size());
+        QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
+        for (int i = 0; i < spyMulti.size(); ++i) {
             QCOMPARE(spyMulti
                          .at(i) // Signal at position i
                          .at(0) // First argument of this signal
@@ -1945,7 +1945,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1961,31 +1961,31 @@ private Q_SLOTS:
 
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
         QCOMPARE(widget2->sectionValues().at(0), 0);
-        QCOMPARE(spyMultiValueChanged.count(), 0);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiValueChanged.size(), 0);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
         QCOMPARE(widget2->sectionValues().at(0), 1);
-        QCOMPARE(spyMultiValueChanged.count(), 1);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiValueChanged.size(), 1);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_2);
         QCOMPARE(widget2->sectionValues().at(0), 1);
-        QCOMPARE(spyMultiValueChanged.count(), 1);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiValueChanged.size(), 1);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(widget2->sectionValues().at(0), 2);
-        QCOMPARE(spyMultiValueChanged.count(), 2);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiValueChanged.size(), 2);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         // Move focus from widget2/section1 to widget2/section2
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(widget2->sectionValues().at(0), 2);
-        QCOMPARE(spyMultiValueChanged.count(), 2);
-        QCOMPARE(spyMultiEditingFinished.count(), 0);
+        QCOMPARE(spyMultiValueChanged.size(), 2);
+        QCOMPARE(spyMultiEditingFinished.size(), 0);
         // Move focus from widget2/section2 to widget3
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(widget2->sectionValues().at(0), 2);
-        QCOMPARE(spyMultiValueChanged.count(), 2);
-        QCOMPARE(spyMultiEditingFinished.count(), 1);
+        QCOMPARE(spyMultiValueChanged.size(), 2);
+        QCOMPARE(spyMultiEditingFinished.size(), 1);
 
         // Cleanup
         delete widget2;
@@ -2277,7 +2277,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->d_pointer->m_sectionConfigurations.count() != 3) {
+        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;

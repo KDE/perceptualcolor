@@ -138,9 +138,9 @@ static void doAntialiasHelper(uchar *const bytesPtr,
                 }
             }
         }
-        if (opaqueColors.count() > 0) {
+        if (opaqueColors.size() > 0) {
             const float countF = //
-                static_cast<float>(opaqueColors.count());
+                static_cast<float>(opaqueColors.size());
             QRgb &pixelRef = *( //
                 reinterpret_cast<QRgb *>(bytesPtr + point.y() * bytesPerLine) //
                 + point.x());
@@ -213,11 +213,11 @@ void doAntialias(QImage &image, const QList<QPoint> &antiAliasCoordinates, const
     auto &poolReference = getLibraryQThreadPoolInstance();
     const int threadCount = qMax(1, poolReference.maxThreadCount());
     const auto parts = splitList(antiAliasCoordinates, threadCount);
-    // The narrowing static_cast<int>() is okay because parts.count() is a
+    // The narrowing static_cast<int>() is okay because parts.size() is a
     // result of threadCount, which is also int.
     static_assert( //
         std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
-    const int partsCount = static_cast<int>(parts.count());
+    const int partsCount = static_cast<int>(parts.size());
     QSemaphore semaphore(0);
     for (const auto &part : parts) {
         const auto myLambda = [bytesPtr, bytesPerLine, part, colorFunction, &semaphore]() {
@@ -227,8 +227,8 @@ void doAntialias(QImage &image, const QList<QPoint> &antiAliasCoordinates, const
         const auto myRunnablePtr = QRunnable::create(myLambda);
         poolReference.start(myRunnablePtr, imageThreadPriority);
     }
-    // Intentionally acquiring parts.count() and not treadCount, because
-    // they might differ and parts.count() is mandatory for thread
+    // Intentionally acquiring parts.size() and not treadCount, because
+    // they might differ and parts.size() is mandatory for thread
     // execution.
     semaphore.acquire(partsCount); // Wait for all threads to finish.
 }

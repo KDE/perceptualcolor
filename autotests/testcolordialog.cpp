@@ -667,20 +667,20 @@ private Q_SLOTS:
         QSignalSpy spyQDialog(m_qDialog.data(), &QColorDialog::colorSelected);
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         QTest::keyClick(m_qDialog.data(), Qt::Key_Return);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
         m_perceptualDialog->show();
         m_qDialog->show();
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Escape);
         QTest::keyClick(m_qDialog.data(), Qt::Key_Escape);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
         m_perceptualDialog->show();
         m_qDialog->show();
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         QTest::keyClick(m_qDialog.data(), Qt::Key_Return);
-        QCOMPARE(spyPerceptualDialog.count(), 2);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 2);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
     }
 
     void testPropertyConformance_data()
@@ -901,27 +901,27 @@ private Q_SLOTS:
         // does not call this signal
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         QTest::keyClick(m_qDialog.data(), Qt::Key_Return);
-        QCOMPARE(spyPerceptualDialog.count(), 0);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 0);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
 
         // A different color should call the signal
         m_perceptualDialog->setCurrentColor(QColor(1, 2, 3));
         m_qDialog->setCurrentColor(QColor(1, 2, 3));
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
 
         // The same color again should not call again the signal
         m_perceptualDialog->setCurrentColor(QColor(1, 2, 3));
         m_qDialog->setCurrentColor(QColor(1, 2, 3));
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
 
         // The same RGB values, but defined in another color model, should not
         // emit a signal either.
         m_perceptualDialog->setCurrentColor(QColor(1, 2, 3).toHsl());
         m_qDialog->setCurrentColor(QColor(1, 2, 3).toHsl());
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
 
         // Changing QColorDialog::ShowAlphaChannel should
         // not emit a signal either
@@ -931,8 +931,8 @@ private Q_SLOTS:
         m_qDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
             false);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(spyPerceptualDialog.count(), spyQDialog.count());
+        QCOMPARE(spyPerceptualDialog.size(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), spyQDialog.size());
     }
 
     void testCurrentColorProperty_data()
@@ -2001,11 +2001,11 @@ private Q_SLOTS:
         // Setting a different DialogLayoutDimensions will emit a signal
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), 1);
         // Setting the same DialogLayoutDimensions will not emit a signal again
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
+        QCOMPARE(spyPerceptualDialog.size(), 1);
     }
 
     void testRoundingErrors_data()
@@ -2738,7 +2738,7 @@ private Q_SLOTS:
         m_perceptualDialog->show(); // Needed for correct m_tabWidget->count()
 
         QList<int> testList;
-        const auto tabCount = m_perceptualDialog->d_pointer->m_tabWidget->count();
+        const int tabCount = m_perceptualDialog->d_pointer->m_tabWidget->count();
         testList.reserve(tabCount + 1);
         for (int i = 0; i < tabCount; ++i) {
             testList.append(i);

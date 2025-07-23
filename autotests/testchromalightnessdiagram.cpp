@@ -557,29 +557,29 @@ private Q_SLOTS:
         test.setCurrentColorCielchD50(color);
         QVERIFY(test.currentColorCielchD50() == color);
         QSignalSpy spy(&test, &ChromaLightnessDiagram::currentColorCielchD50Changed);
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
 
         // Change hue only:
         color.third += 1;
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
         QVERIFY(test.currentColorCielchD50() == color);
 
         // Change chroma only:
         color.second += 1;
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 2);
+        QCOMPARE(spy.size(), 2);
         QVERIFY(test.currentColorCielchD50() == color);
 
         // Change lightness only:
         color.first += 1;
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 3);
+        QCOMPARE(spy.size(), 3);
         QVERIFY(test.currentColorCielchD50() == color);
 
         // Not changing the color should not trigger the signal
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 3);
+        QCOMPARE(spy.size(), 3);
         QVERIFY(test.currentColorCielchD50() == color);
     }
 

@@ -147,7 +147,7 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
         // should not be big.
         initializeLibraryResources();
 
-        if (newUiLanguages.value().count() <= 0) {
+        if (newUiLanguages.value().size() <= 0) {
             // QTranslator::load() will always delete the currently loaded
             // translation. After that, it will try to load the new one.
             // With this trick, we can delete the existing translation:
@@ -174,7 +174,7 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
             // case, Qt doesn’t. And we do not have too many strings to
             // translate anyway. If we find out later that we have many
             // incomplete translations, we can still implement this feature…
-            while (!loaded && i < newUiLanguages.value().count()) {
+            while (!loaded && i < newUiLanguages.value().size()) {
                 loaded = translator.load(
                     // The locale. From this locale are generated BCP47 codes.
                     // Various versions (upper-case and lower-case) are tried

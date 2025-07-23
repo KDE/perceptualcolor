@@ -106,7 +106,7 @@ private Q_SLOTS:
         QVERIFY(spy.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
     }
 
     void testTab()
@@ -126,7 +126,7 @@ private Q_SLOTS:
         QVERIFY(spy.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
     }
 
     void testInstancesAreIdenticalForTab()
@@ -153,11 +153,11 @@ private Q_SLOTS:
         QVERIFY(spy1.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy1.count(), 1);
+        QCOMPARE(spy1.size(), 1);
         QVERIFY(spy2.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy2.count(), 1);
+        QCOMPARE(spy2.size(), 1);
     }
 
     void testTabExpanded()
@@ -177,7 +177,7 @@ private Q_SLOTS:
         QVERIFY(spy.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
     }
 
     void testInstancesAreIdenticalForTabExpanded()
@@ -201,11 +201,11 @@ private Q_SLOTS:
         QVERIFY(spy1.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy1.count(), 1);
+        QCOMPARE(spy1.size(), 1);
         QVERIFY(spy2.isValid());
         // The second call to the setter with an identical value
         // should not trigger a signal.
-        QCOMPARE(spy2.count(), 1);
+        QCOMPARE(spy2.size(), 1);
     }
 
 #endif

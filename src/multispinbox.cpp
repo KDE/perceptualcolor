@@ -174,7 +174,7 @@ QSize MultiSpinBox::sizeHint() const
     QString completeString;
 
     // Get the text for all the sections
-    for (int i = 0; i < myConfiguration.count(); ++i) {
+    for (int i = 0; i < myConfiguration.size(); ++i) {
         // Prefix
         completeString += myConfiguration.at(i).prefix();
         // For each section, test if the minimum value or the maximum
@@ -227,7 +227,7 @@ QSize MultiSpinBox::sizeHint() const
         this // optional widget argument (for better calculations)
     );
 
-    const auto buttonCount = lineEdit()->actions().count();
+    const auto buttonCount = lineEdit()->actions().size();
     if (buttonCount > 0) {
         // Determine the size of icons for actions similar to what Qt
         // does in QLineEditPrivate::sideWidgetParameters() and than
@@ -348,7 +348,7 @@ QString MultiSpinBoxPrivate::formattedPendingValue(qsizetype index) const
 
 /** @brief Updates prefix, value and suffix text
  *
- * @pre <tt>0 <= @ref m_currentIndex < @ref m_sectionConfigurations .count()</tt>
+ * @pre <tt>0 <= @ref m_currentIndex < @ref m_sectionConfigurations .size()</tt>
  *
  * @post Updates @ref m_textBeforeCurrentValue,
  * @ref m_textOfCurrentPendingValue, @ref m_textAfterCurrentValue to the
@@ -377,7 +377,7 @@ void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     m_textAfterCurrentValue = QString();
     m_textAfterCurrentValue.append( //
         m_sectionConfigurations.at(m_currentIndex).suffix());
-    for (i = m_currentIndex + 1; i < m_sectionConfigurations.count(); ++i) {
+    for (i = m_currentIndex + 1; i < m_sectionConfigurations.size(); ++i) {
         m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).prefix());
 
         m_textAfterCurrentValue.append(formattedPendingValue(i));
@@ -431,7 +431,7 @@ void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype n
  * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue */
 void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
 {
-    if (!isInRange<qsizetype>(0, newIndex, m_sectionConfigurations.count() - 1)) {
+    if (!isInRange<qsizetype>(0, newIndex, m_sectionConfigurations.size() - 1)) {
         qWarning() << "The function" << __func__ //
                    << "in file" << __FILE__ //
                    << "near to line" << __LINE__ //
@@ -440,7 +440,7 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
                    << "thought the valid range is currently [" //
                    << 0 //
                    << ", " //
-                   << m_sectionConfigurations.count() - 1 //
+                   << m_sectionConfigurations.size() - 1 //
                    << "]. This is a bug.";
         throw 0;
     }
@@ -510,7 +510,7 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
  * @sa @ref sectionConfigurations() */
 void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations)
 {
-    if (newSectionConfigurations.count() < 1) {
+    if (newSectionConfigurations.size() < 1) {
         return;
     }
 
@@ -518,7 +518,7 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
     d_pointer->m_currentIndex = qBound<qsizetype>( //
         0, //
         d_pointer->m_currentIndex, //
-        newSectionConfigurations.count());
+        newSectionConfigurations.size());
 
     // Set new section configuration
     d_pointer->m_sectionConfigurations = newSectionConfigurations;
@@ -574,20 +574,20 @@ QList<double> MultiSpinBox::sectionValues() const
  */
 void MultiSpinBoxPrivate::setPendingSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues)
 {
-    if (newSectionValues.count() < 1) {
+    if (newSectionValues.size() < 1) {
         return;
     }
 
-    const auto sectionCount = m_sectionConfigurations.count();
+    const auto sectionCount = m_sectionConfigurations.size();
 
     QList<double> fixedNewSectionValues = newSectionValues;
 
     // Adapt the count of values:
-    while (fixedNewSectionValues.count() < sectionCount) {
+    while (fixedNewSectionValues.size() < sectionCount) {
         // Add elements if there are not enough:
         fixedNewSectionValues.append(MultiSpinBoxPrivate::defaultSectionValue);
     }
-    while (fixedNewSectionValues.count() > sectionCount) {
+    while (fixedNewSectionValues.size() > sectionCount) {
         // Remove elements if there are too many:
         fixedNewSectionValues.removeLast();
     }
@@ -713,7 +713,7 @@ void MultiSpinBox::setSectionValues(const QList<double> &newSectionValues)
 bool MultiSpinBox::focusNextPrevChild(bool next)
 {
     if (next == true) { // Move focus forward (Tab)
-        if (d_pointer->m_currentIndex < (d_pointer->m_sectionConfigurations.count() - 1)) {
+        if (d_pointer->m_currentIndex < (d_pointer->m_sectionConfigurations.size() - 1)) {
             d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
                 d_pointer->m_currentIndex + 1);
             d_pointer->applyPendingSectionValuesAndEmitSignals();
@@ -799,7 +799,7 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
         return;
     case Qt::BacktabFocusReason:
         d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
-            d_pointer->m_sectionConfigurations.count() - 1);
+            d_pointer->m_sectionConfigurations.size() - 1);
         // Make sure that the buttons for step up and step down
         // are updated.
         update();
@@ -893,7 +893,7 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
     // the value itself remains.
     QString cleanText = lineEditText;
     if (cleanText.startsWith(m_textBeforeCurrentValue)) {
-        cleanText.remove(0, m_textBeforeCurrentValue.count());
+        cleanText.remove(0, m_textBeforeCurrentValue.size());
     } else {
         // The text does not start with the correct characters.
         // This is an error.
@@ -908,7 +908,7 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
         return;
     }
     if (cleanText.endsWith(m_textAfterCurrentValue)) {
-        cleanText.chop(m_textAfterCurrentValue.count());
+        cleanText.chop(m_textAfterCurrentValue.size());
     } else {
         // The text does not start with the correct characters.
         // This is an error.
@@ -1017,7 +1017,7 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     int sectionOfTheNewCursorPosition;
     qsizetype reference = 0;
     for (sectionOfTheNewCursorPosition = 0; //
-         sectionOfTheNewCursorPosition < m_sectionConfigurations.count() - 1; //
+         sectionOfTheNewCursorPosition < m_sectionConfigurations.size() - 1; //
          ++sectionOfTheNewCursorPosition //
     ) {
         reference += m_sectionConfigurations //

@@ -256,11 +256,11 @@ static void initFonts(QApplication *app, const QStringList &fontfiles)
 
 static void setCurrentTab(ColorDialog *dialog, int index)
 {
-    QList<QTabWidget *> tabWidgets = dialog->findChildren<QTabWidget *>();
-    if (tabWidgets.count() != 1) {
+    QList<QTabWidget *> tabWidgetList = dialog->findChildren<QTabWidget *>();
+    if (tabWidgetList.size() != 1) {
         throw 0;
     }
-    QTabWidget *myTabWidget = tabWidgets.first();
+    QTabWidget *myTabWidget = tabWidgetList.first();
     const auto count = myTabWidget->count();
     if (count > 1) {
         // After calling QTabWidget::setCurrentIndex(), the tab widget may not
@@ -278,11 +278,11 @@ static void setCurrentTab(ColorDialog *dialog, int index)
 
 static void setCurrentSwatchBookSelector(ColorDialog *dialog, int index)
 {
-    QList<QComboBox *> comboBoxes = dialog->findChildren<QComboBox *>();
-    if (comboBoxes.count() != 1) {
+    QList<QComboBox *> comboBoxList = dialog->findChildren<QComboBox *>();
+    if (comboBoxList.size() != 1) {
         throw 0;
     }
-    QComboBox *myComboBox = comboBoxes.first();
+    QComboBox *myComboBox = comboBoxList.first();
     const auto count = myComboBox->count();
     if (count > 1) {
         // After calling QComboBox::setCurrentIndex(), the tab widget may not

@@ -122,12 +122,12 @@ private Q_SLOTS:
 
         // Test if signal is emitted.
         myWheel.setHue(referenceHue);
-        QCOMPARE(mySpy.count(), 1);
+        QCOMPARE(mySpy.size(), 1);
         QCOMPARE(myWheel.hue(), referenceHue);
 
         // Test that no signal is emitted for old hue.
         myWheel.setHue(referenceHue);
-        QCOMPARE(mySpy.count(), 1);
+        QCOMPARE(mySpy.size(), 1);
         QCOMPARE(myWheel.hue(), referenceHue);
     }
 

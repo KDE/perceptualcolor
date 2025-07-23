@@ -576,10 +576,10 @@ void ColorDialogPrivate::retranslateUi()
     // HSL spin box
     QList<MultiSpinBoxSection> hslSections = //
         m_hslSpinBox->sectionConfigurations();
-    if (hslSections.count() != 3) {
+    if (hslSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
-            << hslSections.count() //
+            << hslSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
         hslSections[0].setFormatString( //
@@ -595,10 +595,10 @@ void ColorDialogPrivate::retranslateUi()
     // HWB spin box
     QList<MultiSpinBoxSection> hwbSections = //
         m_hwbSpinBox->sectionConfigurations();
-    if (hwbSections.count() != 3) {
+    if (hwbSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
-            << hwbSections.count() //
+            << hwbSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
         hwbSections[0].setFormatString( //
@@ -614,10 +614,10 @@ void ColorDialogPrivate::retranslateUi()
     // HSV spin box
     QList<MultiSpinBoxSection> hsvSections = //
         m_hsvSpinBox->sectionConfigurations();
-    if (hsvSections.count() != 3) {
+    if (hsvSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
-            << hsvSections.count() //
+            << hsvSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
         hsvSections[0].setFormatString( //
@@ -634,10 +634,10 @@ void ColorDialogPrivate::retranslateUi()
     // CIELCH-D50 spin box
     QList<MultiSpinBoxSection> cielchD50Sections = //
         m_cielchD50SpinBox->sectionConfigurations();
-    if (cielchD50Sections.count() != 3) {
+    if (cielchD50Sections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in CIELCH-D50 MultiSpinBox, but got" //
-            << cielchD50Sections.count() //
+            << cielchD50Sections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
         cielchD50Sections[0].setFormatString( //
@@ -654,10 +654,10 @@ void ColorDialogPrivate::retranslateUi()
     // Oklch spin box
     QList<MultiSpinBoxSection> oklchSections = //
         m_oklchSpinBox->sectionConfigurations();
-    if (oklchSections.count() != 3) {
+    if (oklchSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in Oklch MultiSpinBox, but got" //
-            << oklchSections.count() //
+            << oklchSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
         oklchSections[0].setFormatString( //
@@ -2431,13 +2431,13 @@ void ColorDialog::done(int result)
         auto history = d_pointer->m_settings.history.value();
         const qsizetype maxHistoryLenght = std::max<qsizetype>( //
             d_pointer->historySwatchCount, //
-            history.count());
+            history.size());
         // Remove duplicates of the new value that might exist yet in the list.
         history.removeAll(newHistoryColor);
         // Add the new value at the very beginning.
         history.prepend(newHistoryColor);
         // Adapt list length.
-        while (history.count() > maxHistoryLenght) {
+        while (history.size() > maxHistoryLenght) {
             history.removeLast();
         }
         d_pointer->m_settings.history.setValue(history);

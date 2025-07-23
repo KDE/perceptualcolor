@@ -66,7 +66,7 @@ void SwatchBookPrivate::retranslateUi()
         // available in the given font.
         auto ucs4 = string.toUcs4();
         bool okay = true;
-        for (int i = 0; okay && (i < ucs4.count()); ++i) {
+        for (int i = 0; okay && (i < ucs4.size()); ++i) {
             okay = myFontMetrics.inFontUcs4(ucs4.at(i));
         }
         if (okay) {

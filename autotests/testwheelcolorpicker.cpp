@@ -77,25 +77,25 @@ private Q_SLOTS:
         color.third = 10;
         test.setCurrentColorCielchD50(color);
         QSignalSpy spy(&test, &WheelColorPicker::currentColorCielchD50Changed);
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
 
         // Change hue only:
         color.third += 1;
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
         QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().third, color.third);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.third);
 
         // Change chroma only:
         color.second += 1;
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 2);
+        QCOMPARE(spy.size(), 2);
         QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().second, color.second);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.third);
 
         // Not changing the color should not trigger the signal
         test.setCurrentColorCielchD50(color);
-        QCOMPARE(spy.count(), 2);
+        QCOMPARE(spy.size(), 2);
         QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().second, color.second);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.third);
     }

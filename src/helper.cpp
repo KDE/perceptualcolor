@@ -193,7 +193,7 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
     const auto list = formatString //
                           .arg(QStringLiteral("%1")) //
                           .split(QStringLiteral("%1"));
-    if (list.count() == 2) {
+    if (list.size() == 2) {
         return QPair<QString, QString>(list.at(0), list.at(1));
     }
     return QPair<QString, QString>(QString(), QString());
@@ -565,7 +565,7 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
 
     // Gray axis
     QList<double> lightnesses{1, 0.75, 0.5, 0.25, 0};
-    for (int j = 0; j < lightnesses.count(); ++j) {
+    for (int j = 0; j < lightnesses.size(); ++j) {
         const GenericColor myOklab{lightnesses.at(j), 0, 0};
         const auto cielchD50 = AbsoluteColor::convert( //
                                    ColorModel::OklabD65, //

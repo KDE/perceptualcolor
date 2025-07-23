@@ -180,11 +180,11 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
 
     {
         const auto segments = splitElements(imageHeight, threadCount);
-        // The narrowing static_cast<int>() is okay because parts.count() is a
+        // The narrowing static_cast<int>() is okay because parts.size() is a
         // result of threadCount, which is also int.
         static_assert( //
             std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
-        const int segmentsCount = static_cast<int>(segments.count());
+        const int segmentsCount = static_cast<int>(segments.size());
         QSemaphore semaphore(0);
         if (callbackObject.shouldAbort()) {
             return;
@@ -208,9 +208,9 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             const auto myRunnablePtr = QRunnable::create(myLambda);
             poolReference.start(myRunnablePtr, imageThreadPriority);
         }
-        // Intentionally acquiring segments.count() and not
+        // Intentionally acquiring segments.size() and not
         // treadCount,  because they might differ and
-        // segments.count() is mandatory for thread execution.
+        // segments.size() is mandatory for thread execution.
         semaphore.acquire(segmentsCount); // Wait for all threads to finish.
     }
 

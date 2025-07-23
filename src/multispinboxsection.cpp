@@ -289,7 +289,7 @@ void MultiSpinBoxSection::setFormatString(const QString &formatString)
                            .arg(QStringLiteral("%1")) //
                            .split(QStringLiteral("%1"));
 
-    if (parts.count() == 2) {
+    if (parts.size() == 2) {
         d_pointer->m_prefix = parts.at(0);
         d_pointer->m_suffix = parts.at(1);
     } else {

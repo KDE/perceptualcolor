@@ -196,13 +196,13 @@ private Q_SLOTS:
 
         // Test if signal for new color is emitted.
         myDiagram.setCurrentColorCielchD50(referenceColorLch);
-        QCOMPARE(mySpy.count(), 1);
+        QCOMPARE(mySpy.size(), 1);
         QVERIFY2(myDiagram.currentColorCielchD50() == referenceColorLch, //
                  "Verify that the color is equal to the reference color.");
 
         // Test that no signal is emitted for old color.
         myDiagram.setCurrentColorCielchD50(referenceColorLch);
-        QCOMPARE(mySpy.count(), 1);
+        QCOMPARE(mySpy.size(), 1);
         QVERIFY2(myDiagram.currentColorCielchD50() == referenceColorLch, //
                  "Verify that the color is equal to the reference color.");
     }

@@ -323,7 +323,7 @@ void ScreenColorPicker::getPortalResponse(uint exitCode, const QVariantMap &resp
         rgb.append(temp);
     }
     responseColor.endStructure();
-    if (rgb.count() == 3) {
+    if (rgb.size() == 3) {
         // The documentation of Portal claims to return always sRGB values,
         // so if the screen has a different color space, portal is supposed
         // to apply color management and return the sRGB correspondence.
