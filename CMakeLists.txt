@@ -402,8 +402,10 @@ if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
     add_compile_options(
         # List of additional warnings for MSVC
 
+        # Higher warning level.
         # NOTE We do not use /Wall because it pulls in also extremly confusing
         # messages with little practical value.
+        /W4
 
         # warning C4711: function selected for automatic inline expansion
         # MSVC issues this warning for its own std header files when /Wall is
