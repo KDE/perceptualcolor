@@ -75,28 +75,28 @@ private Q_SLOTS:
     {
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
-        QVERIFY2(PerceptualColor::gamutPrecisionCielab < 1, //
-                 "Verify that gamut precision value is not too high");
+        static_assert(PerceptualColor::gamutPrecisionCielab < 1, //
+                      "Verify that gamut precision value is not too high");
     }
 
     void testOklabPrecision()
     {
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
-        QVERIFY2(PerceptualColor::gamutPrecisionCielab < 0.01, //
-                 "Verify that gamut precision value is not too high");
+        static_assert(PerceptualColor::gamutPrecisionCielab < 0.01, //
+                      "Verify that gamut precision value is not too high");
     }
 
     void testSteps()
     {
-        QVERIFY2(pageStepChroma > singleStepChroma, //
-                 "Chroma page step is bigger than single step.");
-        QVERIFY2(singleStepChroma > 0, //
-                 "Chroma single step is positive.");
-        QVERIFY2(pageStepHue > singleStepHue, //
-                 "Hue page step is bigger than single step.");
-        QVERIFY2(singleStepHue > 0, //
-                 "Hue single step is positive.");
+        static_assert(pageStepChroma > singleStepChroma, //
+                      "Chroma page step is bigger than single step.");
+        static_assert(singleStepChroma > 0, //
+                      "Chroma single step is positive.");
+        static_assert(pageStepHue > singleStepHue, //
+                      "Hue page step is bigger than single step.");
+        static_assert(singleStepHue > 0, //
+                      "Hue single step is positive.");
     }
 
     void testRichTextMarkerIsRecognized()
