@@ -72,13 +72,15 @@ class MultiSpinBoxPrivate;
  *   <tt>QAbstractSpinBox::interpretText()</tt>:</b><br/>
  *   Although <tt>QAbstractSpinBox</tt> defines these methods, they have no
  *   effect in the base class itself or in non-Qt subclasses like this one.
- *   (In Qt’s own derived classes, <tt>QAbstractSpinBox::interpretText()</tt>
- *   performs meaningful parsing and updates—but this relies on private
- *   internal APIs inaccessible to external or custom subclasses.) As a result,
- *   <tt>@ref fixup()</tt> and <tt>QAbstractSpinBox::interpretText()</tt> in
- *   this context are effectively placeholders with no functional impact. They
- *   appears more like leaked implementation details than a truly extensible
- *   public API.
+ *   They appears more like leaked implementation details than a truly
+ *   extensible public API. As a result, in this class these function are
+ *   effectively placeholders with no functional impact.
+ *   - In Qt’s own derived classes, <tt>QAbstractSpinBox::interpretText()</tt>
+ *     performs meaningful parsing and updates—but this relies on private Qt
+ *     internals that are inaccessible to external or custom subclasses. And
+ *     since the method is not declared <tt>virtual</tt>, it cannot be
+ *     overridden anyway.
+ *   - For more details on @ref fixup(), please refer to its documentation.
  *
  * @internal
  *

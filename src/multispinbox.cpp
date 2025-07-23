@@ -1149,13 +1149,30 @@ void MultiSpinBoxPrivate::updateValidator()
 }
 
 /**
- * @brief Reimplementation from the base class.
+ * @brief Intentionally empty override.
  *
- * Intended to apply input corrections. This mechanism is commonly used in Qt’s
- * subclasses of <tt>QAbstractSpinBox</tt>, but it is not utilized in this
- * class.
+ * @param input The complete user-visible string from the line edit, passed by
+ *              reference for potential in-place modification.
  *
- * @param input The input string to be modified in-place.
+ * @internal
+ *
+ * <tt>QAbstractSpinBox::fixup()</tt> is designed to correct the full input
+ * text. Subclasses like <tt>QDateTimeEdit</tt> apply fixup to all sections
+ * simultaneously using internal Qt APIs. However, <tt>QAbstractSpinBox</tt>
+ * itself currently does not invoke fixup in non-Qt subclasses.
+ *
+ * For @ref MultiSpinBox, this mechanism is unsuitable: its parsing logic
+ * interprets segmented input using arbitrary separators—including empty
+ * prefixes and suffixes—which makes whole-string correction ambiguous. Parsing
+ * is handled internally via @ref MultiSpinBoxPrivate and cannot replicate the
+ * behavior of QDateTimeEdit, which applies fixup uniformly across all
+ * sections. As such, providing a non-empty implementation here could lead to
+ * behavior that diverges surprisingly from QDateTimeEdit. An empty override
+ * is therefore preferred.
+ *
+ * This override also prevents any inherited behavior from QAbstractSpinBox,
+ * ensuring that future changes to its internal logic do not inadvertently
+ * affect @ref MultiSpinBox.
  *
  * @sa @ref validate()
  */
