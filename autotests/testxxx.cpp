@@ -56,7 +56,9 @@ private Q_SLOTS:
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
         myWidget->show();
-        QApplication::setActiveWindow(myWidget.data());
+        myWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(myWidget.data()));
+        myWidget->setFocus(); // Does not always happen automatically.
 
         // Key clicks must go to the focus widget to work as expected.
         widget1->setFocus();

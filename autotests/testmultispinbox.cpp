@@ -30,6 +30,7 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
+#include <qtestsupport_widgets.h>
 #include <qvariant.h>
 #include <qwidget.h>
 
@@ -736,34 +737,15 @@ private Q_SLOTS:
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
         parentWidget->show();
-        QApplication::setActiveWindow(parentWidget.data());
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
 
         // Assert that the setup is okay.
-        if (!widget1->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget3->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget1) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(widget1->hasFocus());
+        QVERIFY(!widget2->hasFocus());
+        QVERIFY(!widget3->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget1);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
 
         // Start actual testing
 
@@ -962,33 +944,14 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        QApplication::setActiveWindow(parentWidget.data());
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
         // Assert that the setup is okay.
-        if (widget1->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (!widget3->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(!widget1->hasFocus());
+        QVERIFY(!widget2->hasFocus());
+        QVERIFY(widget3->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget3);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
 
         // Start actual testing
         // Move focus from widget3 to widget2/section2
@@ -1049,38 +1012,15 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        QApplication::setActiveWindow(parentWidget.data());
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
         // Assert that the setup is okay.
-        if (widget1->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (!widget3->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_currentIndex != 1) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(!widget1->hasFocus());
+        QVERIFY(!widget2->hasFocus());
+        QVERIFY(widget3->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget3);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
+        QVERIFY(widget2->d_pointer->m_currentIndex == 1);
 
         // Start actual testing
         // Move focus from widget3 to widget2/section0
@@ -1140,53 +1080,26 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        QApplication::setActiveWindow(parentWidget.data());
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
         // Assert that the setup is okay.
-        if (widget1->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (!widget3->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(!widget1->hasFocus());
+        QVERIFY(!widget2->hasFocus());
+        QVERIFY(widget3->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget3);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
 
         // Start actual testing
         // Make sure that MultiSpinBox does not react on incoming tab focus
         // events if the current focus policy does not allow tab focus.
         widget2->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
         widget1->setFocus();
-        if (QApplication::focusWidget() != widget1) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(QApplication::focusWidget() == widget1);
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
         widget2->setFocusPolicy(Qt::FocusPolicy::NoFocus);
         widget1->setFocus();
-        if (QApplication::focusWidget() != widget1) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(QApplication::focusWidget() == widget1);
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
 
@@ -1403,28 +1316,13 @@ private Q_SLOTS:
         parentWidget->show();
         widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         // The following statement make focus and widget events working.
-        QApplication::setActiveWindow(parentWidget.data());
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
         // Assert that the setup is okay.
-        if (!widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget2) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->lineEdit()->text() != QStringLiteral(u"0°  0%  0")) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(widget2->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget2);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
+        QVERIFY(widget2->lineEdit()->text() == QStringLiteral(u"0°  0%  0"));
 
         // Start actual testing
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
@@ -1772,7 +1670,9 @@ private Q_SLOTS:
         myDouble.setKeyboardTracking(true);
 
         // Get test data
-        QApplication::setActiveWindow(&myMulti);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
         myMulti.setSectionValues({8});
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
         QTest::keyClick(&myMulti, Qt::Key::Key_5);
@@ -1781,7 +1681,9 @@ private Q_SLOTS:
 
         // Get reference data
         myDouble.setValue(8);
-        QApplication::setActiveWindow(&myDouble);
+        myDouble.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myDouble));
+        myDouble.setFocus();
         QTest::keyClick(&myDouble, Qt::Key_Up);
         QTest::keyClick(&myDouble, Qt::Key::Key_5);
         QTest::keyClick(&myDouble, Qt::Key::Key_4);
@@ -1848,7 +1750,10 @@ private Q_SLOTS:
 
         // Get test data
         myMulti.setSectionValues({8});
-        QApplication::setActiveWindow(&myMulti);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        spyMultiEditingFinished.clear();
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
         QCOMPARE(spyMultiEditingFinished.size(), 0);
@@ -1863,12 +1768,20 @@ private Q_SLOTS:
         QTest::keyClick(&myMulti, Qt::Key::Key_2);
         myMulti.stepUp();
         QCOMPARE(spyMultiEditingFinished.size(), 1);
-        QApplication::setActiveWindow(&helper); // Make spinbox loose focus
-        QCOMPARE(spyMultiEditingFinished.size(), 2);
+        helper.activateWindow(); // Make spinbox loose focus
+        QVERIFY(QTest::qWaitForWindowActive(&helper));
+        helper.setFocus();
+        // activateWindow() and setFocus() might behave differently across
+        // non-graphical testing environments and different Qt versions,
+        // however the invocation of both should result in at least one
+        // editingFinished() signal emitted.
+        QVERIFY(spyMultiEditingFinished.size() >= 2);
 
         // Get reference data
         myDouble.setValue(8);
-        QApplication::setActiveWindow(&myDouble);
+        myDouble.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myDouble));
+        myDouble.setFocus();
         QTest::keyClick(&myDouble, Qt::Key_Up);
         QTest::keyClick(&myDouble, Qt::Key::Key_5);
         QTest::keyClick(&myDouble, Qt::Key::Key_4);
@@ -1876,7 +1789,9 @@ private Q_SLOTS:
         QTest::keyClick(&myDouble, Qt::Key::Key_3);
         QTest::keyClick(&myDouble, Qt::Key::Key_2);
         myDouble.stepUp();
-        QApplication::setActiveWindow(&helper); // Make spinbox loose focus
+        helper.activateWindow(); // Make spinbox loose focus
+        QVERIFY(QTest::qWaitForWindowActive(&helper));
+        helper.setFocus();
 
         // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
         QCOMPARE(spyMulti.size(), spyDouble.size());
@@ -1929,27 +1844,12 @@ private Q_SLOTS:
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
         parentWidget->show();
-        QApplication::setActiveWindow(parentWidget.data());
-        if (!widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget3->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget2) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QVERIFY(widget2->hasFocus());
+        QVERIFY(!widget3->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget2);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
 
         // Start actual testing
 
@@ -2265,28 +2165,13 @@ private Q_SLOTS:
         parentWidget->show();
         widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         // The following statement make focus and widget events working.
-        QApplication::setActiveWindow(parentWidget.data());
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
         // Assert that the setup is okay.
-        if (!widget2->hasFocus()) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (QApplication::focusWidget() != widget2) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->d_pointer->m_sectionConfigurations.size() != 3) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        if (widget2->lineEdit()->text() != QStringLiteral(u"0°  0%  0")) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
+        QVERIFY(widget2->hasFocus());
+        QVERIFY(QApplication::focusWidget() == widget2);
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
+        QVERIFY(widget2->lineEdit()->text() == QStringLiteral(u"0°  0%  0"));
 
         // Assert that the setup is okay.
         widget2->setSectionValues({1, 1, 1});
