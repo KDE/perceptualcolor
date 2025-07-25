@@ -30,10 +30,10 @@
 #include <qlist.h>
 #include <qlocale.h>
 #include <qmath.h>
-#include <qnamespace.h>
 #include <qrgba64.h>
 #include <qsharedpointer.h>
 #include <qstringliteral.h>
+#include <qtimezone.h>
 #include <type_traits>
 #include <utility>
 
@@ -897,8 +897,9 @@ QDateTime RgbColorSpacePrivate::profileCreationDateTime(cmsHPROFILE profileHandl
         // Time:
         myTime,
         // Assuming UTC for the QDateTime because it’s the only choice
-        // that will not change arbitrary.
-        Qt::TimeSpec::UTC);
+        // that will not change arbitrary. QTimeZone(0) constructs a time
+        // zone with 0 seconds offset to UTC.
+        QTimeZone(0));
 }
 
 /** @brief List of tag signatures that are actually present in the profile.

@@ -24,7 +24,6 @@
 #include <qfileinfo.h>
 #include <qglobal.h>
 #include <qlist.h>
-#include <qnamespace.h>
 #include <qobject.h>
 #include <qrgb.h>
 #include <qrgba64.h>
@@ -37,6 +36,7 @@
 #include <qtemporaryfile.h>
 #include <qtest.h>
 #include <qtestcase.h>
+#include <qtimezone.h>
 #include <qversionnumber.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -357,8 +357,9 @@ private Q_SLOTS:
         // No non-localized test data for widgegamutrgb
 
         QCOMPARE(srgb->profileCreationDateTime().isNull(), true);
-        QCOMPARE(widegamutrgb->profileCreationDateTime(), //
-                 QDateTime(QDate(2021, 04, 27), QTime(10, 27, 00), Qt::UTC));
+        QCOMPARE( //
+            widegamutrgb->profileCreationDateTime(), //
+            QDateTime(QDate(2021, 04, 27), QTime(10, 27, 00), QTimeZone(0)));
 
         QVERIFY(srgb->profileFileSize() == -1);
         QCOMPARE(widegamutrgb->profileFileSize(), 464);
