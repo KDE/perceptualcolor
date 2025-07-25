@@ -74,6 +74,7 @@
 #include <qthread.h> // IWYU pragma: keep
 #include <qtimer.h> // IWYU pragma: keep
 #include <qtranslator.h> // IWYU pragma: keep
+#include <type_traits> // IWYU pragma: keep
 #include <utility> // IWYU pragma: keep
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -86,6 +87,10 @@ namespace test
 {
 Q_NAMESPACE
 }
+
+enum class MyEnum;
+
+static_assert(std::is_enum_v<MyEnum>);
 
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])

@@ -21,6 +21,7 @@
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qthread.h>
+#include <type_traits>
 
 class QWheelEvent;
 class QWidget;
@@ -336,9 +337,13 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
 template<typename T>
 [[nodiscard]] QString enumerationToFullString()
 {
-    const auto myMeta = QMetaEnum::fromType<T>();
-    const auto scope = QString::fromUtf8(myMeta.scope());
-    const auto name = QString::fromUtf8(myMeta.name());
+    static_assert( //
+        std::is_enum_v<T>, //
+        "Template enumerationToFullString() only works with enumeration types.");
+
+    const QMetaEnum myMeta = QMetaEnum::fromType<T>();
+    const QString scope = QString::fromUtf8(myMeta.scope());
+    const QString name = QString::fromUtf8(myMeta.name());
     return QStringLiteral("%1::%2").arg(scope, name);
 }
 
@@ -365,8 +370,13 @@ template<typename T>
 template<typename T>
 [[nodiscard]] QString enumeratorToFullString(const T &enumerator)
 {
-    const auto value = static_cast<int>(enumerator);
-    const auto myMeta = QMetaEnum::fromType<T>();
+    static_assert( //
+        std::is_enum_v<T>, //
+        "Template enumeratorToFullString() only works with enumeration types.");
+
+    const std::underlying_type_t<T> value = //
+        static_cast<std::underlying_type_t<T>>(enumerator);
+    const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
     // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
     // (synonym) keys for a given value. But it also returns happily
@@ -378,9 +388,9 @@ template<typename T>
         return QString();
     }
 
-    const auto scope = QString::fromUtf8(myMeta.scope());
-    const auto name = QString::fromUtf8(myMeta.name());
-    const auto keys = QString::fromUtf8(myMeta.valueToKeys(value));
+    const QString scope = QString::fromUtf8(myMeta.scope());
+    const QString name = QString::fromUtf8(myMeta.name());
+    const QString keys = QString::fromUtf8(myMeta.valueToKeys(value));
     return QStringLiteral("%1::%2::%3(%4)").arg(scope, name, keys).arg(value);
 }
 
@@ -407,8 +417,13 @@ template<typename T>
 template<typename T>
 [[nodiscard]] QString enumeratorToString(const T &enumerator)
 {
-    const auto value = static_cast<int>(enumerator);
-    const auto myMeta = QMetaEnum::fromType<T>();
+    static_assert( //
+        std::is_enum_v<T>, //
+        "Template enumeratorToString() only works with enumeration types.");
+
+    const std::underlying_type_t<T> value = //
+        static_cast<std::underlying_type_t<T>>(enumerator);
+    const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
     // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
     // (synonym) keys for a given value. But it also returns happily
@@ -420,7 +435,7 @@ template<typename T>
         return QString();
     }
 
-    const auto keys = QString::fromUtf8(myMeta.valueToKeys(value));
+    const QString keys = QString::fromUtf8(myMeta.valueToKeys(value));
     return QStringLiteral("%1(%2)").arg(keys).arg(value);
 }
 

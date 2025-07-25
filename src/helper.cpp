@@ -507,15 +507,13 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
     constexpr GenericColor purple{41.22, 33.08, -30.50};
     constexpr GenericColor pink{61.70, 49.42, 18.23};
     constexpr GenericColor brown{41.22, 17.04, 45.95};
-    constexpr std::array<GenericColor, 8> chromaticCielabColors //
+    constexpr quint8 arraySize = 8;
+    constexpr quint8 columnCount = arraySize + 1; // + 1 for gray axis
+    constexpr std::array<GenericColor, arraySize> chromaticCielabColors //
         {{red, orange, yellow, green, blue, purple, pink, brown}};
 
-    // Lowest common denominator of QList‘s and std::array’s size types:
-    using MySizeType = quint8;
+    constexpr quint8 rowCount = 5;
 
-    constexpr MySizeType columnCount = //
-        chromaticCielabColors.size() + 1; // + 1 for gray axis
-    constexpr auto rowCount = 5;
     QColorArray2D wcsSwatches{columnCount, rowCount};
 
     // Chromatic colors
@@ -524,7 +522,7 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
     constexpr double weakShade = 0.18;
     constexpr double strongShade = 0.36;
     std::array<GenericColor, rowCount> tintsAndShades;
-    for (MySizeType i = 0; i < chromaticCielabColors.size(); ++i) { //
+    for (quint8 i = 0; i < chromaticCielabColors.size(); ++i) { //
         const auto oklch = AbsoluteColor::convert( //
                                ColorModel::CielabD50, //
                                chromaticCielabColors.at(i),
@@ -548,7 +546,7 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
             {oklch.first * (1 - strongShade), //
              oklch.second * (1 - strongShade), //
              oklch.third};
-        for (MySizeType j = 0; j < rowCount; ++j) {
+        for (quint8 j = 0; j < rowCount; ++j) {
             const auto variationCielchD50 = AbsoluteColor::convert( //
                                                 ColorModel::OklchD65, //
                                                 tintsAndShades.at(j), //

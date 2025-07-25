@@ -796,7 +796,7 @@ private Q_SLOTS:
             // Initialize the buffer an UTF-32 encoding of “🖌” who’s code point
             // is U+1F58C and who’s UTF-32 representation is 0x1F58C,
             // followed by a null character.
-            *(buffer + 0) = 0x1F58C;
+            *(buffer + 0) = static_cast<wchar_t>(0x1F58C);
             *(buffer + 1) = 0;
             const QString result = QString::fromWCharArray(
                 // Convert to string with these parameters:
