@@ -101,9 +101,13 @@ Setting<T>::Setting(const QString &key, Settings *settings, QObject *parent)
 {
     if constexpr (m_isEnum) {
         static_assert( //
-            std::is_same_v<std::underlying_type_t<T>, int>, //
-            // Reason: We do conversions using QMetaEnum, which uses “int”.
-            "If 'typename T' is an enum, its underlying type must be 'int'.");
+            sizeof(T) <= sizeof(int), //
+            // Reason: We do conversions using QMetaEnum, which uses “int”
+            // up to Qt 6.8. (Starting with Qt 6.9, quint64 is also available.)
+            "Class template 'Setting': If 'typename T' is an enum, its "
+            "underlying type must not exceed the size of 'int'."
+            // signed/unsigned does not matter for QMetaEnum!
+        );
     }
 
     // QSettings seems to use indirectly QMetaType::load() which requires
@@ -188,10 +192,14 @@ void Setting<T>::setValue(const T &newValue)
     if (newValue != m_value) {
         m_value = newValue;
         if constexpr (m_isEnum) {
-            const auto newValueUnderlying = //
+            const auto newValueAsIntegral = //
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+                static_cast<quint64>(newValue);
+#else
                 static_cast<int>(newValue);
+#endif
             const QString string = QString::fromUtf8( //
-                m_qMetaEnum.valueToKeys(newValueUnderlying));
+                m_qMetaEnum.valueToKeys(newValueAsIntegral));
             underlyingQSettings()->setValue(m_key, string);
         } else {
             const auto newVariant = QVariant::fromValue<T>(m_value);

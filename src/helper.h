@@ -373,9 +373,19 @@ template<typename T>
     static_assert( //
         std::is_enum_v<T>, //
         "Template enumeratorToFullString() only works with enumeration types.");
+    static_assert( //
+        sizeof(T) <= sizeof(int), //
+        "Template enumeratorToFullString(): Underlying type of "
+        "enumeration must not exceed the size of 'int'."
+        // signed/unsigned does not matter for QMetaEnum!
+    );
 
-    const std::underlying_type_t<T> value = //
-        static_cast<std::underlying_type_t<T>>(enumerator);
+    const auto value = //
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+        static_cast<quint64>(enumerator);
+#else
+        static_cast<int>(enumerator);
+#endif
     const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
     // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
@@ -420,9 +430,19 @@ template<typename T>
     static_assert( //
         std::is_enum_v<T>, //
         "Template enumeratorToString() only works with enumeration types.");
+    static_assert( //
+        sizeof(T) <= sizeof(int), //
+        "Template enumeratorToFullString(): Underlying type of "
+        "enumeration must not exceed the size of 'int'."
+        // signed/unsigned does not matter for QMetaEnum!
+    );
 
-    const std::underlying_type_t<T> value = //
-        static_cast<std::underlying_type_t<T>>(enumerator);
+    const auto value = //
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+        static_cast<quint64>(enumerator);
+#else
+        static_cast<int>(enumerator);
+#endif
     const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
     // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
