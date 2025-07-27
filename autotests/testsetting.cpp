@@ -7,6 +7,7 @@
 
 #include "settingbase.h"
 #include "settings.h"
+#include <limits>
 #include <qfile.h>
 #include <qglobal.h>
 #include <qobject.h>
@@ -17,6 +18,7 @@
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
+#include <qvariant.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -33,6 +35,12 @@ public:
         : QObject(parent)
     {
     }
+
+    static constexpr int min = std::numeric_limits<int>::min();
+    static constexpr int max = std::numeric_limits<int>::max();
+
+    enum class MyEnum { negative = min, zero = 0, middle = 5, high = max };
+    Q_ENUM(MyEnum);
 
 private:
     static const inline QString organization = QStringLiteral("kde.org");
@@ -174,6 +182,48 @@ private Q_SLOTS:
         tab.updateFromQSettings();
         QCOMPARE(tab.m_value, newTab2);
         QCOMPARE(tab.value(), newTab2);
+    }
+
+    void testUpdateFromSettingsWithEnum()
+    {
+        Settings mySettings(QSettings::UserScope, //
+                            organization, //
+                            application);
+
+        const QString key = QStringLiteral("group/testUpdateFromEnumSetting");
+        Setting<MyEnum> someEnum(key, //
+                                 &mySettings);
+
+        someEnum.setValue(MyEnum::zero);
+        QCOMPARE(someEnum.m_value, MyEnum::zero);
+        QCOMPARE(someEnum.value(), MyEnum::zero);
+
+        someEnum.underlyingQSettings()->setValue( //
+            key, //
+            QVariant::fromValue(MyEnum::middle));
+        QCOMPARE(someEnum.m_value, MyEnum::zero);
+        QCOMPARE(someEnum.value(), MyEnum::zero);
+        someEnum.updateFromQSettings();
+        QCOMPARE(someEnum.m_value, MyEnum::middle);
+        QCOMPARE(someEnum.value(), MyEnum::middle);
+
+        someEnum.underlyingQSettings()->setValue( //
+            key, //
+            QVariant::fromValue(MyEnum::high));
+        QCOMPARE(someEnum.m_value, MyEnum::middle);
+        QCOMPARE(someEnum.value(), MyEnum::middle);
+        someEnum.updateFromQSettings();
+        QCOMPARE(someEnum.m_value, MyEnum::high);
+        QCOMPARE(someEnum.value(), MyEnum::high);
+
+        someEnum.underlyingQSettings()->setValue( //
+            key, //
+            QVariant::fromValue(MyEnum::negative));
+        QCOMPARE(someEnum.m_value, MyEnum::high);
+        QCOMPARE(someEnum.value(), MyEnum::high);
+        someEnum.updateFromQSettings();
+        QCOMPARE(someEnum.m_value, MyEnum::negative);
+        QCOMPARE(someEnum.value(), MyEnum::negative);
     }
 #endif
 };
