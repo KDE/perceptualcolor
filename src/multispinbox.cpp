@@ -9,7 +9,6 @@
 
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
-#include "extendeddoublevalidator.h"
 #include "helpermath.h"
 #include "multispinboxsection.h"
 #include <math.h>
@@ -30,6 +29,7 @@
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+#include <qvalidator.h>
 #include <qwidget.h>
 #include <utility>
 class QAction;
@@ -86,7 +86,7 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
     , d_pointer(new MultiSpinBoxPrivate(this))
 {
     // Set up the m_validator
-    d_pointer->m_validator = new ExtendedDoubleValidator(this);
+    d_pointer->m_validator = new QDoubleValidator(this);
     // QDoubleSpinBox does not accept QDoubleValidator::ScientificNotation,
     // so we don't either.
     d_pointer->m_validator->setNotation(QDoubleValidator::StandardNotation);
@@ -1117,9 +1117,6 @@ void MultiSpinBox::clear()
  */
 void MultiSpinBoxPrivate::updateValidator()
 {
-    m_validator->setPrefix(m_textBeforeCurrentValue);
-    m_validator->setSuffix(m_textAfterCurrentValue);
-
     // WARNING
     //
     // setRange(): QDoubleValidator’s default behavior changed in Qt 6.3.
@@ -1192,11 +1189,71 @@ void MultiSpinBox::fixup(QString &input) const
  * @returns A validation state indicating whether the input is acceptable
  *          with regard to the current section.
  *
+ * @note This validator allows changes only to the <em>current</em>
+ * section. It is <em>not</em> possible to change various values at the
+ * same time, for example by marking all the current text and use
+ * Ctrl-V to past a complete new value from the clipboard. This would
+ * be impossible to parse reliably, because the prefixes and suffixes
+ * of each section might contain (localized) digits that would be
+ * difficult to differentiate from the actual value.
+ *
  * @sa @ref fixup()
+ *
+ * @internal
+ *
+ * If the section configuration or the current section index change,
+ * @ref MultiSpinBoxPrivate::updateValidator() must be called in order to
+ * have this function work correctly.
  */
 QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
 {
-    return d_pointer->m_validator->validate(input, pos);
+    QString myInput = input;
+    int myPos = pos;
+
+    // IF (m_prefix.isEmpty && !m_prefix.isNull)
+    // THEN input.startsWith(m_prefix)
+    // →  will be true IF !input.isEmpty
+    // →  will be false IF input.isEmpty
+    // This is inconsistent. Therefore, we test if m_prefix is empty.
+    // If not, we do nothing.
+    // The same also applies to suffix.
+    // That means, Qt documentation is wrong, because
+    // https://doc.qt.io/qt-6/qstring.html#distinction-between-null-and-empty-strings
+    // (and at its Qt-5-counterpart) says:
+    //     “All functions except isNull() treat null strings the same
+    //      as empty strings.”
+    // This is apparently wrong (at least for Qt 5).
+    if (!d_pointer->m_textBeforeCurrentValue.isEmpty()) {
+        if (myInput.startsWith(d_pointer->m_textBeforeCurrentValue)) {
+            myInput.remove(0, d_pointer->m_textBeforeCurrentValue.size());
+            // In Qt6, QString::size() returns a qsizetype aka “long long int”.
+            // HACK We do a simple static_cast because a so long QString isn’t
+            // useful anyway.
+            myPos -= static_cast<int>(d_pointer->m_textBeforeCurrentValue.size());
+        } else {
+            return QValidator::State::Invalid;
+        }
+    }
+    if (!d_pointer->m_textAfterCurrentValue.isEmpty()) {
+        if (myInput.endsWith(d_pointer->m_textAfterCurrentValue)) {
+            myInput.chop(d_pointer->m_textAfterCurrentValue.size());
+        } else {
+            return QValidator::State::Invalid;
+        }
+    }
+
+    QValidator::State result = //
+        d_pointer->m_validator->validate(myInput, myPos);
+    // Following the Qt documentation, QValidator::validate() is allowed
+    // and indented to make changes to the arguments passed by reference
+    // (“input” and “pos”). However, we use its child class QDoubleValidator.
+    // The documentation of QDoubleValidator states that the “pos” argument
+    // is not used. Therefore, write back only the “input” argument.
+    input = d_pointer->m_textBeforeCurrentValue //
+        + myInput //
+        + d_pointer->m_textAfterCurrentValue;
+
+    return result;
 }
 
 /**

@@ -145,7 +145,6 @@ if(BUILD_TESTING)
         testconstpropagatingrawpointer
         testconstpropagatinguniquepointer
         testcsscolor
-        testextendeddoublevalidator
         testgenericcolor
         testgradientimageparameters
         testgradientslider

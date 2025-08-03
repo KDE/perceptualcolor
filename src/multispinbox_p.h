@@ -17,6 +17,7 @@
 #include <qpointer.h>
 #include <qstring.h>
 class QAccessibleInterface;
+class QDoubleValidator;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -24,7 +25,6 @@ class QAccessibleInterface;
 
 namespace PerceptualColor
 {
-class ExtendedDoubleValidator;
 class MultiSpinBox;
 
 /** @internal
@@ -89,21 +89,10 @@ public:
     QString m_textBeforeCurrentValue;
     /** @brief The string of the pending value of the current section. */
     QString m_textOfCurrentPendingValue;
-    /** @brief The validator for the <tt>QLineEdit</tt>.
-     *
-     * This validator allows changes only to the <em>current</em> section.
-     *
-     * If the section configuration, the current section index or the locale
-     * changes, @ref updateValidator() must be called to update this value.
-     *
-     * @note It is <em>not</em> possible to change various values at the
-     * same time, for example by marking all the current text and use
-     * Ctrl-V to past a complete new value from the clipboard. This would
-     * be impossible to parse reliably, because the prefixes and suffixes
-     * of each section might contain (localized) digits that would be
-     * difficult to differentiate from the actual value.
+    /**
+     * @brief Basic validator functionality.
      */
-    QPointer<ExtendedDoubleValidator> m_validator;
+    QPointer<QDoubleValidator> m_validator;
 
     // Functions
     void applyPendingSectionValuesAndEmitSignals();

@@ -31,6 +31,7 @@
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
 #include <qtestsupport_widgets.h>
+#include <qvalidator.h>
 #include <qvariant.h>
 #include <qwidget.h>
 
@@ -2254,6 +2255,30 @@ private Q_SLOTS:
         // The next line should produce a compiler error if the
         // type is not declared to Qt’s Meta Object System.
         test.setValue(QList<double>());
+    }
+
+    void testValidate()
+    {
+        MultiSpinBoxSection mySection;
+        mySection.setFormatString(QStringLiteral("abc%1def"));
+        mySection.setMinimum(0);
+        mySection.setMaximum(1000);
+        mySection.setDecimals(0);
+        QList<MultiSpinBoxSection> myConfigs{mySection};
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(myConfigs);
+
+        const QString originalInput = QStringLiteral("abc123def");
+        QString myInput = originalInput;
+        const int originalPos = 5;
+        int myPos = originalPos;
+        QValidator::State result = myMulti.validate(myInput, myPos);
+        // The input should be considered valid.
+        QCOMPARE(result, QValidator::State::Acceptable);
+        // On simple cases of valid input, the string should not change.
+        QCOMPARE(myInput, originalInput);
+        // On simple cases of valid input, the position should not change.
+        QCOMPARE(myPos, originalPos);
     }
 
     void testSnippet02()
