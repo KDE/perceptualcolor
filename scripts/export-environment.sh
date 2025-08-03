@@ -30,6 +30,14 @@ PARALLEL_PROCESSES=`nproc --all`
 # • no-inefficient-qlist-soft: In Qt6, QList and QVector are aliases
 #   anyway. And, in Qt6 QList is the default type. So we will follow
 #   this recommendation and always use QList.
+# • no-qstring-ref: Since Qt6, QStringRef moved to core5compat. Even in Qt5,
+#   it was a bad idea. Qt documentation says: “For most users, there are no
+#   […] benefits […] since QStringRef requires attention to be paid to memory
+#   management issues, […] making code more complex to […] maintain. […] If the
+#   original string is deleted, the string reference points to an invalid
+#   memory location. We suggest that you only use this class […] where
+#   profiling has clearly identified that performance improvements can be
+#   made […].”
 #
 # There are some more checks that are not part of any level and have to be
 # enabled manually. We enable all of them (that are available at the time
@@ -51,6 +59,7 @@ PARALLEL_PROCESSES=`nproc --all`
 export CLAZY_CHECKS="level2,\
 \
 no-ctor-missing-parent-argument,\
+no-qstring-ref,\
 \
 assert-with-side-effects,\
 container-inside-loop,\

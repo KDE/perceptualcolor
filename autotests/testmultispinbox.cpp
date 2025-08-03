@@ -2281,6 +2281,55 @@ private Q_SLOTS:
         QCOMPARE(myPos, originalPos);
     }
 
+    void testDecimalSeparatorJump()
+    {
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBoxSection section;
+        section.setFormatString(QStringLiteral("%1"));
+        section.setMinimum(0);
+        section.setMaximum(1000);
+        section.setDecimals(2);
+        myMulti.setLocale(QLocale::German);
+        myMulti.setSectionConfigurations(QList<MultiSpinBoxSection>{section});
+        myMulti.show();
+        myMulti.setKeyboardTracking(true);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        myMulti.setSectionValues({12.34});
+        QSignalSpy spyMulti( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChanged);
+        QSignalSpy spyMultiAsQString( //
+            &myMulti, //
+            &MultiSpinBox::sectionValuesChangedAsQString);
+        QCOMPARE(myMulti.text(), QStringLiteral("12,34"));
+        QCOMPARE(spyMulti.size(), 0);
+        QCOMPARE(spyMultiAsQString.size(), 0);
+
+        myMulti.lineEdit()->setCursorPosition(1);
+        QTest::keyClick(&myMulti, Qt::Key_Comma); // Should be ignored
+        QCOMPARE(myMulti.text(), QStringLiteral("12,34"));
+        QCOMPARE(spyMulti.size(), 0);
+        QCOMPARE(spyMultiAsQString.size(), 0);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 1);
+
+        myMulti.lineEdit()->setCursorPosition(2);
+        QTest::keyClick(&myMulti, Qt::Key_Comma); // Should advance cursor
+        QCOMPARE(myMulti.text(), QStringLiteral("12,34"));
+        QCOMPARE(spyMulti.size(), 0);
+        QCOMPARE(spyMultiAsQString.size(), 0);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 3);
+
+        myMulti.lineEdit()->setCursorPosition(3);
+        QTest::keyClick(&myMulti, Qt::Key_Comma); // Should be ignored
+        QCOMPARE(myMulti.text(), QStringLiteral("12,34"));
+        QCOMPARE(spyMulti.size(), 0);
+        QCOMPARE(spyMultiAsQString.size(), 0);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 3);
+    }
+
     void testSnippet02()
     {
         snippet02();

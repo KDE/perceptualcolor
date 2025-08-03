@@ -122,20 +122,6 @@ class MultiSpinBoxPrivate;
  * the one in the middle (you can try this by using your mouse wheel on
  * the widget).
  *
- * @todo Validation behaviour of MultiSpinBox differs from QDoubleSpinBox.
- * The latter is much strikter: It seems to not even allow intermediate
- * states that do not directly translate (after fixup(), I suppose?) to a
- * valid value in the valid range. On the other hand, it handles nicely when
- * the user types a decimal separator with the text cursor being placed before
- * an existing decimal separator (resulting in a text cursor movement to the
- * right). We have to test
- * correctionMode/setCorrectionMode which seems quite impossible in these
- * conditions. Can we get indirectly information by observing how value()
- * changes (in lambdas connected to valueChanged or textChanged)?
- * It would be nice to get the decimal-separator support, but it is not
- * sure if it's a good idea to use just an invisible <tt>QDoubleSpinBox</tt> in
- * the background and abuse its <tt>QDoubleSpinBox::validate()</tt> method?
- *
  * @todo Right-click context menu behaves strange: When used, it changes
  * the cursor position. And increment/decrement is applied to the wrong
  * section (not the original one, the always the first one - while

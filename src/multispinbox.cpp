@@ -1210,6 +1210,17 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
     QString myInput = input;
     int myPos = pos;
 
+    // If a decimal separator is typed while the cursor is positioned before an
+    // existing one, do not insert a second separator. Instead, move the cursor
+    // to the position immediately after the existing decimal separator.
+    const QString decimalSeparator = locale().decimalPoint();
+    const QString doubleDecimalPoint = decimalSeparator + decimalSeparator;
+    if (pos > 0) {
+        if (myInput.mid(pos - 1).startsWith(doubleDecimalPoint)) { // clazy:exclude=qstring-ref
+            myInput.remove(pos, decimalSeparator.length());
+        }
+    }
+
     // IF (m_prefix.isEmpty && !m_prefix.isNull)
     // THEN input.startsWith(m_prefix)
     // →  will be true IF !input.isEmpty
