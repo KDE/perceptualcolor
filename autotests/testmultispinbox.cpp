@@ -12,7 +12,9 @@
 #include <qabstractspinbox.h>
 #include <qaction.h>
 #include <qapplication.h>
+#include <qcoreevent.h>
 #include <qdebug.h>
+#include <qevent.h>
 #include <qglobal.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -771,7 +773,6 @@ private Q_SLOTS:
         // Move focus from widget2/section2 to widget3
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
-        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
 
         // Cleanup
         delete widget1;
@@ -2637,6 +2638,44 @@ private Q_SLOTS:
         QTest::keyClick(&myMulti, Qt::Key_C);
         QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
         QCOMPARE(myMulti.lineEdit()->cursorPosition(), 5);
+    }
+
+    void testContextMenu()
+    {
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBoxSection section;
+        section.setFormatString(QStringLiteral("a%1b"));
+        section.setMinimum(0);
+        section.setMaximum(1000);
+        section.setDecimals(0);
+        QList<MultiSpinBoxSection> configs;
+        configs.append(section);
+        section.setFormatString(QStringLiteral("c%1d"));
+        configs.append(section);
+        myMulti.setSectionConfigurations(configs);
+        myMulti.setLocale(QLocale::English);
+        myMulti.show();
+        myMulti.setKeyboardTracking(true);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        myMulti.setSectionValues({1, 2});
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
+        myMulti.lineEdit()->setCursorPosition(0);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
+        myMulti.lineEdit()->setCursorPosition(5);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
+
+        // Simulate (more or less) the appearance of a context menu after a
+        // right-click with the mouse:
+        QFocusEvent event(QEvent::FocusOut, Qt::PopupFocusReason);
+        QApplication::sendEvent(&myMulti, &event);
+
+        // A right-click with the mouse should only pop up the context menu,
+        // maybe select the value of the current section, but never change
+        // the current section index.
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
     }
 
     void testSnippet02()

@@ -102,31 +102,6 @@ class MultiSpinBoxPrivate;
  *   separators. It's possible to copy this text (both, by Ctrl+C and by
  *   insertion by middle mouse click on Linux).
  *
- * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
- * Then, switch back the the “numeric“ tab. Expected behaviour: When
- * a @ref MultiSpinBox gets back the focus, always the first section should
- * be <em>highlighted/selected</em>, independent from what was selected or
- * the cursor position before the @ref MultiSpinBox lost the focus.
- * (While <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt> don’t do that
- * either, <tt>QDateTimeEdit</tt> indeed <em>does</em>, and that seems
- * appropriate also for @ref MultiSpinBox.
- * On the other hand: QLineEdit
- * leaves the curser where it is (as long as no diagram widget was clicked and
- * the values changed)
- * and that seems practical for small switches?
- *
- * @todo Now, @ref setSectionValues does not select automatically the first
- * section anymore. Is this in conformance with <tt>QDateTimeEdit</tt>?
- * Test: Change the value in the middle. Push “Apply” button. Now, the
- * curser is at the end of the spin box, but the active section is still
- * the one in the middle (you can try this by using your mouse wheel on
- * the widget).
- *
- * @todo Right-click context menu behaves strange: When used, it changes
- * the cursor position. And increment/decrement is applied to the wrong
- * section (not the original one, the always the first one - while
- * QDateTimeEdit applies it correctly to the current one).
- *
  * For feature parity with QAbstractSpinBox, QDoubleSpinBox, QDateTimeEdit and
  * the relevant parts of QLineEdit, the API could be extended.
  *

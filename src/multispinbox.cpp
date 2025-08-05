@@ -31,7 +31,6 @@
 #include <qstyleoption.h>
 #include <qvalidator.h>
 #include <qwidget.h>
-#include <utility>
 class QAction;
 
 namespace PerceptualColor
@@ -112,13 +111,6 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
             &QLineEdit::cursorPositionChanged, // signal
             d_pointer.get(), // receiver
             &MultiSpinBoxPrivate::reactOnCursorPositionChange // slot
-    );
-    connect(this, // sender
-            &QAbstractSpinBox::editingFinished, // signal
-            d_pointer.get(), // receiver
-            [this]() {
-                d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
-            } // slot
     );
 
     // Initialize accessibility support
@@ -762,24 +754,8 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
 void MultiSpinBox::focusOutEvent(QFocusEvent *event)
 {
     d_pointer->updatePrefixValueSuffixText();
-    switch (event->reason()) {
-    case Qt::ShortcutFocusReason:
-    case Qt::TabFocusReason:
-    case Qt::BacktabFocusReason:
-    case Qt::MouseFocusReason:
-        d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
-        break;
-
-    case Qt::ActiveWindowFocusReason:
-    case Qt::PopupFocusReason:
-    case Qt::MenuBarFocusReason:
-    case Qt::OtherFocusReason:
-    case Qt::NoFocusReason:
-    default:
-        d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
-            d_pointer->m_currentIndex);
-        break;
-    }
+    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+        d_pointer->m_currentIndex);
     // Make sure that the buttons for step up and step down
     // are updated.
     update();
