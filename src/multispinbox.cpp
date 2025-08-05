@@ -712,10 +712,17 @@ void MultiSpinBox::setSectionValues(const QList<double> &newSectionValues)
  * otherwise. */
 bool MultiSpinBox::focusNextPrevChild(bool next)
 {
+    const auto currentIndex = d_pointer->m_currentIndex;
+    const auto cursorPosition = lineEdit()->cursorPosition();
+    const bool isBeforeCurrentValue = //
+        cursorPosition < d_pointer->m_textBeforeCurrentValue.size();
     if (next == true) { // Move focus forward (Tab)
-        if (d_pointer->m_currentIndex < (d_pointer->m_sectionConfigurations.size() - 1)) {
-            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
-                d_pointer->m_currentIndex + 1);
+        const auto newIndex = //
+            isBeforeCurrentValue //
+            ? currentIndex //
+            : currentIndex + 1;
+        if (newIndex < d_pointer->m_sectionConfigurations.size()) {
+            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(newIndex);
             d_pointer->applyPendingSectionValuesAndEmitSignals();
             // Make sure that the buttons for step up and step down
             // are updated.
@@ -723,9 +730,12 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
             return true;
         }
     } else { // Move focus backward (Shift+Tab)
-        if (d_pointer->m_currentIndex > 0) {
-            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
-                d_pointer->m_currentIndex - 1);
+        const auto newIndex = //
+            isBeforeCurrentValue || d_pointer->isCursorTouchingCurrentSectionValue() //
+            ? currentIndex - 1 //
+            : currentIndex;
+        if (newIndex >= 0) {
+            d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(newIndex);
             d_pointer->applyPendingSectionValuesAndEmitSignals();
             // Make sure that the buttons for step up and step down
             // are updated.

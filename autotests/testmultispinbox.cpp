@@ -780,6 +780,263 @@ private Q_SLOTS:
         delete label2;
     }
 
+    void testFocusTabPrefixSuffix()
+    {
+        // Integration for reactions on Tab or Shift-Tab depending on
+        // cursor position.
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        QSpinBox *widget1 = new QSpinBox(parentWidget.data());
+        widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        PerceptualColor::MultiSpinBox *widget2 = //
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        MultiSpinBoxSection mySection;
+        QList<MultiSpinBoxSection> configs;
+        mySection.setDecimals(0);
+        mySection.setFormatString(QStringLiteral("ab%1cd"));
+        configs.append(mySection);
+        mySection.setFormatString(QStringLiteral("ef%1gh"));
+        configs.append(mySection);
+        mySection.setFormatString(QStringLiteral("ij%1kl"));
+        configs.append(mySection);
+        widget2->setSectionConfigurations(configs);
+        widget2->setSectionValues({0, 1, 2});
+        QLineEdit *widget3 = new QLineEdit(parentWidget.data());
+        widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+
+        // It is necessary to show the widget and make it active
+        // to make focus and widget events working within unit tests.
+        parentWidget->show();
+        parentWidget->activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+
+        // Assert that the setup is okay.
+        QVERIFY(widget2->d_pointer->m_sectionConfigurations.size() == 3);
+        QCOMPARE(widget2->text(), QStringLiteral("ab0cdef1ghij2kl"));
+
+        // Start actual testing
+
+        // Apparently it isn’t possible to call simply the key click
+        // on the parent widget. This code fails sometimes:
+        // QTest::keyClick(parentWidget, Qt::Key::Key_Tab);
+        // Therefore, we call QTest::keyClick() on
+        // QApplication::focusWidget()
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(0);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("0"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(0);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget1);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(1);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("0"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(1);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget1);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(2);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(2);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget1);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(3);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(3);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget1);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(4);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(4);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("0"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(6);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(6);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("0"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(7);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("2"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(7);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("0"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(8);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("2"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(8);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("0"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(9);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("2"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(9);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(11);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("2"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(11);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(12);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget3);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(12);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(13);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget3);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(13);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("1"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(14);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget3);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(14);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("2"));
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(15);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+        QCOMPARE(QApplication::focusWidget(), widget3);
+
+        widget2->setFocus();
+        widget2->lineEdit()->setCursorPosition(15);
+        QTest::keyClick(QApplication::focusWidget(), //
+                        Qt::Key::Key_Tab, //
+                        Qt::KeyboardModifier::ShiftModifier);
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
+        QCOMPARE(widget2->lineEdit()->selectedText(), QStringLiteral("2"));
+
+        // Cleanup
+        delete widget1;
+        delete widget2;
+        delete widget3;
+    }
+
     void testIsGroupSeparatorShown()
     {
         MultiSpinBoxSection myConfig;
