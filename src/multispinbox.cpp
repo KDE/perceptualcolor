@@ -825,6 +825,30 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
  */
 void MultiSpinBox::keyPressEvent(QKeyEvent *event)
 {
+    const auto eventText = event->text();
+    if (!eventText.isEmpty() && !lineEdit()->hasSelectedText()) {
+        const auto i = d_pointer->m_currentIndex;
+        const bool hasNextSection = //
+            i < d_pointer->m_sectionConfigurations.size() - 1;
+        if (hasNextSection) {
+            const auto posEndOfCurrentSectionValue = //
+                lineEdit()->text().size() //
+                - d_pointer->m_textAfterCurrentValue.size();
+            if (lineEdit()->cursorPosition() == posEndOfCurrentSectionValue) {
+                const QString nextSeparator = //
+                    d_pointer->m_sectionConfigurations.value(i).suffix() //
+                    + d_pointer->m_sectionConfigurations.value(i + 1).prefix();
+                if (nextSeparator.startsWith(eventText)) {
+                    // Analogous to QDateTimeEdit, treat typing the next
+                    // separator as if Tab had been pressed: Move to the next
+                    // section.
+                    focusNextPrevChild(true);
+                    return;
+                }
+            }
+        }
+    }
+
     const auto key = event->key();
     if ((key == Qt::Key_Enter) || (key == Qt::Key_Return)) {
         d_pointer->updatePrefixValueSuffixText();

@@ -2330,6 +2330,58 @@ private Q_SLOTS:
         QCOMPARE(myMulti.lineEdit()->cursorPosition(), 3);
     }
 
+    void testJumpToNextSection()
+    {
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBoxSection section;
+        section.setFormatString(QStringLiteral("a%1b"));
+        section.setMinimum(0);
+        section.setMaximum(1000);
+        section.setDecimals(0);
+        QList<MultiSpinBoxSection> configs;
+        configs.append(section);
+        section.setFormatString(QStringLiteral("c%1d"));
+        configs.append(section);
+        myMulti.setSectionConfigurations(configs);
+        myMulti.setLocale(QLocale::English);
+        myMulti.show();
+        myMulti.setKeyboardTracking(true);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        myMulti.setSectionValues({1, 2});
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
+
+        myMulti.lineEdit()->setCursorPosition(2);
+        QTest::keyClick(&myMulti, Qt::Key_X); // Should be ignored
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+
+        myMulti.lineEdit()->setSelection(1, 1);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+        // Even appropriate keys should be ignored when text is selected:
+        QTest::keyClick(&myMulti, Qt::Key_B);
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+
+        myMulti.lineEdit()->deselect();
+        myMulti.lineEdit()->setCursorPosition(2);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+        QTest::keyClick(&myMulti, Qt::Key_B); // Switch to next section
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 5);
+        QCOMPARE(myMulti.lineEdit()->selectedText(), QStringLiteral("2"));
+
+        myMulti.lineEdit()->deselect();
+        myMulti.lineEdit()->setCursorPosition(5);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 5);
+        // Even appropriate keys should be ignored if this is the last section.
+        QTest::keyClick(&myMulti, Qt::Key_C);
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 5);
+    }
+
     void testSnippet02()
     {
         snippet02();
