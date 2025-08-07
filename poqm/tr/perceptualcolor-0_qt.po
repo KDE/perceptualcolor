@@ -344,7 +344,7 @@ msgid "Custom Colors"
 msgstr "Özel renkler"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1261
+#: colordialog.cpp:1260
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Renk Seç"
