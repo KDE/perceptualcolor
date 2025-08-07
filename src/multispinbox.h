@@ -84,23 +84,35 @@ class MultiSpinBoxPrivate;
  *
  * @internal
  *
- * @todo <tt>selectAll()</tt>:
- *   This slot has a default behaviour that relies on internal
- *   <tt>QAbstractSpinBox</tt> private implementations, which we cannot use
- *   because they are not part of the public API and can therefore change
- *   at any moment. As it isn’t virtual, we cannot reimplement it either.
- *   (Does this shortcut
- *   trigger <tt>selectAll()</tt>?)
- *   Strg+A selects the whole text of the MultiSpinBox. The text cursor
- *   position is at the beginning. It's the first section that will react on
- *   Page-up and Page-down events. This is conform to the behaviour
- *   of QTimeDateEdit. The underlying problem is however that we should make
- *   the normal text selection work as expected:
- *   It is possible to select (either with the left mouse click + mouse
- *   move, or with Shift key + the arrow keys) arbitrary parts of the line
- *   edit, including partial and complete selection of prefixes, suffixes and
- *   separators. It's possible to copy this text (both, by Ctrl+C and by
- *   insertion by middle mouse click on Linux).
+ * @todo <b>Text selection:</b><br/>
+ * <tt>QAbstractSpinBox::selectAll()</tt> is a public slot that sets a
+ * selection in the underlying <tt>QLineEdit</tt>. Since it is not virtual, we
+ * cannot reimplement it.<br/>
+ * It is unclear whether pressing Ctrl+A invokes
+ * <tt>QAbstractSpinBox::selectAll()</tt> or <tt>QLineEdit::selectAll()</tt>.
+ * Likewise, it is unclear which implementation is invoked by the context
+ * menu’s “Select All” option.<br/>
+ * After calling <tt>selectAll()</tt>, the text cursor moves to the beginning
+ * of the <tt>QLineEdit</tt>. Consequently, the first section responds to
+ * Page-Up and Page-Down events, similar to <tt>QDateTimeEdit</tt>.<br/>
+ * However, currently Ctrl+A must be pressed twice for this behavior to occur.
+ * It should work on the first press. The underlying issue is that normal text
+ * selection is broken and needs to be fixed.<br/>
+ * Expected behavior:<br/>
+ * - Users should be able to select arbitrary parts of the line edit using
+ *   either mouse drag or Shift + arrow keys.<br/>
+ * - Possible text selection include partial and complete prefixes and
+ *   suffixes.<br/>
+ * - Selected text should be copyable via Ctrl+C or middle-click paste (on
+ *   Linux).<br/>
+ * - During text selection, automatic corrections (e.g., transforming “03”
+ *   into “3”) must be disabled. These corrections confuse users and make it
+ *   programmatically unclear which part of the corrected string is actually
+ *   selected. <tt>QDateTimeEdit</tt> handles this correctly: corrections are
+ *   postponed until the selection is cleared, and then applied only after the
+ *   cursor moves again to a different section. We could improve upon this by
+ *   applying all corrections immediately after the selection is cleared—except
+ *   for the current section.
  *
  * For feature parity with QAbstractSpinBox, QDoubleSpinBox, QDateTimeEdit and
  * the relevant parts of QLineEdit, the API could be extended in the future:
