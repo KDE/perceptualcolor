@@ -442,7 +442,7 @@ static void makeScreenshots()
         hsvFormat.append(mySection);
         values.append(100);
         m_multiSpinBox.setFormat(hsvFormat);
-        m_multiSpinBox.setSectionValues(values);
+        m_multiSpinBox.setValues(values);
         screenshotDelayed(&m_multiSpinBox);
 
         // Out-of-gamut button for the HLC spin box
@@ -459,7 +459,7 @@ static void makeScreenshots()
         MultiSpinBox m_multiSpinBoxWithButton;
         m_multiSpinBoxWithButton.setFormat( //
             hsvFormat);
-        m_multiSpinBoxWithButton.setSectionValues(values);
+        m_multiSpinBoxWithButton.setValues(values);
         m_multiSpinBoxWithButton.addActionButton( //
             myAction, //
             QLineEdit::ActionPosition::TrailingPosition);

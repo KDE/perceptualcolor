@@ -1164,7 +1164,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &ColorDialogPrivate::readSwatchBookCustomColorsValue // slot
     );
     connect(m_rgbSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
+            &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readRgbNumericValues // slot
     );
@@ -1179,22 +1179,22 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &ColorDialogPrivate::updateRgbHexButBlockSignals // slot
     );
     connect(m_hslSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
+            &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readHslNumericValues // slot
     );
     connect(m_hwbSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
+            &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readHwbNumericValues // slot
     );
     connect(m_hsvSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
+            &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readHsvNumericValues // slot
     );
     connect(m_cielchD50SpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
+            &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readLchNumericValues // slot
     );
@@ -1204,7 +1204,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &ColorDialogPrivate::updateLchButBlockSignals // slot
     );
     connect(m_oklchSpinBox, // sender
-            &MultiSpinBox::sectionValuesChanged, // signal
+            &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readOklchNumericValues // slot
     );
@@ -1591,38 +1591,38 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 
     // Update RGB widget
     if (m_rgbSpinBox != ignoreWidget) {
-        m_rgbSpinBox->setSectionValues( //
+        m_rgbSpinBox->setValues( //
             m_currentOpaqueColorRgb.rgb255.toQList3());
     }
 
     // Update HSL widget
     if (m_hslSpinBox != ignoreWidget) {
-        m_hslSpinBox->setSectionValues( //
+        m_hslSpinBox->setValues( //
             m_currentOpaqueColorRgb.hsl.toQList3());
     }
 
     // Update HWB widget
     if (m_hwbSpinBox != ignoreWidget) {
-        m_hwbSpinBox->setSectionValues( //
+        m_hwbSpinBox->setValues( //
             m_currentOpaqueColorRgb.hwb.toQList3());
     }
 
     // Update HSV widget
     if (m_hsvSpinBox != ignoreWidget) {
-        m_hsvSpinBox->setSectionValues( //
+        m_hsvSpinBox->setValues( //
             m_currentOpaqueColorRgb.hsv.toQList3());
     }
 
     // Update CIELCH-D50 widget
     const GenericColor cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
     if (m_cielchD50SpinBox != ignoreWidget) {
-        m_cielchD50SpinBox->setSectionValues(cielchD50.toQList3());
+        m_cielchD50SpinBox->setValues(cielchD50.toQList3());
     }
 
     // Update Oklch widget
     const auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
     if (m_oklchSpinBox != ignoreWidget) {
-        m_oklchSpinBox->setSectionValues(oklch.toQList3());
+        m_oklchSpinBox->setValues(oklch.toQList3());
     }
 
     // Update RGB hex widget
@@ -1699,7 +1699,7 @@ void ColorDialogPrivate::readHslNumericValues()
         return;
     }
     const auto temp = RgbColor::fromHsl( //
-        GenericColor(m_hslSpinBox->sectionValues()));
+        GenericColor(m_hslSpinBox->values()));
     setCurrentOpaqueColor(temp, m_hslSpinBox);
 }
 
@@ -1712,7 +1712,7 @@ void ColorDialogPrivate::readHwbNumericValues()
         return;
     }
     const auto temp = RgbColor::fromHwb( //
-        GenericColor(m_hwbSpinBox->sectionValues()));
+        GenericColor(m_hwbSpinBox->values()));
     setCurrentOpaqueColor(temp, m_hwbSpinBox);
 }
 
@@ -1725,7 +1725,7 @@ void ColorDialogPrivate::readHsvNumericValues()
         return;
     }
     const auto temp = RgbColor::fromHsv( //
-        GenericColor(m_hsvSpinBox->sectionValues()));
+        GenericColor(m_hsvSpinBox->values()));
     setCurrentOpaqueColor(temp, m_hsvSpinBox);
 }
 
@@ -1738,7 +1738,7 @@ void ColorDialogPrivate::readRgbNumericValues()
         return;
     }
     const auto temp = RgbColor::fromRgb255( //
-        GenericColor(m_rgbSpinBox->sectionValues()));
+        GenericColor(m_rgbSpinBox->values()));
     setCurrentOpaqueColor(temp, m_rgbSpinBox);
 }
 
@@ -1913,7 +1913,7 @@ void ColorDialogPrivate::updateLchButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_cielchD50SpinBox);
     const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
-    m_cielchD50SpinBox->setSectionValues(cielchD50.toQList3());
+    m_cielchD50SpinBox->setValues(cielchD50.toQList3());
     m_cielchD50SpinBoxGamutAction->setVisible(false);
 }
 
@@ -1926,7 +1926,7 @@ void ColorDialogPrivate::updateOklchButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_oklchSpinBox);
     const auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
-    m_oklchSpinBox->setSectionValues(oklch.toQList3());
+    m_oklchSpinBox->setValues(oklch.toQList3());
     m_oklchSpinBoxGamutAction->setVisible(false);
 }
 
@@ -1938,7 +1938,7 @@ void ColorDialogPrivate::readLchNumericValues()
         // Nothing to do!
         return;
     }
-    const GenericColor lchValues = GenericColor(m_cielchD50SpinBox->sectionValues());
+    const GenericColor lchValues = GenericColor(m_cielchD50SpinBox->values());
     if (m_rgbColorSpace->isCielchD50InGamut(lchValues)) {
         m_cielchD50SpinBoxGamutAction->setVisible(false);
     } else {
@@ -1965,9 +1965,9 @@ void ColorDialogPrivate::readOklchNumericValues()
     // the Oklch gamut. This leads to wrong results, because Oklch hue is not
     // guaranteed to be respected. Use actually Oklch to move into gamut!
     GenericColor originalOklch;
-    originalOklch.first = m_oklchSpinBox->sectionValues().value(0);
-    originalOklch.second = m_oklchSpinBox->sectionValues().value(1);
-    originalOklch.third = m_oklchSpinBox->sectionValues().value(2);
+    originalOklch.first = m_oklchSpinBox->values().value(0);
+    originalOklch.second = m_oklchSpinBox->values().value(1);
+    originalOklch.third = m_oklchSpinBox->values().value(2);
     if (m_rgbColorSpace->isOklchInGamut(originalOklch)) {
         m_oklchSpinBoxGamutAction->setVisible(false);
     } else {

@@ -133,12 +133,12 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
      * @invariant This property always contains the same number of elements as
      * @ref format contains.
      *
-     * @sa READ @ref sectionValues() const
-     * @sa WRITE @ref setSectionValues()
-     * @sa NOTIFY @ref sectionValuesChanged()
-     * @sa Alternative notify signal: @ref sectionValuesChangedAsQString()
+     * @sa READ @ref values() const
+     * @sa WRITE @ref setValues()
+     * @sa NOTIFY @ref valuesChanged()
+     * @sa Alternative notify signal: @ref valuesChangedAsQString()
      */
-    Q_PROPERTY(QList<double> sectionValues READ sectionValues WRITE setSectionValues NOTIFY sectionValuesChanged USER true)
+    Q_PROPERTY(QList<double> values READ values WRITE setValues NOTIFY valuesChanged USER true)
 
 public:
     Q_INVOKABLE explicit MultiSpinBox(QWidget *parent = nullptr);
@@ -150,32 +150,32 @@ public:
     virtual void fixup(QString &input) const override;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> format() const;
-    /** @brief Getter for property @ref sectionValues
-     *  @returns the property @ref sectionValues
+    /** @brief Getter for property @ref values
+     *  @returns the property @ref values
      *
      * @internal
      *
      * This it the counterpart to
      * <tt>double QDoubleSpinBox::value() const</tt>.
      */
-    [[nodiscard]] QList<double> sectionValues() const;
+    [[nodiscard]] QList<double> values() const;
     Q_INVOKABLE void setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat);
     [[nodiscard]] virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
     virtual QValidator::State validate(QString &input, int &pos) const override;
 
 public Q_SLOTS:
-    void setSectionValues(const QList<double> &newSectionValues);
+    void setValues(const QList<double> &newValues);
 
 Q_SIGNALS:
     /**
-     * @brief Notifier signal for the @ref sectionValues property.
+     * @brief Notifier signal for the @ref values property.
      *
      * This signal is emitted simultaneously with
-     * @ref sectionValuesChangedAsQString whenever the values in one or more
-     * sections of the @ref sectionValues property change.
+     * @ref valuesChangedAsQString whenever the values in one or more
+     * sections of the @ref values property change.
      *
-     * @param newSectionValues The updated @ref sectionValues
+     * @param newValues The updated @ref values
      *
      * Depending on your use case (for
      * example if you want to use for <em>queued</em> signal-slot connections),
@@ -187,17 +187,17 @@ Q_SIGNALS:
      * This it the counterpart to
      * <tt>void QDoubleSpinBox::valueChanged(double d)</tt>.
      */
-    void sectionValuesChanged(const QList<double> &newSectionValues);
+    void valuesChanged(const QList<double> &newValues);
     /**
-     * @brief Alternative notifier signal for the @ref sectionValues property
+     * @brief Alternative notifier signal for the @ref values property
      *        with a QString argument.
      *
      * This signal is emitted simultaneously with
-     * @ref sectionValuesChanged  whenever the values in one or more
-     * sections of the @ref sectionValues property change, but provides the
+     * @ref valuesChanged  whenever the values in one or more
+     * sections of the @ref values property change, but provides the
      * values as a QString representation.
      *
-     * @param newSectionValuesQString The updated @ref sectionValues as a
+     * @param newValuesQString The updated @ref values as a
      *        QString. This string reflects the current textual representation
      *        visible to the user in the widget. It may also include
      *        intermediate editing states, such as <tt>01</tt> instead of
@@ -233,10 +233,10 @@ Q_SIGNALS:
      * <br/>
      * To avoid ambiguity, @ref MultiSpinBox uses a name that clearly reflects
      * the signal’s true nature: it is a string-based alternative notifier
-     * for the @ref sectionValues property, and has no relation to
+     * for the @ref values property, and has no relation to
      * <tt>QAbstractSpinBox::text</tt>.
      */
-    void sectionValuesChangedAsQString(const QString &newSectionValuesQString);
+    void valuesChangedAsQString(const QString &newValuesQString);
 
 protected:
     virtual void changeEvent(QEvent *event) override;

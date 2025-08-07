@@ -74,7 +74,7 @@ static void snippet02()
 
     myHsvSpinBox->setFormat(hsvConfigurations);
 
-    myHsvSpinBox->setSectionValues(QList<double>{310, 200, 100});
+    myHsvSpinBox->setValues(QList<double>{310, 200, 100});
     // Initial content is:  310,0°  200,0  100,0
     //! [MultiSpinBox Basic example]
     delete myHsvSpinBox;
@@ -181,7 +181,7 @@ private Q_SLOTS:
         QDoubleSpinBox myDoubleSpinBox;
 
         // Test default section values
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test default values of the configuration directly in the widget
         QCOMPARE(myMulti.format().at(0).decimals(), //
@@ -200,8 +200,8 @@ private Q_SLOTS:
                  myDoubleSpinBox.suffix());
 
         // Whitebox tests
-        QCOMPARE(myMulti.sectionValues(), QList<double>{0});
-        QCOMPARE(myMulti.d_pointer->m_sectionValues, QList<double>{0});
+        QCOMPARE(myMulti.values(), QList<double>{0});
+        QCOMPARE(myMulti.d_pointer->m_values, QList<double>{0});
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
     }
 
@@ -348,7 +348,7 @@ private Q_SLOTS:
         QList<double> myValues;
         myValues.clear();
         myValues.append(40);
-        test.setSectionValues(myValues);
+        test.setValues(myValues);
         QVERIFY2(
             // condition
             test.d_pointer->m_format.at(0).minimum() //
@@ -358,12 +358,12 @@ private Q_SLOTS:
         QVERIFY2(
             // condition
             test.d_pointer->m_format.at(0).minimum() //
-                <= test.d_pointer->m_sectionValues.at(0),
+                <= test.d_pointer->m_values.at(0),
             // comment
             "minimum <= value");
         QVERIFY2(
             // condition
-            test.d_pointer->m_sectionValues.at(0) //
+            test.d_pointer->m_values.at(0) //
                 <= test.d_pointer->m_format.at(0).maximum(),
             // comment
             "value <= maximum");
@@ -385,12 +385,12 @@ private Q_SLOTS:
         QVERIFY2(
             // condition
             test.d_pointer->m_format.at(0).minimum() //
-                <= test.d_pointer->m_sectionValues.at(0),
+                <= test.d_pointer->m_values.at(0),
             // comment
             "minimum <= value");
         QVERIFY2(
             // condition
-            test.d_pointer->m_sectionValues.at(0) //
+            test.d_pointer->m_values.at(0) //
                 <= test.d_pointer->m_format.at(0).maximum(),
             // comment
             "value <= maximum");
@@ -476,7 +476,7 @@ private Q_SLOTS:
         myValues.append(80);
 
         myMulti.setFormat(myConfigurations);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         myMulti.d_pointer->m_currentIndex = 1;
         myMulti.d_pointer->updatePrefixValueSuffixText();
         QCOMPARE(myMulti.d_pointer->m_textBeforeCurrentValue, //
@@ -507,7 +507,7 @@ private Q_SLOTS:
         myValues.append(80);
 
         myMulti.setFormat(myConfigurations);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
         QVERIFY2(!myMulti.lineEdit()->hasSelectedText(), //
@@ -546,7 +546,7 @@ private Q_SLOTS:
         myValues.append(80);
 
         myMulti.setFormat(myConfigurations);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
 
         myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
@@ -570,7 +570,7 @@ private Q_SLOTS:
         myMulti.setFormat(myConfigurations);
         myValues.clear();
         myValues.append(8);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         QAbstractSpinBox::StepEnabled flags = myMulti.stepEnabled();
         QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), //
                  "Step up should be enabled");
@@ -579,7 +579,7 @@ private Q_SLOTS:
 
         myValues.clear();
         myValues.append(9);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         flags = myMulti.stepEnabled();
         QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepUpEnabled), //
                  "Step up should be disabled");
@@ -588,7 +588,7 @@ private Q_SLOTS:
 
         myValues.clear();
         myValues.append(10);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         flags = myMulti.stepEnabled();
         QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepUpEnabled), //
                  "Step up should be disabled");
@@ -597,7 +597,7 @@ private Q_SLOTS:
 
         myValues.clear();
         myValues.append(1);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         flags = myMulti.stepEnabled();
         QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), //
                  "Step up should be enabled");
@@ -606,7 +606,7 @@ private Q_SLOTS:
 
         myValues.clear();
         myValues.append(0);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         flags = myMulti.stepEnabled();
         QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), //
                  "Step up should be enabled");
@@ -615,7 +615,7 @@ private Q_SLOTS:
 
         myValues.clear();
         myValues.append(-1);
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         flags = myMulti.stepEnabled();
         QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), //
                  "Step up should be enabled");
@@ -657,7 +657,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         widget->setFormat(specialConfigurations);
         myValues[sampleSectionNumber] = sampleValue;
-        widget->setSectionValues(myValues);
+        widget->setValues(myValues);
         widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
             sampleSectionNumber);
 
@@ -665,7 +665,7 @@ private Q_SLOTS:
         // Assert statements seem to be not always reliably within QTest.
         // Therefore we do some assertions here with QCOMPARE.
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  5%  0"));
-        QCOMPARE(widget->sectionValues().at(sampleSectionNumber), sampleValue);
+        QCOMPARE(widget->values().at(sampleSectionNumber), sampleValue);
         QAbstractSpinBox::StepEnabled flags;
 
         // Actual testing
@@ -687,7 +687,7 @@ private Q_SLOTS:
         QCOMPARE(d->m_currentIndex, sectionIndex);
         QCOMPARE(d->m_format.at(d->m_currentIndex).minimum(), //
                  minimum);
-        QCOMPARE(d->m_sectionValues.at(d->m_currentIndex), //
+        QCOMPARE(d->m_values.at(d->m_currentIndex), //
                  value);
         QCOMPARE(d->m_format.at(d->m_currentIndex).maximum(), //
                  maximum);
@@ -801,7 +801,7 @@ private Q_SLOTS:
         mySection.setFormatString(QStringLiteral("ij%1kl"));
         configs.append(mySection);
         widget2->setFormat(configs);
-        widget2->setSectionValues({0, 1, 2});
+        widget2->setValues({0, 1, 2});
         QLineEdit *widget3 = new QLineEdit(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -1048,7 +1048,7 @@ private Q_SLOTS:
         MultiSpinBox myMulti;
         myMulti.setLocale(QLocale::German);
         myMulti.setFormat({myConfig});
-        myMulti.setSectionValues({6789.123});
+        myMulti.setValues({6789.123});
         QCOMPARE(myMulti.text(), QStringLiteral("6.789,123"));
         myConfig.setGroupSeparatorShown(false);
         myMulti.setFormat({myConfig});
@@ -1073,13 +1073,13 @@ private Q_SLOTS:
         myMulti.setLocale(QLocale::German);
         myMulti.setFormat({myConfig});
         myMulti.lineEdit()->setText(QStringLiteral("2"));
-        QCOMPARE(myMulti.sectionValues().at(0), 2);
+        QCOMPARE(myMulti.values().at(0), 2);
         // Test correctly placed group separator
         myMulti.lineEdit()->setText(QStringLiteral("2.345,6"));
-        QCOMPARE(myMulti.sectionValues().at(0), 2345.6);
+        QCOMPARE(myMulti.values().at(0), 2345.6);
         // Test wrongly placed group separator: should be accepted nevertheless
         myMulti.lineEdit()->setText(QStringLiteral("73.45,6"));
-        QCOMPARE(myMulti.sectionValues().at(0), 7345.6);
+        QCOMPARE(myMulti.values().at(0), 7345.6);
     }
 
     void testInputWhileNotGroupSeparatorShown()
@@ -1093,13 +1093,13 @@ private Q_SLOTS:
         myMulti.setLocale(QLocale::German);
         myMulti.setFormat({myConfig});
         myMulti.lineEdit()->setText(QStringLiteral("2"));
-        QCOMPARE(myMulti.sectionValues().at(0), 2);
+        QCOMPARE(myMulti.values().at(0), 2);
         // Test correctly placed group separator
         myMulti.lineEdit()->setText(QStringLiteral("2.345,6"));
-        QCOMPARE(myMulti.sectionValues().at(0), 2345.6);
+        QCOMPARE(myMulti.values().at(0), 2345.6);
         // Test wrongly placed group separator: should be accepted nevertheless
         myMulti.lineEdit()->setText(QStringLiteral("73.45,6"));
-        QCOMPARE(myMulti.sectionValues().at(0), 7345.6);
+        QCOMPARE(myMulti.values().at(0), 7345.6);
     }
 
     void testTextFromValue()
@@ -1130,20 +1130,20 @@ private Q_SLOTS:
         myMulti.setCorrectionMode(QAbstractSpinBox::CorrectToPreviousValue);
         myMulti.setFormat({myConfig});
         myMulti.lineEdit()->setText(QStringLiteral("3"));
-        QCOMPARE(myMulti.sectionValues().at(0), 3);
+        QCOMPARE(myMulti.values().at(0), 3);
         myMulti.lineEdit()->setText(QStringLiteral("6"));
-        QCOMPARE(myMulti.sectionValues().at(0), 6);
+        QCOMPARE(myMulti.values().at(0), 6);
         myMulti.lineEdit()->setText(QStringLiteral("4"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
         // Value too high
         myMulti.lineEdit()->setText(QStringLiteral("7"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
         // Value too low
         myMulti.lineEdit()->setText(QStringLiteral("2"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
         // Value invalid
         myMulti.lineEdit()->setText(QStringLiteral("xyz"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
     }
 
     void testCorrectToNearestValue()
@@ -1160,25 +1160,25 @@ private Q_SLOTS:
 
         // Value is valid
         myMulti.lineEdit()->setText(QStringLiteral("3"));
-        QCOMPARE(myMulti.sectionValues().at(0), 3);
+        QCOMPARE(myMulti.values().at(0), 3);
         myMulti.lineEdit()->setText(QStringLiteral("6"));
-        QCOMPARE(myMulti.sectionValues().at(0), 6);
+        QCOMPARE(myMulti.values().at(0), 6);
         myMulti.lineEdit()->setText(QStringLiteral("4"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
 
         // Value too high
         myMulti.lineEdit()->setText(QStringLiteral("7"));
-        QCOMPARE(myMulti.sectionValues().at(0), 6);
+        QCOMPARE(myMulti.values().at(0), 6);
 
         // Value too low
         myMulti.lineEdit()->setText(QStringLiteral("2"));
-        QCOMPARE(myMulti.sectionValues().at(0), 3);
+        QCOMPARE(myMulti.values().at(0), 3);
 
         // Value invalid
         myMulti.lineEdit()->setText(QStringLiteral("4"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
         myMulti.lineEdit()->setText(QStringLiteral("xyz"));
-        QCOMPARE(myMulti.sectionValues().at(0), 4);
+        QCOMPARE(myMulti.values().at(0), 4);
     }
 
     void testFocusIntegrationBackwardTab()
@@ -1378,13 +1378,13 @@ private Q_SLOTS:
         widget->setFormat(exampleConfigurations);
         widget->d_pointer->setCurrentIndexWithoutUpdatingText(0);
         widget->stepBy(13);
-        QCOMPARE(widget->sectionValues().at(0), 13);
+        QCOMPARE(widget->values().at(0), 13);
         widget->d_pointer->setCurrentIndexWithoutUpdatingText(1);
         widget->stepBy(130);
-        QCOMPARE(widget->sectionValues().at(1), 100);
+        QCOMPARE(widget->values().at(1), 100);
         widget->d_pointer->setCurrentIndexWithoutUpdatingText(2);
         widget->stepBy(-260);
-        QCOMPARE(widget->sectionValues().at(2), 0);
+        QCOMPARE(widget->values().at(2), 0);
     }
 
     void testStepUpDown()
@@ -1392,17 +1392,17 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget( //
             new PerceptualColor::MultiSpinBox());
         widget->setFormat(exampleConfigurations);
-        QCOMPARE(widget->sectionValues().at(0), 0);
+        QCOMPARE(widget->values().at(0), 0);
         widget->stepUp();
-        QCOMPARE(widget->sectionValues().at(0), 1);
+        QCOMPARE(widget->values().at(0), 1);
         widget->stepUp();
-        QCOMPARE(widget->sectionValues().at(0), 2);
+        QCOMPARE(widget->values().at(0), 2);
         widget->stepDown();
-        QCOMPARE(widget->sectionValues().at(0), 1);
+        QCOMPARE(widget->values().at(0), 1);
         widget->stepDown();
-        QCOMPARE(widget->sectionValues().at(0), 0);
+        QCOMPARE(widget->values().at(0), 0);
         widget->stepDown();
-        QCOMPARE(widget->sectionValues().at(0), 0);
+        QCOMPARE(widget->values().at(0), 0);
     }
 
     void testUpdateValueFromText1()
@@ -1421,7 +1421,7 @@ private Q_SLOTS:
         }
         widget->d_pointer->updateCurrentValueFromText( //
             QStringLiteral(u"0°  9%  0"));
-        QCOMPARE(widget->sectionValues().at(sampleSectionNumber), 9);
+        QCOMPARE(widget->values().at(sampleSectionNumber), 9);
     }
 
     void testUpdateValueFromText2()
@@ -1437,7 +1437,7 @@ private Q_SLOTS:
             myValues.append(0);
         }
         myValues[sampleSectionNumber] = sampleValue;
-        widget->setSectionValues(myValues);
+        widget->setValues(myValues);
         widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
             sampleSectionNumber);
         // Assert that the setup is okay.
@@ -1446,7 +1446,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget->sectionValues().at(sampleSectionNumber) != sampleValue) {
+        if (widget->values().at(sampleSectionNumber) != sampleValue) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1459,7 +1459,7 @@ private Q_SLOTS:
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
         // The original value should not have changed.
-        QCOMPARE(widget->sectionValues().at(sampleSectionNumber), sampleValue);
+        QCOMPARE(widget->values().at(sampleSectionNumber), sampleValue);
     }
 
     void testUpdateSectionFromCursorPosition()
@@ -1476,7 +1476,7 @@ private Q_SLOTS:
             myValues.append(0);
         }
         myValues[sampleSectionNumber] = sampleValue;
-        widget->setSectionValues(myValues);
+        widget->setValues(myValues);
         widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
             sampleSectionNumber);
         // Assert that the setup is okay.
@@ -1485,7 +1485,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget->sectionValues().at(sampleSectionNumber) != sampleValue) {
+        if (widget->values().at(sampleSectionNumber) != sampleValue) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1524,7 +1524,7 @@ private Q_SLOTS:
             myValues.append(0);
         }
         myValues[sampleSectionNumber] = sampleValue;
-        widget->setSectionValues(myValues);
+        widget->setValues(myValues);
         // Assert that the initial content of the line edit is okay
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  5%  0"));
     }
@@ -1543,7 +1543,7 @@ private Q_SLOTS:
         widget->setFormat(mySectionList);
         QList<double> myValues;
         myValues.append(50);
-        widget->setSectionValues(myValues);
+        widget->setValues(myValues);
 
         // Begin testing
 
@@ -1585,7 +1585,7 @@ private Q_SLOTS:
 
         // Start actual testing
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
-        QCOMPARE(widget2->sectionValues().at(1), 1);
+        QCOMPARE(widget2->values().at(1), 1);
         QCOMPARE(widget2->lineEdit()->text(), QStringLiteral(u"0°  1%  0"));
 
         // Cleanup
@@ -1690,15 +1690,15 @@ private Q_SLOTS:
         mySpinBox.setFormat(myConfigurations);
         QList<double> myValues;
         myValues.append(value);
-        mySpinBox.setSectionValues(myValues);
-        QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigFalse);
+        mySpinBox.setValues(myValues);
+        QCOMPARE(mySpinBox.values().at(0), expectedOnIsWrappigFalse);
 
         myConfiguration.setWrapping(true);
         myConfigurations.clear();
         myConfigurations.append(myConfiguration);
         mySpinBox.setFormat(myConfigurations);
-        mySpinBox.setSectionValues(myValues);
-        QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigTrue);
+        mySpinBox.setValues(myValues);
+        QCOMPARE(mySpinBox.values().at(0), expectedOnIsWrappigTrue);
     }
 
     void testFixedSectionOther_data()
@@ -1735,20 +1735,20 @@ private Q_SLOTS:
         mySpinBox.setFormat(myConfigurations);
         QList<double> myValues;
         myValues.append(value);
-        mySpinBox.setSectionValues(myValues);
-        QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigFalse);
+        mySpinBox.setValues(myValues);
+        QCOMPARE(mySpinBox.values().at(0), expectedOnIsWrappigFalse);
 
         myConfiguration.setWrapping(true);
         myConfigurations.clear();
         myConfigurations.append(myConfiguration);
         mySpinBox.setFormat(myConfigurations);
-        mySpinBox.setSectionValues(myValues);
-        QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigTrue);
+        mySpinBox.setValues(myValues);
+        QCOMPARE(mySpinBox.values().at(0), expectedOnIsWrappigTrue);
     }
 
     void testValuesSetterAndConfigurationsSetter()
     {
-        // Both, sectionValues() and format() have a size()
+        // Both, values() and format() have a size()
         // that has to be identical. The count of format() is
         // mandatory. Make sure that different setters let the size()s
         // in a correct state. Our reference for default values is
@@ -1760,9 +1760,9 @@ private Q_SLOTS:
 
         // Section count should be 1 (by default):
         QCOMPARE(myMulti.format().size(), 1);
-        QCOMPARE(myMulti.sectionValues().size(), 1);
+        QCOMPARE(myMulti.values().size(), 1);
         // Control that sections has default value:
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Raise the section count to 3:
         myConfigurations.append(MultiSpinBoxSection());
@@ -1770,8 +1770,8 @@ private Q_SLOTS:
         myConfigurations.append(MultiSpinBoxSection());
         myMulti.setFormat(myConfigurations);
         // Control that all the new sections got the default value:
-        QCOMPARE(myMulti.sectionValues().at(1), myDoubleSpinBox.value());
-        QCOMPARE(myMulti.sectionValues().at(2), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(1), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(2), myDoubleSpinBox.value());
 
         // Put specific values into each of the 3 sections:
         myValues.clear();
@@ -1779,47 +1779,47 @@ private Q_SLOTS:
         myValues.append(11);
         myValues.append(12);
         myValues.append(13); // Too many values for current configuration count
-        myMulti.setSectionValues(myValues);
+        myMulti.setValues(myValues);
         // Assert that the values have been applied correctly
-        QCOMPARE(myMulti.sectionValues().at(0), 10);
-        QCOMPARE(myMulti.sectionValues().at(1), 11);
-        QCOMPARE(myMulti.sectionValues().at(2), 12);
+        QCOMPARE(myMulti.values().at(0), 10);
+        QCOMPARE(myMulti.values().at(1), 11);
+        QCOMPARE(myMulti.values().at(2), 12);
         // The last value has to be ignored (as there are not so many sections):
         QCOMPARE(myMulti.format().size(), 3);
-        QCOMPARE(myMulti.sectionValues().size(), 3);
+        QCOMPARE(myMulti.values().size(), 3);
 
         // Apply a configuration with less sections
         myConfigurations.removeLast();
         QCOMPARE(myConfigurations.size(), 2); // Assertion
         myMulti.setFormat(myConfigurations);
         QCOMPARE(myMulti.format().size(), 2);
-        QCOMPARE(myMulti.sectionValues().size(), 2);
+        QCOMPARE(myMulti.values().size(), 2);
         // The values that survive should not be changed:
-        QCOMPARE(myMulti.sectionValues().at(0), 10);
-        QCOMPARE(myMulti.sectionValues().at(1), 11);
+        QCOMPARE(myMulti.values().at(0), 10);
+        QCOMPARE(myMulti.values().at(1), 11);
 
-        // Set sectionValues that has not enough values
+        // Set values that has not enough values
         QCOMPARE(myMulti.format().size(), 2); // Assertion
-        QCOMPARE(myMulti.sectionValues().size(), 2); // Assertion
-        QCOMPARE(myMulti.sectionValues().at(0), 10); // Assertion
-        QCOMPARE(myMulti.sectionValues().at(1), 11); // Assertion
+        QCOMPARE(myMulti.values().size(), 2); // Assertion
+        QCOMPARE(myMulti.values().at(0), 10); // Assertion
+        QCOMPARE(myMulti.values().at(1), 11); // Assertion
         myValues.clear();
         myValues.append(20);
         // Apply a value list with only 1 value:
-        myMulti.setSectionValues(myValues);
-        QCOMPARE(myMulti.sectionValues().at(0), 20); // This values was applied
+        myMulti.setValues(myValues);
+        QCOMPARE(myMulti.values().at(0), 20); // This values was applied
         // Section count has not been altered:
         QCOMPARE(myMulti.format().size(), 2);
-        QCOMPARE(myMulti.sectionValues().size(), 2);
+        QCOMPARE(myMulti.values().size(), 2);
         // The last section, that got no particular value assigned,
         // has been changed to the default value. (This behaviour
         // is not documented, so not part of the public API, but
         // is seems reasonable (and less confusing and more
         // predictable than just stay with the old value:
-        QCOMPARE(myMulti.sectionValues().at(1), 0);
+        QCOMPARE(myMulti.values().at(1), 0);
     }
 
-    void testSectionValuesChangedSignalBasic()
+    void testValuesChangedSignalBasic()
     {
         // Initialize
         MultiSpinBox myMulti;
@@ -1831,17 +1831,17 @@ private Q_SLOTS:
         myMulti.show();
         QSignalSpy spyMulti( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChanged);
+            &MultiSpinBox::valuesChanged);
         QSignalSpy spyMultiAsQString //
             (&myMulti, //
-             &MultiSpinBox::sectionValuesChangedAsQString);
+             &MultiSpinBox::valuesChangedAsQString);
         QDoubleSpinBox myDouble;
         myDouble.show();
         QSignalSpy spyDouble( //
             &myDouble, //
             QOverload<double>::of(&QDoubleSpinBox::valueChanged));
         // QDoubleSpinBox::textChanged is a bad name. Effectively, it is
-        // the counterpart of MultiSpinBox::sectionValuesChangedAsQString
+        // the counterpart of MultiSpinBox::valuesChangedAsQString
         QSignalSpy spyDoubleAsQString( //
             &myDouble, //
             &QDoubleSpinBox::textChanged);
@@ -1850,7 +1850,7 @@ private Q_SLOTS:
         // QDoubleSpinBox
 
         // Set a value different from the default
-        myMulti.setSectionValues(QList<double>{2, 2});
+        myMulti.setValues(QList<double>{2, 2});
         myDouble.setValue(2);
         QCOMPARE(spyMulti.size(), 1);
         QCOMPARE(spyMulti.size(), spyDouble.size());
@@ -1858,7 +1858,7 @@ private Q_SLOTS:
         QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
 
         // Setting the same value again should not call again the signal
-        myMulti.setSectionValues(QList<double>{2, 2});
+        myMulti.setValues(QList<double>{2, 2});
         myDouble.setValue(2);
         QCOMPARE(spyMulti.size(), 1);
         QCOMPARE(spyMulti.size(), spyDouble.size());
@@ -1866,7 +1866,7 @@ private Q_SLOTS:
         QCOMPARE(spyMultiAsQString.size(), spyDoubleAsQString.size());
 
         // Setting a value list which has only one different element triggers:
-        myMulti.setSectionValues(QList<double>{2, 3});
+        myMulti.setValues(QList<double>{2, 3});
         myDouble.setValue(3);
         QCOMPARE(spyMulti.size(), 2);
         QCOMPARE(spyMulti.size(), spyDouble.size());
@@ -1885,21 +1885,21 @@ private Q_SLOTS:
         mySpinBox.setLocale( //
             QLocale(QLocale::English));
         mySpinBox.setFormat({mySection});
-        mySpinBox.setSectionValues({3456.78});
-        QCOMPARE(mySpinBox.sectionValues(), {3456.78});
+        mySpinBox.setValues({3456.78});
+        QCOMPARE(mySpinBox.values(), {3456.78});
         QCOMPARE(mySpinBox.text(), QStringLiteral("3,456.78"));
         mySpinBox.setLocale( //
             QLocale(QLocale::German));
-        QCOMPARE(mySpinBox.sectionValues(), {3456.78});
+        QCOMPARE(mySpinBox.values(), {3456.78});
         QCOMPARE(mySpinBox.text(), QStringLiteral("3.456,78"));
         // Sort of a special case: QLocale::C is a simplified English locale
         // with quirks (e.g. group separators are off by default).
         mySpinBox.setLocale(QLocale(QLocale::C));
-        QCOMPARE(mySpinBox.sectionValues(), {3456.78});
+        QCOMPARE(mySpinBox.values(), {3456.78});
         QCOMPARE(mySpinBox.text(), QStringLiteral("3,456.78"));
     }
 
-    void testSectionValuesChangedSignalKeyboardTrackingEnabled()
+    void testValuesChangedSignalKeyboardTrackingEnabled()
     {
         // Initialize
         MultiSpinBox myMulti;
@@ -1910,10 +1910,10 @@ private Q_SLOTS:
         myMulti.show();
         QSignalSpy spyMulti( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChanged);
+            &MultiSpinBox::valuesChanged);
         QSignalSpy spyMultiAsQString( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChangedAsQString);
+            &MultiSpinBox::valuesChangedAsQString);
         myMulti.show();
         QDoubleSpinBox myDouble;
         myDouble.show();
@@ -1932,11 +1932,11 @@ private Q_SLOTS:
         myMulti.activateWindow();
         QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
-        myMulti.setSectionValues({8});
+        myMulti.setValues({8});
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
         QTest::keyClick(&myMulti, Qt::Key::Key_5);
         QTest::keyClick(&myMulti, Qt::Key::Key_4);
-        QCOMPARE(myMulti.sectionValues().at(0), 54); // Assertion
+        QCOMPARE(myMulti.values().at(0), 54); // Assertion
 
         // Get reference data
         myDouble.setValue(8);
@@ -1974,7 +1974,7 @@ private Q_SLOTS:
         }
     }
 
-    void testSectionValuesChangedSignalKeyboardTrackingDisabled()
+    void testValuesChangedSignalKeyboardTrackingDisabled()
     {
         // Initialize
         QWidget helper;
@@ -1987,10 +1987,10 @@ private Q_SLOTS:
         myMulti.show();
         QSignalSpy spyMulti( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChanged);
+            &MultiSpinBox::valuesChanged);
         QSignalSpy spyMultiAsQString( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChangedAsQString);
+            &MultiSpinBox::valuesChangedAsQString);
         QSignalSpy spyMultiEditingFinished( //
             &myMulti, //
             &MultiSpinBox::editingFinished);
@@ -2008,7 +2008,7 @@ private Q_SLOTS:
         myDouble.setKeyboardTracking(false);
 
         // Get test data
-        myMulti.setSectionValues({8});
+        myMulti.setValues({8});
         myMulti.activateWindow();
         QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
@@ -2091,7 +2091,7 @@ private Q_SLOTS:
             &MultiSpinBox::editingFinished);
         QSignalSpy spyMultiValueChanged( //
             widget2, //
-            &MultiSpinBox::sectionValuesChanged);
+            &MultiSpinBox::valuesChanged);
         QSpinBox *widget3 = new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         QLabel *label2 = new QLabel(QStringLiteral(u"&Test"), //
@@ -2119,30 +2119,30 @@ private Q_SLOTS:
         // QApplication::focusWidget()
 
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
-        QCOMPARE(widget2->sectionValues().at(0), 0);
+        QCOMPARE(widget2->values().at(0), 0);
         QCOMPARE(spyMultiValueChanged.size(), 0);
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
-        QCOMPARE(widget2->sectionValues().at(0), 1);
+        QCOMPARE(widget2->values().at(0), 1);
         QCOMPARE(spyMultiValueChanged.size(), 1);
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_2);
-        QCOMPARE(widget2->sectionValues().at(0), 1);
+        QCOMPARE(widget2->values().at(0), 1);
         QCOMPARE(spyMultiValueChanged.size(), 1);
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
-        QCOMPARE(widget2->sectionValues().at(0), 2);
+        QCOMPARE(widget2->values().at(0), 2);
         QCOMPARE(spyMultiValueChanged.size(), 2);
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         // Move focus from widget2/section1 to widget2/section2
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
-        QCOMPARE(widget2->sectionValues().at(0), 2);
+        QCOMPARE(widget2->values().at(0), 2);
         QCOMPARE(spyMultiValueChanged.size(), 2);
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         // Move focus from widget2/section2 to widget3
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
-        QCOMPARE(widget2->sectionValues().at(0), 2);
+        QCOMPARE(widget2->values().at(0), 2);
         QCOMPARE(spyMultiValueChanged.size(), 2);
         QCOMPARE(spyMultiEditingFinished.size(), 1);
 
@@ -2169,64 +2169,64 @@ private Q_SLOTS:
         myDoubleSpinBox.setMinimum(5);
         myDoubleSpinBox.setMaximum(360);
 
-        myMulti.setSectionValues(QList<double>{-1});
+        myMulti.setValues(QList<double>{-1});
         myDoubleSpinBox.setValue(-1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{0});
+        myMulti.setValues(QList<double>{0});
         myDoubleSpinBox.setValue(0);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value that rounds down and stays too small
-        myMulti.setSectionValues(QList<double>{4.1});
+        myMulti.setValues(QList<double>{4.1});
         myDoubleSpinBox.setValue(4.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value that is too small, but rounds up to the minimum
-        myMulti.setSectionValues(QList<double>{4.9}); // Rounds up to 5
+        myMulti.setValues(QList<double>{4.9}); // Rounds up to 5
         myDoubleSpinBox.setValue(4.9); // Rounds up to 5
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{5});
+        myMulti.setValues(QList<double>{5});
         myDoubleSpinBox.setValue(5);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value that rounds down to the minimum
-        myMulti.setSectionValues(QList<double>{5.1});
+        myMulti.setValues(QList<double>{5.1});
         myDoubleSpinBox.setValue(5.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value in the middle that rounds down
-        myMulti.setSectionValues(QList<double>{72.1}); // Rounds up to 5
+        myMulti.setValues(QList<double>{72.1}); // Rounds up to 5
         myDoubleSpinBox.setValue(72.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value in the middle that rounds up
-        myMulti.setSectionValues(QList<double>{72.9}); // Rounds up to 5
+        myMulti.setValues(QList<double>{72.9}); // Rounds up to 5
         myDoubleSpinBox.setValue(72.9);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value that is in range and rounds down
-        myMulti.setSectionValues(QList<double>{359.1});
+        myMulti.setValues(QList<double>{359.1});
         myDoubleSpinBox.setValue(359.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value that rounds up to the maximum
-        myMulti.setSectionValues(QList<double>{359.9});
+        myMulti.setValues(QList<double>{359.9});
         myDoubleSpinBox.setValue(359.9);
 
         // Test with maximum
-        myMulti.setSectionValues(QList<double>{360});
+        myMulti.setValues(QList<double>{360});
         myDoubleSpinBox.setValue(360);
 
         // Test with value that rounds down to maximum
-        myMulti.setSectionValues(QList<double>{360.1});
+        myMulti.setValues(QList<double>{360.1});
         myDoubleSpinBox.setValue(360.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{361});
+        myMulti.setValues(QList<double>{361});
         myDoubleSpinBox.setValue(361);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
     }
 
     void testRoundingBehaviourComplianceWithRoundedRanges()
@@ -2246,76 +2246,76 @@ private Q_SLOTS:
         myDoubleSpinBox.setMinimum(4.8);
         myDoubleSpinBox.setMaximum(360.2);
 
-        myMulti.setSectionValues(QList<double>{-1});
+        myMulti.setValues(QList<double>{-1});
         myDoubleSpinBox.setValue(-1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{0});
+        myMulti.setValues(QList<double>{0});
         myDoubleSpinBox.setValue(0);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         // Test with a value that rounds down and stays too small
-        myMulti.setSectionValues(QList<double>{4.1});
+        myMulti.setValues(QList<double>{4.1});
         myDoubleSpinBox.setValue(4.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{4.7});
+        myMulti.setValues(QList<double>{4.7});
         myDoubleSpinBox.setValue(4.7); // Rounds up to 5
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{4.8});
+        myMulti.setValues(QList<double>{4.8});
         myDoubleSpinBox.setValue(4.8); // Rounds up to 5
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{4.9});
+        myMulti.setValues(QList<double>{4.9});
         myDoubleSpinBox.setValue(4.9); // Rounds up to 5
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{5});
+        myMulti.setValues(QList<double>{5});
         myDoubleSpinBox.setValue(5);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{5.1}); // Rounds up to 5
+        myMulti.setValues(QList<double>{5.1}); // Rounds up to 5
         myDoubleSpinBox.setValue(5.1); // Rounds up to 5
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{72.1}); // Rounds up to 5
+        myMulti.setValues(QList<double>{72.1}); // Rounds up to 5
         myDoubleSpinBox.setValue(72.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{72.9}); // Rounds up to 5
+        myMulti.setValues(QList<double>{72.9}); // Rounds up to 5
         myDoubleSpinBox.setValue(72.9);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{359.1});
+        myMulti.setValues(QList<double>{359.1});
         myDoubleSpinBox.setValue(359.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{359.9});
+        myMulti.setValues(QList<double>{359.9});
         myDoubleSpinBox.setValue(359.9);
 
-        myMulti.setSectionValues(QList<double>{360});
+        myMulti.setValues(QList<double>{360});
         myDoubleSpinBox.setValue(360);
 
-        myMulti.setSectionValues(QList<double>{360.1});
+        myMulti.setValues(QList<double>{360.1});
         myDoubleSpinBox.setValue(360.1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{360.2});
+        myMulti.setValues(QList<double>{360.2});
         myDoubleSpinBox.setValue(360.2);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{360.3});
+        myMulti.setValues(QList<double>{360.3});
         myDoubleSpinBox.setValue(360.3);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{360.9});
+        myMulti.setValues(QList<double>{360.9});
         myDoubleSpinBox.setValue(360.9);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{361});
+        myMulti.setValues(QList<double>{361});
         myDoubleSpinBox.setValue(361);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
     }
 
     void testRoundingBehaviourCornerCases()
@@ -2335,25 +2335,25 @@ private Q_SLOTS:
         myDoubleSpinBox.setMinimum(4.8);
         myDoubleSpinBox.setMaximum(359.8);
 
-        myMulti.setSectionValues(QList<double>{359});
+        myMulti.setValues(QList<double>{359});
         myDoubleSpinBox.setValue(359);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{359.7});
+        myMulti.setValues(QList<double>{359.7});
         myDoubleSpinBox.setValue(359.7);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{359.8});
+        myMulti.setValues(QList<double>{359.8});
         myDoubleSpinBox.setValue(359.8);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{359.9});
+        myMulti.setValues(QList<double>{359.9});
         myDoubleSpinBox.setValue(359.9);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
-        myMulti.setSectionValues(QList<double>{360});
+        myMulti.setValues(QList<double>{360});
         myDoubleSpinBox.setValue(360);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
     }
 
     void testRoundingAfterChangingDecimals()
@@ -2369,29 +2369,29 @@ private Q_SLOTS:
         QDoubleSpinBox myDoubleSpinBox;
         myDoubleSpinBox.setDecimals(2);
         const double initialTestValue = 12.34;
-        myMulti.setSectionValues(QList<double>{initialTestValue});
+        myMulti.setValues(QList<double>{initialTestValue});
         myDoubleSpinBox.setValue(initialTestValue);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         myConfigs[0].setDecimals(1);
         myMulti.setFormat(myConfigs);
         myDoubleSpinBox.setDecimals(1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         myConfigs[0].setDecimals(0);
         myMulti.setFormat(myConfigs);
         myDoubleSpinBox.setDecimals(0);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         myConfigs[0].setDecimals(3);
         myMulti.setFormat(myConfigs);
         myDoubleSpinBox.setDecimals(3);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
 
         myConfigs[0].setDecimals(-1);
         myMulti.setFormat(myConfigs);
         myDoubleSpinBox.setDecimals(-1);
-        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+        QCOMPARE(myMulti.values().at(0), myDoubleSpinBox.value());
     }
 
     void testMaximumWrappingRounding_data()
@@ -2433,7 +2433,7 @@ private Q_SLOTS:
         QVERIFY(widget2->lineEdit()->text() == QStringLiteral(u"0°  0%  0"));
 
         // Assert that the setup is okay.
-        widget2->setSectionValues({1, 1, 1});
+        widget2->setValues({1, 1, 1});
         QCOMPARE(widget2->lineEdit()->text(), QStringLiteral(u"1°  1%  1"));
         widget2->lineEdit()->setCursorPosition(5);
         QCOMPARE( //
@@ -2454,7 +2454,7 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget( //
             new PerceptualColor::MultiSpinBox());
         widget->setFormat(exampleConfigurations);
-        widget->setSectionValues({1, 1, 1});
+        widget->setValues({1, 1, 1});
         // Assert that the setup is okay.
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"1°  1%  1"));
         QCOMPARE( //
@@ -2485,12 +2485,12 @@ private Q_SLOTS:
             // Create the QList on the fly…
             QList<MultiSpinBoxSection>{myConfig});
 
-        mySpinBox.setSectionValues(
+        mySpinBox.setValues(
             // Create the QList on the fly…
             QList<double>{value});
         QCOMPARE(mySpinBox.text(), QStringLiteral("0"));
 
-        mySpinBox.setSectionValues(
+        mySpinBox.setValues(
             // Create the QList on the fly…
             QList<double>{359.9});
         QCOMPARE(mySpinBox.text(), QStringLiteral("0"));
@@ -2504,7 +2504,7 @@ private Q_SLOTS:
         test.setValue(MultiSpinBoxSection());
     }
 
-    void testMetaTypeDeclarationForPropertySectionValues()
+    void testMetaTypeDeclarationForPropertyValues()
     {
         // The data type QList<double> seems to be automatically declared
         // because it’s an instance of QList. This unit test controls this
@@ -2555,13 +2555,13 @@ private Q_SLOTS:
         myMulti.activateWindow();
         QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
-        myMulti.setSectionValues({12.34});
+        myMulti.setValues({12.34});
         QSignalSpy spyMulti( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChanged);
+            &MultiSpinBox::valuesChanged);
         QSignalSpy spyMultiAsQString( //
             &myMulti, //
-            &MultiSpinBox::sectionValuesChangedAsQString);
+            &MultiSpinBox::valuesChangedAsQString);
         QCOMPARE(myMulti.text(), QStringLiteral("12,34"));
         QCOMPARE(spyMulti.size(), 0);
         QCOMPARE(spyMultiAsQString.size(), 0);
@@ -2608,7 +2608,7 @@ private Q_SLOTS:
         myMulti.activateWindow();
         QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
-        myMulti.setSectionValues({1, 2});
+        myMulti.setValues({1, 2});
         QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
 
         myMulti.lineEdit()->setCursorPosition(2);
@@ -2660,7 +2660,7 @@ private Q_SLOTS:
         myMulti.activateWindow();
         QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
-        myMulti.setSectionValues({1, 2});
+        myMulti.setValues({1, 2});
         QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
         myMulti.lineEdit()->setCursorPosition(0);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);

@@ -1726,13 +1726,13 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         QList<double> myValues = //
-            myDialog->d_pointer->m_cielchD50SpinBox->sectionValues();
+            myDialog->d_pointer->m_cielchD50SpinBox->values();
 
         // Test with a normal value
         myValues[0] = 10;
         myValues[1] = 11;
         myValues[2] = 12;
-        myDialog->d_pointer->m_cielchD50SpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_cielchD50SpinBox->setValues(myValues);
         myDialog->d_pointer->readLchNumericValues();
         const auto &col1 = myDialog //
                                ->d_pointer //
@@ -1746,7 +1746,7 @@ private Q_SLOTS:
         myValues[0] = 10;
         myValues[1] = 50;
         myValues[2] = 12;
-        myDialog->d_pointer->m_cielchD50SpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_cielchD50SpinBox->setValues(myValues);
         myDialog->d_pointer->readLchNumericValues();
         const auto &col2 = myDialog //
                                ->d_pointer //
@@ -1763,13 +1763,13 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         QList<double> myValues = //
-            myDialog->d_pointer->m_oklchSpinBox->sectionValues();
+            myDialog->d_pointer->m_oklchSpinBox->values();
 
         // Test with a normal value
         myValues[0] = 0.25;
         myValues[1] = 0.05;
         myValues[2] = 3;
-        myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_oklchSpinBox->setValues(myValues);
         myDialog->d_pointer->readOklchNumericValues();
         const auto &col = myDialog->d_pointer->m_currentOpaqueColorAbs.value( //
             ColorModel::OklchD65);
@@ -1781,7 +1781,7 @@ private Q_SLOTS:
         myValues[0] = 0.25;
         myValues[1] = 0.2;
         myValues[2] = 3;
-        myDialog->d_pointer->m_oklchSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_oklchSpinBox->setValues(myValues);
         myDialog->d_pointer->readOklchNumericValues();
         const auto &color = myDialog->d_pointer->m_currentOpaqueColorAbs;
         const auto &colorOklchD65 = color.value(ColorModel::OklchD65);
@@ -1795,11 +1795,11 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         QList<double> myValues = //
-            myDialog->d_pointer->m_hsvSpinBox->sectionValues();
+            myDialog->d_pointer->m_hsvSpinBox->values();
         myValues[0] = 10;
         myValues[1] = 11;
         myValues[2] = 12;
-        myDialog->d_pointer->m_hsvSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_hsvSpinBox->setValues(myValues);
         myDialog->d_pointer->readHsvNumericValues();
         QCOMPARE(qRound(myDialog->currentColor().hueF() * 360), 10);
         QCOMPARE(qRound(myDialog->currentColor().saturationF() * 100), 11);
@@ -1853,11 +1853,11 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(m_srgbBuildinColorSpace));
         QList<double> myValues = //
-            myDialog->d_pointer->m_rgbSpinBox->sectionValues();
+            myDialog->d_pointer->m_rgbSpinBox->values();
         myValues[0] = 10;
         myValues[1] = 11;
         myValues[2] = 12;
-        myDialog->d_pointer->m_rgbSpinBox->setSectionValues(myValues);
+        myDialog->d_pointer->m_rgbSpinBox->setValues(myValues);
         myDialog->d_pointer->readRgbNumericValues();
         QCOMPARE(myDialog->currentColor().red(), 10);
         QCOMPARE(myDialog->currentColor().green(), 11);
@@ -1875,7 +1875,7 @@ private Q_SLOTS:
         myDialog->d_pointer->setCurrentOpaqueColor(myMultiColor, nullptr);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColorAbs, myMultiColor);
         QList<double> myValues = //
-            myDialog->d_pointer->m_rgbSpinBox->sectionValues();
+            myDialog->d_pointer->m_rgbSpinBox->values();
         QCOMPARE(qRound(myValues.at(0)), 113);
         QCOMPARE(qRound(myValues.at(1)), 53);
         QCOMPARE(qRound(myValues.at(2)), 23);
@@ -2106,7 +2106,7 @@ private Q_SLOTS:
         // The value is also converted to LCH 98%, 95, 100° (rounded)
         // visible in the LCH spin box.
         QList<double> lch = //
-            m_perceptualDialog->d_pointer->m_cielchD50SpinBox->sectionValues();
+            m_perceptualDialog->d_pointer->m_cielchD50SpinBox->values();
         QVERIFY(lch.at(0) >= 98 - toleranceRange); // assertion
         QVERIFY(lch.at(0) <= 98 + toleranceRange); // assertion
         QVERIFY(lch.at(1) >= 95 - toleranceRange); // assertion
@@ -2121,7 +2121,7 @@ private Q_SLOTS:
         // behaviour was that the chroma value was changed from 95 to 24.
         // The expected result was that the chroma value only changes
         // slightly because of rounding (or ideally not at all).
-        lch = m_perceptualDialog->d_pointer->m_cielchD50SpinBox->sectionValues();
+        lch = m_perceptualDialog->d_pointer->m_cielchD50SpinBox->values();
         QVERIFY(lch.at(1) >= 95 - toleranceRange);
         QVERIFY(lch.at(1) <= 95 + toleranceRange);
     }
@@ -2141,14 +2141,14 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
 
         const QList<double> hsvTestData{201, 33, 0};
-        m_perceptualDialog->d_pointer->m_hsvSpinBox->setSectionValues( //
+        m_perceptualDialog->d_pointer->m_hsvSpinBox->setValues( //
             hsvTestData);
         QCOMPARE( //
-            m_perceptualDialog->d_pointer->m_hsvSpinBox->sectionValues(), //
+            m_perceptualDialog->d_pointer->m_hsvSpinBox->values(), //
             hsvTestData);
         m_perceptualDialog->d_pointer->readHsvNumericValues();
         QCOMPARE( //
-            m_perceptualDialog->d_pointer->m_hsvSpinBox->sectionValues(), //
+            m_perceptualDialog->d_pointer->m_hsvSpinBox->values(), //
             hsvTestData);
     }
 
@@ -2161,7 +2161,7 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
 
         // The user puts into the LCH spin box the value 98% 94 100°:
-        m_perceptualDialog->d_pointer->m_cielchD50SpinBox->setSectionValues( //
+        m_perceptualDialog->d_pointer->m_cielchD50SpinBox->setValues( //
             QList<double>{98, 94, 100});
         // This is an out-of-gamut color which is not corrected until
         // the focus will leave the widget or the Return key is pressed.
@@ -2173,7 +2173,7 @@ private Q_SLOTS:
         // The RGB spin box becomes:
         const QList<double> expectedRgbValues{255, 251, 202};
         QCOMPARE( //
-            m_perceptualDialog->d_pointer->m_rgbSpinBox->sectionValues(), //
+            m_perceptualDialog->d_pointer->m_rgbSpinBox->values(), //
             expectedRgbValues);
         // Now, the user finishes the editing process (the focus leaves
         // the widget or the Return key is pressed or the action button
@@ -2187,7 +2187,7 @@ private Q_SLOTS:
         // The expected result is however still the very same RGB value
         // as above:
         QCOMPARE( //
-            m_perceptualDialog->d_pointer->m_rgbSpinBox->sectionValues(), //
+            m_perceptualDialog->d_pointer->m_rgbSpinBox->values(), //
             expectedRgbValues);
     }
 
@@ -2225,7 +2225,7 @@ private Q_SLOTS:
         // correctly.)
         const QList<double> rgbList =
             // The the values from the MultiSpinBox:
-            m_perceptualDialog->d_pointer->m_rgbSpinBox->sectionValues();
+            m_perceptualDialog->d_pointer->m_rgbSpinBox->values();
         QColor expectedHex = QColor::fromRgb(
             // The MultiSpinBox might have decimal places, so we round
             // here again.

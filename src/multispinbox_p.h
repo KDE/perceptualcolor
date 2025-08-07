@@ -53,13 +53,13 @@ public:
      * @sa @ref setCurrentIndexWithoutUpdatingText */
     qsizetype m_currentIndex = 0;
     /**
-     * @brief Section values pending to be applied to @ref m_sectionValues.
+     * @brief Section values pending to be applied to @ref m_values.
      *
      * If QAbstractSpinBox::keyboardTracking is disabled, changes to
-     * @ref m_sectionValues caused by keyboard input are deferred. This
+     * @ref m_values caused by keyboard input are deferred. This
      * variable helps to keep track.
      */
-    QList<double> m_pendingSectionValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
+    QList<double> m_pendingValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
     /** @brief Holds the data for the sections.
      *
      * This list is guaranteed to contain at least <em>one</em> section.
@@ -68,11 +68,11 @@ public:
      * @sa @ref MultiSpinBox::setFormat() */
     QList<MultiSpinBoxSection> m_format;
     /**
-     * @brief Internal storage for property @ref MultiSpinBox::sectionValues.
+     * @brief Internal storage for property @ref MultiSpinBox::values.
      *
-     * @sa @ref m_pendingSectionValues
+     * @sa @ref m_pendingValues
      */
-    QList<double> m_sectionValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
+    QList<double> m_values = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
     /** @brief The string of everything <em>after</em> the value of the
      * current section.
      *
@@ -95,12 +95,12 @@ public:
     QPointer<QDoubleValidator> m_validator;
 
     // Functions
-    void applyPendingSectionValuesAndEmitSignals();
+    void applyPendingValuesAndEmitSignals();
     [[nodiscard]] QString formattedPendingValue(qsizetype index) const;
     [[nodiscard]] bool isCursorTouchingCurrentSectionValue() const;
     void setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex);
     void setCurrentIndexWithoutUpdatingText(qsizetype newIndex);
-    void setPendingSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
+    void setPendingValuesWithoutFurtherUpdating(const QList<double> &newValues);
     [[nodiscard]] static QString textFromValue(const double value, const int decimals, const bool showGroupSeparator, const QLocale &locale);
     void updatePrefixValueSuffixText();
     void updateValidator();

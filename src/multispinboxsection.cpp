@@ -96,14 +96,14 @@ void MultiSpinBoxSection::setDecimals(int newDecimals)
     d_pointer->m_decimals = qBound(0, newDecimals, 323);
 }
 
-/** @brief Holds whether or not @ref MultiSpinBox::sectionValues wrap
+/** @brief Holds whether or not @ref MultiSpinBox::values wrap
  * around when they reaches @ref minimum or @ref maximum.
  *
  * The default is <tt>false</tt>.
  *
- * If <tt>false</tt>, @ref MultiSpinBox::sectionValues shall be bound
+ * If <tt>false</tt>, @ref MultiSpinBox::values shall be bound
  * between @ref minimum and  @ref maximum. If <tt>true</tt>,
- * @ref MultiSpinBox::sectionValues shall be treated as a circular.
+ * @ref MultiSpinBox::values shall be treated as a circular.
  *
  * Example: You have a section that displays a value measured in
  * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.

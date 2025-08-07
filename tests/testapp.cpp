@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
     section.setSingleStep(4);
     box.setFormat({section, section});
     box.setAccelerated(true);
-    box.setSectionValues({1234, 5678});
+    box.setValues({1234, 5678});
     box.stepBy(3);
     box.stepBy(-1);
     // qDebug() << "box" << box.text();
@@ -345,14 +345,14 @@ int main(int argc, char *argv[])
     box.setKeyboardTracking(true);
     box.show();
     QObject::connect(&box, //
-                     &MultiSpinBox::sectionValuesChangedAsQString, //
+                     &MultiSpinBox::valuesChangedAsQString, //
                      [=](const QString &v) {
                          qDebug() << "textChanged()" << v;
                      });
     QObject::connect(&box, //
-                     &MultiSpinBox::sectionValuesChanged, //
-                     [=](const QList<double> &newSectionValues) {
-                         qDebug() << "valueChanged()" << newSectionValues;
+                     &MultiSpinBox::valuesChanged, //
+                     [=](const QList<double> &newValues) {
+                         qDebug() << "valueChanged()" << newValues;
                      });
     QObject::connect(&box, //
                      &MultiSpinBox::editingFinished, //
