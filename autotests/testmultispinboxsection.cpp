@@ -45,7 +45,6 @@ private:
         return myConfig;
     }
 
-    QList<MultiSpinBoxSection> exampleConfigurations;
     static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
