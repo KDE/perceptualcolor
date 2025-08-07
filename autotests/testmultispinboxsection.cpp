@@ -45,6 +45,12 @@ private:
         return myConfig;
     }
 
+    QList<MultiSpinBoxSection> exampleConfigurations;
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
+        // dummy message handler that does not print messages
+    }
+
 private Q_SLOTS:
     void initTestCase()
     {
@@ -416,6 +422,16 @@ private Q_SLOTS:
         // The next line should produce a compiler error if the
         // type is not declared to Qt’s Meta Object System.
         test.setValue(MultiSpinBoxSection());
+    }
+
+    void testSectionDebug()
+    {
+        // suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+        // Test if QDebug support does not make a crash.
+        qDebug() << MultiSpinBoxSection();
+        // do not suppress warning for generating invalid QColor anymore
+        qInstallMessageHandler(nullptr);
     }
 };
 

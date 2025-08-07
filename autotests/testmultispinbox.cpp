@@ -1592,16 +1592,6 @@ private Q_SLOTS:
         delete widget2;
     }
 
-    void testSectionDebug()
-    {
-        // suppress warnings
-        qInstallMessageHandler(voidMessageHandler);
-        // Test if QDebug support does not make a crash.
-        qDebug() << MultiSpinBoxSection();
-        // do not suppress warning for generating invalid QColor anymore
-        qInstallMessageHandler(nullptr);
-    }
-
     void testAddActionButtonSizeHint()
     {
         // Adding an action button necessarily changes the size hint of the
