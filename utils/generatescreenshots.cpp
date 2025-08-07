@@ -423,25 +423,25 @@ static void makeScreenshots()
     {
         MultiSpinBox m_multiSpinBox;
         PerceptualColor::MultiSpinBoxSection mySection;
-        QList<PerceptualColor::MultiSpinBoxSection> hsvSectionConfigurations;
+        QList<PerceptualColor::MultiSpinBoxSection> hsvFormat;
         QList<double> values;
         mySection.setDecimals(1);
         mySection.setMinimum(0);
         mySection.setWrapping(true);
         mySection.setMaximum(360);
         mySection.setFormatString(QStringLiteral(u"%1° "));
-        hsvSectionConfigurations.append(mySection);
+        hsvFormat.append(mySection);
         values.append(310);
         mySection.setMinimum(0);
         mySection.setMaximum(255);
         mySection.setWrapping(false);
         mySection.setFormatString(QStringLiteral(u" %1 "));
-        hsvSectionConfigurations.append(mySection);
+        hsvFormat.append(mySection);
         values.append(200);
         mySection.setFormatString(QStringLiteral("%1"));
-        hsvSectionConfigurations.append(mySection);
+        hsvFormat.append(mySection);
         values.append(100);
-        m_multiSpinBox.setSectionConfigurations(hsvSectionConfigurations);
+        m_multiSpinBox.setFormat(hsvFormat);
         m_multiSpinBox.setSectionValues(values);
         screenshotDelayed(&m_multiSpinBox);
 
@@ -457,8 +457,8 @@ static void makeScreenshots()
             // Parent object:
             &m_multiSpinBox);
         MultiSpinBox m_multiSpinBoxWithButton;
-        m_multiSpinBoxWithButton.setSectionConfigurations( //
-            hsvSectionConfigurations);
+        m_multiSpinBoxWithButton.setFormat( //
+            hsvFormat);
         m_multiSpinBoxWithButton.setSectionValues(values);
         m_multiSpinBoxWithButton.addActionButton( //
             myAction, //

@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
     section.setFormatString(QStringLiteral("prefix%1suffix"));
     // section.setGroupSeparatorShown(true);
     section.setSingleStep(4);
-    box.setSectionConfigurations({section, section});
+    box.setFormat({section, section});
     box.setAccelerated(true);
     box.setSectionValues({1234, 5678});
     box.stepBy(3);

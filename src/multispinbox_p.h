@@ -64,9 +64,9 @@ public:
      *
      * This list is guaranteed to contain at least <em>one</em> section.
      *
-     * @sa @ref MultiSpinBox::sectionConfigurations()
-     * @sa @ref MultiSpinBox::setSectionConfigurations() */
-    QList<MultiSpinBoxSection> m_sectionConfigurations;
+     * @sa @ref MultiSpinBox::format()
+     * @sa @ref MultiSpinBox::setFormat() */
+    QList<MultiSpinBoxSection> m_format;
     /**
      * @brief Internal storage for property @ref MultiSpinBox::sectionValues.
      *

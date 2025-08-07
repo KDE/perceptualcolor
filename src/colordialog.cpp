@@ -575,7 +575,7 @@ void ColorDialogPrivate::retranslateUi()
 
     // HSL spin box
     QList<MultiSpinBoxSection> hslSections = //
-        m_hslSpinBox->sectionConfigurations();
+        m_hslSpinBox->format();
     if (hslSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
@@ -589,12 +589,12 @@ void ColorDialogPrivate::retranslateUi()
             + m_multispinboxSectionSeparator);
         hslSections[2].setFormatString( //
             m_multispinboxSectionSeparator + percentageInSpinbox);
-        m_hslSpinBox->setSectionConfigurations(hslSections);
+        m_hslSpinBox->setFormat(hslSections);
     }
 
     // HWB spin box
     QList<MultiSpinBoxSection> hwbSections = //
-        m_hwbSpinBox->sectionConfigurations();
+        m_hwbSpinBox->format();
     if (hwbSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
@@ -608,12 +608,12 @@ void ColorDialogPrivate::retranslateUi()
             + m_multispinboxSectionSeparator);
         hwbSections[2].setFormatString( //
             m_multispinboxSectionSeparator + percentageInSpinbox);
-        m_hwbSpinBox->setSectionConfigurations(hwbSections);
+        m_hwbSpinBox->setFormat(hwbSections);
     }
 
     // HSV spin box
     QList<MultiSpinBoxSection> hsvSections = //
-        m_hsvSpinBox->sectionConfigurations();
+        m_hsvSpinBox->format();
     if (hsvSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
@@ -628,12 +628,12 @@ void ColorDialogPrivate::retranslateUi()
             + m_multispinboxSectionSeparator);
         hsvSections[2].setFormatString( //
             m_multispinboxSectionSeparator + percentageInSpinbox);
-        m_hsvSpinBox->setSectionConfigurations(hsvSections);
+        m_hsvSpinBox->setFormat(hsvSections);
     }
 
     // CIELCH-D50 spin box
     QList<MultiSpinBoxSection> cielchD50Sections = //
-        m_cielchD50SpinBox->sectionConfigurations();
+        m_cielchD50SpinBox->format();
     if (cielchD50Sections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in CIELCH-D50 MultiSpinBox, but got" //
@@ -648,12 +648,12 @@ void ColorDialogPrivate::retranslateUi()
             + m_multispinboxSectionSeparator);
         cielchD50Sections[2].setFormatString( //
             m_multispinboxSectionSeparator + arcDegreeInSpinbox);
-        m_cielchD50SpinBox->setSectionConfigurations(cielchD50Sections);
+        m_cielchD50SpinBox->setFormat(cielchD50Sections);
     }
 
     // Oklch spin box
     QList<MultiSpinBoxSection> oklchSections = //
-        m_oklchSpinBox->sectionConfigurations();
+        m_oklchSpinBox->format();
     if (oklchSections.size() != 3) {
         qWarning() //
             << "Expected 3 sections in Oklch MultiSpinBox, but got" //
@@ -667,7 +667,7 @@ void ColorDialogPrivate::retranslateUi()
             + m_multispinboxSectionSeparator);
         oklchSections[2].setFormatString( //
             m_multispinboxSectionSeparator + arcDegreeInSpinbox);
-        m_oklchSpinBox->setSectionConfigurations(oklchSections);
+        m_oklchSpinBox->setFormat(oklchSections);
     }
 
     if (m_screenColorPickerButton) {
@@ -2054,7 +2054,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
             m_multispinboxSectionSeparator + QStringLiteral("%1"));
         rgbSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
-        m_rgbSpinBox->setSectionConfigurations(rgbSections);
+        m_rgbSpinBox->setFormat(rgbSections);
     }
 
     // Create widget for the hex style color representation
@@ -2090,7 +2090,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setWrapping(false);
         hslSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
-        m_hslSpinBox->setSectionConfigurations(hslSections);
+        m_hslSpinBox->setFormat(hslSections);
     }
 
     // Create HWB spin box
@@ -2115,7 +2115,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setWrapping(false);
         hwbSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
-        m_hwbSpinBox->setSectionConfigurations(hwbSections);
+        m_hwbSpinBox->setFormat(hwbSections);
     }
 
     // Create HSV spin box
@@ -2140,7 +2140,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setWrapping(false);
         hsvSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
-        m_hsvSpinBox->setSectionConfigurations(hsvSections);
+        m_hsvSpinBox->setFormat(hsvSections);
     }
 
     // Create RGB layout
@@ -2199,7 +2199,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setWrapping(true);
         cielchD50Sections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
-        m_cielchD50SpinBox->setSectionConfigurations(cielchD50Sections);
+        m_cielchD50SpinBox->setFormat(cielchD50Sections);
     }
 
     // Create widget for the Oklch color representation
@@ -2229,7 +2229,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setDecimals(decimals);
         oklchSections.append(mySection);
         // Not setting the suffix here. This will be done in retranslateUi()…
-        m_oklchSpinBox->setSectionConfigurations(oklchSections);
+        m_oklchSpinBox->setFormat(oklchSections);
     }
 
     // Create a global widget

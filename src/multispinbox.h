@@ -118,8 +118,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
     /** @brief A list containing the current values for all sections.
      *
      * @note The number of available sections is not determined by this
-     * property, but by @ref sectionConfigurations. To modify the section
-     * count, you must call @ref setSectionConfigurations first, then update
+     * property, but by @ref format. To modify the section
+     * count, you must call @ref setFormat first, then update
      * this property.
      *
      * @note If the <tt>QAbstractSpinBox::keyboardTracking</tt> property is
@@ -131,7 +131,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
      * reflects the current visible content of the editor.
      *
      * @invariant This property always contains the same number of elements as
-     * @ref sectionConfigurations contains.
+     * @ref format contains.
      *
      * @sa READ @ref sectionValues() const
      * @sa WRITE @ref setSectionValues()
@@ -149,7 +149,7 @@ public:
     virtual void clear() override;
     virtual void fixup(QString &input) const override;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
-    [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> sectionConfigurations() const;
+    [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> format() const;
     /** @brief Getter for property @ref sectionValues
      *  @returns the property @ref sectionValues
      *
@@ -159,7 +159,7 @@ public:
      * <tt>double QDoubleSpinBox::value() const</tt>.
      */
     [[nodiscard]] QList<double> sectionValues() const;
-    Q_INVOKABLE void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations);
+    Q_INVOKABLE void setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat);
     [[nodiscard]] virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
     virtual QValidator::State validate(QString &input, int &pos) const override;
