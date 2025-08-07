@@ -166,8 +166,8 @@ public:
     Q_INVOKABLE void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual void clear() override;
     virtual void fixup(QString &input) const override;
-    [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> format() const;
+    [[nodiscard]] virtual QSize minimumSizeHint() const override;
     /**
      * @brief Getter for property @ref sectionCount
      *
@@ -179,6 +179,10 @@ public:
      * <tt>int QDateTimeEdit::sectionCount() const</tt>.
      */
     [[nodiscard]] Q_INVOKABLE qsizetype sectionCount() const;
+    Q_INVOKABLE void setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat);
+    [[nodiscard]] virtual QSize sizeHint() const override;
+    virtual void stepBy(int steps) override;
+    virtual QValidator::State validate(QString &input, int &pos) const override;
     /** @brief Getter for property @ref values
      *  @returns the property @ref values
      *
@@ -188,10 +192,6 @@ public:
      * <tt>double QDoubleSpinBox::value() const</tt>.
      */
     [[nodiscard]] QList<double> values() const;
-    Q_INVOKABLE void setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat);
-    [[nodiscard]] virtual QSize sizeHint() const override;
-    virtual void stepBy(int steps) override;
-    virtual QValidator::State validate(QString &input, int &pos) const override;
 
 public Q_SLOTS:
     void setValues(const QList<double> &newValues);
