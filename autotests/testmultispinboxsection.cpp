@@ -7,9 +7,11 @@
 // Second, the private implementation.
 #include "multispinboxsection_p.h" // IWYU pragma: keep
 
+#include <qdebug.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qspinbox.h>
+#include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>

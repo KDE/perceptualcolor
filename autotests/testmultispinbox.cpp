@@ -13,7 +13,6 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcoreevent.h>
-#include <qdebug.h>
 #include <qevent.h>
 #include <qglobal.h>
 #include <qlabel.h>
