@@ -103,7 +103,7 @@ class MultiSpinBoxPrivate;
  *   insertion by middle mouse click on Linux).
  *
  * For feature parity with QAbstractSpinBox, QDoubleSpinBox, QDateTimeEdit and
- * the relevant parts of QLineEdit, the API could be extended.
+ * the relevant parts of QLineEdit, the API could be extended in the future:
  *
  * Full-featured @ref MultiSpinBoxSection API:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBoxSection
@@ -151,7 +151,13 @@ public:
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSection> sectionConfigurations() const;
     /** @brief Getter for property @ref sectionValues
-     *  @returns the property @ref sectionValues */
+     *  @returns the property @ref sectionValues
+     *
+     * @internal
+     *
+     * This it the counterpart to
+     * <tt>double QDoubleSpinBox::value() const</tt>.
+     */
     [[nodiscard]] QList<double> sectionValues() const;
     Q_INVOKABLE void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations);
     [[nodiscard]] virtual QSize sizeHint() const override;
@@ -175,6 +181,11 @@ Q_SIGNALS:
      * example if you want to use for <em>queued</em> signal-slot connections),
      * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object.
+     *
+     * @internal
+     *
+     * This it the counterpart to
+     * <tt>void QDoubleSpinBox::valueChanged(double d)</tt>.
      */
     void sectionValuesChanged(const QList<double> &newSectionValues);
     /**
@@ -194,6 +205,9 @@ Q_SIGNALS:
      *        time the signal is emitted.
      *
      * @internal
+     *
+     * This it the counterpart to
+     * <tt>QDoubleSpinBox::textChanged(const QString &)</tt>.
      *
      * @note This signal serves as the counterpart to
      * <tt>QDoubleSpinBox::textChanged(const QString &)</tt>,

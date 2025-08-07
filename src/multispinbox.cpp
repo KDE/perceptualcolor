@@ -309,6 +309,12 @@ QString MultiSpinBoxPrivate::textFromValue(const double value, const int decimal
  * or right)
  *
  * The action can be removed with <tt>QWidget::remove()</tt>.
+ *
+ * @internal
+ *
+ * This it the counterpart to
+ * <tt>void QLineEdit::addAction(QAction *action, QLineEdit::ActionPosition
+ * position)</tt>.
  */
 void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition position)
 {
@@ -499,7 +505,13 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
  * @ref MultiSpinBoxSection.maximum</tt>. If the @ref sectionValues are
  * not valid within the new section configurations, they will be fixed.
  *
- * @sa @ref sectionConfigurations() */
+ * @sa @ref sectionConfigurations()
+ *
+ * @internal
+ *
+ * This it the counterpart to
+ * <tt>void QDateTimeEdit::setDisplayFormat(const QString &format)</tt>.
+ */
 void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSection> &newSectionConfigurations)
 {
     if (newSectionConfigurations.size() < 1) {
@@ -537,7 +549,13 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
  *
  * @returns the configuration of all sections.
  *
- * @sa @ref setSectionConfigurations() */
+ * @sa @ref setSectionConfigurations()
+ *
+ * @internal
+ *
+ * This it the counterpart to
+ * <tt>QString QDateTimeEdit::displayFormat() const</tt>.
+ */
 QList<PerceptualColor::MultiSpinBoxSection> MultiSpinBox::sectionConfigurations() const
 {
     return d_pointer->m_sectionConfigurations;
@@ -658,7 +676,13 @@ void MultiSpinBoxPrivate::applyPendingSectionValuesAndEmitSignals()
  * @ref MultiSpinBoxSection::minimum and
  * @ref MultiSpinBoxSection::maximum. Their precision will be
  * reduced to as many decimal places as given by
- * @ref MultiSpinBoxSection::decimals. */
+ * @ref MultiSpinBoxSection::decimals.
+ *
+ * @internal
+ *
+ * This it the counterpart to
+ * <tt>void QDoubleSpinBox::setValue(double val)</tt>.
+ */
 void MultiSpinBox::setSectionValues(const QList<double> &newSectionValues)
 {
     d_pointer->setPendingSectionValuesWithoutFurtherUpdating(newSectionValues);
