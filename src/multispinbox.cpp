@@ -312,7 +312,7 @@ QString MultiSpinBoxPrivate::textFromValue(const double value, const int decimal
  *
  * @internal
  *
- * This it the counterpart to
+ * This is the counterpart to
  * <tt>void QLineEdit::addAction(QAction *action, QLineEdit::ActionPosition
  * position)</tt>.
  */
@@ -509,7 +509,7 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
  *
  * @internal
  *
- * This it the counterpart to
+ * This is the counterpart to
  * <tt>void QDateTimeEdit::setDisplayFormat(const QString &format)</tt>.
  */
 void MultiSpinBox::setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat)
@@ -559,7 +559,7 @@ void MultiSpinBox::setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &
  *
  * @internal
  *
- * This it the counterpart to
+ * This is the counterpart to
  * <tt>QString QDateTimeEdit::displayFormat() const</tt>.
  */
 QList<PerceptualColor::MultiSpinBoxSection> MultiSpinBox::format() const
@@ -686,7 +686,7 @@ void MultiSpinBoxPrivate::applyPendingValuesAndEmitSignals()
  *
  * @internal
  *
- * This it the counterpart to
+ * This is the counterpart to
  * <tt>void QDoubleSpinBox::setValue(double val)</tt>.
  */
 void MultiSpinBox::setValues(const QList<double> &newValues)

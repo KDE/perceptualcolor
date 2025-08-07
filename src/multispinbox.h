@@ -128,7 +128,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
      *
      * @internal
      *
-     * This it the counterpart to
+     * This is the counterpart to
      * <tt>int QDateTimeEdit::sectionCount() const</tt>.
      */
     Q_PROPERTY(qsizetype sectionCount READ sectionCount NOTIFY sectionCountChanged)
@@ -175,7 +175,7 @@ public:
      *
      * @internal
      *
-     * This it the counterpart to
+     * This is the counterpart to
      * <tt>int QDateTimeEdit::sectionCount() const</tt>.
      */
     [[nodiscard]] Q_INVOKABLE qsizetype sectionCount() const;
@@ -184,7 +184,7 @@ public:
      *
      * @internal
      *
-     * This it the counterpart to
+     * This is the counterpart to
      * <tt>double QDoubleSpinBox::value() const</tt>.
      */
     [[nodiscard]] QList<double> values() const;
@@ -219,7 +219,7 @@ Q_SIGNALS:
      *
      * @internal
      *
-     * This it the counterpart to
+     * This is the counterpart to
      * <tt>void QDoubleSpinBox::valueChanged(double d)</tt>.
      */
     void valuesChanged(const QList<double> &newValues);
@@ -241,7 +241,7 @@ Q_SIGNALS:
      *
      * @internal
      *
-     * This it the counterpart to
+     * This is the counterpart to
      * <tt>QDoubleSpinBox::textChanged(const QString &)</tt>.
      *
      * @note This signal serves as the counterpart to
