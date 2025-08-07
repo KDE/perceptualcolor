@@ -1082,8 +1082,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_alphaGradientSlider->setPageStep(pageStepAlpha);
     m_alphaSpinBox = new QDoubleSpinBox();
     m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
-    m_alphaSpinBox->setMinimum(0);
-    m_alphaSpinBox->setMaximum(100);
+    m_alphaSpinBox->setRange(0, 100);
     // The suffix is set in retranslateUi.
     m_alphaSpinBox->setDecimals(decimals);
     m_alphaSpinBox->setSingleStep(singleStepAlpha * 100);
@@ -2038,8 +2037,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         QList<MultiSpinBoxSection> rgbSections;
         MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
-        mySection.setMinimum(0);
-        mySection.setMaximum(255);
+        mySection.setRange(0, 255);
         // R
         mySection.setFormatString( //
             QStringLiteral("%1") + m_multispinboxSectionSeparator);
@@ -2075,18 +2073,15 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
+        mySection.setRange(0, 360);
         mySection.setWrapping(true);
         hslSections.append(mySection);
         // S
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         hslSections.append(mySection);
         // L
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         hslSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
@@ -2100,18 +2095,15 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
+        mySection.setRange(0, 360);
         mySection.setWrapping(true);
         hwbSections.append(mySection);
         // W
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         hwbSections.append(mySection);
         // B
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         hwbSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
@@ -2125,18 +2117,15 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // H
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
+        mySection.setRange(0, 360);
         mySection.setWrapping(true);
         hsvSections.append(mySection);
         // S
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         hsvSections.append(mySection);
         // V
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         hsvSections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
@@ -2184,18 +2173,15 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         MultiSpinBoxSection mySection;
         mySection.setDecimals(decimals);
         // L
-        mySection.setMinimum(0);
-        mySection.setMaximum(100);
+        mySection.setRange(0, 100);
         mySection.setWrapping(false);
         cielchD50Sections.append(mySection);
         // C
-        mySection.setMinimum(0);
-        mySection.setMaximum(CielchD50Values::maximumChroma);
+        mySection.setRange(0, CielchD50Values::maximumChroma);
         mySection.setWrapping(false);
         cielchD50Sections.append(mySection);
         // H
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
+        mySection.setRange(0, 360);
         mySection.setWrapping(true);
         cielchD50Sections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
@@ -2208,22 +2194,19 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         MultiSpinBoxSection mySection;
         m_oklchSpinBox = new MultiSpinBox;
         // L
-        mySection.setMinimum(0);
-        mySection.setMaximum(1);
+        mySection.setRange(0, 1);
         mySection.setSingleStep(singleStepOklabc);
         mySection.setWrapping(false);
         mySection.setDecimals(okdecimals);
         oklchSections.append(mySection);
         // C
-        mySection.setMinimum(0);
-        mySection.setMaximum(OklchValues::maximumChroma);
+        mySection.setRange(0, OklchValues::maximumChroma);
         mySection.setSingleStep(singleStepOklabc);
         mySection.setWrapping(false);
         mySection.setDecimals(okdecimals);
         oklchSections.append(mySection);
         // H
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
+        mySection.setRange(0, 360);
         mySection.setSingleStep(1);
         mySection.setWrapping(true);
         mySection.setDecimals(decimals);

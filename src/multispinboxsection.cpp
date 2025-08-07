@@ -136,11 +136,29 @@ void MultiSpinBoxSection::setWrapping(bool newIsWrapping)
     d_pointer->m_isWrapping = newIsWrapping;
 }
 
+/**
+ * @brief Convenience function to set the @ref minimum and @ref maximum values
+ * with a single function call.
+ *
+ * @param newMinimum The new minimum value.
+ * @param newMaximum The new maximum value.
+ */
+void MultiSpinBoxSection::setRange(double newMinimum, double newMaximum)
+{
+    d_pointer->m_minimum = newMinimum;
+    d_pointer->m_maximum = //
+        newMaximum < newMinimum //
+        ? newMinimum
+        : newMaximum;
+}
+
 /** @brief The maximum possible value of the section.
  *
  * @returns The property value.
  *
- * @sa @ref setMaximum */
+ * @sa @ref setMaximum
+ * @sa @ref setRange
+ */
 double MultiSpinBoxSection::maximum() const
 {
     return roundToDigits(d_pointer->m_maximum, d_pointer->m_decimals);
@@ -148,7 +166,9 @@ double MultiSpinBoxSection::maximum() const
 
 /** @brief Setter for @ref maximum property.
  *
- * @param newMaximum The new maximum value. */
+ * @param newMaximum The new maximum value.
+ * @sa @ref setRange
+ */
 void MultiSpinBoxSection::setMaximum(double newMaximum)
 {
     d_pointer->m_maximum = newMaximum;
@@ -161,7 +181,9 @@ void MultiSpinBoxSection::setMaximum(double newMaximum)
  *
  * @returns The property value.
  *
- * @sa @ref setMinimum */
+ * @sa @ref setMinimum
+ * @sa @ref setRange
+ */
 double MultiSpinBoxSection::minimum() const
 {
     return roundToDigits(d_pointer->m_minimum, d_pointer->m_decimals);
@@ -169,7 +191,10 @@ double MultiSpinBoxSection::minimum() const
 
 /** @brief Setter for @ref minimum property.
  *
- * @param newMinimum The new minimum value. */
+ * @param newMinimum The new minimum value.
+ *
+ * @sa @ref setRange
+ */
 void MultiSpinBoxSection::setMinimum(double newMinimum)
 {
     d_pointer->m_minimum = newMinimum;

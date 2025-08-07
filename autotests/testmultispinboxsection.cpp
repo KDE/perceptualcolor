@@ -434,6 +434,20 @@ private Q_SLOTS:
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
     }
+
+    void testSetRange()
+    {
+        MultiSpinBoxSection mySection;
+        mySection.setRange(40, 60);
+        QCOMPARE(mySection.minimum(), 40);
+        QCOMPARE(mySection.maximum(), 60);
+        mySection.setRange(50, 50);
+        QCOMPARE(mySection.minimum(), 50);
+        QCOMPARE(mySection.maximum(), 50);
+        mySection.setRange(80, 70);
+        QCOMPARE(mySection.minimum(), 80);
+        QCOMPARE(mySection.maximum(), 80);
+    }
 };
 
 } // namespace PerceptualColor

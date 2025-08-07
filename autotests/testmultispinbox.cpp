@@ -87,9 +87,6 @@ class testSnippet02 : public QObject
     // for feature parity with QDoubleSpinBox
 
 public:
-    // range convenance function:
-    void setRange(double newMinimum, double newMaximum); // convenance
-
     // specialValueText property (Note that QDateTimeEdit, different from
     // QDoubleSpinBox, does not provide this.)
     void setSpecialValueText(const QString &newSpecialValueText);

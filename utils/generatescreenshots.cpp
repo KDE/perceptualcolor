@@ -426,14 +426,12 @@ static void makeScreenshots()
         QList<PerceptualColor::MultiSpinBoxSection> hsvFormat;
         QList<double> values;
         mySection.setDecimals(1);
-        mySection.setMinimum(0);
         mySection.setWrapping(true);
-        mySection.setMaximum(360);
+        mySection.setRange(0, 360);
         mySection.setFormatString(QStringLiteral(u"%1° "));
         hsvFormat.append(mySection);
         values.append(310);
-        mySection.setMinimum(0);
-        mySection.setMaximum(255);
+        mySection.setRange(0, 255);
         mySection.setWrapping(false);
         mySection.setFormatString(QStringLiteral(u" %1 "));
         hsvFormat.append(mySection);

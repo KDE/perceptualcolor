@@ -59,6 +59,7 @@ public:
     void setGroupSeparatorShown(bool shown);
     void setMaximum(double newMaximum);
     void setMinimum(double newMinimum);
+    void setRange(double newMinimum, double newMaximum);
     void setSingleStep(double newSingleStep);
     void setWrapping(bool newIsWrapping);
     [[nodiscard]] double singleStep() const;
