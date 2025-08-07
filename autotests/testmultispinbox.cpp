@@ -109,9 +109,6 @@ public: // (None of these functions is a Q_SLOTS in the mentioned Qt classes.)
     int currentSectionIndex() const;
     void setCurrentSectionIndex(int newIndex);
     void setSelectedSection(int newIndex);
-
-    int sectionCount() const; // convenance for format().size()
-
     QString sectionText(int index) const;
     //! [MultiSpinBox Full-featured MultiSpinBox]
 };
@@ -2666,6 +2663,35 @@ private Q_SLOTS:
         // maybe select the value of the current section, but never change
         // the current section index.
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
+    }
+
+    void testSectionCount()
+    {
+        MultiSpinBoxSection mySection1;
+        MultiSpinBoxSection mySection2;
+        mySection2.setMaximum(50);
+        MultiSpinBox myMulti;
+        QCOMPARE(myMulti.format().size(), 1);
+        QCOMPARE(myMulti.sectionCount(), 1);
+        QSignalSpy mySpy( //
+            &myMulti, //
+            &MultiSpinBox::sectionCountChanged);
+
+        myMulti.setFormat({mySection1, mySection1});
+        QCOMPARE(myMulti.sectionCount(), 2);
+        QCOMPARE(mySpy.size(), 1);
+        QCOMPARE(mySpy.last().first(), 2);
+
+        myMulti.setFormat({mySection1, mySection2});
+        QCOMPARE(myMulti.sectionCount(), 2);
+        // sectionCount not changed, no additional signal emitted:
+        QCOMPARE(mySpy.size(), 1);
+        QCOMPARE(mySpy.last().first(), 2);
+
+        myMulti.setFormat({mySection2, mySection1, mySection1});
+        QCOMPARE(myMulti.sectionCount(), 3);
+        QCOMPARE(mySpy.size(), 2);
+        QCOMPARE(mySpy.last().first(), 3);
     }
 
     void testSnippet02()

@@ -346,7 +346,7 @@ QString MultiSpinBoxPrivate::formattedPendingValue(qsizetype index) const
 
 /** @brief Updates prefix, value and suffix text
  *
- * @pre <tt>0 <= @ref m_currentIndex < @ref m_format .size()</tt>
+ * @pre <tt>0 <= @ref m_currentIndex < @ref MultiSpinBox::sectionCount()</tt>
  *
  * @post Updates @ref m_textBeforeCurrentValue,
  * @ref m_textOfCurrentPendingValue, @ref m_textAfterCurrentValue to the
@@ -375,7 +375,7 @@ void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     m_textAfterCurrentValue = QString();
     m_textAfterCurrentValue.append( //
         m_format.at(m_currentIndex).suffix());
-    for (i = m_currentIndex + 1; i < m_format.size(); ++i) {
+    for (i = m_currentIndex + 1; i < q_pointer->sectionCount(); ++i) {
         m_textAfterCurrentValue.append(m_format.at(i).prefix());
 
         m_textAfterCurrentValue.append(formattedPendingValue(i));
@@ -429,7 +429,7 @@ void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype n
  * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue */
 void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
 {
-    if (!isInRange<qsizetype>(0, newIndex, m_format.size() - 1)) {
+    if (!isInRange<qsizetype>(0, newIndex, q_pointer->sectionCount() - 1)) {
         qWarning() << "The function" << __func__ //
                    << "in file" << __FILE__ //
                    << "near to line" << __LINE__ //
@@ -438,7 +438,7 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
                    << "thought the valid range is currently [" //
                    << 0 //
                    << ", " //
-                   << m_format.size() - 1 //
+                   << q_pointer->sectionCount() - 1 //
                    << "]. This is a bug.";
         throw 0;
     }
@@ -525,6 +525,8 @@ void MultiSpinBox::setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &
         newFormat.size());
 
     // Set new section configuration
+    const auto oldSectionCount = d_pointer->m_sectionCount;
+    d_pointer->m_sectionCount = newFormat.size();
     d_pointer->m_format = newFormat;
     d_pointer->updateValidator();
 
@@ -543,6 +545,10 @@ void MultiSpinBox::setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &
     // Make sure that the geometry is updated: sizeHint() and minimumSizeHint()
     // both depend on the section configuration!
     updateGeometry();
+
+    if (d_pointer->m_sectionCount != oldSectionCount) {
+        Q_EMIT sectionCountChanged(d_pointer->m_sectionCount);
+    }
 }
 
 /** @brief Returns the configuration of all sections.
@@ -588,7 +594,7 @@ void MultiSpinBoxPrivate::setPendingValuesWithoutFurtherUpdating(const QList<dou
         return;
     }
 
-    const auto sectionCount = m_format.size();
+    const auto sectionCount = q_pointer->sectionCount();
 
     QList<double> fixedNewValues = newValues;
 
@@ -737,7 +743,7 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
             isBeforeCurrentValue //
             ? currentIndex //
             : currentIndex + 1;
-        if (newIndex < d_pointer->m_format.size()) {
+        if (newIndex < sectionCount()) {
             d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(newIndex);
             d_pointer->applyPendingValuesAndEmitSignals();
             // Make sure that the buttons for step up and step down
@@ -809,7 +815,7 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
         return;
     case Qt::BacktabFocusReason:
         d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
-            d_pointer->m_format.size() - 1);
+            sectionCount() - 1);
         // Make sure that the buttons for step up and step down
         // are updated.
         update();
@@ -839,7 +845,7 @@ void MultiSpinBox::keyPressEvent(QKeyEvent *event)
     if (!eventText.isEmpty() && !lineEdit()->hasSelectedText()) {
         const auto i = d_pointer->m_currentIndex;
         const bool hasNextSection = //
-            i < d_pointer->m_format.size() - 1;
+            i < sectionCount() - 1;
         if (hasNextSection) {
             const auto posEndOfCurrentSectionValue = //
                 lineEdit()->text().size() //
@@ -1051,7 +1057,7 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     int sectionOfTheNewCursorPosition;
     qsizetype reference = 0;
     for (sectionOfTheNewCursorPosition = 0; //
-         sectionOfTheNewCursorPosition < m_format.size() - 1; //
+         sectionOfTheNewCursorPosition < q_pointer->sectionCount() - 1; //
          ++sectionOfTheNewCursorPosition //
     ) {
         reference += m_format //
@@ -1317,6 +1323,11 @@ void MultiSpinBox::actionEvent(QActionEvent *event)
         lineEdit()->removeAction(event->action());
     }
     QAbstractSpinBox::actionEvent(event);
+}
+
+qsizetype MultiSpinBox::sectionCount() const
+{
+    return d_pointer->m_sectionCount;
 }
 
 } // namespace PerceptualColor

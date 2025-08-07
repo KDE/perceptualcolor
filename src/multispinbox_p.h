@@ -68,6 +68,10 @@ public:
      * @sa @ref MultiSpinBox::setFormat() */
     QList<MultiSpinBoxSection> m_format;
     /**
+     * @brief Internal storage for property @ref MultiSpinBox::sectionCount.
+     */
+    qsizetype m_sectionCount = 1;
+    /**
      * @brief Internal storage for property @ref MultiSpinBox::values.
      *
      * @sa @ref m_pendingValues
