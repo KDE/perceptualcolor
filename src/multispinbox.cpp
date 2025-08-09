@@ -1283,6 +1283,14 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
         }
     }
 
+    // If decimals() == 0 then we want integer-like behaviour: decimal
+    // separators are not allowed.
+    if (d_pointer->m_format.value(d_pointer->m_currentIndex).decimals() == 0) {
+        if (myInput.contains(decimalSeparator)) {
+            return QValidator::State::Invalid;
+        }
+    }
+
     QValidator::State result = //
         d_pointer->m_validator->validate(myInput, myPos);
     // Following the Qt documentation, QValidator::validate() is allowed

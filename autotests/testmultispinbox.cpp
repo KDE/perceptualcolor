@@ -2684,6 +2684,62 @@ private Q_SLOTS:
         QCOMPARE(mySpy.last().first(), 3);
     }
 
+    void testIntLikeBehaviourEnglish()
+    {
+        // If MultiSpinBoxSection.decimals() == 0 then the spin box should
+        // behave integer-like, and not allow decimal separators.
+
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBoxSection section;
+        section.setFormatString(QStringLiteral("a%1b"));
+        section.setRange(0, 1000);
+        section.setDecimals(0);
+        const QList<MultiSpinBoxSection> configs{section};
+        myMulti.setFormat(configs);
+        myMulti.setLocale(QLocale::English);
+        myMulti.show();
+        myMulti.setKeyboardTracking(true);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        myMulti.setValues({1});
+        myMulti.lineEdit()->setCursorPosition(2); // between“1” and “b”.
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1b"));
+
+        QTest::keyClick(&myMulti, Qt::Key_Period); // Should be ignored
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1b"));
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+    }
+
+    void testIntLikeBehaviourGerman()
+    {
+        // If MultiSpinBoxSection.decimals() == 0 then the spin box should
+        // behave integer-like, and not allow decimal separators.
+
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBoxSection section;
+        section.setFormatString(QStringLiteral("a%1b"));
+        section.setRange(0, 1000);
+        section.setDecimals(0);
+        const QList<MultiSpinBoxSection> configs{section};
+        myMulti.setFormat(configs);
+        myMulti.setLocale(QLocale::German);
+        myMulti.show();
+        myMulti.setKeyboardTracking(true);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        myMulti.setValues({1});
+        myMulti.lineEdit()->setCursorPosition(2); // between“1” and “b”.
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1b"));
+
+        QTest::keyClick(&myMulti, Qt::Key_Comma); // Should be ignored
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1b"));
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+    }
+
     void testSnippet02()
     {
         snippet02();
