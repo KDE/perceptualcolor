@@ -2517,9 +2517,7 @@ void ColorDialogPrivate::applyLayoutDimensions()
         }
         break;
     default:
-        // We should never reach this point, because we treat all possible
-        // enum values in the switch statement.
-        throw 0;
+        return;
     }
 
     if (m_layoutDimensionsEffective == collapsed) {

@@ -15,6 +15,9 @@ namespace PerceptualColor
 
 /** @brief Constructor.
  *
+ * @pre There exists a QCoreApplication object. (Otherwise, this
+ * function will throw an exception.)
+ *
  * @param scope Passed to the underlying <tt>QSettings</tt> object’s
  *        constructor.
  * @param organization Passed to the underlying <tt>QSettings</tt> object’s

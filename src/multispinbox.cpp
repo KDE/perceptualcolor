@@ -430,17 +430,7 @@ void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype n
 void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
 {
     if (!isInRange<qsizetype>(0, newIndex, q_pointer->sectionCount() - 1)) {
-        qWarning() << "The function" << __func__ //
-                   << "in file" << __FILE__ //
-                   << "near to line" << __LINE__ //
-                   << "was called with an invalid “newIndex“ argument of" //
-                   << newIndex //
-                   << "thought the valid range is currently [" //
-                   << 0 //
-                   << ", " //
-                   << q_pointer->sectionCount() - 1 //
-                   << "]. This is a bug.";
-        throw 0;
+        return;
     }
 
     if (newIndex == m_currentIndex) {
