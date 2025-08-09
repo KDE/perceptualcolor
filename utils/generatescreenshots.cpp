@@ -26,7 +26,9 @@
 #include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
 #include <qcoreapplication.h>
+#include <qcoreevent.h>
 #include <qdebug.h>
+#include <qevent.h>
 #include <qfont.h>
 #include <qfontdatabase.h>
 #include <qfontinfo.h>
@@ -39,7 +41,6 @@
 #include <qobjectdefs.h>
 #include <qpalette.h>
 #include <qpixmap.h>
-#include <qscopedpointer.h>
 #include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringbuilder.h>
@@ -141,26 +142,25 @@ static void initWidgetAppearance(QApplication *app)
     // "Breeze", "dsemilight", "dsemidark", "dlight", "ddark", "kvantum-dark",
     // "kvantum", "cleanlooks", "gtk2", "cde", "motif", "plastique", "Oxygen",
     // "QtCurve", "Windows", "Fusion"
-    const QStringList styleNames{QStringLiteral("Fusion"), //
-                                 QStringLiteral("Breeze"), //
+    const QStringList styleNames{QStringLiteral("Breeze"), //
+                                 QStringLiteral("Fusion"), //
                                  QStringLiteral("Oxygen")};
     QStyle *style = nullptr;
-    for (const QString &styleName : styleNames) {
-        style = QStyleFactory::create(styleName);
+    QString styleName;
+    for (const QString &candidatName : styleNames) {
+        style = QStyleFactory::create(candidatName);
         if (style != nullptr) {
+            styleName = candidatName;
             break;
         }
     }
     QApplication::setStyle(style); // This call is safe even if style==nullptr.
-
-    // Fusion uses by default the system’s palette, but
+    QPalette tempPalette = QApplication::style()->standardPalette();
+    // Styles may use by default the system’s palette, but
     // we want something system-independent to make the screenshots
-    // look always the same. Therefore, we explicitly set Fusion’s
+    // look always the same. Therefore, we explicitly set the
     // standard palette.
-    {
-        QScopedPointer<QStyle> tempStyle( //
-            QStyleFactory::create(QStringLiteral("Fusion")));
-        QPalette tempPalette = tempStyle->standardPalette();
+    if (styleName == QStringLiteral("Fusion")) {
         // The following colors are missing in Fusion’s standard palette:
         // They appear in Qt’s documentation of QPalette::ColorRole,
         // but do not appear when passing Fusion’s standard palette to
@@ -168,8 +168,8 @@ static void initWidgetAppearance(QApplication *app)
         // that are mentioned in the documentation of QPalette::ColorRole.
         tempPalette.setColor(QPalette::Link, Qt::blue);
         tempPalette.setColor(QPalette::Link, Qt::magenta);
-        QApplication::setPalette(tempPalette);
     }
+    QApplication::setPalette(tempPalette);
 
     // By default, the icons of the system are made available by
     // QPlatformTheme. However, we want to make screenshots that
@@ -441,6 +441,10 @@ static void makeScreenshots()
         values.append(100);
         m_multiSpinBox.setFormat(hsvFormat);
         m_multiSpinBox.setValues(values);
+        {
+            QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_End, Qt::NoModifier);
+            QApplication::sendEvent(&m_multiSpinBox, &keyPress);
+        }
         screenshotDelayed(&m_multiSpinBox);
 
         // Out-of-gamut button for the HLC spin box
@@ -461,6 +465,10 @@ static void makeScreenshots()
         m_multiSpinBoxWithButton.addActionButton( //
             myAction, //
             QLineEdit::ActionPosition::TrailingPosition);
+        {
+            QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_End, Qt::NoModifier);
+            QApplication::sendEvent(&m_multiSpinBoxWithButton, &keyPress);
+        }
         screenshotDelayed(&m_multiSpinBoxWithButton, QStringLiteral("WithButton"));
     }
 

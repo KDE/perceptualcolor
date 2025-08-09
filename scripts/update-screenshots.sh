@@ -61,7 +61,7 @@ echo "Build generatescreenshots finished."
 #   GPL is a bad choice for font files (risque that resulting documents
 #   must be GPL also.)
 #   Has a Sans variant that might work for UI.
-#   Big coverage, but is jsut collection of various free fonts, hasn’t a
+#   Big coverage, but is just collection of various free fonts, hasn’t a
 #   uniform design across scripts.
 # - Victor Mono
 #   https://github.com/rubjo/victor-mono/blob/e9c0f111221b7a871b97c51907d9bcbc58b7ce0d/LICENSE
@@ -76,13 +76,16 @@ echo "Build generatescreenshots finished."
 #   https://stackoverflow.com/a/40664202
 #   https://go.googlesource.com/image/+/refs/heads/master/font/gofont/ttfs/
 #   https://github.com/golang/image/blob/master/font/gofont/ttfs/Go-Regular.ttf
-#   BSD-3-Clause.
-#   Likely the best choice!
+#   https://github.com/golang/image/raw/b6ac75bc5918c3a0a2200faa20aedebc76d5b349/font/gofont/ttfs/Go-Regular.ttf
+#   BSD-3-Clause – likely the best choice!
+# But as we only create screenshots, and do not embed the font anywhere, we
+# can also download Noto (KDE’s default font) on-the-fly, for KDE consistent
+# styling.
 if ! [ -f .screenshotfont.ttf ]; then
   wget \
     --no-check-certificate \
     --output-document .screenshotfont.ttf \
-    https://github.com/golang/image/raw/b6ac75bc5918c3a0a2200faa20aedebc76d5b349/font/gofont/ttfs/Go-Regular.ttf
+    https://github.com/notofonts/NotoSans/raw/refs/heads/main/fonts/ttf/hinted/instance_ttf/NotoSans-Regular.ttf
 fi
 
 ################# Run #################
