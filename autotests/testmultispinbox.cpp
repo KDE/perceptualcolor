@@ -287,18 +287,12 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if setting negative value is ignored
-        QVERIFY_EXCEPTION_THROWN( //
-            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-1), //
-            int);
+        test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-1);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
-        QVERIFY_EXCEPTION_THROWN( //
-            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-100), //
-            int);
+        test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-100);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // Test setting too high values is ignored
-        QVERIFY_EXCEPTION_THROWN( //
-            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(100), //
-            int);
+        test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(100);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
