@@ -2737,6 +2737,48 @@ private Q_SLOTS:
         QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
     }
 
+    void testEmptySuffixPrefixEdgeCase()
+    {
+        // If all prefixes and suffixes are empty, the digits of the sections
+        // are next to each other. That’s arguable useless for the user, but
+        // testing edge cases make the code more robust.
+
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBoxSection section;
+        section.setRange(0, 1000);
+        section.setDecimals(0);
+        const QList<MultiSpinBoxSection> configs{section, section};
+        myMulti.setFormat(configs);
+        myMulti.show();
+        myMulti.setKeyboardTracking(true);
+        myMulti.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
+        myMulti.setFocus();
+        myMulti.setValues({6, 7});
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("67"));
+
+        // If the cursor position is between value 0 ("6") and value 1 ("7")
+        // then the current section index is either 0 or 1, depending from
+        // the previous position of the text cursor.
+
+        myMulti.lineEdit()->setCursorPosition(0);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 0);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
+        QTest::keyClick(&myMulti, Qt::Key_Right);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 1);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
+        QTest::keyClick(&myMulti, Qt::Key_Right);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 2);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
+        QTest::keyClick(&myMulti, Qt::Key_Left);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 1);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
+        QTest::keyClick(&myMulti, Qt::Key_Left);
+        QCOMPARE(myMulti.lineEdit()->cursorPosition(), 0);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
+    }
+
     void testSnippet02()
     {
         snippet02();
