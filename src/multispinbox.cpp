@@ -1245,7 +1245,7 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
     // to the position immediately after the existing decimal separator.
     const QString decimalSeparator = locale().decimalPoint();
     const QString doubleDecimalPoint = decimalSeparator + decimalSeparator;
-    if (pos > 0) {
+    if (pos > 0 && !decimalSeparator.isEmpty()) {
         if (myInput.mid(pos - 1).startsWith(doubleDecimalPoint)) { // clazy:exclude=qstring-ref
             myInput.remove(pos, decimalSeparator.length());
         }
@@ -1286,7 +1286,7 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
     // If decimals() == 0 then we want integer-like behaviour: decimal
     // separators are not allowed.
     if (d_pointer->m_format.value(d_pointer->m_currentIndex).decimals() == 0) {
-        if (myInput.contains(decimalSeparator)) {
+        if (!decimalSeparator.isEmpty() && myInput.contains(decimalSeparator)) {
             return QValidator::State::Invalid;
         }
     }
