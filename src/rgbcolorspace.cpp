@@ -36,6 +36,7 @@
 #include <qtimezone.h>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 // Include the type “tm” as defined in the C standard (time.h), as LittleCMS
 // expects, preventing IWYU < 0.19 to produce false-positives.
@@ -750,10 +751,10 @@ QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsI
     // actually created, and instead an empty string is returned.
 
     // Allocate the buffer
-    wchar_t *buffer = new wchar_t[bufferLength];
+    std::vector<wchar_t> buffer(bufferLength);
     // Initialize the buffer with 0
     for (cmsUInt32Number i = 0; i < bufferLength; ++i) {
-        *(buffer + i) = 0;
+        buffer[i] = 0;
     }
 
     // Write the actual information to the buffer
@@ -767,12 +768,12 @@ QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsI
         // the preferred country for which we want to get the information
         countryCode.constData(),
         // the buffer into which the requested information will be written
-        buffer,
+        buffer.data(),
         // the buffer size as previously calculated by cmsGetProfileInfo
         resultLength);
     // Make absolutely sure the buffer is null-terminated by marking its last
     // element (the one that was the +1 "extra" element) as null.
-    *(buffer + (bufferLength - 1)) = 0;
+    buffer[bufferLength - 1] = 0;
 
     // Create a QString() from the from the buffer
     //
@@ -825,12 +826,9 @@ QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsI
     // need the buffer.
     const QString result = QString::fromWCharArray(
         // Convert to string with these parameters:
-        buffer, // read from this buffer
+        buffer.data(), // read from this buffer
         -1 // read until the first null element
     );
-
-    // Free allocated memory of the buffer
-    delete[] buffer;
 
     // Return
     return result;

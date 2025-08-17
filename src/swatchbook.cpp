@@ -392,7 +392,7 @@ void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGr
  */
 void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow)
 {
-    const auto newColor = m_swatchGrid.value(newCurrentColumn, newCurrentRow);
+    const QColor newColor = m_swatchGrid.value(newCurrentColumn, newCurrentRow);
     if (!newColor.isValid()) {
         return;
     }

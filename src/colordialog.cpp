@@ -263,6 +263,7 @@ void ColorDialogPrivate::retranslateUi()
     case cmsSigLinkClass: // Device link profile
     case cmsSigNamedColorClass: // Named color profile
     case cmsSigOutputClass: // Output profile
+    default:
         // These profile classes are currently not supported.
         break;
     }
@@ -917,6 +918,8 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
                     m_swatchBookStack->setCurrentIndex(2);
                     m_settings.swatchBookPage.setValue( //
                         PerceptualSettings::SwatchBookPage::CustomColors);
+                    break;
+                default:
                     break;
                 };
             });

@@ -53,6 +53,8 @@ std::optional<QRgb> CssColor::parseHexColor(const QString &hexColor)
             + capturedDigits.at(2) + capturedDigits.at(2) //
             + capturedDigits.at(3) + capturedDigits.at(3);
         break;
+    default:
+        break;
     }
     if (capturedDigits.length() == 6) {
         // Add missing opacity.

@@ -29,6 +29,7 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 namespace PerceptualColor
 {
@@ -616,14 +617,15 @@ QMap<cmsUInt32Number, QString> lcmsIntentList()
         QMap<cmsUInt32Number, QString> lambdaResult;
         const cmsUInt32Number intentCount = //
             cmsGetSupportedIntents(0, nullptr, nullptr);
-        cmsUInt32Number *codeArray = new cmsUInt32Number[intentCount];
-        char **descriptionArray = new char *[intentCount];
-        cmsGetSupportedIntents(intentCount, codeArray, descriptionArray);
+        std::vector<cmsUInt32Number> codeArray(intentCount);
+        std::vector<char *> descriptionArray(intentCount);
+        cmsGetSupportedIntents(intentCount, //
+                               codeArray.data(), //
+                               descriptionArray.data());
         for (cmsUInt32Number i = 0; i < intentCount; ++i) {
-            lambdaResult.insert(codeArray[i], QString::fromUtf8(descriptionArray[i]));
+            lambdaResult.insert(codeArray[i], //
+                                QString::fromUtf8(descriptionArray[i]));
         }
-        delete[] codeArray;
-        delete[] descriptionArray;
         return lambdaResult;
     }();
     return result;

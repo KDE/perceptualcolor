@@ -27,6 +27,7 @@
 #include <qtestcase.h>
 #include <qwidget.h>
 #include <rgbcolorspacefactory.h>
+#include <type_traits>
 #include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -890,7 +891,7 @@ private Q_SLOTS:
         QCOMPARE(result.size(), 5);
 
         int totalElements = 0;
-        for (const auto &segment : result) {
+        for (const auto &segment : std::as_const(result)) {
             // cppcheck-suppress useStlAlgorithm
             totalElements += segment.second - segment.first + 1;
         }
@@ -909,7 +910,7 @@ private Q_SLOTS:
     {
         QList<QPair<int, int>> result = splitElementsTapered(100, 7, 10, 0.3);
 
-        for (const auto &segment : result) {
+        for (const auto &segment : std::as_const(result)) {
             QCOMPARE(segment.first % 10, 0); // Start index must be a multiple of alignment
         }
     }

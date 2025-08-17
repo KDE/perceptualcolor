@@ -1138,7 +1138,7 @@ void MultiSpinBox::clear()
     d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
         d_pointer->m_currentIndex);
     // Substitute currently selected text with an empty string.
-    lineEdit()->insert(QStringLiteral(""));
+    lineEdit()->insert(QString());
     update(); // Make sure the buttons for step-up and step-down are updated.
 }
 
