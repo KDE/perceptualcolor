@@ -39,7 +39,12 @@ public:
     static constexpr int min = std::numeric_limits<int>::min();
     static constexpr int max = std::numeric_limits<int>::max();
 
-    enum class MyEnum { negative = min, zero = 0, middle = 5, high = max };
+    enum class MyEnum { //
+        negative = min, //
+        zero = 0, //
+        middle = 5, //
+        high = max //
+    };
     Q_ENUM(MyEnum);
 
 private:

@@ -24,8 +24,13 @@ class ReceiverMockup : public QWidget
 {
     Q_OBJECT
 public:
+    // clang-format off
     explicit ReceiverMockup(QWidget *parent = nullptr)
-        : QWidget(parent){};
+        : QWidget(parent) //
+    {
+        // empty implementation
+    };
+    // clang-format on
     bool languageChangeEventDetected = false;
 
 protected:

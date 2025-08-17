@@ -80,22 +80,46 @@ class EnumTestClass : QObject
 {
     Q_OBJECT
 public:
-    enum class Normal { value0, value1, value2 };
+    enum class Normal { //
+        value0, //
+        value1, //
+        value2 //
+    };
     Q_ENUM(Normal);
 
-    enum class Defined { value0 = 0, value1 = 1, value2 = 2 };
+    enum class Defined { //
+        value0 = 0, //
+        value1 = 1, //
+        value2 = 2 //
+    };
     Q_ENUM(Defined);
 
-    enum class Shifted { value0 = 10, value1 = 11, value2 = 12 };
+    enum class Shifted { //
+        value0 = 10, //
+        value1 = 11, //
+        value2 = 12 //
+    };
     Q_ENUM(Shifted);
 
-    enum class Missing { value0 = 00, value1 = 10, value2 = 20 };
+    enum class Missing { //
+        value0 = 00, //
+        value1 = 10, //
+        value2 = 20 //
+    };
     Q_ENUM(Missing);
 
-    enum class DoubledValue { value0 = 0, value1 = 1, value2 = 1 };
+    enum class DoubledValue { //
+        value0 = 0, //
+        value1 = 1, //
+        value2 = 1 //
+    };
     Q_ENUM(DoubledValue);
 
-    enum class DoubledKey { value0 = 0, value1 = 1, value2 = value1 };
+    enum class DoubledKey { //
+        value0 = 0, //
+        value1 = 1, //
+        value2 = value1 //
+    };
     Q_ENUM(DoubledKey);
 };
 
@@ -103,7 +127,11 @@ namespace MyNamespace
 {
 Q_NAMESPACE
 
-enum class NamespaceEnum { value0, value1, value2 };
+enum class NamespaceEnum { //
+    value0, //
+    value1, //
+    value2 //
+};
 Q_ENUM_NS(NamespaceEnum);
 }
 
