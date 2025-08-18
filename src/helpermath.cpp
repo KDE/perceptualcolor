@@ -135,4 +135,38 @@ int roundToNearestMultiple(double num, int multiple)
     return qRound(num / multiple) * multiple;
 }
 
+/**
+ * @brief Rounds a floating-point number to the nearest multiple of an integer.
+ *
+ * @param num The number to be rounded
+ * @param multiple The multiple to round to
+ *
+ * @returns int The rounded result, rounding halfway cases away from zero.
+ */
+int roundToIntMultiple(double num, int multiple)
+{
+    if (multiple == 0) {
+        // Avoid division by zero
+        multiple = 1;
+    }
+    return static_cast<int>(std::round(num / multiple) * multiple);
+}
+
+/**
+ * @brief Rounds a floating-point number to the nearest multiple of
+ * a floating-point number.
+ *
+ * @param num The number to be rounded
+ * @param multiple The multiple to round to
+ *
+ * @returns int The rounded result, rounding halfway cases away from zero.
+ */
+double roundToFloatMultiple(double num, double multiple)
+{
+    if (multiple == 0) {
+        return num;
+    }
+    return std::round(num / multiple) * multiple;
+}
+
 } // namespace PerceptualColor

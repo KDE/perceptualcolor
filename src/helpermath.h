@@ -325,6 +325,10 @@ template<typename T>
     return std::round(value * multiplier) / multiplier;
 }
 
+double roundToFloatMultiple(double num, double multiple);
+
+int roundToIntMultiple(double num, int multiple);
+
 } // namespace PerceptualColor
 
 Q_DECLARE_METATYPE(PerceptualColor::Quartet)
