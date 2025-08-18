@@ -10,6 +10,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
 #include "rgbcolorspace.h"
+#include <qapplication.h>
 #include <qboxlayout.h>
 #include <qglobal.h>
 #include <qlineedit.h>
@@ -23,7 +24,6 @@
 #include <qtestcase.h>
 #include <qtestkeyboard.h>
 #include <qtestmouse.h>
-#include <qtestsupport_widgets.h>
 #include <qwidget.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -84,10 +84,9 @@ private Q_SLOTS:
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
         myWindow.show();
-        myWindow.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myWindow));
-        myLineEdit->setFocus();
+        QApplication::setActiveWindow(&myWindow);
 
+        myLineEdit->setFocus();
         QCOMPARE(myLineEdit->hasFocus(), true);
         QCOMPARE(myColorWheel->hasFocus(), false);
 

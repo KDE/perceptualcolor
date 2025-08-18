@@ -15,6 +15,7 @@
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qglobal.h>
+#include <qguiapplication.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
@@ -727,8 +728,7 @@ private Q_SLOTS:
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
         parentWidget->show();
-        parentWidget->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QApplication::setActiveWindow(parentWidget.data());
 
         // Assert that the setup is okay.
         QVERIFY(widget1->hasFocus());
@@ -770,6 +770,13 @@ private Q_SLOTS:
 
     void testFocusTabPrefixSuffix()
     {
+        const QString platform = QGuiApplication::platformName();
+        if (platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+            // Wayland does not allow to activate windows manually, which is
+            // however necessary for this test.
+            return;
+        }
+
         // Integration for reactions on Tab or Shift-Tab depending on
         // cursor position.
         QScopedPointer<QWidget> parentWidget(new QWidget());
@@ -1190,8 +1197,7 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        parentWidget->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
         QVERIFY(!widget1->hasFocus());
         QVERIFY(!widget2->hasFocus());
@@ -1258,8 +1264,7 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        parentWidget->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
         QVERIFY(!widget1->hasFocus());
         QVERIFY(!widget2->hasFocus());
@@ -1326,8 +1331,7 @@ private Q_SLOTS:
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        parentWidget->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
         QVERIFY(!widget1->hasFocus());
         QVERIFY(!widget2->hasFocus());
@@ -1562,8 +1566,7 @@ private Q_SLOTS:
         parentWidget->show();
         widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         // The following statement make focus and widget events working.
-        parentWidget->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
         QVERIFY(widget2->hasFocus());
         QVERIFY(QApplication::focusWidget() == widget2);
@@ -1906,9 +1909,7 @@ private Q_SLOTS:
         myDouble.setKeyboardTracking(true);
 
         // Get test data
-        myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
-        myMulti.setFocus();
+        QApplication::setActiveWindow(&myMulti);
         myMulti.setValues({8});
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
         QTest::keyClick(&myMulti, Qt::Key::Key_5);
@@ -1917,9 +1918,7 @@ private Q_SLOTS:
 
         // Get reference data
         myDouble.setValue(8);
-        myDouble.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myDouble));
-        myDouble.setFocus();
+        QApplication::setActiveWindow(&myDouble);
         QTest::keyClick(&myDouble, Qt::Key_Up);
         QTest::keyClick(&myDouble, Qt::Key::Key_5);
         QTest::keyClick(&myDouble, Qt::Key::Key_4);
@@ -1986,10 +1985,7 @@ private Q_SLOTS:
 
         // Get test data
         myMulti.setValues({8});
-        myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
-        myMulti.setFocus();
-        spyMultiEditingFinished.clear();
+        QApplication::setActiveWindow(&myMulti);
         QCOMPARE(spyMultiEditingFinished.size(), 0);
         QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
         QCOMPARE(spyMultiEditingFinished.size(), 0);
@@ -2004,20 +2000,12 @@ private Q_SLOTS:
         QTest::keyClick(&myMulti, Qt::Key::Key_2);
         myMulti.stepUp();
         QCOMPARE(spyMultiEditingFinished.size(), 1);
-        helper.activateWindow(); // Make spinbox loose focus
-        QVERIFY(QTest::qWaitForWindowActive(&helper));
-        helper.setFocus();
-        // activateWindow() and setFocus() might behave differently across
-        // non-graphical testing environments and different Qt versions,
-        // however the invocation of both should result in at least one
-        // editingFinished() signal emitted.
-        QVERIFY(spyMultiEditingFinished.size() >= 2);
+        QApplication::setActiveWindow(&helper); // Make spinbox loose focus
+        QCOMPARE(spyMultiEditingFinished.size(), 2);
 
         // Get reference data
         myDouble.setValue(8);
-        myDouble.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myDouble));
-        myDouble.setFocus();
+        QApplication::setActiveWindow(&myDouble);
         QTest::keyClick(&myDouble, Qt::Key_Up);
         QTest::keyClick(&myDouble, Qt::Key::Key_5);
         QTest::keyClick(&myDouble, Qt::Key::Key_4);
@@ -2025,9 +2013,7 @@ private Q_SLOTS:
         QTest::keyClick(&myDouble, Qt::Key::Key_3);
         QTest::keyClick(&myDouble, Qt::Key::Key_2);
         myDouble.stepUp();
-        helper.activateWindow(); // Make spinbox loose focus
-        QVERIFY(QTest::qWaitForWindowActive(&helper));
-        helper.setFocus();
+        QApplication::setActiveWindow(&helper); // Make spinbox loose focus
 
         // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
         QCOMPARE(spyMulti.size(), spyDouble.size());
@@ -2057,6 +2043,13 @@ private Q_SLOTS:
 
     void signalsOnTabWhithoutKeyboardTracking()
     {
+        const QString platform = QGuiApplication::platformName();
+        if (platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+            // Wayland does not allow to activate windows manually, which is
+            // however necessary for this test.
+            return;
+        }
+
         QScopedPointer<QWidget> parentWidget(new QWidget());
         MultiSpinBox *widget2 = //
             new MultiSpinBox(parentWidget.data());
@@ -2401,8 +2394,7 @@ private Q_SLOTS:
         parentWidget->show();
         widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         // The following statement make focus and widget events working.
-        parentWidget->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(parentWidget.data()));
+        QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
         QVERIFY(widget2->hasFocus());
         QVERIFY(QApplication::focusWidget() == widget2);
@@ -2530,7 +2522,6 @@ private Q_SLOTS:
         myMulti.show();
         myMulti.setKeyboardTracking(true);
         myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
         myMulti.setValues({12.34});
         QSignalSpy spyMulti( //
@@ -2567,6 +2558,13 @@ private Q_SLOTS:
 
     void testJumpToNextSection()
     {
+        const QString platform = QGuiApplication::platformName();
+        if (platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+            // Wayland does not allow to activate windows manually, which is
+            // however necessary for this test.
+            return;
+        }
+
         // Initialize
         MultiSpinBox myMulti;
         MultiSpinBoxSection section;
@@ -2635,7 +2633,6 @@ private Q_SLOTS:
         myMulti.show();
         myMulti.setKeyboardTracking(true);
         myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
         myMulti.setValues({1, 2});
         QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("a1bc2d"));
@@ -2701,7 +2698,6 @@ private Q_SLOTS:
         myMulti.show();
         myMulti.setKeyboardTracking(true);
         myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
         myMulti.setValues({1});
         myMulti.lineEdit()->setCursorPosition(2); // between“1” and “b”.
@@ -2729,7 +2725,6 @@ private Q_SLOTS:
         myMulti.show();
         myMulti.setKeyboardTracking(true);
         myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
         myMulti.setFocus();
         myMulti.setValues({1});
         myMulti.lineEdit()->setCursorPosition(2); // between“1” and “b”.

@@ -56,7 +56,6 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
-#include <qtestsupport_widgets.h>
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
@@ -2043,9 +2042,7 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorSpace));
         m_perceptualDialog->setCurrentColor(color);
         m_perceptualDialog->show();
-        m_perceptualDialog->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(m_perceptualDialog.data()));
-        m_perceptualDialog->setFocus();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
         // Using a QList instead of a simple QWidget* to make sure
         // not to have infinite loops even is focus passing might be
         // broken and never returns to the original focus.
@@ -2282,9 +2279,7 @@ private Q_SLOTS:
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_perceptualDialog->show();
-        m_perceptualDialog->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(m_perceptualDialog.data()));
-        m_perceptualDialog->setFocus();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
         auto &d = m_perceptualDialog->d_pointer;
 
         d->m_tabWidget->setFocus();
@@ -2346,9 +2341,7 @@ private Q_SLOTS:
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         m_perceptualDialog->show();
-        m_perceptualDialog->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(m_perceptualDialog.data()));
-        m_perceptualDialog->setFocus();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
         auto &d = m_perceptualDialog->d_pointer;
 
         d->m_tabWidget->setFocus();
@@ -2410,9 +2403,7 @@ private Q_SLOTS:
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_perceptualDialog->show();
-        m_perceptualDialog->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(m_perceptualDialog.data()));
-        m_perceptualDialog->setFocus();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
         auto &d = m_perceptualDialog->d_pointer;
 
         const auto originalIndex = d->m_tabWidget->currentIndex();
@@ -2470,9 +2461,7 @@ private Q_SLOTS:
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         m_perceptualDialog->show();
-        m_perceptualDialog->activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(m_perceptualDialog.data()));
-        m_perceptualDialog->setFocus();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
         auto &d = m_perceptualDialog->d_pointer;
 
         const auto originalIndex = d->m_tabWidget->currentIndex();

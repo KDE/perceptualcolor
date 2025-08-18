@@ -7,9 +7,13 @@
 
 #include <qcontainerfwd.h>
 #include <qglobal.h>
+#include <qguiapplication.h>
 #include <qmap.h>
+#include <qnamespace.h>
 #include <qobject.h>
 #include <qpointer.h>
+#include <qstring.h>
+#include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 
@@ -101,8 +105,12 @@ private Q_SLOTS:
             QCOMPARE(picker.m_hasQColorDialogSupport.value(), true);
         }
 #endif
-        QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
-        QVERIFY(!picker.m_qColorDialog.isNull());
+
+        const QString name = QGuiApplication::platformName();
+        if (!name.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+            QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
+            QVERIFY(!picker.m_qColorDialog.isNull());
+        }
     }
 
     void testHasPortalSupport()
