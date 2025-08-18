@@ -70,6 +70,7 @@ public:
 
     // Member functions
     [[nodiscard]] QSize calculateImageSizePhysical() const;
+    [[nodiscard]] int defaultBorderDeviceIndependant() const;
     [[nodiscard]] int defaultBorderPhysical() const;
     /** @internal
      *
@@ -101,6 +102,7 @@ public:
     }
     [[nodiscard]] GenericColor fromWidgetPixelPositionToCielchD50(const QPoint widgetPixelPosition) const;
     [[nodiscard]] bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const;
+    [[nodiscard]] int leftBorderDeviceIndependent() const;
     [[nodiscard]] int leftBorderPhysical() const;
     [[nodiscard]] GenericColor nearestInGamutCielchD50ByAdjustingChromaLightness(const double chroma, const double lightness);
     [[nodiscard]] std::optional<QPoint> nearestInGamutPixelPosition(const QPoint originalPixelPosition);

@@ -99,11 +99,36 @@ void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const
         nearestInGamutCielchD50ByAdjustingChromaLightness(color.second, color.first));
 }
 
-/** @brief The border between the widget outer top, right and bottom
+/**
+ * @brief The border between the widget outer top, right and bottom
  * border and the diagram itself.
  *
  * @returns The border between the widget outer top, right and bottom
+ * border and the diagram itself, measured in <em>device-independent
+ * pixels</em>.
+ *
+ * The diagram is not painted on the whole extend of the widget.
+ * A border is left to allow that the selection handle can be painted
+ * completely even when a pixel on the border of the diagram is
+ * selected.
+ *
+ * This is the value for the top, right and bottom border. For the left
+ * border, see @ref leftBorderDeviceIndependent() instead.
+ *
+ *  @sa @ref defaultBorderPhysical()
+ */
+int ChromaLightnessDiagramPrivate::defaultBorderDeviceIndependant() const
+{
+    return qCeil( //
+        q_pointer->handleRadius() + q_pointer->handleOutlineThickness() / 2.0);
+}
+
+/**
+ * @brief The border between the widget outer top, right and bottom
  * border and the diagram itself.
+ *
+ * @returns The border between the widget outer top, right and bottom
+ * border and the diagram itself, measured in <em>physical pixels</em>.
  *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
@@ -113,19 +138,50 @@ void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const
  * This is the value for the top, right and bottom border. For the left
  * border, see @ref leftBorderPhysical() instead.
  *
- * Measured in <em>physical pixels</em>. */
+ *  @sa @ref defaultBorderDeviceIndependant()
+ */
 int ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
 {
-    const qreal border = q_pointer->handleRadius() //
-        + q_pointer->handleOutlineThickness() / 2.0;
-    return qCeil(border * q_pointer->devicePixelRatioF());
+    return qCeil( //
+        defaultBorderDeviceIndependant() * q_pointer->devicePixelRatioF());
 }
 
-/** @brief The left border between the widget outer left border and the
+/**
+ * @brief The left border between the widget outer left border and the
  * diagram itself.
  *
  * @returns The left border between the widget outer left border and the
+ * diagram itself, measured in <em>device-independent
+ * pixels</em>.
+ *
+ * The diagram is not painted on the whole extend of the widget.
+ * A border is left to allow that the selection handle can be painted
+ * completely even when a pixel on the border of the diagram is
+ * selected. Also, there is space left for the focus indicator.
+ *
+ * This is the value for the left border. For the other three borders,
+ * see @ref defaultBorderDeviceIndependant() instead.
+ *
+ * @sa @ref leftBorderPhysical
+ */
+int ChromaLightnessDiagramPrivate::leftBorderDeviceIndependent() const
+{
+    // Candidate 1:
+    const int candidateOne = //
+        defaultBorderDeviceIndependant() + q_pointer->handleOutlineThickness();
+
+    // Candidate 2: Generally recommended value for focus indicator:
+    const int candidateTwo = q_pointer->spaceForFocusIndicator();
+
+    return qMax(candidateOne, candidateTwo);
+}
+
+/**
+ * @brief The left border between the widget outer left border and the
  * diagram itself.
+ *
+ * @returns The left border between the widget outer left border and the
+ * diagram itself, measured in <em>physical pixels</em>.
  *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
@@ -135,20 +191,12 @@ int ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
  * This is the value for the left border. For the other three borders,
  * see @ref defaultBorderPhysical() instead.
  *
- * Measured in <em>physical pixels</em>. */
+ * @sa @ref leftBorderDeviceIndependent
+ */
 int ChromaLightnessDiagramPrivate::leftBorderPhysical() const
 {
-    const int focusIndicatorThickness = qCeil( //
-        q_pointer->handleOutlineThickness() * q_pointer->devicePixelRatioF());
-
-    // Candidate 1:
-    const int candidateOne = defaultBorderPhysical() + focusIndicatorThickness;
-
-    // Candidate 2: Generally recommended value for focus indicator:
-    const int candidateTwo = qCeil( //
-        q_pointer->spaceForFocusIndicator() * q_pointer->devicePixelRatioF());
-
-    return qMax(candidateOne, candidateTwo);
+    return qCeil( //
+        leftBorderDeviceIndependent() * q_pointer->devicePixelRatioF());
 }
 
 /** @brief Calculate a size for @ref m_chromaLightnessImage that corresponds
@@ -589,12 +637,14 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const int minimumHeight = qRound(
         // Top border and bottom border:
-        2.0 * d_pointer->defaultBorderPhysical() / devicePixelRatioF()
+        2.0 * d_pointer->defaultBorderDeviceIndependant()
         // Add the height for the diagram:
         + gradientMinimumLength());
     const int minimumWidth = qRound(
-        // Left border and right border:
-        (d_pointer->leftBorderPhysical() + d_pointer->defaultBorderPhysical()) / devicePixelRatioF()
+        // Left border
+        d_pointer->leftBorderDeviceIndependent()
+        // Right border
+        + d_pointer->defaultBorderDeviceIndependant()
         // Add the gradient minimum length from y axis, multiplied with
         // the factor to allow at correct scaling showing up the whole
         // chroma range of the gamut.

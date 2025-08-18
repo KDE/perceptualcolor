@@ -879,7 +879,23 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
  *
  * Reimplemented from base class.
  *
- * @param event the paint event */
+ * @param event the paint event
+ *
+ * @internal
+ *
+ * Color patches are aligned to device pixels only at integral scale factors
+ * (e.g., 100%, 200%, 300%). At fractional scale factors, pixel alignment is
+ * intentionally avoided. Aligning patches at fractional scales leads to
+ * rounding errors—for example, a patch size of 17.5 device pixels may round
+ * to 18, and spacing of 4.5 may round to 5. This introduces a 0.5 device pixel
+ * discrepancy per patch and per space. With 10 patches and 9 spaces, this
+ * accumulates to 19 × 0.5 = 9.5 device pixels of error. Such inconsistencies
+ * cause functions like sizeHint(), which report sizes in device-independent
+ * pixels, to vary across scale factors. This is problematic in multi-screen
+ * Wayland setups where scale factors can differ between screens and change
+ * dynamically as windows move. To ensure consistent sizing across all scale
+ * factors, pixel alignment is deliberately avoided in this function.
+ */
 void SwatchBook::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
