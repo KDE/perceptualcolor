@@ -48,13 +48,24 @@ echo cmakelint finished.
 # old documentation for classes that do not exist anymore, or old
 # screenshots that are not used anymore, would stay in the directory
 # and occupy space:
+
 rm --recursive --force docs/publicapi
-rm --recursive --force docs/publicapiandinternals
+cp docs/Doxyfile.external docs/Doxyfile.external.temp
+doxygen -u docs/Doxyfile.external.temp > /dev/null 2> /dev/null
 # Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-nice --adjustment 19 doxygen docs/Doxyfile.internal 2>&1 \
-    | sed 's/^/Doxygen “public API and internals”: /'
-nice --adjustment 19 doxygen docs/Doxyfile.external 2>&1 \
+nice --adjustment 19 doxygen docs/Doxyfile.external.temp 2>&1 \
     | sed 's/^/Doxygen “public API”: /'
+rm docs/Doxyfile.external.temp
+rm docs/Doxyfile.external.temp.bak
+
+rm --recursive --force docs/publicapiandinternals
+cp docs/Doxyfile.internal docs/Doxyfile.internal.temp
+doxygen -u docs/Doxyfile.internal.temp > /dev/null 2> /dev/null
+# Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
+nice --adjustment 19 doxygen docs/Doxyfile.internal.temp 2>&1 \
+    | sed 's/^/Doxygen “public API and internals”: /'
+rm docs/Doxyfile.internal.temp
+rm docs/Doxyfile.internal.temp.bak
 
 
 
@@ -118,9 +129,11 @@ mkdir --parents build \
     | grep --invert-match --perl-regexp "^Added \d+ tests to meet fixture requirements" \
     | grep --invert-match --perl-regexp "^Checking test dependency graph\.\.\." \
     | grep --invert-match --perl-regexp "^Checking test dependency graph end" \
+    | grep --invert-match --perl-regexp "^Total Test time" \
     | grep --invert-match --perl-regexp "^Parse Config file:.*DartConfiguration.tcl$" \
     | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
     | grep --invert-match --perl-regexp "^\d+: RESULT : " \
+    | grep --invert-match --perl-regexp "^\d+: Working Directory: " \
     | grep --invert-match --perl-regexp "^      Start " \
     | grep --invert-match --perl-regexp "^$"
 )
