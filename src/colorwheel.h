@@ -82,11 +82,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
      * @sa READ @ref hue() const
      * @sa WRITE @ref setHue()
      * @sa NOTIFY @ref hueChanged()
-     *
-     * @internal
-     *
-     * The value gets normalized according
-     * to @ref PolarPointF::normalizedAngle360() */
+     */
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged USER true)
 
 public:

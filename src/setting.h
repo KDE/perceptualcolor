@@ -162,7 +162,10 @@ void Setting<T>::updateFromQSettings()
     T newValue;
     if constexpr (m_isEnum) {
         const QByteArray byteArray = newValueVariant.toString().toUtf8();
-        const int enumInteger = m_qMetaEnum.keysToValue(byteArray.constData());
+        const int enumInteger = //
+            byteArray.isEmpty() //
+            ? 0 //
+            : m_qMetaEnum.keysToValue(byteArray.constData());
         newValue = static_cast<T>(enumInteger);
     } else {
         newValue = newValueVariant.value<T>();

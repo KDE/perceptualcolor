@@ -1548,7 +1548,9 @@ private Q_SLOTS:
         // be applied on-the-fly.
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"50,0"));
 
-        widget->setLocale(QLocale::Bengali);
+        qInstallMessageHandler(voidMessageHandler); // suppress warnings
+        widget->setLocale(QLocale::Bengali); // might warn if font is missing
+        qInstallMessageHandler(nullptr); // reenable warnings again
         // Without calling update() or other functions, the new locale should
         // be applied on-the-fly.
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"৫০.০"));

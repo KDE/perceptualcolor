@@ -44,6 +44,7 @@
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qscopedpointer.h>
+#include <qset.h>
 #include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qspinbox.h>
@@ -698,9 +699,14 @@ private Q_SLOTS:
         // about the actual encoding of “const char *”.
         QTest::addColumn<QByteArray>("propertyName");
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
+        QSet<QByteArray> seenProperties;
         for (int i = 0; i < referenceClass.propertyCount(); ++i) {
-            QTest::newRow(referenceClass.property(i).name()) //
-                << QByteArray(referenceClass.property(i).name());
+            const QByteArray name = referenceClass.property(i).name();
+            if (seenProperties.contains(name)) {
+                continue;
+            }
+            seenProperties.insert(name);
+            QTest::newRow(name.constData()) << name;
         }
     }
 
@@ -814,10 +820,16 @@ private Q_SLOTS:
         QTest::addColumn<QByteArray>("methodSignature");
         QTest::addColumn<int>("referenceClassIndex");
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
+        QSet<QByteArray> seenMethodNames;
         for (int i = 0; i < referenceClass.methodCount(); ++i) {
+            // Exclude private methods from conformance check
             if (referenceClass.method(i).access() != QMetaMethod::Private) {
-                // Exclude private methods from conformance check
-                QTest::newRow(referenceClass.method(i).name().data()) //
+                const QByteArray name = referenceClass.method(i).name();
+                if (seenMethodNames.contains(name)) {
+                    continue;
+                }
+                seenMethodNames.insert(name);
+                QTest::newRow(name.constData()) //
                     << QMetaObject::normalizedSignature( //
                            referenceClass.method(i).methodSignature().data()) //
                     << i;
