@@ -206,7 +206,7 @@ public:
     /** @brief String that is used as separator between two sections
      * within a @ref MultiSpinBox.
      *
-     * This string is introduced <em>twice</em> between two sections
+     * This string is introduced between two sections
      * within a @ref MultiSpinBox. */
     static inline const QString m_multispinboxSectionSeparator = QStringLiteral(u" ");
     /** @brief Shortcut to show the tab with @ref m_numericalWidget. */

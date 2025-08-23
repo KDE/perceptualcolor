@@ -583,11 +583,9 @@ void ColorDialogPrivate::retranslateUi()
             << hslSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        hslSections[0].setFormatString( //
-            arcDegreeInSpinbox + m_multispinboxSectionSeparator);
+        hslSections[0].setFormatString(arcDegreeInSpinbox);
         hslSections[1].setFormatString( //
-            m_multispinboxSectionSeparator + percentageInSpinbox //
-            + m_multispinboxSectionSeparator);
+            m_multispinboxSectionSeparator + percentageInSpinbox);
         hslSections[2].setFormatString( //
             m_multispinboxSectionSeparator + percentageInSpinbox);
         m_hslSpinBox->setFormat(hslSections);
@@ -602,11 +600,9 @@ void ColorDialogPrivate::retranslateUi()
             << hwbSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        hwbSections[0].setFormatString( //
-            arcDegreeInSpinbox + m_multispinboxSectionSeparator);
+        hwbSections[0].setFormatString(arcDegreeInSpinbox);
         hwbSections[1].setFormatString( //
-            m_multispinboxSectionSeparator + percentageInSpinbox //
-            + m_multispinboxSectionSeparator);
+            m_multispinboxSectionSeparator + percentageInSpinbox);
         hwbSections[2].setFormatString( //
             m_multispinboxSectionSeparator + percentageInSpinbox);
         m_hwbSpinBox->setFormat(hwbSections);
@@ -621,12 +617,9 @@ void ColorDialogPrivate::retranslateUi()
             << hsvSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        hsvSections[0].setFormatString( //
-            arcDegreeInSpinbox + m_multispinboxSectionSeparator);
+        hsvSections[0].setFormatString(arcDegreeInSpinbox);
         hsvSections[1].setFormatString( //
-            m_multispinboxSectionSeparator //
-            + percentageInSpinbox //
-            + m_multispinboxSectionSeparator);
+            m_multispinboxSectionSeparator + percentageInSpinbox);
         hsvSections[2].setFormatString( //
             m_multispinboxSectionSeparator + percentageInSpinbox);
         m_hsvSpinBox->setFormat(hsvSections);
@@ -642,11 +635,9 @@ void ColorDialogPrivate::retranslateUi()
             << "instead. This is a bug in libperceptualcolor.";
     } else {
         cielchD50Sections[0].setFormatString( //
-            percentageInSpinbox + m_multispinboxSectionSeparator);
+            percentageInSpinbox);
         cielchD50Sections[1].setFormatString( //
-            m_multispinboxSectionSeparator //
-            + QStringLiteral("%1") //
-            + m_multispinboxSectionSeparator);
+            m_multispinboxSectionSeparator + QStringLiteral("%1"));
         cielchD50Sections[2].setFormatString( //
             m_multispinboxSectionSeparator + arcDegreeInSpinbox);
         m_cielchD50SpinBox->setFormat(cielchD50Sections);
@@ -661,11 +652,9 @@ void ColorDialogPrivate::retranslateUi()
             << oklchSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
     } else {
-        oklchSections[0].setFormatString( //
-            QStringLiteral("%1") + m_multispinboxSectionSeparator);
+        oklchSections[0].setFormatString(QStringLiteral("%1"));
         oklchSections[1].setFormatString( //
-            m_multispinboxSectionSeparator + QStringLiteral("%1") //
-            + m_multispinboxSectionSeparator);
+            m_multispinboxSectionSeparator + QStringLiteral("%1"));
         oklchSections[2].setFormatString( //
             m_multispinboxSectionSeparator + arcDegreeInSpinbox);
         m_oklchSpinBox->setFormat(oklchSections);
@@ -2042,13 +2031,11 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setDecimals(decimals);
         mySection.setRange(0, 255);
         // R
-        mySection.setFormatString( //
-            QStringLiteral("%1") + m_multispinboxSectionSeparator);
+        mySection.setFormatString(QStringLiteral("%1"));
         rgbSections.append(mySection);
         // G
         mySection.setFormatString( //
-            m_multispinboxSectionSeparator + QStringLiteral("%1") //
-            + m_multispinboxSectionSeparator);
+            m_multispinboxSectionSeparator + QStringLiteral("%1"));
         rgbSections.append(mySection);
         // B
         mySection.setFormatString( //
