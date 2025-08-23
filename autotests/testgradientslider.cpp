@@ -137,19 +137,19 @@ private Q_SLOTS:
         QCOMPARE(spySecond.size(), 1);
     }
 
-    void testMinimalSizeHint()
+    void testMinimumSizeHint()
     {
         GradientSlider testWidget(m_rgbColorSpace);
-        QVERIFY2(testWidget.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
-        QVERIFY2(testWidget.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
+        QVERIFY2(testWidget.minimumSizeHint().width() > 0, "minimumSizeHint width is implemented.");
+        QVERIFY2(testWidget.minimumSizeHint().height() > 0, "minimumSizeHint height is implemented.");
     }
 
     void testSizeHint()
     {
         GradientSlider testWidget(m_rgbColorSpace);
-        QVERIFY2(testWidget.sizeHint().width() >= testWidget.minimumSizeHint().width(), "sizeHint width is bigger than or equal to minimalSizeHint width.");
+        QVERIFY2(testWidget.sizeHint().width() >= testWidget.minimumSizeHint().width(), "sizeHint width is bigger than or equal to minimumSizeHint width.");
         QVERIFY2(testWidget.sizeHint().height() >= testWidget.minimumSizeHint().height(),
-                 "sizeHint height is bigger than or equal to minimalSizeHint "
+                 "sizeHint height is bigger than or equal to minimumSizeHint "
                  "height.");
     }
 

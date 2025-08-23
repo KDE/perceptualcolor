@@ -384,7 +384,7 @@ private Q_SLOTS:
             "value <= maximum");
     }
 
-    void testMinimalSizeHint()
+    void testMinimumSizeHint()
     {
         PerceptualColor::MultiSpinBox myMulti;
         QCOMPARE(myMulti.minimumSizeHint(), myMulti.sizeHint());

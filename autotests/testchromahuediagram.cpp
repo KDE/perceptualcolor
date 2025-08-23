@@ -170,8 +170,8 @@ private Q_SLOTS:
     void testMinimumSizeHint()
     {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
-        QVERIFY2(myDiagram.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
-        QVERIFY2(myDiagram.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
+        QVERIFY2(myDiagram.minimumSizeHint().width() > 0, "minimumSizeHint width is implemented.");
+        QVERIFY2(myDiagram.minimumSizeHint().height() > 0, "minimumSizeHint height is implemented.");
         // Check that the hint is a square:
         QCOMPARE(myDiagram.minimumSizeHint().width(), myDiagram.minimumSizeHint().height());
     }
@@ -179,8 +179,8 @@ private Q_SLOTS:
     void testSizeHint()
     {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
-        QVERIFY2(myDiagram.sizeHint().width() > myDiagram.minimumSizeHint().width(), "sizeHint width is bigger than minimalSizeHint width.");
-        QVERIFY2(myDiagram.sizeHint().height() > myDiagram.minimumSizeHint().height(), "sizeHint height is bigger than minimalSizeHint height.");
+        QVERIFY2(myDiagram.sizeHint().width() > myDiagram.minimumSizeHint().width(), "sizeHint width is bigger than minimumSizeHint width.");
+        QVERIFY2(myDiagram.sizeHint().height() > myDiagram.minimumSizeHint().height(), "sizeHint height is bigger than minimumSizeHint height.");
         // Check that the hint is a square:
         QCOMPARE(myDiagram.minimumSizeHint().width(), myDiagram.minimumSizeHint().height());
     }
