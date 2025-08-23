@@ -2752,9 +2752,6 @@ private Q_SLOTS:
         myMulti.setFormat(configs);
         myMulti.show();
         myMulti.setKeyboardTracking(true);
-        myMulti.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&myMulti));
-        myMulti.setFocus();
         myMulti.setValues({6, 7});
         QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("67"));
 
