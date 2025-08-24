@@ -315,37 +315,37 @@ msgid "Op&acity:"
 msgstr "Op&acità:"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
-#: colordialog.cpp:682
+#: colordialog.cpp:671
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color…"
 msgstr "&Scegli il colore dello schermo…"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
-#: colordialog.cpp:695
+#: colordialog.cpp:684
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
 msgstr "Fai clic per eseguire l'aggancio al colore in-&gamut più vicino"
 
 #. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
-#: colordialog.cpp:707
+#: colordialog.cpp:696
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
 msgstr "Colori di base"
 
 #. @item:inlistbox The swatch grid showing the history of previously selected colors.
-#: colordialog.cpp:712
+#: colordialog.cpp:701
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
 msgstr "Cronologia"
 
 #. @item:inlistbox The swatch grid showing custom colors, allowing users to add or remove colors as desired.
-#: colordialog.cpp:717
+#: colordialog.cpp:706
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
 msgstr "Colori personalizzati"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1263
+#: colordialog.cpp:1252
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Seleziona il colore"
