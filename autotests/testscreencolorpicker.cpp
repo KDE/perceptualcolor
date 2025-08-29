@@ -102,7 +102,7 @@ private Q_SLOTS:
             QCOMPARE(picker.m_hasQColorDialogSupport.value(), true);
         }
 #endif
-        if (onWayland()) {
+        if (!onWayland()) {
             QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
             QVERIFY(!picker.m_qColorDialog.isNull());
         }
