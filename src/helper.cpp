@@ -239,9 +239,6 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
  */
 QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type)
 {
-#ifdef PERCEPTUALCOLORINTERNAL
-    Q_UNUSED(names)
-#else
     // Try to find icon in theme
     for (auto const &name : std::as_const(names)) {
         const QIcon myIcon = QIcon::fromTheme(name);
@@ -249,7 +246,6 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSch
             return myIcon;
         }
     }
-#endif
 
     // Return fallback icon
     initializeLibraryResources();

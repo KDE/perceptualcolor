@@ -721,6 +721,25 @@ void ColorDialogPrivate::retranslateUi()
     // the call is not necessary, as mentioned earlier.
 }
 
+/**
+ * @brief Gamut icon for a given color scheme.
+ *
+ * @param type Type of color scheme
+ *
+ * @returns Gamut icon for a given color scheme.
+ */
+QIcon ColorDialogPrivate::getGamutIcon(PerceptualColor::ColorSchemeType type)
+{
+    static const QStringList gamutIconNames //
+        {
+            QStringLiteral("data-warning"),
+            QStringLiteral("dialog-warning-symbolic"),
+        };
+    return qIconFromTheme(gamutIconNames, //
+                          QStringLiteral("eye-exclamation"),
+                          type);
+}
+
 /** @brief Reloads all icons, adapting to the current color schema and
  * widget style. */
 void ColorDialogPrivate::reloadIcons()
@@ -782,14 +801,7 @@ void ColorDialogPrivate::reloadIcons()
     }
 
     // Gamut button for some spin boxes
-    static const QStringList gamutIconNames //
-        {
-            QStringLiteral("data-warning"),
-            QStringLiteral("dialog-warning-symbolic"),
-        };
-    const QIcon gamutIcon = qIconFromTheme(gamutIconNames, //
-                                           QStringLiteral("eye-exclamation"),
-                                           m_currentIconThemeType);
+    const QIcon gamutIcon = getGamutIcon(m_currentIconThemeType);
     m_cielchD50SpinBoxGamutAction->setIcon(gamutIcon);
     m_oklchSpinBoxGamutAction->setIcon(gamutIcon);
 

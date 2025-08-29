@@ -166,9 +166,7 @@ void GradientSlider::resizeEvent(QResizeEvent *event)
     Q_UNUSED(event)
     d_pointer->m_gradientImageParameters.setGradientLength( //
         d_pointer->physicalPixelLength());
-    d_pointer->m_gradientImageParameters.setGradientThickness(
-        // Normally, this should not change, but maybe on Hight-DPI
-        // devices there might be some differences.
+    d_pointer->m_gradientImageParameters.setGradientThickness( //
         d_pointer->physicalPixelThickness());
     d_pointer->m_gradientImage.setImageParameters( //
         d_pointer->m_gradientImageParameters);

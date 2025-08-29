@@ -10,19 +10,24 @@
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
+#include <qdebug.h>
 #include <qglobal.h>
+#include <qguiapplication.h>
 #include <qicon.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qmap.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
+#include <qnamespace.h>
+#include <qobject.h>
 #include <qpair.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qthread.h>
 #include <type_traits>
 
+class QApplication;
 class QWheelEvent;
 class QWidget;
 
@@ -316,6 +321,60 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
         QThread::msleep(msecWaitBetweenEventLoopPasses);
         QCoreApplication::processEvents();
     }
+}
+
+/**
+ * @internal
+ *
+ * @brief Determines whether the current session is running under the
+ * X Window System.
+ *
+ * @pre A valid QApplication instance must be available to perform detection.
+ *
+ * @warning Throws an exception if no QApplication instance exists.
+ *
+ * @returns
+ * - <tt>true</tt> if X is detected as the active window system.
+ * - <tt>false</tt> if another window system is detected.
+ */
+template<typename T = void>
+[[nodiscard]] bool onWayland()
+{
+    QApplication *app = //
+        qobject_cast<QApplication *>(QCoreApplication::instance());
+    if (app == nullptr) {
+        qWarning() << "onWayland() called, but no QApplication exists.";
+        throw 0;
+    }
+    const QString platform = QGuiApplication::platformName();
+    return platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive);
+}
+
+/**
+ * @internal
+ *
+ * @brief Determines whether the current session is running under the
+ * X Window System.
+ *
+ * @pre A valid QApplication instance must be available to perform detection.
+ *
+ * @warning Throws an exception if no QApplication instance exists.
+ *
+ * @returns
+ * - <tt>true</tt> if X is detected as the active window system.
+ * - <tt>false</tt> if another window system is detected.
+ */
+template<typename T = void>
+[[nodiscard]] bool onX()
+{
+    QApplication *app = //
+        qobject_cast<QApplication *>(QCoreApplication::instance());
+    if (app == nullptr) {
+        qWarning() << "onX() called, but no QApplication exists.";
+        throw 0;
+    }
+    const QString platform = QGuiApplication::platformName();
+    return platform.contains(QStringLiteral("xcb"), Qt::CaseInsensitive);
 }
 
 [[nodiscard]] QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);

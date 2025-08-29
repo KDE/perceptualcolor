@@ -5,15 +5,12 @@
 // this forces the header to be self-contained.
 #include "screencolorpicker.h"
 
+#include "helper.h"
 #include <qcontainerfwd.h>
 #include <qglobal.h>
-#include <qguiapplication.h>
 #include <qmap.h>
-#include <qnamespace.h>
 #include <qobject.h>
 #include <qpointer.h>
-#include <qstring.h>
-#include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 
@@ -105,9 +102,7 @@ private Q_SLOTS:
             QCOMPARE(picker.m_hasQColorDialogSupport.value(), true);
         }
 #endif
-
-        const QString name = QGuiApplication::platformName();
-        if (!name.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+        if (onWayland()) {
             QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
             QVERIFY(!picker.m_qColorDialog.isNull());
         }

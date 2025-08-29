@@ -8,6 +8,7 @@
 #include "multispinbox_p.h" // IWYU pragma: keep
 
 #include "constpropagatinguniquepointer.h"
+#include "helper.h"
 #include "multispinboxsection.h"
 #include <qabstractspinbox.h>
 #include <qaction.h>
@@ -15,7 +16,6 @@
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qglobal.h>
-#include <qguiapplication.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
@@ -770,8 +770,7 @@ private Q_SLOTS:
 
     void testFocusTabPrefixSuffix()
     {
-        const QString platform = QGuiApplication::platformName();
-        if (platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+        if (onWayland()) {
             // Wayland does not allow to activate windows manually, which is
             // however necessary for this test.
             return;
@@ -2045,8 +2044,7 @@ private Q_SLOTS:
 
     void signalsOnTabWhithoutKeyboardTracking()
     {
-        const QString platform = QGuiApplication::platformName();
-        if (platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+        if (onWayland()) {
             // Wayland does not allow to activate windows manually, which is
             // however necessary for this test.
             return;
@@ -2560,8 +2558,7 @@ private Q_SLOTS:
 
     void testJumpToNextSection()
     {
-        const QString platform = QGuiApplication::platformName();
-        if (platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive)) {
+        if (onWayland()) {
             // Wayland does not allow to activate windows manually, which is
             // however necessary for this test.
             return;

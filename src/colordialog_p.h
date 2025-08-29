@@ -19,6 +19,7 @@
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qhash.h>
+#include <qicon.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qsharedpointer.h>
@@ -311,6 +312,7 @@ public:
 
     void applyLayoutDimensions();
     [[nodiscard]] QColor defaultColor() const;
+    static QIcon getGamutIcon(PerceptualColor::ColorSchemeType type);
     void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializeScreenColorPicker();

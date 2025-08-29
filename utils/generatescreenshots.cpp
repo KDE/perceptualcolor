@@ -4,6 +4,7 @@
 #include "chromahuediagram.h"
 #include "chromalightnessdiagram.h"
 #include "colordialog.h"
+#include "colordialog_p.h"
 #include "colorpatch.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
@@ -111,7 +112,7 @@ static void screenshotDelayed(QWidget *widget, const QString &comment = QString(
     // forceFont influences the metrics. Therefore, calling it before
     // QWidget::resize() and QWidget::show().
     forceFont(widget);
-    // Set an acceptable widget size (important
+    // Set an acceptable widget size (important for
     // standalone-widgets without layout management):
     widget->resize(widget->sizeHint());
     widget->show(); // Necessary to receive and process events like paintEvent()
@@ -416,6 +417,7 @@ static void makeScreenshots()
 
     {
         GradientSlider m_gradientSlider(m_colorSpace);
+        m_gradientSlider.setValue(0.2);
         m_gradientSlider.setOrientation(Qt::Horizontal);
         screenshotDelayed(&m_gradientSlider);
     }
@@ -450,10 +452,8 @@ static void makeScreenshots()
         // Out-of-gamut button for the HLC spin box
         QAction *myAction = new QAction(
             // Icon:
-            qIconFromTheme( //
-                QStringList(),
-                QStringLiteral("eye-exclamation"),
-                ColorSchemeType::Light),
+            ColorDialogPrivate::getGamutIcon( //
+                guessColorSchemeTypeFromWidget(&m_multiSpinBox)),
             // Text:
             QString(),
             // Parent object:
@@ -514,27 +514,48 @@ int main(int argc, char *argv[])
         // factor. This affects both, widget painting and font
         // rendering (font DPI).
         //
-        // We choose a small factor, because the actual default size
-        // of dialog and top-level widgets in Qt is: smaller or
-        // than ⅔ of the screen. This affects our color dialog, which
+        // We choose a small default factor, because the actual default size
+        // of dialog and top-level widgets in Qt is: smaller than or equal
+        // to ⅔ of the screen. This affects our color dialog, which
         // allows small sizes, but recommends bigger ones. As the
         // screen size of the computer running this program is not
         // known in advance, we try to minimize the effects be choosing
         // the smallest possible scale factor, which is 1. (Values
-        // smaller than 1 are working: They break the layout.)
+        // smaller than 1 are working, but hey break the layout.)
         constexpr qreal screenshotScaleFactor = 1;
+
         // Create a temporary QApplication object within this block scope.
-        // Necessary to get the system’s scale factor.
+        // Necessary to get the system’s platform and scale factor.
         QApplication app(argc, argv);
-        const qreal systemScaleFactor = QWidget().devicePixelRatioF();
+
         bool conversionOkay;
         double qtScaleFactor = //
             qEnvironmentVariable("QT_SCALE_FACTOR").toDouble(&conversionOkay);
         if (!conversionOkay) {
             qtScaleFactor = 1;
         }
-        qtScaleFactor = //
-            qtScaleFactor / systemScaleFactor * screenshotScaleFactor;
+
+        if (onWayland()) {
+            // On Wayland, when using 1.25 as scale factor on a given screen,
+            // devicePixelRatioF() is nevertheless 2.0. There seems to be
+            // another scaling in the background, and Wayland always operates
+            // with integer scale factors when communicating with applications.
+            // Therefore, we cannot work around the current scaling factor
+            // of the screen on which the screenshots are generated. If the
+            // screen is at 125%, the screenshots will be biggen than if the screen is at 100%.
+
+            // We apply only our own screenshot scale factor.
+            qtScaleFactor *= screenshotScaleFactor;
+        } else if (onX()) {
+            const qreal systemScaleFactor = []() {
+                QWidget myWidget;
+                myWidget.show();
+                QApplication::processEvents();
+                return myWidget.devicePixelRatioF();
+            }();
+            qtScaleFactor = //
+                qtScaleFactor / systemScaleFactor * screenshotScaleFactor;
+        }
         // Set QT_SCALE_FACTOR to a corrected factor. This will only
         // take effect when the current QApplication object has been
         // destroyed and a new one has been created.
