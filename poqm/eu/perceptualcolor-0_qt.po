@@ -353,7 +353,7 @@ msgid "Custom Colors"
 msgstr "Neurrira ipinitako koloreak"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1252
+#: colordialog.cpp:1264
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Aukeratu kolorea"

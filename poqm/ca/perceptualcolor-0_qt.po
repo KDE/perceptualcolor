@@ -349,7 +349,7 @@ msgid "Custom Colors"
 msgstr "Colors personalitzats"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1252
+#: colordialog.cpp:1264
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Selecció de color"
