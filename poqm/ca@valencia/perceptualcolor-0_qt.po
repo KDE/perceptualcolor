@@ -7,7 +7,6 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor\n"
-"Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: 2025-07-19 10:05+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -323,7 +322,7 @@ msgstr "O&pacitat:"
 #: colordialog.cpp:671
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color…"
-msgstr "Seleccioneu un color de la &pantalla…"
+msgstr "Trieu un color de la &pantalla…"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:684
@@ -353,7 +352,7 @@ msgstr "Colors personalitzats"
 #: colordialog.cpp:1264
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
-msgstr "Seleccioneu un color"
+msgstr "Trieu un color"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: rgbcolorspace.cpp:106
