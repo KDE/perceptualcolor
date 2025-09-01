@@ -171,6 +171,7 @@ void GradientSlider::resizeEvent(QResizeEvent *event)
     d_pointer->m_gradientImage.setImageParameters( //
         d_pointer->m_gradientImageParameters);
     update();
+    // No image computation because the widget might not even be visible.
 }
 
 /** @brief Recommended size for the widget
@@ -543,24 +544,30 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     //       representation on any platform.”
     QImage paintBuffer;
 
-    // Paint the gradient itself.
-    // Make sure the image will be correct. We set length and thickness,
-    // just to be sure (we might have missed a resize event). Also,
-    // the device pixel ratio float might have changed because the
-    // window has been moved to another screen. We do not update the
-    // first and the second color because we have complete control
-    // about these values and are sure the any changes have yet been
-    // applied.
+    // Render the gradient itself.
+
+    // Ensure the image parameters are up to date. We explicitly set the
+    // gradient’s length and thickness to prevent inconsistencies that may
+    // arise if a resize event was missed. Additionally, devicePixelRatioF()
+    // might have changed if the window was moved — with more than half of its
+    // surface — to a screen with a different scale factor, or if the user
+    // manually adjusted the scale of the current screen. Since QWidget does
+    // not emit events or signals for scale factor changes, here is our only
+    // reliable point to apply the correct dimensions.
+
+    // No need to update the gradient color parameters here — we have full
+    // control over them, and any changes have already been applied elsewhere.
     d_pointer->m_gradientImageParameters.setDevicePixelRatioF( //
         devicePixelRatioF());
     d_pointer->m_gradientImageParameters.setGradientLength( //
         d_pointer->physicalPixelLength());
-    d_pointer->m_gradientImageParameters.setGradientThickness(
-        // Normally, this should not change, but maybe on Hight-DPI
-        // devices there are some differences.
+    d_pointer->m_gradientImageParameters.setGradientThickness( //
         d_pointer->physicalPixelThickness());
     d_pointer->m_gradientImage.setImageParameters( //
         d_pointer->m_gradientImageParameters);
+
+    // Always refresh the image, as other parameters (e.g., colors) may have
+    // changed without triggering a recomputation.
     d_pointer->m_gradientImage.refreshAsync();
     paintBuffer = d_pointer->m_gradientImage.getCache();
     if (paintBuffer.isNull()) {

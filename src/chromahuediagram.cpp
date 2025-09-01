@@ -669,7 +669,12 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // Paint the gamut itself as available in the cache.
     bufferPainter.setRenderHint(QPainter::Antialiasing, false);
     // As devicePixelRatioF() might have changed, we make sure everything
-    // that might depend on devicePixelRatioF() is updated before painting.
+    // that might depend on devicePixelRatioF() is updated. devicePixelRatioF()
+    // might have changed if the window was moved — with more than half of its
+    // surface — to a screen with a different scale factor, or if the user
+    // manually adjusted the scale of the current screen. Since QWidget does
+    // not emit events or signals for scale factor changes, here is our only
+    // reliable point to apply the correct dimensions.
     d_pointer->m_chromaHueImageParameters.borderPhysical =
         // TODO It might be useful to reduce this border to (near to) zero, and
         // than paint with an offset (if this is possible with drawEllipse?).

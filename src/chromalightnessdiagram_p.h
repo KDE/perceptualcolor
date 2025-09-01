@@ -109,6 +109,7 @@ public:
     [[nodiscard]] static std::optional<QPoint>
     nearestNeighborSearch(const QPoint point, const QRect searchRectangle, const std::function<bool(const QPoint)> &doesPointExist);
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
+    void updateImageDimensions();
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)

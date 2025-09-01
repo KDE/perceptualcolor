@@ -348,6 +348,15 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     QPen pen;
     painter.setRenderHint(QPainter::Antialiasing, false);
 
+    // As devicePixelRatioF() might have changed, we make sure everything
+    // that might depend on devicePixelRatioF() is updated. devicePixelRatioF()
+    // might have changed if the window was moved — with more than half of its
+    // surface — to a screen with a different scale factor, or if the user
+    // manually adjusted the scale of the current screen. Since QWidget does
+    // not emit events or signals for scale factor changes, here is our only
+    // reliable point to apply the correct dimensions.
+    d_pointer->updateImageDimensions();
+
     // Paint the diagram itself.
     // Request image update. If the cache is not up-to-date, this
     // will trigger a new paint event, once the cache has been updated.
@@ -604,14 +613,25 @@ void ChromaLightnessDiagram::setCurrentColorCielchD50(const PerceptualColor::Gen
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event)
-    d_pointer->m_chromaLightnessImageParameters.imageSizePhysical = //
-        d_pointer->calculateImageSizePhysical();
-    d_pointer->m_chromaLightnessImage.setImageParameters( //
-        d_pointer->m_chromaLightnessImageParameters);
+    d_pointer->updateImageDimensions();
     // As by Qt documentation:
     //     “The widget will be erased and receive a paint event
     //      immediately after processing the resize event. No drawing
     //      need be (or should be) done inside this handler.”
+}
+
+/**
+ * @brief Updates the image dimensions.
+ *
+ * Updates the image dimensions in @ref m_chromaLightnessImageParameters and
+ * @ref m_chromaLightnessImage, but does not trigger a new rendering.
+ */
+void ChromaLightnessDiagramPrivate::updateImageDimensions()
+{
+    m_chromaLightnessImageParameters.imageSizePhysical = //
+        calculateImageSizePhysical();
+    m_chromaLightnessImage.setImageParameters( //
+        m_chromaLightnessImageParameters);
 }
 
 /** @brief Recommended size for the widget.

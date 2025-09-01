@@ -13,6 +13,7 @@
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
+class QPaintEvent;
 class QResizeEvent;
 class QWidget;
 
@@ -58,7 +59,7 @@ class ColorPatchPrivate;
  * @note This class intentionally does not reimplement the paint event,
  * but uses a child QLabel to display the color. QLabel integrates by
  * default nicely with QStyle: Even round frames that are cutting slightly
- * the pixmap (like in the Breeze style), are possible. So we rely entirely
+ * the pixmap (like in some styles), are possible. So we rely entirely
  * on QLabel for the actual display, and only implement @ref sizeHint() and
  * @ref minimumSizeHint() ourselves. */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorPatch : public AbstractDiagram
@@ -107,6 +108,7 @@ protected:
     virtual void dropEvent(QDropEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
