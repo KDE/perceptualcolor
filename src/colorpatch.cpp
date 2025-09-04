@@ -278,6 +278,7 @@ QImage ColorPatchPrivate::renderImage(const int width,
         // Background for colors that are not fully opaque
         QImage tempBackground = transparencyBackground( //
             devicePixelRatioF);
+        tempBackground.setDevicePixelRatio(1); // necessary for correct ratio
         // Paint the color above
         QPainter(&tempBackground).fillRect(tempBackground.rect(), color);
         {

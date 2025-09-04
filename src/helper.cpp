@@ -77,7 +77,8 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * the top-left corner. This image is made for LTR layouts. If you have an
  * RTL layout, you should horizontally mirror your paint buffer after painting
  * the tiles. The image has its device pixel ratio set to the value that was
- * given in the parameter.
+ * given in the parameter, but you might want to change it to 1 before drawing
+ * as tiles via QPainter.
  *
  * @note The image is considering the given device-pixel ratio to deliver
  * sharp (and correctly scaled) images also for HiDPI devices.

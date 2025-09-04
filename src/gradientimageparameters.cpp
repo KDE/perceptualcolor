@@ -179,8 +179,9 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
     ) {
         // Fill the image with tiles. (QBrush will ignore
         // the devicePixelRatioF of the image of the tile.)
-        const auto background = transparencyBackground( //
+        auto background = transparencyBackground( //
             parameters.m_devicePixelRatioF);
+        background.setDevicePixelRatio(1);
         painter.fillRect(0, //
                          0, //
                          parameters.m_gradientLength, //

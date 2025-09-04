@@ -132,7 +132,9 @@ qreal AbstractDiagram::maximumWidgetSquareSize() const
  * @snippet testabstractdiagram.cpp useTransparencyBackground
  *
  * @returns An image of a mosaic of neutral gray rectangles of different
- * lightness. You can use this as tiles to paint a background.
+ * lightness. You can use this as tiles to paint a background. The image has
+ * its device pixel ratio set to the current value of this widget, but you
+ * might want to change it to 1 before drawing as tiles via QPainter.
  *
  * @note The image is considering QWidget::devicePixelRatioF() to deliver
  * crisp (correctly scaled) images also for high-DPI devices.

@@ -41,6 +41,8 @@ public:
 
         QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
 
+        myImage.setDevicePixelRatio(1); // Correct scaling
+
         QPainter myPainter(&myImage);
 
         // Fill the hole image with tiles made of transparencyBackground()
