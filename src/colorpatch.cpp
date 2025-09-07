@@ -40,6 +40,7 @@
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qvariant.h>
+#include <tuple>
 class QWidget;
 
 namespace PerceptualColor
@@ -52,7 +53,7 @@ ColorPatch::ColorPatch(QWidget *parent)
 {
     setAcceptDrops(true);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    d_pointer->updatePixmap();
+    d_pointer->updatePixmapIfNecessary();
 }
 
 /** @brief Destructor */
@@ -115,16 +116,24 @@ QSize ColorPatch::minimumSizeHint() const
         this);
 }
 
-/** @brief Updates the pixmap in @ref m_label and its alignment. */
-void ColorPatchPrivate::updatePixmap()
+/**
+ * @brief Updates the pixmap in @ref m_label if necessary.
+ */
+void ColorPatchPrivate::updatePixmapIfNecessary()
 {
     const QRect qLabelContentsRect = m_label->contentsRect();
-    const QPixmap pixmap = renderPixmap(qLabelContentsRect.width(), //
-                                        qLabelContentsRect.height());
+    const ImageParameters parameters = getImageParameters( //
+        qLabelContentsRect.width(), //
+        qLabelContentsRect.height());
+    if (parameters == m_lastImageParameters) {
+        return;
+    }
+
+    m_lastImageParameters = parameters;
     // NOTE Kvantum was mistakenly scaling the pixmap (even though
     // QLabel::hasScaledContents() == false) for versions ≤ 1.0.2. This bug
     // has been fixed: https://github.com/tsujan/Kvantum/issues/804.
-    m_label->setPixmap(pixmap);
+    m_label->setPixmap(renderPixmap(parameters));
     // There were rendering artefacts under certain QStyle (Breeze, Plastik,
     // Windows): When selecting in the color dialog a new color with the
     // screen color picker using “Portal” under 125% scaling, the left and
@@ -152,7 +161,7 @@ void ColorPatch::resizeEvent(QResizeEvent *event)
     // Qt::AlignLeading and Qt::AlignTop) to be lost and the image to be
     // shifted. This error can be worked around by actually each time a new
     // pixmap is assigned, which is not identical to the old one:
-    d_pointer->updatePixmap();
+    d_pointer->updatePixmapIfNecessary();
 }
 
 // No documentation here (documentation of properties
@@ -168,23 +177,14 @@ void ColorPatch::setColor(const QColor &newColor)
 {
     if (newColor != d_pointer->m_color) {
         d_pointer->m_color = newColor;
-        d_pointer->updatePixmap();
+        d_pointer->updatePixmapIfNecessary();
         Q_EMIT colorChanged(newColor);
     }
 }
 
 /** @brief Renders the image to be displayed.
  *
- * @param width of the requested image, measured in device-independent pixels.
- * @param height of the requested image, measured in device-independent pixels.
- * @param devicePixelRatioF The device pixel ratio of the widget, with floating
- *        point precision
- * @param color The color to be displayed
- * @param lineWidth The line width used to draw the mark that symbolized an
- *        invalid color, measured in device-independent pixels.
- * @param lineColor The color used to draw the mark that symbolized an
- *        invalid color.
- * @param layoutDirection The layout direction of the widget
+ * @param parameters The image parameters
  *
  * @returns An image containing the color of @ref m_color. If the color is
  * transparent or semi-transparent, background with small gray squares is
@@ -198,19 +198,13 @@ void ColorPatch::setColor(const QColor &newColor)
  * does <em>not</em> scale the image by default, it will be displayed with
  * the correct aspect ratio, while guaranteeing to be big enough whatever
  * QLabel’s frame size is with the currently used QStyle. */
-QImage ColorPatchPrivate::renderImage(const int width,
-                                      const int height,
-                                      const qreal devicePixelRatioF,
-                                      const QColor color,
-                                      const int lineWidth,
-                                      const QColor lineColor,
-                                      const Qt::LayoutDirection layoutDirection)
+QImage ColorPatchPrivate::renderImage(const ImageParameters &parameters)
 {
     // Initialization
     // Round up to the next integer to be sure to have a big-enough image:
-    const qreal imageWidthF = width * devicePixelRatioF;
+    const qreal imageWidthF = parameters.width * parameters.devicePixelRatioF;
     const int imageWidth = qCeil(imageWidthF);
-    const qreal imageHeightF = height * devicePixelRatioF;
+    const qreal imageHeightF = parameters.height * parameters.devicePixelRatioF;
     const int imageHeight = qCeil(imageHeightF);
     QImage myImage(imageWidth, //
                    imageHeight, //
@@ -218,12 +212,12 @@ QImage ColorPatchPrivate::renderImage(const int width,
     if ((imageWidth <= 0) || (imageHeight <= 0)) {
         // Initializing a QPainter on an image of zero size would print
         // errors. Therefore, returning immediately:
-        myImage.setDevicePixelRatio(devicePixelRatioF);
+        myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
         return QImage();
     }
 
     // Draw content of an invalid color (and return)
-    if (!color.isValid()) {
+    if (!parameters.color.isValid()) {
         myImage.fill( //
             Qt::transparent
             // An alternative value might be:
@@ -232,9 +226,10 @@ QImage ColorPatchPrivate::renderImage(const int width,
             // might have background decorations that cover all widgets.
             // Ultimately, however, it is a matter of taste.
         );
-        QPen pen(lineColor);
+        QPen pen(parameters.lineColor);
 
-        const auto lineWidthF = lineWidth * devicePixelRatioF;
+        const auto lineWidthF = //
+            parameters.lineWidth * parameters.devicePixelRatioF;
         pen.setWidthF(lineWidthF);
         pen.setCapStyle(Qt::PenCapStyle::SquareCap);
         {
@@ -268,19 +263,21 @@ QImage ColorPatchPrivate::renderImage(const int width,
             painter.drawLine(QPointF(left, bottom), //
                              QPointF(right, top));
         }
-        myImage.setDevicePixelRatio(devicePixelRatioF);
+        myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
         return myImage;
     }
 
     // Draw content of a valid color
-    if (color.alphaF() < 1) {
+    if (parameters.color.alphaF() < 1) {
         // Prepare the image with (semi-)transparent color
         // Background for colors that are not fully opaque
         QImage tempBackground = transparencyBackground( //
-            devicePixelRatioF);
+            parameters.devicePixelRatioF);
         tempBackground.setDevicePixelRatio(1); // necessary for correct ratio
         // Paint the color above
-        QPainter(&tempBackground).fillRect(tempBackground.rect(), color);
+        QPainter(&tempBackground)
+            .fillRect(tempBackground.rect(), //
+                      parameters.color);
         {
             // Fill a given rectangle with tiles. (QBrush will ignore
             // the devicePixelRatioF of the image of the tile.)
@@ -288,7 +285,7 @@ QImage ColorPatchPrivate::renderImage(const int width,
             painter.setRenderHint(QPainter::Antialiasing, false);
             painter.fillRect(myImage.rect(), QBrush(tempBackground));
         }
-        if (layoutDirection == Qt::RightToLeft) {
+        if (parameters.layoutDirection == Qt::RightToLeft) {
             // Horizontally mirrored image for right-to-left layout,
             // so that the “nice” part is the first you see in reading
             // direction.
@@ -298,42 +295,53 @@ QImage ColorPatchPrivate::renderImage(const int width,
         }
     } else {
         // Prepare the image with plain color
-        myImage.fill(color);
+        myImage.fill(parameters.color);
     }
-    myImage.setDevicePixelRatio(devicePixelRatioF);
+    myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
     return myImage;
 }
 
-/** @brief Renders the image to be displayed.
+/**
+ * @brief Get image parameters for the current widget state.
  *
  * @param width of the requested image, measured in logical pixels.
  *
  * @param height of the requested image, measured in logical pixels.
  *
- * @returns Same as @ref renderImage but as QPixmap. */
-QPixmap ColorPatchPrivate::renderPixmap(const int width, const int height)
+ * @returns The image parameters, based on the current widget state (color
+ * theme, device pixel ratio etc.).
+ */
+ColorPatchPrivate::ImageParameters ColorPatchPrivate::getImageParameters(const int width, const int height) const
 {
+    ImageParameters parameters;
+    parameters.width = width;
+    parameters.height = height;
+    parameters.devicePixelRatioF = q_pointer->devicePixelRatioF();
+    parameters.color = m_color;
     QStyleOptionFrame opt;
     // initFrom() also sets also QStyle::State_MouseOver if appropriate
     opt.initFrom(q_pointer.toPointerToConstObject());
-    const auto lineWidth = qMax( //
+    parameters.lineWidth = qMax( //
         q_pointer->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt), //
         1);
     const QPalette::ColorGroup myColorGroup = //
         (q_pointer->isEnabled()) //
         ? QPalette::ColorGroup::Normal //
         : QPalette::ColorGroup::Disabled;
-    const auto lineColor = q_pointer->palette().color(myColorGroup, QPalette::WindowText);
+    parameters.lineColor = q_pointer->palette().color(myColorGroup, //
+                                                      QPalette::WindowText);
+    parameters.layoutDirection = q_pointer->layoutDirection();
+    return parameters;
+}
 
-    const QImage image = renderImage( //
-        width,
-        height,
-        q_pointer->devicePixelRatioF(),
-        m_color,
-        lineWidth,
-        lineColor,
-        q_pointer->layoutDirection());
-
+/** @brief Renders the image to be displayed.
+ *
+ * @param parameters The image parameters
+ *
+ * @returns Same as @ref renderImage but as QPixmap. */
+QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters)
+{
+    const QImage image = renderImage(parameters);
     QPixmap pixmap = QPixmap::fromImage(image);
     pixmap.setDevicePixelRatio(q_pointer->devicePixelRatioF());
     return pixmap;
@@ -373,7 +381,9 @@ void ColorPatch::mouseMoveEvent(QMouseEvent *event)
             const auto finalSize = std::max({30, //
                                              minimumSizeHint().width(), //
                                              minimumSizeHint().height()});
-            drag->setPixmap(d_pointer->renderPixmap(finalSize, finalSize));
+            const auto parameters = //
+                d_pointer->getImageParameters(finalSize, finalSize);
+            drag->setPixmap(d_pointer->renderPixmap(parameters));
             drag->exec(Qt::CopyAction);
         }
     }
@@ -437,7 +447,33 @@ void ColorPatch::paintEvent(QPaintEvent *event)
     //   and currently we do not track it otherwhere.
     // - The widget might have been resized, though this is also tracked
     //   in the resizeEvent reimplementation.
-    d_pointer->updatePixmap();
+    // d_pointer->updatePixmap();
+}
+
+/**
+ * @brief Equal operator
+ *
+ * @param other The object to compare with.
+ *
+ * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+ */
+bool ColorPatchPrivate::ImageParameters::operator==(const ImageParameters &other) const
+{
+    const auto thisTie = std::tie(width, //
+                                  height, //
+                                  devicePixelRatioF, //
+                                  color, //
+                                  lineWidth, //
+                                  lineColor, //
+                                  layoutDirection);
+    const auto otherTie = std::tie(other.width, //
+                                   other.height, //
+                                   other.devicePixelRatioF, //
+                                   other.color, //
+                                   other.lineWidth, //
+                                   other.lineColor, //
+                                   other.layoutDirection);
+    return thisTie == otherTie;
 }
 
 } // namespace PerceptualColor

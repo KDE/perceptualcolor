@@ -28,6 +28,47 @@ class ColorPatch;
 class ColorPatchPrivate final
 {
 public:
+    /**
+     * @brief Parameters for the image.
+     */
+    struct ImageParameters {
+        /**
+         * @brief width of the requested image, measured in device-independent
+         * pixels.
+         */
+        int width;
+        /**
+         * @brief height of the requested image, measured in device-independent
+         * pixels.
+         */
+        int height;
+        /**
+         * @brief The device pixel ratio of the widget, with floating
+         *        point precision
+         */
+        qreal devicePixelRatioF;
+        /**
+         * @brief The color to be displayed
+         */
+        QColor color;
+        /**
+         * @brief The line width used to draw the mark that symbolized an
+         * invalid color, measured in device-independent pixels.
+         */
+        int lineWidth;
+        /**
+         * @brief The color used to draw the mark that symbolized an
+         * invalid color.
+         */
+        QColor lineColor;
+        /**
+         * @brief The layout direction of the widget
+         */
+        Qt::LayoutDirection layoutDirection;
+
+        bool operator==(const ImageParameters &other) const;
+    };
+
     /** @brief Constructor */
     explicit ColorPatchPrivate(ColorPatch *backLink);
     /** @brief Default destructor
@@ -51,16 +92,16 @@ public:
     QColor m_color;
     /** @brief The QLabel widget that is used to display the color. */
     QLabel *m_label;
+    /**
+     * @brief Cache for the last imamge parameters that have been shown
+     * in @ref m_label.
+     */
+    ImageParameters m_lastImageParameters = ImageParameters();
 
-    [[nodiscard]] static QImage renderImage(const int width,
-                                            const int height,
-                                            const qreal devicePixelRatioF,
-                                            const QColor color,
-                                            const int lineWidth,
-                                            const QColor lineColor,
-                                            const Qt::LayoutDirection layoutDirection);
-    [[nodiscard]] QPixmap renderPixmap(const int width, const int height);
-    void updatePixmap();
+    [[nodiscard]] ColorPatchPrivate::ImageParameters getImageParameters(const int width, const int height) const;
+    [[nodiscard]] static QImage renderImage(const ImageParameters &parameters);
+    [[nodiscard]] QPixmap renderPixmap(const ImageParameters &parameters);
+    void updatePixmapIfNecessary();
 
 private:
     Q_DISABLE_COPY(ColorPatchPrivate)
