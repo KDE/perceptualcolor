@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2025-07-19 12:13+0100\n"
+"PO-Revision-Date: 2025-09-20 22:28+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.04.3\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:101
@@ -301,7 +301,7 @@ msgstr "Luminosidad"
 #: colordialog.cpp:551
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr "<p>Luminosidad: 0–⁠100%</p><p>Croma: 0⁠–⁠%L1</p><p>Matiz: 0°⁠–⁠360°</p>"
+msgstr "<p>Luminosidad: 0–⁠100 %</p><p>Croma: 0⁠–⁠%L1</p><p>Matiz: 0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:560
