@@ -42,6 +42,25 @@ class SwatchBookPrivate;
  * @internal
  *
  * @todo Is it useful to Qt's use Model/View instead of @ref QColorArray2D?
+ *
+ * @todo <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">
+ * QIcon::ThemeIcon::ListAdd</a> and
+ * <a href="https://specifications.freedesktop.org/icon-naming-spec/latest/#actions">
+ * list-add</a>  (order to be determined) could be used when available,
+ * replacing @ref SwatchBookPrivate::m_addMark as the primary icon
+ * source. In this setup,  @ref SwatchBookPrivate::m_addMark would serve
+ * only as a fallback if the others are unavailable. To support this,
+ * @ref qIconFromTheme() needs to be extended with an additional parameter to
+ * handle <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">
+ * QIcon::ThemeIcon</a>, and its documentation should be updated
+ * accordingly. Currently, the documentation states that
+ * <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">
+ * QIcon::ThemeIcon</a> offers no benefit, which will no longer be
+ * accurate. Note that conditional compilation will be required, as
+ * <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">
+ * QIcon::ThemeIcon</a> is only
+ * <a href="https://www.qt.io/blog/qt-6.7-released">available
+ * starting from Qt 6.7</a>.
  */
 class SwatchBook : public AbstractDiagram
 {
