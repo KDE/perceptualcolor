@@ -44,7 +44,9 @@ namespace PerceptualColor
  * considered <em>touching</em> the current value.
  *
  * @returns <tt>true</tt> if the text cursor is touching at the current
- * section’s value.. <tt>false</tt> otherwise. */
+ * section’s value.. <tt>false</tt> otherwise.
+ *
+ * @sa @ref cursorSection */
 bool MultiSpinBoxPrivate::isCursorTouchingCurrentSectionValue() const
 {
     const auto cursorPosition = q_pointer->lineEdit()->cursorPosition();
@@ -991,6 +993,37 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
     // this function is meant to receive signals of the very same lineEdit().
 }
 
+/**
+ * @brief Returns the section index corresponding to a specified text cursor
+ * position.
+ *
+ * @param cursorPosition The position of the text cursor, as defined
+ * by <tt>QLineEdit</tt>, for which the section index should be determined.
+ *
+ * @returns The index of the section at the given cursor position, based
+ * on @ref MultiSpinBox::format. If the cursor is exactly between two sections,
+ * the index of the preceding section is returned.
+ *
+ * @sa @ref isCursorTouchingCurrentSectionValue
+ */
+int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
+{
+    int result;
+    int reference = 0;
+    for (result = 0; //
+         result < m_format.count() - 1; //
+         ++result //
+    ) {
+        reference += m_format.at(result).prefix().length();
+        reference += formattedPendingValue(result).length();
+        reference += m_format.at(result).suffix().length();
+        if (cursorPosition <= reference) {
+            break;
+        }
+    }
+    return result;
+}
+
 /** @brief The main event handler.
  *
  * Reimplemented from base class.
@@ -1043,30 +1076,8 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     const bool mustAdjustCursorPosition = //
         (newPos > (oldTextLength - m_textAfterCurrentValue.length()));
 
-    // Calculate in which section the cursor is
-    int sectionOfTheNewCursorPosition;
-    qsizetype reference = 0;
-    for (sectionOfTheNewCursorPosition = 0; //
-         sectionOfTheNewCursorPosition < q_pointer->sectionCount() - 1; //
-         ++sectionOfTheNewCursorPosition //
-    ) {
-        reference += m_format //
-                         .at(sectionOfTheNewCursorPosition) //
-                         .prefix() //
-                         .length();
-        reference += //
-            formattedPendingValue(sectionOfTheNewCursorPosition).length();
-        reference += m_format //
-                         .at(sectionOfTheNewCursorPosition) //
-                         .suffix() //
-                         .length();
-        if (newPos <= reference) {
-            break;
-        }
-    }
-
     updatePrefixValueSuffixText();
-    setCurrentIndexWithoutUpdatingText(sectionOfTheNewCursorPosition);
+    setCurrentIndexWithoutUpdatingText(cursorSection(newPos));
     q_pointer->lineEdit()->setText(m_textBeforeCurrentValue //
                                    + m_textOfCurrentPendingValue //
                                    + m_textAfterCurrentValue);

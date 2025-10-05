@@ -123,7 +123,22 @@ public:
     }
 
 private:
-    QList<MultiSpinBoxSection> exampleConfigurations;
+    const QList<MultiSpinBoxSection> exampleConfigurations = []() {
+        QList<MultiSpinBoxSection> result;
+        MultiSpinBoxSection mySection;
+        mySection.setDecimals(0);
+        mySection.setMinimum(0);
+        mySection.setMaximum(360);
+        mySection.setFormatString(QStringLiteral(u"%1°"));
+        result.append(mySection);
+        mySection.setMaximum(100);
+        mySection.setFormatString(QStringLiteral(u"  %1%"));
+        result.append(mySection);
+        mySection.setMaximum(255);
+        mySection.setFormatString(QStringLiteral(u"  %1"));
+        result.append(mySection);
+        return result;
+    }();
     static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
@@ -137,20 +152,6 @@ private Q_SLOTS:
         // Make sure to have mnemonics (like Qt::ALT+Qt::Key_X for "E&xit")
         // enabled, also on platforms that disable it by default.
         qt_set_sequence_auto_mnemonic(true);
-
-        // Provide example configuration
-        MultiSpinBoxSection mySection;
-        mySection.setDecimals(0);
-        mySection.setMinimum(0);
-        mySection.setMaximum(360);
-        mySection.setFormatString(QStringLiteral(u"%1°"));
-        exampleConfigurations.append(mySection);
-        mySection.setMaximum(100);
-        mySection.setFormatString(QStringLiteral(u"  %1%"));
-        exampleConfigurations.append(mySection);
-        mySection.setMaximum(255);
-        mySection.setFormatString(QStringLiteral(u"  %1"));
-        exampleConfigurations.append(mySection);
     }
 
     void cleanupTestCase()
@@ -2771,6 +2772,58 @@ private Q_SLOTS:
         QTest::keyClick(&myMulti, Qt::Key_Left);
         QCOMPARE(myMulti.lineEdit()->cursorPosition(), 0);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
+    }
+
+    void testCursorSection()
+    {
+        MultiSpinBoxSection mySection;
+        QList<MultiSpinBoxSection> list;
+        mySection.setDecimals(0);
+        mySection.setRange(1, 3);
+        mySection.setFormatString(QStringLiteral(u"%1"));
+        list.append(mySection);
+        mySection.setFormatString(QStringLiteral(u"%1ab"));
+        list.append(mySection);
+        mySection.setFormatString(QStringLiteral(u"cd%1ef"));
+        list.append(mySection);
+        PerceptualColor::MultiSpinBox myMulti;
+        myMulti.setFormat(list);
+        myMulti.setValues({2, 2, 2});
+        QCOMPARE(myMulti.lineEdit()->text(), QStringLiteral("22abcd2ef"));
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(0), 0);
+
+        // When the cursor is positioned between section 0 and section 1,
+        // it should always return the section before the cursor (i.e.,
+        // section 0), regardless of whether the cursor was previously within
+        // section 0 or section 1.
+        QCOMPARE(myMulti.d_pointer->cursorSection(1), 0);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(2), 1);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(3), 1);
+
+        // When the cursor is positioned between section 1 and section 2,
+        // it should always return the section before the cursor (i.e.,
+        // section 1), regardless of whether the cursor was previously within
+        // section 1 or section 2.
+        QCOMPARE(myMulti.d_pointer->cursorSection(4), 1);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(5), 2);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(6), 2);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(7), 2);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(8), 2);
+
+        QCOMPARE(myMulti.d_pointer->cursorSection(9), 2);
+
+        // When the cursor is positioned between section 1 and section 2,
+        // it should always return the section before the cursor (i.e.,
+        // section 1), regardless of whether the cursor was previously within
+        // section 1 or section 2.
+        QCOMPARE(myMulti.d_pointer->cursorSection(4), 1);
     }
 
     void testSnippet02()

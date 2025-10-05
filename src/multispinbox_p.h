@@ -100,6 +100,7 @@ public:
 
     // Functions
     void applyPendingValuesAndEmitSignals();
+    [[nodiscard]] int cursorSection(const int cursorPosition) const;
     [[nodiscard]] QString formattedPendingValue(qsizetype index) const;
     [[nodiscard]] bool isCursorTouchingCurrentSectionValue() const;
     void setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex);
