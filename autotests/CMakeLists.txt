@@ -149,6 +149,7 @@ if(BUILD_TESTING)
         testgradientimageparameters
         testgradientslider
         testhelper
+        testhelperaccessibility
         testhelperconstants
         testhelperconversion
         testhelperimage

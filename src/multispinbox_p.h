@@ -16,7 +16,6 @@
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>
-class QAccessibleInterface;
 class QDoubleValidator;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -130,7 +129,6 @@ class AccessibleMultiSpinBox : public QAccessibleWidget
 public:
     explicit AccessibleMultiSpinBox(MultiSpinBox *w);
     virtual ~AccessibleMultiSpinBox() override;
-    [[nodiscard]] static QAccessibleInterface *factory(const QString &classname, QObject *object);
 };
 
 } // namespace PerceptualColor
