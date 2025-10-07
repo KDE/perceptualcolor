@@ -11,18 +11,30 @@
  *
  * Build-time dependencies:
  * - LittleCMS 2 (minimum version: 2.0)
- * - Qt 5 (minimum version: 5.15) <!-- Qt 5.15 has an API that is close
- *   to Qt 6. It introduces some new functions we are using to avoid
- *   deprecated older functions. --> or Qt 6 (minimum version: 6.0.0).
-     Components: Core, Gui, Widgets, DBus, Concurrent, Test, Svg.
+ * - Qt 6 (minimum version: 6.0.0).
+ *   Components: Core, Gui, Widgets, DBus, Concurrent, Test, Svg.
+ * <!--
+ *     This library officially supports only Qt 6. Qt 5.15 builds are
+ *     maintained solely for internal testing purposes and are not part of the
+ *     public API contract. Qt 5.15 provides an API that is yet largely similar
+ *     to Qt 6 and includes many of the newer functions, allowing us to avoid
+ *     deprecated or removed legacy calls in Qt 6 production code. Note that
+ *     Qt 5 support is minimal, intended only for internal use.  For Qt 6, we
+ *     aim to keep compiler warnings to a minimum. For Qt 5, compiler warnings
+ *     are not a concern.
+ *
+ *     We keep internal builds working with Qt 5.15 because it offers a
+ *     significantly wider range of QStyle implementations than Qt 6. This is
+ *     a widget UI library, and thorough testing across diverse styles is
+ *     essential.
+ * -->
  * - CMake
  * - ECM (Extra CMake Modules from KDE)
  * - C++17
  * - Both, the input character set and the execution character set, have
  *   to be UTF8. (See @ref compilercharacterset for more details.)
  * <!--
- *      Qt 5.6 (which is the minimum Qt version required
- *      by this library) only requires C++03. Only starting
+ *      Qt 5.6 only required C++03. Only starting
  *      with Qt 5.7, Qt itself requires C++11. Source:
  *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
  *
@@ -30,14 +42,8 @@
  *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
  *      explains.
  *
- *      Our library code uses C++11 features, for example “constexpr”.
- *
  *      In the CMakeLists.txt file, we set -std=c++17 and we set
- *      also -Wpedantic and -pedantic-errors to enforce it. That is
- *      a useful option for this library if we decide to make it Qt-6-only.
- *      But it is even be useful if we support Qt 5, so we have future-proof
- *      requirements that we do not have to raise soon, and that are a
- *      good base for LTS.
+ *      also -Wpedantic and -pedantic-errors to enforce it.
  * -->
  * - Optional: There is also a LittleCMS plugin called
  *   <em>fast_float plug-in</em> that you can include into the
