@@ -1064,27 +1064,35 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
 
     QSignalBlocker myBlocker(q_pointer->lineEdit());
 
-    // The new position is not at the current value, but the old one might
-    // have been. So maybe we have to correct the value, which might change
-    // its length. If the new cursor position is after this value, it will
-    // have to be adapted (if the value had been changed or alternated).
-    const auto oldTextLength = q_pointer->lineEdit()->text().length();
-    const bool mustAdjustCursorPosition = //
-        (newPos > (oldTextLength - m_textAfterCurrentValue.length()));
-
-    updatePrefixValueSuffixText();
-    setCurrentIndexWithoutUpdatingText(cursorSection(newPos));
-    q_pointer->lineEdit()->setText(m_textBeforeCurrentValue //
-                                   + m_textOfCurrentPendingValue //
-                                   + m_textAfterCurrentValue);
-    int correctedCursorPosition = newPos;
-    if (mustAdjustCursorPosition) {
-        correctedCursorPosition = //
-            static_cast<int>(newPos //
-                             + q_pointer->lineEdit()->text().length() //
-                             - oldTextLength);
+    if (q_pointer->lineEdit()->selectionLength() > 0) {
+        // We intentionally follow QDateTimeEdit’s behavior: values are not
+        // updated while the user has text selected, to avoid confusion. Any
+        // oddly formatted values are corrected once the selection is cleared
+        // and the user either moves to another section or the widget loses
+        // focus.
+        setCurrentIndexWithoutUpdatingText(cursorSection(newPos));
+    } else {
+        // The new position is not at the current value, but the old one might
+        // have been. So maybe we have to correct the value, which might change
+        // its length. If the new cursor position is after this value, it will
+        // have to be adapted (if the value had been changed or alternated).
+        const auto oldTextLength = q_pointer->lineEdit()->text().length();
+        const bool mustAdjustCursorPosition = //
+            (newPos > (oldTextLength - m_textAfterCurrentValue.length()));
+        updatePrefixValueSuffixText();
+        setCurrentIndexWithoutUpdatingText(cursorSection(newPos));
+        q_pointer->lineEdit()->setText(m_textBeforeCurrentValue //
+                                       + m_textOfCurrentPendingValue //
+                                       + m_textAfterCurrentValue);
+        int correctedCursorPosition = newPos;
+        if (mustAdjustCursorPosition) {
+            correctedCursorPosition = //
+                static_cast<int>(newPos //
+                                 + q_pointer->lineEdit()->text().length() //
+                                 - oldTextLength);
+        }
+        q_pointer->lineEdit()->setCursorPosition(correctedCursorPosition);
     }
-    q_pointer->lineEdit()->setCursorPosition(correctedCursorPosition);
 
     // Make sure that the buttons for step up and step down are updated.
     q_pointer->update();

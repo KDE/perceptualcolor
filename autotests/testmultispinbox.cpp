@@ -1361,6 +1361,124 @@ private Q_SLOTS:
         delete label3;
     }
 
+    void testSelect()
+    {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
+        widget->setFormat(exampleConfigurations);
+        widget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget->show();
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(widget.data());
+        widget->setFocus();
+        if (QApplication::focusWidget() != widget.data()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        const auto &lineEdit = widget->lineEdit();
+        const auto &sectionIndex = widget->d_pointer->m_currentIndex;
+        QTest::keyClick(widget.data(), Qt::Key::Key_Home);
+        QCOMPARE(lineEdit->selectedText(), QString());
+        QCOMPARE(sectionIndex, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0"));
+        QCOMPARE(sectionIndex, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0"));
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0 "));
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  "));
+        QCOMPARE(sectionIndex, 1);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  0"));
+        QCOMPARE(sectionIndex, 1);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  0%"));
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  0% "));
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  0%  "));
+        QCOMPARE(sectionIndex, 2);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  0%  0"));
+        QCOMPARE(sectionIndex, 2);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0\u00B0  0%  0"));
+        QCOMPARE(sectionIndex, 2);
+    }
+
+    void testSelectWithModification()
+    {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
+        widget->setFormat(exampleConfigurations);
+        widget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget->show();
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(widget.data());
+        widget->setFocus();
+        if (QApplication::focusWidget() != widget.data()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        const auto &lineEdit = widget->lineEdit();
+        const auto &sectionIndex = widget->d_pointer->m_currentIndex;
+        QTest::keyClick(widget.data(), Qt::Key::Key_Home);
+        QTest::keyClick(widget.data(), Qt::Key::Key_0);
+        QTest::keyClick(widget.data(), Qt::Key::Key_Home);
+        QCOMPARE(lineEdit->selectedText(), QString());
+        QCOMPARE(sectionIndex, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("0"));
+        QCOMPARE(sectionIndex, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("00"));
+        QCOMPARE(sectionIndex, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("00\u00B0"));
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("00\u00B0 "));
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("00\u00B0  "));
+        QCOMPARE(sectionIndex, 1);
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier);
+        QCOMPARE(lineEdit->selectedText(), QStringLiteral("00\u00B0  0"));
+        QCOMPARE(sectionIndex, 1);
+    }
+
+    void testSelectAll1()
+    {
+        // NOTE There were bugs during development preventing the selection
+        // of all line-edit content (Ctrl+A). While it functioned correctly
+        // when the text cursor was positioned at the beginning of the
+        // line-edit text, it failed to work when the text cursor was
+        // towards the end of the line-edit text.
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
+        widget->setFormat(exampleConfigurations);
+        QTest::keyClick(widget.data(), Qt::Key_Home);
+        QCOMPARE(widget->lineEdit()->selectedText(), QString());
+        widget->selectAll();
+        QCOMPARE(widget->lineEdit()->selectedText(), //
+                 QStringLiteral("0\u00B0  0%  0"));
+    }
+
+    void testSelectAll2()
+    {
+        // NOTE There were bugs during development preventing the selection
+        // of all line-edit content (Ctrl+A). While it functioned correctly
+        // when the text cursor was positioned at the beginning of the
+        // line-edit text, it failed to work when the text cursor was
+        // towards the end of the line-edit text.
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
+        widget->setFormat(exampleConfigurations);
+        QTest::keyClick(widget.data(), Qt::Key_End);
+        QCOMPARE(widget->lineEdit()->selectedText(), QString());
+        widget->selectAll();
+        QCOMPARE(widget->lineEdit()->selectedText(), //
+                 QStringLiteral("0\u00B0  0%  0"));
+    }
+
     void testStepBy()
     {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget( //
