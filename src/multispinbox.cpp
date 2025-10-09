@@ -771,13 +771,17 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
  * @param event the <tt>QEvent::FocusOut</tt> to be handled. */
 void MultiSpinBox::focusOutEvent(QFocusEvent *event)
 {
-    d_pointer->updatePrefixValueSuffixText();
-    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
-        d_pointer->m_currentIndex);
-    // Make sure that the buttons for step up and step down
-    // are updated.
-    update();
-    d_pointer->applyPendingValuesAndEmitSignals();
+    // When the context menu (right mouse click) pops up, this should not
+    // modify the current text selection.
+    if (event->reason() != Qt::PopupFocusReason) {
+        d_pointer->updatePrefixValueSuffixText();
+        d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
+            d_pointer->m_currentIndex);
+        // Make sure that the buttons for step up and step down
+        // are updated.
+        update();
+        d_pointer->applyPendingValuesAndEmitSignals();
+    }
 
     QAbstractSpinBox::focusOutEvent(event);
 }

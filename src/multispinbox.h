@@ -93,19 +93,16 @@ class MultiSpinBoxPrivate;
  * Full-featured @ref MultiSpinBox API:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBox
  *
- * @todo Current behavior: When text is selected and the context menu is
- *       opened—either via right-click or the keyboard menu key—the selection
- *       changes to the value (excluding prefix/suffix) of the current
- *       section. While this clarifies the scope of context menu actions like
- *       “Increment” and “Decrement”, it is confusing and renders other actions
- *       like “Copy” useless. QDateTimeEdit does not exhibit this behavior.
- *       Expected behavior: The existing text selection should remain unchanged
- *       when the context menu is opened.
- *
- * @todo When right-clicking on the MultiSpinBox, it selects the value of the
- *       section that was active the last time the widget had focus. This can
- *       be confusing. Wouldn’t it be more intuitive to always select the first
- *       section, regardless of previous focus’ state?
+ * @todo Current behavior: When text is selected in @ref ColorDialog in the
+ *       “Oklch” und “CIELch” @ref MultiSpinBox widgets and the context menu is
+ *       opened—either via right-click or the keyboard menu key, the existing
+ *       text selection is changed. Expected behavior: The existing text
+ *       selection should remain unchanged when the context menu is opened.
+ *       Note that his happens only with “Oklch” und “CIELch”
+ *       @ref MultiSpinBox widgets, but not with “RGB”, “HSV” and other ones.
+ *       This behaviour seems to be connected to the slots
+ *       @ref ColorDialogPrivate::updateLchButBlockSignals and
+ *       @ref ColorDialogPrivate::updateOklchButBlockSignals.
  *
  * @todo Full-featured accessibility support
  */
