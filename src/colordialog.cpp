@@ -1204,7 +1204,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     connect(m_cielchD50SpinBox, // sender
             &MultiSpinBox::editingFinished, // signal
             this, // receiver
-            &ColorDialogPrivate::updateLchButBlockSignals // slot
+            &ColorDialogPrivate::updateCielchD50ButBlockSignals // slot
     );
     connect(m_oklchSpinBox, // sender
             &MultiSpinBox::valuesChanged, // signal
@@ -1285,7 +1285,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     connect(m_cielchD50SpinBoxGamutAction, // sender
             &QAction::triggered, // signal
             this, // receiver
-            &ColorDialogPrivate::updateLchButBlockSignals // slot
+            &ColorDialogPrivate::updateCielchD50ButBlockSignals // slot
     );
     m_oklchSpinBoxGamutAction = new QAction(q_pointer);
     connect(m_oklchSpinBoxGamutAction, // sender
@@ -1912,7 +1912,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
  * @post The @ref m_cielchD50SpinBox gets the value of
  * @ref m_currentOpaqueColorAbs. During this operation, all signals of
  * @ref m_cielchD50SpinBox are blocked. */
-void ColorDialogPrivate::updateLchButBlockSignals()
+void ColorDialogPrivate::updateCielchD50ButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_cielchD50SpinBox);
     const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);

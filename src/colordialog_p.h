@@ -344,7 +344,7 @@ public Q_SLOTS:
                                const PerceptualColor::RgbColor &rgb,
                                QWidget *const ignoreWidget);
     void updateColorPatch();
-    void updateLchButBlockSignals();
+    void updateCielchD50ButBlockSignals();
     void updateOklchButBlockSignals();
     void updateRgbHexButBlockSignals();
 

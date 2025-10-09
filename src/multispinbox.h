@@ -101,7 +101,7 @@ class MultiSpinBoxPrivate;
  *       Note that his happens only with “Oklch” und “CIELch”
  *       @ref MultiSpinBox widgets, but not with “RGB”, “HSV” and other ones.
  *       This behaviour seems to be connected to the slots
- *       @ref ColorDialogPrivate::updateLchButBlockSignals and
+ *       @ref ColorDialogPrivate::updateCielchD50ButBlockSignals and
  *       @ref ColorDialogPrivate::updateOklchButBlockSignals.
  *
  * @todo Full-featured accessibility support

@@ -2187,7 +2187,7 @@ private Q_SLOTS:
         // Now, the user finishes the editing process (the focus leaves
         // the widget or the Return key is pressed or the action button
         // is clicked):
-        m_perceptualDialog->d_pointer->updateLchButBlockSignals();
+        m_perceptualDialog->d_pointer->updateCielchD50ButBlockSignals();
         // The buggy result during development phase was an RGB value
         // of 252 254 4. Why?
         // - The internal value was around 100° 97% 94, but not exactly.
