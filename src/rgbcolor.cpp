@@ -4,7 +4,9 @@
 // Own header
 #include "rgbcolor.h"
 
+#include <qchar.h>
 #include <qglobal.h>
+#include <qstringliteral.h>
 #include <type_traits>
 
 namespace PerceptualColor
@@ -45,10 +47,41 @@ RgbColor::RgbColor()
  * set. */
 void RgbColor::fillAll(QColor color, std::optional<double> hue)
 {
-    rgb255 = GenericColor(static_cast<double>(color.redF() * 255), //
-                          static_cast<double>(color.greenF() * 255), //
-                          static_cast<double>(color.blueF() * 255));
+    // rgb255
+    rgb255 = GenericColor( //
+        qBound<double>(0., static_cast<double>(color.redF() * 255), 255.), //
+        qBound<double>(0., static_cast<double>(color.greenF() * 255), 255.), //
+        qBound<double>(0., static_cast<double>(color.blueF() * 255), 255.));
 
+    // rgbHex6
+    // We cannot rely on the convenient QColor.name() because this function
+    // seems to use floor() instead of round(), which does not make sense for
+    // us, and it would be inconsistent with other code in our
+    // library. Therefore, we have to round explicitly.
+    // This format string provides intentionally a non-localized format,
+    // using QString::arg() which does not localize if the corresponding
+    // placeholder (%1, %2 …) is not followed by an "L", which it isn’t
+    // in this code.
+    rgbHex6 = //
+        QStringLiteral(u"#%1%2%3")
+            .arg(qBound(0, qRound(rgb255.first), 255), // The number itself
+                 2, // The minimal field width (2 digits)
+                 16, // The base of the number representation (16, hexadecimal)
+                 QChar::fromLatin1('0') // The fill character (leading zero)
+                 )
+            .arg(qBound(0, qRound(rgb255.second), 255), // The number itself
+                 2, // The minimal field width (2 digits)
+                 16, // The base of the number representation (16, hexadecimal)
+                 QChar::fromLatin1('0') // The fill character (leading zero)
+                 )
+            .arg(qBound(0, qRound(rgb255.third), 255), // The number itself
+                 2, // The minimal field width (2 digits)
+                 16, // The base of the number representation (16, hexadecimal)
+                 QChar::fromLatin1('0') // The fill character (leading zero)
+                 )
+            .toUpper(); // Convert to upper case
+
+    // rgbQColor
     rgbQColor = color.toRgb();
     if (rgbQColor.alphaF() != 1) {
         rgbQColor.setAlphaF(1);
@@ -76,6 +109,7 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
                        hsvSaturationPercentage, //
                        hsvValuePercentage);
 
+    // HWB
     const double hwbWhitenessPercentage = //
         qBound(0.0, (1 - color.hsvSaturationF()) * color.valueF() * 100, 100.0);
     const double hwbBlacknessPercentage = //
@@ -112,14 +146,17 @@ RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> h
 /** @brief Static convenience function that returns a @ref RgbColor
  * constructed from the given color.
  *
- * @param color Original color.
- * Note that the opacity (alpha channel) is ignored.
+ * @param color Original color. The opacity (alpha channel) is ignored.
  *
  * @returns A @ref RgbColor object representing this color. */
 RgbColor RgbColor::fromRgbQColor(const QColor &color)
 {
     RgbColor result;
-    result.fillAll(color, std::nullopt);
+    const QColor newRgbQColor = QColor::fromRgbF( //
+        qBound<float>(0, color.redF(), 1), //
+        qBound<float>(0, color.greenF(), 1), //
+        qBound<float>(0, color.blueF(), 1));
+    result.fillAll(newRgbQColor, std::nullopt);
 
     return result;
 }
@@ -241,6 +278,7 @@ bool RgbColor::operator==(const RgbColor &other) const
         && (hsv == other.hsv) //
         && (hwb == other.hwb) //
         && (rgb255 == other.rgb255) //
+        && (rgbHex6 == other.rgbHex6) //
         && (rgbQColor == other.rgbQColor);
 }
 

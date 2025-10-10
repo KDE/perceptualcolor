@@ -11,6 +11,7 @@
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
+#include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <utility>
@@ -83,6 +84,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -94,6 +96,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -106,6 +109,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -119,6 +123,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -131,6 +136,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -143,6 +149,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -156,6 +163,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -169,6 +177,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
         QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
 
@@ -465,6 +474,29 @@ private Q_SLOTS:
         QVERIFY(myColor1 == myColor2);
         myColor2.rgb255.first += 1;
         QVERIFY(!(myColor1 == myColor2));
+    }
+
+    void testHex6()
+    {
+        RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
+        QCOMPARE(myColor1.rgbHex6, QStringLiteral("#010203"));
+        RgbColor myColor2 = RgbColor::fromRgb255(GenericColor{0, 0, 0});
+        QCOMPARE(myColor2.rgbHex6, QStringLiteral("#000000"));
+        RgbColor myColor3 = RgbColor::fromRgb255(GenericColor{254, 254, 254});
+        QCOMPARE(myColor3.rgbHex6, QStringLiteral("#FEFEFE"));
+        RgbColor myColor4 = RgbColor::fromRgb255(GenericColor{255, 255, 255});
+        QCOMPARE(myColor4.rgbHex6, QStringLiteral("#FFFFFF"));
+
+        // Test out-of-gamut values
+        RgbColor myColor5 = RgbColor::fromRgb255(GenericColor{270, 270, 270});
+        QCOMPARE(myColor5.rgbHex6, QStringLiteral("#FFFFFF"));
+        RgbColor myColor6 = RgbColor::fromRgb255(GenericColor{-1, -1, -1});
+        QCOMPARE(myColor6.rgbHex6, QStringLiteral("#000000"));
+        RgbColor myColor7 = RgbColor::fromRgbQColor(QColor::fromRgbF(2, 2, 2));
+        QCOMPARE(myColor7.rgbHex6, QStringLiteral("#FFFFFF"));
+        RgbColor myColor8 = RgbColor::fromRgbQColor( //
+            QColor::fromRgbF(-1, -1, -1));
+        QCOMPARE(myColor8.rgbHex6, QStringLiteral("#000000"));
     }
 };
 

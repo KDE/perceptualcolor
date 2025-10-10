@@ -35,7 +35,6 @@
 #include <qapplication.h>
 #include <qboxlayout.h>
 #include <qbytearray.h>
-#include <qchar.h>
 #include <qcombobox.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -1176,6 +1175,9 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readRgbHexValues // slot
     );
+    // After editing is finished, ensure that any three-digit value entered
+    // by the user is replaced with the corresponding six-digit substitute,
+    // and any ill-formed value replaced by the last well-formed one.
     connect(m_rgbLineEdit, // sender
             &QLineEdit::editingFinished, // signal
             this, // receiver
@@ -1201,6 +1203,8 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readLchNumericValues // slot
     );
+    // After editing is finished, ensure that any out-of-gamut value entered
+    // by the user is replaced with the corresponding in-gamut substitute.
     connect(m_cielchD50SpinBox, // sender
             &MultiSpinBox::editingFinished, // signal
             this, // receiver
@@ -1211,6 +1215,8 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readOklchNumericValues // slot
     );
+    // After editing is finished, ensure that any out-of-gamut value entered
+    // by the user is replaced with the corresponding in-gamut substitute.
     connect(m_oklchSpinBox, // sender
             &MultiSpinBox::editingFinished, // signal
             this, // receiver
@@ -1630,7 +1636,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 
     // Update RGB hex widget
     if (m_rgbLineEdit != ignoreWidget) {
-        updateRgbHexButBlockSignals();
+        m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgbHex6);
     }
 
     // Update lightness selector
@@ -1860,8 +1866,6 @@ void ColorDialogPrivate::readRgbHexValues()
     if (rgb.isValid()) {
         const auto myRgbColor = RgbColor::fromRgbQColor(rgb);
         setCurrentOpaqueColor(myRgbColor, m_rgbLineEdit);
-    } else {
-        m_isDirtyRgbLineEdit = true;
     }
 }
 
@@ -1873,38 +1877,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_rgbLineEdit);
 
-    // m_currentOpaqueColor is supposed to be always in-gamut. However,
-    // because of rounding issues, a conversion to an unbounded RGB
-    // color could result in an invalid color. Therefore, we must
-    // use a conversion to a _bounded_ RGB color.
-    const auto &rgbFloat = m_currentOpaqueColorRgb.rgb255;
-
-    // We cannot rely on the convenient QColor.name() because this function
-    // seems to use floor() instead of round(), which does not make sense in
-    // our dialog, and it would be inconsistent with the other widgets
-    // of the dialog. Therefore, we have to round explicitly (to integers):
-    // This format string provides a non-localized format!
-    // Format of the numbers:
-    // 1) The number itself
-    // 2) The minimal field width (2 digits)
-    // 3) The base of the number representation (16, hexadecimal)
-    // 4) The fill character (leading zero)
-    const QString hexString = //
-        QStringLiteral(u"#%1%2%3")
-            .arg(qBound(0, qRound(rgbFloat.first), 255), //
-                 2, //
-                 16, //
-                 QChar::fromLatin1('0'))
-            .arg(qBound(0, qRound(rgbFloat.second), 255), //
-                 2, //
-                 16, //
-                 QChar::fromLatin1('0'))
-            .arg(qBound(0, qRound(rgbFloat.third), 255), //
-                 2, //
-                 16, //
-                 QChar::fromLatin1('0'))
-            .toUpper(); // Convert to upper case
-    m_rgbLineEdit->setText(hexString);
+    m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgbHex6);
 }
 
 /** @brief Updates the LCH spin box to @ref m_currentOpaqueColorAbs.

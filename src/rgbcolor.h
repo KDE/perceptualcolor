@@ -8,13 +8,18 @@
 #include <optional>
 #include <qcolor.h>
 #include <qdebug.h>
+#include <qstring.h>
 
 namespace PerceptualColor
 {
 
 /** @internal
  *
- * @brief An RGB color stored in multiple different RGB transformations.
+ * @brief An in-gamut RGB color stored in multiple different RGB
+ * transformations.
+ *
+ * When constructed from an out-of-gamut input value, all channels will be
+ * bound to the gamut.
  *
  * Unlike <tt>QColor</tt> (which is essentially a C++ <tt>union</tt> of
  * different color formats, so only one of them is actually saved),
@@ -100,6 +105,14 @@ public:
      *
      * Range: [0, 255] */
     GenericColor rgb255;
+    /**
+     * @brief RGB representation with 6 hexadecimal digits.
+     *
+     * Each of red, green and blue is represented by 2 digits.
+     *
+     * Range: [\#000000, \#FFFFFF]
+     */
+    QString rgbHex6;
     /** @brief QColor representation.
      *
      * <tt>QColor::spec()</tt> is <tt>QColor::Rgb</tt>. */

@@ -166,11 +166,6 @@ public:
      * within this dialog.
      * @sa @ref setCurrentOpaqueColor() */
     bool m_isColorChangeInProgress = false;
-    /** @brief Holds whether the current text of @ref m_rgbLineEdit differs
-     * from the value in @ref m_currentOpaqueColorRgb.
-     * @sa @ref readRgbHexValues
-     * @sa @ref updateRgbHexButBlockSignals */
-    bool m_isDirtyRgbLineEdit = false;
     /** @brief An event filter used for some child widgets. */
     LanguageChangeEventFilter m_languageChangeEventFilter;
     /** @brief Internal storage for property
