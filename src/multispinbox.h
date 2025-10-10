@@ -93,17 +93,6 @@ class MultiSpinBoxPrivate;
  * Full-featured @ref MultiSpinBox API:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBox
  *
- * @todo Current behavior: When text is selected in @ref ColorDialog in the
- *       “Oklch” und “CIELch” @ref MultiSpinBox widgets and the context menu is
- *       opened—either via right-click or the keyboard menu key, the existing
- *       text selection is changed. Expected behavior: The existing text
- *       selection should remain unchanged when the context menu is opened.
- *       Note that his happens only with “Oklch” und “CIELch”
- *       @ref MultiSpinBox widgets, but not with “RGB”, “HSV” and other ones.
- *       This behaviour seems to be connected to the slots
- *       @ref ColorDialogPrivate::updateCielchD50ButBlockSignals and
- *       @ref ColorDialogPrivate::updateOklchButBlockSignals.
- *
  * @todo Full-featured accessibility support
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox

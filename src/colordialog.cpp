@@ -1175,13 +1175,24 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readRgbHexValues // slot
     );
-    // After editing is finished, ensure that any three-digit value entered
-    // by the user is replaced with the corresponding six-digit substitute,
-    // and any ill-formed value replaced by the last well-formed one.
     connect(m_rgbLineEdit, // sender
             &QLineEdit::editingFinished, // signal
             this, // receiver
-            &ColorDialogPrivate::updateRgbHexButBlockSignals // slot
+            [this]() {
+                // After editing is finished, ensure that any three-digit value
+                // entered by the user is replaced with the corresponding
+                // six-digit substitute, and any ill-formed value replaced by
+                // the last well-formed one.
+                // However, ignore the editingFinished signal if it was
+                // triggered solely by opening the context menu. In such cases,
+                // editing hasn't truly concluded, so no correction should be
+                // applied.
+                QList<QWidget *> childWidgets = //
+                    m_rgbLineEdit->findChildren<QWidget *>();
+                if (!childWidgets.contains(QApplication::activePopupWidget())) {
+                    updateRgbHexButBlockSignals();
+                }
+            } // slot
     );
     connect(m_hslSpinBox, // sender
             &MultiSpinBox::valuesChanged, // signal
@@ -1203,24 +1214,46 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             this, // receiver
             &ColorDialogPrivate::readLchNumericValues // slot
     );
-    // After editing is finished, ensure that any out-of-gamut value entered
-    // by the user is replaced with the corresponding in-gamut substitute.
     connect(m_cielchD50SpinBox, // sender
             &MultiSpinBox::editingFinished, // signal
             this, // receiver
-            &ColorDialogPrivate::updateCielchD50ButBlockSignals // slot
+            [this]() {
+                // After editing is finished, ensure that any out-of-gamut
+                // value entered by the user is replaced with the corresponding
+                // in-gamut substitute.
+                // However, ignore the editingFinished signal if it was
+                // triggered solely by opening the context menu. In such cases,
+                // editing hasn't truly concluded, so no correction should be
+                // applied.
+                QList<QWidget *> childWidgets = //
+                    m_cielchD50SpinBox->findChildren<QWidget *>();
+                if (!childWidgets.contains(QApplication::activePopupWidget())) {
+                    updateCielchD50ButBlockSignals();
+                }
+            } // slot
     );
     connect(m_oklchSpinBox, // sender
             &MultiSpinBox::valuesChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readOklchNumericValues // slot
     );
-    // After editing is finished, ensure that any out-of-gamut value entered
-    // by the user is replaced with the corresponding in-gamut substitute.
     connect(m_oklchSpinBox, // sender
             &MultiSpinBox::editingFinished, // signal
             this, // receiver
-            &ColorDialogPrivate::updateOklchButBlockSignals // slot
+            [this]() {
+                // After editing is finished, ensure that any out-of-gamut
+                // value entered by the user is replaced with the corresponding
+                // in-gamut substitute.
+                // However, ignore the editingFinished signal if it was
+                // triggered solely by opening the context menu. In such cases,
+                // editing hasn't truly concluded, so no correction should be
+                // applied.
+                QList<QWidget *> childWidgets = //
+                    m_oklchSpinBox->findChildren<QWidget *>();
+                if (!childWidgets.contains(QApplication::activePopupWidget())) {
+                    updateOklchButBlockSignals();
+                }
+            } // slot
     );
     connect(m_lchLightnessSelector, // sender
             &GradientSlider::valueChanged, // signal
