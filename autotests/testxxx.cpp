@@ -49,20 +49,26 @@ private Q_SLOTS:
 
     void testDef()
     {
-        // XXX Implement me!
+        QVERIFY(false); // XXX Implement me!
 
-        QVERIFY(false);
+        QScopedPointer<PerceptualColor::Widget> widget(new PerceptualColor::Widget());
 
         // It is necessary to show the widget and make it active
         // to make focus and widget events working within unit tests.
-        myWidget->show();
-        QApplication::setActiveWindow(myWidget.data());
+        widget->show();
+        QApplication::setActiveWindow(widget.data());
 
         // Key clicks must go to the focus widget to work as expected.
-        widget1->setFocus();
+        widget->setFocus();
         QTest::keyClick(QApplication::focusWidget(), //
                         Qt::Key::Key_T,
                         Qt::KeyboardModifier::AltModifier);
+
+        // If focus is not important, send the event directly.
+        QKeyEvent keyEvent(QEvent::KeyPress, //
+                           Qt::Key::Key_T, //
+                           Qt::KeyboardModifier::AltModifier);
+        QCoreApplication::sendEvent(widget.data(), &keyEvent);
     }
 };
 

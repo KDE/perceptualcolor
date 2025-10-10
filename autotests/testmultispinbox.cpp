@@ -13,6 +13,7 @@
 #include <qabstractspinbox.h>
 #include <qaction.h>
 #include <qapplication.h>
+#include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qglobal.h>
@@ -2759,10 +2760,9 @@ private Q_SLOTS:
         myMulti.lineEdit()->setCursorPosition(5);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
 
-        // Simulate (more or less) the appearance of a context menu after a
-        // right-click with the mouse:
-        QFocusEvent event(QEvent::FocusOut, Qt::PopupFocusReason);
-        QApplication::sendEvent(&myMulti, &event);
+        // Appearance of a context menu after using menu key:
+        QKeyEvent keyEvent(QEvent::KeyPress, Qt::Key_Menu, Qt::NoModifier);
+        QCoreApplication::sendEvent(&myMulti, &keyEvent);
 
         // A right-click with the mouse should only pop up the context menu,
         // maybe select the value of the current section, but never change
