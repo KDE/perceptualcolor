@@ -84,13 +84,8 @@ class MultiSpinBoxPrivate;
  *
  * @internal
  *
- * For feature parity with QAbstractSpinBox, QDoubleSpinBox, QDateTimeEdit and
- * the relevant parts of QLineEdit, the API could be extended in the future:
- *
- * Full-featured @ref MultiSpinBoxSection API:
+ * The API could be extended in the future:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBoxSection
- *
- * Full-featured @ref MultiSpinBox API:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBox
  *
  * @todo Full-featured accessibility support
