@@ -103,6 +103,14 @@ private Q_SLOTS:
         QCOMPARE(testObject.d_pointer->m_selectedRow, -1);
     }
 
+    void testConstructorNoCrahOnEmptyArray()
+    {
+        const QColorArray2D emptyArray{0, 0, {}};
+        SwatchBook testObject(m_rgbColorSpace, //
+                              emptyArray,
+                              {});
+    }
+
     void testMinimumSizeHint()
     {
         SwatchBook testWidget(m_rgbColorSpace, //

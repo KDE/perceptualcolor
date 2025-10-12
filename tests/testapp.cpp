@@ -28,6 +28,7 @@
 #include "setting.h" // IWYU pragma: keep
 #include "settingbase.h" // IWYU pragma: keep
 #include "settings.h" // IWYU pragma: keep
+#include "swatchbook.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
 #include <qaction.h> // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
