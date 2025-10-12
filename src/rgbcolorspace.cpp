@@ -1484,7 +1484,7 @@ QColor RgbColorSpace::maxChromaColorByOklabHue360(double hue360) const
 {
     return d_pointer->maxChromaColorByHue360( //
         hue360, //
-        RgbColorSpacePrivate::LchSpace::Oklch);
+        LchSpace::Oklch);
 }
 
 /**
@@ -1499,7 +1499,7 @@ QColor RgbColorSpace::maxChromaColorByCielchD50Hue360(double hue360) const
 {
     return d_pointer->maxChromaColorByHue360( //
         hue360, //
-        RgbColorSpacePrivate::LchSpace::CielchD50);
+        LchSpace::CielchD50);
 }
 
 /**
@@ -1511,7 +1511,7 @@ QColor RgbColorSpace::maxChromaColorByCielchD50Hue360(double hue360) const
  * @returns the most chromatic color for the given Oklab hue in the current
  * RGB gamut.
  */
-QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, RgbColorSpacePrivate::LchSpace type) const
+QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, PerceptualColor::LchSpace type) const
 {
     const auto &table = (type == LchSpace::CielchD50) //
         ? m_chromaticityBoundaryByCielchD50Hue360 //

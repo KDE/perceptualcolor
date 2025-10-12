@@ -94,6 +94,18 @@ enum class ColorModel {
 };
 Q_ENUM_NS(ColorModel)
 
+/**
+ * @brief Enum class representing possible color spaces in the Lch color
+ * models.
+ */
+enum class LchSpace {
+    Oklch, /**< The Oklch color space, which uses by definition
+    always a D65 whitepoint. */
+    CielchD50 /**< The CielchD50 color space, assuming a chromatic
+    adaption to the D50 whitepoint. */
+};
+Q_ENUM_NS(LchSpace)
+
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 uint qHash(const ColorModel t, uint seed = 0); // clazy:exclude=qt6-qhash-signature
 #endif

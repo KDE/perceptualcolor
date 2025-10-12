@@ -9,6 +9,7 @@
 
 #include "cielchd50values.h"
 #include "constpropagatingrawpointer.h"
+#include "helperconversion.h"
 #include "oklchvalues.h"
 #include "rgbcolorspace.h"
 #include <lcms2.h>
@@ -36,17 +37,6 @@ namespace PerceptualColor
 class RgbColorSpacePrivate final
 {
 public:
-    /**
-     * @brief Enum class representing possible color spaces in the Lch color
-     * models.
-     */
-    enum class LchSpace {
-        Oklch, /**< The Oklch color space, which uses by definition
-            always a D65 whitepoint. */
-        CielchD50 /**< The CielchD50 color space, assuming a chromatic
-            adaption to the D50 whitepoint. */
-    };
-
     explicit RgbColorSpacePrivate(RgbColorSpace *backLink);
     /** @brief Default destructor
      *
@@ -188,7 +178,7 @@ public:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
     void initializeChromaticityBoundaries();
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
-    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByHue360(double oklabHue360, RgbColorSpacePrivate::LchSpace type) const;
+    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByHue360(double oklabHue360, PerceptualColor::LchSpace type) const;
     [[nodiscard]] static QDateTime profileCreationDateTime(cmsHPROFILE profileHandle);
     [[nodiscard]] static QVersionNumber profileIccVersion(cmsHPROFILE profileHandle);
     [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory);
