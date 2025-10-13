@@ -452,13 +452,13 @@ private Q_SLOTS:
         myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Home);
         QVERIFY(myDiagram.currentColorCielchD50().first == referenceColorLch.first);
-        QVERIFY(myDiagram.currentColorCielchD50().second > referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().second < referenceColorLch.second);
         QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
         myDiagram.setCurrentColorCielchD50(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_End);
         QVERIFY(myDiagram.currentColorCielchD50().first == referenceColorLch.first);
-        QVERIFY(myDiagram.currentColorCielchD50().second < referenceColorLch.second);
+        QVERIFY(myDiagram.currentColorCielchD50().second > referenceColorLch.second);
         QVERIFY(myDiagram.currentColorCielchD50().third == referenceColorLch.third);
 
         myDiagram.setCurrentColorCielchD50(referenceColorLch);
@@ -484,7 +484,7 @@ private Q_SLOTS:
         QCOMPARE(myDiagram.currentColorCielchD50().third, referenceColorLch.third);
 
         myDiagram.setCurrentColorCielchD50(referenceColorLch);
-        QTest::keyClick(&myDiagram, Qt::Key_End);
+        QTest::keyClick(&myDiagram, Qt::Key_Home);
         QCOMPARE(myDiagram.currentColorCielchD50().first, referenceColorLch.first);
         QCOMPARE(myDiagram.currentColorCielchD50().second, referenceColorLch.second);
         QCOMPARE(myDiagram.currentColorCielchD50().third, referenceColorLch.third);

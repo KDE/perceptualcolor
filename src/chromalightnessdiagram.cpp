@@ -506,11 +506,11 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     case Qt::Key_PageDown:
         temp.first -= pageStepLightness;
         break;
-    case Qt::Key_Home:
+    case Qt::Key_End:
         temp.second += pageStepChroma;
         temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
-    case Qt::Key_End:
+    case Qt::Key_Home:
         temp.second = qMax<double>(0, temp.second - pageStepChroma);
         break;
     default:
