@@ -88,7 +88,7 @@ public:
      * empty string otherwise.
      *
      * The value is set by @ref retranslateUi(). */
-    QString m_addMark;
+    QString m_addMarkAvailableInCurrentFont;
     /** @brief Internal storage for property @ref SwatchBook::currentColor
      *
      * QColor automatically initializes with an invalid color, just like it
@@ -147,7 +147,7 @@ public:
      * empty string otherwise.
      *
      * The value is set by @ref retranslateUi(). */
-    QString m_selectionMark;
+    QString m_selectionMarkAvailableInCurrentFont;
     /** @brief Internal storage for property @ref SwatchBook::swatchGrid */
     QColorArray2D m_swatchGrid;
     /** @brief List of axis where @ref widePatchSpacing should be used. */

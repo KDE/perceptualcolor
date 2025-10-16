@@ -46,6 +46,7 @@
 #include <qgenericmatrix.h> // IWYU pragma: keep
 #include <qglobal.h> // IWYU pragma: keep
 #include <qhash.h> // IWYU pragma: keep
+#include <qicon.h> // IWYU pragma: keep
 #include <qlabel.h> // IWYU pragma: keep
 #include <qlayout.h> // IWYU pragma: keep
 #include <qlibraryinfo.h> // IWYU pragma: keep
@@ -360,6 +361,19 @@ int main(int argc, char *argv[])
                      [=]() {
                          qDebug() << "Editing finished!";
                      });
+
+    QIcon myIcon = qIconFromTheme( //
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
+        QIcon::ThemeIcon::ListAdd, // Available in Plasma/Breeze
+    // QIcon::ThemeIcon::SyncError, // Not available in Plasma/Breeze
+    // QIcon::ThemeIcon::DocumentPrint, // Available in Plasma/Breeze
+#endif
+        {QStringLiteral("list-add")}, // Available in Plasma/Breeze
+        // {QStringLiteral("help-browser")}, // Available in Plasma/Breeze
+        // {QStringLiteral("abcdefg")}, // Not available in Plasma/Breeze
+        QString(), //
+        ColorSchemeType::Light); // Should not always be ColorSchemeType::Light
+    Q_UNUSED(myIcon)
 
     // Run
     return app.exec();

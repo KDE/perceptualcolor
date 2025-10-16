@@ -379,7 +379,11 @@ template<typename T = void>
 
 [[nodiscard]] QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
 
-[[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type);
+[[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType fallbackType);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
+[[nodiscard]] QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback, ColorSchemeType fallbackType);
+#endif
 
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 

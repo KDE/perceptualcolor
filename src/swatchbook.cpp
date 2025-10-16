@@ -24,6 +24,7 @@
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qfontmetrics.h>
+#include <qicon.h>
 #include <qline.h>
 #include <qlist.h>
 #include <qmargins.h>
@@ -98,7 +99,7 @@ void SwatchBookPrivate::retranslateUi()
     colorful on some systems, so they will ignore the automatically chosen
     color which is used get best contrast with the background. (Also
     U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.) */
-    m_selectionMark = validateWithFont(tr("✓"));
+    m_selectionMarkAvailableInCurrentFont = validateWithFont(tr("✓"));
 
     /*: @item Indicate that you can click on this empty patch to add a new
     color to it. This symbol should be translated to whatever symbol is most
@@ -107,7 +108,7 @@ void SwatchBookPrivate::retranslateUi()
     the automatically chosen color which is used get best contrast with the
     background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful
     rendering.) */
-    m_addMark = validateWithFont(tr("+"));
+    m_addMarkAvailableInCurrentFont = validateWithFont(tr("+"));
 
     // Schedule a paint event to make the changes visible.
     q_pointer->update();
@@ -741,17 +742,16 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
 {
     widgetPainter->save(); // We'll do a restore() at the end of this function.
 
-    // Draw the selection mark (if any)
-    const qsizetype visualSelectedColumnIndex = //
+    const qsizetype visualColumnIndex = //
         (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) //
         ? column //
         : m_swatchGrid.iCount() - 1 - column;
     const int patchWidthOuter = patchSizeOuter().width();
     const int patchHeightOuter = patchSizeOuter().height();
 
-    const QPointF selectedPatchOffset = QPointF( //
+    const QPointF patchOffset = QPointF( //
         offset.x() //
-            + (static_cast<int>(visualSelectedColumnIndex) //
+            + (static_cast<int>(visualColumnIndex) //
                * (patchWidthOuter + horizontalPatchSpacing())), //
         offset.y() //
             + (static_cast<int>(row) //
@@ -759,32 +759,83 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
     const int patchWidthInner = patchSizeInner().width();
     const int patchHeightInner = patchSizeInner().height();
 
+    QIcon myIcon;
     QString myMark;
     switch (markSymbol) {
     case Mark::Selection:
-        myMark = m_selectionMark;
+        myMark = m_selectionMarkAvailableInCurrentFont;
         break;
     case Mark::Add:
-        myMark = m_addMark;
+        myIcon = qIconFromTheme( //
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
+            QIcon::ThemeIcon::ListAdd,
+#endif
+            {QStringLiteral("list-add")},
+            QString(), // Do not use “fallback” from the resources
+            ColorSchemeType::Light // Not actually used (“fallback” is empty)
+        );
+        myMark = m_addMarkAvailableInCurrentFont;
         break;
     default:
         break;
     }
-    if (myMark.isEmpty()) {
-        // If no selection mark is available for the current translation in
-        // the current font, we will draw a hard-coded fallback mark.
+    if (!myIcon.isNull()) { // Draw the icon
+        myIcon.paint(widgetPainter, //
+                     qRound(patchOffset.x()), //
+                     qRound(patchOffset.y()), //
+                     patchWidthOuter, //
+                     patchHeightOuter, //
+                     Qt::AlignCenter, //
+                     QIcon::Mode::Normal, //
+                     QIcon::State::On);
+    } else if (!myMark.isEmpty()) { // Dram the text
+        QPainterPath textPath;
+        // Render the mark string in the path
+        textPath.addText(0, 0, q_pointer->font(), myMark);
+        // Align the path top-left to the path’s virtual coordinate system
+        textPath.translate(textPath.boundingRect().x() * (-1), //
+                           textPath.boundingRect().y() * (-1));
+        // QPainterPath::boundingRect() might be slow. Cache the result:
+        const QSizeF boundingRectangleSize = textPath.boundingRect().size();
+
+        if (!boundingRectangleSize.isEmpty()) { // Prevent division by 0
+            QTransform textTransform;
+
+            // Offset for the current patch
+            textTransform.translate( //
+                patchOffset.x() + (patchWidthOuter - patchWidthInner) / 2, //
+                patchOffset.y() + (patchHeightOuter - patchHeightInner) / 2);
+
+            // Scale to maximum and center within the margins
+            const qreal scaleFactor = qMin(
+                // Horizontal scale factor:
+                patchWidthInner / boundingRectangleSize.width(),
+                // Vertical scale factor:
+                patchHeightInner / boundingRectangleSize.height());
+            QSizeF scaledMarkSize = boundingRectangleSize * scaleFactor;
+            const QSizeF temp = (patchSizeInner() - scaledMarkSize) / 2;
+            textTransform.translate(temp.width(), temp.height());
+            textTransform.scale(scaleFactor, scaleFactor);
+
+            // Draw
+            widgetPainter->setTransform(textTransform);
+            widgetPainter->setPen(Qt::NoPen);
+            widgetPainter->setBrush(color);
+            widgetPainter->drawPath(textPath);
+        }
+    } else { // Draw hard-coded fallback image
+        // If the mark for the current translation is not available in the
+        // current font, we will draw a hard-coded fallback mark.
         const QSize sizeDifference = patchSizeOuter() - patchSizeInner();
-        // Offset of the selection mark to the border of the patch:
-        QPointF selectionMarkOffset = QPointF( //
-            sizeDifference.width() / 2.0,
+        // Offset of the mark to the border of the patch:
+        QPointF markOffset = QPointF( //
+            sizeDifference.width() / 2.0, //
             sizeDifference.height() / 2.0);
         if (patchWidthInner > patchHeightInner) {
-            selectionMarkOffset.rx() += //
-                ((patchWidthInner - patchHeightInner) / 2.0);
+            markOffset.rx() += ((patchWidthInner - patchHeightInner) / 2.0);
         }
         if (patchHeightInner > patchWidthInner) {
-            selectionMarkOffset.ry() += //
-                ((patchHeightInner - patchWidthInner) / 2.0);
+            markOffset.ry() += ((patchHeightInner - patchWidthInner) / 2.0);
         }
         const int effectiveSquareSize = qMin( //
             patchHeightInner,
@@ -800,75 +851,34 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
         case Mark::Selection: {
             QPointF point1 = QPointF(penWidth, //
                                      0.7 * effectiveSquareSize);
-            point1 += selectedPatchOffset + selectionMarkOffset;
+            point1 += patchOffset + markOffset;
             QPointF point2(0.35 * effectiveSquareSize, //
                            1 * effectiveSquareSize - penWidth);
-            point2 += selectedPatchOffset + selectionMarkOffset;
+            point2 += patchOffset + markOffset;
             QPointF point3(1 * effectiveSquareSize - penWidth, //
                            penWidth);
-            point3 += selectedPatchOffset + selectionMarkOffset;
+            point3 += patchOffset + markOffset;
             widgetPainter->drawLine(QLineF(point1, point2));
             widgetPainter->drawLine(QLineF(point2, point3));
         } break;
         case Mark::Add: {
             QPointF point1 = QPointF(penWidth, //
                                      0.5 * effectiveSquareSize);
-            point1 += selectedPatchOffset + selectionMarkOffset;
+            point1 += patchOffset + markOffset;
             QPointF point2 = QPointF(1 * effectiveSquareSize - penWidth, //
                                      0.5 * effectiveSquareSize);
-            point2 += selectedPatchOffset + selectionMarkOffset;
+            point2 += patchOffset + markOffset;
             QPointF point3(0.5 * effectiveSquareSize, //
                            penWidth);
-            point3 += selectedPatchOffset + selectionMarkOffset;
+            point3 += patchOffset + markOffset;
             QPointF point4(0.5 * effectiveSquareSize, //
                            1 * effectiveSquareSize - penWidth);
-            point4 += selectedPatchOffset + selectionMarkOffset;
+            point4 += patchOffset + markOffset;
             widgetPainter->drawLine(QLineF(point1, point2));
             widgetPainter->drawLine(QLineF(point3, point4));
         } break;
         default:
             break;
-        }
-    } else {
-        QPainterPath textPath;
-        // Render the selection mark string in the path
-        textPath.addText(0, 0, q_pointer->font(), myMark);
-        // Align the path top-left to the path’s virtual coordinate system
-        textPath.translate(textPath.boundingRect().x() * (-1), //
-                           textPath.boundingRect().y() * (-1));
-        // QPainterPath::boundingRect() might be slow. Cache the result:
-        const QSizeF boundingRectangleSize = textPath.boundingRect().size();
-
-        if (!boundingRectangleSize.isEmpty()) { // Prevent division by 0
-            QTransform textTransform;
-
-            // Offset for the current patch
-            textTransform.translate(
-                // x:
-                selectedPatchOffset.x() //
-                    + (patchWidthOuter - patchWidthInner) / 2,
-                // y:
-                selectedPatchOffset.y() //
-                    + (patchHeightOuter - patchHeightInner) / 2);
-
-            // Scale to maximum and center within the margins
-            const qreal scaleFactor = qMin(
-                // Horizontal scale factor:
-                patchWidthInner / boundingRectangleSize.width(),
-                // Vertical scale factor:
-                patchHeightInner / boundingRectangleSize.height());
-            QSizeF scaledSelectionMarkSize = //
-                boundingRectangleSize * scaleFactor;
-            const QSizeF temp = //
-                (patchSizeInner() - scaledSelectionMarkSize) / 2;
-            textTransform.translate(temp.width(), temp.height());
-            textTransform.scale(scaleFactor, scaleFactor);
-
-            // Draw
-            widgetPainter->setTransform(textTransform);
-            widgetPainter->setPen(Qt::NoPen);
-            widgetPainter->setBrush(color);
-            widgetPainter->drawPath(textPath);
         }
     }
 

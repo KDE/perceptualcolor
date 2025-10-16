@@ -15,6 +15,7 @@
 #include <qchar.h>
 #include <qcolor.h>
 #include <qevent.h>
+#include <qfile.h>
 #include <qkeysequence.h>
 #include <qlabel.h>
 #include <qlist.h>
@@ -201,46 +202,25 @@ void drawQWidgetStyleSheetAware(QWidget *widget)
     return QPair<QString, QString>(QString(), QString());
 }
 
-/** @internal
+/**
+ * @internal
  *
  * @brief Icon from theme.
  *
  * @param names List of names, preferred names first. The system’s icon
- *              themes are searched for this.
- * @param fallback If the system icon themes do not provide an icon, use
- *                 this fallback icon from the built-in resources.
- * @param type Type of widget color scheme for which the fallback icon (if
- *             used) should be suitable.
+ *        themes are searched for this. These themes are commonly available
+ *        on Linux, but typically absent on other platforms.
+ * @param fallback A fallback icon from the built-in resources, used if no
+ *        native or theme icon is found.
+ * @param fallbackType The intended widget color scheme, used to select an
+ *        appropriate fallback icon.
  *
- * @returns An icon from the system icons or a fallback icons. If none is
- * available, an empty icon.
- *
- * @internal
- *
- * @note Defining PERCEPTUALCOLORINTERNAL bypasses the platform's
- * icon theme, relying exclusively on the fallback. This behavior
- * is primarily intended to ensure that utils/generatescreenshots.cpp,
- * used for generating documentation screenshots, produces results
- * that are independent of the platform.
- *
- * @note By default, the library leverages any available icon
- * theme supported by Qt. On Linux, such themes are typically
- * present. Support for Windows, macOS, iOS, and Android was
- * <a href="https://doc.qt.io/qt-6/whatsnew67.html#qt-gui-module">
- * introduced only in Qt 6.7</a> via a
- * <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">new
- * enum</a> and by <a href="https://www.qt.io/blog/qt-6.7-released">
- * mapping XDG icon names to platform-native symbols</a>.
- * However, none of the icons available via the new enum does
- * suit our needs. QIcon::ThemeIcon::DialogWarning could potentially be
- * (mis)used for the out-of-gamut warning, but all other necessary
- * icons—mostly color-related—are unavailable. Until Qt provides more
- * color-related icons in this enum, we will continue using FreeDesktop
- * icon names and bundled built-in icons as our traditional approach.
+ * @returns An icon from one of the available sources, or an empty icon if none
+ * are found.
  */
-QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType type)
+QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType fallbackType)
 {
-    // Try to find icon in theme
+    // Try to find icon in system themes
     for (auto const &name : std::as_const(names)) {
         const QIcon myIcon = QIcon::fromTheme(name);
         if (!myIcon.isNull()) {
@@ -250,14 +230,61 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSch
 
     // Return fallback icon
     initializeLibraryResources();
-    QString path = QStringLiteral( //
-        ":/PerceptualColor/icons/lighttheme/%1.svg");
-    if (type == ColorSchemeType::Dark) {
-        path = QStringLiteral( //
-            ":/PerceptualColor/icons/darktheme/%1.svg");
+    const QString pattern = //
+        (fallbackType == ColorSchemeType::Dark) //
+        ? QStringLiteral(":/PerceptualColor/icons/darktheme/%1.svg") //
+        : QStringLiteral(":/PerceptualColor/icons/lighttheme/%1.svg");
+    const QString path = pattern.arg(fallback);
+    if (QFile::exists(path)) {
+        // Trying to construct a QIcon from a missing resource file would make
+        // Qt print debug messages. Therefore we check for existance first.
+        return QIcon(path);
     }
-    return QIcon(path.arg(fallback));
+
+    // Even fallback icon is not available
+    return QIcon();
 }
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
+/**
+ * @internal
+ *
+ * @brief Icon from theme.
+ *
+ * @param nativeIcon An icon from the system's native icon
+ *        library. Supports Windows, macOS, iOS, and Android and
+ *        was <a href="https://doc.qt.io/qt-6/whatsnew67.html#qt-gui-module">
+ *        introduced only in Qt 6.7</a> via
+ *        a <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">new
+ *        enum</a> and by <a href="https://www.qt.io/blog/qt-6.7-released">
+ *        mapping XDG icon names to platform-native symbols</a>.
+ * @param names List of names, preferred names first. The system’s icon themes
+ *        are searched for this. These themes are commonly available on Linux,
+ *        but typically absent on other platforms.
+ * @param fallback A fallback icon from the built-in resources, used if no
+ *        native or theme icon is found.
+ * @param fallbackType The intended widget color scheme, used to select an
+ *        appropriate fallback icon.
+ *
+ * @returns An icon from one of the available sources, or an empty icon if none
+ * are found.
+ *
+ * @note This function is only available when Qt ≥ 6.7.
+ *
+ * @internal
+ *
+ * @todo Consider using QIcon::ThemeIcon::DialogWarning for the out-of-gamut
+ * warning, though this may be a misuse of its intended purpose.
+ */
+QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback, ColorSchemeType fallbackType)
+{
+    const QIcon myIcon = QIcon::fromTheme(nativeIcon);
+    if (!myIcon.isNull()) {
+        return myIcon;
+    }
+    return qIconFromTheme(names, fallback, fallbackType);
+}
+#endif
 
 /** @internal
  *
