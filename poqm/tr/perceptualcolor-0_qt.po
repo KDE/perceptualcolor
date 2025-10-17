@@ -362,19 +362,19 @@ msgid "sRGB color space"
 msgstr "sRGB renk uzayı"
 
 #. @item Indicate the selected color in the swatch book. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:101
+#: swatchbook.cpp:102
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
 
 #. @item Indicate that you can click on this empty patch to add a new color to it. This symbol should be translated to whatever symbol is most appropriate for “add” in the translation language. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:110
+#: swatchbook.cpp:111
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
 msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
-#: swatchbook.cpp:155
+#: swatchbook.cpp:156
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr "Sil"
