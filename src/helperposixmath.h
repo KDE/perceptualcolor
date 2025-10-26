@@ -4,11 +4,20 @@
 #ifndef HELPERPOSIXMATH_H
 #define HELPERPOSIXMATH_H
 
-#include <qmath.h>
-
 /** @internal
  *
  * @file
+ * */
+
+namespace PerceptualColor
+{
+
+/** @internal
+ *
+ * @brief pi
+ *
+ * Alternaive to <tt>std::numbers::pi</tt> (only available starting with
+ * C++20, be we have C++17 compatibility here), and to M_PI.
  *
  * From <tt>&lt;qmath.h&gt;</tt> documentation:
  *
@@ -16,19 +25,12 @@
  * > present in C++ standards (so absent from <tt>&lt;math.h&gt;</tt> on some
  * > platforms), are defined:
  *
- * To ensure that we never forget to include <tt>&lt;qmath.h&gt;</tt>, we
- * define our own constexpr with these values here. When these constexpr are
- * used, it is ensured that <em>this</em> header is included, and thus
- * indirectly also <tt>&lt;qmath.h&gt;</tt>. Furthermore, the constexpr are
- * much more convenient to use than the POSIX constants, which are macros. */
-
-namespace PerceptualColor
-{
-
-/** @internal
- *
- * @brief pi */
-constexpr auto pi = M_PI;
+ * So <tt>&lt;qmath.h&gt;</tt>  provides M_PI from POSIX. But we could forget
+ * to include  <tt>&lt;qmath.h&gt;</tt>, and it would work on Unix but fail on
+ * Windows, which does not provide POSIX. Also, a constexpr is much more
+ * convenient to use than M_PI, which are macros.
+ */
+inline constexpr double pi = 3.141592653589793238462643383279502884197169399375;
 
 } // namespace PerceptualColor
 

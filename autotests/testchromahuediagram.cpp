@@ -113,7 +113,7 @@ private Q_SLOTS:
         referenceColorChromaLch.third = 180;
         myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
 
-        QScopedPointer<QKeyEvent> myEvent; // TODO Use QTest::keyClick() instead!
+        QScopedPointer<QKeyEvent> myEvent;
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, 0, Qt::NoModifier));
 
         myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);

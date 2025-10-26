@@ -40,10 +40,10 @@ class MultiSpinBoxSectionPrivate;
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBoxSection
 {
 public:
-    MultiSpinBoxSection();
-    MultiSpinBoxSection(const MultiSpinBoxSection &other);
+    MultiSpinBoxSection() noexcept;
+    MultiSpinBoxSection(const MultiSpinBoxSection &other) noexcept;
     ~MultiSpinBoxSection() noexcept;
-    MultiSpinBoxSection &operator=(const MultiSpinBoxSection &other);
+    MultiSpinBoxSection &operator=(const MultiSpinBoxSection &other) noexcept;
     MultiSpinBoxSection(MultiSpinBoxSection &&other) noexcept;
     MultiSpinBoxSection &operator=(MultiSpinBoxSection &&other) noexcept;
 

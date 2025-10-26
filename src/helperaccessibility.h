@@ -5,9 +5,9 @@
 #define HELPERACCESSIBILITY_H
 
 #include <qaccessible.h>
-#include <qmetaobject.h>
-#include <qobject.h>
 #include <qstring.h>
+#include <type_traits>
+class QObject;
 
 /** @internal
  *

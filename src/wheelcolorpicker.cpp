@@ -9,10 +9,10 @@
 
 #include "abstractdiagram.h"
 #include "chromalightnessdiagram.h"
-#include "chromalightnessdiagram_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
+#include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 #include "cielchd50values.h"
 #include "colorwheel.h"
-#include "colorwheel_p.h" // IWYU pragma: keep // TODO Avoid this pragma by better design: not accessing private parts of other classes.
+#include "colorwheel_p.h" // IWYU pragma: keep
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"

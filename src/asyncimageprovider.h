@@ -6,11 +6,17 @@
 
 #include "asyncimageproviderbase.h"
 #include "asyncimagerenderthread.h"
-#include "rgbcolorspacefactory.h"
 #include <optional>
+#include <qglobal.h>
 #include <qimage.h>
-#include <qobject.h>
+#include <qmetatype.h>
 #include <qvariant.h>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <qtmetamacros.h>
+#endif
+
+class QObject;
 
 namespace PerceptualColor
 {

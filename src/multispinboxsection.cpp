@@ -15,10 +15,11 @@
 
 namespace PerceptualColor
 {
+
 /** @brief Constructor
  *
  * The object is initialized with default values. */
-MultiSpinBoxSection::MultiSpinBoxSection()
+MultiSpinBoxSection::MultiSpinBoxSection() noexcept
     : d_pointer(new MultiSpinBoxSectionPrivate())
 {
 }
@@ -31,7 +32,7 @@ MultiSpinBoxSection::~MultiSpinBoxSection() noexcept
 /** @brief Copy constructor
  *
  * @param other the object to be copied */
-MultiSpinBoxSection::MultiSpinBoxSection(const MultiSpinBoxSection &other)
+MultiSpinBoxSection::MultiSpinBoxSection(const MultiSpinBoxSection &other) noexcept
 {
     d_pointer.reset(
         // Create a copy of the private implementation object
@@ -43,7 +44,7 @@ MultiSpinBoxSection::MultiSpinBoxSection(const MultiSpinBoxSection &other)
  * @returns By convention, always returns <tt>*this</tt>.
  *
  * @param other the object to be copied */
-MultiSpinBoxSection &MultiSpinBoxSection::operator=(const MultiSpinBoxSection &other)
+MultiSpinBoxSection &MultiSpinBoxSection::operator=(const MultiSpinBoxSection &other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
         d_pointer.reset(

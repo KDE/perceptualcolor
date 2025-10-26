@@ -16,6 +16,7 @@
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qvariant.h>
+#include <type_traits>
 #include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
@@ -71,6 +72,22 @@ private Q_SLOTS:
     void cleanup()
     {
         // Called after every test function
+    }
+
+    void testTraits()
+    {
+        // static_assert(std::is_trivially_copyable_v<MultiSpinBoxSection>);
+        // static_assert(std::is_trivial_v<MultiSpinBoxSection>);
+        static_assert(std::is_standard_layout_v<MultiSpinBoxSection>);
+        static_assert(std::is_default_constructible_v<MultiSpinBoxSection>);
+        // static_assert(std::is_trivially_default_constructible_v<MultiSpinBoxSection>);
+        static_assert(std::is_nothrow_default_constructible_v<MultiSpinBoxSection>);
+        static_assert(std::is_copy_constructible_v<MultiSpinBoxSection>);
+        // static_assert(std::is_trivially_copy_constructible_v<MultiSpinBoxSection>);
+        static_assert(std::is_nothrow_copy_constructible_v<MultiSpinBoxSection>);
+        static_assert(std::is_move_constructible_v<MultiSpinBoxSection>);
+        // static_assert(std::is_trivially_move_constructible_v<MultiSpinBoxSection>);
+        static_assert(std::is_nothrow_move_constructible_v<MultiSpinBoxSection>);
     }
 
     void testDefaultValues()

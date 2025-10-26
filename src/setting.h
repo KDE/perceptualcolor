@@ -6,21 +6,18 @@
 
 #include "settingbase.h"
 #include "settings.h"
-#include <QMetaEnum>
-#include <qcolor.h>
-#include <qdebug.h>
-#include <qfilesystemwatcher.h>
+#include <qbytearray.h>
 #include <qglobal.h>
-#include <qlist.h>
+#include <qmetaobject.h>
 #include <qmetatype.h>
-#include <qobject.h>
-#include <qsettings.h>
 #include <qstring.h>
-#include <qstringliteral.h>
+#include <qvariant.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
 #endif
+
+class QObject;
 
 namespace PerceptualColor
 {

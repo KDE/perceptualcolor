@@ -3,8 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "helperconversion.h" // TODO Write actual unit tests for this
-
+#include "helperconversion.h"
 #include <lcms2.h>
 #include <qglobal.h>
 #include <qmetatype.h>

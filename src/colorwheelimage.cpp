@@ -200,7 +200,8 @@ QImage ColorWheelImage::getImage()
                 m_image.setPixelColor( //
                     x, //
                     y, //
-                    m_rgbColorSpace->maxChromaColorByCielchD50Hue360(hue));
+                    // m_rgbColorSpace->maxChromaColorByCielchD50Hue360(hue));
+                    m_rgbColorSpace->maxChromaColorByOklabHue360(hue));
             }
         }
     }

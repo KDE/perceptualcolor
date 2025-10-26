@@ -689,20 +689,20 @@ void ColorDialogPrivate::retranslateUi()
     m_oklchSpinBoxGamutAction->setToolTip(gamutTooltip);
     m_oklchSpinBoxGamutAction->setShortcut(gamutShortcut);
 
-    /*: @item:inlistbox
+    /*: @item:inlistbox/plain
     The swatch grid showing the basic colors like yellow,
     orange, red… Same text as in QColorDialog */
-    m_swatchBookSelector->setItemText(0, tr("Basic colors")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
+    m_swatchBookSelector->setItemText(0, tr("Basic colors"));
 
-    /*: @item:inlistbox
+    /*: @item:inlistbox/plain
     The swatch grid showing the history of
     previously selected colors. */
-    m_swatchBookSelector->setItemText(1, tr("History")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
+    m_swatchBookSelector->setItemText(1, tr("History"));
 
-    /*: @item:inlistbox
+    /*: @item:inlistbox/plain
     The swatch grid showing custom colors, allowing users to add or remove
     colors as desired. */
-    m_swatchBookSelector->setItemText(2, tr("Custom Colors")); // TODO xxx Short cut? /plain or /richtext or how is the correct context marker?
+    m_swatchBookSelector->setItemText(2, tr("Custom Colors"));
 
     // NOTE No need to call
     //

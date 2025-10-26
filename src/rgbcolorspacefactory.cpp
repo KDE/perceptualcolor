@@ -40,7 +40,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb(
 
 /** @brief Try to create a color space object for a given ICC file.
  *
- * @note This function may fail to create the color space object when it
+ * This function may fail to create the color space object when it
  * cannot open the given file, or when the file cannot be interpreted.
  *
  * @pre This function is called from the main thread.
@@ -53,7 +53,12 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb(
  * ICC profiles up to version 4.
  *
  * @returns A shared pointer to a newly created color space object on success.
- * A shared pointer to <tt>nullptr</tt> on fail. */
+ * A shared pointer to <tt>nullptr</tt> on fail.
+ *
+ * @note Opening unknown or untrusted files may pose security risks. For
+ * instance, an unusually large file could exhaust system memory potentially
+ * leading to crashes.
+ */
 QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::tryCreateFromFile(const QString &fileName)
 {
     return RgbColorSpace::tryCreateFromFile(fileName);
@@ -141,10 +146,10 @@ QStringList RgbColorSpaceFactory::colorProfileDirectories()
     candidates.append(QStringLiteral(u"/System/Library/ColorSync/Profiles/"));
 
     // Printer drivers also might have color profiles:
-    candidates.append(QStringLiteral(u"/Library/Printers/")); // TODO Useful?
+    candidates.append(QStringLiteral(u"/Library/Printers/"));
 
     // Adobe’s applications also might have color profiles:
-    candidates.append( // TODO Is it useful to support particular programs?
+    candidates.append( //
         QStringLiteral(u"/Library/Application Support/Adobe/Color/Profiles/"));
 
 #elif defined(Q_OS_UNIX)
@@ -205,7 +210,7 @@ QStringList RgbColorSpaceFactory::colorProfileDirectories()
     // Starting with XP, this is the default directory:
     candidates.append(winSysDir + QStringLiteral(u"/Spool/Drivers/Color/"));
     // In Windows 95, 98, this was the default directory:
-    candidates.append(winSysDir + QStringLiteral(u"/Color/")); // TODO Useful?
+    candidates.append(winSysDir + QStringLiteral(u"/Color/"));
 #endif
 
     // Prepare the return value:

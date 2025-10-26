@@ -14,7 +14,6 @@ configure_file(
     # Output:
     ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
 )
-# TODO Also configure rpm.spec and Doxygen files with this version information.
 
 
 
@@ -47,6 +46,7 @@ set(library_SRC
     initializetranslation.cpp
     interlacingpass.cpp
     iohandlerfactory.cpp
+    iwyu.cpp
     languagechangeeventfilter.cpp
     multispinbox.cpp
     multispinboxsection.cpp
@@ -89,8 +89,6 @@ set(lib_PUBLICHEADERS
     wheelcolorpicker.h
     ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
 )
-# TODO Also explicitly list all private headers to get more stable CMake
-#      and make sure these files pop up in IDEs.
 
 
 
@@ -99,7 +97,6 @@ set(lib_PUBLICHEADERS
 ################# Translation #################
 get_filename_component(absolute_poqm_directory "../poqm" ABSOLUTE)
 file(
-    # TODO Is it possible to get rid of GLOB_RECURSE?
     GLOB_RECURSE po_file_list # Name of the output variable.
     LIST_DIRECTORIES FALSE
     # CMake will add logic to the main build system check target to
@@ -168,13 +165,14 @@ file(
 qt_add_resources(
     library_SRC # existing source list
     ${qrc_file} # File with list of Qt resource to be added
-    # TODO Starting with Qt6, it will no longer be necessary to have a
-    # .qrc file, but the list of files can be passed in the very same
-    # qt_add_resources() command. Problem: The attributes
-    # threshold="100" compress-algo="none" (see explication above)
-    # cannot be specified than.
-    #  See also https://www.basyskom.de/translating-qt-applications/
+    # Starting with Qt6, it will no longer be necessary to
+    # have a .qrc file, but the list of files can be passed
+    # in the very same qt_add_resources() command. See also
+    # https://www.basyskom.de/translating-qt-applications/
     # for a detailed explanation.
+    # But the problem with this approach would be: The attributes
+    # threshold="100" compress-algo="none" (see explication above)
+    # could not be specified than.
 )
 
 
@@ -245,11 +243,8 @@ target_include_directories(
 # For details, see https://cmake.org/pipermail/cmake/2016-May/063400.html
 target_link_libraries(
     ${LIBRARY_NAME}
-    # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure
-    # that we will not need it in the future either. Otherwise, it’s better
-    # to keep it, for future binary compatibility.
     PUBLIC
-        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent Qt::Svg
+        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Svg
     PRIVATE
         ${LCMS2_LIBRARIES})
 install(
@@ -384,14 +379,11 @@ target_include_directories(
         ${LCMS2_INCLUDE_DIRS})
 target_link_libraries(
     ${INTERNAL_LIBRARY_NAME}
-    # TODO We could remove the Qt::Concurrent (only) if we were absolutely sure
-    # that we will not need it in the future either. Otherwise, it’s better
-    # to keep it, for future binary compatibility.
     # NOTE It's necessary for LittleCMS to be marked as PUBLIC for the
     # internal build since users of the internal build have full access
     # to internal headers. These headers may include LittleCMS, and without
     # public access, users wouldn't be able to use the library as intended.
     PUBLIC
-        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Concurrent Qt::Svg
+        Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Svg
         ${LCMS2_LIBRARIES}
 )

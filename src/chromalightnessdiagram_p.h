@@ -48,23 +48,6 @@ public:
     /** @brief Internal storage of
      * the @ref ChromaLightnessDiagram::currentColorCielchD50 property */
     GenericColor m_currentColorCielchD50;
-    /** @brief Holds if currently a mouse event is active or not.
-     *
-     * Default value is <tt>false</tt>.
-     * - A mouse event gets typically activated on a
-     *   @ref ChromaLightnessDiagram::mousePressEvent()
-     *   done within the gamut diagram. The value is set to <tt>true</tt>.
-     * - While active, all @ref ChromaLightnessDiagram::mouseMoveEvent() will
-     *   move the diagram’s color handle.
-     * - Once a @ref ChromaLightnessDiagram::mouseReleaseEvent() occurs, the
-     *   value is set to <tt>false</tt>. Further mouse movements will not
-     *   move the handle anymore.
-     *
-     * This is done because Qt’s default mouse tracking reacts on all clicks
-     * within the (rectangular) widget. However, <em>this</em> widget is meant
-     * as a circular widget, only reacting on mouse events within the circle;
-     * this requires this custom implementation. */
-    bool m_isMouseEventActive = false; // TODO Remove me!
     /** @brief Pointer to RgbColorSpace() object */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 

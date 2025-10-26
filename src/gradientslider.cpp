@@ -639,21 +639,6 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     QPainter widgetPainter(this);
     widgetPainter.setTransform(transform);
     widgetPainter.drawImage(0, 0, paintBuffer);
-
-    //     // TODO Draw a focus rectangle like this?:
-    //     widgetPainter.setTransform(QTransform());
-    //     if (hasFocus()) {
-    //         QStyleOptionFocusRect opt;
-    //         opt.palette = palette();
-    //         opt.rect = rect();
-    //         opt.state = QStyle::State_None |
-    //         QStyle::State_KeyboardFocusChange; style()->drawPrimitive(
-    //             QStyle::PE_FrameFocusRect,
-    //             &opt,
-    //             &widgetPainter,
-    //             this
-    //         );
-    //     }
 }
 
 } // namespace PerceptualColor

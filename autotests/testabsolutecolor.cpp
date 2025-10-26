@@ -145,14 +145,14 @@ private:
 
         constexpr double oklabSpecialWhite[] = //
             {1.0000000010492212, -1.0775085046432764e-8, 5.03845311028428e-8};
-        // TODO xxx This is out-of-bound! What is the expected behaviour???
+        // NOTE The lightness value is out-of-bound! (Valid range: 0..100)
         QTest::newRow("special white 100., 0., 0.") //
             << cmsCIELab({100., 0., 0.}) //
             << Trio(oklabSpecialWhite);
 
         constexpr double oklabWhite[] = //
             {1.000000009791752, -3.3637913787742946e-8, 6.836016341882356e-8};
-        // TODO xxx This is out-of-bound! What is the expected behaviour???
+        // NOTE The lightness value is out-of-bound! (Valid range: 0..100)
         QTest::newRow("white 100.00000139649632, -0.000007807961277528364, 0.000006766250648659877") //
             << cmsCIELab({100.00000139649632, -0.000007807961277528364, 0.000006766250648659877}) //
             << Trio(oklabWhite);

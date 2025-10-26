@@ -52,12 +52,6 @@ if(iwyu_path)
         "Found.\n"
             "   Run cmake again with "
             "“-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=${iwyu_path}” to use it.")
-    # TODO This does not check headers that have neither a cpp
-    #      file with the same name nor a cpp file declaring the header
-    #      with “// IWYU pragma: associated”. It should check them however.
-    #      At the time of writing this comment, this are: importexport.h,
-    #      constpropagatinguniquepointer.h, and constpropagatingrawpointer.h.
-    #      Maybe declare them by pragma within their unit tests?
 else()
     message(CHECK_FAIL "Not found.")
 endif()
@@ -180,12 +174,6 @@ message(
 # This option breaks strict IEEE compatibility of floating point to provide
 # a faster run-time; for example, division by 0 results in a wrong return
 # value instead of an exception.
-#
-# TODO Profile-guided optimization (PGO) provides by GCC can further
-# increase speed and shriek binary size, but requires a more complex
-# build system. It would be nice to have this if it does not make the build
-# process too complicate. For details, see also:
-# https://documentation.suse.com/sbp/all/pdf/SBP-GCC-10_color_en.pdf
 
 
 
@@ -263,9 +251,6 @@ option(
     ADDITIONAL_WARNINGS               # Name
     "More warnings and errors"        # Help text
     FALSE)                            # Default value
-# TODO Starting with CMake 3.19, this option could be replaced with
-# a CMake preset, which might be more convenient? Anyway, currently we
-# require only CMake 3.16 just as Qt 6 does…
 message(
     STATUS
     "ADDITIONAL_WARNINGS: ${ADDITIONAL_WARNINGS}")
@@ -291,7 +276,6 @@ if(ADDITIONAL_WARNINGS
         -Wconversion
         -Wdeprecated
         -Wdisabled-optimization
-        # -Wfloat-equal # TODO Enable this check!
         -Wformat
         -Wformat=2 # even more checks on top of “-Wformat”
         -Wformat-nonliteral
@@ -510,7 +494,7 @@ message(
 find_package(
     Qt${QT_MAJOR_VERSION}
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
-    COMPONENTS Core Gui Widgets DBus Test Concurrent Svg
+    COMPONENTS Core Gui Widgets DBus Test Svg
     REQUIRED)
 message(STATUS
         "Using Qt version: "
@@ -545,21 +529,6 @@ else()
     set(MSVC_DLL FALSE)
 endif()
 message(STATUS "MSVC_DLL: ${MSVC_DLL}")
-
-
-
-
-
-################# More targets? #################
-# TODO https://gitlab.com/ubports/core/cmake-extras/ provides (among others)
-# – DoxygenBuilder: Creates Doxygen API doc generation targets. But:
-#   We have to make sure that the screenshots are always up-to-date. And:
-#   Doxygen has currently many false-positive warnings, which we are
-#   filtering in run-ci.sh. Is this possible in CMake, so that it can
-#   be used as a tool to make sure the documentation is correct?
-#   Or we could do like described in
-#   https://majewsky.wordpress.com/2010/08/14/tip-of-the-day-cmake-and-doxygen/
-#   and create a custom target manually…
 
 
 
@@ -661,7 +630,6 @@ endif()
 ################# Clang format #################
 include(KDEClangFormat)
 file(
-    # TODO Is it possible to get rid of GLOB_RECURSE?
     GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES # Name of the output variable.
     LIST_DIRECTORIES FALSE
     # CMake will add logic to the main build system check target to

@@ -4,7 +4,6 @@
 #ifndef CONSTPROPAGATINGUNIQUEPOINTER_H
 #define CONSTPROPAGATINGUNIQUEPOINTER_H
 
-#include "importexport.h"
 #include <memory>
 
 namespace PerceptualColor

@@ -5,8 +5,11 @@
 // this forces the header to be self-contained.
 #include "oklchvalues.h"
 
+#include "rgbcolorspace.h"
+#include "rgbcolorspacefactory.h"
 #include <qglobal.h>
 #include <qobject.h>
+#include <qsharedpointer.h>
 #include <qtest.h>
 #include <qtestcase.h>
 
@@ -50,7 +53,10 @@ private Q_SLOTS:
     void testMaximumChroma()
     {
         QVERIFY(OklchValues::maximumChroma > 0);
-        // TODO xxx Load all profiles to see if none has a higher chroma!
+
+        const auto mySpace = RgbColorSpaceFactory::createSrgb();
+        const auto maxOkChroma = mySpace->profileMaximumOklchChroma();
+        QVERIFY(OklchValues::maximumChroma > maxOkChroma);
     }
 };
 

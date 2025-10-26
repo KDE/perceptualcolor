@@ -271,7 +271,6 @@ GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50(c
  * implement this? */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
-    d_pointer->m_isMouseEventActive = true;
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
         setCursor(Qt::BlankCursor);

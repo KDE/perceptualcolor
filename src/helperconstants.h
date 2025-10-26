@@ -6,6 +6,7 @@
 
 #include <qglobal.h>
 #include <qstring.h>
+#include <qstringliteral.h>
 
 /** @internal
  *

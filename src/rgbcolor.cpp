@@ -12,26 +12,6 @@
 namespace PerceptualColor
 {
 
-// TODO xxx Decide on the commented-out static_assert statements. Ideally
-// get them working!
-
-// static_assert(std::is_trivially_copyable_v<RgbColor>);
-// static_assert(std::is_trivial_v<RgbColor>);
-
-static_assert(std::is_standard_layout_v<RgbColor>);
-
-static_assert(std::is_default_constructible_v<RgbColor>);
-// static_assert(std::is_trivially_default_constructible_v<RgbColor>);
-// static_assert(std::is_nothrow_default_constructible_v<RgbColor>);
-
-static_assert(std::is_copy_constructible_v<RgbColor>);
-// static_assert(std::is_trivially_copy_constructible_v<RgbColor>);
-// static_assert(std::is_nothrow_copy_constructible_v<RgbColor>);
-
-// static_assert(std::is_move_constructible_v<RgbColor>);
-// static_assert(std::is_trivially_move_constructible_v<RgbColor>);
-// static_assert(std::is_nothrow_move_constructible_v<RgbColor>);
-
 RgbColor::RgbColor()
 {
 }

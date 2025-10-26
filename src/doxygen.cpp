@@ -12,7 +12,7 @@
  * Build-time dependencies:
  * - LittleCMS 2 (minimum version: 2.0)
  * - Qt 6 (minimum version: 6.0.0).
- *   Components: Core, Gui, Widgets, DBus, Concurrent, Test, Svg.
+ *   Components: Core, Gui, Widgets, DBus, Test, Svg.
  * <!--
  *     This library officially supports only Qt 6. Qt 5.15 builds are
  *     maintained solely for internal testing purposes and are not part of the
@@ -329,7 +329,7 @@
  *
  * @page generaltodolist General TODO list
  *
- * This is a TODO list that contains general ideas or issues of this
+ * This is a list that contains general ideas or issues of this
  * library.
  *
  * @todo Use words as hints for color ranges? Muted/dull colors have a low

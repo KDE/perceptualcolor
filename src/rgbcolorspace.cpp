@@ -115,7 +115,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
 
 /** @brief Try to create a color space object for a given ICC file.
  *
- * @note This function may fail to create the color space object when it
+ * This function may fail to create the color space object when it
  * cannot open the given file, or when the file cannot be interpreted.
  *
  * @pre This function is called from the main thread.
@@ -130,12 +130,18 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * @returns A shared pointer to a newly created color space object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.
  *
+ * @note Opening unknown or untrusted files may pose security risks. For
+ * instance, an unusually large file could exhaust system memory potentially
+ * leading to crashes.
+ *
  * @sa @ref RgbColorSpaceFactory::tryCreateFromFile()
  *
  * @internal
  *
  * @todo The value for @ref profileMaximumCielchD50Chroma should be the actual maximum
  * chroma value of the profile, and not a fallback default value as currently.
+ *
+ * @todo Only accept "Display Class"" profiles?
  *
  * @note Currently, there is no function that loads a profile from a memory
  * buffer instead of a file. However it would easily be possible to implement
@@ -154,8 +160,6 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * management system. */
 QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(const QString &fileName)
 {
-    // TODO xxx Only accept Display Class profiles
-
     // Definitions
     constexpr auto myContextID = nullptr;
 
@@ -744,11 +748,6 @@ QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsI
     // as number of necessary wchart_t, which creates a greater buffer,
     // which might possibly be waste of space, but it’s just a little bit
     // of text, so that’s not so much space that is wasted finally.
-
-    // TODO For security reasons (you never know what surprise a foreign ICC
-    // file might have for us), it would be better to have a maximum
-    // length for the buffer, so that insane big buffer will not be
-    // actually created, and instead an empty string is returned.
 
     // Allocate the buffer
     std::vector<wchar_t> buffer(bufferLength);

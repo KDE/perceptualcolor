@@ -6,6 +6,7 @@
 #include "perceptualsettings.h"
 
 #include <qcoreapplication.h>
+#include <qdebug.h>
 #include <qsettings.h>
 #include <qstringliteral.h>
 

@@ -16,7 +16,8 @@ namespace PerceptualColor
 struct OklchValues final {
 public:
     /** @brief Maximum chroma value as defined in @ref lchrangerationale. */
-    static constexpr int maximumChroma = 2; // TODO xxx Measure this exactly, to know if it's really appropriate!
+    static constexpr int maximumChroma = 2;
+
 private:
     /** @brief Delete the constructor to disallow creating an instance
      * of this class. */

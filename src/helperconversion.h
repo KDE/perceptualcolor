@@ -168,7 +168,6 @@ template<typename T>
  * > Z = 108.883”
  *
  * Normalizing this to Y = 1 as expected by LittleCMS, gives this value. */
-// TODO xxx This seems to be not longer used!?
 constexpr cmsCIEXYZ whitePointD65TwoDegree{0.95047, 1.00000, 1.08883};
 
 } // namespace PerceptualColor
