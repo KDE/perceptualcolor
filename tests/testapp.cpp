@@ -375,6 +375,15 @@ int main(int argc, char *argv[])
         ColorSchemeType::Light); // Should not always be ColorSchemeType::Light
     Q_UNUSED(myIcon)
 
+    // app.processEvents(); // Work around https://bugreports.qt.io/browse/QTBUG-120957
+    // QColorDialog builtInDialog;
+    // builtInDialog.setOption(QColorDialog::DontUseNativeDialog, true);
+    // builtInDialog.setOption(QColorDialog::NoEyeDropperButton, false);
+    // builtInDialog.show();
+    // builtInDialog.setOption(QColorDialog::NoEyeDropperButton, true);
+
+    // m_colorDialog.setOption(QColorDialog::NoEyeDropperButton, true);
+
     // Run
     return app.exec();
 }

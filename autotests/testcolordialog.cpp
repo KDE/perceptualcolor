@@ -57,6 +57,7 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
+#include <qtoolbutton.h> // IWYU pragma: keep
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
@@ -2767,6 +2768,15 @@ private Q_SLOTS:
             QCOMPARE(m_perceptualDialog->d_pointer->m_tabWidget->currentIndex(), i);
         }
     }
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
+    void testEyeDropperButton()
+    {
+        ColorDialog myDialog;
+        myDialog.setOption(QColorDialog::NoEyeDropperButton, false);
+        QVERIFY(!myDialog.d_pointer->m_screenColorPickerButton->isVisible());
+    }
+#endif
 
 private:
     void unused()

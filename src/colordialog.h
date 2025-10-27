@@ -358,6 +358,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * | :------------------ | :------------ | :----------
      * | ShowAlphaChannel    | false         | Allow the user to select the alpha component of a color.
      * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for “live dialogs”.)
+     * | NoEyeDropperButton  | false         | Hide the Eye Dropper button. This value was added in Qt 6.6.
      * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
      *
      *   @invariant The option <tt>ColorDialogOption::DontUseNativeDialog</tt>

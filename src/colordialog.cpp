@@ -1045,14 +1045,17 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
 
     QHBoxLayout *headerLayout = new QHBoxLayout();
     headerLayout->addWidget(m_colorPatch, 1);
-    m_screenColorPickerButton->setSizePolicy(QSizePolicy::Minimum, // horizontal
-                                             QSizePolicy::Minimum); // vertical
-    headerLayout->addWidget(m_screenColorPickerButton,
-                            // Do not grow the cell in the direction
-                            // of the QBoxLayout:
-                            0,
-                            // No alignment: Fill the entire cell.
-                            Qt::Alignment());
+    if (m_screenColorPickerButton) {
+        m_screenColorPickerButton->setSizePolicy( //
+            QSizePolicy::Minimum, // horizontal
+            QSizePolicy::Minimum); // vertical
+        headerLayout->addWidget(m_screenColorPickerButton,
+                                // Do not grow the cell in the direction
+                                // of the QBoxLayout:
+                                0,
+                                // No alignment: Fill the entire cell.
+                                Qt::Alignment());
+    }
 
     // Create widget for the numerical values
     m_numericalWidget = initializeNumericPage();
@@ -2290,6 +2293,15 @@ void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions ne
     // Apply the new options (buttons)
     d_pointer->m_buttonBox->setVisible(!d_pointer->m_options.testFlag( //
         QColorDialog::ColorDialogOption::NoButtons));
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
+    // Apply the new options (buttons)
+    if (d_pointer->m_screenColorPickerButton) {
+        const bool showEyeDropperButton = !d_pointer->m_options.testFlag( //
+            QColorDialog::ColorDialogOption::NoEyeDropperButton);
+        d_pointer->m_screenColorPickerButton->setVisible(showEyeDropperButton);
+    }
+#endif
 
     // Notify
     Q_EMIT optionsChanged(d_pointer->m_options);
