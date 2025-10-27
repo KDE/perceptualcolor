@@ -344,19 +344,19 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
 msgstr "Klaku por alkroĉi al plej proksima en-&gama koloro"
 
-#. @item:inlistbox The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
+#. @item:inlistbox/plain The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:695
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Basic colors"
 msgstr "Bazaj koloroj"
 
-#. @item:inlistbox The swatch grid showing the history of previously selected colors.
+#. @item:inlistbox/plain The swatch grid showing the history of previously selected colors.
 #: colordialog.cpp:700
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
 msgstr "Historio"
 
-#. @item:inlistbox The swatch grid showing custom colors, allowing users to add or remove colors as desired.
+#. @item:inlistbox/plain The swatch grid showing custom colors, allowing users to add or remove colors as desired.
 #: colordialog.cpp:705
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
