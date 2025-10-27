@@ -7,15 +7,18 @@
 // Second, the private implementation.
 #include "swatchbook_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "abstractdiagram.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "helper.h"
+#include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include "rgbcolorspace.h"
 #include <algorithm>
+#include <lcms2.h>
 #include <optional>
 #include <qaction.h>
 #include <qapplication.h>
@@ -1006,11 +1009,18 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const auto selectedColor = d_pointer->m_swatchGrid.value( //
         d_pointer->m_selectedColumn,
         d_pointer->m_selectedRow);
-    // TODO Use Oklab instead of CielchD50
-    const auto colorCielchD50 = d_pointer->m_rgbColorSpace->toCielchD50( //
+    const auto colorCielabD50 = d_pointer->m_rgbColorSpace->toCielabD50( //
         selectedColor.rgba64());
+    const auto colorOklab = AbsoluteColor::convert( //
+        ColorModel::CielabD50, //
+        GenericColor(colorCielabD50), //
+        ColorModel::OklabD65);
+    const double lightness = //
+        colorOklab.has_value() //
+        ? colorOklab.value().first * 100 //
+        : colorCielabD50.L; // fallback if conversion to Oklab has failed
     const QColor selectionMarkColor = //
-        handleColorFromBackgroundLightness(colorCielchD50.first);
+        handleColorFromBackgroundLightness(lightness);
     d_pointer->drawMark(offset, //
                         &widgetPainter, //
                         selectionMarkColor, //

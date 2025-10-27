@@ -534,10 +534,6 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     setCurrentColorCielchD50(
         // Search for the nearest color without changing the hue:
         d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp));
-    // TODO Instead of this, simply do setCurrentColor(temp); but guarantee
-    // for up, down, page-up and page-down that the lightness is raised
-    // or reduced until fitting into the gamut. Maybe find a way to share
-    // code with reduceChromaToFitIntoGamut ?
 }
 
 /** @brief Tests if a given widget pixel position is within
@@ -769,14 +765,15 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
         for (j = 0; (j <= i) && (!nearestPointTillNow.has_value()); ++j) {
             const auto container = searchPointOffsets(i, j);
             for (const QPoint &temp : std::as_const(container)) {
-                // TODO A possible optimization might be to not always use all
+                // NOTE A possible optimization might be to not always use all
                 // eight search points. Imagine you have an original point
                 // that is outside the image, at its left side. The search
                 // point on the left line of the search perimeter rectangle
                 // will always be out-of-boundary, so there is no need
                 // to calculate the search points, just to find out later
                 // that these points are outside the searchRectangle. But
-                // how could an elegant implementation look like?
+                // this seems to be quite complex and the performance grain
+                // is probably minimal.
                 searchPoint = point + temp;
                 if (searchRectangle.contains(searchPoint)) {
                     if (doesPointExist(searchPoint)) {

@@ -357,6 +357,15 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     QPen pen;
     pen.setWidth(handleOutlineThickness());
     pen.setCapStyle(Qt::FlatCap);
+    // NOTE: We use Qt::FlatCap, which renders the handle as a tall
+    // rectangle. This shape does not conform to the circular curvature of
+    // the wheel — the top and bottom edges of the handle remain perfectly
+    // straight, while the color wheel background is slightly curved.
+    // Since the handle is quite narrow, this mismatch is barely
+    // noticeable. Alternatively, we could draw a custom handle that
+    // precisely follows the round inner and outer edges of the wheel.
+    // However, the added complexity doesn’t seem justified given the
+    // minimal visual impact.
     pen.setColor(Qt::black);
     bufferPainter.setPen(pen);
     bufferPainter.setRenderHint(QPainter::Antialiasing, true);

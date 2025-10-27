@@ -1972,10 +1972,7 @@ void ColorDialogPrivate::readOklchNumericValues()
         // Nothing to do!
         return;
     }
-    // Get final color (in necessary moving the original color into gamut).
-    // TODO xxx This code moves into gamut based on the Cielch-D50 instead of
-    // the Oklch gamut. This leads to wrong results, because Oklch hue is not
-    // guaranteed to be respected. Use actually Oklch to move into gamut!
+    // Get final color (if necessary moving the original color into gamut).
     GenericColor originalOklch;
     originalOklch.first = m_oklchSpinBox->values().value(0);
     originalOklch.second = m_oklchSpinBox->values().value(1);
@@ -1997,7 +1994,15 @@ void ColorDialogPrivate::readOklchNumericValues()
 /** @brief Try to initialize the screen color picker feature.
  *
  * @post If supported, @ref m_screenColorPickerButton
- * is created. Otherwise, it stays <tt>nullptr</tt>. */
+ * is created. Otherwise, it stays <tt>nullptr</tt>.
+ *
+ * @todo Currently, there is no color
+ * management for the result of the screen color picking. Instead,
+ * we should assume that the result of the screen color picking is sRGB
+ * and convert it into the actual working color space of this
+ * widget (which might happen to be also sRGB, but could also
+ * be different).
+ */
 void ColorDialogPrivate::initializeScreenColorPicker()
 {
     auto screenPicker = new ScreenColorPicker(q_pointer);
@@ -2012,7 +2017,12 @@ void ColorDialogPrivate::initializeScreenColorPicker()
             // Default capture by reference, but screenPicker by value
             [&, screenPicker]() {
                 const auto myColor = q_pointer->currentColor();
-                // TODO Restore QColor exactly, but could potentially produce
+                // NOTE After picking has started, depending on the
+                // implementation, there might be signals with new colors
+                // while moving the mouse on the screen. If the user presses
+                // the ESC key, a signal with the original RGB color will
+                // be emitted. This will restore the original QColor exactly,
+                // but could potentially produce roundtrip
                 // rounding errors: If original MultiColor was derived form
                 // LCH, it is not guaranteed that the new MultiColor derived
                 // from this QColor will not have rounding errors for LCH.
@@ -2025,12 +2035,7 @@ void ColorDialogPrivate::initializeScreenColorPicker()
             &ScreenColorPicker::newColor, //
             q_pointer, //
             [this](const double red, const double green, const double blue, const bool isSRgbGuaranteed) {
-                Q_UNUSED(isSRgbGuaranteed) // BUG Currently, there is no color
-                // management for the result of the screen color picking.
-                // Instead, we should assume probably that the value is sRGB
-                // and convert it into the actual working color space of this
-                // widget (which might happen to be also sRGB, but could also
-                // be different).
+                Q_UNUSED(isSRgbGuaranteed)
                 const GenericColor rgb255 //
                     {qBound<double>(0, red * 255, 255), //
                      qBound<double>(0, green * 255, 255),

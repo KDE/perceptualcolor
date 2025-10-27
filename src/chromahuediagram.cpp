@@ -106,11 +106,14 @@ ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, con
  *   value is the highest possible chroma within the gamut at this hue.
  * @endinternal
  *
- * @param event The corresponding mouse event */
+ * @param event The corresponding mouse event
+ *
+ * @todo Also accept clicks outside the gray circle: Either in the color wheel
+ * or in the small space between color wheel and gray circle. By the way: Maybe
+ * remove this small space?
+ */
 void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
-    // TODO Also accept out-of-gamut clicks when they are covered by the
-    // current handle.
     const bool isWithinCircle = //
         d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos());
     if (isWithinCircle) {
@@ -123,10 +126,16 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         setFocus(Qt::MouseFocusReason);
         // Enable mouse tracking from now on:
         d_pointer->m_isMouseEventActive = true;
-        // As clicks are only accepted within the visible gamut, the mouse
+        // If within the visible gamut, the mouse
         // cursor is made invisible. Its function is taken over by the
         // handle itself within the displayed gamut.
-        setCursor(Qt::BlankCursor);
+        const cmsCIELab cielabD50 = //
+            d_pointer->fromWidgetPixelPositionToLab(event->pos());
+        if (d_pointer->m_rgbColorSpace->isCielabD50InGamut(cielabD50)) {
+            setCursor(Qt::BlankCursor);
+        } else {
+            unsetCursor();
+        }
         // Set the color property
         d_pointer->setColorFromWidgetPixelPosition(event->pos());
         // Schedule a paint event, so that the wheel handle will show. It’s
@@ -413,10 +422,9 @@ void ChromaHueDiagram::setCurrentColorCielchD50(const GenericColor &newCurrentCo
                                   d_pointer->m_currentColorCielchD50.first, //
                                   static_cast<qreal>(100));
         d_pointer->m_chromaHueImageParameters.lightness = temp;
-        // TODO xxx Enable this line one the performance problem is solved.
         // This is meant to free memory in the cache if the widget is
         // not currently visible.
-        // d_pointer->m_chromaHueImage.setImageParameters(d_pointer->m_chromaHueImageParameters);
+        d_pointer->m_chromaHueImage.setImageParameters(d_pointer->m_chromaHueImageParameters);
     }
 
     // Schedule a paint event:
@@ -468,10 +476,9 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
     d_pointer->m_chromaHueImageParameters.imageSizePhysical =
         // Guaranteed to be ≥ 0:
         maximumPhysicalSquareSize();
-    // TODO xxx Enable this line once the performance problem is solved.
     // This is meant to free memory in the cache if the widget is
     // not currently visible.
-    // d_pointer->m_chromaHueImage.setImageParameters(d_pointer->m_chromaHueImageParameters);
+    d_pointer->m_chromaHueImage.setImageParameters(d_pointer->m_chromaHueImageParameters);
 
     // As Qt documentation says:
     //     “The widget will be erased and receive a paint event
@@ -675,10 +682,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // manually adjusted the scale of the current screen. Since QWidget does
     // not emit events or signals for scale factor changes, here is our only
     // reliable point to apply the correct dimensions.
-    d_pointer->m_chromaHueImageParameters.borderPhysical =
-        // TODO It might be useful to reduce this border to (near to) zero, and
-        // than paint with an offset (if this is possible with drawEllipse?).
-        // Then the memory consumption would be reduced somewhat.
+    d_pointer->m_chromaHueImageParameters.borderPhysical = //
         d_pointer->diagramBorder() * devicePixelRatioF();
     d_pointer->m_chromaHueImageParameters.imageSizePhysical =
         // Guaranteed to be ≥ 0:
@@ -754,9 +758,15 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         // Draw the line
         pen = QPen();
         pen.setWidth(handleOutlineThickness());
-        // TODO Instead of Qt::FlatCap, we could really paint a handle
-        // that does match perfectly the round inner and outer border
-        // of the wheel. But: Is it really worth the complexity?
+        // NOTE: We use Qt::FlatCap, which renders the handle as a tall
+        // rectangle. This shape does not conform to the circular curvature of
+        // the wheel — the top and bottom edges of the handle remain perfectly
+        // straight, while the color wheel background is slightly curved.
+        // Since the handle is quite narrow, this mismatch is barely
+        // noticeable. Alternatively, we could draw a custom handle that
+        // precisely follows the round inner and outer edges of the wheel.
+        // However, the added complexity doesn’t seem justified given the
+        // minimal visual impact.
         pen.setCapStyle(Qt::FlatCap);
         pen.setColor(handleColor);
         bufferPainter.setPen(pen);

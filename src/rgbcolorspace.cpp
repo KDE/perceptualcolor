@@ -229,7 +229,17 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
  * @todo This function is used in @ref RgbColorSpace::createSrgb()
  * and @ref RgbColorSpace::tryCreateFromFile(), but some of the initialization
  * is changed afterwards (file name, file size, profile name, maximum chroma).
- * Is it possible to find a more elegant design? */
+ * Is it possible to find a more elegant design?
+ *
+ * @todo This function creates a transforms from CIELabD50 to RGB. And if RGB
+ * is sRGB, it is D65 (and other RGB gamuts are likely to be also D65).
+ * However, CIELabD50 is D50! We do no whitepoint compensation manuelly, and
+ * https://sourceforge.net/p/lcms/mailman/lcms-user/?viewmonth=202510 says
+ * we do not need to when usung perceptual or relative-colormetric rendering
+ * intents. However, we use absolut rendering intent. Also, we have these
+ * changes between D50 and D65 in a lot of other, different contexts. What
+ * would be the general solution here?
+ */
 bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 {
     constexpr auto renderingIntent = INTENT_ABSOLUTE_COLORIMETRIC;
@@ -348,8 +358,6 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
         // Create an ICC v4 profile object for the CielabD50 color space.
         cmsHPROFILE cielabD50ProfileHandle = cmsCreateLab4Profile(
             // nullptr means: Default white point (D50)
-            // TODO Does this make sense? sRGB, for example, has
-            // D65 as whitepoint…
             nullptr);
 
         // Create the transforms.
@@ -397,9 +405,6 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     ) {
         return false;
     }
-
-    // Maximum chroma:
-    // TODO Detect an appropriate value for m_profileMaximumCielchD50Chroma.
 
     // Find blackpoint and whitepoint.
     // For CielabD50 make sure that: 0 <= blackpoint < whitepoint <= 100
@@ -1008,42 +1013,22 @@ PerceptualColor::GenericColor RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut
         referenceColor.first = d_pointer->m_cielabD50BlackpointL;
         lowerChroma.first = d_pointer->m_cielabD50BlackpointL;
     }
-    // TODO Decide which one of the algorithms provides with the “if constexpr”
-    // will be used (and remove the other one).
-    constexpr bool quickApproximate = true;
-    if constexpr (quickApproximate) {
-        // Do a quick-approximate search:
-        GenericColor upperChroma{referenceColor};
-        // Now we know for sure that lowerChroma is in-gamut
-        // and upperChroma is out-of-gamut…
-        temp = upperChroma;
-        while (upperChroma.second - lowerChroma.second > gamutPrecisionCielab) {
-            // Our test candidate is half the way between lowerChroma
-            // and upperChroma:
-            temp.second = ((lowerChroma.second + upperChroma.second) / 2);
-            if (isCielchD50InGamut(temp)) {
-                lowerChroma = temp;
-            } else {
-                upperChroma = temp;
-            }
+    // Do a quick-approximate search:
+    GenericColor upperChroma{referenceColor};
+    // Now we know for sure that lowerChroma is in-gamut
+    // and upperChroma is out-of-gamut…
+    temp = upperChroma;
+    while (upperChroma.second - lowerChroma.second > gamutPrecisionCielab) {
+        // Our test candidate is half the way between lowerChroma
+        // and upperChroma:
+        temp.second = ((lowerChroma.second + upperChroma.second) / 2);
+        if (isCielchD50InGamut(temp)) {
+            lowerChroma = temp;
+        } else {
+            upperChroma = temp;
         }
-        return lowerChroma;
-
-    } else {
-        // Do a slow-thorough search:
-        temp = referenceColor;
-        while (temp.second > 0) {
-            if (isCielchD50InGamut(temp)) {
-                break;
-            } else {
-                temp.second -= gamutPrecisionCielab;
-            }
-        }
-        if (temp.second < 0) {
-            temp.second = 0;
-        }
-        return temp;
     }
+    return lowerChroma;
 }
 
 /** @brief Reduces the chroma until the color fits into the gamut.
@@ -1092,42 +1077,22 @@ PerceptualColor::GenericColor RgbColorSpace::reduceOklchChromaToFitIntoGamut(con
         referenceColor.first = d_pointer->m_oklabBlackpointL;
         lowerChroma.first = d_pointer->m_oklabBlackpointL;
     }
-    // TODO Decide which one of the algorithms provides with the “if constexpr”
-    // will be used (and remove the other one).
-    constexpr bool quickApproximate = true;
-    if constexpr (quickApproximate) {
-        // Do a quick-approximate search:
-        GenericColor upperChroma{referenceColor};
-        // Now we know for sure that lowerChroma is in-gamut
-        // and upperChroma is out-of-gamut…
-        temp = upperChroma;
-        while (upperChroma.second - lowerChroma.second > gamutPrecisionOklab) {
-            // Our test candidate is half the way between lowerChroma
-            // and upperChroma:
-            temp.second = ((lowerChroma.second + upperChroma.second) / 2);
-            if (isOklchInGamut(temp)) {
-                lowerChroma = temp;
-            } else {
-                upperChroma = temp;
-            }
+    // Do a quick-approximate search:
+    GenericColor upperChroma{referenceColor};
+    // Now we know for sure that lowerChroma is in-gamut
+    // and upperChroma is out-of-gamut…
+    temp = upperChroma;
+    while (upperChroma.second - lowerChroma.second > gamutPrecisionOklab) {
+        // Our test candidate is half the way between lowerChroma
+        // and upperChroma:
+        temp.second = ((lowerChroma.second + upperChroma.second) / 2);
+        if (isOklchInGamut(temp)) {
+            lowerChroma = temp;
+        } else {
+            upperChroma = temp;
         }
-        return lowerChroma;
-
-    } else {
-        // Do a slow-thorough search:
-        temp = referenceColor;
-        while (temp.second > 0) {
-            if (isOklchInGamut(temp)) {
-                break;
-            } else {
-                temp.second -= gamutPrecisionOklab;
-            }
-        }
-        if (temp.second < 0) {
-            temp.second = 0;
-        }
-        return temp;
     }
+    return lowerChroma;
 }
 
 /** @brief Conversion to CIELab.

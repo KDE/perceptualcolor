@@ -327,10 +327,7 @@
 
 /** @internal
  *
- * @page generaltodolist General TODO list
- *
- * This is a list that contains general ideas or issues of this
- * library.
+ * @page generallist General to-do list with ideas or issues
  *
  * @todo Use words as hints for color ranges? Muted/dull colors have a low
  * chroma value. The dark ones (getrübte/gebrochene Farben) are created by

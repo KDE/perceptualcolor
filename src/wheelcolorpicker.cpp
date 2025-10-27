@@ -296,21 +296,18 @@ void WheelColorPickerPrivate::resizeChildWidgets()
     // Correct the new geometry of chroma-lightness-diagram to fit into
     // an integer raster.
     QRectF diagramGeometry(widgetTopLeftPos, widgetSize);
-    // We have to round to full integers, so that our integer-based rectangle
-    // does not exceed the dimensions of the floating-point rectangle.
-    // Round to bigger coordinates for top-left corner:
-    diagramGeometry.setLeft(ceil(diagramGeometry.left()));
+    // We have to round to full integers
+    diagramGeometry.setLeft(floor(diagramGeometry.left()));
     diagramGeometry.setTop(ceil(diagramGeometry.top()));
     // Round to smaller coordinates for bottom-right corner:
-    diagramGeometry.setRight(floor(diagramGeometry.right()));
+    diagramGeometry.setRight(ceil(diagramGeometry.right()));
     diagramGeometry.setBottom(floor(diagramGeometry.bottom()));
-    // TODO The rounding has probably changed the ratio (b ÷ a) of the
-    // diagram itself with the chroma-hue widget. Therefore, maybe a little
+    // NOTE The rounding might change the ratio (b ÷ a) of the
+    // diagram itself. If horizontially not wide enough, there may be a little
     // bit of gamut is not visible at the right of the diagram. There
-    // might be two possibilities to solve this: Either ChromaLightnessDiagram
-    // gets support for scaling to user-defined maximum chroma (unlikely)
-    // or we implement it here, just by reducing a little bit the height
-    // of the widget until the full gamut gets in (easier).
+    // is a simple solution: When rounding, top and bottom are rounded so that
+    // the heigh is rounded down, but left and right are rounded so that the
+    // width is rounded up. That makes sure that the whole gamut is visible.
 
     // Apply new geometry
     m_chromaLightnessDiagram->setGeometry(diagramGeometry.toRect());
