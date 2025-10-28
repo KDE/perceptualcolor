@@ -734,9 +734,13 @@ QIcon ColorDialogPrivate::getGamutIcon(PerceptualColor::ColorSchemeType type)
             QStringLiteral("data-warning"),
             QStringLiteral("dialog-warning-symbolic"),
         };
-    return qIconFromTheme(gamutIconNames, //
-                          QStringLiteral("eye-exclamation"),
-                          type);
+    return qIconFromTheme(
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
+        QIcon::ThemeIcon::DialogWarning,
+#endif
+        gamutIconNames, //
+        QStringLiteral("eye-exclamation"),
+        type);
 }
 
 /** @brief Reloads all icons, adapting to the current color schema and

@@ -270,11 +270,6 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSch
  * are found.
  *
  * @note This function is only available when Qt ≥ 6.7.
- *
- * @internal
- *
- * @todo Consider using QIcon::ThemeIcon::DialogWarning for the out-of-gamut
- * warning, though this may be a misuse of its intended purpose.
  */
 QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback, ColorSchemeType fallbackType)
 {
