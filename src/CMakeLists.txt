@@ -35,6 +35,7 @@ set(library_SRC
     colorpatch.cpp
     colorwheel.cpp
     colorwheelimage.cpp
+    docs.cpp
     genericcolor.cpp
     gradientimageparameters.cpp
     gradientslider.cpp
