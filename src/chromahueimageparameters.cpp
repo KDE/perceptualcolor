@@ -184,11 +184,7 @@ void ChromaHueImageParameters::renderByRow( //
  * @param variantParameters A <tt>QVariant</tt> that contains the
  *        image parameters.
  * @param callbackObject Pointer to the object for the callbacks.
- *
- * @todo Could we get better performance? Even online tools like
- * https://bottosson.github.io/misc/colorpicker/#ff2a00 or
- * https://oklch.evilmartians.io/#65.4,0.136,146.7,100 get quite good
- * performance. How do they do that? */
+ */
 void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {
     if (!variantParameters.canConvert<ChromaHueImageParameters>()) {

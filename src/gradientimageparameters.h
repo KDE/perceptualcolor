@@ -31,12 +31,7 @@ class RgbColorSpace;
  * <em>before</em> calling the first time @ref render().
  *
  * This class supports HiDPI via its @ref setDevicePixelRatioF function.
- *
- * @todo Instead of providing an image that has actually the size that
- * has been requested, we could provide just a tile. The user would have
- * to tile the surface. In many cases, we could get away with much smaller
- * images. Attention: Test if this approach works fine when the screen scale
- * factor is not an integer! */
+ */
 struct GradientImageParameters final {
 public:
     explicit GradientImageParameters();

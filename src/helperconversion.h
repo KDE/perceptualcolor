@@ -25,9 +25,10 @@ namespace PerceptualColor
 
 Q_NAMESPACE
 
-/** @brief Identifiers for color models.
- *
+/**
  * @internal
+ *
+ * @brief Identifiers for color models.
  *
  * @note Maybe
  * <a href="https://doc-snapshots.qt.io/qt6-dev/qcolorspace.html#ColorModel-enum">
@@ -35,58 +36,62 @@ Q_NAMESPACE
  * the future.
  */
 enum class ColorModel {
-    CielabD50, /**< The absolute Cielab color space using a D50 illuminant.
+    CielabD50, /**< @internal The absolute Cielab color space using a D50
+        illuminant.
+
         Lightness: [0, 100].<br/>
         a: unbound.<br/>
         b: unbound. */
-    CielchD50, /**< The absolute Cielch color space using a D50 illuminant.
+    CielchD50, /**< @internal The absolute Cielch color space using a D50
+        illuminant.
+
         Lightness: [0, 100].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Hsl360_1_1, /**< Any color space using the HSL color model, which is a
-        transformation of the RGB color model. Color values only have a
+    Hsl360_1_1, /**< @internal Any color space using the HSL color model, which
+        is a transformation of the RGB color model. Color values only have a
         well-defined absolute meaning when associated with a corresponding
         RGB color profile.
 
         Hue: [0, 360[.<br/>
         Saturation: [0, 1].<br/>
         Lightness: [0, 1]. */
-    Hwb360_1_1, /**< Any color space using the HSL color model, which is a
-        transformation of the HWB color model. Color values only have a
+    Hwb360_1_1, /**< @internal Any color space using the HSL color model, which
+        is a transformation of the HWB color model. Color values only have a
         well-defined absolute meaning when associated with a corresponding
         RGB color profile.
 
         Hue: [0, 360[.<br/>
         Whiteness: [0, 1].<br/>
         Blackness: [0, 1]. */
-    Invalid, /**< Represents invalid data. */
-    OklabD65, /**< The absolute Oklab color space, which by definition always
-        and exclusively uses a D65 illuminant.
+    Invalid, /**< @internal Represents invalid data. */
+    OklabD65, /**< @internal The absolute Oklab color space, which by
+        definition always and exclusively uses a D65 illuminant.
 
         Lightness: [0, 1].<br/>
         a: unbound.<br/>
         b: unbound. */
-    OklchD65, /**< The absolute Oklch color space, which by definition always
-        and exclusively uses a D65 illuminant.
+    OklchD65, /**< @internal The absolute Oklch color space, which by
+        definition always and exclusively uses a D65 illuminant.
 
         Lightness: [0, 1].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Rgb1, /**< Any color space using the RGB color model. Color values only
-        have a well-defined absolute meaning when associated with a
+    Rgb1, /**< @internal Any color space using the RGB color model. Color
+        values only have a well-defined absolute meaning when associated with a
         corresponding RGB color profile.
 
         R: [0, 1].<br/>
         G: [0, 1].<br/>
         B: [0, 1]. */
-    XyzD50, /**< The absolute XYZ color space assuming chromatic adaption
-        for the D50 illuminant.
+    XyzD50, /**< @internal The absolute XYZ color space assuming chromatic
+        adaption for the D50 illuminant.
 
         X: unbound.<br/>
         Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>
         Z: unbound. */
-    XyzD65 /**< The absolute XYZ color space assuming chromatic adaption
-        for the D65 illuminant.
+    XyzD65 /**< @internal The absolute XYZ color space assuming chromatic
+        adaption for the D65 illuminant.
 
         X: unbound.<br/>
         Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>

@@ -54,8 +54,21 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @todo Port this class to @ref AsyncImageProvider, and do so with
- * interlacing support. */
+ * @note We could port this class to @ref AsyncImageProvider with support for
+ * interlacing. Alternatively, we could implement a singleton that provides a
+ * cached color wheel image shared by both @ref ChromaHueDiagram and
+ * @ref ChromaLightnessDiagram (effectively, @ref WheelColorPicker).
+ * The cache should ensure that the requested wheel size (defined by inner and
+ * outer radius) is fully covered. A single cached image can accommodate
+ * multiple wheel sizes, even if they intersect. Colors would be computed only
+ * once, and new pixels would be calculated only if they haven't been generated
+ * previously. However, this approach introduces significant complexity. Its
+ * benefits are limited to scenarios where the image size changes frequently
+ * (which is unlikely, as users rarely resize the window) or where multiple
+ * widgets use the wheel image simultaneously (also unlikely, as we currently
+ * have only two such widgets). Given the limited advantages, this may not
+ * justify the added cost.
+ */
 class ColorWheelImage final
 {
 public:

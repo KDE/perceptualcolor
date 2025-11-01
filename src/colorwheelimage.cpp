@@ -137,7 +137,8 @@ void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
  * Antialiasing is used, so there is no sharp border between
  * transparent and non-transparent parts.
  *
- * @todo Out-of-gamut situations should automatically be handled. */
+ * @todo SHOULDHAVE Out-of-gamut situations should automatically be handled.
+ */
 QImage ColorWheelImage::getImage()
 {
     // If image is in cache, simply return the cache.

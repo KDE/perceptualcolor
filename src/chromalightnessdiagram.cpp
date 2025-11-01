@@ -262,13 +262,7 @@ GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50(c
  * gamut, the handle is displaced to a nearby in-gamut color.
  *
  * @param event The corresponding mouse event
- *
- * @internal
- *
- * @todo This widget reacts on mouse press events also when they occur
- * within the border. It might be nice if it would not. On the other
- * hand: The border is small. Would it really be worth the pain to
- * implement this? */
+ */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
@@ -474,14 +468,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  * Other key events are forwarded to the base class.
  *
  * @param event the event
- *
- * @internal
- *
- * @todo Is the current behaviour (when pressing right arrow while yet
- * at the right border of the gamut, also the lightness is adjusted to
- * allow moving actually to the right) really a good idea? Anyway, it
- * has a bug, and arrow-down does not work on blue hues because the
- * gamut has some sort of corner, and there, the curser blocks. */
+ */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
     GenericColor temp = d_pointer->m_currentColorCielchD50;
@@ -546,11 +533,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
  *
  * @returns <tt>true</tt> if the widget pixel position is within the
  * <em>currently displayed gamut</em>. Otherwise <tt>false</tt>.
- *
- * @internal
- *
- * @todo How does isInGamut() react? Does it also control valid chroma
- * and lightness ranges? */
+ */
 bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const
 {
     if (calculateImageSizePhysical().isEmpty()) {
@@ -576,11 +559,7 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
 /** @brief Setter for the @ref currentColorCielchD50() property.
  *
  * @param newCurrentColorCielchD50 the new @ref currentColorCielchD50
- *
- * @todo When an out-of-gamut color is given, both lightness and chroma
- * are adjusted. But does this really make sense? In @ref WheelColorPicker,
- * when using the hue wheel, also <em>both</em>, lightness <em>and</em> chroma
- * will change. Isn’t that confusing? */
+ */
 void ChromaLightnessDiagram::setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50)
 {
     if (newCurrentColorCielchD50 == d_pointer->m_currentColorCielchD50) {
@@ -842,10 +821,18 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
  * @note This function waits until a full-quality @ref m_chromaLightnessImage
  * is available, which might take some time.
  *
- * @todo A possible optimization might be to search initially, after a new
+ * @todo NICETOHAVE A possible optimization
+ * might be to search initially, after a new
  * image is available, entire columns, starting from the right, until we hit
  * the first column that has a non-transparent pixel. This information can be
- * used to reduce the search rectangle significantly. */
+ * used to reduce the search rectangle significantly.
+ *
+ * @todo NICETOHAVE RGB 0 28 253: When moving
+ * the curser outside the gamut, below the
+ * dark blue shadows, but still near to the gamut, the selection marker
+ * “jumps” where the gamut boundary in nearly horizontal and there are
+ * one-pixel stairs. That's not that nice.
+ */
 std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition(const QPoint originalPixelPosition)
 {
     m_chromaLightnessImage.refreshSync();

@@ -87,8 +87,6 @@ class MultiSpinBoxPrivate;
  * The API could be extended in the future:
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBoxSection
  * @snippet testmultispinbox.cpp MultiSpinBox Full-featured MultiSpinBox
- *
- * @todo Full-featured accessibility support
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {

@@ -186,21 +186,12 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  *
  * @internal
  *
- * @todo Add to the color-space tooltip information about available rendering
- * intents (we have yet RgbColorSpacePrivate::intentList but do not use it
- * anywhere) and the RGB profile illuminant? (This would have to be implemented
+ * @todo NICETOHAVE Add to the color-space tooltip information about
+ * the RGB profile illuminant? (This would have to be implemented
  * in @ref RgbColorSpace first.)
  *
- * @todo As the tooltip for color-space information is quite big, would
- * it be better to do what systemsettings does in globaldesign/fonts? They
- * have a small button with an “i” symbol (for information), which does
- * nothing when it’s clicked, but when hovering with the mouse, it shows
- * the tooltip?
- *
- * @todo How to make tooltip information available for touch-screen users?
- *
- * @todo Provide the information
- * of @ref RgbColorSpace::profileRenderingIntentDirections() in the tooltip of the
+ * @todo NICETOHAVE Provide the information about available
+ * @ref RgbColorSpace::profileRenderingIntentDirections() in the tooltip of the
  * color space. Example: Rendering intents: Perceptual (input, output, proof)
  * [br] Relative (input, proof) [br] Saturation (output) [br]
  * Absolute colorimetric (proof). Missing rendering intents are not displayed.
@@ -828,12 +819,7 @@ void ColorDialogPrivate::reloadIcons()
  * Can be created with @ref RgbColorSpaceFactory.
  *
  * Code that is shared between the various overloaded constructors.
- *
- * @todo The RTL layout is broken for @ref SwatchBook. Thought a stretch
- * is added in the layout, the @ref SwatchBook stays left-aligned
- * instead of right-aligned if there is too much space. Why doesn’t this
- * right-align? For @ref m_wheelColorPicker and @ref m_chromaHueDiagram
- * the same code works fine! */
+ */
 void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     // Do not show the “?” button in the window title. This button is displayed
@@ -2000,7 +1986,7 @@ void ColorDialogPrivate::readOklchNumericValues()
  * @post If supported, @ref m_screenColorPickerButton
  * is created. Otherwise, it stays <tt>nullptr</tt>.
  *
- * @todo Currently, there is no color
+ * @todo SHOULDHAVE Currently, there is no color
  * management for the result of the screen color picking. Instead,
  * we should assume that the result of the screen color picking is sRGB
  * and convert it into the actual working color space of this

@@ -121,89 +121,52 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @note In the QColorDialog API, the function <tt>QColorDialog::getRgba()</tt>
- * has been deprecated during the Qt5 life cycle. This class does not provide
- * source compatibility with obsolete functions of the QColorDialog API.
- *
- * @todo The @ref ColorDialogPrivate::m_lchLightnessSelector has a different
+ * @todo NICETOHAVE The
+ * @ref ColorDialogPrivate::m_lchLightnessSelector has a different
  * scale than the @ref ColorDialogPrivate::m_chromaHueDiagram, but both are
  * directly side-by-side in the dialog. Would it make sense to use the
  * same scale for both?
  *
- * @todo Provide an option to enable labels for the
- * <a href="https://www.handprint.com/HP/WCL/color12.html">warm-cool</a>
- * contrast, maybe outside the wheel around the position 45° (warm) and
- * 135° (cool).
- *
- * @todo In web design, CSS4 is often used. CSS4 also supports the
- * <a href="https://www.w3.org/TR/css-color-4/#the-hsl-notation"> HSL</a> and
- * the  <a href="https://www.w3.org/TR/css-color-4/#the-hwb-notation">HBW</a>
- * color space. We should do the same.
- *
- * @todo Provide <tt>setResizable(bool resizable)</tt>. Do not provide
- * a property, because in the background this is setting <em>two</em>
+ * @todo NICETOHAVE Provide <tt>setResizable(bool resizable)</tt>. Do not
+ * provide a property, because in the background this is setting <em>two</em>
  * different values, which might be conflicting in the moment when read
  * access is done. Code within ColorDialog to enable:
- * <tt><br/>
- *  layout()->setSizeConstraint(QLayout::SetFixedSize);
- * <br/>
- *  setSizeGripEnabled(false);
- * <br/></tt>
+ * <tt>layout()->setSizeConstraint(QLayout::SetFixedSize);
+ * setSizeGripEnabled(false);</tt>
  * Document the performance impact: When resizing is allowed (which is the
  * default), the user can make the window very big, which might increase
  * the rendering time considerable.
  *
- * @todo Use <tt>QSignalBlocker</tt> instead of m_updateIsRunning in
- * ColorDialog. Attention: The connection alpha-slider and alpha-spinbox
- * is special and would not work anymore, which has to be fixed.
- *
- * @todo In KDE’s systemsettings, in the “Fonts” settings, there are small
+ * @todo NICETOHAVE In KDE systemsettings, in “Fonts” settings, there are small
  * buttons showing a “i” symbol (for “information”) that has no functionality,
  * but a tooltip for the widget at the left. Would this be also good for
  * @ref ColorDialog?
+ * The button does nothing when it’s clicked, but when hovering with the mouse,
+ * it shows the tooltip. This might be interesting at least for the tooltip of
+ * the color-space information, which is quite big. And could this help to make
+ * tooltip information available for touch-screen users, maybe displaying them
+ * when the user clicks the button?
  *
- * @todo Recently KDE merged something that displays tooltips and integrates a
+ * @todo NICETOHAVE KDE merged something that displays tooltips and integrates a
  * link that calls the <tt>QWhatsThis</tt> which has more information. Would
  * this be helpful here also?
  *
- * @todo Since August 2021 <a href="https://phabricator.kde.org/T9460">the
- * Breeze styling of spin boxes has changed</a>. Is or should be the
- * new default horizontal alignment “center”?
- *
- * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
- * central physical pixel with an in-gamut color. Solution: Limit the range
- * of the lightness selector? Or a better algorithm in @ref ChromaHueDiagram?
- *
- * @todo Provide (on demand) two patches, like Scribus also does: One for the
+ * @todo NICETOHAVE Provide (on demand) two patches,
+ * like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new
  * color (same behavior as the yet existing color patch). One could be
  * named “before” and the other “after”. Or maybe make this configurable?
  * And put an arrow between the patches, from “before” to “after”. (Be aware:
  * RTL support necessary!)
  *
- * @section uireview Review of the user interface
- *
- * @todo The HLC widget accepts values that are out-of-gamut; the dialog
- * shows the nearest in-gamut color during this moment. Also, the RGB Hex
- * widget accepts intermediatly invalid values (for example, 4-digit-values);
- * the dialog displays the last previously displayed valid color during
- * this moment. Those two situations do not have consiteend behaviour,
- * but there are no good alternatives. However: Would it make sense to
- * keep this behaviour, but display in the @ref ColorPatch an empty
- * value during editing an out-of-gamut HLC value or an invalid RGB Hex values?
- *
- * @todo For the tab widget, use rather icons instead of the text “hue-baded”
- * and “lightness-based”!?
- *
- * @todo Provide more <tt>tooltip()</tt> help for widgets. For
+ * @todo NICETOHAVE Provide more <tt>tooltip()</tt> help for widgets. For
  * @ref WheelColorPicker and @ref ChromaLightnessDiagram, this
  * help text could describe the keyboard controls and be integrated
  * as default value in the class itself. For the other widgets, a
  * help text could be defined here within <em>this</em> class,
  * if appropriate.
  *
- * @todo Touch screen compatibility: In general: What would mean better
- * support for touch-screen and convertible? More things to do? For example,
+ * @todo NICETOHAVE Touch screen compatibility:
  * A spin box can also be used on mobile phone (putting the numbers
  * with on-screen keyboard). But the + and - button for increasing
  * or decreasing the values might be too small. And mobile UI uses
@@ -211,45 +174,37 @@ class RgbColorSpace;
  *
  * @section additionalcolordialogfeatures Proposals for additional features
  *
- * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
- * letters on-the-fly (as-you-type) to upper-case letters. And: Maybe it
+ * @todo NICETOHAVE The QLineEdit for the hexadecimal RGB values: Maybe it
  * could even be switched to @ref MultiSpinBox (but that would mean implement
  * support for hexadecimal digits in @ref MultiSpinBox).
  *
- * @todo Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
+ * @todo NICETOHAVE Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
  * functionality as the gamut button in the HCL @ref MultiSpinBox.
  * But attention: If a library user <em>embeds</em> the dialog, he does
  * not want his shortcuts to be intercepted!
  *
- * @todo It might be nice to support keyboard shortcuts for switching tabs
+ * @todo NICETOHAVE It might be nice to
+ * support keyboard shortcuts for switching tabs
  * like in browsers, which is a concept many users might be familiar to.
  * Crtl+Tab to switch to the next tab in the list. Crtl+Shift+Tab to switch
  * to the previous tab in the list.
  *
- * @todo Start with dialog with Qt::yellow. You get HLC 100° 98% 95.
- * Push the apply button. Actual result: HLC 100° 98% 94 which has a slightly
- * different chroma value. Expected result: Ideally there would be no rounding
- * difference at all: Every once displayed value is always recognized as
- * valid. When the color space conversion takes place, we could (and should)
- * make this sure for HLC values. But then comes the also the rounding
- * in @ref MultiSpinBox. Is there any solution?
+ * @todo NICETOHAVE Start with dialog with Qt::yellow RGB 255 255 0. You get
+ * CIELchD50 98% 95 100°. Change the value, than enter manually
+ * CIELchD50 98% 95 100°. Expected result: Ideally there would be no rounding
+ * difference at all and we get RGB 255 255 0. Actual result:
+ * CIELchD50 98% 95 100° is marked as out-of-gamut. The correspondingly used
+ * in-gamut value is RGB 255 251 202, which is really quite far from
+ * Qt::yellow RGB 255 255 0 (much more pale).
  *
- * @todo If there is no alpha widget <em>and</em> the actual layout is
- * expanded (either explicitly by @ref DialogLayoutDimensions::Expanded
- * or implicitly by @ref DialogLayoutDimensions::ScreenSizeDependent on
- * bigger screens) <em>than</em> it would make sense to move
- * the @ref ColorDialogPrivate::m_buttonBox into the same column as
- * the @ref ColorDialogPrivate::m_numericalWidget, namely <em>below</em>
- * the @ref ColorDialogPrivate::m_numericalWidget. This saves screen
- * space and does not confuse the user.
- *
- * @todo Provide an overloaded version of @ref open() that accepts
+ * @todo SHOULDHAVE Provide an overloaded version of @ref open() that accepts
  * arguments for new-style connect statements, making use of compiler
  * checks.
  *
- * @todo Use the <em>actual</em> color profile of the monitor.
+ * @todo SHOULDHAVE Use the <em>actual</em> color profile of the monitor.
  *
- * @todo The LCh-hue (and so the graphical widgets) jumps forward and backward
+ * @todo NICETOHAVE
+ * The LCh-hue (and so the graphical widgets) jumps forward and backward
  * when changing RGB-based values (also HSV) when entering and leaving the gray
  * axis, due to lack of hue information. Would it be an option to store the
  * old hue to get a meaningful hue?
@@ -259,36 +214,60 @@ class RgbColorSpace;
  * example 0°, as default hue for when no old hue is available but the
  * new value is on the gray axis?
  *
- * @todo Custom layout management that has a specific height-per-width ratio
- * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
- * and <em>their</em> useful height-per-width ratio.
- *
- * @todo Support for other models like HSL (HSB is yet identical to HSV?),
+ * @todo NICETOHAVE Support for other models like
  * Munsell? With an option to enable or disable them? (NCS not, because
  * it is not free…)
  *
- * @todo Would CMYK support make sense? Would it integrate intuitively into
- * the user interface? If we would have CMYK support, we would have two
- * different profiles (RGB and CMYK) active simultaniously. Which one is the
- * profile that defines the available color space? Would this be intuitive?
- * Also, when using two different profiles, it will be possible to have
- * out-of-gamut colors in one of the profiles. How to represent this in the
- * UI?
+ * @todo SHOWSTOPPER “Hijack screen picker” should be optional and
+ * off-by-default
  *
- * @todo Provide more different swatch grids? Include there a swatch grid
- * with QColorDialog’s standard colors as RGB values without
- * a specific color space, with the name “Default”? Add
+ * @todo NICETOHAVE Add more @ref MultiSpinBox for
+ * Oklab (feature parity with CSS Color 5),
+ * Cielab (feature parity with CSS Color 5), Okhsl?
+ *
+ * @todo NICETOHAVE Info about the whitepoint (D50, D65…) in the tooltip for
+ * the ICC profile.
+ *
+ * @todo NICETOHAVE Restore the previous window geometry when the dialog is
+ * shown? We restore already the chosen tab and swatchbook page, but not the
+ * window geometry. Would it make sense to do so app-wise or system-wise?
+ * Would this work on Wayland at all, or maybe only for the window size, but
+ * not for the window position? Anyway, the native QColorDialog does’t to
+ * that.
+ *
+ * @todo SHOWSTOPPER What does the dialog return by definition? sRGB?
+ * Another RGB? Is it RGB at all, because QColor could also contain something
+ * else? What accuracy is promised? QColor cannot exceed 16 bits per channel.
+ * Would it be preferable to use QRgb or Rgba64 to clearly communicate that RGB
+ * is being returned? Can the precision be specified through settings, or is
+ * it hard-coded? both of which affect SwatchBook, which decides whether
+ * two colours are the same, currently with one byte per channel precision.
+ * What about ColorPatch? Does its limitation to QColor have practical
+ * implications for the precision of our colour conversions?
+ *
+ * @todo SHOWSTOPPER When using sRGB working gamut, prefix all settings in the
+ * settings file with “srgb” or similar to make sure they will not
+ * be miss-interpreted.
+ *
+ * @todo SHOWSTOPPER Which color to save in history? RGB or HSL or Oklch or
+ * Oklab or what? If RGB: Which color space to use for saving? How to behave
+ * if the next time the dialog is used with a different gamut color space, and
+ * the colors have different RGB values or are even out-of-gamut? Or use a
+ * per-gamut history?
+ *
+ * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
+ * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
+ * for compatibility?
+ *
+ * @note The swatch book has the basic color page, which provides a perceptual
+ * color palette. Commom palettes like QColorDialog’s standard colors or the
  * <a href="https://www.w3.org/TR/css-color-4/#named-colors">CSS colors</a>
- * as defined as sRGB values?
+ * or the
  * <a href="https://en.wikipedia.org/wiki/Web_colors#Web-safe_colors">
- * Web-safe colors</a> (but with another name, maybe “216 colors”)
- * as bigger swatch grid, without a specific color space – does
+ * Web-safe colors</a> do
  * not make sense, since we provide a perceptual color dialog,
- * which allows things much beyond 216 colors, and 216 colors
+ * which allows things much beyond the 216 web-save colors, and 216 colors
  * isn’t a useful standard anymore, and not a nice swatch grid either.
- *
- * @todo Discrete widgets, that have
- * a fixed (quite limited) number of fields to chose for the user?
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
 {
@@ -343,7 +322,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      *
      * @sa @ref ColorDialogPrivate::m_layoutDimensionsEffective
      *
-     * @todo Remove this property? Instead, implement a truly convertible
+     * @todo SHOULDHAVE Remove this property? Instead,
+     * implement a truly convertible
      * layout: Show/hide the widget for numbers depending on dialog size,
      * and maybe even re-arrange even more of the widgets with varying
      * sizes. */

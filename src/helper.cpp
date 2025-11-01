@@ -90,14 +90,16 @@ qreal standardWheelStepCount(QWheelEvent *event)
  *
  * @sa @ref AbstractDiagram::transparencyBackground()
  *
- * @todo Provide color management support! Currently, we use the same
- * value for red, green and blue, this might <em>not</em> be perfectly
+ * @todo NICETOHAVE The function @ref transparencyBackground
+ * should have color management support! Currently, we use the
+ * same value for red, green and blue, this might <em>not</em> be perfectly
  * neutral gray depending on the color profile of the monitor… And: We
  * should make sure that transparent colors are not applied by Qt on top
  * of this image. Instead, add a parameter to this function to get the
  * transparent color to paint above, and do color-managed overlay of the
  * transparent color, in Lch space. For each Lab (not Lch!) channel:
- * result = opacity * foreground + (100% - opacity) * background. */
+ * result = opacity * foreground + (100% - opacity) * background.
+ */
 QImage transparencyBackground(qreal devicePixelRatioF)
 {
     // The valid lightness range is [0, 255]. The median is 127/128.
@@ -379,8 +381,11 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  * results with color schemes that have background colors around 50% lightness,
  * which our currently implementation has problems to get right. But on
  * the other hand, other styles like Kvantum might still chose to ignore
- * the color palette, so it seems safer to stay with the current
- * implementation. */
+ * the color palette. And the new Qt 6.5 solution might
+ * <a href="https://stackoverflow.com/questions/75457687">not work reliably
+ * on some Linux desktops</a>. So it seems safer to stay with the current
+ * implementation.
+ */
 ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
 {
     if (widget == nullptr) {
@@ -415,7 +420,10 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
     return ColorSchemeType::Light;
 }
 
-/** @brief Swatch grid derived from the basic colors as by WCS (World color
+/**
+ * @internal
+ *
+ * @brief Swatch grid derived from the basic colors as by WCS (World color
  * survey).
  *
  * The swatch grid contains various tints and shades of the
@@ -516,7 +524,13 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * the lightest and finishing with the darkest: 2 tints, the tone itself,
  * 2 shades).
  *
- * @note The RGB value is rounded to full integers in the range [0, 255]. */
+ * @note The RGB value is rounded to full integers in the range [0, 255].
+ *
+ * @internal
+ *
+ * @todo NICETOHAVE wcsBasicColors has a gray axis that makes diagram hue flip
+ * around. It shouldn’t.
+ */
 QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     constexpr GenericColor red{41.22, 61.40, 17.92};
@@ -599,6 +613,8 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
 }
 
 /**
+ * @internal
+ *
  * @brief The rendering intents supported by the LittleCMS library.
  *
  * Contains all rendering intents supported by the LittleCMS library
@@ -651,6 +667,8 @@ QMap<cmsUInt32Number, QString> lcmsIntentList()
 }
 
 /**
+ * @internal
+ *
  * @brief Sets the opacity of a color to fully opaque.
  *
  * @param color The input color.
@@ -667,6 +685,8 @@ QColor toOpaque(const QColor &color)
 }
 
 /**
+ * @internal
+ *
  * @brief Makes all colors in the array fully opaque.
  *
  * @param array The input array of colors.
@@ -687,6 +707,8 @@ QColorArray2D toOpaque(const QColorArray2D &array)
 }
 
 /**
+ * @internal
+ *
  * @brief Splits a number of elements into segments with a tapered
  * distribution.
  *

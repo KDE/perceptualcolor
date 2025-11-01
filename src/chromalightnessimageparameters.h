@@ -33,11 +33,6 @@ class RgbColorSpace;
  * the pixel at pixel position <tt>(2, 3)</tt> shows the color corresponding
  * to coordinate point <tt>(2.5, 3.5)</tt>.
  *
- * @todo Solve the problem with nearestNeighborSearch to respond immediately,
- * without waiting for the rendering to complete, to avoid using things like
- * <a href="https://api.kde.org/frameworks/kwidgetsaddons/html/classKBusyIndicatorWidget.html">
- * KBusyIndicatorWidget</a>.
- *
  * @note Intentionally there is no anti-aliasing because this would be much
  * slower: As there is no mathematical description of the shape of the color
  * solid, the only easy way to get anti-aliasing would be to render at a

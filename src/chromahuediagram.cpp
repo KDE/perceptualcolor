@@ -108,9 +108,14 @@ ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, con
  *
  * @param event The corresponding mouse event
  *
- * @todo Also accept clicks outside the gray circle: Either in the color wheel
- * or in the small space between color wheel and gray circle. By the way: Maybe
- * remove this small space?
+ * @todo MUSTHAVE Also accept clicks outside the gray circle: Either in the
+ * color wheel or in the small space between color wheel and gray circle. By
+ * the way: Maybe remove this small space? If so, we should simply make
+ * the circular diagram surface wider: The extra space is needed to make sure
+ * that even on maximum-chroma colors like RGB 0 0 255 the handle for
+ * chroma-hue has enough space for overlap (half of its own outer diameter),
+ * without going into the color wheel or the line that is drawn on the color
+ * wheel.
  */
 void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
@@ -210,11 +215,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
  * - The mouse cursor is made visible (if he wasn’t yet visible anyway).
  * - @ref ChromaHueDiagramPrivate::m_isMouseEventActive is set
  *   to <tt>false</tt>.
- *
- * @todo What if the widget displays a gamut that has no L*=0.1 because its
- * blackpoint is lighter.? Sacrificing chroma alone does not help? How to
- * react (for mouse input, keyboard input, but also API functions like
- * setColor()? */
+ */
 void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
@@ -303,13 +304,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
  * - Qt::Key_End decrements hue a big step
  *
  * @param event the event
- *
- * @internal
- *
- * @todo Is this behavior really a good user experience? Or is it confusing
- * that left, right, up and down don’t do what was expected? What could be
- * more intuitive keys for changing radius and angle? At least the arrow keys
- * are likely that the user tries them out by trial-and-error. */
+ */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
     GenericColor newColor = currentColorCielchD50();
@@ -562,11 +557,13 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
  *
  * @internal
  *
- * @todo What when the mouse goes outside the gray circle, but more gamut
- * is available outside (because @ref RgbColorSpace::profileMaximumCielchD50Chroma()
+ * @todo SHOULDHAVE What when the mouse goes outside the
+ * gray circle,  but more gamut is available outside (because
+ * @ref RgbColorSpace::profileMaximumCielchD50Chroma()
  * was chosen too small)? For consistency, the handle of the diagram should
  * stay within the gray circle, and this should be interpreted also actually
- * as the value at the position of the handle. */
+ * as the value at the position of the handle.
+ */
 void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
     const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
@@ -627,12 +624,19 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
  *   for round widgets. Therefore, we draw the focus indicator ourself,
  *   which means its form is not controlled by <tt>QStyle</tt>.
  *
- * @todo Show the indicator on the color wheel not only while a mouse button
+ * @todo NICETOHAVE Show the indicator on
+ * the color wheel not only while a mouse button
  * is pressed, but also while a keyboard button is pressed.
  *
- * @todo What when @ref ChromaHueDiagramPrivate::m_currentColorCielchD50 has a valid
+ * @todo SHOULDHAVE What when
+ * @ref ChromaHueDiagramPrivate::m_currentColorCielchD50 has a valid
  * in-gamut color, but this color is out of the <em>displayed</em> diagram?
- * How to handle that? */
+ * How to handle that?
+ *
+ * @todo SHOWSTOPPER ChromaHueDiagram flickers when brightness changes very
+ * quickly. Parts of the gamut are missing, but interestingly, the background
+ * is not the widget background, but the grey of the background circle.
+ */
 void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)

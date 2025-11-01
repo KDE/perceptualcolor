@@ -126,12 +126,8 @@ void ChromaLightnessImageParameters::renderByRow( //
  *        image parameters.
  * @param callbackObject Pointer to the object for the callbacks.
  *
- * @todo Interlacing support.
- *
- * @todo Could we get better performance? Even online tools like
- * https://bottosson.github.io/misc/colorpicker/#ff2a00 or
- * https://oklch.evilmartians.io/#65.4,0.136,146.7,100 get quite good
- * performance. How do they do that? */
+ * @todo SHOULDHAVE Interlacing support (for faster reactions)
+ */
 void ChromaLightnessImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {
     if (!variantParameters.canConvert<ChromaLightnessImageParameters>()) {

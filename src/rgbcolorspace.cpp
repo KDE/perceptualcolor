@@ -138,10 +138,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  *
  * @internal
  *
- * @todo The value for @ref profileMaximumCielchD50Chroma should be the actual maximum
- * chroma value of the profile, and not a fallback default value as currently.
- *
- * @todo Only accept "Display Class"" profiles?
+ * @todo SHOULDHAVE Only accept “Display Class“ profiles?
  *
  * @note Currently, there is no function that loads a profile from a memory
  * buffer instead of a file. However it would easily be possible to implement
@@ -219,19 +216,16 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
  *
  * @internal
  *
- * @todo LUT profiles should be detected and refused, as the actual diagram
+ * @todo SHOULDHAVE
+ * LUT profiles should be detected and refused, as the actual diagram
  * results are currently bad. (LUT profiles for RGB are not common among
  * the usual standard profile files. But they might be more common among
  * individually calibrated monitors? -> The color.org reference sRGB profile
  * named sRGB_v4_ICC_preference.icc also uses them, and it works fine in
  * our library.)
  *
- * @todo This function is used in @ref RgbColorSpace::createSrgb()
- * and @ref RgbColorSpace::tryCreateFromFile(), but some of the initialization
- * is changed afterwards (file name, file size, profile name, maximum chroma).
- * Is it possible to find a more elegant design?
- *
- * @todo This function creates a transforms from CIELabD50 to RGB. And if RGB
+ * @todo SHOULDHAVE
+ * This function creates a transforms from CIELabD50 to RGB. And if RGB
  * is sRGB, it is D65 (and other RGB gamuts are likely to be also D65).
  * However, CIELabD50 is D50! We do no whitepoint compensation manuelly, and
  * https://sourceforge.net/p/lcms/mailman/lcms-user/?viewmonth=202510 says

@@ -41,7 +41,8 @@ class SwatchBookPrivate;
  *
  * @internal
  *
- * @todo Is it useful to Qt's use Model/View instead of @ref QColorArray2D?
+ * @note Using Qt's use Model/View architecture instead of @ref QColorArray2D
+ * would propably not be worth the added complexity.
  */
 class SwatchBook : public AbstractDiagram
 {

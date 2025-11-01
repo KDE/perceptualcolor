@@ -74,56 +74,16 @@ namespace PerceptualColor
  * @ref AsyncImageProviderBase serves as a base class to provide
  * signals for @ref AsyncImageProvider.
  *
- * @todo Possible (or even necessary?) improvement: When
- * a widget that uses this class becomes invisible (see
- * @ref AbstractDiagram::actualVisibilityToggledEvent for
- * details about the type of visibility we are talking about)
- * it might make sense to delete the cache once the image
- * parameters change. This might reduce memory consumption (though
- * in the moment of changing from one tab to another, anyway
- * both widgets on these tabs will need a cache). If this is <em>not</em>
- * implemented, @ref AbstractDiagram::actualVisibilityToggledEvent
- * can be removed.
- *
- * @todo Possible (or even necessary?) improvement: If a requested image
- * is yet either available or in computation at another object of the same
- * template class, that this object should not trigger a new computation,
- * but use the yet available/running one of the other object. In practice,
- * this might be interesting for the @ref ColorWheelImage, which is likely to
- * be used twice within the same @ref ColorDialog at exactly the same size.
- * This requires probably a thread-safe management of instances through
- * static class members, to make sure that the resulting objects are
- * (while still not thread-safe themselves) at least reentrant.
- *
- * @todo Possible (or even necessary?) improvement: Render an image
- * could be split to more than one thread (if actually the current computer
- * we are running on has more than one core) to speed up the rendering.
- *
- * @todo Possible (or even necessary?) improvement: For @ref ChromaHueDiagram
- * and @ref ChromaLightnessDiagram, the image cache is quite big, because
- * we cache both, the center of the diagram and also the surrounding
- * @ref ColorWheelImage. Could we combine both into one single cache? But
- * if so, wouldn’t this make problems with anti-aliasing if in future versions
- * we do not want to preserve a distance between the color wheel and the
- * inner content anymore? And: Would this be compatible with sharing
- * computations between various objects of the same template class to
- * safe computation power?
- *
- * @todo Possible (or even necessary?) improvement: Cancel the current
- * rendering (if any) when new image parameters are set.
- *
- * @todo Possible (or even necessary?) improvement: Do not cancel rendering
+ * @todo SHOULDHAVE In @ref ChromaLightnessImageParameters::render(),
+ * @ref ChromaHueImageParameters::render(),
+ * @ref GradientImageParameters::render()  Do not cancel rendering
  * until the first (interlacing) result has been delivered to make sure that
  * slowly but continuously moving slider see at least sometimes updates… (and
  * it's more likely the current value is near to the last value than to the
  * old value still in the buffer before the user started moving the cursor
  * at all). The performance impact should be minimal when interlacing is
- * used. And if no interlacing is available (though we might even decide not
- * ever to do non-interlacing rendering), the impact should also not be
- * catastrophic either.
- *
- * @todo xxx Use this class for all image providers, and not only for
- * @ref ChromaHueImageParameters.
+ * used. And if no interlacing is available, the impact should not be
+ * too bad either.
  *
  * @note It would be nice to merge @ref AsyncImageProviderBase and
  * @ref AsyncImageProvider into one single class (that is <em>not</em> a

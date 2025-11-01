@@ -16,13 +16,7 @@ class QCoreApplication;
  *
  * @internal
  *
- * @todo Call <tt>
- * <a href="https://doc.qt.io/qt-5/qmetatype.html#qRegisterMetaType-1">
- * qRegisterMetaType()</a></tt> for all our data types during initialization!?
- *
- * @todo Provide an own documentation page for initialization and localization.
- *
- * @todo Investigate automatic initialization. We definitely
+ * @todo SHOULDHAVE Investigate automatic initialization. We definitely
  * need to call the @ref PerceptualColor::initializeTranslation()
  * function, but having to call it manually might be
  * cumbersome. It would be more comfortable if the initialization
@@ -68,7 +62,8 @@ class QCoreApplication;
  *   also https://isocpp.org/wiki/faq/ctors#static-init-order for useful
  *   information about static initialization.
  *
- * @todo Do not reload translations in one thread while another thread
+ * @todo SHOULDHAVE
+ * Do not reload translations in one thread while another thread
  * uses tr(). But how to make this sure, also because the library user
  * could also reload its own translations while we are using tr(). At least,
  * we could make sure our classes that use translations (widget classes but
@@ -78,10 +73,12 @@ class QCoreApplication;
  * (and maybe the properties that return translated text) is
  * the own function that is not thread-safe…
  *
- * @todo LocaleChange could be important for spin boxes to accept the new
+ * @todo SHOULDHAVE
+ * LocaleChange could be important for spin boxes to accept the new
  * QLocale’s number format.
  *
- * @todo Catch QEvent::LayoutDirectionChange in all widgets? Or the signal
+ * @todo MUSTHAVE
+ * Catch QEvent::LayoutDirectionChange in all widgets? Or the signal
  * QGuiApplication::layoutDirectionChanged()? */
 
 namespace PerceptualColor

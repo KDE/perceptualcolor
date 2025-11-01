@@ -329,88 +329,108 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo Use words as hints for color ranges? Muted/dull colors have a low
- * chroma value. The dark ones (getrübte/gebrochene Farben) are created by
- * adding black (and possibly a bit of white) and include warm tones (the
+ * @todo SHOULDHAVE Check against Q_NAMESPACE and Q_ENUM_NS because they cannot
+ * work reliably when namespaces do accross header files (a double declaration
+ * would break Q_NAMESPACE), and the gain isn't work the problems.
+ *
+ * @todo SHOULDHAVE Since lcms 2.10,<br/>
+ * <tt>\#define CMS_NO_REGISTER_KEYWORD<br/>
+ * \#include &lt;lcms2.h&gt;</tt><br/>
+ * works. Use it instead of this CMakeLists.txt code<br/>
+ * <tt>
+ * if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")<br/>
+ *    add_compile_options(/wd5033)<br/>
+ * endif()<br/>
+ * if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR ON_CLANG_DERIVATE)<br/>
+ *    add_compile_options(-Wno-register)<br/>
+ * endif()<br/>
+ * </tt><br/>
+ * which would not work cross-compiler.
+ *
+ * @todo SHOULDHAVE <tt>/usr/share/color/icc/sRGB_v4_ICC_preference.icc</tt>
+ * has a strange blackpoint in chroma-lightness diagram (1/10 above the
+ * 0 line)
+ *
+ *
+ * @todo SHOULDHAVE Full-featured accessibility support
+ *
+ * @todo NCIETOHAVE Add <tt>QToolTip</tt> value explaining the accepted keys
+ * and mouse movements?
+ *
+ * @todo SHOULDHAVE Circular diagrams should be right-aligned on RTL layouts.
+ *
+ * @todo NICETOHAVE Could we get better rendering performance? Even online
+ * tools like <a href="https://bottosson.github.io/misc/colorpicker/#ff2a00">
+ * this</a> or <a href="https://oklch.evilmartians.io/#65.4,0.136,146.7,100">
+ * this</a> get quite good rendering performance. How do they do that?
+ *
+ * @todo NICETOHAVE Use words as hints for color ranges? Muted/dull colors have
+ * a low chroma value. The dark ones (getrübte/gebrochene Farben) are created by
+ * adding black (and possibly a bit of white) and include both, warm tones (the
  * browns) and cool tones (the olives). The light ones are called Pastel
  * colors and are created by adding white (and possibly a bit of
- * black) and include warm tones (like baby pink) and cool
+ * black) and also include both warm tones (like baby pink) and cool
  * tones (like baby blue). Warm colors are located at a color angle of
  * about 45°, cool colors at about 225°. Could we mark this in the diagrams?
+ * Could we provide an option to enable labels for the
+ * <a href="https://www.handprint.com/HP/WCL/color12.html">warm-cool</a>?
  * Cold and warm could be marked by a text outside the color wheel at the
  * given position. The other ones seem to be more complicated: These specific
  * color terms do not have a translation in all languages. (For “muted colors”,
  * there is no good German translation, and for “getrübte Farben”, there is
  * no good English translation.
+ * Another idea might be to mark the wavelength of the corresponding spectral
+ * color outside around the color wheel, respectively the term
+ * “Line of purples” for the non-spectral colors.
  *
- * @todo https://invent.kde.org/plasma/kdeplasma-addons/-/merge_requests/249
+ * @todo NICETOHAVE
+ * https://invent.kde.org/plasma/kdeplasma-addons/-/merge_requests/249
  * allows the user to drag and drop an image file. The image’s average color
  * is calculated and set as current color of Plasma’s color picker widget.
  * Furthermore, it seems that Plasma’s color picker widget also accepts
  * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
  * Would this make sense also for our library?
  *
- * @todo ITUR profile: Minimum widget size must be smaller! On high sizes, the
+ * @todo SHOULDHAVE
+ * ITUR profile: Minimum widget size must be smaller! On high sizes, the
  * inner focus indicator of color wheel too narrow to hue circle.
  * On RGB 255 0 0 no value indicator is visible. The high-chroma values
  * are empty in the diagram!
  *
- * @todo Touch friendly: @ref PerceptualColor::ColorPatch,
- * @ref PerceptualColor::GradientSlider etc. at least
- * as thick as (normal) buttons. Qt6 replaces QTouchDevice by
- * QInputDevice::devices()…
- *
- * @todo All scripts (both, local and CI scripts) should break and stop
+ * @todo NICETOHAVE
+ * All scripts (both, local and CI scripts) should break and stop
  * on every error. When implementing this, be beware of side effects
  * (some local scripts are also called from the CI and so on…).
  *
- * @todo Review @ref PerceptualColor::RgbColorSpace. And change
- * it in order to allow support for Oklab. And maybe Googles
- * <a href="https://github.com/material-foundation/material-color-utilities">
- * HTC</a>.
- *
- * @todo A design question: In the chroma-lightness diagram, the color
- * wheel is a slider and reacts as such. However, in the chroma-hue-diagram,
- * the same color wheel is just decoration (for orientation). Isn’t this
- * different behaviour of two visually identical elements confusing?
- *
- * @todo A design question: Should we use
+ * @todo NICETOHAVE A design question: Should we use
  * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum"><tt>
  * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
  * @ref PerceptualColor::GradientSlider?
  *
- * @todo Remove things form the public API, leaving only the absolutely
+ * @todo SHOWSTOPPER Remove things form the public API, leaving only the absolutely
  * minimal API that is required by the user.
  *
- * @todo Avoid “final” in the public API (or even altogether?). Implement
- * a codecheck for this.
+ * @todo SHOULDHAVE Avoid “final” in the public API (or even altogether?).
+ * Implement a codecheck for this.
  *
- * @todo <a href="https://valgrind.org/docs/manual/quick-start.html"> Test with
- * valgrind.org</a>
- *
- * @todo Most widgets of this library allocate in each paint event a new
- * buffer to paint on, before painting on the widget. This is also done
+ * @todo NICETOHAVE Most widgets of this library allocate in each paint event
+ * a new buffer to paint on, before painting on the widget. This is also done
  * because only <tt>QImage</tt> guarantees the same result on all platforms,
  * while <tt>QPixmap</tt> is platform-dependent and Qt does not guarantee that
  * for example <tt>QPainter::Antialiasing</tt> is available on all platforms.
- * However, not using a buffer would save memory! Can we know if the current
- * platform supports <tt>QPainter::Antialiasing</tt> and buffer only if
- * necessary? Or could we at least instantiate only one single buffer per
+ * Could we at least instantiate only one single buffer per
  * application, that is than shared between all the widgets of our library?
  * This buffer would never be freed, so it will always occupy memory. But
  * this avoids the time-consuming memory allocations at each paint event!
  *
- * @todo Use <tt>QCache</tt> where is makes sense. Maybe
+ * @todo NICETOHAVE Use <tt>QCache</tt> where is makes sense. Maybe
  * @ref PerceptualColor::RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut() or
  * @ref PerceptualColor::RgbColorSpace::isCielchD50InGamut() or
  * @ref PerceptualColor::RgbColorSpace::isCielabD50InGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutCielchD50ByAdjustingChromaLightness(().
  *
- * @todo Switch AbstractDiagram::handleOutlineThickness() and
- * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
- * (PM_DefaultFrameWidth seems to be used yet in ColorPatch.)
- *
- * @todo If using the Motif style, the @ref PerceptualColor::ChromaHueDiagram
+ * @todo SHOULDHAVE If using the Motif style (only available in Qt 5, not
+ * in Qt 6), the @ref PerceptualColor::ChromaHueDiagram
  * widget, which has circular look-and-feel, has a rectangular focus
  * indicator corresponding the rectangular widget geometry, which looks
  * quite ugly. On the other hand, @ref PerceptualColor::WheelColorPicker
@@ -420,25 +440,7 @@
  * like @ref PerceptualColor::WheelColorPicker? And
  * how does @ref PerceptualColor::ColorWheel behave?
  *
- * @todo Idea: Provide QColorWidget (like QColorDialog, but inheriting
- * from QWidget, and no buttons). Does this make sense?
- *
- * @todo Use implicit data sharing in @ref PerceptualColor::RgbColorSpace
- * instead of <tt>QSharedPointer\< @ref PerceptualColor::RgbColorSpace \></tt>.
- * But: Wouldn’t this require to make the declaration
- * of @ref PerceptualColor::RgbColorSpace, which was secret until today,
- * public? If so, this would not be good…
- *
- * @todo Dual-Licence with Apache2 and/or Boost licence?
- *
- * @todo Currently, we consider that a mouse clicks click a pixel, but mean
- * the coordinate point in the middle of this pixel. This seems an approach
- * that other widgets (including Qt itself) do not use. And maybe is meant also
- * the coordinate at the top of the mouse cursor, so no offset by (0.5, 0.5)
- * would be necessary. This would give better results (at least on LTR
- * mouse cursors, but what's about crosshair cursors and RTL cursors?)
- *
- * @todo We do some hacks to get circle-like (instead of rectangular)
+ * @todo SHOULDHAVE We do some hacks to get circle-like (instead of rectangular)
  * feeling for our circular widgets, which is not perfect when talking
  * about mouse events. It seems that QWidget::setMask() offers an
  * alternative, restricting mouse events (and painting) to a given
@@ -452,15 +454,14 @@
  * <a href="https://forum.qt.io/topic/118547/accept-reject-focus-coming-by-mouse-click-based-on-coordinates">
  * this Qt Forum thread</a>.
  *
- * @todo Support more of Qt Style Sheets, for example allow
+ * @todo SHOULDHAVE Support more of Qt Style Sheets, for example allow
  * customizing the neutral-gray background of diagrams? If
  * so, @ref PerceptualColor::drawQWidgetStyleSheetAware()
  * is available. Otherwise, remove the currently not used
  * @ref PerceptualColor::drawQWidgetStyleSheetAware() from
  * this library.
  *
- * @todo General library properties:
- * - Could we integrate more with QStyle? Apparently
+ * @todo NICETOHAVE Could we integrate more with QStyle? Apparently
  *   <a href="https://api.kde.org/frameworks/frameworkintegration/html/classKStyle.html">
  *   KStyle</a> is a QCommonStyle-based class that provides
  *   support for QString-based query for custom style hints,
@@ -483,12 +484,17 @@
  *   disadvantage: We would have to <em>link</em> against all styles
  *   that we want to support, which makes our library <em>depend</em>
  *   on them, which is not reasonable.
- * - More work on accessibility. [This includes to work well with bigger
+ *
+ * @todo SHOULDHAVE Full-featured
+ *   <a href="https://doc.qt.io/qt-6/accessible-qwidget.html">Qt Widget
+ *   accessibility support</a>. And:
+ *   More work on accessibility. [This includes to work well with bigger
  *   fonts. Should then the gradient be thicker and the marker
  *   thicker? setAccessibleName().] The application Accerciser provides
  *   inspection possibilities.
  *
- * @todo From KDE’s binary compatibility info page: In order to make a class
+ * @todo SHOWSTOPPER From KDE’s binary compatibility info page:
+ * In order to make a class
  * to extend in the future you should follow these rules:
  * - add non-inline virtual destructor even if the body is empty.
  * - re-implement event in QObject-derived classes, even if the body for
@@ -496,67 +502,95 @@
  *   specifically to avoid problems caused by adding a reimplemented virtual
  *   function as discussed below.
  *
- * @todo Following the recommendation of the C++ core guidelines, all
+ * @todo SHOWSTOPPER Following the recommendation
+ * of the C++ core guidelines, all
  * destructors should be noexcept.
  *
- * @todo The missing 3rd diagram (hue-lightness? But: Impossible to model
- * the circular behaviour of the LCH color space: It cannot be a cut through
- * the gamut body, but has to be a curve within the gamut body – not so
- * nice. And: The diagram width has to change with the selected hue if we want
- * to have correct scaling between x axis and y axis…
- *
- * @todo In https://phabricator.kde.org/T12359 is recommended to provide
+ * @todo NICETOHAVE
+ * In https://phabricator.kde.org/T12359 is recommended to provide
  * RESET statements for all properties for better compatibility with QML.
  * As we provide widgets, this should not be too important. Are there also
  * good arguments for widgets to provide RESET?
  *
- * @todo Provide an init() function that calls qRegisterMetaType() for
- * all our types?
- *
- * @todo We prevent division by 0 in
+ * @todo SHOULDHAVE We prevent division by 0 in
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50().
  * We should make sure this happens also in the other diagram widgets!
  *
- * @todo Add a @ref PerceptualColor::ConstPropagatingUniquePointer to
+ * @todo SHOWSTOPPER
+ * Add a @ref PerceptualColor::ConstPropagatingUniquePointer to
  * all classes, including the non-pimpl classes, to allow for later
  * enhancements.
  *
- * @todo Remove setDevicePixelRatioF from all *Image classes. (It is
+ * @todo NICETOHAVE Remove setDevicePixelRatioF from all *Image classes. (It is
  * confusing, and at the same time there is no real need/benefit.)
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
  * @ref PerceptualColor::ColorWheelImage,
  * @ref PerceptualColor::GradientImageParameters.
  *
- * @todo Sometimes, on dual-screen setup, one screen has another DPI than
+ * @todo SHOWSTOPPER
+ * Sometimes, on dual-screen setup, one screen has another DPI than
  * the other screen. Does this library behave correctly in these situations?
+ * Especially the rounding for the transparency background image: The size of
+ * the squares of the transparency background should not change across scale
+ * factors! Instead: No pixel alignment anymore, use floating-point coordinates
+ * on all scale factors instead!
  *
- * @todo When setting <tt>currentColor</tt> to an out-of-gamut color,
+ * @todo NICETOHAVE Static test: Do not use the Tab character in source code!
+ *
+ * @todo SHOULDHAVE When setting <tt>currentColor</tt> to an out-of-gamut color,
  * what happens? Does @ref PerceptualColor::ChromaHueDiagram preserve
  * lightness, while @ref PerceptualColor::ChromaLightnessDiagram preserves
  * hue? Would this make sense?
  *
- * @todo Paint grayed-out handles for all widgets when setEnabled(false)
+ * @todo NICETOHAVE Paint grayed-out
+ * handles for all widgets when <tt>setReadOnly(false)</tt>
  * is used! For example 25% lightness instead of black. And 75% lightness
  * instead of white. But: Provide this information
  * in @ref PerceptualColor::AbstractDiagram!
+ * And: Gray out the hole diagram, making the diagram itself grayscale and
+ * maybe even the gamut itself invisible when <tt>setEnabled(false)</tt>
+ * is used.
  *
- * @todo It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
+ * @todo SHOULDHAVE Switch AbstractDiagram::handleOutlineThickness() and
+ * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
+ * (PM_DefaultFrameWidth seems to be used yet in ColorPatch.)
+ *
+ * @todo SHOULDHAVE
+ * It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
  * <em>(Horizontal margin that the focus frame will outset the widget
  * by.)</em> Or: <tt>QStyle::PM_FocusFrameVMargin</tt>. Using this for the
  * distance between the focus indicator and the actual content of the widget
  * maybe give a more <tt>QStyle</tt> compliant look. But: If using this,
  * ensurePolished() must be called before!
  *
- * @todo Use <tt>explicit</tt> on all constructors?
+ * @todo SHOULDHAVE Screen picker with magnifier glass in two steps
+ * similar to https://colorsnapper.com which has a normal-sized magnifying
+ * glass, and also a giant magnifying glass occupying almost the hole screen?
+ * How does its UI work? Is there the normal magnifying glass, then a first
+ * click, then the giant magnifying glass? Advantage: Users are always aware
+ * of the function. Disadvantage: It always requires two clicks, what might
+ * be cumbersome. Or do you get the giant magnifying glass only on demand,
+ * for example by pushing the Ctrl key? Or should we do it more simply
+ * <a href="https://web.archive.org/web/20250626170102/https://www.firefox.com/en-US/features/eyedropper/">
+ * like in Firefox</a> (Application Menu → More tools → Eyedropper)?
+ * Also Spectacle (the new version in Plasma 6.4)
+ * <a href="https://kde.org/announcements/plasma/6/6.4.0/#screenshots--screen-recording">
+ * has a magnifying glass with haircross</a>, but is this only on X11 or also
+ * on Wayland? And how does it work, because Wayland is very strict about
+ * security?
  *
- * @todo Screen picker with magnifier glass in two steps
- * similar to https://colorsnapper.com ? Or like in Firefox
- * (Menu → Weitere Werkzeuge → Farbpalette)?
+ * @todo SHOULDHAVE KDE is switching from
+ * Doxygen to QDoc, at least for Frameworks. The
+ * <a href="https://mail.kde.org/pipermail/kde-devel/2025-June/003710.html">
+ * QDoc-based documentation it built within CMake targets</a> and requires
+ * <a href="https://invent.kde.org/-/snippets/3206">quite some syntax
+ * changes</a> compared to Doxygen.
+ * <a href="https://doc.qt.io/qt-6/qdoc-index.html">QDoc has also its own
+ * manual.</a> Is it possible to support both, Doxygen and QDoc, at the same
+ * time? If not, can we get with QDoc as much error tracking in
+ * Continious Integration as we get currently with Doxygen?
  *
- * @todo Multi-licensing? Add Boost licence and Unlicense as an additional
- * choice?
- *
- * @todo KDE provides an interesting
+ * @todo NICETOHAVE KDE provides an interesting
  * recommendation: <tt>int Units::humanMoment = 2000;</tt> <em>Time in
  * milliseconds equivalent to the theoretical human moment, which can be
  * used to determine whether how long to wait until the user should be
@@ -569,34 +603,34 @@
  * https://api.kde.org/frameworks/plasma-framework/html/classUnits.html#ab22ad7033b2e3d00a862650e82f5ba5e
  * for details. Use this instead of interlacing big images?
  *
- * @todo Automatically scale the thickness of the wheel (and maybe even the
- * handle) with varying widget size?
- *
- * @todo Support more color spaces? https://pypi.org/project/colorio/ for
+ * @todo NICETOHAVE
+ * Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
  *
- * @todo Check in all classes that take a @ref PerceptualColor::RgbColorSpace
+ * @todo SHOULDHAVE
+ * Check in all classes that take a @ref PerceptualColor::RgbColorSpace
  * that the shared pointer is actually not a <tt>nullptr</tt>. If is
  * <em>is</em> a <tt>nullptr</tt> than throw an exception. Throwing the
  * exception early might make error detection easier for users of the library.
  *
- * * @todo Avoid default arguments like <tt>void test(int i = 0)</tt> in
+ * @todo SHOULDHAVE
+ * Avoid default arguments like <tt>void test(int i = 0)</tt> in
  * public headers, as changes require re-compilation of the client application
  * to take effect, which might lead to a miss-match of behaviour between
  * application and library, if  compile-time and run-time version of the
  * library are not the same. Is the problem  for default constructors
  * like <tt>ClassName() = default</tt> similar?
  *
- * @todo mark all public non-slot functions with Q_INVOKABLE (except property
+ * @todo SHOULDHAVE mark all public
+ * non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
  *
- * @todo A good widget library should also be touchscreen-ready. Find
- * an alternative to @ref PerceptualColor::MultiSpinBox? How, for up
- * to 360 values (degrees in step by 1)? Or should the steps simply be bigger?
+ * @todo SHOULDHAVE KDE Frameworks / https://marketplace.qt.io/ ?
  *
- * @todo KDE Frameworks / https://marketplace.qt.io/ ?
- *
- * @todo Provide property bindings as described in
+ * @todo SHOULDHAVE Property bindings: Can a Q_PROPERTY declaration be changed
+ * afterwards without breaking binary compatibility? If not, we have to
+ * decide now, before the first release, on property bindings:
+ * Provide property bindings as described in
  * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
  * when we do not support QML? What are the pitfalls? Imagine a property
  * that holds a percent value from 0 to 100; the setter enforces this
@@ -610,25 +644,21 @@
  * access directly m_color instead of color(), so when using bindings,
  * this code is broken?
  *
- * @todo Provide QML support so that for
+ * @todo NICETOHAVE Provide QML support so that for
  * https://doc.qt.io/qt-5/qml-qtquick-dialogs-colordialog.html (or its
  * Qt6 counterpart) we provide a source compatible alternative, like for
  * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
  * Support <a href="https://mauikit.org/">MauiKit</a>?
+ * Apparently QWidget cannot be used from QML. (Though there is
+ * https://www.kdab.com/declarative-widgets/ – how does that work?)
  *
- * @todo Apparently QWidget cannot be used from QML. (Though there is
- * https://www.kdab.com/declarative-widgets/ – how does that work?) Is it
- * therefore worth to have complete support for signals in all our QWidget
- * code if this is not really necessary for QWidget (for example for
- * properties that can only be changed by the library user and not by the
- * end user)?
- *
- * @todo Comply with <a href="https://community.kde.org/Policies">KDE
+ * @todo SHOULDHAVE Comply with <a href="https://community.kde.org/Policies">KDE
  * policies</a>.
  *
- * @todo Remove all qDebug calls from the source
+ * @todo SHOULDHAVE Remove all qDebug calls from the source
  *
- * @todo Qt Designer support for the widgets. Quote from a blog from Viking
+ * @todo NICETOHAVE
+ * Qt Designer support for the widgets. Quote from a blog from Viking
  * about Qt Designer plugins:
  * The problem is that you have to build it with exactly the same compiler
  * tool chain as designer was built with, and you have to do it in release
@@ -637,32 +667,35 @@
  * compiler as you build the application with, if you use the system Qt or
  * a downloaded Qt version.
  *
- * @todo Use <a href="https://lvc.github.io/abi-compliance-checker/">
+ * @todo SHOULDHAVE
+ * Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.
  *
- * @todo Follow KDE’s <a href="https://hig.kde.org/index.html">HIG</a>
- *
- * @todo Test linking against lcms.h in version 2.0.0 for compatibility
+ * @todo SHOULDHAVE
+ * Test linking against lcms.h in version 2.0.0 for compatibility
  * (or require more recent version?)
  *
- * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
- * also https://phabricator.kde.org/T12359
- *
- * @todo Better design on small widget sizes for the whole library.
- *
- * @todo Touch-friendly interface: Would it be good to have buttons for
- * plus and minus on the various LCH axis which would be companions
- * for @ref PerceptualColor::ChromaHueDiagram and
- * @ref PerceptualColor::ChromaLightnessDiagram and would allow
- * more exactly choose colors also on touch devices?
- *
- * @todo Would it be a good idea to have plus and minus buttons that
+ * @todo NICETOHAVE Would it be a good idea to have plus and minus buttons that
  * manipulate the current color along the depth and vividness axis
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
  *
- * @todo Spell checking for the documentation, if possible also grammar
- * checking with LanguageTool */
+ * @todo SHOULDHAVE Move diagrams from Cielch to Oklch
+ *
+ * @todo NICETOHAVE In our custom CI, test (and fail) not only on clang
+ * warnings but also on gcc warnings.
+ *
+ * @todo SHOULDHAVE Test RTL functionality and text layout, using the yet
+ * available Arabic translation.
+ *
+ * @todo NICETOHAVE How can the diagrams actually output 16 bits per channel on
+ * the screen instead of the current 8 bits? There isn’t any Qt API for that,
+ * isn’t it?
+ *
+ * @todo SHOWSTOPPER Which type of sRGB does Wayland assume? Real sRGB with
+ * the defined gamma functions per section, or simplified 2.2-overall gamma,
+ * or even linear?
+ */
 
 /** @page hidpisupport High DPI support
  *
@@ -746,7 +779,8 @@
  *
  * @internal
  *
- * @todo Support changing the localization dynamically (during program
+ * @todo NICETOHAVE Support changing the localization  (like which decimal
+ * separator to use or which date format to use) dynamically (during program
  * execution). This affects also @ref PerceptualColor::MultiSpinBox and
  * the <tt>QSpinBox</tt> in @ref PerceptualColor::ColorDialog that is
  * used for the opacity and maybe also the RGB-Hex-LineEdit.
@@ -931,7 +965,7 @@
  * @ref PerceptualColor::ColorDialog, use the selector
  * <tt>PerceptualColor\--ColorDialog</tt>. */
 
-/** @page lchrange Range of LCH values
+/** @page rangeoflchvalues Range of LCH values
  *
  *
  * The LCH values in this library are implemented with the following range:
@@ -1012,12 +1046,36 @@
  * @sa @ref PerceptualColor::CielchD50Values::maximumChroma
  * @sa @ref PerceptualColor::OklchValues::maximumChroma
  *
- * @todo Why is the exact extend of non-imaginary colors unknown? Could it be
- * deduced from the <a href="https://en.m.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space">
- * CIE xy chromacity diagram</a>? And: Is 255 enough even for large color
+ * @todo NICETOHAVE Why is the exact extend of non-imaginary
+ * colors unknown? Could it be deduced from the
+ * <a href="https://en.m.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space">
+ * CIE xy chromacity diagram</a>? And: Are CIELCh chroma 255 and
+ * Oklch chroma 2.00 enough even for large color
  * spaces like <a href="https://en.m.wikipedia.org/wiki/Rec._2020">
  * Rec. 2020</a> or <a href="https://en.m.wikipedia.org/wiki/DCI-P3">
  * DCI-P3</a>?
+ */
+
+/** @internal
+ *
+ * @page releasechecklist Release checklist
+ *
+ * @todo SHOULDHAVE https://keepachangelog.com/en/1.1.0/
+ *
+ * @todo SHOULDHAVE Add missing friend declarations for unit
+ * tests
+ *
+ * @todo SHOULDHAVE Execute all scritps
+ *
+ * @todo SHOULDHAVE Update screenshots
+ *
+ * @todo SHOULDHAVE Control compile warnings in default CI jobs
+ *
+ * @todo SHOULDHAVE Manually control that only actual Public API appears in the
+ * Public API documentation.
+ *
+ * @todo SHOULDHAVE Increase version number in CMakeLists.txt (MAJOR_VERSION,
+ * MINOR_VERSION, PATCH_VERSION)
  */
 
 /** @page versioninfo Version information at compiletime and runtime

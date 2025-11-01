@@ -33,20 +33,9 @@ class WheelColorPickerPrivate;
  *
  * @internal
  *
- * @todo BUG: When the hue changes and the gamut gets smaller than the
- * current chroma-lightness value, then the marker is not moved into the
- * new gamut. But it should!
- *
- * @todo This class is a friend class of @ref ChromaLightnessDiagram
- * and of @ref ColorWheel. Would it be possible to not rely on this
- * friendship in the code of this class (or at least, to rely less
- * on it)?
- *
- * @todo Is the (double) focus indicator actually good design? Are there
- * better solutions?
- *
- * @todo Add <tt>QToolTip</tt> value explaining the accepted keys and mouse
- * movements (and also to other widgets). */
+ * @todo NICETOHAVE Is the (double) focus indicator actually good design? Are
+ * there better solutions?
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT WheelColorPicker : public AbstractDiagram
 {
     Q_OBJECT

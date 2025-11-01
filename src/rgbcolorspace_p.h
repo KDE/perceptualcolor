@@ -84,7 +84,8 @@ public:
      *
      * @internal
      *
-     * @todo Use cmsDetectBlackPoint? But “our” “blackpoint” is always on
+     * @todo SHOULDHAVE Use cmsDetectBlackPoint?
+     * But “our” “blackpoint” is always on
      * the grey axis, but the real blackpoint not? Document this? */
     qreal m_cielabD50BlackpointL = 0;
     /** @brief The lightest in-gamut point on the L* axis.
@@ -95,7 +96,8 @@ public:
      *
      * @internal
      *
-     * @todo Use cmsDetectBlackPoint? But “our” “blackpoint” is always on
+     * @todo SHOULDHAVE Use cmsDetectBlackPoint?
+     * But “our” “blackpoint” is always on
      * the grey axis, but the real blackpoint not? Document this? */
     qreal m_oklabBlackpointL = 0;
     /** @brief The lightest in-gamut point on the L* axis.

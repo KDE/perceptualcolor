@@ -48,15 +48,9 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @todo Add support for Qt::MouseButton::BackButton?
- * (Typically present on the 'thumb' side of a mouse
- * with extra buttons. This is NOT the tilt wheel.)
- * Add support for Qt::MouseButton::ForwardButton?
- * (Typically present beside the 'Back' button, and
- * also pressed by the thumb.)
- *
- * @todo What when some of the wheel colors are out of gamut? How to handle
- * that? */
+ * @todo SHOWSTOPPER What when some of the wheel colors are out of gamut? How
+ * to handle that?
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT

@@ -33,11 +33,11 @@ static void snippet01()
 {
     //! [instantiate]
     auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
-    PerceptualColor::ChromaHueDiagram *myDiagram = new PerceptualColor::ChromaHueDiagram(myColorSpace);
-    PerceptualColor::GenericColor myColor;
-    myColor.third = 270;
-    myColor.first = 50;
-    myColor.second = 25;
+    auto myDiagram = new PerceptualColor::ChromaHueDiagram(myColorSpace);
+    PerceptualColor::GenericColor myColor; // Lch
+    myColor.first = 50; // Lightness
+    myColor.second = 25; // Chroma
+    myColor.third = 270; // Hue
     myDiagram->setCurrentColorCielchD50(myColor);
     myDiagram->show();
     //! [instantiate]

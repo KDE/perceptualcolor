@@ -48,11 +48,7 @@ public:
      * Neutral gray is a good choice for the background, as it is equally
      * distant from black and white, and also quite distant from any
      * saturated color.
-     *
-     * @todo Given that this might be used quite often, it could be useful
-     * to provide the corresponding RGB value within @ref RgbColorSpace
-     * as a property, returning a variable that is initialized on first
-     * usage. */
+     */
     static constexpr GenericColor neutralGray{neutralLightness, //
                                               neutralChroma, //
                                               neutralHue};
@@ -66,9 +62,7 @@ public:
      *  a usual sRGB gamut.
      *
      *  @sa @ref neutralChroma
-     *
-     * @todo This value should be removed in favor of using individual
-     * values for each gamut. */
+     */
     static constexpr int srgbVersatileChroma = 32;
     /** @brief Versatile initial color for widgets in
      * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in

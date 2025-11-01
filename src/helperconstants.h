@@ -99,15 +99,7 @@ constexpr int singleStepChroma = 1;
  * value.
  *
  * @sa @ref pageStepHue
- *
- * @todo What would be a good value for this? Its effect depends on
- * chroma: On higher chroma, the same step in hue means a bigger visual
- * color difference. We could even calculate that, but it does not seem to
- * be very intuitive if the reaction on mouse wheel events are different
- * depending on chroma - that would not be easy to understand for the
- * user. And it might be better that the user this way also notices
- * intuitively that hue changes are not linear across chroma. Anyway:
- * What would be a sensible default step? */
+ */
 constexpr int singleStepHue = 360 / 100;
 
 /** @internal

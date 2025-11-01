@@ -249,11 +249,7 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
  * or <tt>Qt::Key_Delete</tt> are pressed, it raises or lowers the hue faster.
  *
  * @param event the corresponding event
- *
- * @internal
- *
- * @todo The keys are chosen to not conflict with @ref ChromaHueDiagram. But:
- * They are a little strange. Does this really make sense? */
+ */
 void ColorWheel::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
@@ -296,11 +292,11 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
  * The wheel is painted using @ref ColorWheelPrivate::m_wheelImage.
  * The focus indicator (if any) and the handle are painted on-the-fly.
  *
- * @todo Make the wheel to be drawn horizontally and vertically aligned?? Or
+ * @todo SHOULDHAVE Make the wheel to be drawn
+ * horizontally and vertically aligned?? Or
  * better top-left aligned for LTR layouts and top-right aligned for RTL
  * layouts?
- *
- * @todo Better design (smaller wheel ribbon?) for small widget sizes */
+ */
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)

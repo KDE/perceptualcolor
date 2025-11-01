@@ -54,19 +54,7 @@ class RgbColorSpace;
  * example if you want to use for <em>queued</em> signal-slot connections),
  * you might consider calling <tt>qRegisterMetaType()</tt> for
  * this type, once you have a QApplication object.
- *
- * @internal
- *
- * @todo Why does @ref ChromaHueImageParameters::render() not make everything
- * outside the circle transparent? Because it would look ugly without
- * antialiasing. And when we use antialiasing various times to cut of
- * unwanted artefacts, half-opaque pixel become quarter-opaque and so on,
- * so this would be ugly, too. However, we could use a single image to
- * work on, and for each interlacing pass result, create a copy and
- * apply the antialiased circle only to the copy. This would of course
- * require more memory. On the other hand: When calling
- * @ref AsyncImageRenderThread::deliverInterlacingPass() a signal will
- * be emitted, which will create a copy anyway… */
+ */
 struct ChromaHueImageParameters final {
 public:
     /** @brief The border size, measured in physical pixels. */

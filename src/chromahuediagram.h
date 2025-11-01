@@ -70,55 +70,38 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo BUG Left-click in the gray area inside the wheel but outside
- * the displayed gamut; maintain the click button and do not move the
- * mouse. Actual behavior: Mouse cursor is invisible. Expected behaviour:
- * Mouse cursor stays visible (as it would be anyway after moving the mouse).
- *
- * @todo BUG Click on the wheel. Actual behaviour: Nothing. Expected behavior:
+ * @todo MUSTHAVE Click on the wheel. Actual
+ * behaviour: Nothing. Expected behavior:
  * The selected color follows the cursor.
  *
- * @todo BUG Wide gamut RGB: RGB 51 255 51. Chroma-Hue-Diagram: The handle
- * is drawn outside the circle. This should never happen! See also
- * @ref PerceptualColor::CielchD50Values::maximumChroma
- *
- * @todo The hue circle around chroma-hue diagram might be confusing because
+ * @todo NICETOHAVE The hue circle around
+ * chroma-hue diagram might be confusing because
  * it is colored, but it is not a usable slider like all other colored
  * elements. We could remove it. But on the other hand, it is also useful
  * to have it. Maybe make it look different than for @ref WheelColorPicker,
  * for instance make it thinner and make it touch the gray diagram area?
- * Maybe make it react on mouse events just like the inner part of the diagram.
  *
- * @todo Add a circular indicator to the handle, indicating the values
- * with identical chroma? Only during mouse dragging? Or always? Or never?
- *
- * @todo Example code: How to create the widget at a given
- * lightness.
- *
- * @todo Allow to touch the widget on the color wheel (and have a reaction).
- *
- * @todo Use a cross cursor for better usability: The cross cursor indicates
+ * @todo NICETOHAVE Questin: Use a cross cursor when the mouse cursor hovers
+ * above the diagrams, for better usability? The cross cursor indicates
  * to the user that an area can be clicked in. Do it only within the gamut
  * (where the color handle can actually go) or in the hole gray circle,
- * which is the mouse sensitive area (but out of the gamut the color
- * handle cannot follow)?
+ * which is the mouse sensitive area.
  *
- * @todo Support additional mouse buttons. For example, “forward” and
+ * @todo SHOULDHAVE Support more mouse buttons. For example, “forward” and
  * “backward” could be used to increase or decrease the radius.
  *
- * @todo What if black or white are out of gamut on L=0.1 or L=99.9? Where
- * are the handles placed? Visible or invisible? How to react? Should
+ * @todo SHOULDHAVE What if black or white are out of gamut on L=0.1 or L=99.9?
+ * Where are the handles placed? Visible or invisible? How to react (for mouse
+ * input, keyboard input, but also API functions like setColor()? Should
  * there be always a physical pixel in the middle that is visible (black
  * or white) even when out of gamut?
+ * Make sure that @ref ChromaHueDiagram always shows at least at the
+ * central physical pixel with an in-gamut color? Solution: Limit the range
+ * of the lightness selector?
  *
- * @todo Optimization: It might be possible to <em>not</em> store
- * both, @ref ChromaHueDiagramPrivate::m_chromaHueImage and
- * a @ref ChromaHueDiagramPrivate::m_wheelImage. Instead, both could
- * be combined into one single image. As long as there is a (big enough)
- * safety margin between the color wheel and the inner (circular) diagram
- * surface, it should be possible to erase the original data and paint
- * new data above without rendering artefacts for each of these two elements
- * of the image. */
+ * @todo SHOULDHAVE Accept Key + like currently yet Key Left, and Key - like
+ * currently yet Key Right, for consistency with @ref WheelColorPicker.
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT

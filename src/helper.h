@@ -31,20 +31,32 @@ class QApplication;
 class QWheelEvent;
 class QWidget;
 
+/** @internal
+ *
+ * @file
+ *
+ * Provides helper functionality. */
+
 namespace PerceptualColor
 {
 
 class RgbColorSpace;
 
-/** @brief Represents the appearance of a theme.
+/**
+ * @internal
  *
- * @todo Substitute this by
+ * @brief Represents the appearance of a theme.
+ *
+ * @sa @ref guessColorSchemeTypeFromWidget()
+ *
+ * @note This is similar to
  * <a href="https://doc-snapshots.qt.io/qt6-dev/qt.html#ColorScheme-enum"><tt>
  * enum class Qt::ColorScheme</tt></a> which is available since Qt 6.
- */
+ * However, this enum class here has no “unknown” option, so it guarantees
+ * always a defined value. */
 enum class ColorSchemeType {
-    Light, /**< Light theme. */
-    Dark /**< Dark theme. */
+    Light, /**< @internal Light theme. */
+    Dark /**< @internal Dark theme. */
 };
 
 void drawQWidgetStyleSheetAware(QWidget *widget);
@@ -269,7 +281,10 @@ private:
     qsizetype m_jCount;
 };
 
-/** @brief Swatches organized in a grid.
+/**
+ * @internal
+ *
+ * @brief Swatches organized in a grid.
  *
  * This type is declared as type to Qt’s type system via
  * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
@@ -387,7 +402,10 @@ template<typename T = void>
 
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 
-/** @brief The full-qualified C++ identifier as QString.
+/**
+ * @internal
+ *
+ * @brief The full-qualified C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
@@ -410,7 +428,10 @@ template<typename T>
     return QStringLiteral("%1::%2").arg(scope, name);
 }
 
-/** @brief The full-qualified C++ identifier as QString.
+/**
+ * @internal
+ *
+ * @brief The full-qualified C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
@@ -467,7 +488,10 @@ template<typename T>
     return QStringLiteral("%1::%2::%3(%4)").arg(scope, name, keys).arg(value);
 }
 
-/** @brief The C++ identifier as QString.
+/**
+ * @internal
+ *
+ * @brief The C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
@@ -523,6 +547,8 @@ template<typename T>
 }
 
 /**
+ * @internal
+ *
  * @brief Splits a given number of elements into equal segments.
  *
  * This function divides <tt>elementCount</tt> elements (indices from
@@ -573,6 +599,8 @@ QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
 }
 
 /**
+ * @internal
+ *
  * @brief Splits a <tt>QList&lt;T&gt;</tt> into a specified number of parts.
  *
  * This function divides the elements of a <tt>QList&lt;T&gt;</tt> as evenly as

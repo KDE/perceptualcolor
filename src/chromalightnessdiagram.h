@@ -52,16 +52,13 @@ class RgbColorSpace;
  * that is widthForHeight-dependent to allow the library user to
  * comfortably make use of this!
  *
- * @todo RGB 0 28 253: When moving the curser outside the gamut, below the
- * dark blue shadows, but still near to the gamut, the selection marker
- * “jumps” where the gamut boundary in nearly horizontal and there are
- * one-pixel stairs. That's not that nice.
- *
- * @todo What to do if a gamut allows lightness < 0 or lightness > 100 ???
- * What if a part of the gamut at the right is not displayed? (Thought
- * this means that @ref RgbColorSpace has a bug.) Shouldn’t this be
- * controlled?) Maybe it would be better to control this
- * within @ref RgbColorSpace … */
+ * @todo NICETOHAVE From noahdvs in Matrix: “I noticed an issue with the arrow
+ * key navigation of the lightness/saturation picker in the "Hue-based" tab.
+ * If you press Up or Down, the point is able to climb up or down until it
+ * reaches the maximum/minimum lightness (good). If you press Right, the point
+ * gets stuck when it reaches an edge rather than being able to continue to the
+ * right until maximum saturation is reached (bad).”
+ */
 class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT

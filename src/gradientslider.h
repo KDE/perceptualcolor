@@ -70,17 +70,17 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @todo A better handle for the slider. Currently, the handle is just a
+ * @todo NICETOHAVE A better handle for the slider.
+ * Currently, the handle is just a
  * line. At a handle position at the very beginning or end of the slider,
  * furthermore only half of the line thickness is visible. It might be better
  * to have arrows outside the slider to mark the position. (On the other
  * hand, this would be different to the slider handles of the color
  * wheels…)
  *
- * @todo A better focus indicator. Some example code is commented out
- * in the implementation of @ref paintEvent().
+ * @todo NICETOHAVE A better focus indicator.
  *
- * @todo This class @ref GradientSlider and also the class
+ * @todo SHOULDHAVE This class @ref GradientSlider and also the class
  * @ref ColorWheel could be subclasses of QAbstractSlider. This
  * might integrate better with the user’s Qt code. On the other hand,
  * this would mean a lot of work in this library to implement the

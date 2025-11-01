@@ -28,11 +28,12 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo This should be implemented as singleton with on-demand
+ * @todo NICETOHAVE This should be implemented as singleton with on-demand
  * initialization. This requires however changes to @ref RgbColorSpace
  * which should <em>not</em> guarantee that properties like
  * @ref RgbColorSpace::profileName() are constant. Instead,
- * for the sRGB profiles, the translation should be dynamic. */
+ * for the sRGB profiles, the translation should be dynamic.
+ */
 QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb()
 {
     return RgbColorSpace::createSrgb();

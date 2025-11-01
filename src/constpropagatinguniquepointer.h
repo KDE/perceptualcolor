@@ -50,12 +50,19 @@ namespace PerceptualColor
  * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
  * std::experimental::propagate_const</a></tt> if this one ever becomes
  * part of the C++ standard. (Experimental features however are optional
- * for compilers, so not all of them implement them. Furthermore, they
- * can still change. Therefore, we cannot use experimental features here.)
+ * for compilers, so not all of them implement them. Furthermore, they can
+ * still change. Therefore, we cannot use experimental features here.) But <tt>
+ * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
+ * std::experimental::propagate_const</a></tt> seems to be superseded by <tt>
+ * <a href="https://en.cppreference.com/w/cpp/memory/indirect.html">
+ * std::indirect</a></tt> and <tt>
+ * <a href="https://en.cppreference.com/w/cpp/memory/polymorphic.html">
+ * std::polymorphic</a></tt>  anyway.
  *
- * @todo Would it be better to include (or link to)
+ * @note There are other implementation available. But it’s not worth to use
  * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library? */
+ * implementation, which is simpler, but just fine for our use case.
+ */
 // NOTE No PERCEPTUALCOLOR_IMPORTEXPORT for generic template definitions!
 template<typename T>
 class ConstPropagatingUniquePointer : private std::shared_ptr<T>

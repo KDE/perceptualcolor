@@ -47,10 +47,10 @@ class AbstractDiagramPrivate;
  * these features; that’s the only way to provide a consistent and good
  * user experience.
  *
- * @todo Circular diagrams should be right-aligned on RTL layouts.
- *
- * @todo Touchscreen support: Magnify the handle circle, when diagram is
- * used on a touch device?  */
+ * @todo NICETOHAVE @ref AbstractDiagram::actualVisibilityToggledEvent and
+ * @ref AbstractDiagram::isActuallyVisible are not actually used.
+ * Either use them or remove them?
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT AbstractDiagram : public QWidget
 {
     Q_OBJECT

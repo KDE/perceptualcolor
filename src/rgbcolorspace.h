@@ -48,13 +48,23 @@ class RgbColorSpacePrivate;
  * This class is reentrant. Furthermore, it is thread-save to use only
  * <tt>const</tt> functions simultaneously from various threads.
  *
- * @todo Unit tests for @ref RgbColorSpace, especially the to…() functions.
+ * @todo SHOULDHAVE
+ * Review @ref PerceptualColor::RgbColorSpace. And change
+ * it in order to allow support for Oklab. And maybe Googles
+ * <a href="https://github.com/material-foundation/material-color-utilities">
+ * HTC</a> (they also use
+ * <a href="https://m3.material.io/blog/science-of-color-design">HTC in their
+ * Material design system</a>).
  *
- * @todo Unit tests for @ref profileMaximumCielchD50Chroma and
+ * @todo SHOULDHAVE
+ *       Unit tests for @ref RgbColorSpace, especially the to…() functions.
+ *
+ * @todo SHOULDHAVE
+ *       Unit tests for @ref profileMaximumCielchD50Chroma and
  *       @ref profileMaximumOklchChroma with all profiles that are available
  *       in the testbed.
  *
- * @todo Allow also other perceptual color spaces instead of CIELAB:
+ * @todo SHOWSTOPPER Allow also other perceptual color spaces instead of CIELAB:
  *       This might be Oklab or Google’s HCT, CAM16 or DIN99. Attention:
  *       The range of valid values for Oklab is identical for L
  *       (0–1, or 0%–100%), but different for a and b:
@@ -68,7 +78,8 @@ class RgbColorSpacePrivate;
  *       no support for anything else in our widgets.
  *
  *
- * @todo The sRGB colour space object should be implemented as a singleton.
+ * @todo NICETOHAVE
+ *       The sRGB colour space object should be implemented as a singleton.
  *       This is possible because it is thread-safe, and therefore it does
  *       not make sense to have more than one object of this class. At the
  *       same time, it is necessary that it implements the common interface
@@ -84,7 +95,8 @@ class RgbColorSpacePrivate;
  *       for: 1) thread-safety. 2)  dynamic libraries. See Wikipedia
  *       for details!
  *
- * @todo Is it possible to split this into an interface and into
+ * @todo NICETOHAVE
+ *       Is it possible to split this into an interface and into
  *       various implementations (a slow but safe implementation for
  *       all valid ICC files, and a fast optimized implementation for sRGB
  *       only? If so, is it possible to get rid of the dependency from
@@ -99,22 +111,26 @@ class RgbColorSpacePrivate;
  *       http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
  *       for implementation details.
  *
- * @todo We return double precision values. But doesn’t use LittleCMS
+ * @todo SHOULDHAVE
+ *       We return double precision values. But doesn’t use LittleCMS
  *       only 16-bit-integer internally? On the other hand: Using double
  *       precision allows to filter out out-of-range values…
  *
- * @todo Do not convert QRgba64 to RgbDouble, but use a transform that
+ * @todo SHOULDHAVE
+ *       Do not convert QRgba64 to RgbDouble, but use a transform that
  *       reads QRgba64 directly. While the benefit might not be big in
  *       this function, in general it would be good to review for which data
  *       types we provide transforms and minimize conversions.
  *
- * @todo In the API of this class, clarify the precision. If more than
+ * @todo SHOULDHAVE
+ *       In the API of this class, clarify the precision. If more than
  *       8 bit per channel, we have to switch from QRgb to QRgb64. But
  *       probably all OS APIs only accept 8 bit anyway? Is it worth the
  *       pain just because @ref ColorDialog can return <tt>QColor</tt>
  *       which provides 16 bit support?
  *
- * @todo Find more efficient ways of in-gamut detection. Maybe provide
+ * @todo NICETOHAVE
+ *       Find more efficient ways of in-gamut detection. Maybe provide
  *       a subclass with optimized algorithms just for sRGB-build-in? */
 class RgbColorSpace : public QObject
 {
