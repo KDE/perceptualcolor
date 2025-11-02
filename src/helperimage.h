@@ -32,11 +32,15 @@ void fillRect(uchar *const bytesPtr, const qsizetype bytesPerLine, const QRect r
 QThreadPool &getLibraryQThreadPoolInstance();
 
 /**
+ * @internal
+ *
  * @brief Thread priority for calculating images in the background.
  */
 constexpr QThread::Priority imageThreadPriority = QThread::Priority::LowPriority;
 
 /**
+ * @internal
+ *
  * @brief A transparent value, compatible with both the premultiplied and the
  * non-premultiplied format.
  */

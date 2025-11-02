@@ -19,6 +19,8 @@ namespace PerceptualColor
 {
 
 /**
+ * @internal
+ *
  * @brief Factory function template for creating accessible interfaces.
  *
  * This template provides a factory function compatible with both the
@@ -70,6 +72,8 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
 }
 
 /**
+ * @internal
+ *
  * @brief Defines and installs an accessible interface factory using
  * <tt>QAccessible::installFactory()</tt>.
  *

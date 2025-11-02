@@ -100,13 +100,15 @@ enum class ColorModel {
 Q_ENUM_NS(ColorModel)
 
 /**
+ * @internal
+ *
  * @brief Enum class representing possible color spaces in the Lch color
  * models.
  */
 enum class LchSpace {
-    Oklch, /**< The Oklch color space, which uses by definition
+    Oklch, /**< @internal The Oklch color space, which uses by definition
     always a D65 whitepoint. */
-    CielchD50 /**< The CielchD50 color space, assuming a chromatic
+    CielchD50 /**< @internal The CielchD50 color space, assuming a chromatic
     adaption to the D50 whitepoint. */
 };
 Q_ENUM_NS(LchSpace)

@@ -88,7 +88,10 @@ std::optional<SquareMatrix3> inverseMatrix(const SquareMatrix3 &matrix)
     return temp / determinant;
 }
 
-/** @brief Calculates the required number of decimals to achieve the requested
+/**
+ * @internal
+ *
+ * @brief Calculates the required number of decimals to achieve the requested
  * number of significant figures within the given range.
  *
  * @param rangeMax The maximum value of the range [0, rangeMax].
@@ -115,6 +118,8 @@ int decimalPlaces(const int rangeMax, const int significantFigures)
 }
 
 /**
+ * @internal
+ *
  * @brief Rounds a given floating point value to the nearest multiple of a
  * specified integer.
  *
@@ -136,6 +141,8 @@ int roundToNearestMultiple(double num, int multiple)
 }
 
 /**
+ * @internal
+ *
  * @brief Rounds a floating-point number to the nearest multiple of an integer.
  *
  * @param num The number to be rounded
@@ -153,6 +160,8 @@ int roundToIntMultiple(double num, int multiple)
 }
 
 /**
+ * @internal
+ *
  * @brief Rounds a floating-point number to the nearest multiple of
  * a floating-point number.
  *

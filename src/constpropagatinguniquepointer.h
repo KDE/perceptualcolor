@@ -8,8 +8,7 @@
 
 namespace PerceptualColor
 {
-/** @internal
- *
+/**
  * @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
  *
  * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
