@@ -750,16 +750,7 @@
  * This library is internationalized (i18n). This include also support
  * for right-to-left layouts in the widgets.
  *
- * @section Localization
- *
- * This library is also localized (l10n). The localization is divided
- * into two separate areas, which behave differently and independently
- * of each other.
- *
- * 1. Translation.
- * 2. Everything else.
- *
- * @subsection localizationtranslation Translation
+ * @section localizationtranslation Localization – Translation Component
  *
  * The translation of user-visible strings is a global setting for the whole
  * library. The language for the translation is auto-detected depending on
@@ -769,7 +760,7 @@
  * The various translations are build directly into the library binary;
  * no external files need to be available or loaded.
  *
- * @subsection localizationeverythingelse Everything else
+ * @section localizationnontranslation Localization – Non-Translation Components
  *
  * All other localization settings (like which decimal separator to use or
  * which date format to use) are individual per widget, depending on the

@@ -108,6 +108,8 @@ ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, con
  *
  * @param event The corresponding mouse event
  *
+ * @internal
+ *
  * @todo MUSTHAVE Also accept clicks outside the gray circle: Either in the
  * color wheel or in the small space between color wheel and gray circle. By
  * the way: Maybe remove this small space? If so, we should simply make
