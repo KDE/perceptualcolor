@@ -1067,6 +1067,9 @@
  *
  * @todo SHOULDHAVE Increase version number in CMakeLists.txt (MAJOR_VERSION,
  * MINOR_VERSION, PATCH_VERSION)
+ *
+ * @todo SHOULDHAVE <tt>operator&lt;&lt;</tt> and <tt>operator==</tt> actually
+ * cover all data members.
  */
 
 /** @page versioninfo Version information at compiletime and runtime

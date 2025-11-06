@@ -88,11 +88,6 @@ public:
     // RgbColor(RgbColor &&other) noexcept = default;
 
     [[nodiscard]] bool operator==(const RgbColor &other) const;
-
-    /** @brief HWB representation.
-     *
-     * Range: [0, 360], [0, 100], [0, 100] */
-    GenericColor hwb;
     /** @brief HSL representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
@@ -101,6 +96,10 @@ public:
      *
      * Range: [0, 360], [0, 100], [0, 100] */
     GenericColor hsv;
+    /** @brief HWB representation.
+     *
+     * Range: [0, 360], [0, 100], [0, 100] */
+    GenericColor hwb;
     /** @brief RGB representation.
      *
      * Range: [0, 255] */

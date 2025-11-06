@@ -277,7 +277,8 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
         << " - hsl: " << value.hsl << "\n"
         << " - hsv: " << value.hsv << "\n"
         << " - hwb: " << value.hwb << "\n"
-        << " - rgb: " << value.rgb255 << "\n"
+        << " - rgb255: " << value.rgb255 << "\n"
+        << " - rgbHex6: " << value.rgbHex6 << "\n"
         << " - rgbQColor: " << value.rgbQColor << "\n"
         << ")";
     return dbg.maybeSpace();

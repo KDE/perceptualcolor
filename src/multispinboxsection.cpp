@@ -286,10 +286,12 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
     dbg.nospace() << "\nMultiSpinBoxSection(" // Opening line
                   << "\n    decimals: " << value.decimals() //
                   << "\n    formatString: " << value.formatString() //
+                  << "\n    isGroupSeparatorShown: " << value.isGroupSeparatorShown() //
                   << "\n    isWrapping: " << value.isWrapping() //
                   << "\n    maximum: " << value.maximum() //
                   << "\n    minimum: " << value.minimum() //
                   << "\n    prefix: " << value.prefix() //
+                  << "\n    singleStep: " << value.singleStep() //
                   << "\n    suffix: " << value.suffix() //
                   << "\n)" // Closing line
         ;
