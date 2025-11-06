@@ -25,7 +25,7 @@ class ColorPatch;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class ColorPatchPrivate final
+class ColorPatchPrivate
 {
 public:
     /**
@@ -69,13 +69,8 @@ public:
         bool operator==(const ImageParameters &other) const;
     };
 
-    /** @brief Constructor */
     explicit ColorPatchPrivate(ColorPatch *backLink);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~ColorPatchPrivate() noexcept = default;
+    virtual ~ColorPatchPrivate() noexcept;
 
     /** @brief Initial cursor position (at the time of the left-click)
      * where a drag-and-drop action starts.

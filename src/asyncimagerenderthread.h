@@ -42,7 +42,7 @@ public:
      *
      * The function pointed to by this pointer is supposed to
      * render the image with the given parameters, and deliver the
-     * result of each interlacing pass and also the final result by
+     * result of each interlacing pass and also the final result by
      * callbacks. It also is supposed to check regularly via callbacks
      * if it should abort the rendering.
      *
@@ -101,7 +101,7 @@ Q_SIGNALS:
      * @param parameters The parameters of the image
      * @param state The interlacing state of the image. A render function
      * must first return zero or more images with intermediate state. After
-     * that, it must return exactly one image with final state (unless it
+     * that, it must return exactly one image with final state (unless it
      * was aborted). After that, it must not return any more images.
      *
      * @warning This signal can be emitted by a thread other than the

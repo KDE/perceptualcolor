@@ -13,7 +13,7 @@ namespace PerceptualColor
  * The @ref lchrangerationale "range of Oklch values" it known.
  * But what could be useful default values? This struct provides some
  * proposals. All values are <tt>constexpr</tt>. */
-struct OklchValues final {
+struct OklchValues {
 public:
     /** @brief Maximum chroma value as defined in @ref lchrangerationale. */
     static constexpr int maximumChroma = 2;

@@ -32,7 +32,9 @@ class PerceptualSettings : public Settings
 public:
     /** @brief Data type for color lists.
      *
-     * Has serialization support as required by <tt>QSettings</tt>. */
+     * Has serialization support as required by <tt>QSettings</tt>
+     * thanks to <tt>QList</tt>.
+     */
     using ColorList = QList<QColor>;
 
     virtual ~PerceptualSettings() override;

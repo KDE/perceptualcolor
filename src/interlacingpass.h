@@ -33,7 +33,7 @@ namespace PerceptualColor
  * @note As this is just an internal class which is not part of the public API,
  * there is direct access to its data members for simplicity reasons. However,
  * it is not allowed to change them directly! Use them read-only. */
-class InterlacingPass final
+class InterlacingPass
 {
 public:
     explicit InterlacingPass(const double passCount);

@@ -78,6 +78,13 @@ ColorPatchPrivate::ColorPatchPrivate(ColorPatch *backLink)
     m_label->setAlignment(myAlignment);
 }
 
+/**
+ * @brief Destructor
+ */
+ColorPatchPrivate::~ColorPatchPrivate() noexcept
+{
+}
+
 /** @brief Provide the size hint.
  *
  * Reimplemented from base class.

@@ -41,7 +41,7 @@ public:
     enum class InterlacingState {
         Intermediate, /**< The image represents
             an intermediate interlacing result. */
-        Final /**< The image represents the final image in full quality.
+        Final /**< The image represents the final image in full quality.
             No further interlacing passes will happen. */
     };
 
@@ -65,7 +65,7 @@ public:
      * @param parameters The parameters of the image
      * @param state The interlacing state of the image. A render function
      * must first return zero or more images with intermediate state. After
-     * that, it must return exactly one image with final state (unless it
+     * that, it must return exactly one image with final state (unless it
      * was aborted). After that, it must not return any more images. */
     virtual void deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state) = 0;
 

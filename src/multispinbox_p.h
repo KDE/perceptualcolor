@@ -30,7 +30,7 @@ class MultiSpinBox;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class MultiSpinBoxPrivate final : public QObject
+class MultiSpinBoxPrivate : public QObject
 {
     Q_OBJECT
 

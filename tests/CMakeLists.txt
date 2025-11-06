@@ -7,6 +7,8 @@
 
 ################# Tool launching the color dialog #################
 add_executable(perceptualcolorpicker)
+target_compile_definitions(perceptualcolorpicker
+    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(
@@ -25,6 +27,8 @@ target_link_libraries(
 
 ################# Test tool #################
 add_executable(testapp)
+target_compile_definitions(testapp
+    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(

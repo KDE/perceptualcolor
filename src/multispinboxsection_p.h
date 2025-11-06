@@ -15,7 +15,7 @@ namespace PerceptualColor
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class MultiSpinBoxSectionPrivate final
+class MultiSpinBoxSectionPrivate
 {
 public:
     /** @brief Internal storage of the

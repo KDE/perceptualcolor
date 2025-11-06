@@ -36,7 +36,7 @@ class RgbColorSpace;
  * Also, mouse events work with pixel position; so when reacting on mouse
  * events than it’s the center of the given mouse event pixel position that is
  * considered when processing the mouse event. */
-class ChromaHueDiagramPrivate final
+class ChromaHueDiagramPrivate
 {
 public:
     ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);

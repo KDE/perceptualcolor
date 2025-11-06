@@ -333,20 +333,6 @@
  * work reliably when namespaces do accross header files (a double declaration
  * would break Q_NAMESPACE), and the gain isn't work the problems.
  *
- * @todo SHOULDHAVE Since lcms 2.10,<br/>
- * <tt>\#define CMS_NO_REGISTER_KEYWORD<br/>
- * \#include &lt;lcms2.h&gt;</tt><br/>
- * works. Use it instead of this CMakeLists.txt code<br/>
- * <tt>
- * if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")<br/>
- *    add_compile_options(/wd5033)<br/>
- * endif()<br/>
- * if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR ON_CLANG_DERIVATE)<br/>
- *    add_compile_options(-Wno-register)<br/>
- * endif()<br/>
- * </tt><br/>
- * which would not work cross-compiler.
- *
  * @todo SHOULDHAVE <tt>/usr/share/color/icc/sRGB_v4_ICC_preference.icc</tt>
  * has a strange blackpoint in chroma-lightness diagram (1/10 above the
  * 0 line)
@@ -406,12 +392,6 @@
  * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum"><tt>
  * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
  * @ref PerceptualColor::GradientSlider?
- *
- * @todo SHOWSTOPPER Remove things form the public API, leaving only the absolutely
- * minimal API that is required by the user.
- *
- * @todo SHOULDHAVE Avoid “final” in the public API (or even altogether?).
- * Implement a codecheck for this.
  *
  * @todo NICETOHAVE Most widgets of this library allocate in each paint event
  * a new buffer to paint on, before painting on the widget. This is also done
@@ -493,19 +473,6 @@
  *   thicker? setAccessibleName().] The application Accerciser provides
  *   inspection possibilities.
  *
- * @todo SHOWSTOPPER From KDE’s binary compatibility info page:
- * In order to make a class
- * to extend in the future you should follow these rules:
- * - add non-inline virtual destructor even if the body is empty.
- * - re-implement event in QObject-derived classes, even if the body for
- *   the function is just calling the base class' implementation. This is
- *   specifically to avoid problems caused by adding a reimplemented virtual
- *   function as discussed below.
- *
- * @todo SHOWSTOPPER Following the recommendation
- * of the C++ core guidelines, all
- * destructors should be noexcept.
- *
  * @todo NICETOHAVE
  * In https://phabricator.kde.org/T12359 is recommended to provide
  * RESET statements for all properties for better compatibility with QML.
@@ -515,11 +482,6 @@
  * @todo SHOULDHAVE We prevent division by 0 in
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50().
  * We should make sure this happens also in the other diagram widgets!
- *
- * @todo SHOWSTOPPER
- * Add a @ref PerceptualColor::ConstPropagatingUniquePointer to
- * all classes, including the non-pimpl classes, to allow for later
- * enhancements.
  *
  * @todo NICETOHAVE Remove setDevicePixelRatioF from all *Image classes. (It is
  * confusing, and at the same time there is no real need/benefit.)
@@ -534,8 +496,6 @@
  * the squares of the transparency background should not change across scale
  * factors! Instead: No pixel alignment anymore, use floating-point coordinates
  * on all scale factors instead!
- *
- * @todo NICETOHAVE Static test: Do not use the Tab character in source code!
  *
  * @todo SHOULDHAVE When setting <tt>currentColor</tt> to an out-of-gamut color,
  * what happens? Does @ref PerceptualColor::ChromaHueDiagram preserve
@@ -1054,7 +1014,7 @@
  * @todo SHOULDHAVE https://keepachangelog.com/en/1.1.0/
  *
  * @todo SHOULDHAVE Add missing friend declarations for unit
- * tests
+ * tests in Public API.
  *
  * @todo SHOULDHAVE Execute all scritps
  *
@@ -1070,6 +1030,57 @@
  *
  * @todo SHOULDHAVE <tt>operator&lt;&lt;</tt> and <tt>operator==</tt> actually
  * cover all data members.
+ *
+ * @todo SHOULDHAVE From
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
+ * KDE’s binary compatibility info page</a>:
+ * In order to make a class to extend in the future you should follow these
+ * rules:
+ * - Add d-pointer. See below.
+ * - Add non-inline virtual destructor even if the body is empty.
+ * - Reimplement <tt>event</tt> in QObject-derived classes, even if the body
+ *   for the function is just calling the base class' implementation. This is
+ *   specifically to avoid problems caused by adding a reimplemented virtual
+ *   function as discussed below.
+ * - Make all constructors non-inline.
+ * - Write non-inline implementations of the copy constructor and assignment
+ *   operator unless the class cannot be copied by value. (E.g. classes
+ *   inherited from QObject can't be.)
+ *
+ * @todo SHOULDHAVE
+ * Add d-pointer using @ref PerceptualColor::ConstPropagatingUniquePointer to
+ * all public classes, including the non-pimpl classes, to allow for later
+ * enhancements.
+ *
+ * @todo SHOULDHAVE Following
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
+ * KDE’s binary compatibility info page</a> you cannot:
+ * “Add a virtual function to a class that doesn't have any virtual functions
+ * or virtual bases.” Therefore, make sure all Public API classes have either
+ * a virtual function or a virtual base class, if appropriate (though even so,
+ * it seems to be impossible to add new virtual functions on Windows while
+ * staying binary compatible.)
+ *
+ * @todo SHOULDHAVE
+ * <a href="https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#c37-make-destructors-noexcept">
+ * The C++ core guidelines recommand that destructors should
+ * be <tt>noexcept</tt>, either implicitly or explicitly.</a>. Make sure
+ * that in our Public API, every destructor is explicitly <tt>noexcept</tt>.
+ *
+ * @todo SHOULDHAVE Remove things form the public API, leaving only the
+ * absolutely minimal API that is required by the user.
+ *
+ * @todo SHOULDHAVE Ensure full accessibility for all functions via both mouse
+ * and keyboard. Every function in the dialog should be operable using only the
+ * mouse, and likewise using only the keyboard. Currently, at least two issues
+ * remain: Adding and removing colors from the swatchbook is not possible via
+ * keyboard. The hexadecimal RGB value cannot be modified without using the
+ * keyboard. A potential solution for the hexadecimal RGB input might be to
+ * replace the current widget with @ref PerceptualColor::MultiSpinBox. However,
+ * this could interfere with copy-and-paste of the entire value. Can we extend
+ * @ref PerceptualColor::MultiSpinBox to support full-value copy-paste? If such
+ * support introduces binary or source incompatibilities, it must be
+ * implemented before any eventual release.
  */
 
 /** @page versioninfo Version information at compiletime and runtime

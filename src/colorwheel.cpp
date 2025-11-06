@@ -59,7 +59,9 @@ ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
 }
 
-/** @brief Default destructor */
+/**
+ * @brief Destructor
+ */
 ColorWheel::~ColorWheel() noexcept
 {
 }
@@ -76,6 +78,13 @@ ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<
 {
     // Initialization
     m_hue = CielchD50Values::neutralHue;
+}
+
+/**
+ * @brief Destructor
+ */
+ColorWheelPrivate::~ColorWheelPrivate() noexcept
+{
 }
 
 /** @brief Convert widget pixel positions to wheel coordinate points.

@@ -70,7 +70,7 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo MUSTHAVE Click on the wheel. Actual
+ * @todo SHOWSTOPPER Click on the wheel. Actual
  * behaviour: Nothing. Expected behavior:
  * The selected color follows the cursor.
  *

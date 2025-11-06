@@ -33,7 +33,7 @@ namespace PerceptualColor
  *           declared with <tt>Q_ENUM</tt> <em>and</em> their underlying type
  *           is <tt>int</tt>. */
 template<typename T>
-class Setting final : public SettingBase
+class Setting : public SettingBase
 {
 public:
     Setting(const QString &key, Settings *settings, QObject *parent = nullptr);

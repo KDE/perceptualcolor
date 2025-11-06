@@ -24,15 +24,11 @@ class RgbColorSpace;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class ColorWheelPrivate final
+class ColorWheelPrivate
 {
 public:
     ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~ColorWheelPrivate() noexcept = default;
+    virtual ~ColorWheelPrivate() noexcept;
 
     /** @brief Internal storage of the @ref ColorWheel::hue() property */
     qreal m_hue;

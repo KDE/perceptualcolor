@@ -52,7 +52,9 @@ GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpa
     d_pointer->initialize(colorSpace, orientation);
 }
 
-/** @brief Default destructor */
+/**
+ * @brief Destructor
+ */
 GradientSlider::~GradientSlider() noexcept
 {
 }
@@ -65,6 +67,13 @@ GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink)
     : m_firstColorCieLchD50A{0, 0, 0, 0} // dummy value
     , m_secondColorCieLchD50A{0, 0, 0, 0} // dummy value
     , q_pointer(backLink)
+{
+}
+
+/**
+ * @brief Destructor
+ */
+GradientSliderPrivate::~GradientSliderPrivate() noexcept
 {
 }
 

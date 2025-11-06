@@ -57,6 +57,13 @@ grep \
         --invert-match \
     | sed 's/^/Missing byte-order-mark: /'
 
+grep \
+    --recursive --exclude-dir=testbed \
+    --files-with-match $'\t' \
+    $ALL_CODE \
+        | sed 's/^/Contains tab character: /'
+
+
 # All header files in src/ should have an “@internal” in
 # the Doxygen documentation, because when it would be public,
 # the header file would not be in src/
@@ -67,13 +74,18 @@ grep \
     src/*.h \
          | sed 's/^/Missing “@internal” statement in non-public header: /'
 
-# The public header files should not use “final” because it cannot be removed
-# without breaking binary compatibility.
+# https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#c139-use-final-on-classes-sparingly
+# The C++ core guidelines remommend to use “final” sparingly. The public header
+# files must not use “final” at all because it cannot be removed without
+# breaking binary compatibility. Other headers should avoid it also.
 grep \
     --recursive --exclude-dir=testbed \
-    --files-with-matches $'final' \
-    $PUBLIC_HEADERS \
-         | sed 's/^/“final” should not show up in public headers: /'
+    --perl-regexp --files-with-matches '(^|[[:space:]])final([[:space:]]|$)' \
+    $ALL_CODE \
+    | grep \
+        --perl-regexp "\.cpp$" \
+        --invert-match \
+    | sed 's/^/“final” should not be used: /'
 
 # All public header files should use
 # the PERCEPTUALCOLOR_IMPORTEXPORT macro.

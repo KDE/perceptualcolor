@@ -24,15 +24,11 @@ class RgbColorSpace;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class GradientSliderPrivate final
+class GradientSliderPrivate
 {
 public:
     explicit GradientSliderPrivate(GradientSlider *backLink);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~GradientSliderPrivate() noexcept = default;
+    virtual ~GradientSliderPrivate() noexcept;
 
     // Methods
     [[nodiscard]] qreal fromWidgetPixelPositionToValue(QPoint pixelPosition);

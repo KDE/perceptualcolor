@@ -15,7 +15,7 @@ namespace PerceptualColor
  * The @ref lchrangerationale "range of CIELCh-D50 values" it known.
  * But what could be useful default values? This struct provides some
  * proposals. All values are <tt>constexpr</tt>. */
-struct CielchD50Values final {
+struct CielchD50Values {
 public:
     /** @brief Maximum chroma value as defined in @ref lchrangerationale. */
     static constexpr int maximumChroma = 255;

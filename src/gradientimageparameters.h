@@ -32,7 +32,7 @@ class RgbColorSpace;
  *
  * This class supports HiDPI via its @ref setDevicePixelRatioF function.
  */
-struct GradientImageParameters final {
+struct GradientImageParameters {
 public:
     explicit GradientImageParameters();
     [[nodiscard]] bool operator==(const GradientImageParameters &other) const;

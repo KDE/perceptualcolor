@@ -69,7 +69,7 @@ class RgbColorSpace;
  * have only two such widgets). Given the limited advantages, this may not
  * justify the added cost.
  */
-class ColorWheelImage final
+class ColorWheelImage
 {
 public:
     explicit ColorWheelImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);

@@ -472,10 +472,10 @@ template<typename T>
 #endif
     const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
-    // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
+    // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
     // (synonym) keys for a given value. But it also returns happily
     // fantasy strings for non-existing values. Therefore, we have check
-    // first with QMetaEnum::valueToKeys (identifier with a final s) which
+    // first with QMetaEnum::valueToKeys (identifier with a final s) which
     // does only return one single key for each value, but is guaranteed to
     // return nullptr if the value has no key.
     if (!myMeta.valueToKey(value)) {
@@ -532,10 +532,10 @@ template<typename T>
 #endif
     const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
-    // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
+    // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
     // (synonym) keys for a given value. But it also returns happily
     // fantasy strings for non-existing values. Therefore, we have check
-    // first with QMetaEnum::valueToKeys (identifier with a final s) which
+    // first with QMetaEnum::valueToKeys (identifier with a final s) which
     // does only return one single key for each value, but is guaranteed to
     // return nullptr if the value has no key.
     if (!myMeta.valueToKey(value)) {

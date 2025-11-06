@@ -46,7 +46,7 @@ namespace PerceptualColor
  * @ref operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
  *
  * @sa @ref AbsoluteColor */
-class RgbColor final
+class RgbColor
 {
 public:
     [[nodiscard]] static RgbColor fromHsl(const GenericColor &color);

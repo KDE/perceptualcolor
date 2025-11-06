@@ -34,7 +34,7 @@ namespace PerceptualColor
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class RgbColorSpacePrivate final
+class RgbColorSpacePrivate
 {
 public:
     explicit RgbColorSpacePrivate(RgbColorSpace *backLink);

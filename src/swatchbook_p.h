@@ -34,7 +34,7 @@ class SwatchBook;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class SwatchBookPrivate final : public QObject
+class SwatchBookPrivate : public QObject
 {
     Q_OBJECT
 

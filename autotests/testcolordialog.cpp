@@ -772,8 +772,8 @@ private Q_SLOTS:
                  referenceClassProperty.isScriptable());
         QCOMPARE(testClassProperty.isStored(), //
                  referenceClassProperty.isStored());
-        QCOMPARE(testClassProperty.isUser(), //
-                 referenceClassProperty.isUser());
+        // Do not test isUser() because our API differs here intentionally
+        // from the QColorDialog API.
         QCOMPARE(testClassProperty.isValid(), //
                  referenceClassProperty.isValid());
         QCOMPARE(testClassProperty.isWritable(), //

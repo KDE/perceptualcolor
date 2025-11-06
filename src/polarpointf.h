@@ -51,7 +51,7 @@ namespace PerceptualColor
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
  */
-class PolarPointF final
+class PolarPointF
 {
 public:
     /** @brief Constructor

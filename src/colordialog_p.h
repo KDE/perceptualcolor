@@ -58,7 +58,7 @@ class WheelColorPicker;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class ColorDialogPrivate final : public QObject
+class ColorDialogPrivate : public QObject
 {
     Q_OBJECT
 public:

@@ -53,7 +53,7 @@ private:
 
         constexpr double oklabHighXYZ[] = //
             {1.000, 0.000, 0.000};
-        QTest::newRow("highXYZ 0.950	1.000	1.089") //
+        QTest::newRow("highXYZ 0.950 1.000 1.089") //
             << 0.950 << 1.000 << 1.089 //
             << Trio(oklabHighXYZ);
 

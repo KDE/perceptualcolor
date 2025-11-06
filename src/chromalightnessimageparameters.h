@@ -37,9 +37,9 @@ class RgbColorSpace;
  * slower: As there is no mathematical description of the shape of the color
  * solid, the only easy way to get anti-aliasing would be to render at a
  * higher resolution (say two times higher, which would yet mean four times
- * more data), and then downscale it to the final resolution. This would be
+ * more data), and then downscale it to the final resolution. This would be
  * too slow. */
-class ChromaLightnessImageParameters final
+class ChromaLightnessImageParameters
 {
 public:
     [[nodiscard]] bool operator==(const ChromaLightnessImageParameters &other) const;

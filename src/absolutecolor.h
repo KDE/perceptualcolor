@@ -19,7 +19,7 @@ namespace PerceptualColor
  * @brief Toolbox for color conversions.
  *
  * @sa @ref RgbColor */
-class AbsoluteColor final
+class AbsoluteColor
 {
 public:
     AbsoluteColor() = delete;

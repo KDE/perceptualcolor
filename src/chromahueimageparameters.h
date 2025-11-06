@@ -55,7 +55,7 @@ class RgbColorSpace;
  * you might consider calling <tt>qRegisterMetaType()</tt> for
  * this type, once you have a QApplication object.
  */
-struct ChromaHueImageParameters final {
+struct ChromaHueImageParameters {
 public:
     /** @brief The border size, measured in physical pixels. */
     qreal borderPhysical = 0;

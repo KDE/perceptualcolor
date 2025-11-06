@@ -40,7 +40,7 @@ namespace PerceptualColor
  *   signal @ref interlacingPassCompleted as soon as they are available.
  * - Optional interlacing support: The rendering function can
  *   provide a low-quality image first, and then progressively
- *   better images until the final full-quality image. Since today’s
+ *   better images until the final full-quality image. Since today’s
  *   high-DPI screens have more and more pixels (4K screens, perhaps
  *   one day 8K screens?), interlacing becomes increasingly important,
  *   especially with complex image calculation. The @ref InterlacingPass
@@ -112,7 +112,7 @@ namespace PerceptualColor
  *   anymore if the data type of the parameters is wrong – but is this
  *   really a big issue in practice?  */
 template<typename T>
-class AsyncImageProvider final : public AsyncImageProviderBase
+class AsyncImageProvider : public AsyncImageProviderBase
 {
     // Here is no Q_OBJECT macro because it cannot be combined with templates.
     // See https://stackoverflow.com/a/63021891 for more information.

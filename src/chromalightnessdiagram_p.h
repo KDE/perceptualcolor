@@ -30,7 +30,7 @@ class RgbColorSpace;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class ChromaLightnessDiagramPrivate final
+class ChromaLightnessDiagramPrivate
 {
 public:
     explicit ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink);

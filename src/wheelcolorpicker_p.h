@@ -30,7 +30,7 @@ class WheelColorPicker;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class WheelColorPickerPrivate final : public QObject
+class WheelColorPickerPrivate : public QObject
 {
     Q_OBJECT
 

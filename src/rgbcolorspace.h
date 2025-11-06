@@ -49,14 +49,6 @@ class RgbColorSpacePrivate;
  * <tt>const</tt> functions simultaneously from various threads.
  *
  * @todo SHOULDHAVE
- * Review @ref PerceptualColor::RgbColorSpace. And change
- * it in order to allow support for Oklab. And maybe Googles
- * <a href="https://github.com/material-foundation/material-color-utilities">
- * HTC</a> (they also use
- * <a href="https://m3.material.io/blog/science-of-color-design">HTC in their
- * Material design system</a>).
- *
- * @todo SHOULDHAVE
  *       Unit tests for @ref RgbColorSpace, especially the to…() functions.
  *
  * @todo SHOULDHAVE
@@ -64,19 +56,15 @@ class RgbColorSpacePrivate;
  *       @ref profileMaximumOklchChroma with all profiles that are available
  *       in the testbed.
  *
- * @todo SHOWSTOPPER Allow also other perceptual color spaces instead of CIELAB:
- *       This might be Oklab or Google’s HCT, CAM16 or DIN99. Attention:
- *       The range of valid values for Oklab is identical for L
- *       (0–1, or 0%–100%), but different for a and b:
- *       https://www.w3.org/TR/css-color-4/#ok-lab says up to 0.5, but
- *       we would have to actually test this. Therefore, also the
- *       @ref profileMaximumCielchD50Chroma would have to be provided for all
- *       these color spaces individually. Anyway, we could also
- *       output the data in a new data type for cylindrical coordinates
- *       (angle [in degree], radius, z), independent of the color
- *       space, which must always be cylindrical anyway as we have
- *       no support for anything else in our widgets.
- *
+ * @todo SHOWSTOPPER Allow also other perceptual color spaces instead
+ * of CIELAB: Definitely Oklab. But not
+ * less common ones like CAM16 or DIN99 or Googles
+ * <a href="https://github.com/material-foundation/material-color-utilities">
+ * HCT</a> (they also use
+ * <a href="https://m3.material.io/blog/science-of-color-design">HCT in their
+ * Material design system</a>). Also the @ref profileMaximumCielchD50Chroma
+ * would need to have companion functions provided for all the new color
+ * spaces individually.
  *
  * @todo NICETOHAVE
  *       The sRGB colour space object should be implemented as a singleton.
@@ -110,17 +98,6 @@ class RgbColorSpacePrivate;
  *       http://www.brucelindbloom.com/index.html?Math.html and
  *       http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
  *       for implementation details.
- *
- * @todo SHOULDHAVE
- *       We return double precision values. But doesn’t use LittleCMS
- *       only 16-bit-integer internally? On the other hand: Using double
- *       precision allows to filter out out-of-range values…
- *
- * @todo SHOULDHAVE
- *       Do not convert QRgba64 to RgbDouble, but use a transform that
- *       reads QRgba64 directly. While the benefit might not be big in
- *       this function, in general it would be good to review for which data
- *       types we provide transforms and minimize conversions.
  *
  * @todo SHOULDHAVE
  *       In the API of this class, clarify the precision. If more than

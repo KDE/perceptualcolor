@@ -77,7 +77,7 @@ class QCoreApplication;
  * LocaleChange could be important for spin boxes to accept the new
  * QLocale’s number format.
  *
- * @todo MUSTHAVE
+ * @todo SHOWSTOPPER
  * Catch QEvent::LayoutDirectionChange in all widgets? Or the signal
  * QGuiApplication::layoutDirectionChanged()? */
 

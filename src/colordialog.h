@@ -172,8 +172,6 @@ class RgbColorSpace;
  * or decreasing the values might be too small. And mobile UI uses
  * often wheels for this use case…
  *
- * @section additionalcolordialogfeatures Proposals for additional features
- *
  * @todo NICETOHAVE The QLineEdit for the hexadecimal RGB values: Maybe it
  * could even be switched to @ref MultiSpinBox (but that would mean implement
  * support for hexadecimal digits in @ref MultiSpinBox).
@@ -235,22 +233,12 @@ class RgbColorSpace;
  * not for the window position? Anyway, the native QColorDialog does’t to
  * that.
  *
- * @todo SHOWSTOPPER What does the dialog return by definition? sRGB?
- * Another RGB? Is it RGB at all, because QColor could also contain something
- * else? What accuracy is promised? QColor cannot exceed 16 bits per channel.
- * Would it be preferable to use QRgb or Rgba64 to clearly communicate that RGB
- * is being returned? Can the precision be specified through settings, or is
- * it hard-coded? both of which affect SwatchBook, which decides whether
- * two colours are the same, currently with one byte per channel precision.
- * What about ColorPatch? Does its limitation to QColor have practical
- * implications for the precision of our colour conversions?
- *
- * @todo SHOWSTOPPER When using sRGB working gamut, prefix all settings in the
- * settings file with “srgb” or similar to make sure they will not
- * be miss-interpreted.
- *
  * @todo SHOWSTOPPER Which color to save in history? RGB or HSL or Oklch or
- * Oklab or what? If RGB: Which color space to use for saving? How to behave
+ * Oklab or what? If RGB: Which color space to use for saving? Maybe
+ * prefix all settings in the
+ * settings file with “srgb” or similar to make sure they will not
+ * be miss-interpreted. So something similar when using user-defined
+ * RGB profiles as gamut respectivele Working Color Space. How to behave
  * if the next time the dialog is used with a different gamut color space, and
  * the colors have different RGB values or are even out-of-gamut? Or use a
  * per-gamut history?
@@ -258,6 +246,12 @@ class RgbColorSpace;
  * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
  * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
  * for compatibility?
+ *
+ * @todo NICETOHAVE A property in @ref ColorDialog that substitutes
+ * @ref ColorDialogPrivate::decimals and so provides an API to change this
+ * within a reasonably range like [0..2].
+ *
+ * @todo NICETOHAVE Implement more of the <tt>QColorDialog</tt> API here.
  *
  * @note The swatch book has the basic color page, which provides a perceptual
  * color palette. Commom palettes like QColorDialog’s standard colors or the
@@ -273,17 +267,17 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
 {
     Q_OBJECT
 
-    /** @brief Currently selected color in the dialog
+    /** @brief The currently selected color in the dialog.
      *
-     * @invariant This property is provided as an RGB value.
-     * <tt>QColor::isValid()</tt> is always <tt>true</tt> and
-     * <tt>QColor::spec()</tt> is always <tt>QColor::Spec::Rgb</tt>.
+     * This property represents the selected color using the dialog’s
+     * working color space (gamut), with a precision of 16 bits per channel.
      *
-     * @invariant The signal @ref currentColorChanged() is emitted always and
-     * only when the value of this property changes.
+     * @invariant The signal @ref currentColorChanged() is emitted if and
+     * only if the value of this property changes.
      *
-     * @note The setter @ref setCurrentColor() does not accept all QColor
-     * values. See its documentation for details.
+     * @note The setter @ref setCurrentColor() does not accept all
+     * possible <tt>QColor</tt> values. Refer to its documentation for
+     * specific constraints.
      *
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
@@ -291,10 +285,11 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      *
      * @internal
      *
-     * @note This property does not have <tt>USER true</tt>. While it would
-     * be nice to have it, we do not do this because of conformance with
-     * QColorDialog, which doesn’t have it either. */
-    Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
+     * @invariant <tt>QColor::isValid()</tt> is guaranteed to
+     * return <tt>true</tt>, and <tt>QColor::spec()</tt> is
+     * always <tt>QColor::Spec::Rgb</tt>.
+     */
+    Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
 
     /** @brief Layout dimensions
      *

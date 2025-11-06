@@ -50,6 +50,8 @@ if(BUILD_TESTING)
         foreach(test_name IN LISTS ARGV)
             set(test_target_name "${test_name}")
             add_executable("${test_target_name}")
+            target_compile_definitions("${test_target_name}"
+                PRIVATE CMS_NO_REGISTER_KEYWORD)
             set(test_sources "${test_name}.cpp")
             if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.qrc")
                 # Add all resources from the .qrt file to our sources

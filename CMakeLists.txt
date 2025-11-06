@@ -446,7 +446,12 @@ endif()
 # noting that the LittleCMS header "lcms2.h," which we rely on, is a C header
 # and not specifically designed for C++. In this header, the "register" keyword
 # is extensively used. Since modifying the external header is not possible, we
-# opt to disable the warning.
+# need a different solution. Since lcms 2.10, defining
+# “#define CMS_NO_REGISTER_KEYWORD” before including “#include <lcms2.h>”
+# configures LittleCMS to not use the register keyword. We use this by adding
+# “target_compile_definitions(mytarget PRIVATE CMS_NO_REGISTER_KEYWORD)” to
+# all targets in our CMake code. But to support lcms < 2.10, we disable the
+# warning at least for some well-known compilers:
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options(/wd5033)
 endif()

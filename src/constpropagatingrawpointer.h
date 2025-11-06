@@ -51,7 +51,7 @@ namespace PerceptualColor
  * for compilers, so not all of them implement them. Furthermore, they
  * can still change. Therefore, we cannot use experimental features here.) */
 template<typename T>
-class ConstPropagatingRawPointer final
+class ConstPropagatingRawPointer
 {
 public:
     /** @brief Default constructor

@@ -187,6 +187,8 @@ set(LIBRARY_NAME "perceptualcolor-${MAJOR_VERSION}")
 # Add library. If it will build as STATIC or as SHARED library is not
 # hardcoded, so add_library() it use BUILD_SHARED_LIBS to decide.
 add_library(${LIBRARY_NAME})
+target_compile_definitions(${LIBRARY_NAME}
+    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # The headers have to be added here explicitly because otherwise Qt’s MOC
 # would not find them because they are not in the same directory as the
 # corresponding .cpp files
@@ -299,6 +301,8 @@ set(INTERNAL_LIBRARY_NAME "perceptualcolorinternal-${MAJOR_VERSION}")
 # Add library. If it will build as STATIC or as SHARED library is not
 # hardcoded, so add_library() it use BUILD_SHARED_LIBS to decide.
 add_library(${INTERNAL_LIBRARY_NAME})
+target_compile_definitions(${INTERNAL_LIBRARY_NAME}
+    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(

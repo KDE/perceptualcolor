@@ -12,30 +12,6 @@ class QSettings;
 namespace PerceptualColor
 {
 
-// // Example stream operator
-// QDataStream& operator<<(QDataStream& out, const Settings::ColorList& colorList)
-// {
-//     out << static_cast<qint32>(colorList.size());
-//     for (const QColor& color : colorList) {
-//         out << color;
-//     }
-//     return out;
-// }
-//
-// // Example stream operator
-// QDataStream& operator>>(QDataStream& in, Settings::ColorList& colorList)
-// {
-//     colorList.clear();
-//     qint32 size;
-//     in >> size;
-//     for (int i = 0; i < size; ++i) {
-//         QColor color;
-//         in >> color;
-//         colorList.append(color);
-//     }
-//     return in;
-// }
-
 /** @brief Constructor.
  *
  * @param key <tt>QSettings</tt> key for the value.
