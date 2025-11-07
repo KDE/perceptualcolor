@@ -27,14 +27,16 @@ PerceptualSettings::PerceptualSettings()
     //   And even if we always use INI, having both capital and small letters
     //   is error-prone because typos are not checked by the compiler.)
     // - Only the letters a-z should be used.
-    //   (Also, some characters like the backslash are not allowed on some
-    //   platforms.)
-    // - “group/key”: Each key has exactly one group. Don't use subgroups.
-    //   Use the class name as group name.
-    //   (This makes the settings file well readable for humans. Missing
-    //   groups are confusing because the system generates a “General”
-    //   group which is not easy to understand. And using class identifiers
-    //   helps to understand the structure of the settings file.)
+    //   (Also, some characters like the slash and backslash are not allowed on
+    //   many platforms.)
+    // - Key strings must follow the format “groupname/keyname”. Each keyname
+    //   should belong to a group, separated by a slash. You can
+    //   use nested groups like “groupname/subgroupname/keyname”. Use the
+    //   name of the class associated with the setting as the group name. This
+    //   convention improves readability of the settings file: Omitting a group
+    //   causes the system to assign the key to a default “General” group,
+    //   which can be unexpected and confusing. Using class names as group
+    //   names clarifies the origin and purpose of each setting.
     // - In C++, use “const” variables to define key strings, instead of
     //   manually typing the key strings.
     //   (This avoids typing errors.)
