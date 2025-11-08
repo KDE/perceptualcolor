@@ -235,10 +235,16 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
  * is sRGB, it is D65 (and other RGB gamuts are likely to be also D65).
  * However, CIELabD50 is D50! We do no whitepoint compensation manuelly, and
  * https://sourceforge.net/p/lcms/mailman/lcms-user/?viewmonth=202510 says
- * we do not need to when usung perceptual or relative-colormetric rendering
+ * we do not need to when using perceptual or relative-colormetric rendering
  * intents. However, we use absolut rendering intent. Also, we have these
  * changes between D50 and D65 in a lot of other, different contexts. What
  * would be the general solution here?
+ *
+ * @todo SHOULDHAVE Decide wether to require specific rendering intents to be
+ * present in the ICC file or not.
+ *
+ * @todo NICETOHAVE Add support the profiles containing a VCGT? Currently,
+ * these profiles are rejected.
  */
 bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 {
@@ -1104,7 +1110,10 @@ PerceptualColor::GenericColor RgbColorSpace::reduceOklchChromaToFitIntoGamut(con
  * color in this very same color space. Nevertheless, because of rounding
  * errors, when converting colors that are near to the outer hull of the
  * gamut/color space, than @ref isCielabD50InGamut() might return <tt>false</tt> for
- * a return value of <em>this</em> function. */
+ * a return value of <em>this</em> function.
+ *
+ * @todo NICETOHAVE Write a unit test for this function.
+ */
 cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //

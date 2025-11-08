@@ -896,7 +896,8 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
  *
  * @internal
  *
- * Color patches are aligned to device pixels only at integral scale factors
+ * @note Color patches
+ * are aligned to device pixels only at integral scale factors
  * (e.g., 100%, 200%, 300%). At fractional scale factors, pixel alignment is
  * intentionally avoided. Aligning patches at fractional scales leads to
  * rounding errors—for example, a patch size of 17.5 device pixels may round
@@ -908,6 +909,11 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
  * Wayland setups where scale factors can differ between screens and change
  * dynamically as windows move. To ensure consistent sizing across all scale
  * factors, pixel alignment is deliberately avoided in this function.
+ *
+ * @todo In Qt 6, the Breeze style no longer draws a blue focus border when a
+ * widget gains focus. This behavior was present in Qt 5, making it a
+ * regression specific to Breeze. While not all styles support this visual cue,
+ * Breeze previously did.
  */
 void SwatchBook::paintEvent(QPaintEvent *event)
 {

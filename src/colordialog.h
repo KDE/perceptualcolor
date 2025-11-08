@@ -224,7 +224,14 @@ class RgbColorSpace;
  * Cielab (feature parity with CSS Color 5), Okhsl?
  *
  * @todo NICETOHAVE Info about the whitepoint (D50, D65…) in the tooltip for
- * the ICC profile.
+ * the ICC profile. And about the mean or average gamma, CIE’s shoe sole
+ * diagram for gamut visualisation, gamma curve diagrams… At least
+ * @ref RgbColorSpace::profileTagBlackpoint,
+ * @ref RgbColorSpace::profileTagWhitepoint,
+ * @ref RgbColorSpace::profileTagRedPrimary,
+ * @ref RgbColorSpace::profileTagGreenPrimary,
+ * @ref RgbColorSpace::profileTagBluePrimary are yet available. Since
+ * LittleCMS 2.13 also <tt>cmsDetectRGBProfileGamma()</tt> is available.
  *
  * @todo NICETOHAVE Restore the previous window geometry when the dialog is
  * shown? We restore already the chosen tab and swatchbook page, but not the

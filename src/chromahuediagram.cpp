@@ -638,6 +638,13 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
  * @todo SHOWSTOPPER ChromaHueDiagram flickers when brightness changes very
  * quickly. Parts of the gamut are missing, but interestingly, the background
  * is not the widget background, but the grey of the background circle.
+ * Ideas: 1. Incoming interlacing passes are ignored if the minimum interval
+ * since the previous rendering has not yet elapsed. Once the minimum interval
+ * has passed, rendering is performed retroactively—provided that no new
+ * interlacing pass has arrived in the meantime. 2. In the @ref paintEvent()
+ * code, we delete all other pending @ref paintEvent() calls from the event
+ * loop at the very beginning (!) since we are already rendering the current
+ * image.*
  */
 void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 {

@@ -48,6 +48,9 @@ class RgbColorSpacePrivate;
  * This class is reentrant. Furthermore, it is thread-save to use only
  * <tt>const</tt> functions simultaneously from various threads.
  *
+ * @todo SHOULDHAVE Complete refactoring of this class, overhaul the interface,
+ * the unit tests etc …
+ *
  * @todo SHOULDHAVE
  *       Unit tests for @ref RgbColorSpace, especially the to…() functions.
  *
@@ -105,6 +108,24 @@ class RgbColorSpacePrivate;
  *       probably all OS APIs only accept 8 bit anyway? Is it worth the
  *       pain just because @ref ColorDialog can return <tt>QColor</tt>
  *       which provides 16 bit support?
+ *
+ * @todo NICETOHAVE If almost all RGB profiles are matrix-based and not
+ * LUT-based (look-up table based), may there exist an algorithmic way to
+ * calculate the gamut boundary in Oklab or CIELab projections?
+ *
+ * @todo SHOULDHAVE Restructure this class? Use two different classes instead,
+ * one for the working color space (defines the gamut available in the color
+ * dialog) and another one that represents the output screen color space?
+ *
+ * @todo SHOULDHAVE To determine whether a specific value is in-gamut or
+ * out-of-gamut, this class converts Oklch or CIELch values to RGB using an
+ * RGB ICC color profile. If the resulting RGB values are out of range, the
+ * original color is considered out-of-gamut. However, we know that this
+ * behavior in LittleCMS works with some RGB memory formats, but fails with
+ * others. Is it also possible that this entire approach may not work with
+ * certain (unusual) ICC profiles? Could we test this during profile creation?
+ * For example, by converting a clearly out-of-gamut Oklch or CIELch value and
+ * rejecting the profile creation if the resulting RGB value appears in-gamut?
  *
  * @todo NICETOHAVE
  *       Find more efficient ways of in-gamut detection. Maybe provide

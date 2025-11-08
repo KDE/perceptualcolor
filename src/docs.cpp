@@ -329,6 +329,21 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo SHOULDHAVE When using the ITUR profiles, the relation between the
+ * diagrams and the numeric values seems strange. And there are artefacts
+ * in the diagrams.
+ *
+ * @todo NICETOHAVE Static codecheck: The doxygen command (at)sa must always
+ * be followed by (at)ref, because (at)sa fails silently, but a following
+ * (at)ref makes sure we get an error message.
+ *
+ * @todo NICETOHAVE Currently, <tt>testcolordialog.cpp</tt> modifies the
+ * normal configuration file of the library, which interferes with normal
+ * usage of the library. It would be nice if <tt>testcolordialog.cpp</tt>
+ * could work independently from the normal configuration file, similar to
+ * <tt>testperceptualsettings.cpp</tt> which uses a custon identifier to
+ * prevent modifications of the normal ini configuration file.
+ *
  * @todo SHOULDHAVE Check against Q_NAMESPACE and Q_ENUM_NS because they cannot
  * work reliably when namespaces do accross header files (a double declaration
  * would break Q_NAMESPACE), and the gain isn't work the problems.
@@ -1068,7 +1083,11 @@
  * that in our Public API, every destructor is explicitly <tt>noexcept</tt>.
  *
  * @todo SHOULDHAVE Remove things form the public API, leaving only the
- * absolutely minimal API that is required by the user.
+ * absolutely minimal API that is required by the user, then remove this
+ * item from the release checklist.
+ *
+ * @todo SHOULDHAVE Test on MacOS and Big-Endian, which are both not in the
+ * normal CI pipeline.
  *
  * @todo SHOULDHAVE Ensure full accessibility for all functions via both mouse
  * and keyboard. Every function in the dialog should be operable using only the
