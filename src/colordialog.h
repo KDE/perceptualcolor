@@ -233,16 +233,6 @@ class RgbColorSpace;
  * not for the window position? Anyway, the native QColorDialog does’t to
  * that.
  *
- * @todo SHOWSTOPPER Which color to save in history? RGB or HSL or Oklch or
- * Oklab or what? If RGB: Which color space to use for saving? Maybe
- * prefix all settings in the
- * settings file with “srgb” or similar to make sure they will not
- * be miss-interpreted. So something similar when using user-defined
- * RGB profiles as gamut respectivele Working Color Space. How to behave
- * if the next time the dialog is used with a different gamut color space, and
- * the colors have different RGB values or are even out-of-gamut? Or use a
- * per-gamut history?
- *
  * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
  * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
  * for compatibility?

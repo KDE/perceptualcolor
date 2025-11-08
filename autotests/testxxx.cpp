@@ -26,6 +26,12 @@ public:
     {
     }
 
+private:
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
+        // dummy message handler that does not print messages
+    }
+
 private Q_SLOTS:
     void initTestCase()
     {
@@ -47,7 +53,18 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testDef()
+    void testMessages()
+    {
+        // Suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+
+        // Do something …
+
+        // Do not suppress warnings anymore
+        qInstallMessageHandler(nullptr);
+    }
+
+    void testWidget()
     {
         QVERIFY(false); // XXX Implement me!
 

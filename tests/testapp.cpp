@@ -140,7 +140,8 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
             // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
-        );
+            ,
+            QStringLiteral("testappidentifier"));
     if (myColorSpace.isNull()) {
         myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
     }

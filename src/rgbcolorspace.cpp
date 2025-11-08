@@ -107,6 +107,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
     result->d_pointer->m_profileModel = QString();
     /*: @item Name of the built-in sRGB color space. */
     result->d_pointer->m_profileName = tr("sRGB color space");
+    result->d_pointer->m_gamutIdentifier = QStringLiteral("builtinsrgb");
     result->d_pointer->m_profileMaximumCielchD50Chroma = 132;
 
     // Return:
@@ -126,6 +127,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * this function. The created object does not need the file anymore,
  * because all necessary information has already been loaded into
  * memory. Accepted are most RGB-based ICC profiles up to version 4.
+ *
+ * @param identifier Identifier for @ref PerceptualSettings. Must comply
+ * with the conditions documented in @ref PerceptualSettings.
  *
  * @returns A shared pointer to a newly created color space object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.
@@ -155,7 +159,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * a <a href="https://github.com/InternationalColorConsortium/DemoIccMAX">demo
  * implementation</a>, but this does not seem to be a complete color
  * management system. */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(const QString &fileName)
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(const QString &fileName, const QString &identifier)
 {
     // Definitions
     constexpr auto myContextID = nullptr;
@@ -189,6 +193,8 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
 
     // Clean up
     cmsCloseProfile(myProfileHandle); // Also deletes the underlying IO handler
+
+    newObject->d_pointer->m_gamutIdentifier = identifier;
 
     // Return
     if (success) {
@@ -1510,6 +1516,16 @@ QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, Perceptu
     } else {
         return greaterOrEqual->second;
     }
+}
+
+/**
+ * @brief Identifier for the gamut (working color space).
+ *
+ * @returns Identifier for @ref PerceptualSettings.
+ */
+QString RgbColorSpace::gamutIdentifier() const
+{
+    return d_pointer->m_gamutIdentifier;
 }
 
 } // namespace PerceptualColor

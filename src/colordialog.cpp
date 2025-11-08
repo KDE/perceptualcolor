@@ -21,6 +21,7 @@
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "oklchvalues.h"
+#include "perceptualsettings.h"
 #include "rgbcolor.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
@@ -875,7 +876,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
             &SwatchBook::swatchGridChanged, // signal
             this, // receiver
             [this](const QColorArray2D &newSwatches) {
-                m_settings.customColors.setValue(newSwatches.toQList());
+                m_settings->customColors.setValue(newSwatches.toQList());
             });
     m_swatchBookStack = new QStackedLayout();
     m_swatchBookStack->addWidget(swatchBookBasicColorsLayoutWidget);
@@ -896,17 +897,17 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
                 switch (i) {
                 case 0:
                     m_swatchBookStack->setCurrentIndex(0);
-                    m_settings.swatchBookPage.setValue( //
+                    m_settings->swatchBookPage.setValue( //
                         PerceptualSettings::SwatchBookPage::BasicColors);
                     break;
                 case 1:
                     m_swatchBookStack->setCurrentIndex(1);
-                    m_settings.swatchBookPage.setValue( //
+                    m_settings->swatchBookPage.setValue( //
                         PerceptualSettings::SwatchBookPage::History);
                     break;
                 case 2:
                     m_swatchBookStack->setCurrentIndex(2);
-                    m_settings.swatchBookPage.setValue( //
+                    m_settings->swatchBookPage.setValue( //
                         PerceptualSettings::SwatchBookPage::CustomColors);
                     break;
                 default:
@@ -918,11 +919,11 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     swatchBookOuterLayout->addStretch();
     m_swatchBookWrapperWidget = new QWidget();
     m_swatchBookWrapperWidget->setLayout(swatchBookOuterLayout);
-    connect(&m_settings.history, //
+    connect(&m_settings->history, //
             &Setting<PerceptualSettings::ColorList>::valueChanged,
             this,
             &ColorDialogPrivate::loadHistoryFromSettingsToSwatchBook);
-    connect(&m_settings.customColors, //
+    connect(&m_settings->customColors, //
             &Setting<PerceptualSettings::ColorList>::valueChanged,
             this,
             &ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook);
@@ -1360,7 +1361,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
  *  @post The @ref currentColor property is set to a default value. */
 ColorDialog::ColorDialog(QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
 {
     d_pointer->initialize(RgbColorSpaceFactory::createSrgb());
     setCurrentColor(d_pointer->defaultColor());
@@ -1378,7 +1379,7 @@ ColorDialog::ColorDialog(QWidget *parent)
  *  used. */
 ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
 {
     d_pointer->initialize(RgbColorSpaceFactory::createSrgb());
     // Calling setCurrentColor() guaranties to update all widgets
@@ -1397,7 +1398,7 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
  *  @post The @ref currentColor property is set to a default value. */
 ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + colorSpace->gamutIdentifier()))
 {
     d_pointer->initialize(colorSpace);
     setCurrentColor(d_pointer->defaultColor());
@@ -1409,7 +1410,7 @@ ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &c
  * the history (if any), or otherwise from @ref m_wcsBasicDefaultColor. */
 QColor ColorDialogPrivate::defaultColor() const
 {
-    const auto lastColor = m_settings.lastColor.value();
+    const auto lastColor = m_settings->lastColor.value();
     if (lastColor.isValid()) {
         return lastColor;
     }
@@ -1430,7 +1431,7 @@ QColor ColorDialogPrivate::defaultColor() const
  *  used. */
 ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + colorSpace->gamutIdentifier()))
 {
     d_pointer->initialize(colorSpace);
     // Calling setCurrentColor() guaranties to update all widgets
@@ -1454,9 +1455,14 @@ ColorDialog::~ColorDialog() noexcept
 /** @brief Constructor
  *
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
-ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink)
-    : q_pointer(backLink)
+ * is the private implementation.
+ *
+ * @param identifier Identifier for @ref PerceptualSettings. Must comply
+ * with the conditions documented in @ref PerceptualSettings.
+ */
+ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink, const QString &identifier)
+    : m_settings(&PerceptualSettings::getInstance(identifier))
+    , q_pointer(backLink)
 {
 }
 
@@ -2422,11 +2428,11 @@ void ColorDialog::done(int result)
         d_pointer->m_selectedColor = currentColor();
 
         // Update settings: lastColor
-        d_pointer->m_settings.lastColor.setValue(d_pointer->m_selectedColor);
+        d_pointer->m_settings->lastColor.setValue(d_pointer->m_selectedColor);
 
         // Update settings: history
         const auto newHistoryColor = toOpaque(d_pointer->m_selectedColor);
-        auto history = d_pointer->m_settings.history.value();
+        auto history = d_pointer->m_settings->history.value();
         const qsizetype maxHistoryLenght = std::max<qsizetype>( //
             d_pointer->historySwatchCount, //
             history.size());
@@ -2438,7 +2444,7 @@ void ColorDialog::done(int result)
         while (history.size() > maxHistoryLenght) {
             history.removeLast();
         }
-        d_pointer->m_settings.history.setValue(history);
+        d_pointer->m_settings->history.setValue(history);
 
         // Emit signal
         Q_EMIT colorSelected(d_pointer->m_selectedColor);
@@ -2637,8 +2643,8 @@ void ColorDialog::showEvent(QShowEvent *event)
         constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
         const bool exp = d_pointer->m_layoutDimensionsEffective == expValue;
         const auto tabString = exp //
-            ? d_pointer->m_settings.tabExpanded.value() //
-            : d_pointer->m_settings.tab.value();
+            ? d_pointer->m_settings->tabExpanded.value() //
+            : d_pointer->m_settings->tab.value();
         const auto key = d_pointer->m_tabTable.key(tabString, nullptr);
         if (key != nullptr) {
             d_pointer->m_tabWidget->setCurrentWidget(*key);
@@ -2650,22 +2656,22 @@ void ColorDialog::showEvent(QShowEvent *event)
         // is saved whenever the user has first seen it.
         d_pointer->saveCurrentTab();
 
-        switch (d_pointer->m_settings.swatchBookPage.value()) {
+        switch (d_pointer->m_settings->swatchBookPage.value()) {
         case PerceptualSettings::SwatchBookPage::BasicColors:
         default:
-            d_pointer->m_settings.swatchBookPage.setValue( //
+            d_pointer->m_settings->swatchBookPage.setValue( //
                 PerceptualSettings::SwatchBookPage::BasicColors);
             d_pointer->m_swatchBookSelector->setCurrentIndex(0);
             d_pointer->m_swatchBookStack->setCurrentIndex(0);
             break;
         case PerceptualSettings::SwatchBookPage::History:
-            d_pointer->m_settings.swatchBookPage.setValue( //
+            d_pointer->m_settings->swatchBookPage.setValue( //
                 PerceptualSettings::SwatchBookPage::History);
             d_pointer->m_swatchBookSelector->setCurrentIndex(1);
             d_pointer->m_swatchBookStack->setCurrentIndex(1);
             break;
         case PerceptualSettings::SwatchBookPage::CustomColors:
-            d_pointer->m_settings.swatchBookPage.setValue( //
+            d_pointer->m_settings->swatchBookPage.setValue( //
                 PerceptualSettings::SwatchBookPage::CustomColors);
             d_pointer->m_swatchBookSelector->setCurrentIndex(2);
             d_pointer->m_swatchBookStack->setCurrentIndex(2);
@@ -2694,9 +2700,9 @@ void ColorDialogPrivate::saveCurrentTab()
         const auto tabString = m_tabTable.value(*it);
         constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
         if (m_layoutDimensionsEffective == expValue) {
-            m_settings.tabExpanded.setValue(tabString);
+            m_settings->tabExpanded.setValue(tabString);
         } else {
-            m_settings.tab.setValue(tabString);
+            m_settings->tab.setValue(tabString);
         }
     }
 }
@@ -2707,7 +2713,7 @@ void ColorDialogPrivate::loadHistoryFromSettingsToSwatchBook()
 {
     const QColorArray2D historyArray(historyHSwatchCount, //
                                      historyVSwatchCount, //
-                                     m_settings.history.value());
+                                     m_settings->history.value());
     m_swatchBookHistory->setSwatchGrid(historyArray);
 }
 
@@ -2717,7 +2723,7 @@ void ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook()
 {
     const QColorArray2D customColorsArray(customColorsHSwatchCount, //
                                           customColorsVSwatchCount, //
-                                          m_settings.customColors.value());
+                                          m_settings->customColors.value());
     m_swatchBookCustomColors->setSwatchGrid(toOpaque(customColorsArray));
 }
 

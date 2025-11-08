@@ -12,7 +12,6 @@
 #include "helper.h"
 #include "helperconversion.h"
 #include "languagechangeeventfilter.h"
-#include "perceptualsettings.h"
 #include "rgbcolor.h"
 #include <lcms2.h>
 #include <qbytearray.h>
@@ -50,8 +49,9 @@ class ChromaHueDiagram;
 class ColorPatch;
 class GradientSlider;
 class MultiSpinBox;
-class SwatchBook;
+class PerceptualSettings;
 class RgbColorSpace;
+class SwatchBook;
 class WheelColorPicker;
 
 /** @internal
@@ -62,7 +62,16 @@ class ColorDialogPrivate : public QObject
 {
     Q_OBJECT
 public:
-    explicit ColorDialogPrivate(ColorDialog *backLink);
+    /**
+     * @brief Identifier string for the built-in sRGB color space.
+     */
+    static inline QString const builtinsrgbIdentifier = QStringLiteral("builtinsrgb");
+    /**
+     * @brief Prefix for custom Identifier strings.
+     */
+    static inline QString const customIdentifierPrefix = QStringLiteral("custom");
+
+    explicit ColorDialogPrivate(ColorDialog *backLink, const QString &identifier);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -261,8 +270,10 @@ public:
     QColor m_selectedColor;
     /** @brief Layout that holds the graphical and numeric selectors. */
     QPointer<QHBoxLayout> m_selectorLayout;
-    /** @brief Access to the @ref Settings singleton. */
-    PerceptualSettings &m_settings = PerceptualSettings::getInstance();
+    /**
+     * @brief Access to the @ref Settings singleton for the given color space.
+     */
+    PerceptualSettings *m_settings;
     /** @brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
     QPointer<QToolButton> m_screenColorPickerButton;

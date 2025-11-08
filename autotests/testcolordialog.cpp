@@ -2265,7 +2265,8 @@ private Q_SLOTS:
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
         auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
-            wideGamutProfile->fileName());
+            wideGamutProfile->fileName(), //
+            QStringLiteral("testrgbcolorspace"));
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         m_perceptualDialog.reset( //
             new ColorDialog(myColorSpace));

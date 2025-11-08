@@ -43,7 +43,7 @@ public:
     PerceptualSettings(const PerceptualSettings &) = delete;
     PerceptualSettings &operator=(const PerceptualSettings &) = delete;
 
-    static PerceptualSettings &getInstance();
+    [[nodiscard]] static PerceptualSettings &getInstance(const QString &identifier);
 
     /** @brief Custom colors of @ref ColorDialog. */
     Setting<PerceptualSettings::ColorList> customColors;
@@ -97,10 +97,12 @@ public:
     Setting<QString> tabExpanded;
 
 private:
-    PerceptualSettings();
+    explicit PerceptualSettings(const QString &identifier);
 
     /** @internal @brief Only for unit tests. */
     friend class TestPerceptualSettings;
+
+    static QString fixIdentifier(const QString &input);
 };
 
 } // namespace PerceptualColor

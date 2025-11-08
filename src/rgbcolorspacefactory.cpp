@@ -53,6 +53,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb(
  * has already been loaded into memory. Accepted are most RGB-based
  * ICC profiles up to version 4.
  *
+ * @param identifier Identifier for settings that are stored in a configuration
+ * file. May only contain the lowercase letters a-z.
+ *
  * @returns A shared pointer to a newly created color space object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.
  *
@@ -60,9 +63,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb(
  * instance, an unusually large file could exhaust system memory potentially
  * leading to crashes.
  */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::tryCreateFromFile(const QString &fileName)
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::tryCreateFromFile(const QString &fileName, const QString &identifier)
 {
-    return RgbColorSpace::tryCreateFromFile(fileName);
+    return RgbColorSpace::tryCreateFromFile(fileName, identifier);
 }
 
 /** @brief List of directories where color profiles are typically

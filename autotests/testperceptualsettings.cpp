@@ -26,7 +26,8 @@ static void snippet01()
 {
     // cppcheck-suppress constVariableReference // snippet for documentation
     //! [PerceptualSettings Instance]
-    auto &settingsRef = PerceptualColor::PerceptualSettings::getInstance();
+    auto &settingsRef = PerceptualColor::PerceptualSettings::getInstance( //
+        QStringLiteral("identifier"));
     //! [PerceptualSettings Instance]
     Q_UNUSED(settingsRef)
 }
@@ -42,6 +43,14 @@ public:
         : QObject(parent)
     {
     }
+
+private:
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
+        // dummy message handler that does not print messages
+    }
+
+    inline static const QString id = QStringLiteral("testperceptualsettings");
 
 private Q_SLOTS:
     void initTestCase()
@@ -78,7 +87,7 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         // There should be no crash:
-        const auto &mySettings = PerceptualSettings::getInstance();
+        const auto &mySettings = PerceptualSettings::getInstance(id);
         Q_UNUSED(mySettings)
     }
 
@@ -91,7 +100,7 @@ private Q_SLOTS:
 
     void testCustomColors()
     {
-        auto &mySettings = PerceptualSettings::getInstance();
+        auto &mySettings = PerceptualSettings::getInstance(id);
 
         const PerceptualColor::PerceptualSettings::ColorList newColors1 = {QColor(Qt::red), QColor(Qt::green), QColor(Qt::blue)};
         mySettings.customColors.setValue(newColors1);
@@ -111,7 +120,7 @@ private Q_SLOTS:
 
     void testTab()
     {
-        auto &mySettings = PerceptualSettings::getInstance();
+        auto &mySettings = PerceptualSettings::getInstance(id);
 
         const QString newTab1 = QStringLiteral("testTab");
         mySettings.tab.setValue(newTab1);
@@ -134,8 +143,8 @@ private Q_SLOTS:
         // As this is implemented as singleton, calling the singleton function
         // various times should still produce interchangeable results.
 
-        auto &mySettings1 = PerceptualSettings::getInstance();
-        auto &mySettings2 = PerceptualSettings::getInstance();
+        auto &mySettings1 = PerceptualSettings::getInstance(id);
+        auto &mySettings2 = PerceptualSettings::getInstance(id);
 
         const QString newTab1 = QStringLiteral("testTabInstance");
         mySettings1.tab.setValue(newTab1);
@@ -162,7 +171,7 @@ private Q_SLOTS:
 
     void testTabExpanded()
     {
-        auto &mySettings = PerceptualSettings::getInstance();
+        auto &mySettings = PerceptualSettings::getInstance(id);
 
         const QString newTab1 = QStringLiteral("testTabExpanded");
         mySettings.tabExpanded.setValue(newTab1);
@@ -182,8 +191,8 @@ private Q_SLOTS:
 
     void testInstancesAreIdenticalForTabExpanded()
     {
-        auto &mySettings1 = PerceptualSettings::getInstance();
-        auto &mySettings2 = PerceptualSettings::getInstance();
+        auto &mySettings1 = PerceptualSettings::getInstance(id);
+        auto &mySettings2 = PerceptualSettings::getInstance(id);
 
         const QString newTabExpanded1 = QStringLiteral("testTabExpandedInstance");
         mySettings1.tabExpanded.setValue(newTabExpanded1);
@@ -206,6 +215,37 @@ private Q_SLOTS:
         // The second call to the setter with an identical value
         // should not trigger a signal.
         QCOMPARE(spy2.size(), 1);
+    }
+
+    void testFixIdentifier()
+    {
+        // Suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("abc")), //
+            QStringLiteral("abc"));
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("aB1c$dEfg!")), //
+            QStringLiteral("abcdefg"));
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("ABCXYZ!")), //
+            QStringLiteral("abcxyz"));
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("1234!@#$")), //
+            QString());
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("!")), //
+            QString());
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("ÄÖÜß€µ")), //
+            QString());
+        QCOMPARE( //
+            PerceptualSettings::fixIdentifier(QStringLiteral("a b\tc\nd")), //
+            QStringLiteral("abcd"));
+
+        // Do not suppress warnings anymore
+        qInstallMessageHandler(nullptr);
     }
 
 #endif

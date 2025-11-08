@@ -5,10 +5,17 @@
 // First the interface, which forces the header to be self-contained.
 #include "perceptualsettings.h"
 
+#include <qchar.h>
 #include <qcoreapplication.h>
 #include <qdebug.h>
+#include <qhash.h>
 #include <qsettings.h>
+#include <qsharedpointer.h>
+#include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #else
@@ -18,9 +25,48 @@
 namespace PerceptualColor
 {
 
-/** @brief Private constructor to prevent instantiation. */
-PerceptualSettings::PerceptualSettings()
-    : Settings(QSettings::UserScope, QStringLiteral("kde.org"), QStringLiteral("libperceptualcolor"))
+/**
+ * @brief Filters a QString to retain only lowercase letters a–z.
+ *
+ * This function scans the input string and constructs a new string containing
+ * only characters in the range 'a' to 'z'. Uppercase letters A-Z are
+ * converted to lowercase letters. Other characters are removed.
+ * If any change is made, a warning is issued.
+ *
+ * @param input The original string to be filtered.
+ *
+ * @return A QString containing only lowercase letters a–z.
+ */
+QString PerceptualSettings::fixIdentifier(const QString &input)
+{
+    QString result;
+    const QString lowercase = input.toLower();
+    for (const QChar &ch : std::as_const(lowercase)) {
+        if ((ch.unicode() >= 'a') && (ch.unicode() <= 'z')) {
+            result.append(ch);
+        }
+    }
+    if (result != input) {
+        qWarning() //
+            << "PerceptualSettings identifier contains invalid characters:" //
+            << input;
+        qWarning() //
+            << "Identifier has been substituted by:" //
+            << result;
+    }
+    return result;
+}
+
+/**
+ * @brief Private constructor to prevent instantiation.
+ *
+ * @param identifier A unique identifier for the instance. This allows for the
+ * configuration of distinct and independent settings—for example, one set for
+ * the “sRGB” color space and another for “Adobe Wide Gamut RGB” color space.
+ * It is restricted to the lowercase letters a-z.
+ */
+PerceptualSettings::PerceptualSettings(const QString &identifier)
+    : Settings(QSettings::UserScope, QStringLiteral("kde.org"), QStringLiteral("libperceptualcolor") + fixIdentifier(identifier))
     // For maximum portability:
     // - No upper case should ever be used.
     //   (Some systems, like the INI that we are using, are case-insensitive.
@@ -54,29 +100,46 @@ PerceptualSettings::~PerceptualSettings()
 {
 }
 
-/** @brief Get a reference to the singleton instance.
+/**
+ * @brief Get a reference to the singleton instance associated
+ * with a specific identifier.
  *
  * @pre There exists a QCoreApplication object. (Otherwise, this
  * function will throw an exception.)
+ *
+ * @param identifier A unique identifier for the instance. This allows for the
+ * configuration of distinct and independent settings—for example, one set for
+ * the “sRGB” color space and another for “Adobe Wide Gamut RGB” color space.
+ * It is restricted to the small letters a-z. For each identifier exists an
+ * own singleton.
  *
  * @returns A reference to the instance.
  *
  * To use it, assign the return value to a reference (not a normal variable):
  *
  * @snippet testperceptualsettings.cpp PerceptualSettings Instance */
-PerceptualSettings &PerceptualSettings::getInstance()
+PerceptualSettings &PerceptualSettings::getInstance(const QString &identifier)
 {
-    // Pattern: Meyer's singleton.
+    const auto validIdentifier = fixIdentifier(identifier);
     if (QCoreApplication::instance() == nullptr) {
         // A QCoreApplication object is required because otherwise
         // the QFileSystemWatcher will not do anything and print the
         // highly confusing warning “QSocketNotifier: Can only be used
         // with threads started with QThread”. It's better to give clear
         // feedback:
-        throw 0;
+        throw std::runtime_error( //
+            "QCoreApplication instance required for PerceptualSettings.");
     }
-    static PerceptualSettings myInstance;
-    return myInstance;
+
+    static QHash<QString, QSharedPointer<PerceptualSettings>> instances;
+
+    if (!instances.contains(validIdentifier)) {
+        auto newSettings = QSharedPointer<PerceptualSettings>( //
+            new PerceptualSettings(validIdentifier));
+        instances[validIdentifier] = newSettings;
+    }
+
+    return *instances[validIdentifier];
 }
 
 } // namespace PerceptualColor

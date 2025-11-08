@@ -55,6 +55,8 @@ public:
     {
     }
 
+    static inline QString const id = QStringLiteral("testrgbcolorspace");
+
 private Q_SLOTS:
     void initTestCase()
     {
@@ -127,7 +129,9 @@ private Q_SLOTS:
 
         // Invalid file
         QVERIFY(QFileInfo::exists(invalidFile->fileName())); // assertion
-        myColorSpace = RgbColorSpace::tryCreateFromFile(invalidFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            invalidFile->fileName(), //
+            id);
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Non-existing file/directory name
@@ -135,22 +139,28 @@ private Q_SLOTS:
             QStringLiteral("/nonexistingfilename.txt");
         QCOMPARE(QFileInfo::exists(nonexistingfilename), false); // assertion
         QCOMPARE(QDir{nonexistingfilename}.exists(), false); // assertion
-        myColorSpace = RgbColorSpace::tryCreateFromFile(nonexistingfilename);
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            nonexistingfilename, //
+            id);
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Existing folder with trailing slash
         myColorSpace = RgbColorSpace::tryCreateFromFile( //
-            existingDirectoryWithoutTrailingSlash.path() + QStringLiteral("/"));
+            existingDirectoryWithoutTrailingSlash.path() + QStringLiteral("/"), //
+            id);
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Existing folder without trailing slash
         myColorSpace = RgbColorSpace::tryCreateFromFile( //
-            existingDirectoryWithoutTrailingSlash.path());
+            existingDirectoryWithoutTrailingSlash.path(), //
+            id);
         QCOMPARE(myColorSpace.isNull(), true);
 
         // Valid RGB profile (should load correctly)
         QVERIFY(QFileInfo::exists(validRgbFile->fileName())); // assertion
-        myColorSpace = RgbColorSpace::tryCreateFromFile(validRgbFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            validRgbFile->fileName(), //
+            id);
         QCOMPARE(myColorSpace.isNull(), false);
     }
 
@@ -165,7 +175,9 @@ private Q_SLOTS:
             throw 0;
         }
 
-        auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            wideGamutFile->fileName(), //
+            id);
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         // assertion that maximum lightness is out-of-gamut for this profile:
         QCOMPARE(myColorSpace->isCielchD50InGamut(GenericColor{100, 0, 0}), false);
@@ -193,7 +205,9 @@ private Q_SLOTS:
         }
 
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
-        myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            wideGamutFile->fileName(), //
+            id);
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         const GenericColor referenceColor{100, 50, 0};
         QCOMPARE(myColorSpace->isCielchD50InGamut(referenceColor), false); // assertion
@@ -226,7 +240,9 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            wideGamutFile->fileName(), //
+            id);
         GenericColor temp{100, 50, 0};
         QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).first > 95);
     }
@@ -243,7 +259,9 @@ private Q_SLOTS:
         }
 
         QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
-        myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
+        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            wideGamutFile->fileName(), //
+            id);
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         const GenericColor referenceColor{1, 0.151189, 359.374};
         QCOMPARE(myColorSpace->isOklchInGamut(referenceColor), false); // assertion
@@ -276,7 +294,9 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::tryCreateFromFile(wideGamutFile->fileName());
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            wideGamutFile->fileName(), //
+            id);
         const GenericColor temp{1, 0.151189, 359.374};
         QVERIFY(myColorSpace->reduceOklchChromaToFitIntoGamut(temp).first > 0.95);
     }
@@ -332,7 +352,8 @@ private Q_SLOTS:
         auto srgb = RgbColorSpace::createSrgb();
         QCOMPARE(srgb.isNull(), false); // assertion
         auto widegamutrgb = RgbColorSpace::tryCreateFromFile( //
-            wideGamutFile->fileName());
+            wideGamutFile->fileName(), //
+            id);
         QCOMPARE(widegamutrgb.isNull(), false); // assertion
 
         // Start testing
@@ -841,6 +862,34 @@ private Q_SLOTS:
         // Six 8-bit color blocks, minus 6 duplicates where the blocks touch
         // each other, plus 2 duplicates at the lower and upper range.
         QCOMPARE(colorCount, 256 * 6 - 6 + 2);
+    }
+
+    void testIdentifier()
+    {
+        QSharedPointer<PerceptualColor::RgbColorSpace> tmp =
+            // Create sRGB which is pretty much standard.
+            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+        QCOMPARE(tmp->gamutIdentifier(), QStringLiteral("builtinsrgb"));
+    }
+
+    void testIdentifierFromFile()
+    {
+        QScopedPointer<QTemporaryFile> validRgbFile(
+            // Create a temporary actual file…
+            QTemporaryFile::createNativeFile(
+                // …from the content of this resource:
+                QStringLiteral(":/testbed/Compact-ICC-Profiles/Compact-ICC-Profiles/profiles/WideGamutCompat-v4.icc")));
+        if (validRgbFile.isNull()) {
+            throw 0;
+        }
+
+        // Valid RGB profile (should load correctly)
+        QVERIFY(QFileInfo::exists(validRgbFile->fileName())); // assertion
+        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+            validRgbFile->fileName(), //
+            id);
+        QCOMPARE(myColorSpace->gamutIdentifier(), //
+                 id);
     }
 
     void testMaxChromaColorBy()
