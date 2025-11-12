@@ -127,6 +127,14 @@ class RgbColorSpacePrivate;
  * For example, by converting a clearly out-of-gamut Oklch or CIELch value and
  * rejecting the profile creation if the resulting RGB value appears in-gamut?
  *
+ * @todo SHOULDHAVE When loading an ICC profile from a file, load first the
+ * file into a <tt>QByteArray</tt>, then keep it permanently in memory.
+ * Document this behaviour and warn the library user about the memory
+ * consumtion. Provide on-the-fly translated ICC fields (for on-the-fly
+ * application language changes), based on the <tt>QByteArray</tt>. Add
+ * functions that accept directly a <tt>QByteArray</tt> instead of a file
+ * path.
+ *
  * @todo NICETOHAVE
  *       Find more efficient ways of in-gamut detection. Maybe provide
  *       a subclass with optimized algorithms just for sRGB-build-in? */
@@ -373,12 +381,11 @@ private:
     Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagWhitepoint READ profileTagWhitepoint CONSTANT)
 
 public: // Static factory functions
-    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName, const QString &identifier);
+    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName);
     [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createSrgb();
 
 public:
     virtual ~RgbColorSpace() noexcept override;
-    [[nodiscard]] Q_INVOKABLE QString gamutIdentifier() const;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielabD50InGamut(const cmsCIELab &lab) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::GenericColor &lch) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isOklchInGamut(const PerceptualColor::GenericColor &lch) const;

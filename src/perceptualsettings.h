@@ -102,7 +102,7 @@ private:
     /** @internal @brief Only for unit tests. */
     friend class TestPerceptualSettings;
 
-    static QString fixIdentifier(const QString &input);
+    static QString fixedIdentifierWithHyphenMinus(const QString &input);
 };
 
 } // namespace PerceptualColor

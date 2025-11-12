@@ -140,13 +140,13 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
             // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
-            ,
-            QStringLiteral("testappidentifier"));
+        );
     if (myColorSpace.isNull()) {
         myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
     }
 
-    PerceptualColor::ColorDialog m_colorDialog(myColorSpace);
+    PerceptualColor::ColorDialog m_colorDialog(myColorSpace, //
+                                               QStringLiteral("testapp"));
     // For session management, according to https://doc.qt.io/qt-6/session.html
     //     “you must identify your top level widgets with
     //      unique application-wide object names”

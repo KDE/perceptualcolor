@@ -14,8 +14,10 @@
 #include "languagechangeeventfilter.h"
 #include "rgbcolor.h"
 #include <lcms2.h>
+#include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
+#include <qcolordialog.h>
 #include <qglobal.h>
 #include <qhash.h>
 #include <qicon.h>
@@ -93,6 +95,14 @@ public:
     /** @brief  Total count of swatches for custom colors. */
     static constexpr qsizetype customColorsSwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
+
+    static QString fixedIdentifierWithoutHyphenMinus(const QString &input);
+    static QColor getColorCommon(std::optional<const QSharedPointer<PerceptualColor::RgbColorSpace>> colorSpace,
+                                 std::optional<const QString> gamutIdentifier,
+                                 const QColor &initial,
+                                 QWidget *parent,
+                                 const QString &title,
+                                 QColorDialog::ColorDialogOptions options);
 
     /** @brief @ref GradientSlider widget for the alpha channel. */
     QPointer<GradientSlider> m_alphaGradientSlider;

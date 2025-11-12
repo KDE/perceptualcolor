@@ -16,7 +16,7 @@ namespace PerceptualColor
  *
  * <em>This</em> pointer type is different: It propagates the const-ness of
  * the object members and propagates them to the call through the pointer;
- * it will trigger a compiler error if non-cost access to object members
+ * it will trigger a compiler error if non-const access to object members
  * or methods is done from within const functions. Apart from that, it
  * behaves similar to raw pointers. For compatibility with raw pointers,
  * it also casts implicitly to the corresponding raw pointer (but only
@@ -122,8 +122,8 @@ public:
     // providing this function with a strange name. But overloading
     // operator T* leads to compile errors because of ambiguity
     // on GCC and Clang when using this pointer within a “delete” statement.
-    // That’s confusing, therefore we should avoid it. So given this
-    // function this different name prevents automatic casts in non-cost
+    // That’s confusing, therefore we should avoid it. By giving this
+    // function a different name prevents automatic casts in non-const
     // objects, which also forbids deleting directly pointers of this
     // type in non-const contexts, which is nice.
     [[nodiscard]] const T *toPointerToConstObject() const

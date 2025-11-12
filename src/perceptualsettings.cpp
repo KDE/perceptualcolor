@@ -37,12 +37,16 @@ namespace PerceptualColor
  *
  * @return A QString containing only lowercase letters a–z.
  */
-QString PerceptualSettings::fixIdentifier(const QString &input)
+QString PerceptualSettings::fixedIdentifierWithHyphenMinus(const QString &input)
 {
     QString result;
     const QString lowercase = input.toLower();
     for (const QChar &ch : std::as_const(lowercase)) {
-        if ((ch.unicode() >= 'a') && (ch.unicode() <= 'z')) {
+        // NOTE Fast comparision with char literal works only for up to
+        // codepoint 127 (because of UTF-8 encoding)!
+        const bool isLowercaseAZ = //
+            (ch.unicode() >= 'a') && (ch.unicode() <= 'z');
+        if (isLowercaseAZ || (ch.unicode() == '-')) {
             result.append(ch);
         }
     }
@@ -51,7 +55,7 @@ QString PerceptualSettings::fixIdentifier(const QString &input)
             << "PerceptualSettings identifier contains invalid characters:" //
             << input;
         qWarning() //
-            << "Identifier has been substituted by:" //
+            << "PerceptualSettings identifier has been substituted by:" //
             << result;
     }
     return result;
@@ -63,10 +67,23 @@ QString PerceptualSettings::fixIdentifier(const QString &input)
  * @param identifier A unique identifier for the instance. This allows for the
  * configuration of distinct and independent settings—for example, one set for
  * the “sRGB” color space and another for “Adobe Wide Gamut RGB” color space.
- * It is restricted to the lowercase letters a-z.
+ * It is restricted to the lowercase letters a-z. Keep it short, as the
+ * underlying system might have restrictions.
+ *
+ * @internal
+ *
+ * Internally, a dedicated @ref Settings object is created for each identifier.
+ * This automatically instantiates a corresponding <tt>QSettings</tt> object,
+ * and provides a singleton instance bound to that identifier. In other words:
+ * one identifier → one file → one singleton. This design simplifies usage and
+ * avoids conflicts. If a single file were shared across multiple singleton
+ * objects, they would all require concurrent read/write access, which could
+ * lead to side effects and data inconsistencies. Supporting a shared file
+ * would require significant refactoring of this class. By keeping separate
+ * files per identifier, the implementation remains easier to maintain.
  */
 PerceptualSettings::PerceptualSettings(const QString &identifier)
-    : Settings(QSettings::UserScope, QStringLiteral("kde.org"), QStringLiteral("libperceptualcolor") + fixIdentifier(identifier))
+    : Settings(QSettings::UserScope, QStringLiteral("kde.org"), QStringLiteral("libperceptualcolor") + fixedIdentifierWithHyphenMinus(identifier))
     // For maximum portability:
     // - No upper case should ever be used.
     //   (Some systems, like the INI that we are using, are case-insensitive.
@@ -120,7 +137,7 @@ PerceptualSettings::~PerceptualSettings()
  * @snippet testperceptualsettings.cpp PerceptualSettings Instance */
 PerceptualSettings &PerceptualSettings::getInstance(const QString &identifier)
 {
-    const auto validIdentifier = fixIdentifier(identifier);
+    const auto validIdentifier = fixedIdentifierWithHyphenMinus(identifier);
     if (QCoreApplication::instance() == nullptr) {
         // A QCoreApplication object is required because otherwise
         // the QFileSystemWatcher will not do anything and print the

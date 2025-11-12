@@ -17,7 +17,7 @@ namespace PerceptualColor
  *
  * <em>This</em> pointer type is different: It propagates the constness of
  * the object members and propagates them to the call through the pointer;
- * it will trigger a compiler error if non-cost access to object members
+ * it will trigger a compiler error if non-const access to object members
  * or methods is done from within const functions. Apart from that, it
  * behaves like <tt>std::unique_ptr</tt>.
  *

@@ -329,6 +329,9 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo NICETOHAVE Get rid of the “deprecated” warnings of Qt by using
+ * conditional compiling while preserving Qt-5 compatibility.
+ *
  * @todo SHOULDHAVE When using the ITUR profiles, the relation between the
  * diagrams and the numeric values seems strange. And there are artefacts
  * in the diagrams.
@@ -336,13 +339,6 @@
  * @todo NICETOHAVE Static codecheck: The doxygen command (at)sa must always
  * be followed by (at)ref, because (at)sa fails silently, but a following
  * (at)ref makes sure we get an error message.
- *
- * @todo NICETOHAVE Currently, <tt>testcolordialog.cpp</tt> modifies the
- * normal configuration file of the library, which interferes with normal
- * usage of the library. It would be nice if <tt>testcolordialog.cpp</tt>
- * could work independently from the normal configuration file, similar to
- * <tt>testperceptualsettings.cpp</tt> which uses a custon identifier to
- * prevent modifications of the normal ini configuration file.
  *
  * @todo SHOULDHAVE Check against Q_NAMESPACE and Q_ENUM_NS because they cannot
  * work reliably when namespaces do accross header files (a double declaration
@@ -1061,6 +1057,12 @@
  * - Write non-inline implementations of the copy constructor and assignment
  *   operator unless the class cannot be copied by value. (E.g. classes
  *   inherited from QObject can't be.)
+ *
+ * @todo SHOULDHAVE Additional to <tt>event()</tt>, reimplement also all other
+ * virtual functions that might potentially be useful in the future, using a
+ * simple implementation that just calls the implementation of the base class.
+ * This reduces the risk to have to break binary compatibility and make a new
+ * mayor version release in the future.
  *
  * @todo SHOULDHAVE
  * Add d-pointer using @ref PerceptualColor::ConstPropagatingUniquePointer to

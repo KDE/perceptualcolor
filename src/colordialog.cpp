@@ -31,11 +31,13 @@
 #include "wheelcolorpicker.h"
 #include <algorithm>
 #include <lcms2.h>
+#include <memory>
 #include <optional>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qboxlayout.h>
 #include <qbytearray.h>
+#include <qchar.h>
 #include <qcombobox.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -72,6 +74,7 @@
 #include <qvalidator.h>
 #include <qversionnumber.h>
 #include <qwidget.h>
+#include <type_traits>
 #include <utility>
 class QShowEvent;
 
@@ -1394,11 +1397,16 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
  *
  *  @param colorSpace The color space within which this widget should operate.
  *  Can be created with @ref RgbColorSpaceFactory.
+ *  @param gamutIdentifier Optional identifier used to save the settings for
+ *                   this @ref ColorDialog. For each identifier, the
+ *                   @ref ColorDialog saves its own, independent set of
+ *                   settings. Must contain only the lowercase letters a-z.
  *  @param parent pointer to the parent widget, if any
  *  @post The @ref currentColor property is set to a default value. */
-ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QString &gamutIdentifier, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + colorSpace->gamutIdentifier()))
+    , d_pointer(
+          new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(gamutIdentifier)))
 {
     d_pointer->initialize(colorSpace);
     setCurrentColor(d_pointer->defaultColor());
@@ -1421,6 +1429,10 @@ QColor ColorDialogPrivate::defaultColor() const
  *
  *  @param colorSpace The color space within which this widget should operate.
  *  Can be created with @ref RgbColorSpaceFactory.
+ *  @param gamutIdentifier Optional identifier used to save the settings for
+ *                   this @ref ColorDialog. For each identifier, the
+ *                   @ref ColorDialog saves its own, independent set of
+ *                   settings. Must contain only the lowercase letters a-z.
  *  @param initial the initially chosen color of the dialog
  *  @param parent pointer to the parent widget, if any
  *  @post The object is constructed and @ref setCurrentColor() is called
@@ -1429,9 +1441,13 @@ QColor ColorDialogPrivate::defaultColor() const
  *  this dialog is constructed by default without alpha support, the
  *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
  *  used. */
-ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial, QWidget *parent)
+ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+                         const QString &gamutIdentifier,
+                         const QColor &initial,
+                         QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + colorSpace->gamutIdentifier()))
+    , d_pointer(
+          new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(gamutIdentifier)))
 {
     d_pointer->initialize(colorSpace);
     // Calling setCurrentColor() guaranties to update all widgets
@@ -2324,50 +2340,101 @@ bool ColorDialog::testOption(PerceptualColor::ColorDialog::ColorDialogOption opt
  *  returns that color.
  *
  * @param colorSpace The color space within which this widget should operate.
- * @param initial    initial value for currentColor()
- * @param parent     parent widget of the dialog (or 0 for no parent)
+ * @param gamutIdentifier The identifier used to save the settings for
+ *                   this @ref ColorDialog. For each identifier, the
+ *                   @ref ColorDialog saves its own, independent set of
+ *                   settings. Must contain only the lowercase letters a-z.
+ * @param initial    initial value for @ref currentColor()
+ * @param parent     parent widget of the dialog (or nullptr for no parent)
  * @param title      window title (or an empty string for the default window
  *                   title)
- * @param options    the options() for customizing the look and feel of the
- *                   dialog
- * @returns          selectedColor(): The color the user has selected; or an
- *                   invalid color if the user has canceled the dialog. */
+ * @param options    @ref ColorDialog::options() for customizing the look and
+ *                   feel of the dialog
+ * @returns          @ref ColorDialog::selectedColor(): The color the user has
+ *                   selected; or an invalid color if the user has canceled the
+ *                   dialog.
+ */
 QColor ColorDialog::getColor(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+                             const QString &gamutIdentifier,
                              const QColor &initial,
                              QWidget *parent,
                              const QString &title,
                              QColorDialog::ColorDialogOptions options)
 {
-    ColorDialog temp(colorSpace, parent);
-    if (!title.isEmpty()) {
-        temp.setWindowTitle(title);
-    }
-    temp.setOptions(options);
-    // setCurrentColor() must be after setOptions()
-    // to allow alpha channel support
-    temp.setCurrentColor(initial);
-    temp.exec();
-    return temp.selectedColor();
+    return ColorDialogPrivate::getColorCommon(colorSpace, gamutIdentifier, initial, parent, title, options);
 }
 
 /** @brief Pops up a modal color dialog, lets the user choose a color, and
  *  returns that color.
  *
- * @param initial    initial value for currentColor()
- * @param parent     parent widget of the dialog (or 0 for no parent)
+ * @param initial    initial value for @ref currentColor()
+ * @param parent     parent widget of the dialog (or nullptr for no parent)
  * @param title      window title (or an empty string for the default window
  *                   title)
- * @param options    the options() for customizing the look and feel of the
- *                   dialog
- * @returns          selectedColor(): The color the user has selected; or an
- *                   invalid color if the user has canceled the dialog. */
+ * @param options    @ref ColorDialog::options() for customizing the look and
+ *                   feel of the dialog
+ * @returns          @ref ColorDialog::selectedColor(): The color the user has
+ *                   selected; or an invalid color if the user has canceled the
+ *                   dialog.
+ */
 QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
 {
-    return getColor(RgbColorSpaceFactory::createSrgb(), //
-                    initial, //
-                    parent, //
-                    title, //
-                    options);
+    return ColorDialogPrivate::getColorCommon(std::nullopt, std::nullopt, initial, parent, title, options);
+}
+
+/** @brief Internal helper function for @ref ColorDialog::getColor()
+ *
+ * This function is used by the public API to centralize the logic for
+ * displaying the color dialog between the various
+ * overloaded @ref ColorDialog::getColor() functions.
+ *
+ * If one of the <tt>std::optional</tt> parameters does not have a value,
+ * all of them are ignored and instead, the constructor is used that does
+ * not specify them.
+ *
+ * @param colorSpace Optional color space within which this widget should
+ *                   operate.
+ * @param gamutIdentifier Optional identifier used to save the settings for
+ *                   this @ref ColorDialog. For each identifier, the
+ *                   @ref ColorDialog saves its own, independent set of
+ *                   settings. Must contain only the lowercase letters a-z.
+ * @param initial    initial value for @ref ColorDialog::currentColor()
+ * @param parent     parent widget of the dialog (or nullptr for no parent)
+ * @param title      window title (or an empty string for the default window
+ *                   title)
+ * @param options    @ref ColorDialog::options() for customizing the look and
+ *                   feel of the dialog
+ * @returns          @ref ColorDialog::selectedColor(): The color the user has
+ *                   selected; or an invalid color if the user has canceled the
+ *                   dialog.
+ */
+QColor ColorDialogPrivate::getColorCommon(std::optional<const QSharedPointer<PerceptualColor::RgbColorSpace>> colorSpace,
+                                          std::optional<const QString> gamutIdentifier,
+                                          const QColor &initial,
+                                          QWidget *parent,
+                                          const QString &title,
+                                          QColorDialog::ColorDialogOptions options)
+{
+    std::unique_ptr<ColorDialog> tempDialog;
+    if (colorSpace.has_value() && gamutIdentifier.has_value()) {
+        tempDialog = std::make_unique<ColorDialog>(colorSpace.value(), //
+                                                   gamutIdentifier.value(), //
+                                                   parent);
+    } else {
+        tempDialog = std::make_unique<ColorDialog>(parent);
+    }
+
+    if (!title.isEmpty()) {
+        tempDialog->setWindowTitle(title);
+    }
+    tempDialog->setOptions(options);
+    // setCurrentColor() must be after setOptions()
+    // to allow alpha channel support
+    tempDialog->setCurrentColor(initial);
+
+    tempDialog->exec();
+
+    return tempDialog->selectedColor();
 }
 
 /** @brief The color that was actually selected by the user.
@@ -2725,6 +2792,40 @@ void ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook()
                                           customColorsVSwatchCount, //
                                           m_settings->customColors.value());
     m_swatchBookCustomColors->setSwatchGrid(toOpaque(customColorsArray));
+}
+
+/**
+ * @brief Filters a QString to retain only lowercase letters a–z.
+ *
+ * This function scans the input string and constructs a new string containing
+ * only characters in the range 'a' to 'z'. Uppercase letters A-Z are
+ * converted to lowercase letters. Other characters are removed.
+ * If any change is made, a warning is issued.
+ *
+ * @param input The original string to be filtered.
+ *
+ * @return A QString containing only lowercase letters a–z.
+ */
+QString ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(const QString &input)
+{
+    QString result;
+    const QString lowercase = input.toLower();
+    for (const QChar &ch : std::as_const(lowercase)) {
+        // NOTE Fast comparision with char literal works only for up to
+        // codepoint 127 (because of UTF-8 encoding)!
+        if ((ch.unicode() >= 'a') && (ch.unicode() <= 'z')) {
+            result.append(ch);
+        }
+    }
+    if (result != input) {
+        qWarning() //
+            << "Gamut identifier contains invalid characters:" //
+            << input;
+        qWarning() //
+            << "Gamut identifier has been substituted by:" //
+            << result;
+    }
+    return result;
 }
 
 } // namespace PerceptualColor

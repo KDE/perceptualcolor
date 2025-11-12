@@ -4,13 +4,11 @@
 #include <colordialog.h>
 #include <qapplication.h>
 #include <qcolordialog.h>
-#include <rgbcolorspacefactory.h>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
-    PerceptualColor::ColorDialog m_colorDialog(myColorSpace);
+    PerceptualColor::ColorDialog m_colorDialog;
     m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
     m_colorDialog.show();
     return app.exec();

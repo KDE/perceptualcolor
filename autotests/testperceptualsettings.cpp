@@ -217,32 +217,35 @@ private Q_SLOTS:
         QCOMPARE(spy2.size(), 1);
     }
 
-    void testFixIdentifier()
+    void testFixedIdentifierWithHyphenMinus()
     {
         // Suppress warnings
         qInstallMessageHandler(voidMessageHandler);
 
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("abc")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("abc")), //
             QStringLiteral("abc"));
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("aB1c$dEfg!")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("aB1c$dEfg!")), //
             QStringLiteral("abcdefg"));
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("ABCXYZ!")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("ABCXYZ!")), //
             QStringLiteral("abcxyz"));
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("1234!@#$")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("1234!@#$")), //
             QString());
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("!")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("!")), //
             QString());
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("ÄÖÜß€µ")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("ÄÖÜß€µ")), //
             QString());
         QCOMPARE( //
-            PerceptualSettings::fixIdentifier(QStringLiteral("a b\tc\nd")), //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("a b\tc\nd")), //
             QStringLiteral("abcd"));
+        QCOMPARE( //
+            PerceptualSettings::fixedIdentifierWithHyphenMinus(QStringLiteral("-ab-cd-")), //
+            QStringLiteral("-ab-cd-"));
 
         // Do not suppress warnings anymore
         qInstallMessageHandler(nullptr);

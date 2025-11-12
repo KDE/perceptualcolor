@@ -6,7 +6,6 @@
 #include "initializetranslation.h"
 
 #include "colordialog.h"
-#include "rgbcolorspacefactory.h"
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qglobal.h>
@@ -60,12 +59,10 @@ private Q_SLOTS:
     // PerceptualColor::initializeTranslation() has never been called before.
     void testIfTranslationIsActuallyLoaded()
     {
-        auto m_srgbBuildinColorSpace = RgbColorSpaceFactory::createSrgb();
-
         QLocale::setDefault(QLocale(QStringLiteral("nl")));
         PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                                QLocale().uiLanguages());
-        PerceptualColor::ColorDialog test1(m_srgbBuildinColorSpace);
+        PerceptualColor::ColorDialog test1;
         // Test if the window title is translated.
         QCOMPARE(test1.windowTitle(), QStringLiteral("Kleur selecteren"));
 
@@ -73,7 +70,7 @@ private Q_SLOTS:
         QLocale::setDefault(QLocale(QStringLiteral("es")));
         PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                                QLocale().uiLanguages());
-        PerceptualColor::ColorDialog test2(m_srgbBuildinColorSpace);
+        PerceptualColor::ColorDialog test2;
         // Test if the window title is translated.
         QCOMPARE(test2.windowTitle(), QStringLiteral("Seleccionar color"));
 
@@ -82,7 +79,7 @@ private Q_SLOTS:
         PerceptualColor::initializeTranslation( //
             QCoreApplication::instance(), //
             QStringList(QStringLiteral("CA")));
-        PerceptualColor::ColorDialog test3(m_srgbBuildinColorSpace);
+        PerceptualColor::ColorDialog test3;
         // Test if the window title is translated.
         QCOMPARE(test3.windowTitle(), //
                  QStringLiteral("Selecció de color"));
@@ -91,7 +88,7 @@ private Q_SLOTS:
         QLocale::setDefault(QLocale(QString()));
         PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                                QStringList(QString()));
-        PerceptualColor::ColorDialog test4(m_srgbBuildinColorSpace);
+        PerceptualColor::ColorDialog test4;
         // Test if the window title is actually not translated.
         QCOMPARE(test4.windowTitle(), QStringLiteral("Select color"));
     }

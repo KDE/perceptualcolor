@@ -31,7 +31,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT RgbColorSpaceFactory
 public:
     // No Q_INVOKABLE here because the class does not inherit QObject:
     [[nodiscard]] static QSharedPointer<PerceptualColor::RgbColorSpace> createSrgb();
-    [[nodiscard]] static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName, const QString &identifier);
+    [[nodiscard]] static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName);
     [[nodiscard]] static QStringList colorProfileDirectories();
 
 private:

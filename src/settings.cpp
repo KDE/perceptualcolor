@@ -23,7 +23,10 @@ namespace PerceptualColor
  * @param organization Passed to the underlying <tt>QSettings</tt> object’s
  *        constructor.
  * @param application Passed to the underlying <tt>QSettings</tt> object’s
- *        constructor. */
+ *        constructor. Keep this string short and without special characters,
+ *        as it might be used as file name for the configuration file, and
+ *        the underlying file system might have restrictions.
+ */
 Settings::Settings(QSettings::Scope scope, const QString &organization, const QString &application)
     // There are important reasons to use <tt>QSettings::IniFormat</tt>.
     //

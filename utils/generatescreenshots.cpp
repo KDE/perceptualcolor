@@ -328,7 +328,7 @@ static void makeScreenshots()
     }
 
     {
-        ColorDialog m_colorDialog(m_colorSpace);
+        ColorDialog m_colorDialog;
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
@@ -338,7 +338,7 @@ static void makeScreenshots()
     }
 
     {
-        ColorDialog m_colorDialog(m_colorSpace);
+        ColorDialog m_colorDialog;
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
@@ -347,7 +347,7 @@ static void makeScreenshots()
     }
 
     {
-        ColorDialog m_colorDialog(m_colorSpace);
+        ColorDialog m_colorDialog;
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
@@ -356,7 +356,7 @@ static void makeScreenshots()
     }
 
     {
-        ColorDialog m_colorDialog(m_colorSpace);
+        ColorDialog m_colorDialog;
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
@@ -370,7 +370,7 @@ static void makeScreenshots()
     }
 
     {
-        ColorDialog m_colorDialog(m_colorSpace);
+        ColorDialog m_colorDialog;
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_colorDialog.setCurrentColor(defaultColorRgb);
@@ -384,7 +384,7 @@ static void makeScreenshots()
     }
 
     {
-        ColorDialog m_colorDialog(m_colorSpace);
+        ColorDialog m_colorDialog;
         m_colorDialog.setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         m_colorDialog.setCurrentColor(defaultColorRgb);

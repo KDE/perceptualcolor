@@ -91,9 +91,7 @@ public:
     void testSnippet05()
     {
         //! [ColorDialog Open]
-        PerceptualColor::ColorDialog *m_dialog = //
-            new PerceptualColor::ColorDialog( //
-                PerceptualColor::RgbColorSpaceFactory::createSrgb());
+        auto *m_dialog = new PerceptualColor::ColorDialog();
         m_dialog->open(this, SLOT(mySlot(QColor)));
         //! [ColorDialog Open]
         delete m_dialog;
@@ -170,6 +168,7 @@ public:
     }
 
 private:
+    static inline const QString id = QStringLiteral("testcolordialog");
     QScopedPointer<ColorDialog> m_perceptualDialog;
     QScopedPointer<ColorDialog> m_perceptualDialog2;
     QScopedPointer<QColorDialog> m_qDialog;
@@ -365,7 +364,7 @@ private Q_SLOTS:
     void testDefaultConstructorAndDestructor1()
     {
         // This should not crash!
-        ColorDialog test(m_srgbBuildinColorSpace);
+        ColorDialog test(m_srgbBuildinColorSpace, id);
         Q_UNUSED(test);
     }
 
@@ -381,7 +380,7 @@ private Q_SLOTS:
         QWidget myWidget;
         {
             // This should not crash!
-            ColorDialog test(m_srgbBuildinColorSpace, &myWidget);
+            ColorDialog test(m_srgbBuildinColorSpace, id, &myWidget);
             Q_UNUSED(test);
         }
     }
@@ -400,11 +399,11 @@ private Q_SLOTS:
     {
         // Test the constructor ColorDialog(QWidget * parent = nullptr)
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         QScopedPointer<QWidget> tempWidget{new QWidget()};
         QScopedPointer<ColorDialog> tempPerceptualDialog2;
         tempPerceptualDialog2.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace, tempWidget.data()));
+            new ColorDialog(m_srgbBuildinColorSpace, id, tempWidget.data()));
         QCOMPARE(tempPerceptualDialog2->parentWidget(), tempWidget.data());
         QCOMPARE(tempPerceptualDialog2->parent(), tempWidget.data());
     }
@@ -415,6 +414,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset( //
             new ColorDialog( //
                 m_srgbBuildinColorSpace, //
+                id, //
                 QColor(Qt::white) //
                 ) //
         );
@@ -422,6 +422,7 @@ private Q_SLOTS:
         ColorDialog *tempPerceptualDialog2 = //
             new ColorDialog( //
                 m_srgbBuildinColorSpace,
+                id, //
                 QColor(Qt::white), //
                 tempWidget.data() //
             );
@@ -450,12 +451,13 @@ private Q_SLOTS:
 
         // Test the constructors
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace, color));
+            new ColorDialog(m_srgbBuildinColorSpace, id, color));
         QScopedPointer<QWidget> tempWidget{new QWidget()};
         QScopedPointer<ColorDialog> tempPerceptualDialog2{
             //
             new ColorDialog( //
                 m_srgbBuildinColorSpace, //
+                id, //
                 color, //
                 tempWidget.data() //
                 ) //
@@ -495,10 +497,11 @@ private Q_SLOTS:
 
         // Test the constructor ColorDialog(QWidget * parent = nullptr)
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace, color));
+            new ColorDialog(m_srgbBuildinColorSpace, id, color));
         QScopedPointer<QWidget> tempWidget{new QWidget()};
         ColorDialog *tempPerceptualDialog2 = new ColorDialog( //
             m_srgbBuildinColorSpace,
+            id,
             color,
             tempWidget.data());
         // Test if this coordinates is conform to QColorDialog
@@ -567,7 +570,7 @@ private Q_SLOTS:
         QFETCH(bool, showAlphaChannel);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace, initialColor));
+            new ColorDialog(m_srgbBuildinColorSpace, id, initialColor));
         m_qDialog.reset(new QColorDialog(initialColor));
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
 
@@ -622,7 +625,7 @@ private Q_SLOTS:
         QFETCH(bool, noButtons);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace, initialColor));
+            new ColorDialog(m_srgbBuildinColorSpace, id, initialColor));
         m_qDialog.reset(new QColorDialog(initialColor));
         helperCompareDialog(m_perceptualDialog.data(), m_qDialog.data());
 
@@ -658,7 +661,7 @@ private Q_SLOTS:
     void testColorSelectedSignal()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->show();
         m_qDialog.reset(new QColorDialog());
         m_qDialog->setOption(QColorDialog::DontUseNativeDialog, true);
@@ -900,7 +903,7 @@ private Q_SLOTS:
     void testCurrentColorChangedSignal()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_qDialog.reset(new QColorDialog());
         m_perceptualDialog->show();
         m_qDialog->show();
@@ -966,7 +969,7 @@ private Q_SLOTS:
         opaqueColor.setAlpha(255);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_qDialog.reset(new QColorDialog);
         m_qDialog->setOption(QColorDialog::DontUseNativeDialog, true);
         m_perceptualDialog->setOption( //
@@ -1072,7 +1075,7 @@ private Q_SLOTS:
     void testSetCurrentColor()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->show();
         constexpr auto testColor = Qt::yellow;
         m_perceptualDialog->setCurrentColor(testColor);
@@ -1138,7 +1141,7 @@ private Q_SLOTS:
         // thing as our reference
         m_color = Qt::black;
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setCurrentColor(Qt::white);
         m_perceptualDialog->open(this, SLOT(helperReceiveSignals(QColor)));
         m_perceptualDialog->setCurrentColor(Qt::red);
@@ -1157,7 +1160,7 @@ private Q_SLOTS:
     void testDefaultOptions()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_qDialog.reset(new QColorDialog);
         QCOMPARE( //
             m_perceptualDialog->testOption( //
@@ -1198,7 +1201,7 @@ private Q_SLOTS:
     void testOptionDontUseNativeDialogAlwaysTrue()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setOption(QColorDialog::DontUseNativeDialog);
         QCOMPARE( //
             m_perceptualDialog->testOption( //
@@ -1259,7 +1262,7 @@ private Q_SLOTS:
     void testOptionShowAlpha()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace, QColor(Qt::white)));
+            new ColorDialog(m_srgbBuildinColorSpace, id, QColor(Qt::white)));
         m_qDialog.reset(new QColorDialog);
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel);
@@ -1299,6 +1302,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset( //
             new ColorDialog( //
                 m_srgbBuildinColorSpace, //
+                id, //
                 QColor(Qt::white) //
                 ) //
         );
@@ -1344,7 +1348,7 @@ private Q_SLOTS:
     void testSetOptionAndTestOptionInteraction()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // Test if the option changes as expected
         m_perceptualDialog->setOption(QColorDialog::ShowAlphaChannel, //
                                       true);
@@ -1369,7 +1373,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // Test if the option changes as expected
         m_perceptualDialog->setOption(QColorDialog::ShowAlphaChannel, //
                                       false);
@@ -1394,7 +1398,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // Test if the option changes as expected
         m_perceptualDialog->setOption( //
             QColorDialog::NoButtons, //
@@ -1420,7 +1424,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // Test if the option changes as expected
         m_perceptualDialog->setOption( //
             QColorDialog::NoButtons, //
@@ -1447,7 +1451,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // define an option
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
@@ -1463,7 +1467,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // define an option
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
@@ -1479,7 +1483,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // define an option
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
@@ -1495,7 +1499,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // define an option
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
@@ -1514,7 +1518,7 @@ private Q_SLOTS:
     void testRgbInput()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
             true);
@@ -1523,7 +1527,7 @@ private Q_SLOTS:
     void testAlphaSpinbox()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setOption( //
             QColorDialog::ShowAlphaChannel, //
             true);
@@ -1548,7 +1552,7 @@ private Q_SLOTS:
     void testSelectedColorAndSetVisible()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_qDialog.reset(new QColorDialog);
         QCOMPARE(m_perceptualDialog->selectedColor(), //
                  m_qDialog->selectedColor());
@@ -1607,7 +1611,7 @@ private Q_SLOTS:
     void testAliases()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_qDialog.reset(new QColorDialog);
 
         // Test setting QColorDialog syntax
@@ -1656,7 +1660,7 @@ private Q_SLOTS:
     void testReadLightnessValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
         const auto &color = myDialog->d_pointer->m_currentOpaqueColorAbs;
@@ -1667,7 +1671,7 @@ private Q_SLOTS:
     void testGamutIconCielchD50()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // On startup, the current color should be in-gamut, so no gamut action
         // should be visible.
@@ -1701,7 +1705,7 @@ private Q_SLOTS:
     void testGamutIconOklch()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace, QColor(50, 127, 206)));
+            new ColorDialog(m_srgbBuildinColorSpace, id, QColor(50, 127, 206)));
 
         // On startup, the current color should be in-gamut, so no gamut action
         // should be visible.
@@ -1736,7 +1740,7 @@ private Q_SLOTS:
     void testReadLchNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         QList<double> myValues = //
             myDialog->d_pointer->m_cielchD50SpinBox->values();
 
@@ -1773,7 +1777,7 @@ private Q_SLOTS:
     void testReadOklchNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         QList<double> myValues = //
             myDialog->d_pointer->m_oklchSpinBox->values();
 
@@ -1805,7 +1809,7 @@ private Q_SLOTS:
     void testReadHsvNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         QList<double> myValues = //
             myDialog->d_pointer->m_hsvSpinBox->values();
         myValues[0] = 10;
@@ -1821,7 +1825,7 @@ private Q_SLOTS:
     void testReadRgbHexValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // Test some value
         myDialog->d_pointer->m_rgbLineEdit->setText(QStringLiteral("#010203"));
@@ -1863,7 +1867,7 @@ private Q_SLOTS:
     void testReadRgbNumericValues()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         QList<double> myValues = //
             myDialog->d_pointer->m_rgbSpinBox->values();
         myValues[0] = 10;
@@ -1880,7 +1884,7 @@ private Q_SLOTS:
     void testSetCurrentOpaqueColor()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         const auto myMultiColor = AbsoluteColor::allConversions( //
             ColorModel::CielchD50,
             GenericColor(30, 40, 50));
@@ -1897,7 +1901,7 @@ private Q_SLOTS:
     void testUpdateColorPatch()
     {
         QScopedPointer<ColorDialog> myDialog( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         myDialog->d_pointer->m_currentOpaqueColorRgb = //
             RgbColor::fromRgbQColor(QColor(1, 2, 3));
         myDialog->d_pointer->updateColorPatch();
@@ -1923,7 +1927,7 @@ private Q_SLOTS:
         // widget styles indeed show the size grip widget, like Fusion or
         // QtCurve.
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         QCOMPARE(m_perceptualDialog->isSizeGripEnabled(), true);
         m_perceptualDialog->show();
         QCOMPARE(m_perceptualDialog->isSizeGripEnabled(), true);
@@ -1934,7 +1938,7 @@ private Q_SLOTS:
     void testLayoutDimensions()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // Test default value
         QCOMPARE( //
             m_perceptualDialog->layoutDimensions(), //
@@ -1979,7 +1983,7 @@ private Q_SLOTS:
     void testApplyLayoutDimensions()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         // Test default value
         QCOMPARE( //
             m_perceptualDialog->layoutDimensions(), //
@@ -2003,7 +2007,7 @@ private Q_SLOTS:
     void testLayoutDimensionsChanged()
     {
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         QSignalSpy spyPerceptualDialog(
@@ -2052,7 +2056,7 @@ private Q_SLOTS:
         // done. This would not be correct, and this test controls this.)
 
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setCurrentColor(color);
         m_perceptualDialog->show();
         QApplication::setActiveWindow(m_perceptualDialog.data());
@@ -2103,7 +2107,7 @@ private Q_SLOTS:
 
         // Create a ColorDialog
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // Start with Qt::yellow as initial color.
         // If this RGB value is interpreted in the sRGB (LittleCMS build-in)
@@ -2148,7 +2152,7 @@ private Q_SLOTS:
 
         // Create a ColorDialog
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         const QList<double> hsvTestData{201, 33, 0};
         m_perceptualDialog->d_pointer->m_hsvSpinBox->setValues( //
@@ -2168,7 +2172,7 @@ private Q_SLOTS:
 
         // Create a ColorDialog:
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // The user puts into the LCH spin box the value 98% 94 100°:
         m_perceptualDialog->d_pointer->m_cielchD50SpinBox->setValues( //
@@ -2214,7 +2218,7 @@ private Q_SLOTS:
 
         // Create a ColorDialog:
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // Set a color that triggers the rounding error:
         GenericColor testColorLch{97, 94, 100};
@@ -2265,11 +2269,10 @@ private Q_SLOTS:
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
         auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
-            wideGamutProfile->fileName(), //
-            QStringLiteral("testrgbcolorspace"));
+            wideGamutProfile->fileName());
         QCOMPARE(myColorSpace.isNull(), false); // assertion
         m_perceptualDialog.reset( //
-            new ColorDialog(myColorSpace));
+            new ColorDialog(myColorSpace, id));
         QTest::keyClick( //
             m_perceptualDialog->d_pointer->m_lchLightnessSelector, //
             Qt::Key_End);
@@ -2289,7 +2292,7 @@ private Q_SLOTS:
                        QLocale(QLocale::English).uiLanguages());
         // Create a ColorDialog:
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_perceptualDialog->show();
@@ -2351,7 +2354,7 @@ private Q_SLOTS:
                        QLocale(QLocale::English).uiLanguages());
         // Create a ColorDialog:
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         m_perceptualDialog->show();
@@ -2413,7 +2416,7 @@ private Q_SLOTS:
                        QLocale(QLocale::English).uiLanguages());
         // Create a ColorDialog:
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Expanded);
         m_perceptualDialog->show();
@@ -2471,7 +2474,7 @@ private Q_SLOTS:
                        QLocale(QLocale::English).uiLanguages());
         // Create a ColorDialog:
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setLayoutDimensions( //
             ColorDialog::DialogLayoutDimensions::Collapsed);
         m_perceptualDialog->show();
@@ -2540,7 +2543,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
         QBENCHMARK {
             m_perceptualDialog.reset( //
-                new ColorDialog(m_srgbBuildinColorSpace));
+                new ColorDialog(m_srgbBuildinColorSpace, id));
             m_perceptualDialog->show();
             m_perceptualDialog->repaint();
             m_perceptualDialog.reset(nullptr);
@@ -2552,7 +2555,7 @@ private Q_SLOTS:
         m_perceptualDialog.reset(nullptr);
         QBENCHMARK {
             m_perceptualDialog.reset( //
-                new ColorDialog(m_srgbBuildinColorSpace));
+                new ColorDialog(m_srgbBuildinColorSpace, id));
             m_perceptualDialog->showMaximized();
             m_perceptualDialog->repaint();
             m_perceptualDialog.reset(nullptr);
@@ -2575,7 +2578,7 @@ private Q_SLOTS:
         setTranslation(QCoreApplication::instance(), //
                        QLocale(QLocale::English).uiLanguages());
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->show();
 
         QTabWidget *theTabWidget = //
@@ -2603,7 +2606,7 @@ private Q_SLOTS:
         setTranslation(QCoreApplication::instance(), //
                        QLocale(QLocale::English).uiLanguages());
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->show();
 
         QTabWidget *theTabWidget = //
@@ -2648,7 +2651,7 @@ private Q_SLOTS:
         initializeTranslation(QCoreApplication::instance(), //
                               QLocale(QLocale::English).uiLanguages());
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // We test various translations, because we do not know the locale
         // of the system on which this unit test will run. As there might
@@ -2688,7 +2691,7 @@ private Q_SLOTS:
         initializeTranslation(QCoreApplication::instance(), //
                               QLocale(QLocale::English).uiLanguages());
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
 
         // There is a particular reason for testing the translation of
         // the dialog buttons. We are using standard-buttons generated
@@ -2747,7 +2750,7 @@ private Q_SLOTS:
     {
         QFETCH(ColorDialog::DialogLayoutDimensions, layout);
         m_perceptualDialog.reset( //
-            new ColorDialog(m_srgbBuildinColorSpace));
+            new ColorDialog(m_srgbBuildinColorSpace, id));
         m_perceptualDialog->setLayoutDimensions(layout);
         m_perceptualDialog->show(); // Needed for correct m_tabWidget->count()
 
@@ -2762,7 +2765,7 @@ private Q_SLOTS:
         for (const auto i : std::as_const(testList)) {
             m_perceptualDialog->d_pointer->m_tabWidget->setCurrentIndex(i);
             m_perceptualDialog.reset( //
-                new ColorDialog(m_srgbBuildinColorSpace));
+                new ColorDialog(m_srgbBuildinColorSpace, id));
             // The last tab is only restored on show().
             m_perceptualDialog->setLayoutDimensions(layout);
             m_perceptualDialog->show();
@@ -2778,6 +2781,40 @@ private Q_SLOTS:
         QVERIFY(!myDialog.d_pointer->m_screenColorPickerButton->isVisible());
     }
 #endif
+
+    void testFixedIdentifierWithoutHyphenMinus()
+    {
+        // Suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("abc")), //
+            QStringLiteral("abc"));
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("aB1c$dEfg!")), //
+            QStringLiteral("abcdefg"));
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("ABCXYZ!")), //
+            QStringLiteral("abcxyz"));
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("1234!@#$")), //
+            QString());
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("!")), //
+            QString());
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("ÄÖÜß€µ")), //
+            QString());
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("a b\tc\nd")), //
+            QStringLiteral("abcd"));
+        QCOMPARE( //
+            ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(QStringLiteral("-ab-cd-")), //
+            QStringLiteral("abcd"));
+
+        // Do not suppress warnings anymore
+        qInstallMessageHandler(nullptr);
+    }
 
 private:
     void unused()

@@ -94,11 +94,6 @@ public:
      * @sa @ref m_cielabD50BlackpointL()
      */
     qreal m_cielabD50WhitepointL = 100;
-    /**
-     * @brief Internal storage for property
-     * @ref RgbColorSpace::gamutIdentifier
-     */
-    QString m_gamutIdentifier;
     /** @brief The darkest in-gamut point on the L* axis.
      *
      * @sa @ref m_oklabWhitepointL()
