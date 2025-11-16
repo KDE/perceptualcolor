@@ -910,7 +910,8 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
  * dynamically as windows move. To ensure consistent sizing across all scale
  * factors, pixel alignment is deliberately avoided in this function.
  *
- * @todo In Qt 6, the Breeze style no longer draws a blue focus border when a
+ * @todo SHOULDHAVE In Qt 6, the Breeze
+ * style no longer draws a blue focus border when a
  * widget gains focus. This behavior was present in Qt 5, making it a
  * regression specific to Breeze. While not all styles support this visual cue,
  * Breeze previously did.

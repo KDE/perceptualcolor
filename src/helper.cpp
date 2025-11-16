@@ -102,8 +102,8 @@ qreal standardWheelStepCount(QWheelEvent *event)
  *
  * @todo NICETOHAVE Calculate the two color values in Oklab instead of RGB.
  *
- * @todo On dual‑screen setups with different DPI scaling factors, the
- * current implementation rounds coordinates to full pixels. This makes the
+ * @todo NICETOHAVE On dual‑screen setups with different DPI scaling factors,
+ * the current implementation rounds coordinates to full pixels. This makes the
  * transparency background squares appear slightly inconsistent across
  * displays. When many squares are painted, for example in GradientSlider,
  * the effect becomes more visible when moving the widget between screens.
