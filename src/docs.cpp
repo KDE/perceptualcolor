@@ -1063,6 +1063,10 @@
  * absolutely minimal API that is required by the user, then remove this
  * item from the release checklist.
  *
+ * @todo SHOULDHAVE Consider
+ * <a href="https://develop.kde.org/docs/getting-started/add-project/#kde-review">
+ * KDE review</a>, then remove this item from the release checklist.
+ *
  * @todo SHOULDHAVE Test on MacOS and Big-Endian, which are both not in the
  * normal CI pipeline.
  *

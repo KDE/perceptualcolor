@@ -145,6 +145,10 @@ class RgbColorSpacePrivate;
  * functions that accept directly a <tt>QByteArray</tt> instead of a file
  * path.
  *
+ * @todo NCETOHAVE Use cmsHPROFILE cmsCreate_OkLabProfile(cmsContext ctx)
+ * instead fo calculating Oklab values ourself. For performance reasons.
+ * But it's available sind LittleCMS 2.16 only!
+ *
  * @todo NICETOHAVE
  *       Find more efficient ways of in-gamut detection. Maybe provide
  *       a subclass with optimized algorithms just for sRGB-build-in? */
