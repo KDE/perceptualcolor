@@ -82,6 +82,7 @@ public:
     [[nodiscard]] QPointF diagramCenter() const;
     [[nodiscard]] qreal diagramOffset() const;
     [[nodiscard]] cmsCIELab fromWidgetPixelPositionToLab(const QPoint position) const;
+    [[nodiscard]] bool isWidgetPixelPositionWithinDiagramCircle(const QPoint position) const;
     [[nodiscard]] bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);
     [[nodiscard]] QPointF widgetCoordinatesFromCurrentColorCielchD50() const;

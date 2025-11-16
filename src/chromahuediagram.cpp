@@ -107,17 +107,6 @@ ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, con
  * @endinternal
  *
  * @param event The corresponding mouse event
- *
- * @internal
- *
- * @todo SHOWSTOPPER Also accept clicks outside the gray circle: Either in the
- * color wheel or in the small space between color wheel and gray circle. By
- * the way: Maybe remove this small space? If so, we should simply make
- * the circular diagram surface wider: The extra space is needed to make sure
- * that even on maximum-chroma colors like RGB 0 0 255 the handle for
- * chroma-hue has enough space for overlap (half of its own outer diameter),
- * without going into the color wheel or the line that is drawn on the color
- * wheel.
  */
 void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
@@ -183,10 +172,10 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
         event->accept();
         const cmsCIELab cielabD50 = //
             d_pointer->fromWidgetPixelPositionToLab(event->pos());
-        const bool isWithinCircle = //
-            d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle( //
+        const bool isWithinDiagram = //
+            d_pointer->isWidgetPixelPositionWithinDiagramCircle( //
                 event->pos());
-        if (isWithinCircle && d_pointer->m_rgbColorSpace->isCielabD50InGamut(cielabD50)) {
+        if (isWithinDiagram && d_pointer->m_rgbColorSpace->isCielabD50InGamut(cielabD50)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
@@ -577,8 +566,8 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
 
 /** @brief Tests if a widget pixel position is within the mouse sensible circle.
  *
- * The mouse sensible circle contains the inner gray circle (on which the
- * gamut diagram is painted).
+ * The mouse sensible circle contains the outer color wheel and everything
+ * within it.
  * @param position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
@@ -587,22 +576,54 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
  * is within the circle, <tt>false</tt> otherwise. */
 bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
 {
-    const qreal radius = PolarPointF(
-                             // Position relative to
-                             // polar coordinate system center:
-                             position
-                             - diagramCenter()
-                             // Apply the offset between
-                             // - a pixel position on one hand and
-                             // - a coordinate point in the middle of this very
-                             //   same pixel on the other:
-                             + QPointF(0.5, 0.5))
-                             .radius();
+    const qreal mouseRadius = PolarPointF(
+                                  // Position relative to
+                                  // polar coordinate system center:
+                                  position
+                                  - diagramCenter()
+                                  // Apply the offset between
+                                  // - a pixel position on one hand and
+                                  // - a coordinate point in the middle of this
+                                  //   very same pixel on the other:
+                                  + QPointF(0.5, 0.5))
+                                  .radius();
+
+    const qreal sensibleRadius = q_pointer->maximumWidgetSquareSize() / 2.0 //
+        - q_pointer->spaceForFocusIndicator();
+
+    return (mouseRadius <= sensibleRadius);
+}
+
+/**
+ * @brief Tests if a widget pixel position is within the diagram circle.
+ *
+ * The diagram circle is the inner gray circle (on which the
+ * gamut diagram is painted).
+ * @param position The position of a pixel of the widget coordinate
+ * system. The given value  does not necessarily need to be within the
+ * actual displayed diagram or even the gamut itself. It might even be
+ * negative.
+ * @returns <tt>true</tt> if the (center of the) pixel at the given position
+ * is within the circle, <tt>false</tt> otherwise.
+ */
+bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinDiagramCircle(const QPoint position) const
+{
+    const qreal mouseRadius = PolarPointF(
+                                  // Position relative to
+                                  // polar coordinate system center:
+                                  position
+                                  - diagramCenter()
+                                  // Apply the offset between
+                                  // - a pixel position on one hand and
+                                  // - a coordinate point in the middle of this
+                                  //   very same pixel on the other:
+                                  + QPointF(0.5, 0.5))
+                                  .radius();
 
     const qreal diagramCircleRadius = //
         q_pointer->maximumWidgetSquareSize() / 2.0 - diagramBorder();
 
-    return (radius <= diagramCircleRadius);
+    return (mouseRadius <= diagramCircleRadius);
 }
 
 /** @brief Paint the widget.
