@@ -45,11 +45,6 @@ class RgbColorSpace;
  *   value that accepts focus by mouse click, the focus will not only be
  *   accepted for clicks within the actual circle, but also for clicks
  *   anywhere within the (rectangular) widget.
- *
- * @internal
- *
- * @todo SHOWSTOPPER What when some of the wheel colors are out of gamut? How
- * to handle that?
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {

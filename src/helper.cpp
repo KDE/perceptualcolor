@@ -71,7 +71,7 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * on which it is shown. This function provides a suitable background
  * for showcasing a color.
  *
- * @param devicePixelRatioF The desired device-pixel ratio. Must be ≥ 1.
+ * @param devicePixelRatioF The desired device-pixel ratio.
  *
  * @returns An image of a mosaic of neutral gray rectangles of different
  * lightness. You can use this as tiles to paint a background, starting from
@@ -99,6 +99,22 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * transparent color to paint above, and do color-managed overlay of the
  * transparent color, in Lch space. For each Lab (not Lch!) channel:
  * result = opacity * foreground + (100% - opacity) * background.
+ *
+ * @todo NICETOHAVE Calculate the two color values in Oklab instead of RGB.
+ *
+ * @todo On dual‑screen setups with different DPI scaling factors, the
+ * current implementation rounds coordinates to full pixels. This makes the
+ * transparency background squares appear slightly inconsistent across
+ * displays. When many squares are painted, for example in GradientSlider,
+ * the effect becomes more visible when moving the widget between screens.
+ * The function should drop pixel alignment and use floating‑point coordinates
+ * for all scale factors. A 10×10 pixel square at 125% scaling should become
+ * 12.5×12.5 pixels. QImage dimensions must be integers, so fractional sizes
+ * cannot be represented directly. The design should therefore be changed to
+ * no longer return a QImage. Instead, it should accept a QPainter or
+ * a reference to an existing QImage with an LTR/RTL parameter. Painting
+ * should then be done with floating‑point precision on the given target
+ * to ensure consistent rendering across different DPIs.
  */
 QImage transparencyBackground(qreal devicePixelRatioF)
 {

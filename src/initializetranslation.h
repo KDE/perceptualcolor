@@ -76,10 +76,7 @@ class QCoreApplication;
  * @todo SHOULDHAVE
  * LocaleChange could be important for spin boxes to accept the new
  * QLocale’s number format.
- *
- * @todo SHOWSTOPPER
- * Catch QEvent::LayoutDirectionChange in all widgets? Or the signal
- * QGuiApplication::layoutDirectionChanged()? */
+ */
 
 namespace PerceptualColor
 {

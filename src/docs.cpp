@@ -310,23 +310,6 @@
 
 /** @internal
  *
- * @page datatypes Data types
- *
- * The library uses in general <tt>int</tt> for integer values, because
- * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
- * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
- * seems reasonable.
- *
- * For the same reason, it uses generally <tt>qreal</tt>
- * for floating point values, because <tt>QPointF()</tt> also does.
- *
- * Output colors that are shown on the screen, are usually 8-bit-per-channel
- * colors. For internal transformation, usually <tt>qreal</tt>
- * is used for each channel, giving a better precision and reducing rounding
- * errors. */
-
-/** @internal
- *
  * @page generallist General to-do list with ideas or issues
  *
  * @todo NICETOHAVE Get rid of the “deprecated” warnings of Qt by using
@@ -499,14 +482,6 @@
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
  * @ref PerceptualColor::ColorWheelImage,
  * @ref PerceptualColor::GradientImageParameters.
- *
- * @todo SHOWSTOPPER
- * Sometimes, on dual-screen setup, one screen has another DPI than
- * the other screen. Does this library behave correctly in these situations?
- * Especially the rounding for the transparency background image: The size of
- * the squares of the transparency background should not change across scale
- * factors! Instead: No pixel alignment anymore, use floating-point coordinates
- * on all scale factors instead!
  *
  * @todo SHOULDHAVE When setting <tt>currentColor</tt> to an out-of-gamut color,
  * what happens? Does @ref PerceptualColor::ChromaHueDiagram preserve

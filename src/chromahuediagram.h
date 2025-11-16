@@ -70,10 +70,6 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo SHOWSTOPPER Click on the wheel. Actual
- * behaviour: Nothing. Expected behavior:
- * The selected color follows the cursor.
- *
  * @todo NICETOHAVE The hue circle around
  * chroma-hue diagram might be confusing because
  * it is colored, but it is not a usable slider like all other colored

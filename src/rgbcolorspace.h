@@ -48,8 +48,16 @@ class RgbColorSpacePrivate;
  * This class is reentrant. Furthermore, it is thread-save to use only
  * <tt>const</tt> functions simultaneously from various threads.
  *
- * @todo SHOULDHAVE Complete refactoring of this class, overhaul the interface,
- * the unit tests etc …
+ * @todo SHOULDHAVE Decouple Gamut and Output Profiles. Problem: This class
+ * assumes that the working gamut (used for the color values) and the screen
+ * profiles (the profile of the display device) are always identical. This
+ * assumption is incorrect. Example: While sRGB for both is the most likely
+ * case (sRGB is kind of standard), it's well possible that a Display-P3
+ * working gamut is requested, but the output must be mapped/clamped to an
+ * sRGB-only display (or the other way around). Action Items: Decide whether
+ * this class represents only the gamut profile, only the screen profile or the
+ * combination of both. Refactor the class’ interface and rename the class to
+ * accurately reflect this change in scope.
  *
  * @todo SHOULDHAVE
  *       Unit tests for @ref RgbColorSpace, especially the to…() functions.
@@ -59,9 +67,11 @@ class RgbColorSpacePrivate;
  *       @ref profileMaximumOklchChroma with all profiles that are available
  *       in the testbed.
  *
- * @todo SHOWSTOPPER Allow also other perceptual color spaces instead
- * of CIELAB: Definitely Oklab. But not
- * less common ones like CAM16 or DIN99 or Googles
+ * @todo SHOWSTOPPER Use (only or alternatively) Oklab
+ * instead of CIELAB. But not less common
+ * <a href="https://en.wikipedia.org/wiki/Uniform_color_space">
+ * perceptually uniform color spaces</a> like CAM16 or
+ * <a href="https://de.wikipedia.org/wiki/DIN99-Farbraum">DIN99</a> or Googles
  * <a href="https://github.com/material-foundation/material-color-utilities">
  * HCT</a> (they also use
  * <a href="https://m3.material.io/blog/science-of-color-design">HCT in their
