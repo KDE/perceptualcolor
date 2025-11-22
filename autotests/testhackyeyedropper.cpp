@@ -3,16 +3,11 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "screencolorpicker.h"
+#include "hackyeyedropper.h"
 
-#include "helper.h"
-#include <qcontainerfwd.h>
 #include <qglobal.h>
-#include <qmap.h>
 #include <qobject.h>
-#include <qpointer.h>
 #include <qtest.h>
-#include <qtestcase.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -24,12 +19,12 @@
 
 namespace PerceptualColor
 {
-class TestScreenColorPicker : public QObject
+class TestHackyEyedropper : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestScreenColorPicker(QObject *parent = nullptr)
+    explicit TestHackyEyedropper(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -57,23 +52,16 @@ private Q_SLOTS:
 
     void testIsAvailable()
     {
-        ScreenColorPicker picker(nullptr);
+        HackyEyedropper picker(nullptr);
         // Result depends on the platform. Make sure that at least is
         // does not crash.
         const bool result = picker.isAvailable();
         Q_UNUSED(result)
     }
 
-    void testGetPortalResponse()
-    {
-        ScreenColorPicker picker(nullptr);
-        // Difficult to test. Make sure that at least it does not crash.
-        picker.getPortalResponse(1, QVariantMap());
-    }
-
     void testInitializeQColorDialogSupport()
     {
-        ScreenColorPicker picker(nullptr);
+        HackyEyedropper picker(nullptr);
         // Difficult to test. Make sure that at least it does not crash.
         picker.initializeQColorDialogSupport();
 
@@ -91,7 +79,7 @@ private Q_SLOTS:
         // private class members, as nobody can access them. Consequently,
         // this part of the unit test is intended for static builds only.
 
-        // There has to be at least a result (even if we do not know which)
+        // There has to be at least a result (even if we do not know which one)
         QVERIFY(picker.m_hasQColorDialogSupport.has_value());
 
         // Tough future code changes in Qt could break our
@@ -100,39 +88,25 @@ private Q_SLOTS:
         // so we might get at least alerts by failing unit tests.
         if (picker.m_hasQColorDialogSupport.has_value()) {
             QCOMPARE(picker.m_hasQColorDialogSupport.value(), true);
-        }
-#endif
-        if (!onWayland()) {
             QVERIFY(!picker.m_qColorDialogScreenButton.isNull());
             QVERIFY(!picker.m_qColorDialog.isNull());
         }
-    }
-
-    void testHasPortalSupport()
-    {
-        // Difficult to test. Make sure that at least it does not crash.
-        const bool result = ScreenColorPicker::hasPortalSupport();
-        Q_UNUSED(result)
-    }
-
-    void testQueryPortalSupport()
-    {
-        // Difficult to test. Make sure that at least it does not crash.
-        const bool result = ScreenColorPicker::queryPortalSupport();
-        Q_UNUSED(result)
+#endif
     }
 
     void testTranslateViaQColorDialog()
     {
-        // Difficult to test. Make sure that at least it does not crash.
-        const auto result = ScreenColorPicker::translateViaQColorDialog("abcdefghijkl");
+        // Difficult to test. We do not know the locale of the machine on which
+        // the test in running. Make sure that at least it does not crash.
+        const auto result = //
+            HackyEyedropper::translateViaQColorDialog("abcdefghijkl");
         Q_UNUSED(result)
     }
 };
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestScreenColorPicker)
+QTEST_MAIN(PerceptualColor::TestHackyEyedropper)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testscreencolorpicker.moc"
+#include "testhackyeyedropper.moc"

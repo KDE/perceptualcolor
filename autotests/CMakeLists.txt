@@ -150,6 +150,7 @@ if(BUILD_TESTING)
         testgenericcolor
         testgradientimageparameters
         testgradientslider
+        testhackyeyedropper
         testhelper
         testhelperaccessibility
         testhelperconstants
@@ -167,10 +168,10 @@ if(BUILD_TESTING)
         testoklchvalues
         testperceptualsettings
         testpolarpointf
+        testportaleyedropper
         testrgbcolor
         testrgbcolorspace
         testrgbcolorspacefactory
-        testscreencolorpicker
         testsetting
         testsettingbase
         testsettings

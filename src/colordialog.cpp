@@ -22,10 +22,10 @@
 #include "multispinboxsection.h"
 #include "oklchvalues.h"
 #include "perceptualsettings.h"
+#include "portaleyedropper.h"
 #include "rgbcolor.h"
 #include "rgbcolorspace.h"
 #include "rgbcolorspacefactory.h"
-#include "screencolorpicker.h"
 #include "setting.h"
 #include "swatchbook.h"
 #include "wheelcolorpicker.h"
@@ -654,7 +654,7 @@ void ColorDialogPrivate::retranslateUi()
         m_oklchSpinBox->setFormat(oklchSections);
     }
 
-    if (m_screenColorPickerButton) {
+    if (m_eyedropperButton) {
         // Following KDE’s HIG, if the command requires additional user
         // interaction to complete, at the end of its label there should be an
         // elipsis (…)
@@ -663,9 +663,9 @@ void ColorDialogPrivate::retranslateUi()
         the user choose a color from the screen by doing a left-click.
         Same text as in QColorDialog */
         const auto mnemonic = tr("&Pick screen color…");
-        m_screenColorPickerButton->setToolTip( //
+        m_eyedropperButton->setToolTip( //
             richTextMarker + fromMnemonicToRichText(mnemonic));
-        m_screenColorPickerButton->setShortcut( //
+        m_eyedropperButton->setShortcut( //
             QKeySequence::mnemonic(mnemonic));
     }
 
@@ -809,8 +809,8 @@ void ColorDialogPrivate::reloadIcons()
             QStringLiteral("gtk-color-picker"), //
             QStringLiteral("tool_color_picker"), //
         };
-    if (!m_screenColorPickerButton.isNull()) {
-        m_screenColorPickerButton->setIcon( //
+    if (!m_eyedropperButton.isNull()) {
+        m_eyedropperButton->setIcon( //
             qIconFromTheme(candidates, //
                            QStringLiteral("color-picker"),
                            m_currentIconThemeType));
@@ -955,7 +955,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
     m_lightnessFirstWrapperWidget = new QWidget();
     m_lightnessFirstWrapperWidget->setLayout(tempLightnesFirstLayout);
 
-    initializeScreenColorPicker();
+    initializePortalEyedropper();
 
     m_tabWidget = new QTabWidget;
     // It would be good to have bigger icons. Via QStyle::pixelMetrics()
@@ -1039,11 +1039,11 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbCol
 
     QHBoxLayout *headerLayout = new QHBoxLayout();
     headerLayout->addWidget(m_colorPatch, 1);
-    if (m_screenColorPickerButton) {
-        m_screenColorPickerButton->setSizePolicy( //
+    if (m_eyedropperButton) {
+        m_eyedropperButton->setSizePolicy( //
             QSizePolicy::Minimum, // horizontal
             QSizePolicy::Minimum); // vertical
-        headerLayout->addWidget(m_screenColorPickerButton,
+        headerLayout->addWidget(m_eyedropperButton,
                                 // Do not grow the cell in the direction
                                 // of the QBoxLayout:
                                 0,
@@ -1537,7 +1537,12 @@ void ColorDialog::setCurrentColor(const QColor &color)
  * @snippet testcolordialog.cpp ColorDialog Open
  *
  * @param receiver the object that will receive the @ref colorSelected() signal
- * @param member the slot that will receive the @ref colorSelected() signal */
+ * @param member the slot that will receive the @ref colorSelected() signal
+ *
+ * @todo SHOULDHAVE Use new-style-type-save syntax instead, like
+ * template<typename Func> void open(QObject *receiver, Func slot) {
+ * connect(this, SIGNAL(colorSelected(QColor)), receiver, slot);
+ */
 void ColorDialog::open(QObject *receiver, const char *member)
 {
     connect(this, // sender
@@ -2005,7 +2010,7 @@ void ColorDialogPrivate::readOklchNumericValues()
 
 /** @brief Try to initialize the screen color picker feature.
  *
- * @post If supported, @ref m_screenColorPickerButton
+ * @post If supported, @ref m_eyedropperButton
  * is created. Otherwise, it stays <tt>nullptr</tt>.
  *
  * @todo SHOULDHAVE Currently, there is no color
@@ -2015,45 +2020,49 @@ void ColorDialogPrivate::readOklchNumericValues()
  * widget (which might happen to be also sRGB, but could also
  * be different).
  */
-void ColorDialogPrivate::initializeScreenColorPicker()
+void ColorDialogPrivate::initializePortalEyedropper()
 {
-    auto screenPicker = new ScreenColorPicker(q_pointer);
-    if (!screenPicker->isAvailable()) {
-        return;
-    }
-    m_screenColorPickerButton = new QToolButton;
-    screenPicker->setParent(m_screenColorPickerButton); // For better support
-    connect(m_screenColorPickerButton,
-            &QPushButton::clicked,
-            screenPicker,
-            // Default capture by reference, but screenPicker by value
-            [&, screenPicker]() {
-                const auto myColor = q_pointer->currentColor();
-                // NOTE After picking has started, depending on the
-                // implementation, there might be signals with new colors
-                // while moving the mouse on the screen. If the user presses
-                // the ESC key, a signal with the original RGB color will
-                // be emitted. This will restore the original QColor exactly,
-                // but could potentially produce roundtrip
-                // rounding errors: If original MultiColor was derived form
-                // LCH, it is not guaranteed that the new MultiColor derived
-                // from this QColor will not have rounding errors for LCH.
-                screenPicker->startPicking( //
-                    fromFloatingToEightBit(myColor.redF()), //
-                    fromFloatingToEightBit(myColor.greenF()), //
-                    fromFloatingToEightBit(myColor.blueF()));
+    auto &screenPicker = PortalEyedropper::getInstance();
+    m_eyedropperButton = new QToolButton;
+    connect(m_eyedropperButton, //
+            &QPushButton::clicked, //
+            &screenPicker, //
+            [&screenPicker, this]() {
+                screenPicker.startPicking(q_pointer);
             });
-    connect(screenPicker, //
-            &ScreenColorPicker::newColor, //
+    connect(&screenPicker, //
+            &PortalEyedropper::newColor, //
             q_pointer, //
-            [this](const double red, const double green, const double blue, const bool isSRgbGuaranteed) {
-                Q_UNUSED(isSRgbGuaranteed)
+            [this](const double red, const double green, const double blue) {
                 const GenericColor rgb255 //
                     {qBound<double>(0, red * 255, 255), //
                      qBound<double>(0, green * 255, 255),
                      qBound<double>(0, blue * 255, 255)};
                 setCurrentOpaqueColor(RgbColor::fromRgb255(rgb255), nullptr);
             });
+    connect(&screenPicker, //
+            &PortalEyedropper::isAvailableChanged, //
+            this, //
+            &ColorDialogPrivate::updateEyedropperButtonVisibility);
+    updateEyedropperButtonVisibility();
+}
+
+/**
+ * @brief Updates the visibility of @ref m_eyedropperButton.
+ *
+ * Considers @ref PortalEyedropper::isAvailable() and
+ * the <tt>NoEyeDropperButton</tt> flag from @ref m_options.
+ */
+void ColorDialogPrivate::updateEyedropperButtonVisibility()
+{
+    std::optional<bool> newVisibility = //
+        PortalEyedropper::getInstance().isAvailable();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
+    if (m_options.testFlag(QColorDialog::NoEyeDropperButton)) {
+        newVisibility = false;
+    };
+#endif
+    m_eyedropperButton->setVisible(newVisibility.value_or(false));
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.
@@ -2311,14 +2320,7 @@ void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions ne
     d_pointer->m_buttonBox->setVisible(!d_pointer->m_options.testFlag( //
         QColorDialog::ColorDialogOption::NoButtons));
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
-    // Apply the new options (buttons)
-    if (d_pointer->m_screenColorPickerButton) {
-        const bool showEyeDropperButton = !d_pointer->m_options.testFlag( //
-            QColorDialog::ColorDialogOption::NoEyeDropperButton);
-        d_pointer->m_screenColorPickerButton->setVisible(showEyeDropperButton);
-    }
-#endif
+    d_pointer->updateEyedropperButtonVisibility();
 
     // Notify
     Q_EMIT optionsChanged(d_pointer->m_options);

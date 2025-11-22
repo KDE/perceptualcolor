@@ -286,7 +286,7 @@ public:
     PerceptualSettings *m_settings;
     /** @brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
-    QPointer<QToolButton> m_screenColorPickerButton;
+    QPointer<QToolButton> m_eyedropperButton;
     /** @brief A row with two columns within a table in Qt’s rich text
      * formatting.
      *
@@ -331,7 +331,7 @@ public:
     static QIcon getGamutIcon(PerceptualColor::ColorSchemeType type);
     void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     [[nodiscard]] QWidget *initializeNumericPage();
-    void initializeScreenColorPicker();
+    void initializePortalEyedropper();
     void loadCustomColorsFromSettingsToSwatchBook();
     void loadHistoryFromSettingsToSwatchBook();
     [[nodiscard]] QString translateColorModel(cmsColorSpaceSignature model);
@@ -361,6 +361,7 @@ public Q_SLOTS:
                                QWidget *const ignoreWidget);
     void updateColorPatch();
     void updateCielchD50ButBlockSignals();
+    void updateEyedropperButtonVisibility();
     void updateOklchButBlockSignals();
     void updateRgbHexButBlockSignals();
 

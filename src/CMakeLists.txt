@@ -53,10 +53,10 @@ set(library_SRC
     multispinboxsection.cpp
     perceptualsettings.cpp
     polarpointf.cpp
+    portaleyedropper.cpp
     rgbcolor.cpp
     rgbcolorspace.cpp
     rgbcolorspacefactory.cpp
-    screencolorpicker.cpp
     settingbase.cpp
     settings.cpp
     settranslation.cpp
@@ -312,7 +312,9 @@ target_sources(
         ${lib_PUBLICHEADERS}
         # Add code that is currently not used, but that should be kept working
         # for possible use in the future.
-        csscolor.cpp)
+        csscolor.cpp
+        hackyeyedropper.cpp
+        )
 target_compile_definitions(
     ${INTERNAL_LIBRARY_NAME}
     PRIVATE PERCEPTUALCOLORINTERNAL)

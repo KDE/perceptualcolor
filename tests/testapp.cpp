@@ -12,6 +12,7 @@
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
 #include "csscolor.h" // IWYU pragma: keep
 #include "genericcolor.h" // IWYU pragma: keep
+#include "hackyeyedropper.h" // IWYU pragma: keep
 #include "helper.h" // IWYU pragma: keep
 #include "helperconstants.h" // IWYU pragma: keep
 #include "helperconversion.h" // IWYU pragma: keep
@@ -23,6 +24,7 @@
 #include "oklchvalues.h" // IWYU pragma: keep
 #include "perceptualsettings.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
+#include "portaleyedropper.h" // IWYU pragma: keep
 #include "rgbcolorspace.h" // IWYU pragma: keep
 #include "rgbcolorspacefactory.h" // IWYU pragma: keep
 #include "setting.h" // IWYU pragma: keep
@@ -60,6 +62,7 @@
 #include <qpixmap.h> // IWYU pragma: keep
 #include <qpluginloader.h> // IWYU pragma: keep
 #include <qpointer.h> // IWYU pragma: keep
+#include <qpushbutton.h> // IWYU pragma: keep
 #include <qrect.h> // IWYU pragma: keep
 #include <qregularexpression.h> // IWYU pragma: keep
 #include <qscopedpointer.h> // IWYU pragma: keep

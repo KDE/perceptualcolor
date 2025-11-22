@@ -50,10 +50,8 @@ This library:
 - Has basic support for accessibility.
 - Is developed with unit tests.
 - Links only to Qt and LittleCMS, making it a Tier 1 library.
-<!-- (ColorDialog’s screen color picker feature depends on Qt’s internals.)
 - Uses only the public API of Qt and LittleCMS, and no private
   features of these libraries.
--->
 
 ## Links
 

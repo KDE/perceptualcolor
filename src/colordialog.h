@@ -216,9 +216,6 @@ class RgbColorSpace;
  * Munsell? With an option to enable or disable them? (NCS not, because
  * it is not free…)
  *
- * @todo SHOWSTOPPER “Hijack screen picker” should be optional and
- * off-by-default
- *
  * @todo NICETOHAVE Add more @ref MultiSpinBox for
  * Oklab (feature parity with CSS Color 5),
  * Cielab (feature parity with CSS Color 5), Okhsl?
@@ -339,6 +336,11 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      *   set  <tt>ColorDialogOption::DontUseNativeDialog</tt> explicitly
      *   to <tt>false</tt>, this will silently be ignored, while the
      *   other options that you might have set, will be correctly applied.)
+     *
+     * @note Eyedropper functionality is only available if the current system
+     * supports this feature through Portal. If eyedropper support is
+     * unavailable, setting NoEyeDropperButton to <tt>false</tt>> has no
+     * effect, and the eyedropper button will not be shown.
      *
      * Example:
      * @snippet testcolordialog.cpp setOptionsWithLocalEnum

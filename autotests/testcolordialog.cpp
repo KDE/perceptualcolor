@@ -2774,11 +2774,13 @@ private Q_SLOTS:
     }
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
-    void testEyeDropperButton()
+    void testEyedropperButton()
     {
         ColorDialog myDialog;
         myDialog.setOption(QColorDialog::NoEyeDropperButton, false);
-        QVERIFY(!myDialog.d_pointer->m_screenColorPickerButton->isVisible());
+        if (!myDialog.d_pointer->m_eyedropperButton.isNull()) {
+            QVERIFY(!myDialog.d_pointer->m_eyedropperButton->isVisible());
+        }
     }
 #endif
 
