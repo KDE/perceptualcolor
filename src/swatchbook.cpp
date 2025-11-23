@@ -1048,7 +1048,11 @@ void SwatchBook::paintEvent(QPaintEvent *event)
  *
  * Other key events are forwarded to the base class.
  *
- * @param event the event */
+ * @param event the event
+ *
+ * @todo NICETOHAVE Support for Qt::Key_Menu (and maybe Qt::Key_MenuKB,
+ * Qt::Key_MenuPB but rather not Qt::Key_TopMenu?) for accessibility?
+ */
 void SwatchBook::keyPressEvent(QKeyEvent *event)
 {
     qsizetype steps = 0;
