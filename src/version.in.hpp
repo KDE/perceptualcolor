@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef PERCEPTUALCOLOR_VERSION_H
+#define PERCEPTUALCOLOR_VERSION_H
 
 #include "importexport.h"
 
@@ -87,4 +87,4 @@ namespace PerceptualColor
 
 } // namespace PerceptualColor
 
-#endif // VERSION_H
+#endif // PERCEPTUALCOLOR_VERSION_H

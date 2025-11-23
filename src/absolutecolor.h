@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef ABSOLUTECOLOR_H
-#define ABSOLUTECOLOR_H
+#ifndef PERCEPTUALCOLOR_ABSOLUTECOLOR_H
+#define PERCEPTUALCOLOR_ABSOLUTECOLOR_H
 
 #include "genericcolor.h"
 #include "helperconversion.h"
@@ -72,4 +72,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // ABSOLUTECOLOR_H
+#endif // PERCEPTUALCOLOR_ABSOLUTECOLOR_H

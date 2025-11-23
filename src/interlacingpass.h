@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef InterlacingPass_H
-#define InterlacingPass_H
+#ifndef PERCEPTUALCOLOR_INTERLACINGPASS_H
+#define PERCEPTUALCOLOR_INTERLACINGPASS_H
 
 #include "helpermath.h"
 #include <qsize.h>
@@ -105,4 +105,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // InterlacingPass_H
+#endif // PERCEPTUALCOLOR_INTERLACINGPASS_H

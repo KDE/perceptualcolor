@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef GENERICCOLOR_H
-#define GENERICCOLOR_H
+#ifndef PERCEPTUALCOLOR_GENERICCOLOR_H
+#define PERCEPTUALCOLOR_GENERICCOLOR_H
 
 #include "helpermath.h"
 #include <lcms2.h>
@@ -128,4 +128,4 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::GenericColor &value);
 
 Q_DECLARE_METATYPE(PerceptualColor::GenericColor)
 
-#endif // GENERICCOLOR_H
+#endif // PERCEPTUALCOLOR_GENERICCOLOR_H

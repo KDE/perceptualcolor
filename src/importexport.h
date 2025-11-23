@@ -5,8 +5,8 @@
  *
  * This file provides support for C++ symbol import and export. */
 
-#ifndef IMPORTEXPORT_H
-#define IMPORTEXPORT_H
+#ifndef PERCEPTUALCOLOR_IMPORTEXPORT_H
+#define PERCEPTUALCOLOR_IMPORTEXPORT_H
 
 #include <qglobal.h>
 
@@ -157,4 +157,4 @@
 
 #endif
 
-#endif // IMPORTEXPORT_H
+#endif // PERCEPTUALCOLOR_IMPORTEXPORT_H

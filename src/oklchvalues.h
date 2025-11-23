@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef OKLCHVALUES_H
-#define OKLCHVALUES_H
+#ifndef PERCEPTUALCOLOR_OKLCHVALUES_H
+#define PERCEPTUALCOLOR_OKLCHVALUES_H
 
 namespace PerceptualColor
 {
@@ -26,4 +26,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // OKLCHVALUES_H
+#endif // PERCEPTUALCOLOR_OKLCHVALUES_H

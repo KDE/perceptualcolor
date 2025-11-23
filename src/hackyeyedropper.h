@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HACKYEYEDROPPER
-#define HACKYEYEDROPPER
+#ifndef PERCEPTUALCOLOR_HACKYEYEDROPPER
+#define PERCEPTUALCOLOR_HACKYEYEDROPPER
 
 #include <optional>
 #include <qglobal.h>
@@ -139,4 +139,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // HACKYEYEDROPPER
+#endif // PERCEPTUALCOLOR_HACKYEYEDROPPER

@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef COLORDIALOG_H
-#define COLORDIALOG_H
+#ifndef PERCEPTUALCOLOR_COLORDIALOG_H
+#define PERCEPTUALCOLOR_COLORDIALOG_H
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
@@ -485,4 +485,4 @@ Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::ColorDialogOption)
 Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::ColorDialogOptions)
 Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::DialogLayoutDimensions)
 
-#endif // COLORDIALOG_H
+#endif // PERCEPTUALCOLOR_COLORDIALOG_H

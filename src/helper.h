@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HELPER_H
-#define HELPER_H
+#ifndef PERCEPTUALCOLOR_HELPER_H
+#define PERCEPTUALCOLOR_HELPER_H
 
 #include "helpermath.h"
 #include "lcms2.h"
@@ -637,4 +637,4 @@ QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
 // Attention: This must be done outside of all name-spaces.
 Q_DECLARE_METATYPE(PerceptualColor::QColorArray2D)
 
-#endif // HELPER_H
+#endif // PERCEPTUALCOLOR_HELPER_H

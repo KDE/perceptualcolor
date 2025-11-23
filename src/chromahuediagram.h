@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CHROMAHUEDIAGRAM_H
-#define CHROMAHUEDIAGRAM_H
+#ifndef PERCEPTUALCOLOR_CHROMAHUEDIAGRAM_H
+#define PERCEPTUALCOLOR_CHROMAHUEDIAGRAM_H
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
@@ -161,4 +161,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // CHROMAHUEDIAGRAM_H
+#endif // PERCEPTUALCOLOR_CHROMAHUEDIAGRAM_H

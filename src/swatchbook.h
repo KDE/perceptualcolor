@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef SWATCHBOOK_H
-#define SWATCHBOOK_H
+#ifndef PERCEPTUALCOLOR_SWATCHBOOK_H
+#define PERCEPTUALCOLOR_SWATCHBOOK_H
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
@@ -155,4 +155,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // SWATCHBOOK_H
+#endif // PERCEPTUALCOLOR_SWATCHBOOK_H

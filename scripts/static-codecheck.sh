@@ -112,6 +112,24 @@ grep \
     $PUBLIC_HEADERS \
          | sed 's/^/Public headers may not use constexpr: /'
 
+# Our policy with regard to namespace pollution requires all macros to be
+# prefixed with PERCEPTUALCOLOR_
+grep \
+    --recursive --exclude-dir=testbed \
+    --fixed-strings \
+    "#define " \
+    $ALL_CODE \
+        | grep -v "#define PERCEPTUALCOLOR_" \
+        | sed 's/^/Missing PERCEPTUALCOLOR_ prefix: /'
+
+grep \
+    --recursive --exclude-dir=testbed \
+    --perl-regexp \
+    '^#define\s+\S+' \
+    $ALL_CODE \
+        | grep --perl-regexp --invert-match '.*#define\s+[A-Z_][A-Z_0-9]*\b' \
+        | sed 's/^/Only A-Z_ in macro names: /'
+
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is
 # displayed.

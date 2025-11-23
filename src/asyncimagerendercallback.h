@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef ASYNCIMAGERENDERCALLBACK_H
-#define ASYNCIMAGERENDERCALLBACK_H
+#ifndef PERCEPTUALCOLOR_ASYNCIMAGERENDERCALLBACK_H
+#define PERCEPTUALCOLOR_ASYNCIMAGERENDERCALLBACK_H
 
 #include <qglobal.h>
 #include <qmetatype.h>
@@ -88,4 +88,4 @@ private:
 
 Q_DECLARE_METATYPE(PerceptualColor::AsyncImageRenderCallback::InterlacingState)
 
-#endif // ASYNCIMAGERENDERCALLBACK_H
+#endif // PERCEPTUALCOLOR_ASYNCIMAGERENDERCALLBACK_H

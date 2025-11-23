@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef ASYNCIMAGEPROVIDER_H
-#define ASYNCIMAGEPROVIDER_H
+#ifndef PERCEPTUALCOLOR_ASYNCIMAGEPROVIDER_H
+#define PERCEPTUALCOLOR_ASYNCIMAGEPROVIDER_H
 
 #include "asyncimageproviderbase.h"
 #include "asyncimagerenderthread.h"
@@ -309,4 +309,4 @@ void AsyncImageProvider<T>::refreshSync()
 
 } // namespace PerceptualColor
 
-#endif // ASYNCIMAGEPROVIDER_H
+#endif // PERCEPTUALCOLOR_ASYNCIMAGEPROVIDER_H

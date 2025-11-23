@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HELPERACCESSIBILITY_H
-#define HELPERACCESSIBILITY_H
+#ifndef PERCEPTUALCOLOR_HELPERACCESSIBILITY_H
+#define PERCEPTUALCOLOR_HELPERACCESSIBILITY_H
 
 #include <qaccessible.h>
 #include <qstring.h>
@@ -110,4 +110,4 @@ void installAccessibleFactory()
 
 } // namespace PerceptualColor
 
-#endif // HELPERACCESSIBILITY_H
+#endif // PERCEPTUALCOLOR_HELPERACCESSIBILITY_H

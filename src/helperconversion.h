@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HELPERCONVERSION_H
-#define HELPERCONVERSION_H
+#ifndef PERCEPTUALCOLOR_HELPERCONVERSION_H
+#define PERCEPTUALCOLOR_HELPERCONVERSION_H
 
 #include "genericcolor.h"
 #include <lcms2.h>
@@ -182,4 +182,4 @@ constexpr cmsCIEXYZ whitePointD65TwoDegree{0.95047, 1.00000, 1.08883};
 
 } // namespace PerceptualColor
 
-#endif // HELPERCONVERSION_H
+#endif // PERCEPTUALCOLOR_HELPERCONVERSION_H

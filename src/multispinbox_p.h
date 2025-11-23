@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef MULTISPINBOX_P_H
-#define MULTISPINBOX_P_H
+#ifndef PERCEPTUALCOLOR_MULTISPINBOX_P_H
+#define PERCEPTUALCOLOR_MULTISPINBOX_P_H
 
 // Include the header of the public class of this private implementation.
 // #include "multispinbox.h"
@@ -133,4 +133,4 @@ public:
 
 } // namespace PerceptualColor
 
-#endif // MULTISPINBOX_P_H
+#endif // PERCEPTUALCOLOR_MULTISPINBOX_P_H

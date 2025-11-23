@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef MULTISPINBOXSECTION_H
-#define MULTISPINBOXSECTION_H
+#ifndef PERCEPTUALCOLOR_MULTISPINBOXSECTION_H
+#define PERCEPTUALCOLOR_MULTISPINBOXSECTION_H
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
@@ -95,4 +95,4 @@ PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor
 
 Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBoxSection)
 
-#endif // MULTISPINBOXSECTION_H
+#endif // PERCEPTUALCOLOR_MULTISPINBOXSECTION_H

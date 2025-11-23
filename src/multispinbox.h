@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef MULTISPINBOX_H
-#define MULTISPINBOX_H
+#ifndef PERCEPTUALCOLOR_MULTISPINBOX_H
+#define PERCEPTUALCOLOR_MULTISPINBOX_H
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
@@ -278,4 +278,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // MULTISPINBOX_H
+#endif // PERCEPTUALCOLOR_MULTISPINBOX_H

@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CSSCOLOR_H
-#define CSSCOLOR_H
+#ifndef PERCEPTUALCOLOR_CSSCOLOR_H
+#define PERCEPTUALCOLOR_CSSCOLOR_H
 
 #include "genericcolor.h"
 #include "helperconversion.h"
@@ -107,4 +107,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // CSSCOLOR_H
+#endif // PERCEPTUALCOLOR_CSSCOLOR_H

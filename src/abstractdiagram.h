@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef ABSTRACTDIAGRAM_H
-#define ABSTRACTDIAGRAM_H
+#ifndef PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H
+#define PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
@@ -97,4 +97,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // ABSTRACTDIAGRAM_H
+#endif // PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H

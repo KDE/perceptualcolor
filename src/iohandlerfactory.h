@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef IOHANDLERFACTORY_H
-#define IOHANDLERFACTORY_H
+#ifndef PERCEPTUALCOLOR_IOHANDLERFACTORY_H
+#define PERCEPTUALCOLOR_IOHANDLERFACTORY_H
 
 #include "lcms2.h"
 #include <qglobal.h>
@@ -90,4 +90,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // IOHANDLERFACTORY_H
+#endif // PERCEPTUALCOLOR_IOHANDLERFACTORY_H

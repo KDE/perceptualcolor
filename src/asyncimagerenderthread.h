@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef ASYNCIMAGERENDERTHREAD_H
-#define ASYNCIMAGERENDERTHREAD_H
+#ifndef PERCEPTUALCOLOR_ASYNCIMAGERENDERTHREAD_H
+#define PERCEPTUALCOLOR_ASYNCIMAGERENDERTHREAD_H
 
 #include "asyncimagerendercallback.h"
 #include <atomic>
@@ -190,4 +190,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // ASYNCIMAGERENDERTHREAD_H
+#endif // PERCEPTUALCOLOR_ASYNCIMAGERENDERTHREAD_H

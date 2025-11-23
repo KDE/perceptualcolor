@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef COLORWHEELIMAGE_H
-#define COLORWHEELIMAGE_H
+#ifndef PERCEPTUALCOLOR_COLORWHEELIMAGE_H
+#define PERCEPTUALCOLOR_COLORWHEELIMAGE_H
 
 #include <qglobal.h>
 #include <qimage.h>
@@ -116,4 +116,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // COLORWHEELIMAGE_H
+#endif // PERCEPTUALCOLOR_COLORWHEELIMAGE_H

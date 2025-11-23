@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef INITIALIZELIBRARYRESOURCES_H
-#define INITIALIZELIBRARYRESOURCES_H
+#ifndef PERCEPTUALCOLOR_INITIALIZELIBRARYRESOURCES_H
+#define PERCEPTUALCOLOR_INITIALIZELIBRARYRESOURCES_H
 
 /** @internal @file
  *
@@ -15,4 +15,4 @@ void initializeLibraryResources();
 
 } // namespace PerceptualColor
 
-#endif // INITIALIZELIBRARYRESOURCES_H
+#endif // PERCEPTUALCOLOR_INITIALIZELIBRARYRESOURCES_H

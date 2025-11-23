@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CONSTPROPAGATINGRAWPOINTER_H
-#define CONSTPROPAGATINGRAWPOINTER_H
+#ifndef PERCEPTUALCOLOR_CONSTPROPAGATINGRAWPOINTER_H
+#define PERCEPTUALCOLOR_CONSTPROPAGATINGRAWPOINTER_H
 
 namespace PerceptualColor
 {
@@ -138,4 +138,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // CONSTPROPAGATINGUNIQUEPOINTER_H
+#endif // PERCEPTUALCOLOR_CONSTPROPAGATINGUNIQUEPOINTER_H

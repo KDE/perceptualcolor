@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HELPERCONSTANTS_H
-#define HELPERCONSTANTS_H
+#ifndef PERCEPTUALCOLOR_HELPERCONSTANTS_H
+#define PERCEPTUALCOLOR_HELPERCONSTANTS_H
 
 #include <qglobal.h>
 #include <qstring.h>
@@ -215,4 +215,4 @@ inline const QString richTextMarker = QStringLiteral(u"<a/>");
 
 } // namespace PerceptualColor
 
-#endif // HELPERCONSTANTS_H
+#endif // PERCEPTUALCOLOR_HELPERCONSTANTS_H

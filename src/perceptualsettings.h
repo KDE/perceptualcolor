@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PERCEPTUALSETTINGS_H
-#define PERCEPTUALSETTINGS_H
+#ifndef PERCEPTUALCOLOR_PERCEPTUALSETTINGS_H
+#define PERCEPTUALCOLOR_PERCEPTUALSETTINGS_H
 
 #include "setting.h"
 #include "settings.h"
@@ -110,4 +110,4 @@ private:
 Q_DECLARE_METATYPE(PerceptualColor::PerceptualSettings::ColorList)
 Q_DECLARE_METATYPE(PerceptualColor::PerceptualSettings::SwatchBookPage)
 
-#endif // PERCEPTUALSETTINGS_H
+#endif // PERCEPTUALCOLOR_PERCEPTUALSETTINGS_H

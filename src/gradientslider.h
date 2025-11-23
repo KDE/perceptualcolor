@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef GRADIENTSLIDER_H
-#define GRADIENTSLIDER_H
+#ifndef PERCEPTUALCOLOR_GRADIENTSLIDER_H
+#define PERCEPTUALCOLOR_GRADIENTSLIDER_H
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
@@ -262,4 +262,4 @@ private:
 
 Q_DECLARE_METATYPE(Qt::Orientation)
 
-#endif // GRADIENTSLIDER_H
+#endif // PERCEPTUALCOLOR_GRADIENTSLIDER_H

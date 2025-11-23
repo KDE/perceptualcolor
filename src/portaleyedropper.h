@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PORTALEYEDROPPER
-#define PORTALEYEDROPPER
+#ifndef PERCEPTUALCOLOR_PORTALEYEDROPPER
+#define PERCEPTUALCOLOR_PORTALEYEDROPPER
 
 #include <optional>
 #include <qcontainerfwd.h>
@@ -120,4 +120,4 @@ private Q_SLOTS:
 
 } // namespace PerceptualColor
 
-#endif // PORTALEYEDROPPER
+#endif // PERCEPTUALCOLOR_PORTALEYEDROPPER

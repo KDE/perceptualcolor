@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef GRADIENTIMAGEPARAMETERS_H
-#define GRADIENTIMAGEPARAMETERS_H
+#ifndef PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H
+#define PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H
 
 #include "genericcolor.h"
 #include <qglobal.h>
@@ -107,4 +107,4 @@ private:
 
 Q_DECLARE_METATYPE(PerceptualColor::GradientImageParameters)
 
-#endif // GRADIENTIMAGEPARAMETERS_H
+#endif // PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H

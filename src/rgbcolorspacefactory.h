@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef RGBCOLORSPACEFACTORY_H
-#define RGBCOLORSPACEFACTORY_H
+#ifndef PERCEPTUALCOLOR_RGBCOLORSPACEFACTORY_H
+#define PERCEPTUALCOLOR_RGBCOLORSPACEFACTORY_H
 
 #include "importexport.h"
 #include <qcontainerfwd.h>
@@ -51,4 +51,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // RGBCOLORSPACEFACTORY_H
+#endif // PERCEPTUALCOLOR_RGBCOLORSPACEFACTORY_H

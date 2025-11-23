@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef SETTRANSLATION_H
-#define SETTRANSLATION_H
+#ifndef PERCEPTUALCOLOR_SETTRANSLATION_H
+#define PERCEPTUALCOLOR_SETTRANSLATION_H
 
 #include "importexport.h"
 #include <qcontainerfwd.h>
@@ -16,4 +16,4 @@ void PERCEPTUALCOLOR_IMPORTEXPORT setTranslation(QCoreApplication *instance, con
 
 } // namespace PerceptualColor
 
-#endif // SETTRANSLATION_H
+#endif // PERCEPTUALCOLOR_SETTRANSLATION_H

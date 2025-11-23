@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef POLARPOINTF_H
-#define POLARPOINTF_H
+#ifndef PERCEPTUALCOLOR_POLARPOINTF_H
+#define PERCEPTUALCOLOR_POLARPOINTF_H
 
 #include <qdebug.h>
 #include <qmetatype.h>
@@ -118,4 +118,4 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value);
 
 Q_DECLARE_METATYPE(PerceptualColor::PolarPointF)
 
-#endif // POLARPOINTF_H
+#endif // PERCEPTUALCOLOR_POLARPOINTF_H

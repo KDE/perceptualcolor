@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef RGBCOLORSPACE_P_H
-#define RGBCOLORSPACE_P_H
+#ifndef PERCEPTUALCOLOR_RGBCOLORSPACE_P_H
+#define PERCEPTUALCOLOR_RGBCOLORSPACE_P_H
 
 // Include the header of the public class of this private implementation.
 // #include "rgbcolorspace.h"
@@ -242,4 +242,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // RGBCOLORSPACE_P_H
+#endif // PERCEPTUALCOLOR_RGBCOLORSPACE_P_H

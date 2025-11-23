@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef LANGUAGECHANGEEVENTFILTER_H
-#define LANGUAGECHANGEEVENTFILTER_H
+#ifndef PERCEPTUALCOLOR_LANGUAGECHANGEEVENTFILTER_H
+#define PERCEPTUALCOLOR_LANGUAGECHANGEEVENTFILTER_H
 
 #include <qglobal.h>
 #include <qobject.h>
@@ -42,4 +42,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // LANGUAGECHANGEEVENTFILTER_H
+#endif // PERCEPTUALCOLOR_LANGUAGECHANGEEVENTFILTER_H

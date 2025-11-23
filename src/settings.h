@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef PERCEPTUALCOLOR_SETTINGS_H
+#define PERCEPTUALCOLOR_SETTINGS_H
 
 #include <qfilesystemwatcher.h>
 #include <qglobal.h>
@@ -94,4 +94,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // SETTINGS_H
+#endif // PERCEPTUALCOLOR_SETTINGS_H

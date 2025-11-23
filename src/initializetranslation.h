@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef INITIALIZETRANSLATION_H
-#define INITIALIZETRANSLATION_H
+#ifndef PERCEPTUALCOLOR_INITIALIZETRANSLATION_H
+#define PERCEPTUALCOLOR_INITIALIZETRANSLATION_H
 
 #include <optional>
 
@@ -85,4 +85,4 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
 
 } // namespace PerceptualColor
 
-#endif // INITIALIZETRANSLATION_H
+#endif // PERCEPTUALCOLOR_INITIALIZETRANSLATION_H

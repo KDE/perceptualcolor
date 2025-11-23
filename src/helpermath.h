@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HELPERMATH_H
-#define HELPERMATH_H
+#ifndef PERCEPTUALCOLOR_HELPERMATH_H
+#define PERCEPTUALCOLOR_HELPERMATH_H
 
 #include <cmath>
 #include <limits>
@@ -335,4 +335,4 @@ Q_DECLARE_METATYPE(PerceptualColor::Quartet)
 Q_DECLARE_METATYPE(PerceptualColor::SquareMatrix3)
 Q_DECLARE_METATYPE(PerceptualColor::Trio)
 
-#endif // HELPERMATH_H
+#endif // PERCEPTUALCOLOR_HELPERMATH_H

@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CHROMALIGHTNESSDIAGRAM_H
-#define CHROMALIGHTNESSDIAGRAM_H
+#ifndef PERCEPTUALCOLOR_CHROMALIGHTNESSDIAGRAM_H
+#define PERCEPTUALCOLOR_CHROMALIGHTNESSDIAGRAM_H
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
@@ -135,4 +135,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // CHROMALIGHTNESSDIAGRAM_H
+#endif // PERCEPTUALCOLOR_CHROMALIGHTNESSDIAGRAM_H

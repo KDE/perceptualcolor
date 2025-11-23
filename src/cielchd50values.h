@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CIELCHD50VALUES_H
-#define CIELCHD50VALUES_H
+#ifndef PERCEPTUALCOLOR_CIELCHD50VALUES_H
+#define PERCEPTUALCOLOR_CIELCHD50VALUES_H
 
 #include <genericcolor.h>
 
@@ -97,4 +97,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // CIELCHD50VALUES_H
+#endif // PERCEPTUALCOLOR_CIELCHD50VALUES_H

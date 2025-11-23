@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef SETTINGBASE_H
-#define SETTINGBASE_H
+#ifndef PERCEPTUALCOLOR_SETTINGBASE_H
+#define PERCEPTUALCOLOR_SETTINGBASE_H
 
 #include <qglobal.h>
 #include <qobject.h>
@@ -59,4 +59,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // SETTINGBASE_H
+#endif // PERCEPTUALCOLOR_SETTINGBASE_H

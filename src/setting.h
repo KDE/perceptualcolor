@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef SETTING_H
-#define SETTING_H
+#ifndef PERCEPTUALCOLOR_SETTING_H
+#define PERCEPTUALCOLOR_SETTING_H
 
 #include "settingbase.h"
 #include "settings.h"
@@ -213,4 +213,4 @@ void Setting<T>::setValue(const T &newValue)
 
 } // namespace PerceptualColor
 
-#endif // SETTING_H
+#endif // PERCEPTUALCOLOR_SETTING_H

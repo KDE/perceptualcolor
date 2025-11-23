@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef SWATCHBOOK_P_H
-#define SWATCHBOOK_P_H
+#ifndef PERCEPTUALCOLOR_SWATCHBOOK_P_H
+#define PERCEPTUALCOLOR_SWATCHBOOK_P_H
 
 // Include the header of the public class of this private implementation.
 // #include "swatchbook.h"
@@ -163,4 +163,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // SWATCHBOOK_P_H
+#endif // PERCEPTUALCOLOR_SWATCHBOOK_P_H

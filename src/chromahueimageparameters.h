@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CHROMAHUEIMAGEPARAMETERS_H
-#define CHROMAHUEIMAGEPARAMETERS_H
+#ifndef PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H
+#define PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H
 
 #include "interlacingpass.h"
 #include <qglobal.h>
@@ -98,4 +98,4 @@ private:
 
 Q_DECLARE_METATYPE(PerceptualColor::ChromaHueImageParameters)
 
-#endif // CHROMAHUEIMAGEPARAMETERS_H
+#endif // PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H

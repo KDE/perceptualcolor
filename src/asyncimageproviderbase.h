@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef ASYNCIMAGEPROVIDERBASE_H
-#define ASYNCIMAGEPROVIDERBASE_H
+#ifndef PERCEPTUALCOLOR_ASYNCIMAGEPROVIDERBASE_H
+#define PERCEPTUALCOLOR_ASYNCIMAGEPROVIDERBASE_H
 
 #include <qglobal.h>
 #include <qobject.h>
@@ -54,4 +54,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // ASYNCIMAGEPROVIDERBASE_H
+#endif // PERCEPTUALCOLOR_ASYNCIMAGEPROVIDERBASE_H

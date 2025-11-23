@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef HELPERPOSIXMATH_H
-#define HELPERPOSIXMATH_H
+#ifndef PERCEPTUALCOLOR_HELPERPOSIXMATH_H
+#define PERCEPTUALCOLOR_HELPERPOSIXMATH_H
 
 /** @internal
  *
@@ -34,4 +34,4 @@ inline constexpr double pi = 3.141592653589793238462643383279502884197169399375;
 
 } // namespace PerceptualColor
 
-#endif // HELPERPOSIXMATH_H
+#endif // PERCEPTUALCOLOR_HELPERPOSIXMATH_H

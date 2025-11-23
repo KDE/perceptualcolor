@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef CHROMALIGHTNESSIMAGEPARAMETERS_H
-#define CHROMALIGHTNESSIMAGEPARAMETERS_H
+#ifndef PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H
+#define PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H
 
 #include <qglobal.h>
 #include <qmetatype.h>
@@ -85,4 +85,4 @@ private:
 
 Q_DECLARE_METATYPE(PerceptualColor::ChromaLightnessImageParameters)
 
-#endif // CHROMALIGHTNESSIMAGEPARAMETERS_H
+#endif // PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H

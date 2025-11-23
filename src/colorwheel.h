@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef COLORWHEEL_H
-#define COLORWHEEL_H
+#ifndef PERCEPTUALCOLOR_COLORWHEEL_H
+#define PERCEPTUALCOLOR_COLORWHEEL_H
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
@@ -132,4 +132,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // COLORWHEEL_H
+#endif // PERCEPTUALCOLOR_COLORWHEEL_H

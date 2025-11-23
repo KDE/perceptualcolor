@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef RGBCOLOR_H
-#define RGBCOLOR_H
+#ifndef PERCEPTUALCOLOR_RGBCOLOR_H
+#define PERCEPTUALCOLOR_RGBCOLOR_H
 
 #include "genericcolor.h"
 #include <optional>
@@ -125,4 +125,4 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value);
 
 } // namespace PerceptualColor
 
-#endif // RGBCOLOR_H
+#endif // PERCEPTUALCOLOR_RGBCOLOR_H
