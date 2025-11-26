@@ -48,7 +48,8 @@ class RgbColorSpacePrivate;
  * This class is reentrant. Furthermore, it is thread-save to use only
  * <tt>const</tt> functions simultaneously from various threads.
  *
- * @note Major operating systems assume sRGB as the standard color
+ * @note Major operating systems assume sRGB (with the
+ * standard-conformant piecewise gamma function) as the default color
  * space for application-drawn content. This is either because the OS
  * performs active color management and expects sRGB input, or because no
  * color management is applied and most monitors are designed to interpret
