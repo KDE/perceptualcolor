@@ -419,8 +419,8 @@ public:
     [[nodiscard]] Q_INVOKABLE virtual bool isCielabD50InGamut(const cmsCIELab &lab) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::GenericColor &lch) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isOklchInGamut(const PerceptualColor::GenericColor &lch) const;
-    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByCielchD50Hue360(double oklabHue360) const;
-    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByOklabHue360(double oklabHue360) const;
+    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByCielchD50Hue360(double hue360) const;
+    [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByOklabHue360(double hue360) const;
     /** @brief Getter for property @ref profileAbsoluteFilePath
      *  @returns the property @ref profileAbsoluteFilePath */
     [[nodiscard]] QString profileAbsoluteFilePath() const;

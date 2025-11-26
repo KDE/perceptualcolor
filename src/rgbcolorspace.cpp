@@ -1472,13 +1472,13 @@ QColor RgbColorSpace::maxChromaColorByCielchD50Hue360(double hue360) const
 /**
  * @brief Returns the most chromatic color for the given hue.
  *
- * @param oklabHue360 Oklab hue in the range [0, 360]
+ * @param hue360 Oklab hue in the range [0, 360]
  * @param type The type of Lch color space.
  *
  * @returns the most chromatic color for the given Oklab hue in the current
  * RGB gamut.
  */
-QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, PerceptualColor::LchSpace type) const
+QColor RgbColorSpacePrivate::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type) const
 {
     const auto &table = (type == LchSpace::CielchD50) //
         ? m_chromaticityBoundaryByCielchD50Hue360 //
@@ -1491,7 +1491,7 @@ QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, Perceptu
     // lower_bound: Returns an iterator pointing to the first element that
     // is not less than (i.e. greater or equal to) key.
     auto greaterOrEqual = //
-        table.lower_bound(oklabHue360);
+        table.lower_bound(hue360);
 
     if (greaterOrEqual == table.begin()) {
         // All available keys are greater than the search key. So the key
@@ -1512,8 +1512,8 @@ QColor RgbColorSpacePrivate::maxChromaColorByHue360(double oklabHue360, Perceptu
     }
 
     // Compare distances to find the closest key
-    const auto distanceToLower = qAbs(oklabHue360 - lower->first);
-    const auto distanceToHigher = qAbs(oklabHue360 - greaterOrEqual->first);
+    const auto distanceToLower = qAbs(hue360 - lower->first);
+    const auto distanceToHigher = qAbs(hue360 - greaterOrEqual->first);
     if (distanceToLower <= distanceToHigher) {
         return lower->second;
     } else {
