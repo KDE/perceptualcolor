@@ -637,10 +637,6 @@
  * @todo NICETOHAVE How can the diagrams actually output 16 bits per channel on
  * the screen instead of the current 8 bits? There isn’t any Qt API for that,
  * isn’t it?
- *
- * @todo SHOWSTOPPER Which type of sRGB does Wayland assume? Real sRGB with
- * the defined gamma functions per section, or simplified 2.2-overall gamma,
- * or even linear?
  */
 
 /** @page hidpisupport High DPI support

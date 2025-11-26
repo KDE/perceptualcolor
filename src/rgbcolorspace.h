@@ -48,6 +48,21 @@ class RgbColorSpacePrivate;
  * This class is reentrant. Furthermore, it is thread-save to use only
  * <tt>const</tt> functions simultaneously from various threads.
  *
+ * @note Major operating systems assume sRGB as the standard color
+ * space for application-drawn content. This is either because the OS
+ * performs active color management and expects sRGB input, or because no
+ * color management is applied and most monitors are designed to interpret
+ * incoming data as sRGB. Consequently, when drawing in QWidget, colors
+ * should be specified in sRGB. Support for Wide Color Gamut (WCG) or High
+ * Dynamic Range (HDR) rendering is only achievable by using
+ * <a href="https://doc.qt.io/qt-6/qopenglwidget.html">QOpenGLWidget</a> and
+ * leveraging OpenGL directly. (<a href="https://doc.qt.io/qt-6/qrhi.html">
+ * QRHI</a> is a half-private API with limited stability guaranties and seems
+ * less appropriate than QOpenGLWidget.) Since sRGB remains the most widely
+ * supported and reliable color space, WCG and HDR are typically of limited
+ * practical importance in this context, and support for output color spaces
+ * different from sRGB is not a priority.
+ *
  * @todo SHOULDHAVE Decouple Gamut and Output Profiles. Problem: This class
  * assumes that the working gamut (used for the color values) and the screen
  * profiles (the profile of the display device) are always identical. This
