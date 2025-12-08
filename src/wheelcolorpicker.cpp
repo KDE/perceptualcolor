@@ -11,12 +11,12 @@
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 #include "cielchd50values.h"
+#include "colorengine.h"
 #include "colorwheel.h"
 #include "colorwheel_p.h" // IWYU pragma: keep
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
-#include "rgbcolorspace.h"
 #include <math.h>
 #include <qapplication.h>
 #include <qmath.h>
@@ -32,19 +32,19 @@ class QWidget;
 namespace PerceptualColor
 {
 /** @brief Constructor
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
+ * @param colorEngine The color engine this widget should use.
+ * Can be created with @ref createSrgbColorEngine().
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new WheelColorPickerPrivate(this))
 {
-    d_pointer->m_rgbColorSpace = colorSpace;
-    d_pointer->m_colorWheel = new ColorWheel(colorSpace, this);
+    d_pointer->m_colorEngine = colorEngine;
+    d_pointer->m_colorWheel = new ColorWheel(colorEngine, this);
     d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(
-        // Same color space for this widget:
-        colorSpace,
+        // Same color engine for this widget:
+        colorEngine,
         // This widget is smaller than the color wheel. It will be a child
         // of the color wheel, so that missed mouse or key events will be
         // forwarded to the parent widget (color wheel).
@@ -62,7 +62,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
             lch.third = newHue;
             // We have to be sure that the color is in-gamut also for the
             // new hue. If it is not, we adjust it:
-            lch = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(lch);
+            lch = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(lch);
             d_pointer->m_chromaLightnessDiagram->setCurrentColorCielchD50(lch);
         });
     connect(d_pointer->m_chromaLightnessDiagram,
@@ -83,7 +83,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     setCurrentColorCielchD50(
         // Though CielchD50Values::srgbVersatileInitialColor() is expected to
         // be in-gamut, its more secure to guarantee this explicitly:
-        d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(
+        d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(
             // Default sRGB initial color:
             CielchD50Values::srgbVersatileInitialColor));
 }
@@ -161,7 +161,7 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
      * | widgetHeight | widget height                    | b + v                              |
      * | a            | diagram width                    | ?                                  |
      */
-    const qreal r = 100.0 / m_rgbColorSpace->profileMaximumCielchD50Chroma();
+    const qreal r = 100.0 / m_colorEngine->profileMaximumCielchD50Chroma();
     const qreal h = m_chromaLightnessDiagram->d_pointer->leftBorderPhysical() //
         + m_chromaLightnessDiagram->d_pointer->defaultBorderPhysical();
     const qreal v = 2 * m_chromaLightnessDiagram->d_pointer->defaultBorderPhysical();

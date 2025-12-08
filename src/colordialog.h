@@ -27,7 +27,7 @@ namespace PerceptualColor
 {
 class ColorDialogPrivate;
 
-class RgbColorSpace;
+class ColorEngine;
 
 /** @brief A perceptually uniform color picker dialog
  *
@@ -94,8 +94,6 @@ class RgbColorSpace;
  * @note @anchor qdialogsourceompatibility The API of this class is mostly
  * source-compatible to the API of QColorDialog. This is a list of
  * incompatibilities:
- * - The constructors and also @ref getColor() require a color space
- *   as argument.
  * - As this dialog does not provide functionality for custom colors and
  *   standard color, the corresponding static functions of QColorDialog are
  *   not available in this class.
@@ -120,6 +118,9 @@ class RgbColorSpace;
  *   color is <em>not</em> guaranteed to be <tt>Qt::white</tt>.
  *
  * @internal
+ *
+ * @todo SHOWSTOPPER Use (exclusivly or alternatively) Oklab instead of CIELAB
+ * as projection color space.
  *
  * @todo NICETOHAVE The
  * @ref ColorDialogPrivate::m_lchLightnessSelector has a different
@@ -223,11 +224,11 @@ class RgbColorSpace;
  * @todo NICETOHAVE Info about the whitepoint (D50, D65…) in the tooltip for
  * the ICC profile. And about the mean or average gamma, CIE’s shoe sole
  * diagram for gamut visualisation, gamma curve diagrams… At least
- * @ref RgbColorSpace::profileTagBlackpoint,
- * @ref RgbColorSpace::profileTagWhitepoint,
- * @ref RgbColorSpace::profileTagRedPrimary,
- * @ref RgbColorSpace::profileTagGreenPrimary,
- * @ref RgbColorSpace::profileTagBluePrimary are yet available. Since
+ * @ref ColorEngine::profileTagBlackpoint,
+ * @ref ColorEngine::profileTagWhitepoint,
+ * @ref ColorEngine::profileTagRedPrimary,
+ * @ref ColorEngine::profileTagGreenPrimary,
+ * @ref ColorEngine::profileTagBluePrimary are yet available. Since
  * LittleCMS 2.13 also <tt>cmsDetectRGBProfileGamma()</tt> is available.
  *
  * @todo NICETOHAVE Restore the previous window geometry when the dialog is
@@ -401,10 +402,10 @@ public:
     Q_ENUM(DialogLayoutDimensions)
     Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
     Q_INVOKABLE explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
-    Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+    Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                                      const QString &gamutIdentifier,
                                      QWidget *parent = nullptr);
-    Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+    Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                                      const QString &gamutIdentifier,
                                      const QColor &initial,
                                      QWidget *parent = nullptr);
@@ -414,7 +415,7 @@ public:
     [[nodiscard]] QColor currentColor() const;
     [[nodiscard]] static QColor
     getColor(const QColor &initial = Qt::white, QWidget *parent = nullptr, const QString &title = QString(), ColorDialogOptions options = ColorDialogOptions());
-    [[nodiscard]] static QColor getColor(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+    [[nodiscard]] static QColor getColor(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                                          const QString &gamutIdentifier,
                                          const QColor &initial = Qt::white,
                                          QWidget *parent = nullptr,

@@ -141,6 +141,7 @@ if(BUILD_TESTING)
         testchromalightnessimageparameters
         testcielchd50values
         testcolordialog
+        testcolorengine
         testcolorpatch
         testcolorwheel
         testcolorwheelimage
@@ -170,8 +171,7 @@ if(BUILD_TESTING)
         testpolarpointf
         testportaleyedropper
         testrgbcolor
-        testrgbcolorspace
-        testrgbcolorspacefactory
+        testcolorenginefactory
         testsetting
         testsettingbase
         testsettings

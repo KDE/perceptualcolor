@@ -6,12 +6,12 @@
 #include "chromahueimageparameters.h"
 
 #include "asyncimagerendercallback.h"
+#include "colorengine.h"
 #include "helper.h"
 #include "helperconstants.h"
 #include "helperimage.h"
 #include "helpermath.h"
 #include "interlacingpass.h"
-#include "rgbcolorspace.h"
 #include <atomic>
 #include <cmath>
 #include <lcms2.h>
@@ -44,7 +44,7 @@ bool ChromaHueImageParameters::operator==(const ChromaHueImageParameters &other)
         && (devicePixelRatioF == other.devicePixelRatioF) //
         && (imageSizePhysical == other.imageSizePhysical) //
         && (lightness == other.lightness) //
-        && (rgbColorSpace == other.rgbColorSpace) //
+        && (colorEngine == other.colorEngine) //
     );
 }
 
@@ -129,7 +129,7 @@ void ChromaHueImageParameters::renderByRow( //
     int lastRow)
 {
     const auto chromaRange = //
-        parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
+        parameters.colorEngine->profileMaximumCielchD50Chroma();
     cmsCIELab cielabD50;
     cielabD50.L = parameters.lightness;
     QRgb tempColor;
@@ -154,7 +154,7 @@ void ChromaHueImageParameters::renderByRow( //
             if (qPow(cielabD50.a, 2) + qPow(cielabD50.b, 2) <= threshold) {
                 tempColor = //
                     parameters
-                        .rgbColorSpace //
+                        .colorEngine //
                         ->fromCielabD50ToQRgbOrTransparent(cielabD50);
                 const auto rectangleWidth =
                     // Make sure to stay within the image
@@ -214,10 +214,10 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // transparent).
     const qreal circleRadius = //
         (parameters.imageSizePhysical - 2 * parameters.borderPhysical) / 2.;
-    if ((circleRadius <= 0) || parameters.rgbColorSpace.isNull()) {
+    if ((circleRadius <= 0) || parameters.colorEngine.isNull()) {
         // The border is too big the and image size too small: The size
-        // of the circle is zero. Or: There is no color space with which
-        // we can work (and dereferencing parameters.rgbColorSpace will
+        // of the circle is zero. Or: There is no color engine with which
+        // we can work (and dereferencing parameters.colorEngine will
         // crash).
         // In either case: The image will therefore be transparent.
         // Initialize the image as completely transparent and return.
@@ -239,7 +239,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
 
     // Prepare for gamut painting
     const auto chromaRange = //
-        parameters.rgbColorSpace->profileMaximumCielchD50Chroma();
+        parameters.colorEngine->profileMaximumCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
         // The following line will never be 0 because we have have
         // tested above that circleRadius is > 0, so this line will
@@ -387,7 +387,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         myCielabD50.L = parameters.lightness;
         myCielabD50.b = chromaRange - (y + shift) * scaleFactor;
         myCielabD50.a = (x + shift) * scaleFactor - chromaRange;
-        return parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+        return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
             myCielabD50);
     };
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);

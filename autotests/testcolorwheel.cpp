@@ -7,9 +7,9 @@
 // Second, the private implementation.
 #include "colorwheel_p.h" // IWYU pragma: keep
 
+#include "colorengine.h"
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
-#include "rgbcolorspace.h"
 #include <qapplication.h>
 #include <qboxlayout.h>
 #include <qglobal.h>
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpace::createSrgb();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()
@@ -68,7 +68,7 @@ private Q_SLOTS:
 
     void testConstructorDestructor()
     {
-        ColorWheel temp(m_rgbColorSpace);
+        ColorWheel temp(m_colorEngine);
     }
 
     void testMouseFocusBehaviour()
@@ -77,7 +77,7 @@ private Q_SLOTS:
         QHBoxLayout *myLayout = new QHBoxLayout;
         QLineEdit *myLineEdit = new QLineEdit;
         myLayout->addWidget(myLineEdit);
-        ColorWheel *myColorWheel = new ColorWheel(m_rgbColorSpace);
+        ColorWheel *myColorWheel = new ColorWheel(m_colorEngine);
         myLayout->addWidget(myColorWheel);
         myWindow.setLayout(myLayout);
 
@@ -116,7 +116,7 @@ private Q_SLOTS:
 
     void testHueProperty()
     {
-        ColorWheel myWheel(m_rgbColorSpace);
+        ColorWheel myWheel(m_colorEngine);
         QSignalSpy mySpy(&myWheel, &ColorWheel::hueChanged);
         qreal referenceHue = 12.345;
 
@@ -133,7 +133,7 @@ private Q_SLOTS:
 
     void testMinimumSizeHint()
     {
-        ColorWheel myColorWheel(m_rgbColorSpace);
+        ColorWheel myColorWheel(m_colorEngine);
         QVERIFY2(myColorWheel.minimumSizeHint().width() > 0, "minimumSizeHint width is implemented.");
         QVERIFY2(myColorWheel.minimumSizeHint().height() > 0, "minimumSizeHint height is implemented.");
         // Check that the hint is a square:
@@ -142,7 +142,7 @@ private Q_SLOTS:
 
     void testSizeHint()
     {
-        ColorWheel myColorWheel(m_rgbColorSpace);
+        ColorWheel myColorWheel(m_colorEngine);
         QVERIFY2(myColorWheel.sizeHint().width() > myColorWheel.minimumSizeHint().width(), "sizeHint width is bigger than minimumSizeHint width.");
         QVERIFY2(myColorWheel.sizeHint().height() > myColorWheel.minimumSizeHint().height(), "sizeHint height is bigger than minimumSizeHint height.");
         // Check that the hint is a square:
@@ -151,13 +151,13 @@ private Q_SLOTS:
 
     void testBorder()
     {
-        ColorWheel myColorWheel(m_rgbColorSpace);
+        ColorWheel myColorWheel(m_colorEngine);
         QVERIFY2(myColorWheel.d_pointer->border() > 0, "border() is a valid value > 0.");
     }
 
     void testInnerDiameter()
     {
-        ColorWheel myColorWheel(m_rgbColorSpace);
+        ColorWheel myColorWheel(m_colorEngine);
         QVERIFY2(myColorWheel.d_pointer->innerDiameter() > 0, "innerDiameter() is a valid value > 0.");
         QVERIFY2(myColorWheel.d_pointer->innerDiameter() < myColorWheel.size().width(), "innerDiameter() is smaller than the widget’s width.");
         QVERIFY2(myColorWheel.d_pointer->innerDiameter() < myColorWheel.size().height(), "innerDiameter() is smaller than the widget’s height.");
@@ -170,7 +170,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        ColorWheel myWidget{m_rgbColorSpace};
+        ColorWheel myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -216,7 +216,7 @@ private Q_SLOTS:
 
     void testOutOfRange()
     {
-        ColorWheel myWidget{m_rgbColorSpace};
+        ColorWheel myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 

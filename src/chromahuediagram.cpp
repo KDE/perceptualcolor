@@ -11,6 +11,7 @@
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "cielchd50values.h"
+#include "colorengine.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -18,7 +19,6 @@
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "polarpointf.h"
-#include "rgbcolorspace.h"
 #include <lcms2.h>
 #include <qbrush.h>
 #include <qcolor.h>
@@ -34,17 +34,17 @@
 namespace PerceptualColor
 {
 /** @brief The constructor.
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
+ * @param colorEngine The color engine with which this widget should operate.
+ * Can be created with @ref createSrgbColorEngine().
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ChromaHueDiagramPrivate(this, colorSpace))
+    , d_pointer(new ChromaHueDiagramPrivate(this, colorEngine))
 {
     // Setup LittleCMS. This is the first thing to do, because other
     // operations rely on a working LittleCMS.
-    d_pointer->m_rgbColorSpace = colorSpace;
+    d_pointer->m_colorEngine = colorEngine;
 
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is either
@@ -80,11 +80,11 @@ ChromaHueDiagram::~ChromaHueDiagram() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  *                 is the private implementation.
- * @param colorSpace The color space within which this widget
+ * @param colorEngine The color engine with which this widget
  *                   should operate. */
-ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
     : m_currentColorCielchD50{0, 0, 0} // dummy value
-    , m_wheelImage(colorSpace)
+    , m_wheelImage(colorEngine)
     , q_pointer(backLink)
 {
 }
@@ -127,7 +127,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // handle itself within the displayed gamut.
         const cmsCIELab cielabD50 = //
             d_pointer->fromWidgetPixelPositionToLab(event->pos());
-        if (d_pointer->m_rgbColorSpace->isCielabD50InGamut(cielabD50)) {
+        if (d_pointer->m_colorEngine->isCielabD50InGamut(cielabD50)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
@@ -175,7 +175,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
         const bool isWithinDiagram = //
             d_pointer->isWidgetPixelPositionWithinDiagramCircle( //
                 event->pos());
-        if (isWithinDiagram && d_pointer->m_rgbColorSpace->isCielabD50InGamut(cielabD50)) {
+        if (isWithinDiagram && d_pointer->m_colorEngine->isCielabD50InGamut(cielabD50)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
@@ -265,7 +265,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         GenericColor newColor = d_pointer->m_currentColorCielchD50;
         newColor.third += standardWheelStepCount(event) * singleStepHue;
         setCurrentColorCielchD50( //
-            d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(newColor));
+            d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(newColor));
     } else {
         event->ignore();
     }
@@ -347,7 +347,7 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
         newColor.second = 0;
     }
     // Move the value into gamut (if necessary):
-    newColor = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(newColor);
+    newColor = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(newColor);
     // Apply the new value:
     setCurrentColorCielchD50(newColor);
 }
@@ -485,7 +485,7 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorCielchD50() co
 {
     const qreal scaleFactor = //
         (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder()) //
-        / (2.0 * m_rgbColorSpace->profileMaximumCielchD50Chroma());
+        / (2.0 * m_colorEngine->profileMaximumCielchD50Chroma());
     QPointF currentColor = //
         PolarPointF(m_currentColorCielchD50.second, m_currentColorCielchD50.third).toCartesian();
     return QPointF(
@@ -508,7 +508,7 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorCielchD50() co
 cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
 {
     const qreal scaleFactor = //
-        (2.0 * m_rgbColorSpace->profileMaximumCielchD50Chroma()) //
+        (2.0 * m_colorEngine->profileMaximumCielchD50Chroma()) //
         / (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
     // The pixel at position 0 0 has its top left border at position 0 0
     // and its bottom right border at position 1 1 and its center at
@@ -550,7 +550,7 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
  *
  * @todo SHOULDHAVE What when the mouse goes outside the
  * gray circle,  but more gamut is available outside (because
- * @ref RgbColorSpace::profileMaximumCielchD50Chroma()
+ * @ref ColorEngine::profileMaximumCielchD50Chroma()
  * was chosen too small)? For consistency, the handle of the diagram should
  * stay within the gray circle, and this should be interpreted also actually
  * as the value at the position of the handle.
@@ -559,7 +559,7 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
 {
     const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
     const auto myColor = //
-        m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut( //
+        m_colorEngine->reduceCielchD50ChromaToFitIntoGamut( //
             toGenericColorCielabD50(lab));
     q_pointer->setCurrentColorCielchD50(myColor);
 }
@@ -727,8 +727,8 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     d_pointer->m_chromaHueImageParameters.lightness = temp;
     d_pointer->m_chromaHueImageParameters.devicePixelRatioF = //
         devicePixelRatioF();
-    d_pointer->m_chromaHueImageParameters.rgbColorSpace = //
-        d_pointer->m_rgbColorSpace;
+    d_pointer->m_chromaHueImageParameters.colorEngine = //
+        d_pointer->m_colorEngine;
     d_pointer->m_chromaHueImage.setImageParameters( //
         d_pointer->m_chromaHueImageParameters);
     d_pointer->m_chromaHueImage.refreshAsync();
@@ -737,7 +737,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     bufferPainter.setRenderHint(QPainter::Antialiasing, true);
     bufferPainter.setPen(QPen(Qt::NoPen));
     const QColor myNeutralGray = //
-        d_pointer->m_rgbColorSpace->fromCielchD50ToQRgbBound( //
+        d_pointer->m_colorEngine->fromCielchD50ToQRgbBound( //
             CielchD50Values::neutralGray);
     bufferPainter.setBrush(myNeutralGray);
     bufferPainter.drawEllipse(

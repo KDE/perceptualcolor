@@ -32,6 +32,8 @@ set(library_SRC
     chromalightnessdiagram.cpp
     chromalightnessimageparameters.cpp
     colordialog.cpp
+    colorengine.cpp
+    colorenginefactory.cpp
     colorpatch.cpp
     colorwheel.cpp
     colorwheelimage.cpp
@@ -55,8 +57,6 @@ set(library_SRC
     polarpointf.cpp
     portaleyedropper.cpp
     rgbcolor.cpp
-    rgbcolorspace.cpp
-    rgbcolorspacefactory.cpp
     settingbase.cpp
     settings.cpp
     settranslation.cpp
@@ -78,6 +78,7 @@ set(lib_PUBLICHEADERS
     abstractdiagram.h
     chromahuediagram.h
     colordialog.h
+    colorenginefactory.h
     colorpatch.h
     colorwheel.h
     constpropagatinguniquepointer.h
@@ -85,7 +86,6 @@ set(lib_PUBLICHEADERS
     importexport.h
     multispinbox.h
     multispinboxsection.h
-    rgbcolorspacefactory.h
     settranslation.h
     wheelcolorpicker.h
     ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h

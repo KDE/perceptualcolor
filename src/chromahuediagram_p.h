@@ -20,7 +20,7 @@
 namespace PerceptualColor
 {
 class ChromaHueDiagram;
-class RgbColorSpace;
+class ColorEngine;
 
 /** @internal
  *
@@ -39,7 +39,7 @@ class RgbColorSpace;
 class ChromaHueDiagramPrivate
 {
 public:
-    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -71,9 +71,10 @@ public:
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
-    /** @brief Pointer to @ref RgbColorSpace object used to describe the
-     * color space. */
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
+    /**
+     * @brief Pointer to @ref ColorEngine object.
+     */
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
     /** @brief The image of the color wheel. */
     ColorWheelImage m_wheelImage;
 

@@ -25,7 +25,7 @@ namespace PerceptualColor
 {
 class ChromaLightnessDiagramPrivate;
 
-class RgbColorSpace;
+class ColorEngine;
 
 /** @internal
  *
@@ -79,7 +79,7 @@ class ChromaLightnessDiagram : public AbstractDiagram
     // clang-format on
 
 public:
-    Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
     virtual ~ChromaLightnessDiagram() noexcept override;
     /** @brief Getter for property @ref currentColorCielchD50
      *  @returns the property @ref currentColorCielchD50 */

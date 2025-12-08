@@ -25,7 +25,7 @@ class QWidget;
 namespace PerceptualColor
 {
 
-class RgbColorSpace;
+class ColorEngine;
 class SwatchBookPrivate;
 
 /** @internal
@@ -83,9 +83,9 @@ class SwatchBook : public AbstractDiagram
 
     /** @brief The swatchGrid that is displayed in the swatch book.
      *
-     * The colors are in the current color space. The first dimension
-     * (@ref Array2D::iCount()) is interpreted as horizontal axis from
-     * left to right on LTR layouts, and the other way around on RTL
+     * The colors are in the current color engine’s working gamut. The first
+     * dimension (@ref Array2D::iCount()) is interpreted as horizontal axis
+     * from left to right on LTR layouts, and the other way around on RTL
      * layouts. The second dimension of the array (@ref Array2D::jCount())
      * is interpreted as vertical axis, from top to bottom.
      *
@@ -95,7 +95,7 @@ class SwatchBook : public AbstractDiagram
     Q_PROPERTY(QColorArray2D swatchGrid READ swatchGrid WRITE setSwatchGrid NOTIFY swatchGridChanged)
 
 public:
-    Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+    Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                                     const PerceptualColor::QColorArray2D &swatchGrid,
                                     Qt::Orientations wideSpacing,
                                     QWidget *parent = nullptr);

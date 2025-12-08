@@ -18,7 +18,7 @@ namespace PerceptualColor
 {
 class ColorWheel;
 
-class RgbColorSpace;
+class ColorEngine;
 
 /** @internal
  *
@@ -27,7 +27,7 @@ class RgbColorSpace;
 class ColorWheelPrivate
 {
 public:
-    ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
     virtual ~ColorWheelPrivate() noexcept;
 
     /** @brief Internal storage of the @ref ColorWheel::hue() property */
@@ -49,9 +49,9 @@ public:
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
-    /** @brief Pointer to @ref RgbColorSpace object used to describe the
-     * color space. */
-    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
+    /** @brief Pointer to @ref ColorEngine object used to describe the
+     * working gamut. */
+    QSharedPointer<ColorEngine> m_colorEngine;
     /** @brief The image of the wheel itself. */
     ColorWheelImage m_wheelImage;
 

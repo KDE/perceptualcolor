@@ -6,8 +6,8 @@
 #include "gradientimageparameters.h"
 
 #include "asyncimagerenderthread.h"
+#include "colorenginefactory.h"
 #include "genericcolor.h"
-#include "rgbcolorspacefactory.h"
 #include <qglobal.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
@@ -34,8 +34,8 @@ public:
     {
         //! [GradientImage HiDPI usage]
         PerceptualColor::GradientImageParameters exampleParameters;
-        exampleParameters.rgbColorSpace = //
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+        exampleParameters.colorEngine = //
+            PerceptualColor::createSrgbColorEngine();
         // These functions expects an int
         // value. static_cast<int> will round
         // down, which is the desired behaviour
@@ -67,7 +67,7 @@ public:
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 
 class TestGradientImageParameters : public QObject
 {
@@ -80,7 +80,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -112,7 +112,7 @@ private Q_SLOTS:
     void testCompletlyNormalizedAndBounded()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         GenericColor lchaTestValue;
 
         // Test values that are too high
@@ -162,7 +162,7 @@ private Q_SLOTS:
     void testUpdateSecondColor()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         myGradient.m_firstColorCorrected = GenericColor{50, 0, 30, 0.5};
         myGradient.m_secondColorCorrectedAndAltered = GenericColor{50, 0, 40, 0.5};
         myGradient.updateSecondColor();
@@ -185,7 +185,7 @@ private Q_SLOTS:
     void testGetImage()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         QScopedPointer<AsyncImageRenderThread> callbackObject{
             //
             new AsyncImageRenderThread(GradientImageParameters::render) //
@@ -198,7 +198,7 @@ private Q_SLOTS:
     void testColorFromValue()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         myGradient.m_firstColorCorrected = GenericColor{50, 0, 30, 0.5};
         myGradient.m_secondColorCorrectedAndAltered = GenericColor{60, 10, 20, 0.4};
         GenericColor middleColor = myGradient.colorFromValue(0.5);
@@ -211,7 +211,7 @@ private Q_SLOTS:
     void testSetDevicelPixelRatioF()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         myGradient.setGradientLength(20);
         myGradient.setGradientThickness(10);
         // Should not crash:
@@ -222,7 +222,7 @@ private Q_SLOTS:
     void testSetGradientLength()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         // Should not crash:
         myGradient.setGradientLength(20);
     }
@@ -230,7 +230,7 @@ private Q_SLOTS:
     void testSetGradientThickness()
     {
         GradientImageParameters myGradient;
-        myGradient.rgbColorSpace = m_rgbColorSpace;
+        myGradient.colorEngine = m_colorEngine;
         // Should not crash:
         myGradient.setGradientThickness(10);
     }

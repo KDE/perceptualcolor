@@ -28,7 +28,7 @@ namespace PerceptualColor
 {
 class GradientSliderPrivate;
 
-class RgbColorSpace;
+class ColorEngine;
 
 /** @brief A slider who’s groove displays an LCH color gradient.
  *
@@ -177,8 +177,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT GradientSlider : public AbstractDiagram
     Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
-    Q_INVOKABLE explicit GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
-    Q_INVOKABLE explicit GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+    Q_INVOKABLE explicit GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                                         Qt::Orientation orientation,
                                         QWidget *parent = nullptr);
     virtual ~GradientSlider() noexcept override;

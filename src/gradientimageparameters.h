@@ -14,7 +14,7 @@
 namespace PerceptualColor
 {
 class AsyncImageRenderCallback;
-class RgbColorSpace;
+class ColorEngine;
 
 /** @internal
  *
@@ -38,8 +38,8 @@ public:
     [[nodiscard]] bool operator==(const GradientImageParameters &other) const;
     [[nodiscard]] bool operator!=(const GradientImageParameters &other) const;
 
-    /** @brief Pointer to @ref RgbColorSpace object */
-    QSharedPointer<PerceptualColor::RgbColorSpace> rgbColorSpace = nullptr;
+    /** @brief Pointer to @ref ColorEngine object */
+    QSharedPointer<PerceptualColor::ColorEngine> colorEngine = nullptr;
 
     [[nodiscard]] GenericColor colorFromValue(qreal value) const;
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);

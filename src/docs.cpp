@@ -398,9 +398,9 @@
  * this avoids the time-consuming memory allocations at each paint event!
  *
  * @todo NICETOHAVE Use <tt>QCache</tt> where is makes sense. Maybe
- * @ref PerceptualColor::RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut() or
- * @ref PerceptualColor::RgbColorSpace::isCielchD50InGamut() or
- * @ref PerceptualColor::RgbColorSpace::isCielabD50InGamut() or
+ * @ref PerceptualColor::ColorEngine::reduceCielchD50ChromaToFitIntoGamut() or
+ * @ref PerceptualColor::ColorEngine::isCielchD50InGamut() or
+ * @ref PerceptualColor::ColorEngine::isCielabD50InGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutCielchD50ByAdjustingChromaLightness(().
  *
  * @todo SHOULDHAVE If using the Motif style (only available in Qt 5, not
@@ -554,7 +554,7 @@
  * example supports a lot of (also perceptually uniform) color spaces…
  *
  * @todo SHOULDHAVE
- * Check in all classes that take a @ref PerceptualColor::RgbColorSpace
+ * Check in all classes that take a @ref PerceptualColor::ColorEngine
  * that the shared pointer is actually not a <tt>nullptr</tt>. If is
  * <em>is</em> a <tt>nullptr</tt> than throw an exception. Throwing the
  * exception early might make error detection easier for users of the library.

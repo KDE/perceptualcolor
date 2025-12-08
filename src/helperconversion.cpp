@@ -41,7 +41,7 @@ cmsCIELab toCmsLab(const cmsCIELCh &value)
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 /** @internal
  *
- * @brief A qHash function for @ref ColorSpace.
+ * @brief A qHash function for @ref ColorModel.
  *
  * Qt5 needs a qHash function if QHash’s key is an enum class. Qt6 does not
  * need this. Therefore, this function is only compiled into the Qt5 builds.

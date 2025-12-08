@@ -19,7 +19,7 @@ class QPoint;
 namespace PerceptualColor
 {
 class GradientSlider;
-class RgbColorSpace;
+class ColorEngine;
 /** @internal
  *
  *  @brief Private implementation within the <em>Pointer to
@@ -32,7 +32,7 @@ public:
 
     // Methods
     [[nodiscard]] qreal fromWidgetPixelPositionToValue(QPoint pixelPosition);
-    void initialize(const QSharedPointer<RgbColorSpace> &colorSpace, Qt::Orientation orientation);
+    void initialize(const QSharedPointer<ColorEngine> &colorEngine, Qt::Orientation orientation);
     void setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation newOrientation);
     [[nodiscard]] int physicalPixelLength() const;
     [[nodiscard]] int physicalPixelThickness() const;

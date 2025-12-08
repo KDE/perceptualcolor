@@ -7,8 +7,8 @@
 
 #include "asyncimageprovider.h"
 #include "asyncimagerendercallback.h"
+#include "colorenginefactory.h"
 #include "helper.h"
-#include "rgbcolorspacefactory.h"
 #include <qbenchmark.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -27,7 +27,7 @@
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 
 class Mockup : public AsyncImageRenderCallback
 {
@@ -83,7 +83,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -130,7 +130,7 @@ private Q_SLOTS:
     void testGetImage0()
     {
         ChromaLightnessImageParameters m_imageParameters;
-        m_imageParameters.rgbColorSpace = m_rgbColorSpace;
+        m_imageParameters.colorEngine = m_colorEngine;
         m_imageParameters.hue = 0;
 
         // Testing extremely small images
@@ -147,7 +147,7 @@ private Q_SLOTS:
     void testGetImage1()
     {
         ChromaLightnessImageParameters m_imageParameters;
-        m_imageParameters.rgbColorSpace = m_rgbColorSpace;
+        m_imageParameters.colorEngine = m_colorEngine;
         m_imageParameters.hue = 0;
 
         // Testing extremely small images
@@ -164,7 +164,7 @@ private Q_SLOTS:
     void testGetImage2()
     {
         ChromaLightnessImageParameters m_imageParameters;
-        m_imageParameters.rgbColorSpace = m_rgbColorSpace;
+        m_imageParameters.colorEngine = m_colorEngine;
         m_imageParameters.hue = 0;
 
         // Testing extremely small images
@@ -181,7 +181,7 @@ private Q_SLOTS:
     void testGetImageInvalid()
     {
         ChromaLightnessImageParameters m_imageParameters;
-        m_imageParameters.rgbColorSpace = m_rgbColorSpace;
+        m_imageParameters.colorEngine = m_colorEngine;
         m_imageParameters.hue = 0;
 
         // Testing extremely small images
@@ -198,7 +198,7 @@ private Q_SLOTS:
     void testGetImageNormalSize()
     {
         ChromaLightnessImageParameters m_imageParameters;
-        m_imageParameters.rgbColorSpace = m_rgbColorSpace;
+        m_imageParameters.colorEngine = m_colorEngine;
         m_imageParameters.hue = 0;
 
         AsyncImageProvider<ChromaLightnessImageParameters> m_imageProvider;
@@ -243,7 +243,7 @@ private Q_SLOTS:
     {
         // Make sure that setting an invalid values does not crash.
         ChromaLightnessImageParameters m_imageParameters;
-        m_imageParameters.rgbColorSpace = m_rgbColorSpace;
+        m_imageParameters.colorEngine = m_colorEngine;
 
         // Set a non-zero image size:
         m_imageParameters.imageSizePhysical = QSize(20, 10);
@@ -309,7 +309,7 @@ private Q_SLOTS:
     void benchmarkRender()
     {
         ChromaLightnessImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         testProperties.hue = 0;
         testProperties.imageSizePhysical = QSize(1000, 1000); // an even number

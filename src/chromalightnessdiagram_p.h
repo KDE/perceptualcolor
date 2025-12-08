@@ -24,7 +24,7 @@ class QPoint;
 namespace PerceptualColor
 {
 class ChromaLightnessDiagram;
-class RgbColorSpace;
+class ColorEngine;
 
 /** @internal
  *
@@ -48,8 +48,8 @@ public:
     /** @brief Internal storage of
      * the @ref ChromaLightnessDiagram::currentColorCielchD50 property */
     GenericColor m_currentColorCielchD50;
-    /** @brief Pointer to RgbColorSpace() object */
-    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
+    /** @brief Pointer to ColorEngine() object */
+    QSharedPointer<ColorEngine> m_colorEngine;
 
     // Member functions
     [[nodiscard]] QSize calculateImageSizePhysical() const;

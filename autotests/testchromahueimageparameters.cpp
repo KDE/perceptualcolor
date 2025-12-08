@@ -6,9 +6,10 @@
 #include "chromahueimageparameters.h"
 
 #include "asyncimagerendercallback.h"
+#include "colorenginefactory.h"
 #include "genericcolor.h"
 #include "helpermath.h"
-#include "rgbcolorspacefactory.h"
+#include <colorengine.h>
 #include <qbenchmark.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -20,7 +21,6 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qvariant.h>
-#include <rgbcolorspace.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
@@ -114,7 +114,7 @@ private Q_SLOTS:
         test.devicePixelRatioF = 3;
         test.imageSizePhysical = 4;
         test.lightness = 5;
-        test.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        test.colorEngine = createSrgbColorEngine();
 
         auto copy = test;
 
@@ -131,7 +131,7 @@ private Q_SLOTS:
     void testImageSizeNew()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
 
         // Test especially small values, that might make special
@@ -169,7 +169,7 @@ private Q_SLOTS:
     void testDevicePixelRatioF()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         testProperties.imageSizePhysical = 100;
         testProperties.render(QVariant::fromValue(testProperties), myMockup);
@@ -189,7 +189,7 @@ private Q_SLOTS:
     void testCornerCases()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         // Set a non-zero image size:
         testProperties.imageSizePhysical = 50;
@@ -254,7 +254,7 @@ private Q_SLOTS:
         Mockup myMockup;
         constexpr int myImageSize = 51;
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         // Set a non-zero image size:
         testProperties.imageSizePhysical = myImageSize;
         // Set a border that is bigger than half of the image size:
@@ -290,7 +290,7 @@ private Q_SLOTS:
         QFETCH(qreal, lightness);
         constexpr int imageSize = 20;
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         // Set a non-zero image size:
         testProperties.imageSizePhysical = imageSize;
         testProperties.lightness = lightness;
@@ -318,7 +318,7 @@ private Q_SLOTS:
         // Make sure that calling setLightness with invalid values
         // does not crash.
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         testProperties.imageSizePhysical = 20; // Set a non-zero image size
         testProperties.lightness = 0;
@@ -351,7 +351,7 @@ private Q_SLOTS:
     {
         // Make sure this code does not crash.
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         // Set a non-zero image size:
         testProperties.imageSizePhysical = 20;
@@ -364,7 +364,7 @@ private Q_SLOTS:
     void testDevicePixelRatioFForExtremeCases()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         // Testing with a (non-integer) scale factor
         testProperties.devicePixelRatioF = 1.5;
@@ -379,7 +379,7 @@ private Q_SLOTS:
     void testIfGamutIsCenteredCorrectlyOnOddSize()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         testProperties.borderPhysical = 0;
         testProperties.lightness = 50;
@@ -390,7 +390,7 @@ private Q_SLOTS:
         constexpr int positionAtCenter = (oddSize - 1) / 2;
         const qreal chromaAtCenter = //
             testProperties //
-                .rgbColorSpace //
+                .colorEngine //
                 ->toCielchD50( //
                     myMockup
                         .lastDeliveredImage() //
@@ -404,7 +404,7 @@ private Q_SLOTS:
                 }
                 const qreal chromaAround = //
                     testProperties //
-                        .rgbColorSpace //
+                        .colorEngine //
                         ->toCielchD50(myMockup //
                                           .lastDeliveredImage() //
                                           .pixelColor(x, y) //
@@ -421,7 +421,7 @@ private Q_SLOTS:
     void testIfGamutIsCenteredCorrectlyOnEvenSize()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         testProperties.borderPhysical = 0;
         testProperties.lightness = 50;
@@ -433,7 +433,7 @@ private Q_SLOTS:
         constexpr int positionAtCenter1 = positionAtCenter2 - 1;
         const qreal chromaAtCenterA = //
             testProperties //
-                .rgbColorSpace //
+                .colorEngine //
                 ->toCielchD50( //
                     myMockup //
                         .lastDeliveredImage() //
@@ -442,7 +442,7 @@ private Q_SLOTS:
                 .second;
         const qreal chromaAtCenterB = //
             testProperties //
-                .rgbColorSpace //
+                .colorEngine //
                 ->toCielchD50( //
                     myMockup //
                         .lastDeliveredImage() //
@@ -451,7 +451,7 @@ private Q_SLOTS:
                 .second;
         const qreal chromaAtCenterC = //
             testProperties //
-                .rgbColorSpace //
+                .colorEngine //
                 ->toCielchD50( //
                     myMockup //
                         .lastDeliveredImage() //
@@ -460,7 +460,7 @@ private Q_SLOTS:
                 .second;
         const qreal chromaAtCenterD = //
             testProperties //
-                .rgbColorSpace //
+                .colorEngine //
                 ->toCielchD50( //
                     myMockup //
                         .lastDeliveredImage() //
@@ -482,7 +482,7 @@ private Q_SLOTS:
                 }
                 const qreal chromaAround = //
                     testProperties //
-                        .rgbColorSpace //
+                        .colorEngine //
                         ->toCielchD50(myMockup //
                                           .lastDeliveredImage() //
                                           .pixelColor(x, y) //
@@ -499,7 +499,7 @@ private Q_SLOTS:
     void benchmarkRender()
     {
         ChromaHueImageParameters testProperties;
-        testProperties.rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+        testProperties.colorEngine = createSrgbColorEngine();
         Mockup myMockup;
         testProperties.borderPhysical = 0;
         testProperties.lightness = 50;

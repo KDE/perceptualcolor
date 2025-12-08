@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "colorwheelimage.h"
 
-#include "rgbcolorspacefactory.h"
+#include "colorenginefactory.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
@@ -32,8 +32,8 @@ public:
     void testSnippet01()
     {
         //! [ColorWheelImage HiDPI usage]
-        auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
-        PerceptualColor::ColorWheelImage test{myColorSpace};
+        auto myColorEngine = PerceptualColor::createSrgbColorEngine();
+        PerceptualColor::ColorWheelImage test{myColorEngine};
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
         // is the desired behaviour here. (Rounding up
@@ -51,7 +51,7 @@ public:
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 
 class TestColorWheelImage : public QObject
 {
@@ -64,7 +64,7 @@ public:
     }
 
 private:
-    QSharedPointer<RgbColorSpace> colorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<ColorEngine> colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -89,12 +89,12 @@ private Q_SLOTS:
 
     void testConstructor()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
     }
 
     void testImageSize()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         QCOMPARE(test.getImage().size(), QSize(0, 0));
         test.setImageSize(5);
         QCOMPARE(test.getImage().size(), QSize(5, 5));
@@ -104,7 +104,7 @@ private Q_SLOTS:
 
     void testDevicePixelRatioF()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         test.setImageSize(100);
         // Image size is as described.
         QCOMPARE(test.getImage().size(), QSize(100, 100));
@@ -120,7 +120,7 @@ private Q_SLOTS:
 
     void testBorderOdd()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         test.setImageSize(99);
         // Default border is zero: no transparent border.
         QVERIFY2(test.getImage().pixelColor(49, 0).alpha() > 0, "Verify that pixel top center is not transparent.");
@@ -137,7 +137,7 @@ private Q_SLOTS:
 
     void testBorderEven()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         test.setImageSize(100);
         // Default border is zero: no transparent border.
         QVERIFY2(test.getImage().pixelColor(49, 0).alpha() > 0, "Verify that pixel top center is not transparent.");
@@ -162,7 +162,7 @@ private Q_SLOTS:
 
     void testCache()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         test.setImageSize(50); // Set a non-zero image size
         QVERIFY2(test.m_image.isNull(), "Verify that instantiation is done with empty cache.");
         test.setBorder(5);
@@ -177,7 +177,7 @@ private Q_SLOTS:
 
     void testCornerCases()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         test.setImageSize(50); // Set a non-zero image size
         QVERIFY2(!test.getImage().isNull(),
                  "Verify that there is no crash and the returned image is not "
@@ -222,7 +222,7 @@ private Q_SLOTS:
 
     void testVeryThickWheel()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         test.setImageSize(51); // Set a non-zero image size
         test.setWheelThickness(100);
         // The wheel is so thick that even in the middle, there should be
@@ -232,7 +232,7 @@ private Q_SLOTS:
 
     void testVeryBigBorder()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         const int myImageSize = 51;
         test.setImageSize(myImageSize); // Set a non-zero image size
         test.setWheelThickness(5);
@@ -248,7 +248,7 @@ private Q_SLOTS:
 
     void testDevicePixelRatioFForExtremeCases()
     {
-        ColorWheelImage test(colorSpace);
+        ColorWheelImage test(colorEngine);
         // Testing with a (non-integer) scale factor
         test.setDevicePixelRatioF(1.5);
         // Test with fully transparent image (here, the border is too big

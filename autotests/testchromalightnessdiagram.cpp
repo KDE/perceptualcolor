@@ -7,11 +7,11 @@
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 
+#include "colorenginefactory.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "helper.h"
 #include "helpermath.h"
-#include "rgbcolorspacefactory.h"
 #include <cmath>
 #include <limits>
 #include <qglobal.h>
@@ -34,7 +34,7 @@
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 
 class TestChromaLightnessDiagram : public QObject
 {
@@ -47,7 +47,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -72,7 +72,7 @@ private Q_SLOTS:
 
     void testConstructorDestructor()
     {
-        ChromaLightnessDiagram test(m_rgbColorSpace);
+        ChromaLightnessDiagram test(m_colorEngine);
     }
 
     void testVerySmallWidgetSizes()
@@ -82,7 +82,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -132,7 +132,7 @@ private Q_SLOTS:
         // This might happen because if the widget is too small, there
         // is no place for a diagram, and some value conversions are
         // diagram-based..
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         const QPoint positive(10, 20);
         const QPoint negative(-10, -20);
         myWidget.resize(QSize(1, 1));
@@ -144,7 +144,7 @@ private Q_SLOTS:
     void testSetCurrentColorCielchD50FromWidgetPixelPosition2()
     {
         // Test this function for out-of-gamut positions
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         constexpr int size = 100;
         myWidget.resize(size, size);
@@ -183,13 +183,13 @@ private Q_SLOTS:
 
     void testDefaultBorderPhysical()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         QVERIFY(myWidget.d_pointer->defaultBorderPhysical() >= 0);
     }
 
     void testLeftBorderPhysical()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         QVERIFY(myWidget.d_pointer->defaultBorderPhysical() >= 0);
         QVERIFY(myWidget.d_pointer->defaultBorderPhysical() >= myWidget.d_pointer->defaultBorderPhysical());
     }
@@ -200,7 +200,7 @@ private Q_SLOTS:
         // This might happen because of divisions by 0, even when the widget
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes.
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.resize(QSize());
         Q_UNUSED(myWidget.d_pointer->calculateImageSizePhysical()); // Should not crash
         myWidget.resize(QSize(-1, -1));
@@ -223,7 +223,7 @@ private Q_SLOTS:
         // This might happen because of divisions by 0, even when the widget
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes.
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         const QPoint positive(10, 20);
         const QPoint negative(-10, -20);
         myWidget.resize(QSize());
@@ -290,7 +290,7 @@ private Q_SLOTS:
 
     void testMouseSupport1()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(2, 2);
         // Mouse movements should not crash when the size of the widget is
@@ -310,7 +310,7 @@ private Q_SLOTS:
     void testMouseSupport2()
     {
         // Test reactions to mouse events when moving out-of-gamut
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         constexpr int size = 100;
         myWidget.resize(size, size);
@@ -383,7 +383,7 @@ private Q_SLOTS:
 
     void testPaintEventNormalSize()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         // Test normal size
         myWidget.resize(100, 100);
@@ -392,7 +392,7 @@ private Q_SLOTS:
 
     void testPaintEventTooSmallSize()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         // Test small size (too small to show a diagram)
         myWidget.resize(2, 2);
@@ -401,7 +401,7 @@ private Q_SLOTS:
 
     void testPaintEventEmptySize()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         // Test empty size
         myWidget.resize(0, 0);
@@ -410,7 +410,7 @@ private Q_SLOTS:
 
     void testKeyPressEvent()
     {
-        ChromaLightnessDiagram myDiagram(m_rgbColorSpace);
+        ChromaLightnessDiagram myDiagram(m_colorEngine);
         GenericColor referenceColorLch;
         referenceColorLch.first = 50;
         referenceColorLch.second = 20;
@@ -524,7 +524,7 @@ private Q_SLOTS:
 
     void testIsWidgetPixelPositionInGamut()
     {
-        ChromaLightnessDiagram myDiagram(m_rgbColorSpace);
+        ChromaLightnessDiagram myDiagram(m_colorEngine);
         myDiagram.show();
         myDiagram.resize(QSize(2, 2));
         // On very small widget sizes, no diagram is visible. Therefore,
@@ -549,7 +549,7 @@ private Q_SLOTS:
 
     void testCurrentColorCielchD50Property()
     {
-        ChromaLightnessDiagram test{m_rgbColorSpace};
+        ChromaLightnessDiagram test{m_colorEngine};
         GenericColor color;
         color.first = 50;
         color.second = 20;
@@ -587,7 +587,7 @@ private Q_SLOTS:
 
     void testResizeEvent()
     {
-        ChromaLightnessDiagram test{m_rgbColorSpace};
+        ChromaLightnessDiagram test{m_colorEngine};
         test.show();
         // Resize events should not crash!
         test.resize(QSize(100, 100)); // normal size
@@ -598,7 +598,7 @@ private Q_SLOTS:
 
     void testSizeHintAndMinimumSizeHint()
     {
-        ChromaLightnessDiagram test{m_rgbColorSpace};
+        ChromaLightnessDiagram test{m_colorEngine};
         test.show();
         QVERIFY(test.minimumSizeHint().width() >= 0);
         QVERIFY(test.minimumSizeHint().height() >= 0);
@@ -608,7 +608,7 @@ private Q_SLOTS:
 
     void testOutOfGamutColors()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -629,7 +629,7 @@ private Q_SLOTS:
 
     void testOutOfRange()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -651,7 +651,7 @@ private Q_SLOTS:
 
     void testNearestInGamutColorByAdjustingChromaLightness()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
 
         // Variables
         GenericColor color;
@@ -681,7 +681,7 @@ private Q_SLOTS:
 
     void testNearestInGamutColorByAdjustingChromaLightnessSmallSize()
     {
-        ChromaLightnessDiagram myWidget{m_rgbColorSpace};
+        ChromaLightnessDiagram myWidget{m_colorEngine};
 
         // Variables
         GenericColor color;

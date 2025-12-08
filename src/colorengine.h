@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PERCEPTUALCOLOR_RGBCOLORSPACE_H
-#define PERCEPTUALCOLOR_RGBCOLORSPACE_H
+#ifndef PERCEPTUALCOLOR_COLORENGINE_H
+#define PERCEPTUALCOLOR_COLORENGINE_H
 
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
@@ -30,23 +30,41 @@ Q_DECLARE_METATYPE(cmsProfileClassSignature)
 
 namespace PerceptualColor
 {
-class RgbColorSpacePrivate;
+class ColorEnginePrivate;
 
 /** @internal
  *
- * @brief Provides access to LittleCMS color management
+ * @brief Provides access to color management functionality.
  *
- * This class has no public constructor. Objects can be generated
- * with the static factory functions.
+ * This internal utility class centralizes color-profile-specific functionality
+ * required by the widgets of this library. Its interface may evolve over time
+ * as needed by the widget classes and can change at any moment. Therefore,
+ * this class is private and not part of the public API. If necessary, the
+ * factory function @ref createSrgbColorEngine(), defined in another header
+ * file that only forward-declares this class, can be used to provide a public
+ * API for creating objects without exposing this class’s declaration.
  *
- * @note The maximum accepted Cielch-D50/Cielab-D50 lightness range is
+ * Provides access to working gamut profiles and supports projections into the
+ * CIELab and Oklab color spaces, both of which are perceptually uniform color
+ * spaces widely used today. Less common perceptually uniform spaces such as
+ * CAM16, <a href="https://de.wikipedia.org/wiki/DIN99-Farbraum">DIN99</a>, or
+ * Google’s
+ * <a href="https://github.com/material-foundation/material-color-utilities">
+ * </a>HCT—which is also
+ * <a href="https://m3.material.io/blog/science-of-color-design">used in their
+ * Material Design system</a>—are not supported.
+ *
+ * This class has no public constructor. Objects can only be created
+ * using the static factory functions.
+ *
+ * The maximum accepted Cielch-D50/Cielab-D50 lightness range is
  * 0 to 100, and the maximum Cielch-D50 chroma is
  * @ref CielchD50Values::maximumChroma. Values outside of this
  * range are considered out-of-gamut, even if the profile
  * itself would accept them.
  *
- * This class is reentrant. Furthermore, it is thread-save to use only
- * <tt>const</tt> functions simultaneously from various threads.
+ * This class is reentrant. Furthermore, it is thread-safe when using only
+ * <tt>const</tt> functions simultaneously from multiple threads.
  *
  * @note Major operating systems assume sRGB (with the
  * standard-conformant piecewise gamma function) as the default color
@@ -76,24 +94,11 @@ class RgbColorSpacePrivate;
  * accurately reflect this change in scope.
  *
  * @todo SHOULDHAVE
- *       Unit tests for @ref RgbColorSpace, especially the to…() functions.
- *
- * @todo SHOULDHAVE
+ *       Unit tests for @ref ColorEngine, especially the to…() functions.
+ *       Especially
  *       Unit tests for @ref profileMaximumCielchD50Chroma and
  *       @ref profileMaximumOklchChroma with all profiles that are available
  *       in the testbed.
- *
- * @todo SHOWSTOPPER Use (only or alternatively) Oklab
- * instead of CIELAB. But not less common
- * <a href="https://en.wikipedia.org/wiki/Uniform_color_space">
- * perceptually uniform color spaces</a> like CAM16 or
- * <a href="https://de.wikipedia.org/wiki/DIN99-Farbraum">DIN99</a> or Googles
- * <a href="https://github.com/material-foundation/material-color-utilities">
- * HCT</a> (they also use
- * <a href="https://m3.material.io/blog/science-of-color-design">HCT in their
- * Material design system</a>). Also the @ref profileMaximumCielchD50Chroma
- * would need to have companion functions provided for all the new color
- * spaces individually.
  *
  * @todo NICETOHAVE
  *       The sRGB colour space object should be implemented as a singleton.
@@ -116,7 +121,8 @@ class RgbColorSpacePrivate;
  *       Is it possible to split this into an interface and into
  *       various implementations (a slow but safe implementation for
  *       all valid ICC files, and a fast optimized implementation for sRGB
- *       only? If so, is it possible to get rid of the dependency from
+ *       only? Maybe find a more efficient ways of in-gamut detection.
+ *       If so, is it possible to get rid of the dependency from
  *       LittleCMS by implementing sRGB ourselves, and providing ICC support
  *       via an optional header-only header that would link against LittleCMS
  *       without injecting this dependency into our shared library? And
@@ -139,10 +145,6 @@ class RgbColorSpacePrivate;
  * LUT-based (look-up table based), may there exist an algorithmic way to
  * calculate the gamut boundary in Oklab or CIELab projections?
  *
- * @todo SHOULDHAVE Restructure this class? Use two different classes instead,
- * one for the working color space (defines the gamut available in the color
- * dialog) and another one that represents the output screen color space?
- *
  * @todo SHOULDHAVE To determine whether a specific value is in-gamut or
  * out-of-gamut, this class converts Oklch or CIELch values to RGB using an
  * RGB ICC color profile. If the resulting RGB values are out of range, the
@@ -163,12 +165,9 @@ class RgbColorSpacePrivate;
  *
  * @todo NCETOHAVE Use cmsHPROFILE cmsCreate_OkLabProfile(cmsContext ctx)
  * instead fo calculating Oklab values ourself. For performance reasons.
- * But it's available sind LittleCMS 2.16 only!
- *
- * @todo NICETOHAVE
- *       Find more efficient ways of in-gamut detection. Maybe provide
- *       a subclass with optimized algorithms just for sRGB-build-in? */
-class RgbColorSpace : public QObject
+ * But it's available only since LittleCMS 2.16!
+ */
+class ColorEngine : public QObject
 {
     Q_OBJECT
 
@@ -209,12 +208,12 @@ public: // enums and flags
      * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object.
      */
-    using RenderingIntentDirections = QMap<cmsUInt32Number, RgbColorSpace::ProfileRoles>;
+    using RenderingIntentDirections = QMap<cmsUInt32Number, ColorEngine::ProfileRoles>;
 
 private:
     /** @brief The absolute file path of the profile.
      *
-     * @note This is empty for build-in profiles.
+     * @note This is empty for built-in profiles.
      *
      * @sa READ @ref profileAbsoluteFilePath() const */
     Q_PROPERTY(QString profileAbsoluteFilePath READ profileAbsoluteFilePath CONSTANT)
@@ -411,11 +410,11 @@ private:
     Q_PROPERTY(std::optional<cmsCIEXYZ> profileTagWhitepoint READ profileTagWhitepoint CONSTANT)
 
 public: // Static factory functions
-    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> tryCreateFromFile(const QString &fileName);
-    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createSrgb();
+    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::ColorEngine> tryCreateFromFile(const QString &fileName);
+    [[nodiscard]] Q_INVOKABLE static QSharedPointer<PerceptualColor::ColorEngine> createSrgb();
 
 public:
-    virtual ~RgbColorSpace() noexcept override;
+    virtual ~ColorEngine() noexcept override;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielabD50InGamut(const cmsCIELab &lab) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isCielchD50InGamut(const PerceptualColor::GenericColor &lch) const;
     [[nodiscard]] Q_INVOKABLE virtual bool isOklchInGamut(const PerceptualColor::GenericColor &lch) const;
@@ -502,15 +501,9 @@ public:
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const;
 
 private:
-    Q_DISABLE_COPY(RgbColorSpace)
+    Q_DISABLE_COPY(ColorEngine)
 
-    /** @internal
-     *
-     * @brief Private constructor.
-     *
-     * @param parent The widget’s parent widget. This parameter will be
-     * passed to the base class’s constructor. */
-    explicit RgbColorSpace(QObject *parent = nullptr);
+    explicit ColorEngine(QObject *parent = nullptr);
 
     /** @internal
      *
@@ -518,17 +511,18 @@ private:
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
-    friend class RgbColorSpacePrivate;
+    friend class ColorEnginePrivate;
+
     /** @brief Pointer to implementation (pimpl) */
-    ConstPropagatingUniquePointer<RgbColorSpacePrivate> d_pointer;
+    ConstPropagatingUniquePointer<ColorEnginePrivate> d_pointer;
 
     /** @internal @brief Only for unit tests. */
-    friend class TestRgbColorSpace;
+    friend class TestColorEngine;
 };
 
 } // namespace PerceptualColor
 
-Q_DECLARE_METATYPE(PerceptualColor::RgbColorSpace::ProfileRole)
-Q_DECLARE_METATYPE(PerceptualColor::RgbColorSpace::RenderingIntentDirections)
+Q_DECLARE_METATYPE(PerceptualColor::ColorEngine::ProfileRole)
+Q_DECLARE_METATYPE(PerceptualColor::ColorEngine::RenderingIntentDirections)
 
-#endif // PERCEPTUALCOLOR_RGBCOLORSPACE_H
+#endif // PERCEPTUALCOLOR_COLORENGINE_H

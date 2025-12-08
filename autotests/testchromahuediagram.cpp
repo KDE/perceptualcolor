@@ -7,10 +7,10 @@
 // Second, the private implementation.
 #include "chromahuediagram_p.h" // IWYU pragma: keep
 
+#include "colorenginefactory.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "polarpointf.h"
-#include "rgbcolorspacefactory.h"
 #include <lcms2.h>
 #include <qcoreevent.h>
 #include <qevent.h>
@@ -32,8 +32,8 @@
 static void snippet01()
 {
     //! [instantiate]
-    auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
-    auto myDiagram = new PerceptualColor::ChromaHueDiagram(myColorSpace);
+    auto myColorEngine = PerceptualColor::createSrgbColorEngine();
+    auto myDiagram = new PerceptualColor::ChromaHueDiagram(myColorEngine);
     PerceptualColor::GenericColor myColor; // Lch
     myColor.first = 50; // Lightness
     myColor.second = 25; // Chroma
@@ -46,7 +46,7 @@ static void snippet01()
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 
 class TestChromaHueDiagram : public QObject
 {
@@ -59,7 +59,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -84,18 +84,18 @@ private Q_SLOTS:
 
     void testConstructorAndDestructor()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
     }
 
     void testShow()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         myDiagram.show();
     }
 
     void testKeyPressEvent()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         GenericColor referenceColorLch;
         referenceColorLch.first = 50;
         referenceColorLch.second = 0;
@@ -169,7 +169,7 @@ private Q_SLOTS:
 
     void testMinimumSizeHint()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         QVERIFY2(myDiagram.minimumSizeHint().width() > 0, "minimumSizeHint width is implemented.");
         QVERIFY2(myDiagram.minimumSizeHint().height() > 0, "minimumSizeHint height is implemented.");
         // Check that the hint is a square:
@@ -178,7 +178,7 @@ private Q_SLOTS:
 
     void testSizeHint()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         QVERIFY2(myDiagram.sizeHint().width() > myDiagram.minimumSizeHint().width(), "sizeHint width is bigger than minimumSizeHint width.");
         QVERIFY2(myDiagram.sizeHint().height() > myDiagram.minimumSizeHint().height(), "sizeHint height is bigger than minimumSizeHint height.");
         // Check that the hint is a square:
@@ -187,7 +187,7 @@ private Q_SLOTS:
 
     void testColorProperty()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         QSignalSpy mySpy(&myDiagram, &PerceptualColor::ChromaHueDiagram::currentColorCielchD50Changed);
         GenericColor referenceColorLch;
         referenceColorLch.first = 50;
@@ -209,7 +209,7 @@ private Q_SLOTS:
 
     void testDiagramOffset()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         myDiagram.show(); // Necessary to allow event processing
         myDiagram.resize(50, 50);
         qreal oldOffset = myDiagram.d_pointer->diagramOffset();
@@ -221,7 +221,7 @@ private Q_SLOTS:
 
     void testdiagramCenter()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         myDiagram.resize(100, 100);
         // Test conformance with diagramOffset()
         QCOMPARE(myDiagram.d_pointer->diagramCenter().x(), //
@@ -232,7 +232,7 @@ private Q_SLOTS:
 
     void testConversions()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
         GenericColor myGrayColor;
         myGrayColor.third = 0;
         myGrayColor.first = 50;
@@ -266,7 +266,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        ChromaHueDiagram myWidget{m_rgbColorSpace};
+        ChromaHueDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -312,7 +312,7 @@ private Q_SLOTS:
 
     void testOutOfGamutColors()
     {
-        ChromaHueDiagram myWidget{m_rgbColorSpace};
+        ChromaHueDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -331,7 +331,7 @@ private Q_SLOTS:
 
     void testOutOfRange()
     {
-        ChromaHueDiagram myWidget{m_rgbColorSpace};
+        ChromaHueDiagram myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 

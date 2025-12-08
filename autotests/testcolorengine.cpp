@@ -3,16 +3,16 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "rgbcolorspace.h"
+#include "colorengine.h"
 // Second, the private implementation.
-#include "rgbcolorspace_p.h" // IWYU pragma: keep
+#include "colorengine_p.h" // IWYU pragma: keep
 
 #include "cielchd50values.h"
+#include "colorenginefactory.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "helpermath.h"
 #include "helperposixmath.h"
-#include "rgbcolorspacefactory.h"
 #include <lcms2.h>
 #include <map>
 #include <optional>
@@ -45,12 +45,12 @@
 
 namespace PerceptualColor
 {
-class TestRgbColorSpace : public QObject
+class TestColorEngine : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestRgbColorSpace(QObject *parent = nullptr)
+    explicit TestColorEngine(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -78,23 +78,23 @@ private Q_SLOTS:
 
     void testConstructorDestructorUninitialized()
     {
-        RgbColorSpace myColorSpace;
+        ColorEngine myColorEngine;
     }
 
     void testCreateSrgb()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine;
 
-        myColorSpace = RgbColorSpace::createSrgb();
-        QCOMPARE(myColorSpace.isNull(), false);
+        myColorEngine = ColorEngine::createSrgb();
+        QCOMPARE(myColorEngine.isNull(), false);
 
-        QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_cielabD50BlackpointL, 1));
+        QVERIFY(isInRange<qreal>(0, myColorEngine->d_pointer->m_cielabD50BlackpointL, 1));
         QVERIFY( //
-            isInRange<qreal>(99, myColorSpace->d_pointer->m_cielabD50WhitepointL, 100));
+            isInRange<qreal>(99, myColorEngine->d_pointer->m_cielabD50WhitepointL, 100));
 
-        QVERIFY(isInRange<qreal>(0.00, myColorSpace->d_pointer->m_oklabBlackpointL, 0.01));
+        QVERIFY(isInRange<qreal>(0.00, myColorEngine->d_pointer->m_oklabBlackpointL, 0.01));
         QVERIFY( //
-            isInRange<qreal>(0.99, myColorSpace->d_pointer->m_oklabWhitepointL, 1.00));
+            isInRange<qreal>(0.99, myColorEngine->d_pointer->m_oklabWhitepointL, 1.00));
     }
 
     void testTryCreateFromFile()
@@ -123,38 +123,38 @@ private Q_SLOTS:
             throw 0;
         }
 
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine;
 
         // Invalid file
         QVERIFY(QFileInfo::exists(invalidFile->fileName())); // assertion
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             invalidFile->fileName());
-        QCOMPARE(myColorSpace.isNull(), true);
+        QCOMPARE(myColorEngine.isNull(), true);
 
         // Non-existing file/directory name
         QString nonexistingfilename = //
             QStringLiteral("/nonexistingfilename.txt");
         QCOMPARE(QFileInfo::exists(nonexistingfilename), false); // assertion
         QCOMPARE(QDir{nonexistingfilename}.exists(), false); // assertion
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             nonexistingfilename);
-        QCOMPARE(myColorSpace.isNull(), true);
+        QCOMPARE(myColorEngine.isNull(), true);
 
         // Existing folder with trailing slash
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             existingDirectoryWithoutTrailingSlash.path() + QStringLiteral("/"));
-        QCOMPARE(myColorSpace.isNull(), true);
+        QCOMPARE(myColorEngine.isNull(), true);
 
         // Existing folder without trailing slash
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             existingDirectoryWithoutTrailingSlash.path());
-        QCOMPARE(myColorSpace.isNull(), true);
+        QCOMPARE(myColorEngine.isNull(), true);
 
         // Valid RGB profile (should load correctly)
         QVERIFY(QFileInfo::exists(validRgbFile->fileName())); // assertion
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             validRgbFile->fileName());
-        QCOMPARE(myColorSpace.isNull(), false);
+        QCOMPARE(myColorEngine.isNull(), false);
     }
 
     void testInitialize()
@@ -168,21 +168,21 @@ private Q_SLOTS:
             throw 0;
         }
 
-        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        auto myColorEngine = ColorEngine::tryCreateFromFile( //
             wideGamutFile->fileName());
-        QCOMPARE(myColorSpace.isNull(), false); // assertion
+        QCOMPARE(myColorEngine.isNull(), false); // assertion
         // assertion that maximum lightness is out-of-gamut for this profile:
-        QCOMPARE(myColorSpace->isCielchD50InGamut(GenericColor{100, 0, 0}), false);
-        QCOMPARE(myColorSpace->isOklchInGamut(GenericColor{1, 0, 0}), false);
+        QCOMPARE(myColorEngine->isCielchD50InGamut(GenericColor{100, 0, 0}), false);
+        QCOMPARE(myColorEngine->isOklchInGamut(GenericColor{1, 0, 0}), false);
 
         // Actual test:
-        QVERIFY(isInRange<qreal>(0, myColorSpace->d_pointer->m_cielabD50BlackpointL, 1));
+        QVERIFY(isInRange<qreal>(0, myColorEngine->d_pointer->m_cielabD50BlackpointL, 1));
         QVERIFY( //
-            isInRange<qreal>(99, myColorSpace->d_pointer->m_cielabD50WhitepointL, 100));
+            isInRange<qreal>(99, myColorEngine->d_pointer->m_cielabD50WhitepointL, 100));
 
-        QVERIFY(isInRange<qreal>(0.00, myColorSpace->d_pointer->m_oklabBlackpointL, 0.01));
+        QVERIFY(isInRange<qreal>(0.00, myColorEngine->d_pointer->m_oklabBlackpointL, 0.01));
         QVERIFY( //
-            isInRange<qreal>(0.99, myColorSpace->d_pointer->m_oklabWhitepointL, 1.00));
+            isInRange<qreal>(0.99, myColorEngine->d_pointer->m_oklabWhitepointL, 1.00));
     }
 
     void testReduceCielchD50ChromaToFitIntoGamut()
@@ -196,23 +196,23 @@ private Q_SLOTS:
             throw 0;
         }
 
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine;
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             wideGamutFile->fileName());
-        QCOMPARE(myColorSpace.isNull(), false); // assertion
+        QCOMPARE(myColorEngine.isNull(), false); // assertion
         const GenericColor referenceColor{100, 50, 0};
-        QCOMPARE(myColorSpace->isCielchD50InGamut(referenceColor), false); // assertion
+        QCOMPARE(myColorEngine->isCielchD50InGamut(referenceColor), false); // assertion
         // The value referenceColor is out-of-gamut because WideGamutRGB stops
         // just a little bit before the lightness of 100.
 
         // Now, test how this special situation is handled:
         const GenericColor modifiedColor = //
-            myColorSpace->reduceCielchD50ChromaToFitIntoGamut(referenceColor);
+            myColorEngine->reduceCielchD50ChromaToFitIntoGamut(referenceColor);
         QVERIFY(modifiedColor.second <= referenceColor.second);
         QCOMPARE(modifiedColor.third, referenceColor.third);
         QVERIFY(isInRange<qreal>(99, modifiedColor.first, 100));
         QVERIFY(modifiedColor.first < 100);
-        QVERIFY(myColorSpace->isCielchD50InGamut(modifiedColor));
+        QVERIFY(myColorEngine->isCielchD50InGamut(modifiedColor));
     }
 
     void testBugReduceCielchD50ChromaToFitIntoGamut()
@@ -231,10 +231,10 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        auto myColorEngine = ColorEngine::tryCreateFromFile( //
             wideGamutFile->fileName());
         GenericColor temp{100, 50, 0};
-        QVERIFY(myColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp).first > 95);
+        QVERIFY(myColorEngine->reduceCielchD50ChromaToFitIntoGamut(temp).first > 95);
     }
 
     void testReduceOklabChromaToFitIntoGamut()
@@ -248,23 +248,23 @@ private Q_SLOTS:
             throw 0;
         }
 
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace;
-        myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine;
+        myColorEngine = ColorEngine::tryCreateFromFile( //
             wideGamutFile->fileName());
-        QCOMPARE(myColorSpace.isNull(), false); // assertion
+        QCOMPARE(myColorEngine.isNull(), false); // assertion
         const GenericColor referenceColor{1, 0.151189, 359.374};
-        QCOMPARE(myColorSpace->isOklchInGamut(referenceColor), false); // assertion
+        QCOMPARE(myColorEngine->isOklchInGamut(referenceColor), false); // assertion
         // The value referenceColor is out-of-gamut because WideGamutRGB stops
         // just a little bit before the lightness of 100.
 
         // Now, test how this special situation is handled:
         const GenericColor modifiedColor = //
-            myColorSpace->reduceOklchChromaToFitIntoGamut(referenceColor);
+            myColorEngine->reduceOklchChromaToFitIntoGamut(referenceColor);
         QVERIFY(modifiedColor.second <= referenceColor.second);
         QCOMPARE(modifiedColor.third, referenceColor.third);
         QVERIFY(isInRange<qreal>(0.99, modifiedColor.first, 1));
         QVERIFY(modifiedColor.first < 1);
-        QVERIFY(myColorSpace->isOklchInGamut(modifiedColor));
+        QVERIFY(myColorEngine->isOklchInGamut(modifiedColor));
     }
 
     void testBugReduceOklabChromaToFitIntoGamut()
@@ -283,16 +283,16 @@ private Q_SLOTS:
         // slider up to 100%: Bug behaviour: the color switches
         // to 0% lightness. Expected behaviour: the color has almost
         // 100% lightness.
-        auto myColorSpace = RgbColorSpace::tryCreateFromFile( //
+        auto myColorEngine = ColorEngine::tryCreateFromFile( //
             wideGamutFile->fileName());
         const GenericColor temp{1, 0.151189, 359.374};
-        QVERIFY(myColorSpace->reduceOklchChromaToFitIntoGamut(temp).first > 0.95);
+        QVERIFY(myColorEngine->reduceOklchChromaToFitIntoGamut(temp).first > 0.95);
     }
 
     void testDeleteTransformThatIsNull()
     {
         cmsHTRANSFORM myTransform = nullptr;
-        RgbColorSpacePrivate::deleteTransform(&myTransform);
+        ColorEnginePrivate::deleteTransform(&myTransform);
         QCOMPARE(myTransform, nullptr);
     }
 
@@ -314,7 +314,7 @@ private Q_SLOTS:
         QVERIFY(myTransform != nullptr); // assertion
 
         // Do the actual unit test
-        RgbColorSpacePrivate::deleteTransform(&myTransform);
+        ColorEnginePrivate::deleteTransform(&myTransform);
         QCOMPARE(myTransform, nullptr);
 
         // Clean-up
@@ -337,9 +337,9 @@ private Q_SLOTS:
             throw 0;
         }
 
-        auto srgb = RgbColorSpace::createSrgb();
+        auto srgb = ColorEngine::createSrgb();
         QCOMPARE(srgb.isNull(), false); // assertion
-        auto widegamutrgb = RgbColorSpace::tryCreateFromFile( //
+        auto widegamutrgb = ColorEngine::tryCreateFromFile( //
             wideGamutFile->fileName());
         QCOMPARE(widegamutrgb.isNull(), false); // assertion
 
@@ -406,7 +406,7 @@ private Q_SLOTS:
 
     void testProfileMaximumCielchD50Chroma()
     {
-        auto temp = RgbColorSpace::createSrgb();
+        auto temp = ColorEngine::createSrgb();
         GenericColor color;
 
         // Test if profileMaximumCielchD50Chroma is big enough
@@ -453,7 +453,7 @@ private Q_SLOTS:
 
     void testProfileMaximumOklchChroma()
     {
-        auto temp = RgbColorSpace::createSrgb();
+        auto temp = ColorEngine::createSrgb();
         GenericColor color;
 
         // Test if profileMaximumOklchChroma is big enough
@@ -500,7 +500,7 @@ private Q_SLOTS:
 
     void testProfileTagSignatures()
     {
-        auto temp = RgbColorSpace::createSrgb();
+        auto temp = ColorEngine::createSrgb();
 
         const QStringList signatures = temp->profileTagSignatures();
 
@@ -510,7 +510,7 @@ private Q_SLOTS:
 
     void testProfileTagWhitepoint()
     {
-        auto temp = RgbColorSpace::createSrgb();
+        auto temp = ColorEngine::createSrgb();
 
         const std::optional<cmsCIEXYZ> maybeWhitepoint = temp->profileTagWhitepoint();
 
@@ -531,13 +531,13 @@ private Q_SLOTS:
 
     void testToCielchD50Double()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         // Testing
         const QRgba64 white = QColor{255, 255, 255}.rgba64();
-        const auto convertedWhite = myColorSpace->toCielchD50(white);
+        const auto convertedWhite = myColorEngine->toCielchD50(white);
         const auto bufferWhiteL = QStringLiteral("convertedWhite.first: %1") //
                                       .arg(convertedWhite.first, 0, 'e') //
                                       .toUtf8();
@@ -552,7 +552,7 @@ private Q_SLOTS:
 
         // Testing
         const QRgba64 black = QColor{0, 0, 0}.rgba64();
-        const auto convertedBlack = myColorSpace->toCielchD50(black);
+        const auto convertedBlack = myColorEngine->toCielchD50(black);
         const auto bufferBlackL = QStringLiteral("convertedBlack.first: %1") //
                                       .arg(convertedBlack.first, 0, 'e') //
                                       .toUtf8();
@@ -568,9 +568,9 @@ private Q_SLOTS:
 
     void testToQRgbForce()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         // Variables
         GenericColor color;
@@ -579,29 +579,29 @@ private Q_SLOTS:
         color.first = 50;
         color.second = 20;
         color.third = 10;
-        auto result = myColorSpace->fromCielchD50ToQRgbBound(color);
+        auto result = myColorEngine->fromCielchD50ToQRgbBound(color);
         QCOMPARE(qAlpha(result), 255); // opaque
 
         // Out-of-gamut colors should work:
         color.first = 100;
         color.second = 200;
         color.third = 10;
-        result = myColorSpace->fromCielchD50ToQRgbBound(color);
+        result = myColorEngine->fromCielchD50ToQRgbBound(color);
         QCOMPARE(qAlpha(result), 255); // opaque
 
         // Out-of-boundary colors should work:
         color.first = 200;
         color.second = 300;
         color.third = 400;
-        result = myColorSpace->fromCielchD50ToQRgbBound(color);
+        result = myColorEngine->fromCielchD50ToQRgbBound(color);
         QCOMPARE(qAlpha(result), 255); // opaque
     }
 
     void testIsCielchD50InGamut()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         // Variables
         GenericColor color;
@@ -610,26 +610,26 @@ private Q_SLOTS:
         color.first = 50;
         color.second = 20;
         color.third = 10;
-        QCOMPARE(myColorSpace->isCielchD50InGamut(color), true);
+        QCOMPARE(myColorEngine->isCielchD50InGamut(color), true);
 
         // Out-of-gamut colors should work:
         color.first = 100;
         color.second = 200;
         color.third = 10;
-        QCOMPARE(myColorSpace->isCielchD50InGamut(color), false);
+        QCOMPARE(myColorEngine->isCielchD50InGamut(color), false);
 
         // Out-of-boundary colors should work:
         color.first = 200;
         color.second = 300;
         color.third = 400;
-        QCOMPARE(myColorSpace->isCielchD50InGamut(color), false);
+        QCOMPARE(myColorEngine->isCielchD50InGamut(color), false);
     }
 
     void testIsOklchInGamut()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         // Variables
         GenericColor color;
@@ -638,26 +638,26 @@ private Q_SLOTS:
         color.first = 0.5;
         color.second = 0.10;
         color.third = 10;
-        QCOMPARE(myColorSpace->isOklchInGamut(color), true);
+        QCOMPARE(myColorEngine->isOklchInGamut(color), true);
 
         // Out-of-gamut colors should work:
         color.first = 1;
         color.second = 0.3;
         color.third = 10;
-        QCOMPARE(myColorSpace->isOklchInGamut(color), false);
+        QCOMPARE(myColorEngine->isOklchInGamut(color), false);
 
         // Out-of-boundary colors should work:
         color.first = 200;
         color.second = 300;
         color.third = 400;
-        QCOMPARE(myColorSpace->isOklchInGamut(color), false);
+        QCOMPARE(myColorEngine->isOklchInGamut(color), false);
     }
 
     void testIsCielabD50InGamut()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         // Variables
         cmsCIELab color;
@@ -666,26 +666,26 @@ private Q_SLOTS:
         color.L = 50;
         color.a = 10;
         color.b = 10;
-        QCOMPARE(myColorSpace->isCielabD50InGamut(color), true);
+        QCOMPARE(myColorEngine->isCielabD50InGamut(color), true);
 
         // Out-of-gamut colors should work:
         color.L = 100;
         color.a = 100;
         color.b = 100;
-        QCOMPARE(myColorSpace->isCielabD50InGamut(color), false);
+        QCOMPARE(myColorEngine->isCielabD50InGamut(color), false);
 
         // Out-of-boundary colors should work:
         color.L = 200;
         color.a = 300;
         color.b = 300;
-        QCOMPARE(myColorSpace->isCielabD50InGamut(color), false);
+        QCOMPARE(myColorEngine->isCielabD50InGamut(color), false);
     }
 
     void testToQRgbOrTransparent()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
+        QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         // Variables
         cmsCIELab color;
@@ -694,19 +694,19 @@ private Q_SLOTS:
         color.L = 50;
         color.a = 10;
         color.b = 10;
-        QVERIFY(qAlpha(myColorSpace->fromCielabD50ToQRgbOrTransparent(color)) == 255);
+        QVERIFY(qAlpha(myColorEngine->fromCielabD50ToQRgbOrTransparent(color)) == 255);
 
         // Out-of-gamut colors should work:
         color.L = 100;
         color.a = 100;
         color.b = 100;
-        QVERIFY(qAlpha(myColorSpace->fromCielabD50ToQRgbOrTransparent(color)) == 0);
+        QVERIFY(qAlpha(myColorEngine->fromCielabD50ToQRgbOrTransparent(color)) == 0);
 
         // Out-of-boundary colors should work:
         color.L = 200;
         color.a = 300;
         color.b = 300;
-        QVERIFY(qAlpha(myColorSpace->fromCielabD50ToQRgbOrTransparent(color)) == 0);
+        QVERIFY(qAlpha(myColorEngine->fromCielabD50ToQRgbOrTransparent(color)) == 0);
     }
 
     // The following unit tests are a little bit special. They do not
@@ -827,9 +827,9 @@ private Q_SLOTS:
 
     void testChromaticityBoundaryByCielchD50Hue360()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> temp =
+        QSharedPointer<PerceptualColor::ColorEngine> temp =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         const auto colorCount = //
             temp->d_pointer->m_chromaticityBoundaryByCielchD50Hue360.size();
@@ -840,9 +840,9 @@ private Q_SLOTS:
 
     void testChromaticityBoundaryByOklabHue360()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> temp =
+        QSharedPointer<PerceptualColor::ColorEngine> temp =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         const auto colorCount = //
             temp->d_pointer->m_chromaticityBoundaryByOklabHue360.size();
@@ -853,9 +853,9 @@ private Q_SLOTS:
 
     void testMaxChromaColorBy()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> tmp =
+        QSharedPointer<PerceptualColor::ColorEngine> tmp =
             // Create sRGB which is pretty much standard.
-            PerceptualColor::RgbColorSpaceFactory::createSrgb();
+            PerceptualColor::createSrgbColorEngine();
 
         auto onChromaBoundary = [](const QColor &c) -> bool {
             const bool has0 = //
@@ -882,7 +882,7 @@ private Q_SLOTS:
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestRgbColorSpace)
+QTEST_MAIN(PerceptualColor::TestColorEngine)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testrgbcolorspace.moc"
+#include "testcolorengine.moc"

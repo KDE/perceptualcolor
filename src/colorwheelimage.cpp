@@ -5,10 +5,10 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimage.h"
 
+#include "colorengine.h"
 #include "helperconstants.h"
 #include "helpermath.h"
 #include "polarpointf.h"
-#include "rgbcolorspace.h"
 #include <qbrush.h>
 #include <qmath.h>
 #include <qnamespace.h>
@@ -21,10 +21,10 @@
 namespace PerceptualColor
 {
 /** @brief Constructor
- * @param colorSpace The color space within which the image should operate.
- * Can be created with @ref RgbColorSpaceFactory. */
-ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
-    : m_rgbColorSpace(colorSpace)
+ * @param colorEngine The color engine with which the image should operate.
+ * Can be created with @ref createSrgbColorEngine(). */
+ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
+    : m_colorEngine(colorEngine)
 {
 }
 
@@ -201,7 +201,7 @@ QImage ColorWheelImage::getImage()
                 m_image.setPixelColor( //
                     x, //
                     y, //
-                    m_rgbColorSpace->maxChromaColorByCielchD50Hue360(hue));
+                    m_colorEngine->maxChromaColorByCielchD50Hue360(hue));
             }
         }
     }

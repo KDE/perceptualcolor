@@ -27,29 +27,28 @@
 namespace PerceptualColor
 {
 /** @brief Constructs a vertical slider.
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
- * Can be created with @ref RgbColorSpaceFactory.
+ * @param colorEngine The color engine with which this widget should operate.
+ * Can be created with @ref createSrgbColorEngine().
  * @param parent parent widget (if any) */
-GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new GradientSliderPrivate(this))
 {
-    d_pointer->initialize(colorSpace, Qt::Orientation::Vertical);
+    d_pointer->initialize(colorEngine, Qt::Orientation::Vertical);
 }
 
 /** @brief Constructs a slider.
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
+ * @param colorEngine The color engine with which this widget should operate.
+ * Can be created with @ref createSrgbColorEngine().
  * @param orientation The orientation parameter determines whether
  * the slider is horizontal or vertical; the valid values
  * are <tt>Qt::Vertical</tt> and <tt>Qt::Horizontal</tt>.
  * @param parent parent widget (if any) */
-GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, Qt::Orientation orientation, QWidget *parent)
+GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, Qt::Orientation orientation, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new GradientSliderPrivate(this))
 {
-    d_pointer->initialize(colorSpace, orientation);
+    d_pointer->initialize(colorEngine, orientation);
 }
 
 /**
@@ -89,13 +88,13 @@ GradientSliderPrivate::~GradientSliderPrivate() noexcept
  * However, a call from the <em>function body</em> of a constructor of
  * @ref GradientSlider should be okay.
  *
- * @param colorSpace the color space
+ * @param colorEngine the color engine
  * @param orientation determines whether the slider is horizontal or
  * vertical */
-void GradientSliderPrivate::initialize(const QSharedPointer<RgbColorSpace> &colorSpace, Qt::Orientation orientation)
+void GradientSliderPrivate::initialize(const QSharedPointer<ColorEngine> &colorEngine, Qt::Orientation orientation)
 {
     q_pointer->setFocusPolicy(Qt::StrongFocus);
-    m_gradientImageParameters.rgbColorSpace = colorSpace;
+    m_gradientImageParameters.colorEngine = colorEngine;
     setOrientationWithoutSignalAndForceNewSizePolicy(orientation);
     constexpr GenericColor first{75, 65, 90, 1};
     constexpr GenericColor second{50, 75, 45, 1};

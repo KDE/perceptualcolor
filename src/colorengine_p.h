@@ -1,17 +1,17 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PERCEPTUALCOLOR_RGBCOLORSPACE_P_H
-#define PERCEPTUALCOLOR_RGBCOLORSPACE_P_H
+#ifndef PERCEPTUALCOLOR_COLORENGINE_P_H
+#define PERCEPTUALCOLOR_COLORENGINE_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "rgbcolorspace.h"
+// #include "colorengine.h"
 
 #include "cielchd50values.h"
+#include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconversion.h"
 #include "oklchvalues.h"
-#include "rgbcolorspace.h"
 #include <lcms2.h>
 #include <map>
 #include <optional>
@@ -34,15 +34,15 @@ namespace PerceptualColor
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class RgbColorSpacePrivate
+class ColorEnginePrivate
 {
 public:
-    explicit RgbColorSpacePrivate(RgbColorSpace *backLink);
+    explicit ColorEnginePrivate(ColorEngine *backLink);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
-    ~RgbColorSpacePrivate() noexcept = default;
+    ~ColorEnginePrivate() noexcept = default;
 
     // Data members:
     /**
@@ -110,70 +110,70 @@ public:
      */
     qreal m_oklabWhitepointL = 1;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileAbsoluteFilePath */
+     * @ref ColorEngine::profileAbsoluteFilePath */
     QString m_profileAbsoluteFilePath;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileClass */
+     * @ref ColorEngine::profileClass */
     cmsProfileClassSignature m_profileClass;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileColorModel */
+     * @ref ColorEngine::profileColorModel */
     cmsColorSpaceSignature m_profileColorModel;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileCopyright */
+     * @ref ColorEngine::profileCopyright */
     QString m_profileCopyright;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileCreationDateTime */
+     * @ref ColorEngine::profileCreationDateTime */
     QDateTime m_profileCreationDateTime;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileFileSize */
+     * @ref ColorEngine::profileFileSize */
     qint64 m_profileFileSize = -1;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileHasClut */
+     * @ref ColorEngine::profileHasClut */
     bool m_profileHasClut = false;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileHasMatrixShaper */
+     * @ref ColorEngine::profileHasMatrixShaper */
     bool m_profileHasMatrixShaper = false;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileRenderingIntentDirections */
-    RgbColorSpace::RenderingIntentDirections m_profileRenderingIntentDirections;
+     * @ref ColorEngine::profileRenderingIntentDirections */
+    ColorEngine::RenderingIntentDirections m_profileRenderingIntentDirections;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileIccVersion */
+     * @ref ColorEngine::profileIccVersion */
     QVersionNumber m_profileIccVersion;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileManufacturer */
+     * @ref ColorEngine::profileManufacturer */
     QString m_profileManufacturer;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileMaximumCielchD50Chroma */
+     * @ref ColorEngine::profileMaximumCielchD50Chroma */
     double m_profileMaximumCielchD50Chroma = CielchD50Values::maximumChroma;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileMaximumOklchChroma */
+     * @ref ColorEngine::profileMaximumOklchChroma */
     double m_profileMaximumOklchChroma = OklchValues::maximumChroma;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileModel */
+     * @ref ColorEngine::profileModel */
     QString m_profileModel;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileName */
+     * @ref ColorEngine::profileName */
     QString m_profileName;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profilePcsColorModel */
+     * @ref ColorEngine::profilePcsColorModel */
     cmsColorSpaceSignature m_profilePcsColorModel;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileTagBlackpoint */
+     * @ref ColorEngine::profileTagBlackpoint */
     std::optional<cmsCIEXYZ> m_profileTagBlackpoint;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileTagBluePrimary */
+     * @ref ColorEngine::profileTagBluePrimary */
     std::optional<cmsCIEXYZ> m_profileTagBluePrimary;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileTagGreenPrimary */
+     * @ref ColorEngine::profileTagGreenPrimary */
     std::optional<cmsCIEXYZ> m_profileTagGreenPrimary;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileTagRedPrimary */
+     * @ref ColorEngine::profileTagRedPrimary */
     std::optional<cmsCIEXYZ> m_profileTagRedPrimary;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileTagSignatures */
+     * @ref ColorEngine::profileTagSignatures */
     QStringList m_profileTagSignatures;
     /** @brief Internal storage for property
-     * @ref RgbColorSpace::profileTagWhitepoint */
+     * @ref ColorEngine::profileTagWhitepoint */
     std::optional<cmsCIEXYZ> m_profileTagWhitepoint;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformCielabD50ToRgb16Handle = nullptr;
@@ -197,8 +197,8 @@ public:
      *
      * The maximum-chroma detection, regardless of the precision, might
      * always return a value that is a bit too small. However, we want
-     * to have @ref RgbColorSpace::profileMaximumCielchD50Chroma and
-     * @ref RgbColorSpace::profileMaximumOklchChroma values that
+     * to have @ref ColorEngine::profileMaximumCielchD50Chroma and
+     * @ref ColorEngine::profileMaximumOklchChroma values that
      * are equal or slightly bigger than the actual maximum-chroma,
      * to make sure to not exclude valid values. Therefore,
      * @ref initializeChromaticityBoundaries() uses this increment factor
@@ -233,13 +233,13 @@ public:
     static constexpr qreal oklabDeviationLimit = 0.001;
 
 private:
-    Q_DISABLE_COPY(RgbColorSpacePrivate)
+    Q_DISABLE_COPY(ColorEnginePrivate)
 
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
-    ConstPropagatingRawPointer<RgbColorSpace> q_pointer;
+    ConstPropagatingRawPointer<ColorEngine> q_pointer;
 };
 
 } // namespace PerceptualColor
 
-#endif // PERCEPTUALCOLOR_RGBCOLORSPACE_P_H
+#endif // PERCEPTUALCOLOR_COLORENGINE_P_H

@@ -8,11 +8,11 @@
 #include "wheelcolorpicker_p.h" // IWYU pragma: keep
 
 #include "chromalightnessdiagram.h"
+#include "colorengine.h"
+#include "colorenginefactory.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
-#include "rgbcolorspace.h"
-#include "rgbcolorspacefactory.h"
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
@@ -39,7 +39,7 @@ public:
     }
 
 private:
-    QSharedPointer<RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<ColorEngine> m_colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -65,12 +65,12 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         // Test for crash in constructor or destructor
-        WheelColorPicker test{m_rgbColorSpace};
+        WheelColorPicker test{m_colorEngine};
     }
 
     void testCurrentColorCielchD50Property()
     {
-        WheelColorPicker test{m_rgbColorSpace};
+        WheelColorPicker test{m_colorEngine};
         GenericColor color;
         color.first = 50;
         color.second = 20;
@@ -102,7 +102,7 @@ private Q_SLOTS:
 
     void testSizeHints()
     {
-        WheelColorPicker test{m_rgbColorSpace};
+        WheelColorPicker test{m_colorEngine};
         QVERIFY(test.minimumSizeHint().width() <= test.sizeHint().width());
         QVERIFY(test.minimumSizeHint().height() <= test.sizeHint().height());
     }
@@ -114,7 +114,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        WheelColorPicker myWidget{m_rgbColorSpace};
+        WheelColorPicker myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -160,7 +160,7 @@ private Q_SLOTS:
 
     void testSetOutOfGamutColors()
     {
-        WheelColorPicker myWidget{m_rgbColorSpace};
+        WheelColorPicker myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -185,7 +185,7 @@ private Q_SLOTS:
 
     void testSetOutOfRangeColors()
     {
-        WheelColorPicker myWidget{m_rgbColorSpace};
+        WheelColorPicker myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -211,7 +211,7 @@ private Q_SLOTS:
 
     void testHueChanges()
     {
-        WheelColorPicker myWidget{m_rgbColorSpace};
+        WheelColorPicker myWidget{m_colorEngine};
         myWidget.resize(QSize(400, 400));
 
         // Choose a color with an extreme, but still clearly in-gamut chroma
@@ -224,7 +224,7 @@ private Q_SLOTS:
 
         // Now, the chroma-lightness coordinates are out-of-gamut for
         // the new hue. Test if they have been corrected:
-        QVERIFY(m_rgbColorSpace->isCielchD50InGamut(myWidget.currentColorCielchD50()));
+        QVERIFY(m_colorEngine->isCielchD50InGamut(myWidget.currentColorCielchD50()));
     }
 };
 

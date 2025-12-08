@@ -67,8 +67,8 @@ class QCoreApplication;
  * uses tr(). But how to make this sure, also because the library user
  * could also reload its own translations while we are using tr(). At least,
  * we could make sure our classes that use translations (widget classes but
- * also @ref PerceptualColor::RgbColorSpace) cannot be instantiated outside
- * of the main thread. But @ref PerceptualColor::RgbColorSpace is
+ * also @ref PerceptualColor::ColorEngine) cannot be instantiated outside
+ * of the main thread. But @ref PerceptualColor::ColorEngine is
  * meant as thread-safe, so it would be strange if its constructor
  * (and maybe the properties that return translated text) is
  * the own function that is not thread-safe…

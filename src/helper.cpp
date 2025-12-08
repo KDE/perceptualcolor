@@ -5,10 +5,10 @@
 #include "helper.h"
 
 #include "absolutecolor.h"
+#include "colorengine.h"
 #include "genericcolor.h"
 #include "helperconversion.h"
 #include "initializelibraryresources.h"
-#include "rgbcolorspace.h"
 #include <array>
 #include <lcms2.h>
 #include <optional>
@@ -530,9 +530,10 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * - The other columns for chromatic colors use the WCS data for the swatch in
  *   the middle. Tints and shades are calculated by adding or reducing chroma
  *   and lightness within the Oklab color space. If the resulting color falls
- *   outside the color space, a nearby in-gamut color is chosen instead.
+ *   outside the gamut, a nearby in-gamut color is chosen instead.
  *
- * @param colorSpace The color space in which the return value is calculated.
+ * @param colorEngine The color space in which the return value is calculated
+ * is the colorEngine working gamut.
  *
  * @returns Swatch grid derived from the basic colors. Provides as a list of
  * basic colors (in this order: red, orange, yellow, green, blue, purple, pink,
@@ -547,7 +548,7 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * @todo NICETOHAVE wcsBasicColors has a gray axis that makes diagram hue flip
  * around. It shouldn’t.
  */
-QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
 {
     constexpr GenericColor red{41.22, 61.40, 17.92};
     constexpr GenericColor orange{61.70, 29.38, 64.40};
@@ -603,7 +604,7 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
                                                 ColorModel::CielchD50 //
                                                 )
                                                 .value_or(GenericColor());
-            const auto variationRgb = colorSpace->fromCielchD50ToQRgbBound( //
+            const auto variationRgb = colorEngine->fromCielchD50ToQRgbBound( //
                 variationCielchD50);
             wcsSwatches.setValue(i, //
                                  j,
@@ -621,7 +622,7 @@ QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace
                                    ColorModel::CielchD50 //
                                    )
                                    .value_or(GenericColor());
-        const auto rgb = colorSpace->fromCielchD50ToQRgbBound(cielchD50);
+        const auto rgb = colorEngine->fromCielchD50ToQRgbBound(cielchD50);
         wcsSwatches.setValue(columnCount - 1, j, rgb);
     }
 

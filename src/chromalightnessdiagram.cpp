@@ -9,10 +9,10 @@
 
 #include "abstractdiagram.h"
 #include "cielchd50values.h"
+#include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
-#include "rgbcolorspace.h"
 #include <optional>
 #include <qcolor.h>
 #include <qevent.h>
@@ -34,24 +34,24 @@ namespace PerceptualColor
 {
 /** @brief The constructor.
  *
- * @param colorSpace The color space within which the widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
+ * @param colorEngine The color engine with which the widget should operate.
+ * Can be created with @ref createSrgbColorEngine().
  *
  * @param parent Passed to the QWidget base class constructor */
-ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ChromaLightnessDiagramPrivate(this))
 {
-    // Setup the color space must be the first thing to do because
-    // other operations rely on a working color space.
-    d_pointer->m_rgbColorSpace = colorSpace;
+    // Setup the color engine must be the first thing to do because
+    // other operations rely on a working color engine.
+    d_pointer->m_colorEngine = colorEngine;
 
     // Initialization
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     d_pointer->m_chromaLightnessImageParameters.imageSizePhysical = //
         d_pointer->calculateImageSizePhysical();
-    d_pointer->m_chromaLightnessImageParameters.rgbColorSpace = colorSpace;
+    d_pointer->m_chromaLightnessImageParameters.colorEngine = colorEngine;
     d_pointer->m_chromaLightnessImage.setImageParameters( //
         d_pointer->m_chromaLightnessImageParameters);
 
@@ -355,7 +355,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     // will trigger a new paint event, once the cache has been updated.
     d_pointer->m_chromaLightnessImage.refreshAsync();
     const QColor myNeutralGray = //
-        d_pointer->m_rgbColorSpace->fromCielchD50ToQRgbBound(CielchD50Values::neutralGray);
+        d_pointer->m_colorEngine->fromCielchD50ToQRgbBound(CielchD50Values::neutralGray);
     painter.setPen(Qt::NoPen);
     painter.setBrush(myNeutralGray);
     const auto imageSize = //
@@ -484,7 +484,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Right:
         temp.second += singleStepChroma;
-        temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
+        temp = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
     case Qt::Key_PageUp:
         temp.first += pageStepLightness;
@@ -494,7 +494,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_End:
         temp.second += pageStepChroma;
-        temp = d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp);
+        temp = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp);
         break;
     case Qt::Key_Home:
         temp.second = qMax<double>(0, temp.second - pageStepChroma);
@@ -520,7 +520,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // Set the new color (only takes effect when the color is indeed different).
     setCurrentColorCielchD50(
         // Search for the nearest color without changing the hue:
-        d_pointer->m_rgbColorSpace->reduceCielchD50ChromaToFitIntoGamut(temp));
+        d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp));
 }
 
 /** @brief Tests if a given widget pixel position is within
@@ -553,7 +553,7 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
     }
 
     // Actually for in-gamut color:
-    return m_rgbColorSpace->isCielchD50InGamut(color);
+    return m_colorEngine->isCielchD50InGamut(color);
 }
 
 /** @brief Setter for the @ref currentColorCielchD50() property.
@@ -642,7 +642,7 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
         // Add the gradient minimum length from y axis, multiplied with
         // the factor to allow at correct scaling showing up the whole
         // chroma range of the gamut.
-        + gradientMinimumLength() * d_pointer->m_rgbColorSpace->profileMaximumCielchD50Chroma() / 100.0);
+        + gradientMinimumLength() * d_pointer->m_colorEngine->profileMaximumCielchD50Chroma() / 100.0);
     // Expand to the global minimum size for GUI elements
     return QSize(minimumWidth, minimumHeight);
 }
@@ -876,7 +876,7 @@ PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutCielc
     // Return is we are within the gamut.
     // NOTE Calling isInGamut() is slower than simply testing for the pixel,
     // it is more exact.
-    if (m_rgbColorSpace->isCielchD50InGamut(temp)) {
+    if (m_colorEngine->isCielchD50InGamut(temp)) {
         return temp;
     }
 

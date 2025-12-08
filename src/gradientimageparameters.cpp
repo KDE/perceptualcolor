@@ -6,8 +6,8 @@
 #include "gradientimageparameters.h"
 
 #include "asyncimagerendercallback.h"
+#include "colorengine.h"
 #include "helper.h"
-#include "rgbcolorspace.h"
 #include <cmath>
 #include <qbrush.h>
 #include <qcolor.h>
@@ -115,7 +115,7 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
     }
     const GradientImageParameters parameters = //
         variantParameters.value<GradientImageParameters>();
-    if (parameters.rgbColorSpace.isNull()) {
+    if (parameters.colorEngine.isNull()) {
         return;
     }
 
@@ -146,7 +146,7 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
         cielchD50.first = color.first;
         cielchD50.second = color.second;
         cielchD50.third = color.third;
-        temp = parameters.rgbColorSpace->fromCielchD50ToQRgbBound(cielchD50);
+        temp = parameters.colorEngine->fromCielchD50ToQRgbBound(cielchD50);
         temp.setAlphaF(
             // Reduce floating point precision if necessary.
             static_cast<float>(color.fourth));
@@ -296,7 +296,7 @@ bool GradientImageParameters::operator==(const GradientImageParameters &other) c
         && (m_firstColorCorrected.fourth == other.m_firstColorCorrected.fourth) //
         && (m_gradientLength == other.m_gradientLength) //
         && (m_gradientThickness == other.m_gradientThickness) //
-        && (rgbColorSpace == other.rgbColorSpace) //
+        && (colorEngine == other.colorEngine) //
         && (m_secondColorCorrectedAndAltered.first == other.m_secondColorCorrectedAndAltered.first) //
         && (m_secondColorCorrectedAndAltered.second == other.m_secondColorCorrectedAndAltered.second) //
         && (m_secondColorCorrectedAndAltered.third == other.m_secondColorCorrectedAndAltered.third) //

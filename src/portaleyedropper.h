@@ -83,7 +83,7 @@ Q_SIGNALS:
     /**
      * @brief Signal emitted when a new color is selected.
      *
-     * The color is in the sRGB color space.
+     * The color in in the sRGB color space.
      *
      * This signal is triggered after the user clicks on the screen to
      * pick a color, following a call to @ref startPicking.

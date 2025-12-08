@@ -7,6 +7,8 @@
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
 #include "colordialog_p.h" // IWYU pragma: keep
+#include "colorengine.h" // IWYU pragma: keep
+#include "colorenginefactory.h" // IWYU pragma: keep
 #include "colorpatch.h" // IWYU pragma: keep
 #include "colorpatch_p.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
@@ -25,8 +27,6 @@
 #include "perceptualsettings.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
 #include "portaleyedropper.h" // IWYU pragma: keep
-#include "rgbcolorspace.h" // IWYU pragma: keep
-#include "rgbcolorspacefactory.h" // IWYU pragma: keep
 #include "setting.h" // IWYU pragma: keep
 #include "settingbase.h" // IWYU pragma: keep
 #include "settings.h" // IWYU pragma: keep
@@ -125,8 +125,8 @@ int main(int argc, char *argv[])
 
     // Initialize the color dialog
 
-    auto myColorSpace = //
-        PerceptualColor::RgbColorSpaceFactory::tryCreateFromFile(
+    auto myColorEngine = //
+        PerceptualColor::tryCreateColorEngineFromFile(
             // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
             // QStringLiteral("/usr/share/color/icc/test/PhotoGamutRGB_avg6c.icc")
             // QStringLiteral("WideGamutRGB.icc") //
@@ -144,11 +144,11 @@ int main(int argc, char *argv[])
             // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
             // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
         );
-    if (myColorSpace.isNull()) {
-        myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
+    if (myColorEngine.isNull()) {
+        myColorEngine = PerceptualColor::createSrgbColorEngine();
     }
 
-    PerceptualColor::ColorDialog m_colorDialog(myColorSpace, //
+    PerceptualColor::ColorDialog m_colorDialog(myColorEngine, //
                                                QStringLiteral("testapp"));
     // For session management, according to https://doc.qt.io/qt-6/session.html
     //     “you must identify your top level widgets with

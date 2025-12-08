@@ -9,6 +9,7 @@
 
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
+#include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
@@ -16,7 +17,6 @@
 #include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
-#include "rgbcolorspace.h"
 #include <algorithm>
 #include <lcms2.h>
 #include <optional>
@@ -193,7 +193,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
 
 /** @brief Constructor
  *
- * @param colorSpace The color space of the swatches.
+ * @param colorEngine The color engine that will be used.
  * @param swatchGrid Initial value for property @ref swatchGrid
  * @param wideSpacing Set of axis where the spacing should be wider than
  *        normal. This is useful to give some visual structure: When your
@@ -201,7 +201,7 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
  *        <tt>Qt::Orientation::Horizontal</tt> here. To use normal spacing
  *        everywhere, simply set this parameter to <tt>{}</tt>.
  * @param parent The parent of the widget, if any */
-SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
+SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                        const PerceptualColor::QColorArray2D &swatchGrid,
                        Qt::Orientations wideSpacing,
                        QWidget *parent)
@@ -210,7 +210,7 @@ SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
 {
     qRegisterMetaType<QColorArray2D>();
 
-    d_pointer->m_rgbColorSpace = colorSpace;
+    d_pointer->m_colorEngine = colorEngine;
 
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 
@@ -1016,7 +1016,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const auto selectedColor = d_pointer->m_swatchGrid.value( //
         d_pointer->m_selectedColumn,
         d_pointer->m_selectedRow);
-    const auto colorCielabD50 = d_pointer->m_rgbColorSpace->toCielabD50( //
+    const auto colorCielabD50 = d_pointer->m_colorEngine->toCielabD50( //
         selectedColor.rgba64());
     const auto colorOklab = AbsoluteColor::convert( //
         ColorModel::CielabD50, //

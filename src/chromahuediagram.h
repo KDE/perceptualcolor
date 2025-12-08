@@ -29,7 +29,7 @@ class ChromaHueDiagramPrivate;
 }
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 }
 
 namespace PerceptualColor
@@ -117,7 +117,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
     Q_PROPERTY(GenericColor currentColorCielchD50 READ currentColorCielchD50 WRITE setCurrentColorCielchD50 NOTIFY currentColorCielchD50Changed)
 
 public:
-    Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
     /** @brief Getter for property @ref currentColorCielchD50
      *  @returns the property @ref currentColorCielchD50 */

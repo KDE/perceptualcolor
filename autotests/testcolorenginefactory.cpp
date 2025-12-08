@@ -3,11 +3,11 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "rgbcolorspacefactory.h"
+#include "colorenginefactory.h"
 
 #include "chromahuediagram.h"
+#include "colorengine.h"
 #include "colorwheel.h"
-#include "rgbcolorspace.h"
 #include "settranslation.h"
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -28,20 +28,20 @@
 static void snippet01()
 {
     //! [Create]
-    QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
-        // Create the color space object with the factory class.
+    QSharedPointer<PerceptualColor::ColorEngine> myColorEngine =
+        // Create the color engine object with the factory class.
         // This call might be slow.
-        PerceptualColor::RgbColorSpaceFactory::createSrgb();
+        PerceptualColor::createSrgbColorEngine();
 
     // These calls are fast:
 
     PerceptualColor::ChromaHueDiagram *myDiagram =
-        // Create a widget with the color space:
-        new PerceptualColor::ChromaHueDiagram(myColorSpace);
+        // Create a widget that uses the color engine:
+        new PerceptualColor::ChromaHueDiagram(myColorEngine);
 
     PerceptualColor::ColorWheel *myWheel =
-        // Create another widget with the very same color space:
-        new PerceptualColor::ColorWheel(myColorSpace);
+        // Create another widget that uses the very same color engine:
+        new PerceptualColor::ColorWheel(myColorEngine);
     //! [Create]
 
     delete myDiagram;
@@ -50,12 +50,12 @@ static void snippet01()
 
 namespace PerceptualColor
 {
-class TestRgbColorSpaceFactory : public QObject
+class TestColorEngineFactory : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestRgbColorSpaceFactory(QObject *parent = nullptr)
+    explicit TestColorEngineFactory(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -85,8 +85,8 @@ private Q_SLOTS:
     {
         setTranslation(QCoreApplication::instance(), //
                        QLocale(QLocale::English).uiLanguages());
-        QSharedPointer<PerceptualColor::RgbColorSpace> temp = //
-            RgbColorSpaceFactory::createSrgb();
+        QSharedPointer<PerceptualColor::ColorEngine> temp = //
+            createSrgbColorEngine();
         QCOMPARE(temp.isNull(), false); // This is no nullptr!
         // Make a random call, just to be sure that a method call won’t crash:
         Q_UNUSED(temp->profileName());
@@ -103,19 +103,19 @@ private Q_SLOTS:
     {
         // colorProfileDirectories() must not throw an exception:
         const QStringList temp = //
-            RgbColorSpaceFactory::colorProfileDirectories();
+            colorProfileDirectories();
         Q_UNUSED(temp)
     }
 
     void testColorProfileDirectoriesQInfo()
     {
-        qInfo() << RgbColorSpaceFactory::colorProfileDirectories();
+        qInfo() << colorProfileDirectories();
     }
 };
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestRgbColorSpaceFactory)
+QTEST_MAIN(PerceptualColor::TestColorEngineFactory)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testrgbcolorspacefactory.moc"
+#include "testcolorenginefactory.moc"

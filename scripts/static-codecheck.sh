@@ -24,6 +24,7 @@ PUBLIC_HEADERS="
     src/abstractdiagram.h
     src/chromahuediagram.h
     src/colordialog.h
+    src/colorenginefactory.h
     src/colorpatch.h
     src/colorwheel.h
     src/constpropagatinguniquepointer.h
@@ -31,7 +32,6 @@ PUBLIC_HEADERS="
     src/importexport.h
     src/multispinbox.h
     src/multispinboxsection.h
-    src/rgbcolorspacefactory.h
     src/settranslation.h
     src/wheelcolorpicker.h
     src/version.in.hpp

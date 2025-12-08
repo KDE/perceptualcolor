@@ -30,18 +30,18 @@ namespace PerceptualColor
 {
 /** @brief Constructor
  *
- * @param colorSpace The color space within which this widget should operate.
- * Can be created with @ref RgbColorSpaceFactory.
+ * @param colorEngine The color engine with which this widget should operate.
+ * Can be created with @ref createSrgbColorEngine().
  *
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ColorWheelPrivate(this, colorSpace))
+    , d_pointer(new ColorWheelPrivate(this, colorEngine))
 {
-    // Setup the color space must be the first thing to do because
-    // other operations rely on a working color space.
-    d_pointer->m_rgbColorSpace = colorSpace;
+    // Setup the color engine must be the first thing to do because
+    // other operations rely on a color engine being present.
+    d_pointer->m_colorEngine = colorEngine;
 
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
@@ -71,9 +71,10 @@ ColorWheel::~ColorWheel() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
  *
- * @param colorSpace The color space within which this widget should operate. */
-ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
-    : m_wheelImage(colorSpace)
+ * @param colorEngine The color engine with which this widget should operate.
+ */
+ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
+    : m_wheelImage(colorEngine)
     , q_pointer(backLink)
 {
     // Initialization

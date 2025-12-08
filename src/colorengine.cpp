@@ -3,9 +3,9 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "rgbcolorspace.h"
+#include "colorengine.h"
 // Second, the private implementation.
-#include "rgbcolorspace_p.h" // IWYU pragma: associated
+#include "colorengine_p.h" // IWYU pragma: associated
 
 #include "absolutecolor.h"
 #include "constpropagatingrawpointer.h"
@@ -49,24 +49,26 @@ namespace PerceptualColor
  *
  * @brief Constructor
  *
+ * @param parent Parent object
+ *
  * @attention Creates an uninitialised object. You have to call
- * @ref RgbColorSpacePrivate::initialize() <em>successfully</em>
+ * @ref ColorEnginePrivate::initialize() <em>successfully</em>
  * before actually use object. */
-RgbColorSpace::RgbColorSpace(QObject *parent)
+ColorEngine::ColorEngine(QObject *parent)
     : QObject(parent)
-    , d_pointer(new RgbColorSpacePrivate(this))
+    , d_pointer(new ColorEnginePrivate(this))
 {
 }
 
-/** @brief Create an sRGB color space object.
+/** @brief Create an sRGB color engine object.
  *
  * This is build-in, no external ICC file is used.
  *
  * @pre This function is called from the main thread.
  *
- * @returns A shared pointer to the newly created color space object.
+ * @returns A shared pointer to the newly created color engine object.
  *
- * @sa @ref RgbColorSpaceFactory::createSrgb()
+ * @sa @ref createSrgb()
  *
  * @internal
  *
@@ -77,10 +79,10 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
  * if this function is also called within the main thread, we can use
  * QObject::tr() safely because there will be not be executed simultaneously
  * with loading a translation. */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
+QSharedPointer<PerceptualColor::ColorEngine> ColorEngine::createSrgb()
 {
     // Create an invalid object:
-    QSharedPointer<PerceptualColor::RgbColorSpace> result{new RgbColorSpace()};
+    QSharedPointer<PerceptualColor::ColorEngine> result{new ColorEngine()};
 
     // Transform it into a valid object:
     cmsHPROFILE srgb = cmsCreate_sRGBProfile(); // Use build-in profile
@@ -113,9 +115,9 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
     return result;
 }
 
-/** @brief Try to create a color space object for a given ICC file.
+/** @brief Try to create a color engine object for a given ICC file.
  *
- * This function may fail to create the color space object when it
+ * This function may fail to create the color engine object when it
  * cannot open the given file, or when the file cannot be interpreted.
  *
  * @pre This function is called from the main thread.
@@ -127,14 +129,14 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * because all necessary information has already been loaded into
  * memory. Accepted are most RGB-based ICC profiles up to version 4.
  *
- * @returns A shared pointer to a newly created color space object on success.
+ * @returns A shared pointer to a newly created color engine object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.
  *
  * @note Opening unknown or untrusted files may pose security risks. For
  * instance, an unusually large file could exhaust system memory potentially
  * leading to crashes.
  *
- * @sa @ref RgbColorSpaceFactory::tryCreateFromFile()
+ * @sa @ref tryCreateFromFile()
  *
  * @internal
  *
@@ -155,7 +157,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
  * a <a href="https://github.com/InternationalColorConsortium/DemoIccMAX">demo
  * implementation</a>, but this does not seem to be a complete color
  * management system. */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(const QString &fileName)
+QSharedPointer<PerceptualColor::ColorEngine> ColorEngine::tryCreateFromFile(const QString &fileName)
 {
     // Definitions
     constexpr auto myContextID = nullptr;
@@ -178,7 +180,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
     }
 
     // Create an invalid object:
-    QSharedPointer<PerceptualColor::RgbColorSpace> newObject{new RgbColorSpace()};
+    QSharedPointer<PerceptualColor::ColorEngine> newObject{new ColorEngine()};
 
     // Try to transform it into a valid object:
     const QFileInfo myFileInfo{fileName};
@@ -240,7 +242,7 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::tryCreateFromFile(
  * @todo NICETOHAVE Add support the profiles containing a VCGT? Currently,
  * these profiles are rejected.
  */
-bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
+bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 {
     constexpr auto renderingIntent = INTENT_ABSOLUTE_COLORIMETRIC;
 
@@ -257,15 +259,15 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
         profileCreationDateTime(rgbProfileHandle);
     const auto renderingIntentIds = lcmsIntentList().keys();
     for (cmsUInt32Number id : renderingIntentIds) {
-        RgbColorSpace::ProfileRoles directions;
+        ColorEngine::ProfileRoles directions;
         directions.setFlag( //
-            RgbColorSpace::ProfileRole::Input, //
+            ColorEngine::ProfileRole::Input, //
             cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_INPUT));
         directions.setFlag( //
-            RgbColorSpace::ProfileRole::Output, //
+            ColorEngine::ProfileRole::Output, //
             cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_OUTPUT));
         directions.setFlag( //
-            RgbColorSpace::ProfileRole::Proof, //
+            ColorEngine::ProfileRole::Proof, //
             cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_PROOF));
         m_profileRenderingIntentDirections.insert(id, directions);
     }
@@ -273,7 +275,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     const auto intents = m_profileRenderingIntentDirections.keys();
     for (auto intent : intents) {
         const auto directions = m_profileRenderingIntentDirections.value(intent);
-        if (directions.testFlag(RgbColorSpace::ProfileRole::Input)) {
+        if (directions.testFlag(ColorEngine::ProfileRole::Input)) {
             m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
                                          renderingIntent, //
                                          LCMS_USED_AS_INPUT);
@@ -281,7 +283,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
                 break;
             }
         }
-        if (directions.testFlag(RgbColorSpace::ProfileRole::Output)) {
+        if (directions.testFlag(ColorEngine::ProfileRole::Output)) {
             m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
                                          renderingIntent, //
                                          LCMS_USED_AS_OUTPUT);
@@ -289,7 +291,7 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
                 break;
             }
         }
-        if (directions.testFlag(RgbColorSpace::ProfileRole::Proof)) {
+        if (directions.testFlag(ColorEngine::ProfileRole::Proof)) {
             m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
                                          renderingIntent, //
                                          LCMS_USED_AS_PROOF);
@@ -453,13 +455,13 @@ bool RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 }
 
 /** @brief Destructor */
-RgbColorSpace::~RgbColorSpace() noexcept
+ColorEngine::~ColorEngine() noexcept
 {
-    RgbColorSpacePrivate::deleteTransform( //
+    ColorEnginePrivate::deleteTransform( //
         &d_pointer->m_transformCielabD50ToRgb16Handle);
-    RgbColorSpacePrivate::deleteTransform( //
+    ColorEnginePrivate::deleteTransform( //
         &d_pointer->m_transformCielabD50ToRgbHandle);
-    RgbColorSpacePrivate::deleteTransform( //
+    ColorEnginePrivate::deleteTransform( //
         &d_pointer->m_transformRgbToCielabD50Handle);
 }
 
@@ -467,7 +469,7 @@ RgbColorSpace::~RgbColorSpace() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
-RgbColorSpacePrivate::RgbColorSpacePrivate(RgbColorSpace *backLink)
+ColorEnginePrivate::ColorEnginePrivate(ColorEngine *backLink)
     : q_pointer(backLink)
 {
 }
@@ -486,7 +488,7 @@ RgbColorSpacePrivate::RgbColorSpacePrivate(RgbColorSpace *backLink)
  * @post If the handle is <tt>nullptr</tt>, nothing happens. Otherwise,
  * <tt>cmsDeleteTransform()</tt> is called, and afterwards the handle is set
  * to <tt>nullptr</tt>. */
-void RgbColorSpacePrivate::deleteTransform(cmsHTRANSFORM *transformHandle)
+void ColorEnginePrivate::deleteTransform(cmsHTRANSFORM *transformHandle)
 {
     if ((*transformHandle) != nullptr) {
         cmsDeleteTransform(*transformHandle);
@@ -496,154 +498,154 @@ void RgbColorSpacePrivate::deleteTransform(cmsHTRANSFORM *transformHandle)
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QString RgbColorSpace::profileAbsoluteFilePath() const
+QString ColorEngine::profileAbsoluteFilePath() const
 {
     return d_pointer->m_profileAbsoluteFilePath;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-cmsProfileClassSignature RgbColorSpace::profileClass() const
+cmsProfileClassSignature ColorEngine::profileClass() const
 {
     return d_pointer->m_profileClass;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-cmsColorSpaceSignature RgbColorSpace::profileColorModel() const
+cmsColorSpaceSignature ColorEngine::profileColorModel() const
 {
     return d_pointer->m_profileColorModel;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QString RgbColorSpace::profileCopyright() const
+QString ColorEngine::profileCopyright() const
 {
     return d_pointer->m_profileCopyright;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QDateTime RgbColorSpace::profileCreationDateTime() const
+QDateTime ColorEngine::profileCreationDateTime() const
 {
     return d_pointer->m_profileCreationDateTime;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-qint64 RgbColorSpace::profileFileSize() const
+qint64 ColorEngine::profileFileSize() const
 {
     return d_pointer->m_profileFileSize;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-bool RgbColorSpace::profileHasClut() const
+bool ColorEngine::profileHasClut() const
 {
     return d_pointer->m_profileHasClut;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-bool RgbColorSpace::profileHasMatrixShaper() const
+bool ColorEngine::profileHasMatrixShaper() const
 {
     return d_pointer->m_profileHasMatrixShaper;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QVersionNumber RgbColorSpace::profileIccVersion() const
+QVersionNumber ColorEngine::profileIccVersion() const
 {
     return d_pointer->m_profileIccVersion;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-RgbColorSpace::RenderingIntentDirections RgbColorSpace::profileRenderingIntentDirections() const
+ColorEngine::RenderingIntentDirections ColorEngine::profileRenderingIntentDirections() const
 {
     return d_pointer->m_profileRenderingIntentDirections;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QString RgbColorSpace::profileManufacturer() const
+QString ColorEngine::profileManufacturer() const
 {
     return d_pointer->m_profileManufacturer;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-double RgbColorSpace::profileMaximumCielchD50Chroma() const
+double ColorEngine::profileMaximumCielchD50Chroma() const
 {
     return d_pointer->m_profileMaximumCielchD50Chroma;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-double RgbColorSpace::profileMaximumOklchChroma() const
+double ColorEngine::profileMaximumOklchChroma() const
 {
     return d_pointer->m_profileMaximumOklchChroma;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QString RgbColorSpace::profileModel() const
+QString ColorEngine::profileModel() const
 {
     return d_pointer->m_profileModel;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QString RgbColorSpace::profileName() const
+QString ColorEngine::profileName() const
 {
     return d_pointer->m_profileName;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-cmsColorSpaceSignature RgbColorSpace::profilePcsColorModel() const
+cmsColorSpaceSignature ColorEngine::profilePcsColorModel() const
 {
     return d_pointer->m_profilePcsColorModel;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-std::optional<cmsCIEXYZ> RgbColorSpace::profileTagBlackpoint() const
+std::optional<cmsCIEXYZ> ColorEngine::profileTagBlackpoint() const
 {
     return d_pointer->m_profileTagBlackpoint;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-std::optional<cmsCIEXYZ> RgbColorSpace::profileTagBluePrimary() const
+std::optional<cmsCIEXYZ> ColorEngine::profileTagBluePrimary() const
 {
     return d_pointer->m_profileTagBluePrimary;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-std::optional<cmsCIEXYZ> RgbColorSpace::profileTagGreenPrimary() const
+std::optional<cmsCIEXYZ> ColorEngine::profileTagGreenPrimary() const
 {
     return d_pointer->m_profileTagGreenPrimary;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-std::optional<cmsCIEXYZ> RgbColorSpace::profileTagRedPrimary() const
+std::optional<cmsCIEXYZ> ColorEngine::profileTagRedPrimary() const
 {
     return d_pointer->m_profileTagRedPrimary;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QStringList RgbColorSpace::profileTagSignatures() const
+QStringList ColorEngine::profileTagSignatures() const
 {
     return d_pointer->m_profileTagSignatures;
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-std::optional<cmsCIEXYZ> RgbColorSpace::profileTagWhitepoint() const
+std::optional<cmsCIEXYZ> ColorEngine::profileTagWhitepoint() const
 {
     return d_pointer->m_profileTagWhitepoint;
 }
@@ -663,7 +665,7 @@ std::optional<cmsCIEXYZ> RgbColorSpace::profileTagWhitepoint() const
  * available in this locale, LittleCMS silently falls back to another available
  * localization. Note that the returned <tt>QString</tt> might be empty if the
  * requested information is not available in the ICC profile. */
-QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory)
+QString ColorEnginePrivate::profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory)
 {
     QByteArray languageCode;
     QByteArray countryCode;
@@ -842,7 +844,7 @@ QString RgbColorSpacePrivate::profileInformation(cmsHPROFILE profileHandle, cmsI
  *
  * @param profileHandle handle to the ICC profile
  * @returns The version number of the ICC format used in the profile. */
-QVersionNumber RgbColorSpacePrivate::profileIccVersion(cmsHPROFILE profileHandle)
+QVersionNumber ColorEnginePrivate::profileIccVersion(cmsHPROFILE profileHandle)
 {
     // cmsGetProfileVersion returns a floating point number. Apparently
     // the digits before the decimal separator are the major version,
@@ -875,7 +877,7 @@ QVersionNumber RgbColorSpacePrivate::profileIccVersion(cmsHPROFILE profileHandle
  * @param profileHandle handle to the ICC profile
  * @returns Date and time of creation of the profile, if available. An invalid
  * date and time otherwise. */
-QDateTime RgbColorSpacePrivate::profileCreationDateTime(cmsHPROFILE profileHandle)
+QDateTime ColorEnginePrivate::profileCreationDateTime(cmsHPROFILE profileHandle)
 {
     tm myDateTime; // The type “tm” as defined in C (time.h), as LittleCMS expects.
     const bool success = cmsGetHeaderCreationDateTime(profileHandle, &myDateTime);
@@ -910,7 +912,7 @@ QDateTime RgbColorSpacePrivate::profileCreationDateTime(cmsHPROFILE profileHandl
  * @returns A list of tag signatures actually present in the profile. Contains
  * both, public and private signatures. See @ref profileTagSignatures for
  * details. */
-QStringList RgbColorSpacePrivate::profileTagSignatures(cmsHPROFILE profileHandle)
+QStringList ColorEnginePrivate::profileTagSignatures(cmsHPROFILE profileHandle)
 {
     const cmsInt32Number count = cmsGetTagCount(profileHandle);
     if (count < 0) {
@@ -950,7 +952,7 @@ QStringList RgbColorSpacePrivate::profileTagSignatures(cmsHPROFILE profileHandle
  * @param signature signature of the tag to search for
  * @returns The value of the requested tag if present in the profile.
  * An <tt>std::nullopt</tt> otherwise. */
-std::optional<cmsCIEXYZ> RgbColorSpacePrivate::profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature)
+std::optional<cmsCIEXYZ> ColorEnginePrivate::profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature)
 {
     if (!cmsIsTag(profileHandle, signature)) {
         return std::nullopt;
@@ -980,7 +982,7 @@ std::optional<cmsCIEXYZ> RgbColorSpacePrivate::profileReadCmsciexyzTag(cmsHPROFI
  * @param cielchD50color The color that will be adapted.
  *
  * @returns An @ref isCielchD50InGamut color. */
-PerceptualColor::GenericColor RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const
+PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const
 {
     GenericColor referenceColor = cielchD50color;
 
@@ -1044,7 +1046,7 @@ PerceptualColor::GenericColor RgbColorSpace::reduceCielchD50ChromaToFitIntoGamut
  * @param oklchColor The color that will be adapted.
  *
  * @returns An @ref isOklchInGamut color. */
-PerceptualColor::GenericColor RgbColorSpace::reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const
+PerceptualColor::GenericColor ColorEngine::reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const
 {
     GenericColor referenceColor = oklchColor;
 
@@ -1108,7 +1110,7 @@ PerceptualColor::GenericColor RgbColorSpace::reduceOklchChromaToFitIntoGamut(con
  *
  * @todo NICETOHAVE Write a unit test for this function.
  */
-cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
+cmsCIELab ColorEngine::toCielabD50(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
@@ -1139,7 +1141,7 @@ cmsCIELab RgbColorSpace::toCielabD50(const QRgba64 rgbColor) const
  * gamut/color space, than @ref isCielchD50InGamut() might return
  * <tt>false</tt> for a return value of <em>this</em> function.
  */
-PerceptualColor::GenericColor RgbColorSpace::toCielchD50(const QRgba64 rgbColor) const
+PerceptualColor::GenericColor ColorEngine::toCielchD50(const QRgba64 rgbColor) const
 {
     constexpr qreal maximum = //
         std::numeric_limits<decltype(rgbColor.red())>::max();
@@ -1175,7 +1177,7 @@ PerceptualColor::GenericColor RgbColorSpace::toCielchD50(const QRgba64 rgbColor)
  * @ref ColorModel::CielabD50, and from @ref ColorModel::OklchD65 to
  * @ref ColorModel::OklabD65.
  */
-cmsCIELab RgbColorSpace::fromLchToCmsCIELab(const GenericColor &lch)
+cmsCIELab ColorEngine::fromLchToCmsCIELab(const GenericColor &lch)
 {
     const cmsCIELCh myCmsCieLch = lch.reinterpretAsLchToCmscielch();
     cmsCIELab lab; // uses cmsFloat64Number internally
@@ -1197,7 +1199,7 @@ cmsCIELab RgbColorSpace::fromLchToCmsCIELab(const GenericColor &lch)
  * to fit out-of-gamut colors into the gamut.
  *
  * @sa @ref fromCielabD50ToQRgbOrTransparent */
-QRgb RgbColorSpace::fromCielchD50ToQRgbBound(const GenericColor &cielchD50) const
+QRgb ColorEngine::fromCielchD50ToQRgbBound(const GenericColor &cielchD50) const
 {
     const auto cielabD50 = fromLchToCmsCIELab(cielchD50);
     cmsUInt16Number rgb_int[3];
@@ -1218,7 +1220,7 @@ QRgb RgbColorSpace::fromCielchD50ToQRgbBound(const GenericColor &cielchD50) cons
  * @param lch the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isCielchD50InGamut(const GenericColor &lch) const
+bool ColorEngine::isCielchD50InGamut(const GenericColor &lch) const
 {
     if (!isInRange<decltype(lch.first)>(0, lch.first, 100)) {
         return false;
@@ -1238,7 +1240,7 @@ bool RgbColorSpace::isCielchD50InGamut(const GenericColor &lch) const
  * @param lch the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isOklchInGamut(const GenericColor &lch) const
+bool ColorEngine::isOklchInGamut(const GenericColor &lch) const
 {
     if (!isInRange<decltype(lch.first)>(0, lch.first, 1)) {
         return false;
@@ -1263,7 +1265,7 @@ bool RgbColorSpace::isOklchInGamut(const GenericColor &lch) const
  * @param lab the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
-bool RgbColorSpace::isCielabD50InGamut(const cmsCIELab &lab) const
+bool ColorEngine::isCielabD50InGamut(const cmsCIELab &lab) const
 {
     if (!isInRange<decltype(lab.L)>(0, lab.L, 100)) {
         return false;
@@ -1281,8 +1283,8 @@ bool RgbColorSpace::isCielabD50InGamut(const cmsCIELab &lab) const
  * @pre
  * - Input Lightness: 0 ≤ lightness ≤ 100
  * @pre
- * - Input Chroma: − @ref RgbColorSpace::profileMaximumCielchD50Chroma ≤ chroma ≤
- *   @ref RgbColorSpace::profileMaximumCielchD50Chroma
+ * - Input Chroma: − @ref ColorEngine::profileMaximumCielchD50Chroma ≤ chroma ≤
+ *   @ref ColorEngine::profileMaximumCielchD50Chroma
  *
  * @param lab the original color
  *
@@ -1291,7 +1293,7 @@ bool RgbColorSpace::isCielabD50InGamut(const cmsCIELab &lab) const
  *          channels set to 0 to ensure ).
  *
  * @sa @ref fromCielchD50ToQRgbBound */
-QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
+QRgb ColorEngine::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
 {
     double rgb[3];
     cmsDoTransform(
@@ -1325,8 +1327,8 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
         + qPow(lab.a - roundtripCielabD50.a, 2) //
         + qPow(lab.b - roundtripCielabD50.b, 2);
     constexpr auto cielabDeviationLimitSquare = //
-        RgbColorSpacePrivate::cielabDeviationLimit //
-        * RgbColorSpacePrivate::cielabDeviationLimit;
+        ColorEnginePrivate::cielabDeviationLimit //
+        * ColorEnginePrivate::cielabDeviationLimit;
     const bool actualDeviationIsOkay = //
         actualDeviationSquare <= cielabDeviationLimitSquare;
 
@@ -1348,7 +1350,7 @@ QRgb RgbColorSpace::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
  * in-range RGB color. If the original color is out-of-gamut, it returns an
  * RGB value which might be in-range or out-of range. The RGB value range
  * is [0, 1]. */
-PerceptualColor::GenericColor RgbColorSpace::fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const
+PerceptualColor::GenericColor ColorEngine::fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const
 {
     const auto cielabD50 = fromLchToCmsCIELab(lch);
     double rgb[3];
@@ -1366,7 +1368,7 @@ PerceptualColor::GenericColor RgbColorSpace::fromCielchD50ToRgb1(const Perceptua
  * @brief Initialization for various data items related to the chromatic
  * boundary.
  */
-void RgbColorSpacePrivate::initializeChromaticityBoundaries()
+void ColorEnginePrivate::initializeChromaticityBoundaries()
 {
     QList<QColor> chromaticityBoundaryQColor;
     chromaticityBoundaryQColor.reserve(256 * 6);
@@ -1447,7 +1449,7 @@ void RgbColorSpacePrivate::initializeChromaticityBoundaries()
  * @returns the most chromatic color for the given hue in the current
  * RGB gamut.
  */
-QColor RgbColorSpace::maxChromaColorByOklabHue360(double hue360) const
+QColor ColorEngine::maxChromaColorByOklabHue360(double hue360) const
 {
     return d_pointer->maxChromaColorByHue360( //
         hue360, //
@@ -1462,7 +1464,7 @@ QColor RgbColorSpace::maxChromaColorByOklabHue360(double hue360) const
  * @returns the most chromatic color for the given hue in the current
  * RGB gamut.
  */
-QColor RgbColorSpace::maxChromaColorByCielchD50Hue360(double hue360) const
+QColor ColorEngine::maxChromaColorByCielchD50Hue360(double hue360) const
 {
     return d_pointer->maxChromaColorByHue360( //
         hue360, //
@@ -1478,7 +1480,7 @@ QColor RgbColorSpace::maxChromaColorByCielchD50Hue360(double hue360) const
  * @returns the most chromatic color for the given Oklab hue in the current
  * RGB gamut.
  */
-QColor RgbColorSpacePrivate::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type) const
+QColor ColorEnginePrivate::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type) const
 {
     const auto &table = (type == LchSpace::CielchD50) //
         ? m_chromaticityBoundaryByCielchD50Hue360 //

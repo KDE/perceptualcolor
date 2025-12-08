@@ -5,9 +5,9 @@
 // this forces the header to be self-contained.
 #include "cielchd50values.h"
 
+#include "colorengine.h"
 #include "genericcolor.h"
 #include "helperposixmath.h"
-#include "rgbcolorspace.h"
 #include <qglobal.h>
 #include <qobject.h>
 #include <qsharedpointer.h>
@@ -63,7 +63,7 @@ private Q_SLOTS:
 
     void testCielchD50Values()
     {
-        auto temp = RgbColorSpace::createSrgb();
+        auto temp = ColorEngine::createSrgb();
         GenericColor color;
         qreal presicion = 0.1;
         qreal hue = 0;

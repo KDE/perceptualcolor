@@ -6,11 +6,11 @@
 #include "chromalightnessimageparameters.h"
 
 #include "asyncimagerendercallback.h"
+#include "colorengine.h"
 #include "helper.h"
 #include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
-#include "rgbcolorspace.h"
 #include <atomic>
 #include <lcms2.h>
 #include <qimage.h>
@@ -37,7 +37,7 @@ bool ChromaLightnessImageParameters::operator==(const ChromaLightnessImageParame
     return ( //
         (hue == other.hue) //
         && (imageSizePhysical == other.imageSizePhysical) //
-        && (rgbColorSpace == other.rgbColorSpace) //
+        && (colorEngine == other.colorEngine) //
     );
 }
 
@@ -93,7 +93,7 @@ void ChromaLightnessImageParameters::renderByRow( //
             // division thanks to 100 which is a "cmsFloat64Number"
             cielchD50.C = (x + 0.5) * 100.0 / parameters.imageSizePhysical.height();
             rgbColor = //
-                parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+                parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
                     toCmsLab(cielchD50));
             if (qAlpha(rgbColor) != 0) {
                 // The pixel is within the gamut
@@ -165,7 +165,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
 
     // Initialization
     const int imageHeight = parameters.imageSizePhysical.height();
-    const auto colorSpace = parameters.rgbColorSpace;
+    const auto colorEngine = parameters.colorEngine;
     auto &poolReference = getLibraryQThreadPoolInstance();
     const auto threadCount = qMax(1, poolReference.maxThreadCount());
 
@@ -244,7 +244,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
         myCielchD50.h = normalizedHue;
         myCielchD50.L = 100 - (colorFunctionY + 0.5) * 100.0 / imageHeight;
         myCielchD50.C = (colorFunctionX + 0.5) * 100.0 / imageHeight;
-        return parameters.rgbColorSpace->fromCielabD50ToQRgbOrTransparent( //
+        return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
             toCmsLab(myCielchD50));
     };
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);

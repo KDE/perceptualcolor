@@ -37,7 +37,8 @@ namespace PerceptualColor
  * a <tt>QEvent::LanguageChange</tt> event only to top-level widgets,
  * and these will get updated then. You can send the event yourself
  * to non-top-level widgets to update those widgets also. Note that
- * also @ref RgbColorSpaceFactory generates objects that might have
+ * also @ref createSrgbColorEngine() and similar
+ * functions generates objects that might have
  * localized properties; these objects do not support translation
  * updates.
  *

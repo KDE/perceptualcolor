@@ -3,9 +3,9 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "rgbcolorspacefactory.h"
+#include "colorenginefactory.h"
 
-#include "rgbcolorspace.h"
+#include "colorengine.h"
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qglobal.h>
@@ -18,30 +18,31 @@
 
 namespace PerceptualColor
 {
-/** @brief Create an sRGB color space object.
+/** @brief Create a color engine object with sRGB working gamut.
  *
  * This is build-in, no external ICC file is used.
  *
  * @pre This function is called from the main thread.
  *
- * @returns A shared pointer to the newly created color space object.
+ * @returns A shared pointer to the newly created color engine object.
  *
  * @internal
  *
  * @todo NICETOHAVE This should be implemented as singleton with on-demand
- * initialization. This requires however changes to @ref RgbColorSpace
+ * initialization. This requires however changes to @ref ColorEngine
  * which should <em>not</em> guarantee that properties like
- * @ref RgbColorSpace::profileName() are constant. Instead,
+ * @ref ColorEngine::profileName() are constant. Instead,
  * for the sRGB profiles, the translation should be dynamic.
  */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb()
+QSharedPointer<PerceptualColor::ColorEngine> createSrgbColorEngine()
 {
-    return RgbColorSpace::createSrgb();
+    return ColorEngine::createSrgb();
 }
 
-/** @brief Try to create a color space object for a given ICC file.
+/** @brief Try to create a color engine object with a working gamut from a
+ * given ICC file.
  *
- * This function may fail to create the color space object when it
+ * This function may fail to create the color engine object when it
  * cannot open the given file, or when the file cannot be interpreted.
  *
  * @pre This function is called from the main thread.
@@ -51,18 +52,18 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb(
  * function and it is closed again at the end of this function. The created
  * object does not need the file anymore, because all necessary information
  * has already been loaded into memory. Accepted are most RGB-based
- * ICC profiles up to version 4.
+ * ICC profiles up to version 4 of the ICC file format.
  *
- * @returns A shared pointer to a newly created color space object on success.
+ * @returns A shared pointer to a newly created color engine object on success.
  * A shared pointer to <tt>nullptr</tt> on fail.
  *
  * @note Opening unknown or untrusted files may pose security risks. For
  * instance, an unusually large file could exhaust system memory potentially
  * leading to crashes.
  */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::tryCreateFromFile(const QString &fileName)
+QSharedPointer<PerceptualColor::ColorEngine> tryCreateColorEngineFromFile(const QString &fileName)
 {
-    return RgbColorSpace::tryCreateFromFile(fileName);
+    return ColorEngine::tryCreateFromFile(fileName);
 }
 
 /** @brief List of directories where color profiles are typically
@@ -107,9 +108,11 @@ QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::tryCreateFr
  *
  * @note Internal implementation details: User directories appear at the top
  * of the list, system-wide directories appear at the bottom. The returned
- * directories are absolute paths with all symlinks removed. There are no
- * duplicates in the list. All returned directories actually exist. */
-QStringList RgbColorSpaceFactory::colorProfileDirectories()
+ * directories are absolute paths with all symlinks resolved. There are no
+ * duplicates in the list. All returned directories actually exist at
+ * the moment when this function is called.
+ */
+QStringList colorProfileDirectories()
 {
     // https://web.archive.org/web/20140625123925/http://nadeausoftware.com/articles/2012/01/c_c_tip_how_use_compiler_predefined_macros_detect_operating_system
     // describes well how to recognize the current system by compiler-defined

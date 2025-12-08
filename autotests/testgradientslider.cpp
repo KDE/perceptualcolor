@@ -7,10 +7,10 @@
 // Second, the private implementation.
 #include "gradientslider_p.h" // IWYU pragma: keep
 
+#include "colorenginefactory.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "gradientimageparameters.h"
-#include "rgbcolorspacefactory.h"
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
@@ -29,7 +29,7 @@
 
 namespace PerceptualColor
 {
-class RgbColorSpace;
+class ColorEngine;
 
 class TestGradientSlider : public QObject
 {
@@ -42,7 +42,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
 
 private Q_SLOTS:
     void initTestCase()
@@ -68,33 +68,33 @@ private Q_SLOTS:
     void testConstructorAndDestructor()
     {
         // Constructor and destructor should not crash.
-        GradientSlider test(m_rgbColorSpace);
-        QCOMPARE(test.d_pointer->m_gradientImageParameters.rgbColorSpace, //
-                 m_rgbColorSpace);
+        GradientSlider test(m_colorEngine);
+        QCOMPARE(test.d_pointer->m_gradientImageParameters.colorEngine, //
+                 m_colorEngine);
         QCOMPARE(test.d_pointer->m_orientation, Qt::Vertical);
     }
 
     void testConstructorAndDestructorHorizontal()
     {
         // Constructor and destructor should not crash.
-        GradientSlider test(m_rgbColorSpace, Qt::Horizontal);
-        QCOMPARE(test.d_pointer->m_gradientImageParameters.rgbColorSpace, //
-                 m_rgbColorSpace);
+        GradientSlider test(m_colorEngine, Qt::Horizontal);
+        QCOMPARE(test.d_pointer->m_gradientImageParameters.colorEngine, //
+                 m_colorEngine);
         QCOMPARE(test.d_pointer->m_orientation, Qt::Horizontal);
     }
 
     void testConstructorAndDestructorVertical()
     {
         // Constructor and destructor should not crash.
-        GradientSlider test(m_rgbColorSpace, Qt::Vertical);
-        QCOMPARE(test.d_pointer->m_gradientImageParameters.rgbColorSpace, //
-                 m_rgbColorSpace);
+        GradientSlider test(m_colorEngine, Qt::Vertical);
+        QCOMPARE(test.d_pointer->m_gradientImageParameters.colorEngine, //
+                 m_colorEngine);
         QCOMPARE(test.d_pointer->m_orientation, Qt::Vertical);
     }
 
     void testFirstColor()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         GenericColor color;
         color.first = 50;
         color.second = 50;
@@ -108,7 +108,7 @@ private Q_SLOTS:
 
     void testSecondColor()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         GenericColor color;
         color.first = 50;
         color.second = 50;
@@ -122,7 +122,7 @@ private Q_SLOTS:
 
     void testSetColors()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         GenericColor color;
         color.first = 50;
         color.second = 50;
@@ -139,14 +139,14 @@ private Q_SLOTS:
 
     void testMinimumSizeHint()
     {
-        GradientSlider testWidget(m_rgbColorSpace);
+        GradientSlider testWidget(m_colorEngine);
         QVERIFY2(testWidget.minimumSizeHint().width() > 0, "minimumSizeHint width is implemented.");
         QVERIFY2(testWidget.minimumSizeHint().height() > 0, "minimumSizeHint height is implemented.");
     }
 
     void testSizeHint()
     {
-        GradientSlider testWidget(m_rgbColorSpace);
+        GradientSlider testWidget(m_colorEngine);
         QVERIFY2(testWidget.sizeHint().width() >= testWidget.minimumSizeHint().width(), "sizeHint width is bigger than or equal to minimumSizeHint width.");
         QVERIFY2(testWidget.sizeHint().height() >= testWidget.minimumSizeHint().height(),
                  "sizeHint height is bigger than or equal to minimumSizeHint "
@@ -155,7 +155,7 @@ private Q_SLOTS:
 
     void testSingleStep()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::singleStepChanged);
         testSlider.setSingleStep(0.5);
         QCOMPARE(spy.size(), 1);
@@ -177,7 +177,7 @@ private Q_SLOTS:
 
     void testPageStep()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::pageStepChanged);
         testSlider.setPageStep(0.5);
         QCOMPARE(spy.size(), 1);
@@ -199,7 +199,7 @@ private Q_SLOTS:
 
     void testValue()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         testSlider.setValue(0.3);
         QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::valueChanged);
         testSlider.setValue(0.5);
@@ -222,7 +222,7 @@ private Q_SLOTS:
 
     void testKeyPressEventLTR()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         testSlider.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
         testSlider.setSingleStep(0.1);
         testSlider.setPageStep(0.2);
@@ -251,7 +251,7 @@ private Q_SLOTS:
 
     void testKeyPressEventRTL()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         testSlider.setLayoutDirection(Qt::LayoutDirection::RightToLeft);
         testSlider.setSingleStep(0.1);
         testSlider.setPageStep(0.2);
@@ -280,7 +280,7 @@ private Q_SLOTS:
 
     void testOrientationDefaultConstructor()
     {
-        GradientSlider testSlider(m_rgbColorSpace);
+        GradientSlider testSlider(m_colorEngine);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
         QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Fixed);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Expanding);
@@ -288,7 +288,7 @@ private Q_SLOTS:
 
     void testOrientationVerticalConstructor()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Orientation::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Orientation::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
         QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Fixed);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Expanding);
@@ -296,7 +296,7 @@ private Q_SLOTS:
 
     void testOrientationHorizontalConstructor()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Orientation::Horizontal);
+        GradientSlider testSlider(m_colorEngine, Qt::Orientation::Horizontal);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Horizontal);
         QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Fixed);
@@ -304,7 +304,7 @@ private Q_SLOTS:
 
     void testOrientation()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
         QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::orientationChanged);
         testSlider.setOrientation(Qt::Orientation::Horizontal);
@@ -321,7 +321,7 @@ private Q_SLOTS:
 
     void testSetOrientationWithoutSignalAndForceNewSizePolicy()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
         QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::orientationChanged);
         testSlider.d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation::Horizontal);
@@ -338,19 +338,19 @@ private Q_SLOTS:
 
     void testPhysicalPixelLength()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         QVERIFY2(testSlider.d_pointer->physicalPixelLength() >= 0, "physicalPixelLength() should be ≥ 0.");
     }
 
     void testPhysicalPixelThickness()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         QVERIFY2(testSlider.d_pointer->physicalPixelThickness() >= 0, "physicalPixelLength() should be ≥ 0.");
     }
 
     void testFromWidgetPositionToValue()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         qreal value;
         value = testSlider.d_pointer->fromWidgetPixelPositionToValue(QPoint(0, 0));
         QVERIFY2((value >= 0) && (value <= 1), "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
@@ -362,7 +362,7 @@ private Q_SLOTS:
 
     void testPaintEvent()
     {
-        GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
+        GradientSlider testSlider(m_colorEngine, Qt::Vertical);
         testSlider.show();
         // Paint event should not crash.
         // repaint() will call paintEvent()…
@@ -376,7 +376,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        GradientSlider myWidget{m_rgbColorSpace};
+        GradientSlider myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -422,7 +422,7 @@ private Q_SLOTS:
 
     void testOutOfGamutColors()
     {
-        GradientSlider myWidget{m_rgbColorSpace};
+        GradientSlider myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(100, 100));
 
@@ -439,7 +439,7 @@ private Q_SLOTS:
 
     void testOutOfRange()
     {
-        GradientSlider myWidget{m_rgbColorSpace};
+        GradientSlider myWidget{m_colorEngine};
         myWidget.show();
         myWidget.resize(QSize(100, 100));
 

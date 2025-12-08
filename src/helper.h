@@ -40,7 +40,7 @@ class QWidget;
 namespace PerceptualColor
 {
 
-class RgbColorSpace;
+class ColorEngine;
 
 /**
  * @internal
@@ -392,7 +392,7 @@ template<typename T = void>
     return platform.contains(QStringLiteral("xcb"), Qt::CaseInsensitive);
 }
 
-[[nodiscard]] QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+[[nodiscard]] QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType fallbackType);
 

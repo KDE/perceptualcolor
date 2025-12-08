@@ -15,7 +15,7 @@ class QSize;
 namespace PerceptualColor
 {
 class AsyncImageRenderCallback;
-class RgbColorSpace;
+class ColorEngine;
 
 /** @internal
  *
@@ -24,8 +24,8 @@ class RgbColorSpace;
  * For usage with @ref AsyncImageProvider.
  *
  * @warning The default constructor constructs an object with an empty
- * @ref rgbColorSpace. Before using this object, you should initialize
- * @ref rgbColorSpace.
+ * @ref colorEngine. Before using this object, you should initialize
+ * @ref colorEngine.
  *
  * This is a cut through the gamut body. The cut is orthogonal to
  * the L axis, so it shows the a‑b diagram (speaking in terms of
@@ -69,12 +69,12 @@ public:
      *
      * Range: <tt>[0, 100]</tt> */
     qreal lightness = 50;
-    /** @brief Pointer to @ref RgbColorSpace object
+    /** @brief Pointer to @ref ColorEngine object
      *
      * @warning The default constructor constructs an object with an empty
-     * @ref rgbColorSpace. Before using this object, you must initialize
-     * @ref rgbColorSpace. */
-    QSharedPointer<PerceptualColor::RgbColorSpace> rgbColorSpace = nullptr;
+     * @ref colorEngine. Before using this object, you must initialize
+     * @ref colorEngine. */
+    QSharedPointer<PerceptualColor::ColorEngine> colorEngine = nullptr;
     [[nodiscard]] bool operator==(const ChromaHueImageParameters &other) const;
     [[nodiscard]] bool operator!=(const ChromaHueImageParameters &other) const;
 

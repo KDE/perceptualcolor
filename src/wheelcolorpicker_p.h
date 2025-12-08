@@ -23,7 +23,7 @@ namespace PerceptualColor
 {
 class ChromaLightnessDiagram;
 class ColorWheel;
-class RgbColorSpace;
+class ColorEngine;
 class WheelColorPicker;
 
 /** @internal
@@ -47,8 +47,8 @@ public:
     // Data members
     /** @brief A pointer to the @ref ChromaLightnessDiagram child widget. */
     QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
-    /** @brief A pointer to the color space. */
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
+    /** @brief A pointer to the color engine. */
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
     /** @brief A pointer to the @ref ColorWheel child widget. */
     QPointer<ColorWheel> m_colorWheel;
 
