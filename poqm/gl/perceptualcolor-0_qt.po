@@ -356,14 +356,20 @@ msgid "Select color"
 msgstr "Seleccionar a cor"
 
 #. @item Manufacturer information for the built-in sRGB color.
-#: rgbcolorspace.cpp:106
-msgctxt "PerceptualColor::RgbColorSpace|"
+#: colorengine.cpp:108
+#, fuzzy
+#| msgctxt "PerceptualColor::RgbColorSpace|"
+#| msgid "LittleCMS"
+msgctxt "PerceptualColor::ColorEngine|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
-#: rgbcolorspace.cpp:109
-msgctxt "PerceptualColor::RgbColorSpace|"
+#: colorengine.cpp:111
+#, fuzzy
+#| msgctxt "PerceptualColor::RgbColorSpace|"
+#| msgid "sRGB color space"
+msgctxt "PerceptualColor::ColorEngine|"
 msgid "sRGB color space"
 msgstr "Espazo de cores sRGB"
 
