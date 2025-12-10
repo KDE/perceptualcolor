@@ -18,25 +18,16 @@
 
 namespace PerceptualColor
 {
-/** @brief Create a color engine object with sRGB working gamut.
+/** @brief A shared pointer to a color engine object with sRGB working gamut.
  *
- * This is build-in, no external ICC file is used.
+ * @pre This function must be called from the main thread.
  *
- * @pre This function is called from the main thread.
- *
- * @returns A shared pointer to the newly created color engine object.
- *
- * @internal
- *
- * @todo NICETOHAVE This should be implemented as singleton with on-demand
- * initialization. This requires however changes to @ref ColorEngine
- * which should <em>not</em> guarantee that properties like
- * @ref ColorEngine::profileName() are constant. Instead,
- * for the sRGB profiles, the translation should be dynamic.
+ * @returns A shared pointer to a color engine object with sRGB working gamut.
  */
 QSharedPointer<PerceptualColor::ColorEngine> createSrgbColorEngine()
 {
-    return ColorEngine::createSrgb();
+    static auto instance = ColorEngine::createSrgb();
+    return instance;
 }
 
 /** @brief Try to create a color engine object with a working gamut from a
@@ -45,7 +36,7 @@ QSharedPointer<PerceptualColor::ColorEngine> createSrgbColorEngine()
  * This function may fail to create the color engine object when it
  * cannot open the given file, or when the file cannot be interpreted.
  *
- * @pre This function is called from the main thread.
+ * @pre This function must be called from the main thread.
  *
  * @param fileName The file name. See <tt>QFile</tt> documentation for what
  * are valid file names. The file is only used during the execution of this

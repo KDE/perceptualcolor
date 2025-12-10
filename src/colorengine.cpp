@@ -60,11 +60,11 @@ ColorEngine::ColorEngine(QObject *parent)
 {
 }
 
-/** @brief Create an sRGB color engine object.
+/** @brief Create a color engine object with sRGB working gamut.
  *
  * This is build-in, no external ICC file is used.
  *
- * @pre This function is called from the main thread.
+ * @pre This function must be called from the main thread.
  *
  * @returns A shared pointer to the newly created color engine object.
  *
@@ -120,7 +120,7 @@ QSharedPointer<PerceptualColor::ColorEngine> ColorEngine::createSrgb()
  * This function may fail to create the color engine object when it
  * cannot open the given file, or when the file cannot be interpreted.
  *
- * @pre This function is called from the main thread.
+ * @pre This function must be called from the main thread.
  *
  * @param fileName The file name. See <tt>QFile</tt> documentation
  * for what are valid file names. The file is only used during the

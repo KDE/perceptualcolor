@@ -101,23 +101,6 @@ class ColorEnginePrivate;
  *       in the testbed.
  *
  * @todo NICETOHAVE
- *       The sRGB colour space object should be implemented as a singleton.
- *       This is possible because it is thread-safe, and therefore it does
- *       not make sense to have more than one object of this class. At the
- *       same time, it is necessary that it implements the common interface
- *       of the colour space objects that are created on-the-fly from ICC
- *       profile files, therefore it cannot be static.
- *       As a consequence, translations within sRGB objects should always
- *       be dynamic instead of being done only once at instantiation time,
- *       because now the instantiation time is out of control of the library
- *       user. (And maybe even for ICC profiles we could provide ALL
- *       translations, be reading ALL possible translations at creating time
- *       and guarding them? Or would this be overkill?)
- *       The singleton pattern has special requirements
- *       for: 1) thread-safety. 2)  dynamic libraries. See Wikipedia
- *       for details!
- *
- * @todo NICETOHAVE
  *       Is it possible to split this into an interface and into
  *       various implementations (a slow but safe implementation for
  *       all valid ICC files, and a fast optimized implementation for sRGB
