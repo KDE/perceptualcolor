@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2025-09-20 22:28+0100\n"
+"PO-Revision-Date: 2025-12-09 12:21+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.08.1\n"
+"X-Generator: Lokalize 25.08.3\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:104
@@ -357,18 +357,12 @@ msgstr "Seleccionar color"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: colorengine.cpp:108
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "LittleCMS"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
 #: colorengine.cpp:111
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "sRGB color space"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "sRGB color space"
 msgstr "Espacio de color sRGB"

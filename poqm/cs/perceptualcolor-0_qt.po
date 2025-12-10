@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2023, 2024 Vit Pelcak <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2023, 2024, 2025 Vit Pelcak <vit@pelcak.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2024-08-06 11:18+0200\n"
+"PO-Revision-Date: 2025-12-05 10:55+0100\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 24.05.2\n"
+"X-Generator: Lokalize 25.08.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -169,7 +169,7 @@ msgstr ""
 #: colordialog.cpp:403
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
-msgstr ""
+msgstr "&CIELCH D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
 #: colordialog.cpp:407
@@ -309,7 +309,7 @@ msgstr "&Krytí:"
 #: colordialog.cpp:665
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color…"
-msgstr ""
+msgstr "Vy&berte barvu obrazovky…"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:678
@@ -333,7 +333,7 @@ msgstr "Historie"
 #: colordialog.cpp:700
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
-msgstr ""
+msgstr "Vlastní barvy"
 
 #. @title:window Default window title. Same text as in QColorDialog
 #: colordialog.cpp:1300
@@ -366,10 +366,10 @@ msgstr "✓"
 #: swatchbook.cpp:114
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
 #: swatchbook.cpp:159
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
-msgstr ""
+msgstr "Smazat"

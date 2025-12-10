@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-19 20:14+0200\n"
+"PO-Revision-Date: 2025-12-09 06:40+0100\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100>=3 && n"
 "%100<=4 ? 2 : 3);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:104
@@ -353,18 +353,12 @@ msgstr "Izberi barvo"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: colorengine.cpp:108
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "LittleCMS"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
 #: colorengine.cpp:111
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "sRGB color space"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "sRGB color space"
 msgstr "barvni prostor sRGB"

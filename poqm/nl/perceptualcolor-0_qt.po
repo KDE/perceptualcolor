@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-07-19 11:03+0200\n"
+"PO-Revision-Date: 2025-12-09 10:46+0100\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.04.3\n"
+"X-Generator: Lokalize 25.08.3\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:104
@@ -351,18 +351,12 @@ msgstr "Kleur selecteren"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: colorengine.cpp:108
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "LittleCMS"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
 #: colorengine.cpp:111
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "sRGB color space"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "sRGB color space"
 msgstr "sRGB kleurruimte"
