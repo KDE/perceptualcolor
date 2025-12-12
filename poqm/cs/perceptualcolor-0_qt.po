@@ -343,12 +343,9 @@ msgstr "Zvolte barvu"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: colorengine.cpp:108
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "LittleCMS"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "LittleCMS"
-msgstr "LittleCMS"
+msgstr ""
 
 #. @item Name of the built-in sRGB color space.
 #: colorengine.cpp:111
