@@ -2689,7 +2689,7 @@ void ColorDialog::changeEvent(QEvent *event)
         }
     }
 
-    if ((type == QEvent::PaletteChange) || (type == QEvent::StyleChange)) {
+    if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
         d_pointer->reloadIcons();
     }
 

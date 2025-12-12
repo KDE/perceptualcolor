@@ -380,6 +380,12 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  *
  * @note The exact implementation of the guess  might change over time.
  *
+ * @note It might be usefull to react on changes affecting the palette by
+ * reimplementing <tt>QWidget::changeEvent()</tt> and add <tt>
+ * if ((type == QEvent::PaletteChange) || (type ==
+ * QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
+ * doSomething(); } </tt>
+ *
  * @internal
  *
  * The current implementation creates a QLabel as child widget of the current
@@ -395,7 +401,11 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  * and test if the text color is lighter or darker than the background color
  * to determine the color scheme type. This would also give us more reliable
  * results with color schemes that have background colors around 50% lightness,
- * which our currently implementation has problems to get right. But on
+ * which our currently implementation has problems to get right. An example
+ * implementaion would be <tt>if (QGuiApplication::styleHints()->colorScheme()
+ * == Qt::ColorScheme::Dark) { return ColorSchemeType::Dark; } else { return
+ * ColorSchemeType::Light; }</tt>. This
+ * is what KDE recommends since Qt 6.10. But on
  * the other hand, other styles like Kvantum might still chose to ignore
  * the color palette. And the new Qt 6.5 solution might
  * <a href="https://stackoverflow.com/questions/75457687">not work reliably

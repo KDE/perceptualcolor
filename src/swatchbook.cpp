@@ -1181,7 +1181,7 @@ void SwatchBook::changeEvent(QEvent *event)
         d_pointer->retranslateUi();
     }
 
-    if ((type == QEvent::PaletteChange) || (type == QEvent::StyleChange)) {
+    if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
         d_pointer->updateColorSchemeCache();
         update();
     }
