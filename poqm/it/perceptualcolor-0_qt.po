@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-07-21 08:46+0200\n"
+"PO-Revision-Date: 2025-12-10 09:10+0100\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.11.70\n"
+"X-Generator: Lokalize 25.08.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @item A color model: X, Y, Z.
@@ -352,21 +352,15 @@ msgstr "Seleziona il colore"
 
 #. @item Manufacturer information for the built-in sRGB color.
 #: colorengine.cpp:108
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "LittleCMS"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "LittleCMS"
 msgstr "LittleCMS"
 
 #. @item Name of the built-in sRGB color space.
 #: colorengine.cpp:111
-#, fuzzy
-#| msgctxt "PerceptualColor::RgbColorSpace|"
-#| msgid "sRGB color space"
 msgctxt "PerceptualColor::ColorEngine|"
 msgid "sRGB color space"
-msgstr "Lo spazio dei colori sRGB"
+msgstr "Spazio dei colori sRGB"
 
 #. @item Indicate the selected color in the swatch book. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
 #: swatchbook.cpp:105
