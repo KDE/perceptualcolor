@@ -47,7 +47,6 @@ This library:
   keyboard navigation in the widgets.
 - Has a permissive license.
 - Can be built as either a static or a shared/dynamic library.
-- Has basic support for accessibility.
 - Is developed with unit tests.
 - Links only to Qt and LittleCMS, making it a Tier 1 library.
 - Uses only the public API of Qt and LittleCMS, and no private

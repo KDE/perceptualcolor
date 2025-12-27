@@ -331,9 +331,6 @@
  * has a strange blackpoint in chroma-lightness diagram (1/10 above the
  * 0 line)
  *
- *
- * @todo SHOULDHAVE Full-featured accessibility support
- *
  * @todo NCIETOHAVE Add <tt>QToolTip</tt> value explaining the accepted keys
  * and mouse movements?
  *
@@ -458,14 +455,6 @@
  *   disadvantage: We would have to <em>link</em> against all styles
  *   that we want to support, which makes our library <em>depend</em>
  *   on them, which is not reasonable.
- *
- * @todo SHOULDHAVE Full-featured
- *   <a href="https://doc.qt.io/qt-6/accessible-qwidget.html">Qt Widget
- *   accessibility support</a>. And:
- *   More work on accessibility. [This includes to work well with bigger
- *   fonts. Should then the gradient be thicker and the marker
- *   thicker? setAccessibleName().] The application Accerciser provides
- *   inspection possibilities.
  *
  * @todo NICETOHAVE
  * In https://phabricator.kde.org/T12359 is recommended to provide
@@ -1066,7 +1055,15 @@
  * @todo SHOULDHAVE Test on MacOS and Big-Endian, which are both not in the
  * normal CI pipeline.
  *
- * @todo SHOULDHAVE Ensure full accessibility for all functions via both mouse
+ * @todo SHOULDHAVE Full-featured
+ *   <a href="https://doc.qt.io/qt-6/accessible-qwidget.html">Qt Widget
+ *   accessibility support</a>. @ref PerceptualColor::AccessibleMultiSpinBox
+ *   has currently not even an actual implementation! And: More work on other
+ *   aspects of accessibility. [This includes to work well with bigger
+ *   fonts. Should then the gradient be thicker and the marker
+ *   thicker? setAccessibleName().] The application Accerciser provides
+ *   inspection possibilities.
+ * And: Ensure full accessibility for all functions via both mouse
  * and keyboard. Every function in the dialog should be operable using only the
  * mouse, and likewise using only the keyboard. Currently, at least two issues
  * remain: Adding and removing colors from the swatchbook is not possible via
