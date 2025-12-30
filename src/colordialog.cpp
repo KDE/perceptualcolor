@@ -1516,7 +1516,7 @@ void ColorDialog::setCurrentColor(const QColor &color)
         // For invalid colors same behavior as QColorDialog
         temp = QColor(Qt::black);
     }
-    if (testOption(ColorDialog::ColorDialogOption::ShowAlphaChannel)) {
+    if (testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel)) {
         d_pointer->m_alphaGradientSlider->setValue( //
             static_cast<double>(temp.alphaF()));
     } else {
@@ -2284,7 +2284,7 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
  * Sets a value for just one single option within @ref options.
  * @param option the option to set
  * @param on the new value of the option */
-void ColorDialog::setOption(PerceptualColor::ColorDialog::ColorDialogOption option, bool on)
+void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
 {
     QColorDialog::ColorDialogOptions temp = d_pointer->m_options;
     temp.setFlag(option, on);
@@ -2295,7 +2295,7 @@ void ColorDialog::setOption(PerceptualColor::ColorDialog::ColorDialogOption opti
  * @param newOptions the new options
  * @post <em>All</em> options of the widget have the same state
  * (enabled/disabled) as in the given parameter. */
-void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions newOptions)
+void ColorDialog::setOptions(QColorDialog::ColorDialogOptions newOptions)
 {
     if (newOptions == d_pointer->m_options) {
         return;
@@ -2333,7 +2333,7 @@ void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions ne
  * @param option the requested option
  * @returns the value of the requested option
  */
-bool ColorDialog::testOption(PerceptualColor::ColorDialog::ColorDialogOption option) const
+bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
 {
     return d_pointer->m_options.testFlag(option);
 }

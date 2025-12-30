@@ -97,15 +97,12 @@ class ColorEngine;
  * - As this dialog does not provide functionality for custom colors and
  *   standard color, the corresponding static functions of QColorDialog are
  *   not available in this class.
- * - The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
+ * - The option <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
  *   will always remain <tt>false</tt> (even if set explicitly), because it’s
  *   just the point of this library to provide an own, non-native dialog.
- * - While the enum declaration @ref ColorDialogOption itself is aliased
- *   here, this isn't possible for the enum values itself. Therefor, when
- *   working with @ref options, you cannot use <tt>ShowAlphaChannel</tt> but
- *   you have to use the fully qualified identifier (either
- *   <tt>PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel</tt>
- *   or <tt>QColorDialog::ShowAlphaChannel</tt>, at your option.
+ * - When working with <tt>QColorDialog::ColorDialogOptions</tt>, you cannot
+ *   use <tt>ShowAlphaChannel</tt>, but you have to use the fully qualified
+ *   identifier <tt>QColorDialog::ShowAlphaChannel</tt>, at your option.
  * - Calling @ref setCurrentColor() with colors that
  *   are <em>not</em> <tt>QColor::Spec::Rgb</tt> will lead to an automatic
  *   conversion like QColorDialog does, but at difference to QColorDialog, it
@@ -321,9 +318,6 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
 
     /** @brief Various options that affect the look and feel of the dialog
      *
-     * These are the same settings as for QColorDialog. For compatibility
-     * reasons, they are also of the same type: @ref ColorDialogOptions
-     *
      * | Option              | Default value | Description
      * | :------------------ | :------------ | :----------
      * | ShowAlphaChannel    | false         | Allow the user to select the alpha component of a color.
@@ -331,10 +325,12 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * | NoEyeDropperButton  | false         | Hide the Eye Dropper button. This value was added in Qt 6.6.
      * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
      *
-     *   @invariant The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
+     *   @invariant The option
+     *   <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
      *   will always be <tt>true</tt> because it’s just the point of
      *   this library to provide an own, non-native dialog. (If you
-     *   set  <tt>ColorDialogOption::DontUseNativeDialog</tt> explicitly
+     *   set <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
+     *   explicitly
      *   to <tt>false</tt>, this will silently be ignored, while the
      *   other options that you might have set, will be correctly applied.)
      *
@@ -357,25 +353,9 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * @sa WRITE @ref setOptions()
      * @sa @ref setOption()
      * @sa NOTIFY @ref optionsChanged()*/
-    Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
+    Q_PROPERTY(QColorDialog::ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
 
 public:
-    /** @brief Local alias for QColorDialog::ColorDialogOption
-     *
-     * This type is declared as type to Qt’s type system via
-     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use for <em>queued</em> signal-slot connections),
-     * you might consider calling <tt>qRegisterMetaType()</tt> for
-     * this type, once you have a QApplication object. */
-    using ColorDialogOption = QColorDialog::ColorDialogOption;
-    /** @brief Local alias for QColorDialog::ColorDialogOptions
-     *
-     * This type is declared as type to Qt’s type system via
-     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use for <em>queued</em> signal-slot connections),
-     * you might consider calling <tt>qRegisterMetaType()</tt> for
-     * this type, once you have a QApplication object. */
-    using ColorDialogOptions = QColorDialog::ColorDialogOptions;
     /** @brief Layout dimensions
      *
      * This enum is declared to the meta-object system with <tt>Q_ENUM</tt>.
@@ -413,14 +393,16 @@ public:
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     [[nodiscard]] QColor currentColor() const;
-    [[nodiscard]] static QColor
-    getColor(const QColor &initial = Qt::white, QWidget *parent = nullptr, const QString &title = QString(), ColorDialogOptions options = ColorDialogOptions());
+    [[nodiscard]] static QColor getColor(const QColor &initial = Qt::white,
+                                         QWidget *parent = nullptr,
+                                         const QString &title = QString(),
+                                         QColorDialog::ColorDialogOptions options = QColorDialog::ColorDialogOptions());
     [[nodiscard]] static QColor getColor(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
                                          const QString &gamutIdentifier,
                                          const QColor &initial = Qt::white,
                                          QWidget *parent = nullptr,
                                          const QString &title = QString(),
-                                         ColorDialogOptions options = ColorDialogOptions());
+                                         QColorDialog::ColorDialogOptions options = QColorDialog::ColorDialogOptions());
     /** @brief Getter for property @ref layoutDimensions
      *  @returns the property @ref layoutDimensions */
     [[nodiscard]] ColorDialog::DialogLayoutDimensions layoutDimensions() const;
@@ -429,16 +411,16 @@ public:
     Q_INVOKABLE void open(QObject *receiver, const char *member);
     /** @brief Getter for property @ref options
      * @returns the current @ref options */
-    [[nodiscard]] ColorDialogOptions options() const;
+    [[nodiscard]] QColorDialog::ColorDialogOptions options() const;
     [[nodiscard]] Q_INVOKABLE QColor selectedColor() const;
     virtual void setVisible(bool visible) override;
-    [[nodiscard]] Q_INVOKABLE bool testOption(PerceptualColor::ColorDialog::ColorDialogOption option) const;
+    [[nodiscard]] Q_INVOKABLE bool testOption(QColorDialog::ColorDialogOption option) const;
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &color);
     void setLayoutDimensions(const PerceptualColor::ColorDialog::DialogLayoutDimensions newLayoutDimensions);
-    Q_INVOKABLE void setOption(PerceptualColor::ColorDialog::ColorDialogOption option, bool on = true);
-    void setOptions(PerceptualColor::ColorDialog::ColorDialogOptions newOptions);
+    Q_INVOKABLE void setOption(QColorDialog::ColorDialogOption option, bool on = true);
+    void setOptions(QColorDialog::ColorDialogOptions newOptions);
 
 Q_SIGNALS:
     /** @brief This signal is emitted just after the user has clicked OK to
@@ -456,7 +438,7 @@ Q_SIGNALS:
     void layoutDimensionsChanged(const PerceptualColor::ColorDialog::DialogLayoutDimensions newLayoutDimensions);
     /** @brief Notify signal for property @ref options.
      * @param newOptions the new options */
-    void optionsChanged(const PerceptualColor::ColorDialog::ColorDialogOptions newOptions);
+    void optionsChanged(const QColorDialog::ColorDialogOptions newOptions);
 
 protected:
     virtual void changeEvent(QEvent *event) override;
@@ -482,8 +464,6 @@ private:
 
 } // namespace PerceptualColor
 
-Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::ColorDialogOption)
-Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::ColorDialogOptions)
 Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::DialogLayoutDimensions)
 
 #endif // PERCEPTUALCOLOR_COLORDIALOG_H

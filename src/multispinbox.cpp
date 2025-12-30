@@ -1009,7 +1009,7 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
 int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
 {
     int result;
-    int reference = 0;
+    qsizetype reference = 0;
     for (result = 0; //
          result < m_format.count() - 1; //
          ++result //

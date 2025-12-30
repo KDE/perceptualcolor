@@ -111,7 +111,7 @@ static void snippet01()
         // Window title (or an empty string for default title):
         QStringLiteral("Window title"),
         // Options:
-        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel);
+        QColorDialog::ColorDialogOption::ShowAlphaChannel);
     //! [ColorDialog Get color with alpha channel]
     Q_UNUSED(myColor)
 }
@@ -121,12 +121,12 @@ static void snippet02()
     //! [setOptionsWithLocalEnum]
     auto myDialog = new PerceptualColor::ColorDialog();
     myDialog->setOption( //
-        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel,
+        QColorDialog::ColorDialogOption::ShowAlphaChannel,
         false);
     //! [setOptionsWithLocalEnum]
     QCOMPARE( //
         myDialog->testOption( //
-            PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel), //
+            QColorDialog::ColorDialogOption::ShowAlphaChannel), //
         false);
     delete myDialog;
 }
@@ -139,7 +139,7 @@ static void snippet03()
     //! [setOptionsWithQColorDialogEnum]
     QCOMPARE( //
         myDialog->testOption( //
-            PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel), //
+            QColorDialog::ColorDialogOption::ShowAlphaChannel), //
         false);
     delete myDialog;
 }
@@ -1621,7 +1621,7 @@ private Q_SLOTS:
             true);
         QCOMPARE( //
             m_perceptualDialog->testOption //
-            (ColorDialog::ColorDialogOption::ShowAlphaChannel), //
+            (QColorDialog::ColorDialogOption::ShowAlphaChannel), //
             true);
         m_qDialog->setOption( //
             QColorDialog::ShowAlphaChannel);
@@ -1629,25 +1629,25 @@ private Q_SLOTS:
                  true);
         QCOMPARE( //
             m_qDialog->testOption( //
-                ColorDialog::ColorDialogOption::ShowAlphaChannel), //
+                QColorDialog::ColorDialogOption::ShowAlphaChannel), //
             true);
 
         // Test setting our alias syntax
         m_perceptualDialog->setOption( //
-            ColorDialog::ColorDialogOption::NoButtons);
+            QColorDialog::ColorDialogOption::NoButtons);
         QCOMPARE( //
             m_perceptualDialog->testOption(QColorDialog::NoButtons),
             true);
         QCOMPARE( //
             m_perceptualDialog->testOption( //
-                ColorDialog::ColorDialogOption::NoButtons), //
+                QColorDialog::ColorDialogOption::NoButtons), //
             true);
         m_qDialog->setOption( //
-            ColorDialog::ColorDialogOption::NoButtons);
+            QColorDialog::ColorDialogOption::NoButtons);
         QCOMPARE(m_qDialog->testOption(QColorDialog::NoButtons), //
                  true);
         QCOMPARE( //
-            m_qDialog->testOption(ColorDialog::ColorDialogOption::NoButtons), //
+            m_qDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), //
             true);
 
         // Test if ColorDialogOptions is compatible (at least for == operator)

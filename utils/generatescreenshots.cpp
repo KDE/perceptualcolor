@@ -23,6 +23,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcolor.h>
+#include <qcolordialog.h>
 #include <qcombobox.h>
 #include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
@@ -362,7 +363,7 @@ static void makeScreenshots()
         m_colorDialog.setCurrentColor(defaultColorRgb);
         setCurrentTab(&m_colorDialog, 1);
         m_colorDialog.setOption( //
-            ColorDialog::ColorDialogOption::ShowAlphaChannel);
+            QColorDialog::ColorDialogOption::ShowAlphaChannel);
         myColor = m_colorDialog.currentColor();
         myColor.setAlphaF(0.5);
         m_colorDialog.setCurrentColor(myColor);
@@ -376,7 +377,7 @@ static void makeScreenshots()
         m_colorDialog.setCurrentColor(defaultColorRgb);
         setCurrentTab(&m_colorDialog, 1);
         m_colorDialog.setOption( //
-            ColorDialog::ColorDialogOption::ShowAlphaChannel);
+            QColorDialog::ColorDialogOption::ShowAlphaChannel);
         myColor = m_colorDialog.currentColor();
         myColor.setAlphaF(0.5);
         m_colorDialog.setCurrentColor(myColor);
@@ -390,7 +391,7 @@ static void makeScreenshots()
         m_colorDialog.setCurrentColor(defaultColorRgb);
         setCurrentTab(&m_colorDialog, 1);
         m_colorDialog.setOption( //
-            ColorDialog::ColorDialogOption::ShowAlphaChannel);
+            QColorDialog::ColorDialogOption::ShowAlphaChannel);
         myColor = m_colorDialog.currentColor();
         myColor.setAlphaF(0.5);
         m_colorDialog.setCurrentColor(myColor);

@@ -397,16 +397,15 @@ void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGr
 void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow)
 {
     const QColor newColor = m_swatchGrid.value(newCurrentColumn, newCurrentRow);
-    if (!newColor.isValid()) {
-        return;
+    if (newColor.isValid()) {
+        m_selectedColumn = newCurrentColumn;
+        m_selectedRow = newCurrentRow;
+        if (newColor != m_currentColor) {
+            m_currentColor = newColor;
+            Q_EMIT q_pointer->currentColorChanged(newColor);
+        }
+        q_pointer->update();
     }
-    m_selectedColumn = newCurrentColumn;
-    m_selectedRow = newCurrentRow;
-    if (newColor != m_currentColor) {
-        m_currentColor = newColor;
-        Q_EMIT q_pointer->currentColorChanged(newColor);
-    }
-    q_pointer->update();
 }
 
 /** @brief Selects a swatch from the grid.

@@ -261,7 +261,7 @@ public:
      * @sa @ref ColorDialog::open() */
     QPointer<QObject> m_receiverToBeDisconnected;
     /** @brief Internal storage for property @ref ColorDialog::options */
-    ColorDialog::ColorDialogOptions m_options;
+    QColorDialog::ColorDialogOptions m_options;
     /** @brief Pointer to the ColorEngine object. */
     QSharedPointer<ColorEngine> m_colorEngine;
     /** @brief Group box that contains all RGB widgets and all widget for
