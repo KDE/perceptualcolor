@@ -207,6 +207,9 @@ add_compile_definitions(
     # features, THIS flag actually seems to block actually all deprecated
     # features:
     QT_DISABLE_DEPRECATED_BEFORE=0x060000
+    # Do not issue warnings for Qt API that was deprecated from Qt 6.0 on
+    # because avoiding them usually means break Qt 5 compaptibility.
+    QT_WARN_DEPRECATED_UP_TO=0x060000
     # This might crash on older Qt versions on Windows,
     # see https://bugreports.qt.io/browse/AUTOSUITE-946.
     # But we do not support older Qt versions anyway:
@@ -238,8 +241,19 @@ add_compile_definitions(
 # versions might throw more warnings, which could break the build if
 # warnings are treated as errors by “-Werror”. Therefore, by default
 # we try to not use any hard-coded compiler flags. This gives us
-# maximum compatibility for release builds. But a higher warning level
-# can be requested by the user:
+# maximum compatibility for release builds. However
+# https://best.openssf.org/Compiler-Hardening-Guides/
+# Compiler-Options-Hardening-Guide-for-C-and-C++.html
+# recommends a lot of options for compiler hardening. Distributors might
+# use these options, but we do not force them. Those options include higher
+# warning level and also options that alter the compilter behaviour. We make
+# sure that our code compiles fine with these options and enable most of
+# them, especially those that help to reveal bugs, in development builds
+# and CI. However, options that make the code execution more secure and
+# therefore might hide bugs, are not enabled here. Those options can be
+# added manually by the distributors as they which. Different from
+# the recommendation, we do not use -Werror at all, not even on development
+# builds.
 message(
     STATUS
     "By calling CMake with the option “-DADDITIONAL_WARNINGS=ON”\n"
@@ -255,10 +269,48 @@ message(
     STATUS
     "ADDITIONAL_WARNINGS: ${ADDITIONAL_WARNINGS}")
 include(CheckCXXCompilerFlag)
+# Add a single (!) compile option only if supportet by the compiler.
+function(add_compile_option_if_supported flag)
+    string(REPLACE "-" "_" flag_var "${flag}")
+    string(REPLACE "=" "_" flag_var "${flag_var}")
+    set(test_var "HAS_${flag_var}")
+    check_cxx_compiler_flag("${flag}" ${test_var})
+    if(${test_var})
+        message(STATUS "Compiler supports ${flag}")
+        add_compile_options(${flag})
+    else()
+        message(STATUS "Compiler does not support ${flag}")
+    endif()
+endfunction()
 if(ADDITIONAL_WARNINGS
     AND
     ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR ON_CLANG_DERIVATE)
 )
+    # Enable control-flow and branch protection against return-oriented
+    # programming and jump-oriented programming attacks.
+    # for x86_64: -fcf-protection=full
+    # for aarch64: -mbranch-protection=standard
+    if(CMAKE_C_COMPILER_TARGET)
+        # Try compiler target first (for cross-compile)
+        set(ARCH "${CMAKE_C_COMPILER_TARGET}")
+    else()
+        # Fallback for native (non-cross-compile) builds
+        set(ARCH "${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+    string(TOLOWER "${ARCH}" ARCH_LOWER)
+    if(ARCH_LOWER MATCHES "x86_64")
+        add_compile_options(-fcf-protection=full)
+    endif()
+    if(ARCH_LOWER MATCHES "aarch64" OR ARCH_LOWER MATCHES "arm64")
+        add_compile_options(-mbranch-protection=standard)
+    endif()
+
+    add_compile_option_if_supported("-fstrict-flex-arrays=3")
+    add_compile_option_if_supported("-ftrivial-auto-var-init=zero")
+
+    add_link_options(
+        -Wl,-z,noexecstack
+    )
     add_compile_options(
         # Issue all the warnings demanded by strict ISO C++:
         -Wpedantic
@@ -268,19 +320,42 @@ if(ADDITIONAL_WARNINGS
         # -Wextra enables some extra warning flags
         # that are not enabled by -Wall:
         -Wextra
-        # Additional individual warning flags (in alphabetical order):
+        # More optimization might expose more bugs. Choosing maximum level.
+        -O3
+        # The option -D_FORTIFY_SOURCE= Requires -O1 or higher, and may
+        # require prepending -U_FORTIFY_SOURCE to avoid warnings because
+        # of a different -D_FORTIFY_SOURCE= default on system level.
+        -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
+        # “Hardening compiler” recommends -fstack-protector-strong. We
+        # use -fstack-protector-all instead because the negative performance
+        # impact is okay because we use it only for developoment, not for
+        # production code.
+        -fstack-protector-all
+        # Additional individual warning flags and compile options
+        # (in alphabetical order):
+        -fcf-protection=full
+        -fexceptions
+        -fno-delete-null-pointer-checks
+        -fno-strict-aliasing
+        -fstack-clash-protection
+        # Using -ftrapv as developoment code equivalant for  the “Hardening
+        # compiler” recommenation -fno-strict-overflow which is for for
+        # GCC-only on production code.
+        -ftrapv
         -Wcast-align
         -Wcast-qual
         -Wchar-subscripts
         -Wcomment
         -Wconversion
         -Wdeprecated
+        -Wdeprecated-declarations
         -Wdisabled-optimization
         -Wformat
         -Wformat=2 # even more checks on top of “-Wformat”
         -Wformat-nonliteral
         -Wformat-security
         -Wformat-y2k
+        -Wimplicit-fallthrough
         -Wimport
         -Winit-self
         -Winvalid-pch
@@ -299,7 +374,6 @@ if(ADDITIONAL_WARNINGS
         -Wshadow
         -Wsign-compare
         -Wsign-conversion
-        -Wstack-protector
         -Wstrict-aliasing
         # It is possible to set “-Wstrict-aliasing=n”, but only after setting
         # “-Wstrict-aliasing” without n before! n is the level:
@@ -333,6 +407,11 @@ if(ADDITIONAL_WARNINGS
 endif()
 if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"))
     add_compile_options(
+        -D_GLIBCXX_ASSERTIONS
+        -fno-strict-overflow
+        -fzero-init-padding-bits=all
+        -Wbidi-chars=any,ucn
+        -Wtrampolines
         -Wunsafe-loop-optimizations
     )
 endif()
@@ -384,14 +463,8 @@ if(ADDITIONAL_WARNINGS AND ON_CLANG_DERIVATE)
     # are disabled because they triggers numerous warnings in moc-generated
     # code, which is auto-generated by Qt’s Meta-Object Compiler and cannot
     # be modified or controlled by us.
-    check_cxx_compiler_flag("-Wno-ctad-maybe-unsupported" HAS_WNOCTAD_FLAG)
-    if(HAS_WNOCTAD_FLAG)
-        add_compile_options("-Wno-ctad-maybe-unsupported")
-    endif()
-    check_cxx_compiler_flag("-Wno-unsafe-buffer-usage" HAS_WNOUNSAFEBUF_FLAG)
-    if(HAS_WNOUNSAFEBUF_FLAG)
-        add_compile_options("-Wno-unsafe-buffer-usage")
-    endif()
+    add_compile_option_if_supported("-Wno-ctad-maybe-unsupported")
+    add_compile_option_if_supported("-Wno-unsafe-buffer-usage")
 endif()
 if(ADDITIONAL_WARNINGS AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"))
     # NOTE Documentation of warning for MSVC:
