@@ -90,7 +90,7 @@ public:
     [[nodiscard]] GenericColor nearestInGamutCielchD50ByAdjustingChromaLightness(const double chroma, const double lightness);
     [[nodiscard]] std::optional<QPoint> nearestInGamutPixelPosition(const QPoint originalPixelPosition);
     [[nodiscard]] static std::optional<QPoint>
-    nearestNeighborSearch(const QPoint point, const QRect searchRectangle, const std::function<bool(const QPoint)> &doesPointExist);
+    nearestNeighborSearch(const QPoint point, const QRect boundingBox, const std::function<bool(const QPoint)> &doesPointExist);
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
     void updateImageDimensions();
 

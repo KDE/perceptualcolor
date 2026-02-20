@@ -663,7 +663,7 @@ GenericColor PerceptualColor::ChromaLightnessDiagram::currentColorCielchD50() co
  * this Stackoverflow answer</a>.
  *
  * @param point The point to which the nearest neighbor is searched.
- * @param searchRectangle The rectangle within which the algorithm searches
+ * @param boundingBox The rectangle within which the algorithm searches
  *        for a nearest neighbor. All points outside this rectangle are
  *        ignored.
  * @param doesPointExist A callback function that must return <tt>true</tt>
@@ -676,16 +676,16 @@ GenericColor PerceptualColor::ChromaLightnessDiagram::currentColorCielchD50() co
  *          considered to be itself its nearest neighbor if it is within the
  *          search rectangle and considered by the test function to exist. */
 std::optional<QPoint>
-ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const QRect searchRectangle, const std::function<bool(const QPoint)> &doesPointExist)
+ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const QRect boundingBox, const std::function<bool(const QPoint)> &doesPointExist)
 {
-    if (!searchRectangle.isValid()) {
+    if (!boundingBox.isValid()) {
         return std::nullopt;
     }
     // A valid QRect is non-empty, as described by QRect documentation…
 
     // Test for special case:
     // originalPixelPosition itself is within the image and non-transparent
-    if (searchRectangle.contains(point)) {
+    if (boundingBox.contains(point)) {
         if (doesPointExist(point)) {
             return point;
         }
@@ -694,12 +694,12 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     // We search the perimeter of a square that we keep moving out one pixel
     // at a time from the original point (“offset”).
 
-    const auto hDistanceFromRect = distanceFromRange(searchRectangle.left(), //
+    const auto hDistanceFromRect = distanceFromRange(boundingBox.left(), //
                                                      point.x(),
-                                                     searchRectangle.right());
-    const auto vDistanceFromRect = distanceFromRange(searchRectangle.top(), //
+                                                     boundingBox.right());
+    const auto vDistanceFromRect = distanceFromRange(boundingBox.top(), //
                                                      point.y(),
-                                                     searchRectangle.bottom());
+                                                     boundingBox.bottom());
     // As described at https://stackoverflow.com/a/307523:
     // An offset of “0” means that only the original point itself is searched
     // for. This is inefficient, because all eight search points will be
@@ -708,10 +708,10 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     // an offset ≥ 0.
     const auto initialOffset = qMax(1, //
                                     qMax(hDistanceFromRect, vDistanceFromRect));
-    const auto hMaxDistance = qMax(qAbs(point.x() - searchRectangle.left()), //
-                                   qAbs(point.x() - searchRectangle.right()));
-    const auto vMaxDistance = qMax(qAbs(point.y() - searchRectangle.top()), //
-                                   qAbs(point.y() - searchRectangle.bottom()));
+    const auto hMaxDistance = qMax(qAbs(point.x() - boundingBox.left()), //
+                                   qAbs(point.x() - boundingBox.right()));
+    const auto vMaxDistance = qMax(qAbs(point.y() - boundingBox.top()), //
+                                   qAbs(point.y() - boundingBox.bottom()));
     const auto maximumOffset = qMax(hMaxDistance, vMaxDistance);
     std::optional<QPoint> nearestPointTillNow;
     int nearestPointTillNowDistanceSquare = 0;
@@ -750,11 +750,11 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
                 // point on the left line of the search perimeter rectangle
                 // will always be out-of-boundary, so there is no need
                 // to calculate the search points, just to find out later
-                // that these points are outside the searchRectangle. But
-                // this seems to be quite complex and the performance grain
+                // that these points are outside the boundingBox. But
+                // this seems to be quite complex and the performance gain
                 // is probably minimal.
                 searchPoint = point + temp;
-                if (searchRectangle.contains(searchPoint)) {
+                if (boundingBox.contains(searchPoint)) {
                     if (doesPointExist(searchPoint)) {
                         nearestPointTillNow = searchPoint;
                         nearestPointTillNowDistanceSquare = //
@@ -770,7 +770,7 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
 
     if (!nearestPointTillNow.has_value()) {
         // There is not one single pixel that is valid in the
-        // whole searchRectangle.
+        // whole boundingBox.
         return nearestPointTillNow;
     }
 
@@ -787,7 +787,7 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
             const auto container = searchPointOffsets(i, j);
             for (const QPoint &temp : std::as_const(container)) {
                 searchPoint = point + temp;
-                if (searchRectangle.contains(searchPoint)) {
+                if (boundingBox.contains(searchPoint)) {
                     if (doesPointExist(searchPoint)) {
                         nearestPointTillNow = searchPoint;
                         nearestPointTillNowDistanceSquare = //

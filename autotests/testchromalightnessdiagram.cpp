@@ -802,44 +802,44 @@ private Q_SLOTS:
             // so we should never get here:
             return true;
         };
-        constexpr auto searchRectangle = QRect(QPoint(-2, -2), QSize(11, 11));
-        QVERIFY(searchRectangle.contains(QPoint(-3, -3)) == false); // assert
-        QVERIFY(searchRectangle.contains(QPoint(-2, -2))); // assert
-        QVERIFY(searchRectangle.contains(QPoint(8, 8))); // assert
-        QVERIFY(searchRectangle.contains(QPoint(9, 9)) == false); // assert
+        constexpr auto boundingBox = QRect(QPoint(-2, -2), QSize(11, 11));
+        QVERIFY(boundingBox.contains(QPoint(-3, -3)) == false); // assert
+        QVERIFY(boundingBox.contains(QPoint(-2, -2))); // assert
+        QVERIFY(boundingBox.contains(QPoint(8, 8))); // assert
+        QVERIFY(boundingBox.contains(QPoint(9, 9)) == false); // assert
 
         // Actual tests
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, -2), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, -2), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-1, -2), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-1, -2), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, -1), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, -1), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-3, -2), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-3, -2), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, -3), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, -3), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-3, -3), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-3, -3), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(1, 1), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(1, 1), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(4, 4), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(4, 4), boundingBox, doesExist), //
                  QPoint(5, 5));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(5, 5), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(5, 5), boundingBox, doesExist), //
                  QPoint(5, 5));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-100, 5), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-100, 5), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-100, -100), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-100, -100), boundingBox, doesExist), //
                  QPoint(-2, -2));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(100, 100), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(100, 100), boundingBox, doesExist), //
                  QPoint(8, 8));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(7, 100), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(7, 100), boundingBox, doesExist), //
                  QPoint(8, 8));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(100, 7), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(100, 7), boundingBox, doesExist), //
                  QPoint(8, 8));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, 8), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(-2, 8), boundingBox, doesExist), //
                  QPoint(5, 5));
-        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(8, -2), searchRectangle, doesExist), //
+        QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(8, -2), boundingBox, doesExist), //
                  QPoint(5, 5));
     }
 };
