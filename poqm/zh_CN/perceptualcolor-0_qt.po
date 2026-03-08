@@ -64,13 +64,13 @@ msgstr "%L1 (估计值)"
 #: colordialog.cpp:232
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum CIELCh-D50 chroma:"
-msgstr "最大 CIELCh-D50 色品："
+msgstr "最大 CIELCh-D50 色度："
 
 #. @item:intext An information from the color profile to be added to the info text about current color space.
 #: colordialog.cpp:243
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Maximum Oklch chroma:"
-msgstr "最大 Oklch 色品："
+msgstr "最大 Oklch 色度："
 
 #. @item:intext The class of an ICC profile.
 #: colordialog.cpp:248
@@ -297,7 +297,7 @@ msgstr "亮度 (Lightness)"
 #: colordialog.cpp:545
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr "<p>亮度：0%⁠–⁠100%</p><p>色品：0⁠–⁠%L1</p><p>色相：0°⁠–⁠360°</p>"
+msgstr "<p>亮度：0%⁠–⁠100%</p><p>色度：0⁠–⁠%L1</p><p>色相：0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:554
@@ -306,7 +306,7 @@ msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
 msgstr ""
-"<p>亮度 (Lightness)：%L1⁠–⁠%L2</p><p>色品：%L3⁠–⁠%L4</p><p>色相：0°⁠–⁠360°</p><p>白"
+"<p>亮度 (Lightness)：%L1⁠–⁠%L2</p><p>色度：%L3⁠–⁠%L4</p><p>色相：0°⁠–⁠360°</p><p>白"
 "点：D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
