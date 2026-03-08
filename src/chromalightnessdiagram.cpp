@@ -7,12 +7,13 @@
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "abstractdiagram.h"
-#include "cielchd50values.h"
 #include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
+#include "lchvalues.h"
 #include <optional>
 #include <qcolor.h>
 #include <qevent.h>
@@ -35,12 +36,16 @@ namespace PerceptualColor
 /** @brief The constructor.
  *
  * @param colorEngine The color engine with which the widget should operate.
- * Can be created with @ref createSrgbColorEngine().
+ * Can be created with @ref ColorEngine::createSrgb().
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
  *
  * @param parent Passed to the QWidget base class constructor */
-ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
+ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                                               const PerceptualColor::LchSpace projectionSpace,
+                                               QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ChromaLightnessDiagramPrivate(this))
+    , d_pointer(new ChromaLightnessDiagramPrivate(this, projectionSpace))
 {
     // Setup the color engine must be the first thing to do because
     // other operations rely on a working color engine.
@@ -51,6 +56,8 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     d_pointer->m_chromaLightnessImageParameters.imageSizePhysical = //
         d_pointer->calculateImageSizePhysical();
+    d_pointer->m_chromaLightnessImageParameters.projectionSpace = //
+        projectionSpace;
     d_pointer->m_chromaLightnessImageParameters.colorEngine = colorEngine;
     d_pointer->m_chromaLightnessImage.setImageParameters( //
         d_pointer->m_chromaLightnessImageParameters);
@@ -70,15 +77,25 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
 /** @brief Constructor
  *
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
-ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink)
-    : m_currentColorCielchD50(CielchD50Values::srgbVersatileInitialColor)
+ * is the private implementation.
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
+ */
+ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const LchSpace projectionSpace)
+    : m_currentColorLch(cielchD50Values.neutralGray())
+    , m_lchValues((projectionSpace == LchSpace::CielchD50) ? cielchD50Values : oklchValues)
+    , m_projectionSpace(projectionSpace)
     , q_pointer(backLink)
 {
 }
 
 /**
- * @brief Updates @ref ChromaLightnessDiagram::currentColorCielchD50
+ * @brief Default destructor
+ */
+ChromaLightnessDiagramPrivate::~ChromaLightnessDiagramPrivate() noexcept = default;
+
+/**
+ * @brief Updates @ref ChromaLightnessDiagram::currentColorLch
  * corresponding to the given widget pixel position.
  *
  * @param widgetPixelPosition The position of a pixel within the widget’s
@@ -87,16 +104,16 @@ ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiag
  * outside the widget.
  *
  * @post If the pixel position is within the gamut, then the corresponding
- * @ref ChromaLightnessDiagram::currentColorCielchD50 is set. If the pixel
+ * @ref ChromaLightnessDiagram::currentColorLch is set. If the pixel
  * position is outside the gamut, than a nearby in-gamut color is set (hue is
  * preserved, chroma and lightness are adjusted). Exception: If the
  * widget is so small that no diagram is displayed, nothing will happen. */
 void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
-    const GenericColor color = fromWidgetPixelPositionToCielchD50(widgetPixelPosition);
-    q_pointer->setCurrentColorCielchD50(
+    const GenericColor color = fromWidgetPixelPositionToLch(widgetPixelPosition);
+    q_pointer->setCurrentColorLch(
         // Search for the nearest color without changing the hue:
-        nearestInGamutCielchD50ByAdjustingChromaLightness(color.second, color.first));
+        nearestInGamutLchByAdjustingChromaLightness(color.second, color.first));
 }
 
 /**
@@ -228,7 +245,7 @@ QSize ChromaLightnessDiagramPrivate::calculateImageSizePhysical() const
  * returned.
  *
  * @sa @ref measurementdetails */
-GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50(const QPoint widgetPixelPosition) const
+GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToLch(const QPoint widgetPixelPosition) const
 {
     const QPointF offset(leftBorderPhysical(), defaultBorderPhysical());
     const QPointF imageCoordinatePoint = widgetPixelPosition
@@ -238,15 +255,16 @@ GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50(c
         // Offset to pass from pixel positions to coordinate points:
         + QPointF(0.5, 0.5);
     GenericColor color;
-    color.third = m_currentColorCielchD50.third;
+    color.third = m_currentColorLch.third;
     const qreal diagramHeight = //
         calculateImageSizePhysical().height() / q_pointer->devicePixelRatioF();
-    if (diagramHeight > 0) {
-        color.first = imageCoordinatePoint.y() * 100.0 / diagramHeight * (-1.0) + 100.0;
-        color.second = imageCoordinatePoint.x() * 100.0 / diagramHeight;
+    const double maxLightness = static_cast<double>(m_lchValues.maximumLightness);
+    if (diagramHeight > 0) { // Avoid division by 0
+        color.first = imageCoordinatePoint.y() * maxLightness / diagramHeight * (-1.0) + maxLightness;
+        color.second = imageCoordinatePoint.x() * maxLightness / diagramHeight;
     } else {
-        color.first = 50;
-        color.second = 0;
+        color.first = m_lchValues.neutralLightness;
+        color.second = m_lchValues.neutralChroma;
     }
     return color;
 }
@@ -351,13 +369,12 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     d_pointer->updateImageDimensions();
 
     // Paint the diagram itself.
+
     // Request image update. If the cache is not up-to-date, this
     // will trigger a new paint event, once the cache has been updated.
     d_pointer->m_chromaLightnessImage.refreshAsync();
-    const QColor myNeutralGray = //
-        d_pointer->m_colorEngine->fromCielchD50ToQRgbBound(CielchD50Values::neutralGray);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(myNeutralGray);
+    painter.setBrush(neutralGray());
     const auto imageSize = //
         d_pointer->m_chromaLightnessImage.imageParameters().imageSizePhysical;
     painter.drawRect( // Paint diagram background
@@ -427,11 +444,12 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
 
     // Paint the handle on-the-fly.
     const int diagramHeight = d_pointer->calculateImageSizePhysical().height();
+    const auto maxL = d_pointer->m_lchValues.maximumLightness;
     QPointF colorCoordinatePoint = QPointF(
         // x:
-        d_pointer->m_currentColorCielchD50.second * diagramHeight / 100.0,
+        d_pointer->m_currentColorLch.second * diagramHeight / maxL,
         // y:
-        d_pointer->m_currentColorCielchD50.first * diagramHeight / 100.0 * (-1) + diagramHeight);
+        d_pointer->m_currentColorLch.first * diagramHeight / maxL * (-1) + diagramHeight);
     colorCoordinatePoint += QPointF(
         // horizontal offset:
         d_pointer->leftBorderPhysical(),
@@ -439,7 +457,9 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
         d_pointer->defaultBorderPhysical());
     pen = QPen();
     pen.setWidthF(handleOutlineThickness() * devicePixelRatioF());
-    pen.setColor(handleColorFromBackgroundLightness(d_pointer->m_currentColorCielchD50.first));
+    pen.setColor(handleColorFromBackgroundLightness( //
+        d_pointer->m_currentColorLch.first, //
+        d_pointer->m_projectionSpace));
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -468,36 +488,49 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  * Other key events are forwarded to the base class.
  *
  * @param event the event
+ *
+ * @internal
+ *
+ * @todo NICETOHAVE From noahdvs in Matrix: “I noticed an issue with the arrow
+ * key navigation of the lightness/saturation picker in the "Hue-based" tab.
+ * If you press Up or Down, the point is able to climb up or down until it
+ * reaches the maximum/minimum lightness (good). If you press Right, the point
+ * gets stuck when it reaches an edge rather than being able to continue to the
+ * right until maximum saturation is reached (bad).” Using
+ * @ref ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness()
+ * might help here, though its precision depends on the rendering size of the
+ * image.
  */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
-    GenericColor temp = d_pointer->m_currentColorCielchD50;
+    GenericColor temp = d_pointer->m_currentColorLch;
+    const auto singleStep = d_pointer->m_lchValues.singleStepLabc;
     switch (event->key()) {
     case Qt::Key_Up:
-        temp.first += singleStepLightness;
+        temp.first += singleStep;
         break;
     case Qt::Key_Down:
-        temp.first -= singleStepLightness;
+        temp.first -= singleStep;
         break;
     case Qt::Key_Left:
-        temp.second = qMax<double>(0, temp.second - singleStepChroma);
+        temp.second = qMax<double>(0, temp.second - singleStep);
         break;
     case Qt::Key_Right:
-        temp.second += singleStepChroma;
-        temp = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp);
+        temp.second += singleStep;
         break;
     case Qt::Key_PageUp:
-        temp.first += pageStepLightness;
+        temp.first += singleStep * pageStepFactor;
         break;
     case Qt::Key_PageDown:
-        temp.first -= pageStepLightness;
+        temp.first -= singleStep * pageStepFactor;
         break;
     case Qt::Key_End:
-        temp.second += pageStepChroma;
-        temp = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp);
+        temp.second += singleStep * pageStepFactor;
         break;
     case Qt::Key_Home:
-        temp.second = qMax<double>(0, temp.second - pageStepChroma);
+        temp.second = qMax<double>( //
+            0, //
+            temp.second - singleStep * pageStepFactor);
         break;
     default:
         // Quote from Qt documentation:
@@ -517,10 +550,16 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // default branch of the switch statement, we would have passed the
     // keyPressEvent yet to the parent and returned.
 
-    // Set the new color (only takes effect when the color is indeed different).
-    setCurrentColorCielchD50(
-        // Search for the nearest color without changing the hue:
-        d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp));
+    // Search for the nearest color without changing the hue:
+    if (d_pointer->m_projectionSpace == LchSpace::CielchD50) {
+        temp = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp);
+    } else {
+        temp = d_pointer->m_colorEngine->reduceOklchChromaToFitIntoGamut(temp);
+    }
+
+    // Set the new color (only takes effect when the color is indeed
+    // different).
+    setCurrentColorLch(temp);
 }
 
 /** @brief Tests if a given widget pixel position is within
@@ -544,7 +583,7 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
         return false;
     }
 
-    const GenericColor color = fromWidgetPixelPositionToCielchD50(widgetPixelPosition);
+    const GenericColor color = fromWidgetPixelPositionToLch(widgetPixelPosition);
 
     // Test if C is in range. This is important because a negative C value
     // can be in-gamut, but is not in the _displayed_ gamut.
@@ -553,30 +592,33 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
     }
 
     // Actually for in-gamut color:
-    return m_colorEngine->isCielchD50InGamut(color);
+    if (m_projectionSpace == LchSpace::CielchD50) {
+        return m_colorEngine->isCielchD50InGamut(color);
+    }
+    return m_colorEngine->isOklchInGamut(color);
 }
 
-/** @brief Setter for the @ref currentColorCielchD50() property.
+/** @brief Setter for the @ref currentColorLch() property.
  *
- * @param newCurrentColorCielchD50 the new @ref currentColorCielchD50
+ * @param newCurrentColorLch the new @ref currentColorLch
  */
-void ChromaLightnessDiagram::setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50)
+void ChromaLightnessDiagram::setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch)
 {
-    if (newCurrentColorCielchD50 == d_pointer->m_currentColorCielchD50) {
+    if (newCurrentColorLch == d_pointer->m_currentColorLch) {
         return;
     }
 
-    double oldHue = d_pointer->m_currentColorCielchD50.third;
-    d_pointer->m_currentColorCielchD50 = newCurrentColorCielchD50;
-    if (d_pointer->m_currentColorCielchD50.third != oldHue) {
+    double oldHue = d_pointer->m_currentColorLch.third;
+    d_pointer->m_currentColorLch = newCurrentColorLch;
+    if (d_pointer->m_currentColorLch.third != oldHue) {
         // Update the diagram (only if the hue has changed):
         d_pointer->m_chromaLightnessImageParameters.hue = //
-            d_pointer->m_currentColorCielchD50.third;
+            d_pointer->m_currentColorLch.third;
         d_pointer->m_chromaLightnessImage.setImageParameters( //
             d_pointer->m_chromaLightnessImageParameters);
     }
     update(); // Schedule a paint event
-    Q_EMIT currentColorCielchD50Changed(newCurrentColorCielchD50);
+    Q_EMIT currentColorLchChanged(newCurrentColorLch);
 }
 
 /** @brief React on a resize event.
@@ -629,6 +671,11 @@ QSize ChromaLightnessDiagram::sizeHint() const
  * @sa @ref sizeHint() */
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
+    const double profileMaxChroma = //
+        (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
+        ? d_pointer->m_colorEngine->profileMaximumCielchD50Chroma() //
+        : d_pointer->m_colorEngine->profileMaximumOklchChroma();
+    const double factor = profileMaxChroma / d_pointer->m_lchValues.maximumLightness;
     const int minimumHeight = qRound(
         // Top border and bottom border:
         2.0 * d_pointer->defaultBorderDeviceIndependant()
@@ -642,16 +689,16 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
         // Add the gradient minimum length from y axis, multiplied with
         // the factor to allow at correct scaling showing up the whole
         // chroma range of the gamut.
-        + gradientMinimumLength() * d_pointer->m_colorEngine->profileMaximumCielchD50Chroma() / 100.0);
+        + gradientMinimumLength() * factor);
     // Expand to the global minimum size for GUI elements
     return QSize(minimumWidth, minimumHeight);
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-GenericColor PerceptualColor::ChromaLightnessDiagram::currentColorCielchD50() const
+GenericColor PerceptualColor::ChromaLightnessDiagram::currentColorLch() const
 {
-    return d_pointer->m_currentColorCielchD50;
+    return d_pointer->m_currentColorLch;
 }
 
 /** @brief An abstract Nearest-neighbor-search algorithm.
@@ -826,12 +873,20 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
  * image is available, entire columns, starting from the right, until we hit
  * the first column that has a non-transparent pixel. This information can be
  * used to reduce the search rectangle significantly.
+ * Or we could use the gamut boundary, mayby still available from the boundary
+ * anti-aliasing.
  *
  * @todo NICETOHAVE RGB 0 28 253: When moving
  * the curser outside the gamut, below the
  * dark blue shadows, but still near to the gamut, the selection marker
  * “jumps” where the gamut boundary in nearly horizontal and there are
- * one-pixel stairs. That's not that nice.
+ * one-pixel stairs. That's not that nice. Maybe we could preserve the
+ * high-resolution anti-alias data that was yet calculated in the
+ * @ref ChromaLightnessImageParameters::render() function which in return
+ * calls @ref doAntialias(). This would give us a high-resolution information.
+ * But wouldn‘t that mean to increase signaificantly the memory usage?
+ * And make the algorithm more complicate because it will have to deal
+ * with two different pixel resolutions?
  */
 std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition(const QPoint originalPixelPosition)
 {
@@ -849,7 +904,7 @@ std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition
 
 /** @brief Find the nearest in-gamut pixel.
  *
- * The hue is assumed to be the current hue at @ref m_currentColorCielchD50.
+ * The hue is assumed to be the current hue at @ref m_currentColorLch.
  * Chroma and lightness are sacrificed, but the hue is preserved. This function
  * works at the precision of the current @ref m_chromaLightnessImage.
  *
@@ -862,34 +917,39 @@ std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition
  *
  * @returns The nearest in-gamut pixel with the same hue as the original
  * color. */
-PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutCielchD50ByAdjustingChromaLightness(const double chroma, const double lightness)
+PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(const double chroma, const double lightness)
 {
     // Initialization
     GenericColor temp;
     temp.first = lightness;
     temp.second = chroma;
-    temp.third = m_currentColorCielchD50.third;
+    temp.third = m_currentColorLch.third;
     if (temp.second < 0) {
         temp.second = 0;
     }
 
     // Return is we are within the gamut.
     // NOTE Calling isInGamut() is slower than simply testing for the pixel,
-    // it is more exact.
-    if (m_colorEngine->isCielchD50InGamut(temp)) {
+    // but it is more exact.
+
+    bool isInGamut = (m_projectionSpace == LchSpace::CielchD50) ? m_colorEngine->isCielchD50InGamut(temp) : m_colorEngine->isOklchInGamut(temp);
+    if (isInGamut) {
         return temp;
     }
 
     const auto imageHeight = calculateImageSizePhysical().height();
+    const double maxLightness = //
+        static_cast<double>(m_lchValues.maximumLightness);
     QPoint myPixelPosition( //
-        qRound(temp.second * (imageHeight - 1) / 100.0),
-        qRound(imageHeight - 1 - temp.first * (imageHeight - 1) / 100.0));
+        qRound(temp.second * (imageHeight - 1) / maxLightness),
+        qRound(imageHeight - 1 - temp.first * (imageHeight - 1) / maxLightness));
 
     myPixelPosition = //
         nearestInGamutPixelPosition(myPixelPosition).value_or(QPoint(0, 0));
     GenericColor result = temp;
-    result.second = myPixelPosition.x() * 100.0 / (imageHeight - 1);
-    result.first = 100 - myPixelPosition.y() * 100.0 / (imageHeight - 1);
+    result.second = myPixelPosition.x() * maxLightness / (imageHeight - 1);
+    result.first = //
+        maxLightness - myPixelPosition.y() * maxLightness / (imageHeight - 1);
     return result;
 }
 

@@ -26,7 +26,7 @@ namespace PerceptualColor
 struct GenericColor {
 public:
     /** @brief Default constructor. */
-    constexpr GenericColor() = default;
+    constexpr GenericColor() noexcept = default;
 
     /** @brief Constructor.
      *
@@ -42,7 +42,7 @@ public:
     /** @brief Constructor.
      *
      * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIELab &init)
+    explicit constexpr GenericColor(const cmsCIELab &init) noexcept
         : first(init.L)
         , second(init.a)
         , third(init.b)
@@ -53,7 +53,7 @@ public:
     /** @brief Constructor.
      *
      * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIELCh &init)
+    explicit constexpr GenericColor(const cmsCIELCh &init) noexcept
         : first(init.L)
         , second(init.C)
         , third(init.h)
@@ -64,7 +64,7 @@ public:
     /** @brief Constructor.
      *
      * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIEXYZ &init)
+    explicit constexpr GenericColor(const cmsCIEXYZ &init) noexcept
         : first(init.X)
         , second(init.Y)
         , third(init.Z)
@@ -79,7 +79,7 @@ public:
      * @param v3 Initial value for @ref third
      *
      * @ref fourth is set to <tt>0</tt>. */
-    constexpr GenericColor(const double v1, const double v2, const double v3)
+    constexpr GenericColor(const double v1, const double v2, const double v3) noexcept
         : first(v1)
         , second(v2)
         , third(v3)
@@ -93,7 +93,7 @@ public:
      * @param v2 Initial value for @ref second
      * @param v3 Initial value for @ref third
      * @param v4 Initial value for @ref fourth */
-    constexpr GenericColor(const double v1, const double v2, const double v3, const double v4)
+    constexpr GenericColor(const double v1, const double v2, const double v3, const double v4) noexcept
         : first(v1)
         , second(v2)
         , third(v3)
@@ -103,12 +103,61 @@ public:
 
     explicit GenericColor(const QList<double> &list);
 
-    bool operator==(const GenericColor &other) const;
-    bool operator!=(const GenericColor &other) const;
+    /** @brief Equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
+    [[nodiscard]] constexpr bool operator==(const GenericColor &other) const noexcept
+    {
+        return ( //
+            (first == other.first) //
+            && (second == other.second) //
+            && (third == other.third) //
+            && (fourth == other.fourth) //
+        );
+    }
 
-    [[nodiscard]] cmsCIELab reinterpretAsLabToCmscielab() const;
-    [[nodiscard]] cmsCIELCh reinterpretAsLchToCmscielch() const;
-    [[nodiscard]] cmsCIEXYZ reinterpretAsXyzToCmsciexyz() const;
+    /** @brief Unequal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
+    [[nodiscard]] constexpr bool operator!=(const GenericColor &other) const noexcept
+    {
+        return !(*this == other);
+    }
+
+    /** @brief Type conversion.
+     *
+     * @warning Interprets the current data members as XZY.
+     *
+     * @returns Type conversion. */
+    [[nodiscard]] constexpr cmsCIEXYZ reinterpretAsXyzToCmsciexyz() const noexcept
+    {
+        return cmsCIEXYZ{first, second, third};
+    }
+
+    /** @brief Type conversion.
+     *
+     * @warning Interprets the current data members as Lab.
+     *
+     * @returns Type conversion. */
+    [[nodiscard]] constexpr cmsCIELab reinterpretAsLabToCmscielab() const noexcept
+    {
+        return cmsCIELab{first, second, third};
+    }
+
+    /** @brief Type conversion.
+     *
+     * @warning Interprets the current data members as LCh.
+     *
+     * @returns Type conversion. */
+    [[nodiscard]] constexpr cmsCIELCh reinterpretAsLchToCmscielch() const noexcept
+    {
+        return cmsCIELCh{first, second, third};
+    }
+
     [[nodiscard]] QList<double> toQList3() const;
     [[nodiscard]] Trio toTrio() const;
 

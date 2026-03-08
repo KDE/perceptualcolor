@@ -4,6 +4,7 @@
 #ifndef PERCEPTUALCOLOR_PERCEPTUALSETTINGS_H
 #define PERCEPTUALCOLOR_PERCEPTUALSETTINGS_H
 
+#include "internalimportexport.h"
 #include "setting.h"
 #include "settings.h"
 #include <qcolor.h>
@@ -25,7 +26,7 @@ namespace PerceptualColor
  *
  * @warning This object is not thread-safe.
  * It must only be used in the main (widget) thread! */
-class PerceptualSettings : public Settings
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT PerceptualSettings : public Settings
 {
     Q_OBJECT
 

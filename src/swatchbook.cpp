@@ -250,6 +250,11 @@ SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, Qt::Orientations wide
 {
 }
 
+/**
+ * @brief Default destructor
+ */
+SwatchBookPrivate::~SwatchBookPrivate() noexcept = default;
+
 /** @brief Recommended size for the widget.
  *
  * Reimplemented from base class.
@@ -1023,10 +1028,10 @@ void SwatchBook::paintEvent(QPaintEvent *event)
         ColorModel::OklabD65);
     const double lightness = //
         colorOklab.has_value() //
-        ? colorOklab.value().first * 100 //
-        : colorCielabD50.L; // fallback if conversion to Oklab has failed
+        ? colorOklab.value().first //
+        : colorCielabD50.L / 100.; // fallback if conversion to Oklab has failed
     const QColor selectionMarkColor = //
-        handleColorFromBackgroundLightness(lightness);
+        handleColorFromBackgroundLightness(lightness, LchSpace::Oklch);
     d_pointer->drawMark(offset, //
                         &widgetPainter, //
                         selectionMarkColor, //

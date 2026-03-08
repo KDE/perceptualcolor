@@ -12,6 +12,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "gradientimageparameters.h"
 #include "helperconstants.h"
+#include "helperconversion.h"
 #include <helper.h>
 #include <qevent.h>
 #include <qguiapplication.h>
@@ -26,27 +27,37 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructs a vertical slider.
+/**
+ * @internal
+ *
+ * @brief Constructs a vertical slider.
  * @param colorEngine The color engine with which this widget should operate.
- * Can be created with @ref createSrgbColorEngine().
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
  * @param parent parent widget (if any) */
-GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
+GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                               const PerceptualColor::LchSpace projectionSpace,
+                               QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new GradientSliderPrivate(this))
+    , d_pointer(new GradientSliderPrivate(this, projectionSpace))
 {
     d_pointer->initialize(colorEngine, Qt::Orientation::Vertical);
 }
 
 /** @brief Constructs a slider.
  * @param colorEngine The color engine with which this widget should operate.
- * Can be created with @ref createSrgbColorEngine().
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
  * @param orientation The orientation parameter determines whether
  * the slider is horizontal or vertical; the valid values
  * are <tt>Qt::Vertical</tt> and <tt>Qt::Horizontal</tt>.
  * @param parent parent widget (if any) */
-GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, Qt::Orientation orientation, QWidget *parent)
+GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                               const PerceptualColor::LchSpace projectionSpace,
+                               Qt::Orientation orientation,
+                               QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new GradientSliderPrivate(this))
+    , d_pointer(new GradientSliderPrivate(this, projectionSpace))
 {
     d_pointer->initialize(colorEngine, orientation);
 }
@@ -61,12 +72,18 @@ GradientSlider::~GradientSlider() noexcept
 /** @brief Constructor
  *
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
-GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink)
-    : m_firstColorCieLchD50A{0, 0, 0, 0} // dummy value
-    , m_secondColorCieLchD50A{0, 0, 0, 0} // dummy value
+ * is the private implementation.
+ *
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
+ */
+GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink, const LchSpace projectionSpace)
+    : m_firstColorLchA{0, 0, 0, 0} // dummy value
+    , m_projectionSpace(projectionSpace)
+    , m_secondColorLchA{0, 0, 0, 0} // dummy value
     , q_pointer(backLink)
 {
+    m_gradientImageParameters.setProjectionSpace(projectionSpace);
 }
 
 /**
@@ -110,57 +127,57 @@ void GradientSliderPrivate::initialize(const QSharedPointer<ColorEngine> &colorE
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-GenericColor GradientSlider::firstColorCieLchD50A() const
+GenericColor GradientSlider::firstColorLchA() const
 {
-    return d_pointer->m_firstColorCieLchD50A;
+    return d_pointer->m_firstColorLchA;
 }
 
-/** @brief Setter for @ref firstColorCieLchD50A property.
+/** @brief Setter for @ref firstColorLchA property.
  *
- * @param newFirstColorCieLchD50A the new @ref firstColorCieLchD50A */
-void GradientSlider::setFirstColorCieLchD50A(const PerceptualColor::GenericColor &newFirstColorCieLchD50A)
+ * @param newFirstColorLchA the new @ref firstColorLchA */
+void GradientSlider::setFirstColorLchA(const PerceptualColor::GenericColor &newFirstColorLchA)
 {
-    if (!(d_pointer->m_firstColorCieLchD50A == newFirstColorCieLchD50A)) {
-        d_pointer->m_firstColorCieLchD50A = newFirstColorCieLchD50A;
-        d_pointer->m_gradientImageParameters.setFirstColorCieLchD50A(newFirstColorCieLchD50A);
+    if (!(d_pointer->m_firstColorLchA == newFirstColorLchA)) {
+        d_pointer->m_firstColorLchA = newFirstColorLchA;
+        d_pointer->m_gradientImageParameters.setFirstColorLchA(newFirstColorLchA);
         d_pointer->m_gradientImage.setImageParameters( //
             d_pointer->m_gradientImageParameters);
         update();
-        Q_EMIT firstColorCieLchD50AChanged(newFirstColorCieLchD50A);
+        Q_EMIT firstColorLchAChanged(newFirstColorLchA);
     }
 }
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-GenericColor GradientSlider::secondColorCieLchD50A() const
+GenericColor GradientSlider::secondColorLchA() const
 {
-    return d_pointer->m_secondColorCieLchD50A;
+    return d_pointer->m_secondColorLchA;
 }
 
-/** @brief Setter for @ref secondColorCieLchD50A property.
+/** @brief Setter for @ref secondColorLchA property.
  *
- * @param newSecondColorCieLchD50A the new @ref secondColorCieLchD50A */
-void GradientSlider::setSecondColorCieLchD50A(const PerceptualColor::GenericColor &newSecondColorCieLchD50A)
+ * @param newSecondColorLchA the new @ref secondColorLchA */
+void GradientSlider::setSecondColorLchA(const PerceptualColor::GenericColor &newSecondColorLchA)
 {
-    if (!(d_pointer->m_secondColorCieLchD50A == newSecondColorCieLchD50A)) {
-        d_pointer->m_secondColorCieLchD50A = newSecondColorCieLchD50A;
-        d_pointer->m_gradientImageParameters.setSecondColorCieLchD50A(newSecondColorCieLchD50A);
+    if (!(d_pointer->m_secondColorLchA == newSecondColorLchA)) {
+        d_pointer->m_secondColorLchA = newSecondColorLchA;
+        d_pointer->m_gradientImageParameters.setSecondColorLchA(newSecondColorLchA);
         d_pointer->m_gradientImage.setImageParameters( //
             d_pointer->m_gradientImageParameters);
         update();
-        Q_EMIT secondColorCieLchD50AChanged(newSecondColorCieLchD50A);
+        Q_EMIT secondColorLchAChanged(newSecondColorLchA);
     }
 }
 
-/** @brief Setter for both, @ref firstColorCieLchD50A property and @ref secondColorCieLchD50A
+/** @brief Setter for both, @ref firstColorLchA property and @ref secondColorLchA
  * property.
  *
- * @param newFirstColorCieLchD50A the new @ref firstColorCieLchD50A
- * @param newSecondColorCieLchD50A the new @ref secondColorCieLchD50A */
-void GradientSlider::setColors(const PerceptualColor::GenericColor &newFirstColorCieLchD50A, const PerceptualColor::GenericColor &newSecondColorCieLchD50A)
+ * @param newFirstColorLchA the new @ref firstColorLchA
+ * @param newSecondColorLchA the new @ref secondColorLchA */
+void GradientSlider::setColors(const PerceptualColor::GenericColor &newFirstColorLchA, const PerceptualColor::GenericColor &newSecondColorLchA)
 {
-    setFirstColorCieLchD50A(newFirstColorCieLchD50A);
-    setSecondColorCieLchD50A(newSecondColorCieLchD50A);
+    setFirstColorLchA(newFirstColorLchA);
+    setSecondColorLchA(newSecondColorLchA);
     update();
 }
 
@@ -607,12 +624,14 @@ void GradientSlider::paintEvent(QPaintEvent *event)
                                QPointF(handleCoordinatePoint, gradientThickness()));
     }
     pen.setWidthF(handleOutlineThickness());
-    pen.setColor( //
-        handleColorFromBackgroundLightness( //
-            d_pointer->m_gradientImageParameters
-                .colorFromValue( //
-                    d_pointer->m_value)
-                .first));
+    const auto lightnessAtHandle = d_pointer
+                                       ->m_gradientImageParameters //
+                                       .colorFromValue(d_pointer->m_value) //
+                                       .first;
+    const auto handleColor = handleColorFromBackgroundLightness( //
+        lightnessAtHandle,
+        d_pointer->m_projectionSpace);
+    pen.setColor(handleColor);
     bufferPainter.setPen(pen);
     bufferPainter.drawLine(QPointF(handleCoordinatePoint, 0), //
                            QPointF(handleCoordinatePoint, gradientThickness()));

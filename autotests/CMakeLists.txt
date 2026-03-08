@@ -139,9 +139,7 @@ if(BUILD_TESTING)
         testchromahueimageparameters
         testchromalightnessdiagram
         testchromalightnessimageparameters
-        testcielchd50values
         testcolordialog
-        testcolorengine
         testcolorpatch
         testcolorwheel
         testcolorwheelimage
@@ -164,14 +162,13 @@ if(BUILD_TESTING)
         testinterlacingpass
         testiohandlerfactory
         testlanguagechangeeventfilter
+        testlchvalues
         testmultispinbox
         testmultispinboxsection
-        testoklchvalues
         testperceptualsettings
         testpolarpointf
         testportaleyedropper
         testrgbcolor
-        testcolorenginefactory
         testsetting
         testsettingbase
         testsettings

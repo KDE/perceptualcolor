@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "helper.h"
 
-#include <colorenginefactory.h>
+#include "colorengine.h"
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
@@ -508,7 +508,7 @@ private Q_SLOTS:
     void testWcsBasicColors()
     {
         const auto colors = wcsBasicColors( //
-            createSrgbColorEngine());
+            ColorEngine::createSrgb());
         QCOMPARE(
             // For test, choose a value that is not in the center neither
             // horizontally nor vertically; this might detect mirroring bugs.

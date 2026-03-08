@@ -12,11 +12,13 @@
 #include <cmath>
 #include <lcms2.h>
 #include <optional>
+#include <qbenchmark.h>
 #include <qgenericmatrix.h>
 #include <qglobal.h>
 #include <qhash.h>
 #include <qmetatype.h>
 #include <qobject.h>
+#include <qrgb.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
@@ -206,6 +208,71 @@ private:
             << Trio(oklabGray);
     }
 
+    void generateDataSRgbOklab()
+    {
+        qRegisterMetaType<cmsCIELab>();
+        qRegisterMetaType<QRgb>();
+        QTest::addColumn<QRgb>("srgb");
+        QTest::addColumn<cmsCIELab>("oklab");
+
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+
+        constexpr cmsCIELab oklabWhite //
+            {1.0000000000000002, -4.996003610813204e-16, 0};
+        QTest::newRow("white 0xFF, 0xFF, 0xFF, 0xFF") //
+            << qRgba(0xFF, 0xFF, 0xFF, 0xFF) //
+            << oklabWhite;
+
+        constexpr cmsCIELab oklabRed //
+            {0.6262871732047106, 0.22407052063705113, 0.12527327000309313};
+        QTest::newRow("red 0xFE, 0x01, 0x01, 0xFF") //
+            << qRgba(0xFE, 0x01, 0x01, 0xFF) //
+            << oklabRed;
+
+        constexpr cmsCIELab oklabGreen //
+            {0.8639098058999964, -0.2330757717098325, 0.17886166282839522};
+        QTest::newRow("green 0x01, 0xFE, 0x01, 0xFF") //
+            << qRgba(0x01, 0xFE, 0x01, 0xFF) //
+            << oklabGreen;
+
+        constexpr cmsCIELab oklabBlue //
+            {0.4511343049665099, -0.031935070958989176, -0.3103103423701257};
+        QTest::newRow("blue 0x01, 0x01, 0xFE, 0xFF") //
+            << qRgba(0x01, 0x01, 0xFE, 0xFF) //
+            << oklabBlue;
+
+        constexpr cmsCIELab oklabCyan //
+            {0.9027384515389787, -0.14893819606031705, -0.03926738454235723};
+        QTest::newRow("cyan 0x01, 0xFE, 0xFE, 0xFF") //
+            << qRgba(0x01, 0xFE, 0xFE, 0xFF) //
+            << oklabCyan;
+
+        constexpr cmsCIELab oklabMagenta //
+            {0.6997232142868329, 0.27358575972682664, -0.16856336391920845};
+        QTest::newRow("magenta 0xFE, 0x01, 0xFE, 0xFF") //
+            << qRgba(0xFE, 0x01, 0xFE, 0xFF) //
+            << oklabMagenta;
+
+        constexpr cmsCIELab oklabYellow //
+            {0.9651131560979367, -0.07111863396799117, 0.19788779483410568};
+        QTest::newRow("yellow 0xFE, 0xFE, 0x01, 0xFF") //
+            << qRgba(0xFE, 0xFE, 0x01, 0xFF) //
+            << oklabYellow;
+
+        constexpr cmsCIELab oklabBlack //
+            {0, 0, 0};
+        QTest::newRow("black 0x00, 0x00, 0x00, 0xFF") //
+            << qRgba(0x00, 0x00, 0x00, 0xFF) //
+            << oklabBlack;
+
+        constexpr cmsCIELab oklabGray //
+            {0.5998708056221469, -5.551115123125783e-16, 0};
+        QTest::newRow("gray 0x80, 0x80, 0x80, 0xFF") //
+            << qRgba(0x80, 0x80, 0x80, 0xFF) //
+            << oklabGray;
+    }
+
 private Q_SLOTS:
     void initTestCase()
     {
@@ -286,7 +353,8 @@ private Q_SLOTS:
         QFETCH(double, y);
         QFETCH(double, z);
         QFETCH(Trio, oklab);
-        const auto actualXyzD65 = AbsoluteColor::fromOklabToXyzD65(GenericColor(oklab));
+        const auto actualXyzD65 = //
+            AbsoluteColor::fromOklabToXyzD65(GenericColor(oklab));
         constexpr double epsilon = 0.001;
         QVERIFY(isNearlyEqual(actualXyzD65.first, x, epsilon));
         QVERIFY(isNearlyEqual(actualXyzD65.second, y, epsilon));
@@ -336,6 +404,92 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actualCielabD50.first, cmscielab.L, epsilon));
         QVERIFY(isNearlyEqual(actualCielabD50.second, cmscielab.a, epsilon));
         QVERIFY(isNearlyEqual(actualCielabD50.third, cmscielab.b, epsilon));
+    }
+
+    void testLinearToSRgb()
+    {
+        QCOMPARE(AbsoluteColor::linearToSRgb(-0), 0);
+        QCOMPARE(AbsoluteColor::linearToSRgb(0), 0);
+        QCOMPARE(AbsoluteColor::linearToSRgb(+0), 0);
+        QVERIFY(AbsoluteColor::linearToSRgb(1) <= 1.001); // Allow for rounding errors
+    }
+
+    void testToByte()
+    {
+        QCOMPARE(AbsoluteColor::toByte(-0.001f), 0); // clamp (or round) -0.255
+        QCOMPARE(AbsoluteColor::toByte(-0.f), 0);
+        QCOMPARE(AbsoluteColor::toByte(0.f), 0);
+        QCOMPARE(AbsoluteColor::toByte(+0.f), 0);
+        QCOMPARE(AbsoluteColor::toByte(0.001f), 0); // round down 0.255
+        QCOMPARE(AbsoluteColor::toByte(0.002f), 1); // round up 0.51
+        QCOMPARE(AbsoluteColor::toByte(0.499f), 127); // round down 127.245
+        QCOMPARE(AbsoluteColor::toByte(0.5f), 128); // round up 127.5
+        QCOMPARE(AbsoluteColor::toByte(1.f), 255);
+        QCOMPARE(AbsoluteColor::toByte(1.001f), 255); // clamp (or round down) 255.255
+    }
+
+    void testFastFromOklabToSRgbOrTransparent_data()
+    {
+        generateDataSRgbOklab();
+    }
+
+    void testFastFromOklabToSRgbOrTransparent()
+    {
+        QFETCH(QRgb, srgb);
+        QFETCH(cmsCIELab, oklab);
+
+        const QRgb actualResult = //
+            AbsoluteColor::fastFromOklabToSRgbOrTransparent(oklab);
+        QCOMPARE(actualResult, srgb);
+    }
+
+    void fastFromOklabToSRgbClamped_data()
+    {
+        generateDataSRgbOklab();
+    }
+
+    void fastFromOklabToSRgbClamped()
+    {
+        QFETCH(QRgb, srgb);
+        QFETCH(cmsCIELab, oklab);
+
+        const QRgb actualResult = //
+            AbsoluteColor::fastFromOklabToSRgbClamped(GenericColor(oklab));
+        QCOMPARE(actualResult, srgb);
+    }
+
+    void testFastFromOklabToSRgbOrTransparentInvalid()
+    {
+        const cmsCIELab invalid{0.5, 5, 6};
+        const QRgb actualResult = //
+            AbsoluteColor::fastFromOklabToSRgbOrTransparent(invalid);
+        QCOMPARE(actualResult, 0);
+    }
+
+    void benchmarkFastFromOklabToSRgbOrTransparentInGamut()
+    {
+        cmsCIELab lab;
+        lab.L = 0.5f;
+        lab.a = 0.1f;
+        lab.b = 0.1f;
+        QBENCHMARK {
+            for (int i = 0; i < 1000000; ++i) {
+                Q_UNUSED(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+            }
+        }
+    }
+
+    void benchmarkFastFromOklabToSRgbOrTransparentOutOfGamut()
+    {
+        cmsCIELab lab;
+        lab.L = 0.5f;
+        lab.a = 0.1f;
+        lab.b = 5.1f;
+        QBENCHMARK {
+            for (int i = 0; i < 1000000; ++i) {
+                Q_UNUSED(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+            }
+        }
     }
 };
 

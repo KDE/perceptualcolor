@@ -87,18 +87,6 @@ private Q_SLOTS:
                       "Verify that gamut precision value is not too high");
     }
 
-    void testSteps()
-    {
-        static_assert(pageStepChroma > singleStepChroma, //
-                      "Chroma page step is bigger than single step.");
-        static_assert(singleStepChroma > 0, //
-                      "Chroma single step is positive.");
-        static_assert(pageStepHue > singleStepHue, //
-                      "Hue page step is bigger than single step.");
-        static_assert(singleStepHue > 0, //
-                      "Hue single step is positive.");
-    }
-
     void testRichTextMarkerIsRecognized()
     {
         const QString myMarker = richTextMarker;

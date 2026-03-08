@@ -4,6 +4,7 @@
 #ifndef PERCEPTUALCOLOR_SETTINGS_H
 #define PERCEPTUALCOLOR_SETTINGS_H
 
+#include "internalimportexport.h"
 #include <qfilesystemwatcher.h>
 #include <qglobal.h>
 #include <qobject.h>
@@ -47,7 +48,7 @@ namespace PerceptualColor
  * <a href="https://www.vikingsoftware.com/blog/more-type-safety-with-qsettings/">
  * alternative approaches available</a>, but they may be overkill for our
  * limited requirements here. */
-class Settings : public QObject
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT Settings : public QObject
 {
     Q_OBJECT
 

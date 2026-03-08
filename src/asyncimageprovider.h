@@ -6,6 +6,7 @@
 
 #include "asyncimageproviderbase.h"
 #include "asyncimagerenderthread.h"
+#include "internalimportexport.h"
 #include <optional>
 #include <qglobal.h>
 #include <qimage.h>

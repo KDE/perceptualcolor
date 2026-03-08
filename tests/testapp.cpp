@@ -4,13 +4,16 @@
 #include "absolutecolor.h" // IWYU pragma: keep
 #include "asyncimageprovider.h" // IWYU pragma: keep
 #include "asyncimageproviderbase.h" // IWYU pragma: keep
+#include "chromahuediagram.h" // IWYU pragma: keep
+#include "chromahueimageparameters.h" // IWYU pragma: keep
+#include "chromalightnessdiagram.h" // IWYU pragma: keep
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
 #include "colordialog_p.h" // IWYU pragma: keep
 #include "colorengine.h" // IWYU pragma: keep
-#include "colorenginefactory.h" // IWYU pragma: keep
 #include "colorpatch.h" // IWYU pragma: keep
 #include "colorpatch_p.h" // IWYU pragma: keep
+#include "colorwheel.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
 #include "csscolor.h" // IWYU pragma: keep
 #include "genericcolor.h" // IWYU pragma: keep
@@ -21,9 +24,9 @@
 #include "helpermath.h" // IWYU pragma: keep
 #include "helperposixmath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
+#include "lchvalues.h" // IWYU pragma: keep
 #include "multispinbox.h" // IWYU pragma: keep
 #include "multispinboxsection.h" // IWYU pragma: keep
-#include "oklchvalues.h" // IWYU pragma: keep
 #include "perceptualsettings.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
 #include "portaleyedropper.h" // IWYU pragma: keep
@@ -32,6 +35,7 @@
 #include "settings.h" // IWYU pragma: keep
 #include "swatchbook.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
+#include "wheelcolorpicker.h" // IWYU pragma: keep
 #include <qaction.h> // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
 #include <qcolor.h> // IWYU pragma: keep
@@ -125,28 +129,7 @@ int main(int argc, char *argv[])
 
     // Initialize the color dialog
 
-    auto myColorEngine = //
-        PerceptualColor::tryCreateColorEngineFromFile(
-            // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
-            // QStringLiteral("/usr/share/color/icc/test/PhotoGamutRGB_avg6c.icc")
-            // QStringLiteral("WideGamutRGB.icc") //
-            // QStringLiteral("/usr/share/color/icc/compatibleWithAdobeRGB1998.icc")
-            QStringLiteral("invalid")
-            // QStringLiteral("/usr/share/color/icc/sRGB.icc")
-            // QStringLiteral("/usr/share/color/icc/sRGB_v4_ICC_preference.icc")
-            // QStringLiteral("/usr/share/color/icc/krita/Rec2020-elle-V4-g10.icc") //
-            // QStringLiteral("/usr/share/color/icc/krita/LargeRGB-elle-V2-g22.icc") //
-            // QStringLiteral("/usr/share/color/icc/krita/WideRGB-elle-V2-g22.icc") //
-            // QStringLiteral("/usr/share/color/icc/krita/XYZ-D50-Identity-elle-V4.icc") //
-            // QStringLiteral("/usr/share/color/icc/krita/ACEScg-elle-V4-g10.icc") //
-            // QStringLiteral("/usr/share/color/icc/krita/cmyk.icm") //
-            // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
-            // QStringLiteral("/usr/share/color/icc/krita/ITUR_2100_PQ_FULL.ICC") //
-            // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
-        );
-    if (myColorEngine.isNull()) {
-        myColorEngine = PerceptualColor::createSrgbColorEngine();
-    }
+    auto myColorEngine = PerceptualColor::ColorEngine::createSrgb();
 
     PerceptualColor::ColorDialog m_colorDialog(myColorEngine, //
                                                QStringLiteral("testapp"));
@@ -387,6 +370,46 @@ int main(int argc, char *argv[])
     // builtInDialog.setOption(QColorDialog::NoEyeDropperButton, true);
 
     // m_colorDialog.setOption(QColorDialog::NoEyeDropperButton, true);
+
+#ifndef MSVC_DLL
+    ChromaLightnessImageParameters m_imageParameters;
+    m_imageParameters.colorEngine = myColorEngine;
+    m_imageParameters.imageSizePhysical = QSize(500, 500);
+    m_imageParameters.projectionSpace = LchSpace::Oklch;
+    for (int i = 264; i < 265; i += 2) {
+        m_imageParameters.hue = i;
+        AsyncImageProvider<ChromaLightnessImageParameters> *m_imageProvider = new AsyncImageProvider<ChromaLightnessImageParameters>;
+        QLabel *label = new QLabel;
+        QObject::connect( //
+            m_imageProvider, //
+            &AsyncImageProvider<ChromaLightnessImageParameters>::interlacingPassCompleted, //
+            label,
+            [label, m_imageProvider, i]() {
+                label->setPixmap(QPixmap::fromImage(m_imageProvider->getCache()));
+                label->adjustSize();
+                label->setWindowTitle(QStringLiteral("Image view %1").arg(i));
+                // label->show();
+            });
+        m_imageProvider->setImageParameters(m_imageParameters);
+        m_imageProvider->refreshSync();
+    }
+#endif
+
+    // ChromaLightnessDiagram myDiagram(myColorEngine, LchSpace::Oklch);
+    // auto color = myDiagram.currentColorLch();
+    // color.third = 264;
+    // myDiagram.setCurrentColorLch(color);
+    // myDiagram.show();
+    //
+    // ColorWheel myWheel(myColorEngine, LchSpace::Oklch);
+    // myWheel.show();
+
+    WheelColorPicker myWheelPicker(myColorEngine, LchSpace::Oklch);
+    // myWheelPicker.show();
+
+    // ChromaHueDiagram myChromaHueDiagram(myColorEngine, LchSpace::Oklch);
+    // myChromaHueDiagram.setCurrentColorLch(GenericColor(0.45, 0, 0));
+    // myChromaHueDiagram.show();
 
     // Run
     return app.exec();

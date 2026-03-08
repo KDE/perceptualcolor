@@ -9,9 +9,7 @@
 
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
-#include "cielchd50values.h"
 #include "colorengine.h"
-#include "colorenginefactory.h"
 #include "colorpatch.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -20,9 +18,9 @@
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "initializetranslation.h"
+#include "lchvalues.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
-#include "oklchvalues.h"
 #include "perceptualsettings.h"
 #include "portaleyedropper.h"
 #include "rgbcolor.h"
@@ -193,15 +191,6 @@ QString ColorDialogPrivate::translateColorModel(cmsColorSpaceSignature model)
  * @todo NICETOHAVE Add to the color-space tooltip information about
  * the RGB profile illuminant? (This would have to be implemented
  * in @ref ColorEngine first.)
- *
- * @todo NICETOHAVE Provide the information about available
- * @ref ColorEngine::profileRenderingIntentDirections() in the tooltip of the
- * color space. Example: Rendering intents: Perceptual (input, output, proof)
- * [br] Relative (input, proof) [br] Saturation (output) [br]
- * Absolute colorimetric (proof). Missing rendering intents are not displayed.
- * Limiting ourself to these four standard rendering intents, leaving LittleCMS
- * extensions out of scope. Providing i18n instead of using the rendering
- * intent descriptions of LittleCMS.
  */
 void ColorDialogPrivate::retranslateUi()
 {
@@ -210,193 +199,6 @@ void ColorDialogPrivate::retranslateUi()
 
     /*: @item/plain Arc-degree value in a spinbox. Range: 0°–360°. */
     const QString arcDegreeInSpinbox = tr("%1°");
-
-    QStringList profileInfo;
-    const QString name = //
-        m_colorEngine->profileName().toHtmlEscaped();
-    if (!name.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added
-        to the info text about current color space. */
-        profileInfo.append(tableRow.arg(tr("Name:"), name));
-    }
-    /*: @item:intext The maximum chroma. */
-    const QString maximumCielchD50Chroma = //
-        tr("%L1 (estimated)")
-            .arg(m_colorEngine->profileMaximumCielchD50Chroma(), //
-                 0, //
-                 'f', //
-                 decimals);
-    /*: @item:intext An information from the color profile to be added
-    to the info text about current color space. */
-    profileInfo.append( //
-        tableRow.arg(tr("Maximum CIELCh-D50 chroma:"), maximumCielchD50Chroma));
-    /*: @item:intext The maximum chroma. */
-    const QString maximumOklchChroma = //
-        tr("%L1 (estimated)")
-            .arg(m_colorEngine->profileMaximumOklchChroma(), //
-                 0, //
-                 'f', //
-                 okdecimals);
-    /*: @item:intext An information from the color profile to be added
-    to the info text about current color space. */
-    profileInfo.append( //
-        tableRow.arg(tr("Maximum Oklch chroma:"), maximumOklchChroma));
-    QString profileClass;
-    switch (m_colorEngine->profileClass()) {
-    case cmsSigDisplayClass:
-        /*: @item:intext The class of an ICC profile. */
-        profileClass = tr("Display profile");
-        break;
-    case cmsSigAbstractClass: // Image effect profile (Abstract profile)
-                              // This ICC profile class is called "abstract
-                              // profile" in the official standard. However,
-                              // the name is misleading. The actual function of
-                              // these ICC profiles is to apply image effects.
-    case cmsSigColorSpaceClass: // Color space conversion profile
-    case cmsSigInputClass: // Input profile
-    case cmsSigLinkClass: // Device link profile
-    case cmsSigNamedColorClass: // Named color profile
-    case cmsSigOutputClass: // Output profile
-    default:
-        // These profile classes are currently not supported.
-        break;
-    }
-    if (!profileClass.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added
-        to the info text about current color space. */
-        profileInfo.append( //
-            tableRow.arg(tr("Profile class:"), profileClass));
-    }
-    const QString colorModel = //
-        translateColorModel(m_colorEngine->profileColorModel());
-    if (!colorModel.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added
-        to the info text about current color space.
-        The color model of the color space which is described by this
-        profile. */
-        profileInfo.append(tableRow.arg(tr("Color model:"), colorModel));
-    }
-    const QString manufacturer = //
-        m_colorEngine->profileManufacturer().toHtmlEscaped();
-    if (!manufacturer.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added
-        to the info text about current color space.
-        This is usually the manufacturer of the device to which
-        the colour profile applies. */
-        profileInfo.append(tableRow.arg(tr("Manufacturer:"), manufacturer));
-    }
-    const QString model = //
-        m_colorEngine->profileModel().toHtmlEscaped();
-    if (!model.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added to
-        the info text about current color space.
-        This is usually the model identifier of the device to which
-        the colour profile applies. */
-        profileInfo.append(tableRow.arg(tr("Device model:"), (model)));
-    }
-    const QDateTime creationDateTime = //
-        m_colorEngine->profileCreationDateTime();
-    if (!creationDateTime.isNull()) {
-        const auto creationDateTimeString = QLocale().toString(
-            // Date and time:
-            creationDateTime,
-            // Format:
-            QLocale::LongFormat);
-        /*: @item:intext An information from the color profile to be added to
-        the info text about current color space.
-        This is the date and time of the creation of the profile. */
-        profileInfo.append( //
-            tableRow.arg(tr("Created:"), (creationDateTimeString)));
-    }
-    const QVersionNumber iccVersion = m_colorEngine->profileIccVersion();
-    /*: @item:intext An information from the color profile to be added to
-    the info text about current color space.
-    This is the version number of the ICC file format that is used. */
-    profileInfo.append( //
-        tableRow.arg(tr("ICC format:"), (iccVersion.toString())));
-    const bool hasMatrixShaper = //
-        m_colorEngine->profileHasMatrixShaper();
-    const bool hasClut = //
-        m_colorEngine->profileHasClut();
-    if (hasMatrixShaper || hasClut) {
-        const QString matrixShaperString = tableRow.arg(
-            /*: @item:intext An information from the color profile to be added
-            to the info text about current color space.
-            Wether the profile has a matrix shaper or a color lookup table
-            (CLUT) or both. */
-            tr("Implementation:"));
-        if (hasMatrixShaper && hasClut) {
-            /*: @item:intext An information from the color profile to be added
-            to the info text about current color space.
-            Wether the profile has a matrix shaper or a color lookup table
-            (CLUT) or both. */
-            profileInfo.append( //
-                matrixShaperString.arg(tr("Matrices and color lookup tables")));
-        } else if (hasMatrixShaper) {
-            /*: @item:intext An information from the color profile to be added
-            to the info text about current color space.
-            Wether the profile has a matrix shaper or a color lookup table
-            (CLUT) or both. */
-            profileInfo.append(matrixShaperString.arg(tr("Matrices")));
-        } else if (hasClut) {
-            /*: @item:intext An information from the color profile to be added
-            to the info text about current color space.
-            Wether the profile has a matrix shaper or a color lookup table
-            (CLUT) or both. */
-            profileInfo.append( //
-                matrixShaperString.arg(tr("Color lookup tables")));
-        }
-    }
-    const QString pcsColorModelText = //
-        translateColorModel(m_colorEngine->profilePcsColorModel());
-    if (!pcsColorModelText.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added
-        to the info text about current color space.
-        The color model of the PCS (profile connection space) which is used
-        internally by this profile. */
-        profileInfo.append( //
-            tableRow.arg(tr("PCS color model:"), pcsColorModelText));
-    }
-    const QString copyright = m_colorEngine->profileCopyright();
-    if (!copyright.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added
-        to the info text about current color space.
-        The copyright of this profile. */
-        profileInfo.append(tableRow.arg(tr("Copyright:"), copyright));
-    }
-    const qint64 fileSize = //
-        m_colorEngine->profileFileSize();
-    if (fileSize >= 0) {
-        /*: @item:intext An information from the color profile to be added to
-        the info text about current color space.
-        This is the size of the ICC file that was read in. */
-        profileInfo.append(tableRow.arg(tr("File size:"), //
-                                        QLocale().formattedDataSize(fileSize)));
-    }
-    const QString fileName = //
-        m_colorEngine->profileAbsoluteFilePath();
-    if (!fileName.isEmpty()) {
-        /*: @item:intext An information from the color profile to be added to
-        the info text about current color space. */
-        profileInfo.append(tableRow.arg(tr("File name:"), fileName));
-    }
-    if (profileInfo.isEmpty()) {
-        m_rgbGroupBox->setToolTip(QString());
-    } else {
-        const QString tableString = QStringLiteral(
-            "<b>%1</b><br/>"
-            "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\">"
-            "%2"
-            "</table>");
-        m_rgbGroupBox->setToolTip(richTextMarker
-                                  + tableString.arg(
-                                      /*: @info:intext Title of info text about
-                                      current color space (will be followed by
-                                      other information as available
-                                      in the color profile. */
-                                      tr("Color space information"), //
-                                      profileInfo.join(QString())));
-    }
 
     /*: @label:spinbox Label for CIE’s CIELCH color model, based on Lightness,
      * Chroma and Hue, and using the D50 illuminant as white point.*/
@@ -545,9 +347,9 @@ void ColorDialogPrivate::retranslateUi()
                                    + tr("<p>Lightness: 0%⁠–⁠100%</p>"
                                         "<p>Chroma: 0⁠–⁠%L1</p>"
                                         "<p>Hue: 0°⁠–⁠360°</p>")
-                                         .arg(CielchD50Values::maximumChroma));
+                                         .arg(cielchD50Values.maximumChroma));
 
-    constexpr double maxOklchChroma = OklchValues::maximumChroma;
+    constexpr double maxOklchChroma = oklchValues.maximumChroma;
     /*: @info:tooltip Help text for Oklch. “lightness” is different from
     “brightness”/“value” and should therefore get a different translation. */
     m_oklchSpinBox->setToolTip(richTextMarker
@@ -653,6 +455,9 @@ void ColorDialogPrivate::retranslateUi()
             m_multispinboxSectionSeparator + arcDegreeInSpinbox);
         m_oklchSpinBox->setFormat(oklchSections);
     }
+
+    /*: @item Name of the sRGB color space. */
+    m_rgbGroupBox->setTitle(tr("sRGB"));
 
     if (m_eyedropperButton) {
         // Following KDE’s HIG, if the command requires additional user
@@ -820,7 +625,7 @@ void ColorDialogPrivate::reloadIcons()
 /** @brief Basic initialization.
  *
  * @param colorEngine The color engine with which this widget should operate.
- * Can be created with @ref createSrgbColorEngine().
+ * Can be created with @ref ColorEngine::createSrgb().
  *
  * Code that is shared between the various overloaded constructors.
  */
@@ -930,25 +735,25 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
             &Setting<PerceptualSettings::ColorList>::valueChanged,
             this,
             &ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook);
-    m_wheelColorPicker = new WheelColorPicker(m_colorEngine);
+    m_wheelColorPicker = new WheelColorPicker(m_colorEngine, m_projectionSpace);
     m_hueFirstWrapperWidget = new QWidget;
     QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
     tempHueFirstLayout->addWidget(m_wheelColorPicker);
     m_hueFirstWrapperWidget->setLayout(tempHueFirstLayout);
 
-    m_lchLightnessSelector = new GradientSlider(m_colorEngine);
-    GenericColor blackCielchD50;
-    blackCielchD50.first = 0;
-    blackCielchD50.second = 0;
-    blackCielchD50.third = 0;
-    blackCielchD50.fourth = 1;
-    GenericColor whiteCielchD50;
-    whiteCielchD50.first = 100;
-    whiteCielchD50.second = 0;
-    whiteCielchD50.third = 0;
-    whiteCielchD50.fourth = 1;
-    m_lchLightnessSelector->setColors(blackCielchD50, whiteCielchD50);
-    m_chromaHueDiagram = new ChromaHueDiagram(m_colorEngine);
+    m_lchLightnessSelector = new GradientSlider(m_colorEngine, m_projectionSpace);
+    GenericColor blackLch;
+    blackLch.first = 0;
+    blackLch.second = 0;
+    blackLch.third = 0;
+    blackLch.fourth = 1;
+    GenericColor whiteLch;
+    whiteLch.first = m_lchValues.maximumLightness;
+    whiteLch.second = 0;
+    whiteLch.third = 0;
+    whiteLch.fourth = 1;
+    m_lchLightnessSelector->setColors(blackLch, whiteLch);
+    m_chromaHueDiagram = new ChromaHueDiagram(m_colorEngine, m_projectionSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
     tempLightnesFirstLayout->addWidget(m_chromaHueDiagram);
@@ -1077,9 +882,10 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
     // Create widgets for alpha value
     QHBoxLayout *m_alphaLayout = new QHBoxLayout();
     m_alphaGradientSlider = new GradientSlider(m_colorEngine, //
+                                               m_projectionSpace,
                                                Qt::Orientation::Horizontal);
     m_alphaGradientSlider->setSingleStep(singleStepAlpha);
-    m_alphaGradientSlider->setPageStep(pageStepAlpha);
+    m_alphaGradientSlider->setPageStep(singleStepAlpha * pageStepFactor);
     m_alphaSpinBox = new QDoubleSpinBox();
     m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
     m_alphaSpinBox->setRange(0, 100);
@@ -1258,12 +1064,12 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
             &ColorDialogPrivate::readLightnessValue // slot
     );
     connect(m_wheelColorPicker, // sender
-            &WheelColorPicker::currentColorCielchD50Changed, // signal
+            &WheelColorPicker::currentColorLchChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readWheelColorPickerValues // slot
     );
     connect(m_chromaHueDiagram, // sender
-            &ChromaHueDiagram::currentColorCielchD50Changed, // signal
+            &ChromaHueDiagram::currentColorLchChanged, // signal
             this, // receiver
             &ColorDialogPrivate::readChromaHueDiagramValue // slot
     );
@@ -1277,7 +1083,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
             this, // receiver
             [this](const qreal newFraction) { // lambda
                 const QSignalBlocker blocker(m_alphaSpinBox);
-                m_alphaSpinBox->setValue(newFraction * 100);
+                m_alphaSpinBox->setValue(newFraction * 100.);
             });
     connect(m_alphaSpinBox, // sender
             QOverload<double>::of(&QDoubleSpinBox::valueChanged), // signal
@@ -1285,7 +1091,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
             [this](const double newValue) { // lambda
                 // m_alphaGradientSlider has range [0, 1], while the signal
                 // has range [0, 100]. This has to be adapted:
-                m_alphaGradientSlider->setValue(newValue / 100);
+                m_alphaGradientSlider->setValue(newValue / 100.);
             });
 
     // Initialize the options
@@ -1366,7 +1172,7 @@ ColorDialog::ColorDialog(QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
 {
-    d_pointer->initialize(createSrgbColorEngine());
+    d_pointer->initialize(ColorEngine::createSrgb());
     setCurrentColor(d_pointer->defaultColor());
 }
 
@@ -1384,7 +1190,7 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
 {
-    d_pointer->initialize(createSrgbColorEngine());
+    d_pointer->initialize(ColorEngine::createSrgb());
     // Calling setCurrentColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
@@ -1396,7 +1202,6 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
 /** @brief Constructor
  *
  *  @param colorEngine The color engine with which this widget should operate.
- *  Can be created with @ref createSrgbColorEngine().
  *  @param gamutIdentifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
@@ -1428,7 +1233,6 @@ QColor ColorDialogPrivate::defaultColor() const
 /** @brief Constructor
  *
  *  @param colorEngine The color engine with which this widget should operate.
- *  Can be created with @ref createSrgbColorEngine().
  *  @param gamutIdentifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
@@ -1480,7 +1284,13 @@ ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink, const QString &ide
     : m_settings(&PerceptualSettings::getInstance(identifier))
     , q_pointer(backLink)
 {
+    m_lchValues = makeLchValues(m_projectionSpace);
 }
+
+/**
+ * @brief Default destructor
+ */
+ColorDialogPrivate::~ColorDialogPrivate() noexcept = default;
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
@@ -1692,32 +1502,37 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
         m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgbHex6);
     }
 
+    const GenericColor projectionSpaceLch = //
+        (m_projectionSpace == LchSpace::CielchD50) //
+        ? cielchD50 //
+        : oklch;
+
     // Update lightness selector
     if (m_lchLightnessSelector != ignoreWidget) {
         m_lchLightnessSelector->setValue( //
-            cielchD50.first / static_cast<qreal>(100));
+            projectionSpaceLch.first / m_lchValues.maximumLightness);
     }
 
     // Update chroma-hue diagram
     if (m_chromaHueDiagram != ignoreWidget) {
-        m_chromaHueDiagram->setCurrentColorCielchD50(cielchD50);
+        m_chromaHueDiagram->setCurrentColorLch(projectionSpaceLch);
     }
 
     // Update wheel color picker
     if (m_wheelColorPicker != ignoreWidget) {
-        m_wheelColorPicker->setCurrentColorCielchD50(cielchD50);
+        m_wheelColorPicker->setCurrentColorLch(projectionSpaceLch);
     }
 
     // Update alpha gradient slider
     if (m_alphaGradientSlider != ignoreWidget) {
         GenericColor tempColor;
-        tempColor.first = cielchD50.first;
-        tempColor.second = cielchD50.second;
-        tempColor.third = cielchD50.third;
+        tempColor.first = projectionSpaceLch.first;
+        tempColor.second = projectionSpaceLch.second;
+        tempColor.third = projectionSpaceLch.third;
         tempColor.fourth = 0;
-        m_alphaGradientSlider->setFirstColorCieLchD50A(tempColor);
+        m_alphaGradientSlider->setFirstColorLchA(tempColor);
         tempColor.fourth = 1;
-        m_alphaGradientSlider->setSecondColorCieLchD50A(tempColor);
+        m_alphaGradientSlider->setSecondColorLchA(tempColor);
     }
 
     // Update widgets that take alpha information
@@ -1743,13 +1558,26 @@ void ColorDialogPrivate::readLightnessValue()
         // Nothing to do!
         return;
     }
-    auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
-    cielchD50.first = m_lchLightnessSelector->value() * 100;
-    cielchD50 = GenericColor( //
-        m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(cielchD50));
-    setCurrentOpaqueColor( //
-        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50), //
-        m_lchLightnessSelector);
+    if (m_projectionSpace == LchSpace::CielchD50) {
+        auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
+        cielchD50.first = //
+            m_lchLightnessSelector->value() * m_lchValues.maximumLightness;
+        cielchD50 = GenericColor( //
+            m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(cielchD50));
+        setCurrentOpaqueColor( //
+            AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50), //
+            m_lchLightnessSelector);
+
+    } else {
+        auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
+        oklch.first = //
+            m_lchLightnessSelector->value() * m_lchValues.maximumLightness;
+        oklch = GenericColor( //
+            m_colorEngine->reduceOklchChromaToFitIntoGamut(oklch));
+        setCurrentOpaqueColor( //
+            AbsoluteColor::allConversions(ColorModel::OklchD65, oklch), //
+            m_lchLightnessSelector);
+    }
 }
 
 /** @brief Reads the HSL numbers in the dialog and
@@ -1882,9 +1710,9 @@ void ColorDialogPrivate::readWheelColorPickerValues()
         // Nothing to do!
         return;
     }
-    const auto cielchD50 = GenericColor(m_wheelColorPicker->currentColorCielchD50());
+    const auto lch = GenericColor(m_wheelColorPicker->currentColorLch());
     setCurrentOpaqueColor( //
-        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
+        AbsoluteColor::allConversions(m_projectionSpaceModel, lch),
         m_wheelColorPicker);
 }
 
@@ -1896,9 +1724,9 @@ void ColorDialogPrivate::readChromaHueDiagramValue()
         // Nothing to do!
         return;
     }
-    const auto cielchD50 = GenericColor(m_chromaHueDiagram->currentColorCielchD50());
+    const auto lch = GenericColor(m_chromaHueDiagram->currentColorLch());
     setCurrentOpaqueColor( //
-        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
+        AbsoluteColor::allConversions(m_projectionSpaceModel, lch),
         m_chromaHueDiagram);
 }
 
@@ -2189,18 +2017,6 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         tempRgbFormLayout->addRow(m_hsvSpinBoxLabel, m_hsvSpinBox);
         m_rgbGroupBox = new QGroupBox();
         m_rgbGroupBox->setLayout(tempRgbFormLayout);
-        // Using the profile name as QGroupBox title. But on some styles, the
-        // title is always shown completely, even if the text is extremly
-        // long. As the text is out of our control, and some profiles
-        // like Krita’s ITUR_2100_PQ_FULL.ICC have actually extremly
-        // long names, we use eliding.
-        const QFontMetricsF fontMetrics(m_rgbGroupBox->font());
-        const auto elidedProfileName = fontMetrics.elidedText( //
-            m_colorEngine->profileName(),
-            Qt::TextElideMode::ElideRight,
-            // width (in device-independent pixels!):
-            tempRgbFormLayout->minimumSize().width());
-        m_rgbGroupBox->setTitle(elidedProfileName);
     }
 
     // Create widget for the CIELCH-D50 color representation
@@ -2211,14 +2027,17 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setDecimals(decimals);
         // L
         mySection.setRange(0, 100);
+        mySection.setSingleStep(cielchD50Values.singleStepLabc);
         mySection.setWrapping(false);
         cielchD50Sections.append(mySection);
         // C
-        mySection.setRange(0, CielchD50Values::maximumChroma);
+        mySection.setRange(0, cielchD50Values.maximumChroma);
+        mySection.setSingleStep(cielchD50Values.singleStepLabc);
         mySection.setWrapping(false);
         cielchD50Sections.append(mySection);
         // H
         mySection.setRange(0, 360);
+        mySection.setSingleStep(1);
         mySection.setWrapping(true);
         cielchD50Sections.append(mySection);
         // Not setting prefix/suffix here. This will be done in retranslateUi()…
@@ -2232,13 +2051,13 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_oklchSpinBox = new MultiSpinBox;
         // L
         mySection.setRange(0, 1);
-        mySection.setSingleStep(singleStepOklabc);
+        mySection.setSingleStep(oklchValues.singleStepLabc);
         mySection.setWrapping(false);
         mySection.setDecimals(okdecimals);
         oklchSections.append(mySection);
         // C
-        mySection.setRange(0, OklchValues::maximumChroma);
-        mySection.setSingleStep(singleStepOklabc);
+        mySection.setRange(0, oklchValues.maximumChroma);
+        mySection.setSingleStep(oklchValues.singleStepLabc);
         mySection.setWrapping(false);
         mySection.setDecimals(okdecimals);
         oklchSections.append(mySection);

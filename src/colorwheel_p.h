@@ -27,7 +27,7 @@ class ColorEngine;
 class ColorWheelPrivate
 {
 public:
-    ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
+    ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, const PerceptualColor::LchSpace projectionSpace);
     virtual ~ColorWheelPrivate() noexcept;
 
     /** @brief Internal storage of the @ref ColorWheel::hue() property */
@@ -52,6 +52,10 @@ public:
     /** @brief Pointer to @ref ColorEngine object used to describe the
      * working gamut. */
     QSharedPointer<ColorEngine> m_colorEngine;
+    /**
+     * @brief The color space into which the gamut will be projected.
+     */
+    const LchSpace m_projectionSpace;
     /** @brief The image of the wheel itself. */
     ColorWheelImage m_wheelImage;
 

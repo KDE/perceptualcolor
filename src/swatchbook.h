@@ -7,6 +7,7 @@
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
+#include "internalimportexport.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qnamespace.h>
@@ -44,7 +45,7 @@ class SwatchBookPrivate;
  * @note Using Qt's use Model/View architecture instead of @ref QColorArray2D
  * would propably not be worth the added complexity.
  */
-class SwatchBook : public AbstractDiagram
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT SwatchBook : public AbstractDiagram
 {
     Q_OBJECT
 

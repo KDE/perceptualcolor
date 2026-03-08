@@ -33,7 +33,6 @@ set(library_SRC
     chromalightnessimageparameters.cpp
     colordialog.cpp
     colorengine.cpp
-    colorenginefactory.cpp
     colorpatch.cpp
     colorwheel.cpp
     colorwheelimage.cpp
@@ -75,19 +74,13 @@ qt_add_resources(
 # NOTE Keep the following list synchronized
 # between scripts/static-codecheck.sh and src/CMakeLists.txt
 set(lib_PUBLICHEADERS
-    abstractdiagram.h
-    chromahuediagram.h
     colordialog.h
-    colorenginefactory.h
     colorpatch.h
-    colorwheel.h
     constpropagatinguniquepointer.h
-    gradientslider.h
     importexport.h
     multispinbox.h
     multispinboxsection.h
     settranslation.h
-    wheelcolorpicker.h
     ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
 )
 
@@ -204,11 +197,11 @@ target_sources(
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(
         ${LIBRARY_NAME}
-        PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+        PRIVATE PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY)
 else()
     target_compile_definitions(
         ${LIBRARY_NAME}
-        PUBLIC PERCEPTUALCOLORLIB_STATIC)
+        PUBLIC PERCEPTUALCOLOR_STATIC)
 endif()
 set_target_properties(
     ${LIBRARY_NAME} PROPERTIES
@@ -317,15 +310,15 @@ target_sources(
         )
 target_compile_definitions(
     ${INTERNAL_LIBRARY_NAME}
-    PRIVATE PERCEPTUALCOLORINTERNAL)
+    PUBLIC PERCEPTUALCOLOR_INTERNAL)
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(
         ${INTERNAL_LIBRARY_NAME}
-        PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+        PRIVATE PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY)
 else()
     target_compile_definitions(
         ${INTERNAL_LIBRARY_NAME}
-        PUBLIC PERCEPTUALCOLORLIB_STATIC)
+        PUBLIC PERCEPTUALCOLOR_STATIC)
 endif()
 set_target_properties(
     ${INTERNAL_LIBRARY_NAME} PROPERTIES
@@ -377,7 +370,7 @@ target_include_directories(
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/>
-        # No $<INSTALL_INTERFACE:xxx> because this target is only meant to
+        # No $<INSTALL_INTERFACE:SOMETHING> because this target is only meant to
         # be build as part of this project, and not by external projects.
         # NOTE It's necessary for LittleCMS to be marked as PUBLIC for the
         # internal build since users of the internal build have full access

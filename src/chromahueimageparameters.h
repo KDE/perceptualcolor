@@ -4,6 +4,7 @@
 #ifndef PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H
 #define PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H
 
+#include "helperconversion.h"
 #include "interlacingpass.h"
 #include <qglobal.h>
 #include <qmetatype.h>
@@ -75,6 +76,11 @@ public:
      * @ref colorEngine. Before using this object, you must initialize
      * @ref colorEngine. */
     QSharedPointer<PerceptualColor::ColorEngine> colorEngine = nullptr;
+    /**
+     * @brief The color space into which the working space is projected.
+     */
+    LchSpace projectionSpace = LchSpace::CielchD50;
+
     [[nodiscard]] bool operator==(const ChromaHueImageParameters &other) const;
     [[nodiscard]] bool operator!=(const ChromaHueImageParameters &other) const;
 
@@ -83,12 +89,12 @@ public:
 private:
     static InterlacingPass createInterlacingPassObject(const QSize imageSizePhysical);
 
-    static void renderByRow(const AsyncImageRenderCallback &callbackObject,
-                            uchar *const bytesPtr,
+    static void renderByRow(uchar *const bytesPtr,
                             const qsizetype bytesPerLine,
                             const ChromaHueImageParameters parameters,
                             const qreal shift,
                             const qreal scaleFactor,
+                            const double chromaRange,
                             const InterlacingPass currentPass,
                             int firstRow,
                             int lastRow);

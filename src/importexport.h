@@ -32,7 +32,7 @@
  * <em>exports</em> the corresponding symbol by expanding to Qt’s
  * <tt>Q_DECL_EXPORT</tt> macro. Exported symbols will be visible
  * symbols in the dynamic library. To get this behaviour, it is
- * necessary to define <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt>
+ * necessary to define <tt>PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY</tt>
  * always when this library itself is build.
  *
  * @section buildstatic Build either the static library itself or an application using it
@@ -48,31 +48,31 @@
  *
  * the macro expands to <em>nothing</em>, because for static libraries
  * no import nor export must happen. To get this behaviour, it is
- * necessary to define <tt>PERCEPTUALCOLORLIB_STATIC</tt>.
+ * necessary to define <tt>PERCEPTUALCOLOR_STATIC</tt>.
  *
  * @section cmakeimportexport CMake code
  *
- * The definition can be made within CMake:
+ * The definition is made within CMake:
  *
  * @code{.unparsed}
  * if(BUILD_SHARED_LIBS)
  *     target_compile_definitions(
  *         my_target_name
- *         PRIVATE PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
+ *         PRIVATE PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY)
  * else()
  *     target_compile_definitions(
  *         my_target_name
- *         PUBLIC PERCEPTUALCOLORLIB_STATIC)
+ *         PUBLIC PERCEPTUALCOLOR_STATIC)
  * endif()
  * @endcode
  *
- * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> is defined
+ * <tt>PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY</tt> is defined
  * <tt>PRIVATE</tt>, so it only becomes available when building
  * the library <em>itself</em> dynamically, and not when building
  * an application <em>using</em> the dynamic library.
  *
- * <tt>PERCEPTUALCOLORLIB_STATIC</tt> however is defined
- * <tt>PUBLIC</tt>, so it only becomes available both, when building
+ * <tt>PERCEPTUALCOLOR_STATIC</tt> however is defined
+ * <tt>PUBLIC</tt>, so it becomes available both, when building
  * the library <em>itself</em> statically, and also when building
  * an application <em>using</em> the static library.
  *
@@ -137,24 +137,25 @@
  *
  * @sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
  * @sa http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
- * @sa https://labjack.com/news/simple-cpp-symbol-visibility-demo */
-
-#ifdef PERCEPTUALCOLORLIB_STATIC
+ * @sa https://labjack.com/news/simple-cpp-symbol-visibility-demo
+ *
+ * @internal
+ *
+ * @sa @ref PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT
+ */
 
 #ifndef PERCEPTUALCOLOR_IMPORTEXPORT
+
+#ifdef PERCEPTUALCOLOR_STATIC
 #define PERCEPTUALCOLOR_IMPORTEXPORT
-#endif
-
 #else
-
-#ifndef PERCEPTUALCOLOR_IMPORTEXPORT
-#ifdef PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY
+#ifdef PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY
 #define PERCEPTUALCOLOR_IMPORTEXPORT Q_DECL_EXPORT
 #else
 #define PERCEPTUALCOLOR_IMPORTEXPORT Q_DECL_IMPORT
 #endif
 #endif
 
-#endif
+#endif // #ifndef PERCEPTUALCOLOR_IMPORTEXPORT
 
 #endif // PERCEPTUALCOLOR_IMPORTEXPORT_H

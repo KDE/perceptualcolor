@@ -7,11 +7,10 @@
 // Include the header of the public class of this private implementation.
 // #include "colorengine.h"
 
-#include "cielchd50values.h"
 #include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "helperconversion.h"
-#include "oklchvalues.h"
+#include "lchvalues.h"
 #include <lcms2.h>
 #include <map>
 #include <optional>
@@ -38,11 +37,7 @@ class ColorEnginePrivate
 {
 public:
     explicit ColorEnginePrivate(ColorEngine *backLink);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~ColorEnginePrivate() noexcept = default;
+    virtual ~ColorEnginePrivate() noexcept;
 
     // Data members:
     /**
@@ -110,88 +105,27 @@ public:
      */
     qreal m_oklabWhitepointL = 1;
     /** @brief Internal storage for property
-     * @ref ColorEngine::profileAbsoluteFilePath */
-    QString m_profileAbsoluteFilePath;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileClass */
-    cmsProfileClassSignature m_profileClass;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileColorModel */
-    cmsColorSpaceSignature m_profileColorModel;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileCopyright */
-    QString m_profileCopyright;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileCreationDateTime */
-    QDateTime m_profileCreationDateTime;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileFileSize */
-    qint64 m_profileFileSize = -1;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileHasClut */
-    bool m_profileHasClut = false;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileHasMatrixShaper */
-    bool m_profileHasMatrixShaper = false;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileRenderingIntentDirections */
-    ColorEngine::RenderingIntentDirections m_profileRenderingIntentDirections;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileIccVersion */
-    QVersionNumber m_profileIccVersion;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileManufacturer */
-    QString m_profileManufacturer;
-    /** @brief Internal storage for property
      * @ref ColorEngine::profileMaximumCielchD50Chroma */
-    double m_profileMaximumCielchD50Chroma = CielchD50Values::maximumChroma;
+    double m_profileMaximumCielchD50Chroma = cielchD50Values.maximumChroma;
     /** @brief Internal storage for property
      * @ref ColorEngine::profileMaximumOklchChroma */
-    double m_profileMaximumOklchChroma = OklchValues::maximumChroma;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileModel */
-    QString m_profileModel;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileName */
-    QString m_profileName;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profilePcsColorModel */
-    cmsColorSpaceSignature m_profilePcsColorModel;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileTagBlackpoint */
-    std::optional<cmsCIEXYZ> m_profileTagBlackpoint;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileTagBluePrimary */
-    std::optional<cmsCIEXYZ> m_profileTagBluePrimary;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileTagGreenPrimary */
-    std::optional<cmsCIEXYZ> m_profileTagGreenPrimary;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileTagRedPrimary */
-    std::optional<cmsCIEXYZ> m_profileTagRedPrimary;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileTagSignatures */
-    QStringList m_profileTagSignatures;
-    /** @brief Internal storage for property
-     * @ref ColorEngine::profileTagWhitepoint */
-    std::optional<cmsCIEXYZ> m_profileTagWhitepoint;
+    double m_profileMaximumOklchChroma = oklchValues.maximumChroma;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformCielabD50ToRgb16Handle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformCielabD50ToRgbHandle = nullptr;
     /** @brief A handle to a LittleCMS transform. */
     cmsHTRANSFORM m_transformRgbToCielabD50Handle = nullptr;
+    /** @brief A handle to a LittleCMS transform. */
+    cmsHTRANSFORM m_transformRgbToXyzD50Handle = nullptr;
+    /** @brief A handle to a LittleCMS transform. */
+    cmsHTRANSFORM m_transformXyzD50ToRgbHandle = nullptr;
 
     // Functions:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
     void initializeChromaticityBoundaries();
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
     [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByHue360(double oklabHue360, PerceptualColor::LchSpace type) const;
-    [[nodiscard]] static QDateTime profileCreationDateTime(cmsHPROFILE profileHandle);
-    [[nodiscard]] static QVersionNumber profileIccVersion(cmsHPROFILE profileHandle);
-    [[nodiscard]] static QString profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory);
-    [[nodiscard]] static std::optional<cmsCIEXYZ> profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature);
-    [[nodiscard]] static QStringList profileTagSignatures(cmsHPROFILE profileHandle);
 
     /** @brief Increment factor for the maximum-chroma detection.
      *

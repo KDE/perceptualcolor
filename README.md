@@ -12,7 +12,7 @@ for recommended document style.
 
 # PerceptualColor
 
-This library provides Qt GUI components for choosing colors, with a
+This library provides Qt GUI components for choosing sRGB colors, with a
 focus on an intuitive and perceptually uniform presentation.
 
 ## Introduction
@@ -48,8 +48,8 @@ This library:
 - Has a permissive license.
 - Can be built as either a static or a shared/dynamic library.
 - Is developed with unit tests.
-- Links only to Qt and LittleCMS, making it a Tier 1 library.
-- Uses only the public API of Qt and LittleCMS, and no private
+- Links only to Qt, so it is a Tier 1 library.
+- Uses only the public API of Qt, and no private
   features of these libraries.
 
 ## Links

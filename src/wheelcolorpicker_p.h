@@ -8,6 +8,8 @@
 // #include "wheelcolorpicker.h"
 
 #include "constpropagatingrawpointer.h"
+#include "helperconversion.h"
+#include "lchvalues.h"
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
@@ -36,7 +38,7 @@ class WheelColorPickerPrivate : public QObject
 
 public:
     // Constructors and destructors
-    explicit WheelColorPickerPrivate(WheelColorPicker *backLink);
+    explicit WheelColorPickerPrivate(WheelColorPicker *backLink, const LchSpace projectionSpace);
     /** @brief Default destructor */
     virtual ~WheelColorPickerPrivate() noexcept override = default;
 
@@ -51,6 +53,14 @@ public:
     QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
     /** @brief A pointer to the @ref ColorWheel child widget. */
     QPointer<ColorWheel> m_colorWheel;
+    /**
+     * @brief Geometry of the current Lch color space.
+     * */
+    const LchValues m_lchValues;
+    /**
+     * @brief The color space into which the gamut will be projected.
+     */
+    const LchSpace m_projectionSpace;
 
 public Q_SLOTS:
     void handleFocusChanged(QWidget *old, QWidget *now);

@@ -6,7 +6,6 @@
 #include "colordialog.h"
 #include "colordialog_p.h"
 #include "colorengine.h"
-#include "colorenginefactory.h"
 #include "colorpatch.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
@@ -304,7 +303,7 @@ static void makeScreenshots()
 {
     // Variables
     QSharedPointer<ColorEngine> m_colorEngine = //
-        createSrgbColorEngine();
+        ColorEngine::createSrgb();
     // Chose a default color:
     // — that is present in the basic colors (to show the selection mark)
     // — is quite chromatic (which looks nice on screenshots)
@@ -317,14 +316,14 @@ static void makeScreenshots()
     QColor myColor;
 
     {
-        ChromaHueDiagram m_chromaHueDiagram(m_colorEngine);
-        m_chromaHueDiagram.setCurrentColorCielchD50(defaultColorCielchD50);
+        ChromaHueDiagram m_chromaHueDiagram(m_colorEngine, LchSpace::CielchD50);
+        m_chromaHueDiagram.setCurrentColorLch(defaultColorCielchD50);
         screenshotDelayed(&m_chromaHueDiagram);
     }
 
     {
-        ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorEngine);
-        m_chromaLightnessDiagram.setCurrentColorCielchD50(defaultColorCielchD50);
+        ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorEngine, LchSpace::CielchD50);
+        m_chromaLightnessDiagram.setCurrentColorLch(defaultColorCielchD50);
         screenshotDelayed(&m_chromaLightnessDiagram);
     }
 
@@ -411,13 +410,13 @@ static void makeScreenshots()
     }
 
     {
-        ColorWheel m_colorWheel(m_colorEngine);
+        ColorWheel m_colorWheel(m_colorEngine, LchSpace::CielchD50);
         m_colorWheel.setHue(defaultColorCielchD50.third);
         screenshotDelayed(&m_colorWheel);
     }
 
     {
-        GradientSlider m_gradientSlider(m_colorEngine);
+        GradientSlider m_gradientSlider(m_colorEngine, LchSpace::CielchD50);
         m_gradientSlider.setValue(0.2);
         m_gradientSlider.setOrientation(Qt::Horizontal);
         screenshotDelayed(&m_gradientSlider);
@@ -474,8 +473,8 @@ static void makeScreenshots()
     }
 
     {
-        WheelColorPicker m_wheelColorPicker(m_colorEngine);
-        m_wheelColorPicker.setCurrentColorCielchD50(defaultColorCielchD50);
+        WheelColorPicker m_wheelColorPicker(m_colorEngine, LchSpace::CielchD50);
+        m_wheelColorPicker.setCurrentColorLch(defaultColorCielchD50);
         screenshotDelayed(&m_wheelColorPicker);
     }
 

@@ -13,7 +13,7 @@
 #include <qtmetamacros.h>
 #endif
 
-#ifdef PERCEPTUALCOLORLIB_STATIC
+#ifdef PERCEPTUALCOLOR_STATIC
 #include <optional>
 #endif
 
@@ -65,7 +65,7 @@ private Q_SLOTS:
         // Difficult to test. Make sure that at least it does not crash.
         picker.initializeQColorDialogSupport();
 
-#ifdef PERCEPTUALCOLORLIB_STATIC
+#ifdef PERCEPTUALCOLOR_STATIC
         // NOTE The variable m_hasQColorDialogSupport is defined as “static
         // inline … = …;”. This decision has caused issues when
         // perceptualcolorinternal is used as a shared/dynamic

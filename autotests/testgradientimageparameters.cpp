@@ -6,7 +6,7 @@
 #include "gradientimageparameters.h"
 
 #include "asyncimagerenderthread.h"
-#include "colorenginefactory.h"
+#include "colorengine.h"
 #include "genericcolor.h"
 #include <qglobal.h>
 #include <qobject.h>
@@ -35,7 +35,7 @@ public:
         //! [GradientImage HiDPI usage]
         PerceptualColor::GradientImageParameters exampleParameters;
         exampleParameters.colorEngine = //
-            PerceptualColor::createSrgbColorEngine();
+            PerceptualColor::ColorEngine::createSrgb();
         // These functions expects an int
         // value. static_cast<int> will round
         // down, which is the desired behaviour
@@ -51,13 +51,13 @@ public:
         firstColor.first = 20;
         firstColor.second = 30;
         firstColor.fourth = 0.4;
-        exampleParameters.setFirstColorCieLchD50A(firstColor);
+        exampleParameters.setFirstColorLchA(firstColor);
         PerceptualColor::GenericColor secondColor;
         secondColor.third = 50;
         secondColor.first = 60;
         secondColor.second = 25;
         secondColor.fourth = 0.9;
-        exampleParameters.setSecondColorCieLchD50A( //
+        exampleParameters.setSecondColorLchA( //
             secondColor);
         exampleParameters.setDevicePixelRatioF( //
             devicePixelRatioF());
@@ -80,7 +80,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

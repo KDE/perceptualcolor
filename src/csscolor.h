@@ -6,6 +6,7 @@
 
 #include "genericcolor.h"
 #include "helperconversion.h"
+#include "internalimportexport.h"
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qglobal.h>
@@ -23,7 +24,7 @@ namespace PerceptualColor
 /** @internal
  *
  * @brief Toolbox for CSS colors. */
-class CssColor
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT CssColor
 {
 public:
     /** @brief Represents the

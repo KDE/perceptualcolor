@@ -10,7 +10,6 @@
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
 #include "colorengine.h"
-#include "colorenginefactory.h"
 #include "colorpatch.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
@@ -175,7 +174,7 @@ private:
     QScopedPointer<QColorDialog> m_qDialog2;
     QColor m_color;
     QSharedPointer<ColorEngine> m_srgbBuildinColorEngine = //
-        createSrgbColorEngine();
+        ColorEngine::createSrgb();
 
     static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
@@ -1082,7 +1081,10 @@ private Q_SLOTS:
 
         // Get internal LCH value
         const auto tmp = m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs;
-        const GenericColor color = tmp.value(ColorModel::CielchD50);
+        const GenericColor color = //
+            (m_perceptualDialog->d_pointer->m_projectionSpace == LchSpace::CielchD50) //
+            ? tmp.value(ColorModel::CielchD50) //
+            : tmp.value(ColorModel::OklchD65);
 
         // The very same LCH value has to be found in all widgets using it.
         // (This is not trivial, because even coming from RGB, because of
@@ -1096,13 +1098,13 @@ private Q_SLOTS:
             m_perceptualDialog //
                 ->d_pointer //
                 ->m_wheelColorPicker //
-                ->currentColorCielchD50());
+                ->currentColorLch());
         QVERIFY( //
             color == //
             m_perceptualDialog //
                 ->d_pointer //
                 ->m_chromaHueDiagram //
-                ->currentColorCielchD50());
+                ->currentColorLch());
         // We do not also control this here for
         // m_perceptualDialog->d_pointer->m_cielchD50SpinBox because this
         // widget rounds the given value to the current decimal precision
@@ -1110,7 +1112,7 @@ private Q_SLOTS:
         // for rounding errors.
 
         const auto sliderColor = //
-            m_perceptualDialog->d_pointer->m_alphaGradientSlider->secondColorCieLchD50A();
+            m_perceptualDialog->d_pointer->m_alphaGradientSlider->secondColorLchA();
         QCOMPARE(sliderColor.first, color.first);
         QCOMPARE(sliderColor.second, color.second);
         QCOMPARE(sliderColor.third, color.third);
@@ -1664,7 +1666,12 @@ private Q_SLOTS:
         myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
         const auto &color = myDialog->d_pointer->m_currentOpaqueColorAbs;
-        QCOMPARE(color.value(ColorModel::CielchD50).first, 60);
+        const auto lchColor = //
+            (myDialog->d_pointer->m_projectionSpace == LchSpace::CielchD50) //
+            ? color.value(ColorModel::CielchD50) //
+            : color.value(ColorModel::OklchD65);
+        QCOMPARE(lchColor.first, //
+                 0.6 * myDialog->d_pointer->m_lchValues.maximumLightness);
     }
 #endif
 
@@ -2249,36 +2256,6 @@ private Q_SLOTS:
 
         // Compare
         QCOMPARE(actualHex, expectedHex);
-    }
-#endif
-
-#ifndef MSVC_DLL
-    void testBugMaximumLightness()
-    {
-        QScopedPointer<QTemporaryFile> wideGamutProfile(
-            // Create a temporary actual file…
-            QTemporaryFile::createNativeFile(
-                // …from the content of this resource:
-                QStringLiteral(":/testbed/Compact-ICC-Profiles/Compact-ICC-Profiles/profiles/WideGamutCompat-v4.icc")));
-        if (wideGamutProfile.isNull()) {
-            throw 0;
-        }
-        // This test looks for a bug that was seen during development
-        // phase. When using WideGamutRGB and raising the lightness
-        // slider up to 100%: Bug behaviour: the color switches
-        // to 0% lightness. Expected behaviour: the color has almost
-        // 100% lightness.
-        auto myColorEngine = ColorEngine::tryCreateFromFile( //
-            wideGamutProfile->fileName());
-        QCOMPARE(myColorEngine.isNull(), false); // assertion
-        m_perceptualDialog.reset( //
-            new ColorDialog(myColorEngine, id));
-        QTest::keyClick( //
-            m_perceptualDialog->d_pointer->m_lchLightnessSelector, //
-            Qt::Key_End);
-        const auto &color = //
-            m_perceptualDialog->d_pointer->m_currentOpaqueColorAbs;
-        QVERIFY(color.value(ColorModel::CielchD50).first > 95);
     }
 #endif
 

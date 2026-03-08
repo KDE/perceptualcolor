@@ -9,7 +9,6 @@
 
 #include "chromalightnessdiagram.h"
 #include "colorengine.h"
-#include "colorenginefactory.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
@@ -39,7 +38,7 @@ public:
     }
 
 private:
-    QSharedPointer<ColorEngine> m_colorEngine = createSrgbColorEngine();
+    QSharedPointer<ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()
@@ -65,44 +64,44 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         // Test for crash in constructor or destructor
-        WheelColorPicker test{m_colorEngine};
+        WheelColorPicker test{m_colorEngine, LchSpace::CielchD50};
     }
 
-    void testCurrentColorCielchD50Property()
+    void testCurrentColorLchProperty()
     {
-        WheelColorPicker test{m_colorEngine};
+        WheelColorPicker test{m_colorEngine, LchSpace::CielchD50};
         GenericColor color;
         color.first = 50;
         color.second = 20;
         color.third = 10;
-        test.setCurrentColorCielchD50(color);
-        QSignalSpy spy(&test, &WheelColorPicker::currentColorCielchD50Changed);
+        test.setCurrentColorLch(color);
+        QSignalSpy spy(&test, &WheelColorPicker::currentColorLchChanged);
         QCOMPARE(spy.size(), 0);
 
         // Change hue only:
         color.third += 1;
-        test.setCurrentColorCielchD50(color);
+        test.setCurrentColorLch(color);
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().third, color.third);
+        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorLch().third, color.third);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.third);
 
         // Change chroma only:
         color.second += 1;
-        test.setCurrentColorCielchD50(color);
+        test.setCurrentColorLch(color);
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().second, color.second);
+        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorLch().second, color.second);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.third);
 
         // Not changing the color should not trigger the signal
-        test.setCurrentColorCielchD50(color);
+        test.setCurrentColorLch(color);
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50().second, color.second);
+        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColorLch().second, color.second);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.third);
     }
 
     void testSizeHints()
     {
-        WheelColorPicker test{m_colorEngine};
+        WheelColorPicker test{m_colorEngine, LchSpace::CielchD50};
         QVERIFY(test.minimumSizeHint().width() <= test.sizeHint().width());
         QVERIFY(test.minimumSizeHint().height() <= test.sizeHint().height());
     }
@@ -114,7 +113,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        WheelColorPicker myWidget{m_colorEngine};
+        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -160,32 +159,32 @@ private Q_SLOTS:
 
     void testSetOutOfGamutColors()
     {
-        WheelColorPicker myWidget{m_colorEngine};
+        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
         // Test that setting out-of-gamut colors works
 
         const GenericColor myFirstColor{100, 150, 0};
-        myWidget.setCurrentColorCielchD50(myFirstColor);
-        QVERIFY(myFirstColor == myWidget.currentColorCielchD50());
+        myWidget.setCurrentColorLch(myFirstColor);
+        QVERIFY(myFirstColor == myWidget.currentColorLch());
         QVERIFY(myFirstColor ==
                 // This widget has no own storage of this property, but
                 // relies on its child widget:
-                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50());
+                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorLch());
 
         const GenericColor mySecondColor{0, 150, 0};
-        myWidget.setCurrentColorCielchD50(mySecondColor);
-        QVERIFY(mySecondColor == myWidget.currentColorCielchD50());
+        myWidget.setCurrentColorLch(mySecondColor);
+        QVERIFY(mySecondColor == myWidget.currentColorLch());
         QVERIFY(mySecondColor ==
                 // This widget has no own storage of this property, but
                 // relies on its child widget:
-                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50());
+                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorLch());
     }
 
     void testSetOutOfRangeColors()
     {
-        WheelColorPicker myWidget{m_colorEngine};
+        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -193,38 +192,38 @@ private Q_SLOTS:
         // but also out of a reasonable range, works.
 
         const GenericColor myFirstColor{300, 550, -10};
-        myWidget.setCurrentColorCielchD50(myFirstColor);
-        QVERIFY(myFirstColor == myWidget.currentColorCielchD50());
+        myWidget.setCurrentColorLch(myFirstColor);
+        QVERIFY(myFirstColor == myWidget.currentColorLch());
         QVERIFY(myFirstColor ==
                 // This widget has no own storage of this property, but
                 // relies on its child widget:
-                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50());
+                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorLch());
 
         const GenericColor mySecondColor{-100, -150, 890};
-        myWidget.setCurrentColorCielchD50(mySecondColor);
-        QVERIFY(mySecondColor == myWidget.currentColorCielchD50());
+        myWidget.setCurrentColorLch(mySecondColor);
+        QVERIFY(mySecondColor == myWidget.currentColorLch());
         QVERIFY(mySecondColor ==
                 // This widget has no own storage of this property, but
                 // relies on its child widget:
-                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorCielchD50());
+                myWidget.d_pointer->m_chromaLightnessDiagram->currentColorLch());
     }
 
     void testHueChanges()
     {
-        WheelColorPicker myWidget{m_colorEngine};
+        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.resize(QSize(400, 400));
 
         // Choose a color with an extreme, but still clearly in-gamut chroma
         // (at least for the build-in sRGB gamut, with which we are testing):
         const GenericColor myColor{32, 115, 300};
-        myWidget.setCurrentColorCielchD50(myColor);
+        myWidget.setCurrentColorLch(myColor);
 
         // Move the wheel to a hue that allows much less chroma:
         myWidget.d_pointer->m_colorWheel->setHue(222);
 
         // Now, the chroma-lightness coordinates are out-of-gamut for
         // the new hue. Test if they have been corrected:
-        QVERIFY(m_colorEngine->isCielchD50InGamut(myWidget.currentColorCielchD50()));
+        QVERIFY(m_colorEngine->isCielchD50InGamut(myWidget.currentColorLch()));
     }
 };
 

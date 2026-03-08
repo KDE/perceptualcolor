@@ -119,8 +119,8 @@ private Q_SLOTS:
 
     void testToCmsCIEXYZ()
     {
-        GenericColor color(0.1, 0.2, 0.3);
-        cmsCIEXYZ ciexyz = color.reinterpretAsXyzToCmsciexyz();
+        constexpr GenericColor color(0.1, 0.2, 0.3);
+        constexpr cmsCIEXYZ ciexyz = color.reinterpretAsXyzToCmsciexyz();
         QCOMPARE(ciexyz.X, 0.1);
         QCOMPARE(ciexyz.Y, 0.2);
         QCOMPARE(ciexyz.Z, 0.3);
@@ -128,66 +128,85 @@ private Q_SLOTS:
 
     void testToCmsCIELab()
     {
-        GenericColor color(50, 20, 30);
-        cmsCIELab cielab = color.reinterpretAsLabToCmscielab();
+        constexpr GenericColor color(50, 20, 30);
+        constexpr cmsCIELab cielab = color.reinterpretAsLabToCmscielab();
         QCOMPARE(cielab.L, 50.0);
         QCOMPARE(cielab.a, 20.0);
         QCOMPARE(cielab.b, 30.0);
     }
 
+    void testToCmsCIELCh()
+    {
+        constexpr GenericColor color(50, 20, 30);
+        constexpr cmsCIELCh cielch = color.reinterpretAsLchToCmscielch();
+        QCOMPARE(cielch.L, 50.0);
+        QCOMPARE(cielch.C, 20.0);
+        QCOMPARE(cielch.h, 30.0);
+    }
+
     void testEqualityOperatorsEqual1()
     {
         // Create two GenericColor objects with the same values
-        GenericColor color1(1.0, 2.0, 3.0);
-        GenericColor color2(1.0, 2.0, 3.0);
+        constexpr GenericColor color1(1.0, 2.0, 3.0);
+        constexpr GenericColor color2(1.0, 2.0, 3.0);
 
         // Test equality
-        QVERIFY(color1 == color2);
-        QVERIFY(!(color1 != color2));
+        constexpr bool equal = (color1 == color2);
+        constexpr bool unequal = (color1 != color2);
+        QVERIFY(equal);
+        QVERIFY(!unequal);
     }
 
     void testEqualityOperatorsEqual2()
     {
         // Create two GenericColor objects with the same values
-        GenericColor color1(0.0, 0.0, 0.0);
-        GenericColor color2;
+        constexpr GenericColor color1(0.0, 0.0, 0.0);
+        constexpr GenericColor color2;
 
         // Test equality
-        QVERIFY(color1 == color2);
-        QVERIFY(!(color1 != color2));
+        constexpr bool equal = (color1 == color2);
+        constexpr bool unequal = (color1 != color2);
+        QVERIFY(equal);
+        QVERIFY(!unequal);
     }
 
     void testEqualityOperatorsUnequal1()
     {
         // Create two GenericColor objects with different values
-        GenericColor color1(1.0, 2.0, 3.0);
-        GenericColor color2(4.0, 5.0, 6.0);
+        constexpr GenericColor color1(1.0, 2.0, 3.0);
+        constexpr GenericColor color2(4.0, 5.0, 6.0);
 
-        // Test inequality
-        QVERIFY(!(color1 == color2));
-        QVERIFY(color1 != color2);
+        // Test unequality
+        constexpr bool equal = (color1 == color2);
+        constexpr bool unequal = (color1 != color2);
+        QVERIFY(!equal);
+        QVERIFY(unequal);
     }
 
     void testEqualityOperatorsUnequal2()
     {
         // Create two GenericColor objects with different values
-        GenericColor color1(1.0, 2.0, 3.0);
-        GenericColor color2;
+        constexpr GenericColor color1(1.0, 2.0, 3.0);
+        constexpr GenericColor color2;
 
-        // Test inequality
-        QVERIFY(!(color1 == color2));
-        QVERIFY(color1 != color2);
+        // Test unequality
+        constexpr bool equal = (color1 == color2);
+        constexpr bool unequal = (color1 != color2);
+        QVERIFY(!equal);
+        QVERIFY(unequal);
     }
 
     void testEqualityOperatorsUnequal3()
     {
         // Create two GenericColor objects with different values
-        GenericColor color1(0.0, 0.0, 0.1);
-        GenericColor color2;
+        constexpr GenericColor color1(0.0, 0.0, 0.1);
+        constexpr GenericColor color2;
 
-        // Test inequality
-        QVERIFY(!(color1 == color2));
-        QVERIFY(color1 != color2);
+        // Test unequality
+        constexpr bool equal = (color1 == color2);
+        constexpr bool unequal = (color1 != color2);
+        QVERIFY(!equal);
+        QVERIFY(unequal);
     }
 };
 

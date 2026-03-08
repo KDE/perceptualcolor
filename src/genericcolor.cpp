@@ -4,8 +4,6 @@
 // Own header
 #include "genericcolor.h"
 
-#include <lcms2.h>
-
 namespace PerceptualColor
 {
 
@@ -36,61 +34,6 @@ Trio GenericColor::toTrio() const
 QList<double> GenericColor::toQList3() const
 {
     return QList<double>{first, second, third};
-}
-
-/** @brief Type conversion.
- *
- * @warning Interprets the current data members as XZY.
- *
- * @returns Type conversion. */
-cmsCIEXYZ GenericColor::reinterpretAsXyzToCmsciexyz() const
-{
-    return cmsCIEXYZ{first, second, third};
-}
-
-/** @brief Type conversion.
- *
- * @warning Interprets the current data members as Lab.
- *
- * @returns Type conversion. */
-cmsCIELab GenericColor::reinterpretAsLabToCmscielab() const
-{
-    return cmsCIELab{first, second, third};
-}
-
-/** @brief Type conversion.
- *
- * @warning Interprets the current data members as LCh.
- *
- * @returns Type conversion. */
-cmsCIELCh GenericColor::reinterpretAsLchToCmscielch() const
-{
-    return cmsCIELCh{first, second, third};
-}
-
-/** @brief Equal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
-bool GenericColor::operator==(const GenericColor &other) const
-{
-    return ( //
-        (first == other.first) //
-        && (second == other.second) //
-        && (third == other.third) //
-        && (fourth == other.fourth) //
-    );
-}
-
-/** @brief Unequal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
-bool GenericColor::operator!=(const GenericColor &other) const
-{
-    return !(*this == other);
 }
 
 /** @internal

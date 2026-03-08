@@ -5,6 +5,7 @@
 #define PERCEPTUALCOLOR_HELPERCONVERSION_H
 
 #include "genericcolor.h"
+#include <array>
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
@@ -29,6 +30,8 @@ Q_NAMESPACE
  * @internal
  *
  * @brief Identifiers for color models.
+ *
+ * @internal
  *
  * @note Maybe
  * <a href="https://doc-snapshots.qt.io/qt6-dev/qcolorspace.html#ColorModel-enum">
@@ -160,8 +163,6 @@ template<typename T>
 
 [[nodiscard]] cmsCIELab toCmsLab(const cmsCIELCh &value);
 
-[[nodiscard]] GenericColor toGenericColorCielabD50(const cmsCIELab &value);
-
 /** @internal
  *
  * @brief White point D65 for 2°-observer.
@@ -179,6 +180,46 @@ template<typename T>
  *
  * Normalizing this to Y = 1 as expected by LittleCMS, gives this value. */
 constexpr cmsCIEXYZ whitePointD65TwoDegree{0.95047, 1.00000, 1.08883};
+
+// clang-format off
+
+/**
+ * @brief Oklab M1 matrix.
+ *
+ * As in the
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
+ * Oklab definition</a>.
+ */
+inline constexpr std::array<double, 9> oklabM1 {{
+    +0.8189330101, +0.3618667424, -0.1288597137,
+    +0.0329845436, +0.9293118715, +0.0361456387,
+    +0.0482003018, +0.2643662691, +0.6338517070}};
+
+/**
+ * @brief Oklab M2 matrix.
+ *
+ * As in the
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
+ * Oklab definition</a>.
+ */
+inline constexpr std::array<double, 9> oklabM2 {{
+    +0.2104542553, +0.7936177850, -0.0040720468,
+    +1.9779984951, -2.4285922050, +0.4505937099,
+    +0.0259040371, +0.7827717662, -0.8086757660}};
+
+/**
+ * @brief xyzD65 to xyzD50 conversion matrix.
+ *
+ * As in the
+ * <a href="https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html">
+ * Bradford transformation</a>.
+ */
+inline constexpr std::array<double, 9> xyzD65ToXyzD50Matrix {{
+    +1.047886, +0.022919, -0.050216,
+    +0.029582, +0.990484, -0.017079,
+    -0.009252, +0.015073, +0.751678}};
+
+// clang-format on
 
 } // namespace PerceptualColor
 

@@ -5,6 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "chromahueimageparameters.h"
 
+#include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
 #include "colorengine.h"
 #include "helper.h"
@@ -45,6 +46,7 @@ bool ChromaHueImageParameters::operator==(const ChromaHueImageParameters &other)
         && (imageSizePhysical == other.imageSizePhysical) //
         && (lightness == other.lightness) //
         && (colorEngine == other.colorEngine) //
+        && (projectionSpace == other.projectionSpace) //
     );
 }
 
@@ -93,13 +95,13 @@ InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSiz
 /**
  * @brief Render some rows of the image directly to the buffer.
  *
- * @param callbackObject Used to stop rendering when an abort is requested
  * @param bytesPtr Pointer to the image data.
  * @param bytesPerLine Bytes per line of the image data (can be obtained by
  *        QImage)
  * @param parameters The parameters
  * @param shift Shift value
  * @param scaleFactor Scale factor
+ * @param chromaRange Chroma range
  * @param currentPass The object providing metrics for the current interlacing
  *        pass
  * @param firstRow Index of the first row to render. Must be a valid index.
@@ -118,30 +120,26 @@ InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSiz
 // possible to prevent potential pitfalls, even though copying by value may
 // introduce slight overhead.
 void ChromaHueImageParameters::renderByRow( //
-    const AsyncImageRenderCallback &callbackObject,
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
     const ChromaHueImageParameters parameters, // clazy:exclude=function-args-by-ref
     const qreal shift,
     const qreal scaleFactor,
+    const double chromaRange,
     const InterlacingPass currentPass, // clazy:exclude=function-args-by-ref
     int firstRow,
     int lastRow)
 {
-    const auto chromaRange = //
-        parameters.colorEngine->profileMaximumCielchD50Chroma();
-    cmsCIELab cielabD50;
-    cielabD50.L = parameters.lightness;
+    cmsCIELab lab;
+    lab.L = parameters.lightness;
     QRgb tempColor;
-    const auto threshold = qPow(chromaRange + overlap, 2);
+    const auto threshold = //
+        (chromaRange + 2 * scaleFactor) * (chromaRange + 2 * scaleFactor);
     for (int y = firstRow + currentPass.lineOffset; //
          y <= lastRow; //
          y += currentPass.lineFrequency) //
     {
-        if (callbackObject.shouldAbort()) {
-            return;
-        }
-        cielabD50.b = chromaRange //
+        lab.b = chromaRange //
             - (y + shift) * scaleFactor;
         const auto rectangleHeight = // Make sure to stay within the image
             qMin(currentPass.rectangleSize.height(), //
@@ -150,12 +148,12 @@ void ChromaHueImageParameters::renderByRow( //
              x < parameters.imageSizePhysical; //
              x += currentPass.columnFrequency //
         ) {
-            cielabD50.a = (x + shift) * scaleFactor - chromaRange;
-            if (qPow(cielabD50.a, 2) + qPow(cielabD50.b, 2) <= threshold) {
+            lab.a = (x + shift) * scaleFactor - chromaRange;
+            if (qPow(lab.a, 2) + qPow(lab.b, 2) <= threshold) {
                 tempColor = //
-                    parameters
-                        .colorEngine //
-                        ->fromCielabD50ToQRgbOrTransparent(cielabD50);
+                    (parameters.projectionSpace == LchSpace::Oklch) //
+                    ? AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab)
+                    : parameters.colorEngine->fromCielabD50ToQRgbOrTransparent(lab);
                 const auto rectangleWidth =
                     // Make sure to stay within the image
                     qMin(currentPass.rectangleSize.width(), //
@@ -193,16 +191,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     const ChromaHueImageParameters parameters = //
         variantParameters.value<ChromaHueImageParameters>();
 
-    // From Qt Example’s documentation:
-    //
-    //     “If we discover […] that restart has been set
-    //      to true (by render()), we break out […] immediately […].
-    //      Similarly, if we discover that abort has been set
-    //      to true (by the […] destructor), we return from the
-    //      function immediately […].”
-    if (callbackObject.shouldAbort()) {
-        return;
-    }
     // Create a new QImage with correct image size.
     QImage myImage(
         // size:
@@ -239,11 +227,13 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
 
     // Prepare for gamut painting
     const auto chromaRange = //
-        parameters.colorEngine->profileMaximumCielchD50Chroma();
+        (parameters.projectionSpace == LchSpace::Oklch) //
+        ? parameters.colorEngine->profileMaximumOklchChroma() //
+        : parameters.colorEngine->profileMaximumCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
         // The following line will never be 0 because we have have
         // tested above that circleRadius is > 0, so this line will
-        // we > 0 also.
+        // be > 0 also.
         / (parameters.imageSizePhysical - 2 * parameters.borderPhysical);
 
     // Paint the gamut.
@@ -267,10 +257,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     const auto threadCount = qMax(1, poolReference.maxThreadCount());
 
     while (true) {
-        if (callbackObject.shouldAbort()) {
-            return;
-        }
-
         // Get an up-to-date pointer to the raw image data. It is
         // mandatory to do this again in each loop run, because
         // delivering the intermediate image will likely create shallow
@@ -292,26 +278,23 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
             std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
         const int segmentsCount = static_cast<int>(segments.size());
         QSemaphore semaphore(0);
-        if (callbackObject.shouldAbort()) {
-            return;
-        }
         std::atomic_thread_fence(std::memory_order_seq_cst); // memory barrier
         for (const auto &segment : segments) {
-            const auto myLambda = [&callbackObject, //
-                                   bytesPtr,
+            const auto myLambda = [bytesPtr, //
                                    bytesPerLine,
                                    parameters,
                                    shift,
                                    scaleFactor,
+                                   chromaRange,
                                    currentPass,
                                    segment,
                                    &semaphore]() {
-                renderByRow(callbackObject,
-                            bytesPtr,
+                renderByRow(bytesPtr,
                             bytesPerLine,
                             parameters, //
                             shift,
                             scaleFactor,
+                            chromaRange,
                             currentPass,
                             segment.first, // first row
                             segment.second // last row
@@ -322,7 +305,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
             poolReference.start(myRunnablePtr, imageThreadPriority);
         }
         // Intentionally acquiring segments.size() and not
-        // treadCount,  because they might differ and
+        // treadCount, because they might differ and
         // segments.size() is mandatory for thread execution.
         semaphore.acquire(segmentsCount); // Wait for all threads to finish.
 
@@ -337,6 +320,34 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
             // final step, which is independent from the Adam-interlacing.
             AsyncImageRenderCallback::InterlacingState::Intermediate);
         myImage.setDevicePixelRatio(1);
+
+        // From Qt Example’s documentation:
+        //
+        //     “If we discover […] that restart has been set
+        //      to true (by render()), we break out […] immediately […].
+        //      Similarly, if we discover that abort has been set
+        //      to true (by the […] destructor), we return from the
+        //      function immediately […].”
+        //
+        // Strategic Abort Handling for Enhanced UI Responsivity:
+        // We intentionally check for restart/abort only *after* the first
+        // interlacing pass. This guarantees that at least one image is
+        // rendered and shown in the widget, so the UI appears responsive
+        // even while the user is interacting (e.g. dragging the hue slider).
+        // If we allowed abort earlier, rapid user input could prevent any
+        // image from ever being displayed. While the resulting image may be
+        // slightly outdated, it maintains the perception of a fluid, reactive
+        // interface.
+        //
+        // After the first pass we may skip the remaining work (such as
+        // anti‑aliasing) while the user is still changing the slider, because
+        // those steps are comparatively expensive and not critical for
+        // immediate feedback. Once the user stops interacting, the remaining
+        // passes (including full anti‑aliasing) will be completed and the
+        // final image delivered.
+        if (callbackObject.shouldAbort()) {
+            return;
+        }
 
         if (currentPass.countdown > 1) {
             currentPass.switchToNextPass();
@@ -383,12 +394,15 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
                                   scaleFactor,
                                   chromaRange] //
         (const double x, const double y) -> QRgb {
-        cmsCIELab myCielabD50;
-        myCielabD50.L = parameters.lightness;
-        myCielabD50.b = chromaRange - (y + shift) * scaleFactor;
-        myCielabD50.a = (x + shift) * scaleFactor - chromaRange;
+        cmsCIELab myLab;
+        myLab.L = parameters.lightness;
+        myLab.b = chromaRange - (y + shift) * scaleFactor;
+        myLab.a = (x + shift) * scaleFactor - chromaRange;
+        if (parameters.projectionSpace == LchSpace::Oklch) {
+            return AbsoluteColor::fastFromOklabToSRgbOrTransparent(myLab);
+        }
         return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
-            myCielabD50);
+            myLab);
     };
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);
 

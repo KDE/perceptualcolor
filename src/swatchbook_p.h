@@ -50,11 +50,7 @@ public:
     };
 
     explicit SwatchBookPrivate(SwatchBook *backLink, Qt::Orientations wideSpacing);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~SwatchBookPrivate() noexcept override = default;
+    virtual ~SwatchBookPrivate() noexcept override;
 
     [[nodiscard]] QSize colorPatchesSizeWithMargin() const;
     [[nodiscard]] int cornerRadius() const;

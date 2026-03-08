@@ -25,7 +25,8 @@ namespace PerceptualColor
 {
 class ColorPatchPrivate;
 
-/** @brief A color display widget.
+/**
+ * @brief A color display widget.
  *
  * This widget simply displays a color. And it provides drag-and-drop support;
  * it emits also @ref colorChanged on drop events if the color has changed.

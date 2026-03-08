@@ -7,6 +7,8 @@
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
+#include "helperconversion.h"
+#include "internalimportexport.h"
 #include <qglobal.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
@@ -29,19 +31,19 @@ class ColorEngine;
 
 /** @internal
  *
- * @brief A widget that displays a chroma-lightness diagram.
- *
- * This widget displays a chroma-lightness diagram for a given hue.
+ * @brief A widget that displays a chroma-lightness diagram for a given hue.
  *
  * @image html ChromaLightnessDiagram.png "ChromaLightnessDiagram"
  *
- * The widget shows the chroma-lightness diagram at the whole widget extend.
- * - Vertically the lightness from 0 (bottom) to 100 (top).
- * - Horizontally the chroma from 0 (left) to a higher value (right). The same
- *   scale is used like for the vertical axis: So if the widget size is a
- *   square, both chroma and lightness range from 0 to 100. If the widget
- *   width is twice the height, the lightness ranges from 0 to 100
- *   and the chroma ranges from 0 to 200.
+ * The widget renders the chroma–lightness diagram across its entire area.
+ * - Vertically, it shows lightness from 0% (bottom) to 100% (top).
+ * - Horizontally, it shows chroma from 0 (left) to a higher value (right).
+ *
+ * The horizontal and vertical axes use the same scale. For example:
+ * - If the widget is square and the lightness range is 0 to 1, then both
+ *   chroma and lightness span 0 to 1.
+ * - If the widget is twice as wide as it is tall, lightness still
+ *   spans 0 to 1, but chroma spans 0 to 2.
  *
  * @internal
  *
@@ -51,49 +53,53 @@ class ColorEngine;
  * chroma). Even if we would fix this: We would need a public API
  * that is widthForHeight-dependent to allow the library user to
  * comfortably make use of this!
- *
- * @todo NICETOHAVE From noahdvs in Matrix: “I noticed an issue with the arrow
- * key navigation of the lightness/saturation picker in the "Hue-based" tab.
- * If you press Up or Down, the point is able to climb up or down until it
- * reaches the maximum/minimum lightness (good). If you press Right, the point
- * gets stuck when it reaches an edge rather than being able to continue to the
- * right until maximum saturation is reached (bad).”
  */
-class ChromaLightnessDiagram : public AbstractDiagram
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
     /** @brief Currently selected color
      *
-     * The widget allows the user to change the LCH chroma and the
-     * LCH lightness values. However, the LCH hue value cannot be
-     * changed by the user, but only by the programmer through this property.
+     * This property represents the color in LCH form. The specific
+     * @ref LchSpace used is determined in the constructor of this class.
      *
-     * @sa READ @ref currentColorCielchD50() const
-     * @sa WRITE @ref setCurrentColorCielchD50()
-     * @sa NOTIFY @ref currentColorCielchD50Changed() */
+     * The widget allows the user to change the LCH chroma and the
+     * LCH lightness components. However, the LCH hue component cannot be
+     * changed by the user; it can only be modified programmatically through
+     * this property.
+     *
+     * @sa READ @ref currentColorLch() const
+     * @sa WRITE @ref setCurrentColorLch()
+     * @sa NOTIFY @ref currentColorLchChanged() */
     // The Q_PROPERTY macro must be on a single line for correct compilation.
     // clang-format is disabled here to prevent automatic line breaks.
     // clang-format off
-    Q_PROPERTY(PerceptualColor::GenericColor currentColorCielchD50 READ currentColorCielchD50 WRITE setCurrentColorCielchD50 NOTIFY currentColorCielchD50Changed)
+    Q_PROPERTY(PerceptualColor::GenericColor currentColorLch READ currentColorLch WRITE setCurrentColorLch NOTIFY currentColorLchChanged)
     // clang-format on
 
 public:
-    Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                                                const PerceptualColor::LchSpace projectionSpace,
+                                                QWidget *parent = nullptr);
     virtual ~ChromaLightnessDiagram() noexcept override;
-    /** @brief Getter for property @ref currentColorCielchD50
-     *  @returns the property @ref currentColorCielchD50 */
-    [[nodiscard]] PerceptualColor::GenericColor currentColorCielchD50() const;
+    /**
+     * @brief Getter for property @ref currentColorLch
+     *
+     * @returns the property @ref currentColorLch
+     */
+    [[nodiscard]] PerceptualColor::GenericColor currentColorLch() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
+    void setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColorCielchD50.
-     *  @param newCurrentColorCielchD50 the new current color */
-    void currentColorCielchD50Changed(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
+    /**
+     * @brief Notify signal for property @ref currentColorLch.
+     *  @param newCurrentColorLch the new current color
+     */
+    void currentColorLchChanged(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;

@@ -45,6 +45,7 @@
 
 namespace PerceptualColor
 {
+
 /** @internal
  *
  * @brief Constructor
@@ -102,101 +103,8 @@ QSharedPointer<PerceptualColor::ColorEngine> ColorEngine::createSrgb()
                           // values.
                           std::optional<QStringList>());
 
-    // Fine-tuning (and localization) for this build-in profile:
-    result->d_pointer->m_profileCreationDateTime = QDateTime();
-    /*: @item Manufacturer information for the built-in sRGB color. */
-    result->d_pointer->m_profileManufacturer = tr("LittleCMS");
-    result->d_pointer->m_profileModel = QString();
-    /*: @item Name of the built-in sRGB color space. */
-    result->d_pointer->m_profileName = tr("sRGB color space");
-    result->d_pointer->m_profileMaximumCielchD50Chroma = 132;
-
     // Return:
     return result;
-}
-
-/** @brief Try to create a color engine object for a given ICC file.
- *
- * This function may fail to create the color engine object when it
- * cannot open the given file, or when the file cannot be interpreted.
- *
- * @pre This function must be called from the main thread.
- *
- * @param fileName The file name. See <tt>QFile</tt> documentation
- * for what are valid file names. The file is only used during the
- * execution of this function and it is closed again at the end of
- * this function. The created object does not need the file anymore,
- * because all necessary information has already been loaded into
- * memory. Accepted are most RGB-based ICC profiles up to version 4.
- *
- * @returns A shared pointer to a newly created color engine object on success.
- * A shared pointer to <tt>nullptr</tt> on fail.
- *
- * @note Opening unknown or untrusted files may pose security risks. For
- * instance, an unusually large file could exhaust system memory potentially
- * leading to crashes.
- *
- * @sa @ref tryCreateFromFile()
- *
- * @internal
- *
- * @todo SHOULDHAVE Only accept “Display Class“ profiles?
- *
- * @note Currently, there is no function that loads a profile from a memory
- * buffer instead of a file. However it would easily be possible to implement
- * this if necessary, because LittleCMS allows loading from a memory buffer.
- *
- * @note While it is not strictly necessary to call this function within
- * the main thread, we put it nevertheless as precondition because of
- * consistency with @ref createSrgb().
- *
- * @note The new <a href="https://www.color.org/iccmax/index.xalter">version 5
- * (iccMax)</a> is <em>not</em> accepted. <a href="https://www.littlecms.com/">
- * LittleCMS</a> does not support ICC version 5, but only
- * up to version 4. The ICC organization itself provides
- * a <a href="https://github.com/InternationalColorConsortium/DemoIccMAX">demo
- * implementation</a>, but this does not seem to be a complete color
- * management system. */
-QSharedPointer<PerceptualColor::ColorEngine> ColorEngine::tryCreateFromFile(const QString &fileName)
-{
-    // Definitions
-    constexpr auto myContextID = nullptr;
-
-    // Create an IO handler for the file
-    cmsIOHANDLER *myIOHandler = //
-        IOHandlerFactory::createReadOnly(myContextID, fileName);
-    if (myIOHandler == nullptr) {
-        return nullptr;
-    }
-
-    // Create a handle to a LittleCMS profile representation
-    cmsHPROFILE myProfileHandle = //
-        cmsOpenProfileFromIOhandlerTHR(myContextID, myIOHandler);
-    if (myProfileHandle == nullptr) {
-        // If cmsOpenProfileFromIOhandlerTHR fails to create a profile
-        // handle, it deletes the IO handler. Therefore,  we do not
-        // have to delete the underlying IO handler manually.
-        return nullptr;
-    }
-
-    // Create an invalid object:
-    QSharedPointer<PerceptualColor::ColorEngine> newObject{new ColorEngine()};
-
-    // Try to transform it into a valid object:
-    const QFileInfo myFileInfo{fileName};
-    newObject->d_pointer->m_profileAbsoluteFilePath = //
-        myFileInfo.absoluteFilePath();
-    newObject->d_pointer->m_profileFileSize = myFileInfo.size();
-    const bool success = newObject->d_pointer->initialize(myProfileHandle);
-
-    // Clean up
-    cmsCloseProfile(myProfileHandle); // Also deletes the underlying IO handler
-
-    // Return
-    if (success) {
-        return newObject;
-    }
-    return nullptr;
 }
 
 /** @brief Basic initialization.
@@ -246,121 +154,14 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
 {
     constexpr auto renderingIntent = INTENT_ABSOLUTE_COLORIMETRIC;
 
-    m_profileClass = cmsGetDeviceClass(rgbProfileHandle);
-    m_profileColorModel = cmsGetColorSpace(rgbProfileHandle);
-    // If we kept a copy of the original ICC file in a QByteArray, we
-    // could provide support for on-the-fly language changes. However, it seems
-    // that most ICC files do not provide different locales anyway.
-    const QString defaultLocaleName = QLocale().name();
-    m_profileCopyright = profileInformation(rgbProfileHandle, //
-                                            cmsInfoCopyright,
-                                            defaultLocaleName);
-    m_profileCreationDateTime = //
-        profileCreationDateTime(rgbProfileHandle);
-    const auto renderingIntentIds = lcmsIntentList().keys();
-    for (cmsUInt32Number id : renderingIntentIds) {
-        ColorEngine::ProfileRoles directions;
-        directions.setFlag( //
-            ColorEngine::ProfileRole::Input, //
-            cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_INPUT));
-        directions.setFlag( //
-            ColorEngine::ProfileRole::Output, //
-            cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_OUTPUT));
-        directions.setFlag( //
-            ColorEngine::ProfileRole::Proof, //
-            cmsIsIntentSupported(rgbProfileHandle, id, LCMS_USED_AS_PROOF));
-        m_profileRenderingIntentDirections.insert(id, directions);
-    }
-    m_profileHasClut = false;
-    const auto intents = m_profileRenderingIntentDirections.keys();
-    for (auto intent : intents) {
-        const auto directions = m_profileRenderingIntentDirections.value(intent);
-        if (directions.testFlag(ColorEngine::ProfileRole::Input)) {
-            m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
-                                         renderingIntent, //
-                                         LCMS_USED_AS_INPUT);
-            if (m_profileHasClut) {
-                break;
-            }
-        }
-        if (directions.testFlag(ColorEngine::ProfileRole::Output)) {
-            m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
-                                         renderingIntent, //
-                                         LCMS_USED_AS_OUTPUT);
-            if (m_profileHasClut) {
-                break;
-            }
-        }
-        if (directions.testFlag(ColorEngine::ProfileRole::Proof)) {
-            m_profileHasClut = cmsIsCLUT(rgbProfileHandle, //
-                                         renderingIntent, //
-                                         LCMS_USED_AS_PROOF);
-            if (m_profileHasClut) {
-                break;
-            }
-        }
-    }
-    m_profileHasMatrixShaper = cmsIsMatrixShaper(rgbProfileHandle);
-    m_profileIccVersion = profileIccVersion(rgbProfileHandle);
-    m_profileManufacturer = profileInformation(rgbProfileHandle, //
-                                               cmsInfoManufacturer,
-                                               defaultLocaleName);
-    m_profileModel = profileInformation(rgbProfileHandle, //
-                                        cmsInfoModel,
-                                        defaultLocaleName);
-    m_profileName = profileInformation(rgbProfileHandle, //
-                                       cmsInfoDescription,
-                                       defaultLocaleName);
-    m_profilePcsColorModel = cmsGetPCS(rgbProfileHandle);
-    m_profileTagSignatures = profileTagSignatures(rgbProfileHandle);
-    // Gamma Correction Overview:
-    //
-    // Modern display systems, which consist of a video card and a screen, have
-    // a gamma curve that determines how colors are rendered. Historically,
-    // CRT (Cathode Ray Tube) screens had a gamma curve inherently defined by
-    // their hardware properties. Contemporary LCD and LED screens often
-    // emulate this behavior, typically using the sRGB gamma curve, which was
-    // designed to closely match the natural gamma curve of CRT screens.
-    //
-    // ICC (International Color Consortium) profiles define color
-    // transformations that assume a specific gamma curve for the display
-    // system (the combination of video card and screen). For correct color
-    // reproduction, the display system's gamma curve must match the one
-    // expected by the ICC profile. Today, this usually means the sRGB gamma
-    // curve.
-    //
-    // However, in some cases, for example when a custom ICC profile is created
-    // using a colorimeter for screen calibration, it may assume a non-standard
-    // gamma curve. This  custom gamma curve is often embedded within the
-    // profile using the private “vcgt”  (Video Card Gamma Table) tag. While
-    // “vcgt” is registered as a private tag in the ICC Signature Registry, it
-    // is not a standard tag defined in the core ICC  specification.  The
-    // operating system is responsible for ensuring that the gamma curve
-    // specified in the ICC profile is applied, typically by loading it into
-    // the video card hardware. However, whether the operating system actually
-    // applies this gamma adjustment is not always guaranteed.
-    //
-    // Note: Our current codebase does not support the “vcgt” tag. If an
-    // ICC profile containing a “vcgt” tag is encountered, it will be rejected.
-    if (m_profileTagSignatures.contains(QStringLiteral("vcgt"))) {
-        return false;
-    }
-    m_profileTagWhitepoint = profileReadCmsciexyzTag(rgbProfileHandle, //
-                                                     cmsSigMediaWhitePointTag);
-    m_profileTagBlackpoint = profileReadCmsciexyzTag(rgbProfileHandle, //
-                                                     cmsSigMediaBlackPointTag);
-    m_profileTagRedPrimary = profileReadCmsciexyzTag(rgbProfileHandle, //
-                                                     cmsSigRedColorantTag);
-    m_profileTagGreenPrimary = profileReadCmsciexyzTag(rgbProfileHandle, //
-                                                       cmsSigGreenColorantTag);
-    m_profileTagBluePrimary = profileReadCmsciexyzTag(rgbProfileHandle, //
-                                                      cmsSigBlueColorantTag);
-
     {
         // Create an ICC v4 profile object for the CielabD50 color space.
         cmsHPROFILE cielabD50ProfileHandle = cmsCreateLab4Profile(
             // nullptr means: Default white point (D50)
             nullptr);
+
+        // Create an ICC profile object for the XYZD50 color space.
+        cmsHPROFILE xyzD50ProfileHandle = cmsCreateXYZProfile();
 
         // Create the transforms.
         // We use the flag cmsFLAGS_NOCACHE which disables the 1-pixel-cache
@@ -375,6 +176,14 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
             // Create a transform function and get a handle to this function:
             cielabD50ProfileHandle, // input profile handle
             TYPE_Lab_DBL, // input buffer format
+            rgbProfileHandle, // output profile handle
+            TYPE_RGB_DBL, // output buffer format
+            renderingIntent,
+            flags);
+        m_transformXyzD50ToRgbHandle = cmsCreateTransform(
+            // Create a transform function and get a handle to this function:
+            xyzD50ProfileHandle, // input profile handle
+            TYPE_XYZ_DBL, // input buffer format
             rgbProfileHandle, // output profile handle
             TYPE_RGB_DBL, // output buffer format
             renderingIntent,
@@ -395,8 +204,17 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
             TYPE_Lab_DBL, // output buffer format
             renderingIntent,
             flags);
+        m_transformRgbToXyzD50Handle = cmsCreateTransform(
+            // Create a transform function and get a handle to this function:
+            rgbProfileHandle, // input profile handle
+            TYPE_RGB_DBL, // input buffer format
+            xyzD50ProfileHandle, // output profile handle
+            TYPE_XYZ_DBL, // output buffer format
+            renderingIntent,
+            flags);
         // It is mandatory to close the profiles to prevent memory leaks:
         cmsCloseProfile(cielabD50ProfileHandle);
+        cmsCloseProfile(xyzD50ProfileHandle);
     }
 
     // After having closed the profiles, we can now return
@@ -404,6 +222,8 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     if ((m_transformCielabD50ToRgbHandle == nullptr) //
         || (m_transformCielabD50ToRgb16Handle == nullptr) //
         || (m_transformRgbToCielabD50Handle == nullptr) //
+        || (m_transformRgbToXyzD50Handle == nullptr) //
+        || (m_transformXyzD50ToRgbHandle == nullptr) //
     ) {
         return false;
     }
@@ -474,6 +294,11 @@ ColorEnginePrivate::ColorEnginePrivate(ColorEngine *backLink)
 {
 }
 
+/**
+ * @brief Default destructor
+ */
+ColorEnginePrivate::~ColorEnginePrivate() noexcept = default;
+
 /** @brief Convenience function for deleting LittleCMS transforms
  *
  * <tt>cmsDeleteTransform()</tt> is not comfortable. Calling it on a
@@ -498,83 +323,6 @@ void ColorEnginePrivate::deleteTransform(cmsHTRANSFORM *transformHandle)
 
 // No documentation here (documentation of properties
 // and its getters are in the header)
-QString ColorEngine::profileAbsoluteFilePath() const
-{
-    return d_pointer->m_profileAbsoluteFilePath;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-cmsProfileClassSignature ColorEngine::profileClass() const
-{
-    return d_pointer->m_profileClass;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-cmsColorSpaceSignature ColorEngine::profileColorModel() const
-{
-    return d_pointer->m_profileColorModel;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QString ColorEngine::profileCopyright() const
-{
-    return d_pointer->m_profileCopyright;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QDateTime ColorEngine::profileCreationDateTime() const
-{
-    return d_pointer->m_profileCreationDateTime;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-qint64 ColorEngine::profileFileSize() const
-{
-    return d_pointer->m_profileFileSize;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-bool ColorEngine::profileHasClut() const
-{
-    return d_pointer->m_profileHasClut;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-bool ColorEngine::profileHasMatrixShaper() const
-{
-    return d_pointer->m_profileHasMatrixShaper;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QVersionNumber ColorEngine::profileIccVersion() const
-{
-    return d_pointer->m_profileIccVersion;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-ColorEngine::RenderingIntentDirections ColorEngine::profileRenderingIntentDirections() const
-{
-    return d_pointer->m_profileRenderingIntentDirections;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QString ColorEngine::profileManufacturer() const
-{
-    return d_pointer->m_profileManufacturer;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
 double ColorEngine::profileMaximumCielchD50Chroma() const
 {
     return d_pointer->m_profileMaximumCielchD50Chroma;
@@ -585,388 +333,6 @@ double ColorEngine::profileMaximumCielchD50Chroma() const
 double ColorEngine::profileMaximumOklchChroma() const
 {
     return d_pointer->m_profileMaximumOklchChroma;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QString ColorEngine::profileModel() const
-{
-    return d_pointer->m_profileModel;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QString ColorEngine::profileName() const
-{
-    return d_pointer->m_profileName;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-cmsColorSpaceSignature ColorEngine::profilePcsColorModel() const
-{
-    return d_pointer->m_profilePcsColorModel;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-std::optional<cmsCIEXYZ> ColorEngine::profileTagBlackpoint() const
-{
-    return d_pointer->m_profileTagBlackpoint;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-std::optional<cmsCIEXYZ> ColorEngine::profileTagBluePrimary() const
-{
-    return d_pointer->m_profileTagBluePrimary;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-std::optional<cmsCIEXYZ> ColorEngine::profileTagGreenPrimary() const
-{
-    return d_pointer->m_profileTagGreenPrimary;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-std::optional<cmsCIEXYZ> ColorEngine::profileTagRedPrimary() const
-{
-    return d_pointer->m_profileTagRedPrimary;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-QStringList ColorEngine::profileTagSignatures() const
-{
-    return d_pointer->m_profileTagSignatures;
-}
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-std::optional<cmsCIEXYZ> ColorEngine::profileTagWhitepoint() const
-{
-    return d_pointer->m_profileTagWhitepoint;
-}
-
-/** @brief Get information from an ICC profile via LittleCMS
- *
- * @param profileHandle handle to the ICC profile in which will be searched
- * @param infoType the type of information that is searched
- * @param languageTerritory A string of the form "language_territory", where
- * language is a lowercase, two-letter ISO 639 language code, and territory is
- * an uppercase, two- or three-letter ISO 3166 territory code. If the locale
- * has no specified territory, only the language name is required. Leave empty
- * to use the default locale of the profile.
- * @returns A QString with the information. It searches the
- * information in the current locale (language code and country code as
- * provided currently by <tt>QLocale</tt>). If the information is not
- * available in this locale, LittleCMS silently falls back to another available
- * localization. Note that the returned <tt>QString</tt> might be empty if the
- * requested information is not available in the ICC profile. */
-QString ColorEnginePrivate::profileInformation(cmsHPROFILE profileHandle, cmsInfoType infoType, const QString &languageTerritory)
-{
-    QByteArray languageCode;
-    QByteArray countryCode;
-    // Update languageCode and countryCode to the actual locale (if possible)
-    const QStringList list = languageTerritory.split(QStringLiteral(u"_"));
-    // The list of locale codes should be ASCII only.
-    // Therefore QString::toUtf8() should return ASCII-only valid results.
-    // (We do not know what character encoding LittleCMS expects,
-    // but ASCII seems a safe choice.)
-    if (list.size() == 2) {
-        languageCode = list.at(0).toUtf8();
-        countryCode = list.at(1).toUtf8();
-    }
-    // Fallback for missing (empty) values to the default value recommended
-    // by LittleCMS documentation: “en” and “US”.
-    if (languageCode.size() != 2) {
-        // Encoding of C++ string literals is UTF8 (we have static_assert
-        // for this):
-        languageCode = QByteArrayLiteral("en");
-    }
-    if (countryCode.size() != 2) {
-        // Encoding of C++ string literals is UTF8 (we have a static_assert
-        // for this):
-        countryCode = QByteArrayLiteral("US");
-    }
-    // NOTE Since LittleCMS ≥ 2.16, cmsNoLanguage and cmsNoCountry could be
-    // used instead of "en" and "US" and would return simply the first language
-    // in the profile, but that seems less predictable and less reliably than
-    // "en" and "US".
-    //
-    // NOTE Do only v4 profiles provide internationalization, while v2 profiles
-    // don’t? This seems to be implied in LittleCMS documentation:
-    //
-    //     “Since 2.16, a special setting for the lenguage and country allows
-    //      to access the unicode variant on V2 profiles.
-    //
-    //      For the language and country:
-    //
-    //      cmsV2Unicode
-    //
-    //      Many V2 profiles have this field empty or filled with bogus values.
-    //      Previous versions of Little CMS were ignoring it, but with
-    //      this additional setting, correct V2 profiles with two variants
-    //      can be honored now. By default, the ASCII variant is returned on
-    //      V2 profiles unless you specify this special setting. If you decide
-    //      to use it, check the result for empty strings and if this is the
-    //      case, repeat reading by using the normal path.”
-    //
-    // So maybe v2 profiles have just one ASCII and one Unicode string, and
-    // that’s all? If so, our approach seems fine: Our locale will be honored
-    // on v4 profiles, and it will be ignored on v2 profiles because we do not
-    // use cmsV2Unicode. This seems a wise choice, because otherwise we would
-    // need different code paths for v2 and v4 profiles, which would be even
-    // even more complex than the current code, and still potentially return
-    // “bogus values” (as LittleCMS the documentation states), so the result
-    // would be worse than the current code.
-
-    // Calculate the expected maximum size of the return value that we have
-    // to provide for cmsGetProfileInfo later on in order to return an
-    // actual value.
-    const cmsUInt32Number resultLength = cmsGetProfileInfo(
-        // Profile in which we search:
-        profileHandle,
-        // The type of information we search:
-        infoType,
-        // The preferred language in which we want to get the information:
-        languageCode.constData(),
-        // The preferred country for which we want to get the information:
-        countryCode.constData(),
-        // Do not actually provide the information,
-        // just return the required buffer size:
-        nullptr,
-        // Do not actually provide the information,
-        // just return the required buffer size:
-        0);
-    // For the actual buffer size, increment by 1. This helps us to
-    // guarantee a null-terminated string later on.
-    const cmsUInt32Number bufferLength = resultLength + 1;
-
-    // NOTE According to the documentation, it seems that cmsGetProfileInfo()
-    // calculates the buffer length in bytes and not in wchar_t. However,
-    // the documentation (as of LittleCMS 2.9) is not clear about the
-    // used encoding, and the buffer type must be wchar_t anyway, and
-    // wchar_t might have different sizes (either 16 bit or 32 bit) on
-    // different systems, and LittleCMS’ treatment of this situation is
-    // not well documented. Therefore, we interpret the buffer length
-    // as number of necessary wchart_t, which creates a greater buffer,
-    // which might possibly be waste of space, but it’s just a little bit
-    // of text, so that’s not so much space that is wasted finally.
-
-    // Allocate the buffer
-    std::vector<wchar_t> buffer(bufferLength);
-    // Initialize the buffer with 0
-    for (cmsUInt32Number i = 0; i < bufferLength; ++i) {
-        buffer[i] = 0;
-    }
-
-    // Write the actual information to the buffer
-    cmsGetProfileInfo(
-        // profile in which we search
-        profileHandle,
-        // the type of information we search
-        infoType,
-        // the preferred language in which we want to get the information
-        languageCode.constData(),
-        // the preferred country for which we want to get the information
-        countryCode.constData(),
-        // the buffer into which the requested information will be written
-        buffer.data(),
-        // the buffer size as previously calculated by cmsGetProfileInfo
-        resultLength);
-    // Make absolutely sure the buffer is null-terminated by marking its last
-    // element (the one that was the +1 "extra" element) as null.
-    buffer[bufferLength - 1] = 0;
-
-    // Create a QString() from the from the buffer
-    //
-    // cmsGetProfileInfo returns often strings that are smaller than the
-    // previously calculated buffer size. But we had initialized the buffer
-    // with null, so actually we get a null-terminated string even if LittleCMS
-    // would not provide the final null.  So we read only up to the first null
-    // value.
-    //
-    // LittleCMS returns wchar_t. This type might have different sizes:
-    // Depending on the operating system either 16 bit or 32 bit.
-    // LittleCMS does not specify the encoding in its documentation for
-    // cmsGetProfileInfo() as of LittleCMS 2.9. It only says “Strings are
-    // returned as wide chars.” So this is likely either UTF-16 or UTF-32.
-    // According to github.com/mm2/Little-CMS/issues/180#issue-421837278
-    // it is even UTF-16 when the size of wchar_t is 32 bit! And according
-    // to github.com/mm2/Little-CMS/issues/180#issuecomment-1007490587
-    // in LittleCMS versions after 2.13 it might be UTF-32 when the size
-    // of wchar_t is 32 bit. So the behaviour of LittleCMS changes between
-    // various versions. Conclusion: It’s either UTF-16 or UTF-32, but we
-    // never know which it is and have to be prepared for all possible
-    // combinations between UTF-16/UTF-32 and a wchar_t size of
-    // 16 bit/32 bit.
-    //
-    // QString::fromWCharArray can create a QString from this data. It
-    // accepts arrays of wchar_t. As Qt’s documentation of
-    // QString::fromWCharArray() says:
-    //
-    //     “If wchar is 4 bytes, the string is interpreted as UCS-4,
-    //      if wchar is 2 bytes it is interpreted as UTF-16.”
-    //
-    // However, apparently this is not exact: When wchar is 4 bytes,
-    // surrogate pairs in the code unit array are interpreted like UTF-16:
-    // The surrogate pair is recognized as such, which is not strictly
-    // UTF-32 conform, but enhances the compatibility. Single surrogates
-    // cannot be interpreted correctly, but there will be no crash:
-    // QString::fromWCharArray will continue to read, also the part
-    // after the first UTF error. So QString::fromWCharArray is quite
-    // error-tolerant, which is great as we do not exactly know the
-    // encoding of the buffer that LittleCMS returns. However, this is
-    // undocumented behaviour of QString::fromWCharArray which means
-    // it could change over time. Therefore, in the unit tests of this
-    // class, we test if QString::fromWCharArray actually behaves as we want.
-    //
-    // NOTE Instead of cmsGetProfileInfo(), we could also use
-    // cmsGetProfileInfoUTF8() which returns directly an UTF-8 encoded
-    // string. We were no longer required to guess the encoding, but we
-    // would have a return value in a well-defined encoding. However,
-    // this would  also require LittleCMS ≥ 2.16, and we would still
-    // need the buffer.
-    const QString result = QString::fromWCharArray(
-        // Convert to string with these parameters:
-        buffer.data(), // read from this buffer
-        -1 // read until the first null element
-    );
-
-    // Return
-    return result;
-}
-
-/** @brief Get ICC version from profile via LittleCMS
- *
- * @param profileHandle handle to the ICC profile
- * @returns The version number of the ICC format used in the profile. */
-QVersionNumber ColorEnginePrivate::profileIccVersion(cmsHPROFILE profileHandle)
-{
-    // cmsGetProfileVersion returns a floating point number. Apparently
-    // the digits before the decimal separator are the major version,
-    // and the digits after the decimal separator are the minor version.
-    // So, the version number strings “2.1” (major version 2, minor version 1)
-    // and “2.10” (major version 2, minor version 10) both get the same
-    // representation as floating point number 2.1 because floating
-    // point numbers do not have memory about how many trailing zeros
-    // exist. So we have to assume minor versions higher than 9 are not
-    // supported by cmsGetProfileVersion anyway. A positive side effect
-    // of this assumption is that is makes the conversion to QVersionNumber
-    // easier: We use a fixed width of exactly one digit for the
-    // part after the decimal separator. This makes also sure that
-    // the floating point number 2 is interpreted as “2.0” (and not
-    // simply as “2”).
-
-    // QString::number() ignores the locale and uses always a “.”
-    // as separator, which is exactly what we need to create
-    // a QVersionNumber from.
-    const QString versionString = QString::number( //
-        cmsGetProfileVersion(profileHandle), // floating point
-        'f', // use normal rendering format (no exponents)
-        1 // number of digits after the decimal point
-    );
-    return QVersionNumber::fromString(versionString);
-}
-
-/** @brief Date and time of creation of a profile via LittleCMS
- *
- * @param profileHandle handle to the ICC profile
- * @returns Date and time of creation of the profile, if available. An invalid
- * date and time otherwise. */
-QDateTime ColorEnginePrivate::profileCreationDateTime(cmsHPROFILE profileHandle)
-{
-    tm myDateTime; // The type “tm” as defined in C (time.h), as LittleCMS expects.
-    const bool success = cmsGetHeaderCreationDateTime(profileHandle, &myDateTime);
-    if (!success) {
-        // Return invalid QDateTime object
-        return QDateTime();
-    }
-    const QDate myDate(myDateTime.tm_year + 1900, // tm_year means: years since 1900
-                       myDateTime.tm_mon + 1, // tm_mon ranges fromm 0 to 11
-                       myDateTime.tm_mday // tm_mday ranges from 1 to 31
-    );
-    // “tm” allows seconds higher than 59: It allows up to 60 seconds: The
-    // “supplement” second is for leap seconds. However, QTime does not
-    // accept seconds beyond 59. Therefore, this has to be corrected:
-    const QTime myTime(myDateTime.tm_hour, //
-                       myDateTime.tm_min, //
-                       qBound(0, myDateTime.tm_sec, 59));
-    return QDateTime(
-        // Date:
-        myDate,
-        // Time:
-        myTime,
-        // Assuming UTC for the QDateTime because it’s the only choice
-        // that will not change arbitrary. QTimeZone(0) constructs a time
-        // zone with 0 seconds offset to UTC.
-        QTimeZone(0));
-}
-
-/** @brief List of tag signatures that are actually present in the profile.
- *
- * @param profileHandle handle to the ICC profile
- * @returns A list of tag signatures actually present in the profile. Contains
- * both, public and private signatures. See @ref profileTagSignatures for
- * details. */
-QStringList ColorEnginePrivate::profileTagSignatures(cmsHPROFILE profileHandle)
-{
-    const cmsInt32Number count = cmsGetTagCount(profileHandle);
-    if (count < 0) {
-        return QStringList();
-    }
-    QStringList returnValue;
-    returnValue.reserve(count);
-    const cmsUInt32Number countUnsigned = static_cast<cmsUInt32Number>(count);
-    using underlyingType = std::underlying_type<cmsTagSignature>::type;
-    for (cmsUInt32Number i = 0; i < countUnsigned; ++i) {
-        const underlyingType value = cmsGetTagSignature(profileHandle, i);
-        QByteArray byteArray;
-        byteArray.reserve(4);
-        // Extract the 4 lowest bytes
-        static_assert( //
-            sizeof(underlyingType) == 4, //
-            "cmsTagSignature must have 4 bytes for this code to work.");
-        byteArray.append(static_cast<char>((value >> 24) & 0xFF));
-        byteArray.append(static_cast<char>((value >> 16) & 0xFF));
-        byteArray.append(static_cast<char>((value >> 8) & 0xFF));
-        byteArray.append(static_cast<char>(value & 0xFF));
-        // Convert QByteArray to QString
-        returnValue.append(QString::fromLatin1(byteArray));
-    }
-    return returnValue;
-}
-
-/** @brief Reads a tag from a profile and converts to cmsCIEXYZ.
- *
- * @pre signature is a tag signature for which LittleCMS will return a
- * pointer to an cmsCIEXYZ value (see LittleCMS documentation).
- *
- * @warning If the precondition is not fulfilled, this will produce undefined
- * behaviour and possibly a segmentation fault.
- *
- * @param profileHandle handle to the ICC profile
- * @param signature signature of the tag to search for
- * @returns The value of the requested tag if present in the profile.
- * An <tt>std::nullopt</tt> otherwise. */
-std::optional<cmsCIEXYZ> ColorEnginePrivate::profileReadCmsciexyzTag(cmsHPROFILE profileHandle, cmsTagSignature signature)
-{
-    if (!cmsIsTag(profileHandle, signature)) {
-        return std::nullopt;
-    }
-
-    void *voidPointer = cmsReadTag(profileHandle, signature);
-
-    if (voidPointer == nullptr) {
-        return std::nullopt;
-    }
-
-    const cmsCIEXYZ result = *static_cast<cmsCIEXYZ *>(voidPointer);
-
-    return result;
 }
 
 /** @brief Reduces the chroma until the color fits into the gamut.
@@ -1262,6 +628,25 @@ bool ColorEngine::isOklchInGamut(const GenericColor &lch) const
 }
 
 /** @brief Check if a color is within the gamut.
+ *
+ * @param oklab the color
+ *
+ * @returns <tt>true</tt> if the color is in the gamut.
+ * <tt>false</tt> otherwise. */
+bool ColorEngine::isOklabInGamut(const PerceptualColor::GenericColor &oklab) const
+{
+    if (!isInRange<decltype(oklab.first)>(0, oklab.first, 1)) {
+        return false;
+    }
+    const auto xyzD65 = AbsoluteColor::fromOklabToXyzD65(oklab);
+    const auto xyzD50 = AbsoluteColor::fromXyzD65ToXyzD50(xyzD65);
+    const auto cielabD50 = AbsoluteColor::fromXyzD50ToCielabD50(xyzD50);
+    const auto cielabD50cms = cielabD50.reinterpretAsLabToCmscielab();
+    const auto rgb = fromCielabD50ToQRgbOrTransparent(cielabD50cms);
+    return (qAlpha(rgb) != 0);
+}
+
+/** @brief Check if a color is within the gamut.
  * @param lab the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise. */
@@ -1428,17 +813,13 @@ void ColorEnginePrivate::initializeChromaticityBoundaries()
     addDuplicates(m_chromaticityBoundaryByCielchD50Hue360);
     addDuplicates(m_chromaticityBoundaryByOklabHue360);
 
-    m_profileMaximumCielchD50Chroma *= chromaDetectionIncrementFactor;
-    m_profileMaximumCielchD50Chroma += cielabDeviationLimit;
     m_profileMaximumCielchD50Chroma = std::min<double>( //
         m_profileMaximumCielchD50Chroma, //
-        CielchD50Values::maximumChroma);
+        cielchD50Values.maximumChroma);
 
-    m_profileMaximumOklchChroma *= chromaDetectionIncrementFactor;
-    m_profileMaximumOklchChroma += oklabDeviationLimit;
     m_profileMaximumOklchChroma = std::min<double>( //
         m_profileMaximumOklchChroma, //
-        OklchValues::maximumChroma);
+        oklchValues.maximumChroma);
 }
 
 /**

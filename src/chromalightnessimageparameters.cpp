@@ -5,13 +5,16 @@
 // First the interface, which forces the header to be self-contained.
 #include "chromalightnessimageparameters.h"
 
+#include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
 #include "colorengine.h"
 #include "helper.h"
 #include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
+#include "lchvalues.h"
 #include <atomic>
+#include <functional>
 #include <lcms2.h>
 #include <qimage.h>
 #include <qlist.h>
@@ -20,6 +23,7 @@
 #include <qrgb.h>
 #include <qrunnable.h>
 #include <qsemaphore.h>
+#include <qsharedpointer.h>
 #include <qthreadpool.h>
 #include <type_traits>
 #include <utility>
@@ -38,6 +42,7 @@ bool ChromaLightnessImageParameters::operator==(const ChromaLightnessImageParame
         (hue == other.hue) //
         && (imageSizePhysical == other.imageSizePhysical) //
         && (colorEngine == other.colorEngine) //
+        && (projectionSpace == other.projectionSpace) //
     );
 }
 
@@ -54,7 +59,6 @@ bool ChromaLightnessImageParameters::operator!=(const ChromaLightnessImageParame
 /**
  * @brief Render some rows of the image directly to the buffer.
  *
- * @param callbackObject Used to stop rendering when an abort is requested
  * @param bytesPtr Pointer to the image data.
  * @param bytesPerLine Bytes per line of the image data (can be obtained by
  *        QImage)
@@ -71,32 +75,36 @@ bool ChromaLightnessImageParameters::operator!=(const ChromaLightnessImageParame
 // possible to prevent potential pitfalls, even though copying by value may
 // introduce slight overhead.
 void ChromaLightnessImageParameters::renderByRow( //
-    const AsyncImageRenderCallback &callbackObject,
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
     const ChromaLightnessImageParameters parameters, // clazy:exclude=function-args-by-ref
-    int firstRow,
-    int lastRow)
+    const int firstRow,
+    const int lastRow)
 {
+    const LchValues ranges = //
+        (parameters.projectionSpace == LchSpace::Oklch) //
+        ? oklchValues //
+        : cielchD50Values;
     QRgb rgbColor;
-    cmsCIELCh cielchD50;
-    cielchD50.h = normalizedAngle360(parameters.hue);
+    cmsCIELCh lch;
+    lch.h = normalizedAngle360(parameters.hue);
     for (int y = firstRow; y <= lastRow; ++y) {
-        if (callbackObject.shouldAbort()) {
-            return;
-        }
         QRgb *line = //
             reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
-        cielchD50.L = 100 - (y + 0.5) * 100.0 / parameters.imageSizePhysical.height();
+        lch.L = ranges.maximumLightness - (y + 0.5) * ranges.maximumLightness / parameters.imageSizePhysical.height();
         for (int x = 0; x < parameters.imageSizePhysical.width(); ++x) {
             // Using the same scale as on the y axis. floating point
-            // division thanks to 100 which is a "cmsFloat64Number"
-            cielchD50.C = (x + 0.5) * 100.0 / parameters.imageSizePhysical.height();
-            rgbColor = //
-                parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
-                    toCmsLab(cielchD50));
+            lch.C = (x + 0.5) * ranges.maximumLightness / parameters.imageSizePhysical.height();
+            if (parameters.projectionSpace == LchSpace::Oklch) {
+                rgbColor = //
+                    AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
+                        toCmsLab(lch));
+            } else {
+                rgbColor = //
+                    parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
+                        toCmsLab(lch));
+            }
             if (qAlpha(rgbColor) != 0) {
-                // The pixel is within the gamut
                 line[x] = rgbColor;
                 // If color is out-of-gamut: We have chroma on the
                 // x axis and lightness on the y axis. We are drawing
@@ -136,16 +144,6 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     const ChromaLightnessImageParameters parameters = //
         variantParameters.value<ChromaLightnessImageParameters>();
 
-    // From Qt Example’s documentation:
-    //
-    //     “If we discover […] that restart has been set
-    //      to true (by render()), we break out […] immediately […].
-    //      Similarly, if we discover that abort has been set
-    //      to true (by the […] destructor), we return from the
-    //      function immediately […].”
-    if (callbackObject.shouldAbort()) {
-        return;
-    }
     // Create a new QImage with correct image size.
     QImage myImage(QSize(parameters.imageSizePhysical), //
                    QImage::Format_ARGB32_Premultiplied);
@@ -187,14 +185,12 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
         }
         std::atomic_thread_fence(std::memory_order_seq_cst); // memory barrier
         for (const auto &segment : segments) {
-            const auto myLambda = [&callbackObject, //
-                                   bytesPtr,
+            const auto myLambda = [bytesPtr, //
                                    bytesPerLine,
                                    parameters,
                                    segment,
                                    &semaphore]() {
-                renderByRow(callbackObject, //
-                            bytesPtr,
+                renderByRow(bytesPtr, //
                             bytesPerLine,
                             parameters,
                             segment.first,
@@ -210,10 +206,6 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
         semaphore.acquire(segmentsCount); // Wait for all threads to finish.
     }
 
-    if (callbackObject.shouldAbort()) {
-        return;
-    }
-
     // A 1-bit mask for the gamut.
     // transparent = white
     // opaque = black
@@ -225,28 +217,72 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
         QVariant::fromValue(parameters), //
         AsyncImageRenderCallback::InterlacingState::Intermediate);
 
-    // cppcheck-suppress knownConditionTrueFalse // false positive
+    // From Qt Example’s documentation:
+    //
+    //     “If we discover […] that restart has been set
+    //      to true (by render()), we break out […] immediately […].
+    //      Similarly, if we discover that abort has been set
+    //      to true (by the […] destructor), we return from the
+    //      function immediately […].”
+    //
+    // Strategic Abort Handling for Enhanced UI Responsivity:
+    // We intentionally check for restart/abort only *after* the first
+    // interlacing pass. This guarantees that at least one image is
+    // rendered and shown in the widget, so the UI appears responsive
+    // even while the user is interacting (e.g. dragging the hue slider).
+    // If we allowed abort earlier, rapid user input could prevent any
+    // image from ever being displayed. While the resulting image may be
+    // slightly outdated, it maintains the perception of a fluid, reactive
+    // interface.
+    //
+    // After the first pass we may skip the remaining work (such as
+    // anti‑aliasing) while the user is still changing the slider, because
+    // those steps are comparatively expensive and not critical for
+    // immediate feedback. Once the user stops interacting, the remaining
+    // passes (including full anti‑aliasing) will be completed and the
+    // final image delivered.
     if (callbackObject.shouldAbort()) {
         return;
     }
 
     // Anti-aliasing
     QList<QPoint> antiAliasCoordinates = findBoundary(myImage);
+
     // cppcheck-suppress knownConditionTrueFalse // false positive
     if (callbackObject.shouldAbort()) {
         return;
     }
-    const auto myColorFunction = [normalizedHue, //
-                                  imageHeight,
-                                  parameters] //
-        (const double colorFunctionX, const double colorFunctionY) -> QRgb {
-        cmsCIELCh myCielchD50;
-        myCielchD50.h = normalizedHue;
-        myCielchD50.L = 100 - (colorFunctionY + 0.5) * 100.0 / imageHeight;
-        myCielchD50.C = (colorFunctionX + 0.5) * 100.0 / imageHeight;
-        return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
-            toCmsLab(myCielchD50));
-    };
+
+    std::function<QRgb(const double x, const double y)> myColorFunction;
+    if (parameters.projectionSpace == LchSpace::Oklch) {
+        myColorFunction = [normalizedHue, //
+                           imageHeight,
+                           parameters] //
+            (const double colorFunctionX, const double colorFunctionY) -> QRgb {
+            cmsCIELCh oklch;
+            oklch.h = normalizedHue;
+            constexpr double maxLight = oklchValues.maximumLightness;
+            oklch.L = //
+                maxLight - (colorFunctionY + 0.5) * maxLight / imageHeight;
+            oklch.C = (colorFunctionX + 0.5) * maxLight / imageHeight;
+            return AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
+                toCmsLab(oklch));
+        };
+    } else {
+        myColorFunction = [normalizedHue, //
+                           imageHeight,
+                           parameters] //
+            (const double colorFunctionX, const double colorFunctionY) -> QRgb {
+            cmsCIELCh myCielchD50;
+            myCielchD50.h = normalizedHue;
+            constexpr double maxLight = cielchD50Values.maximumLightness;
+            myCielchD50.L = //
+                maxLight - (colorFunctionY + 0.5) * maxLight / imageHeight;
+            myCielchD50.C = (colorFunctionX + 0.5) * maxLight / imageHeight;
+            return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
+                toCmsLab(myCielchD50));
+        };
+    }
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);
 
     if (callbackObject.shouldAbort()) {

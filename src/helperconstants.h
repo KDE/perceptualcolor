@@ -70,22 +70,10 @@ constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
  * wheel: The value will be incremented/decremented by the amount of this
  * value.
  *
- * @sa @ref pageStepAlpha */
+ * Use @ref pageStepFactor to calculate corresponding page step (the
+ * larger of two natural steps).
+ */
 constexpr qreal singleStepAlpha = 0.01;
-
-/** @internal
- *
- * @brief Amount of single step for chroma.
- *
- * Measured in LCH chroma units.
- *
- * The smaller of two natural steps that a widget provides and
- * typically corresponds to the user pressing a key or using the mouse
- * wheel: The value will be incremented/decremented by the amount of this
- * value.
- *
- * @sa @ref pageStepChroma */
-constexpr int singleStepChroma = 1;
 
 /** @internal
  *
@@ -98,100 +86,32 @@ constexpr int singleStepChroma = 1;
  * wheel: The value will be incremented/decremented by the amount of this
  * value.
  *
- * @sa @ref pageStepHue
+ * Use @ref pageStepFactor to calculate corresponding page step (the
+ * larger of two natural steps).
  */
 constexpr int singleStepHue = 360 / 100;
 
 /** @internal
  *
- * @brief Amount of single step for lightness.
+ * @brief Factor for converting from single step to page step.
  *
- * Measured in LCH lightness units.
- *
- * The smaller of two natural steps that a widget provides and
+ * The single step is the smaller and the page step is the larger
+ * of two natural steps that a widget provides and
  * typically corresponds to the user pressing a key or using the mouse
  * wheel: The value will be incremented/decremented by the amount of this
  * value.
  *
- * @sa @ref pageStepLightness */
-constexpr int singleStepLightness = 1;
-
-/** @internal
+ * Multiply the single step by this factor to get the page step.
  *
- * @brief Amount of single step for Ok lightness, a, b, chroma (but
- * <em>not</em> hue).
- *
- * Measured in Ok units.
- *
- * The smaller of two natural steps that a widget provides and
- * typically corresponds to the user pressing a key or using the mouse
- * wheel: The value will be incremented/decremented by the amount of this
- * value. */
-constexpr double singleStepOklabc = 0.01;
-
-/** @internal
- *
- * @brief Amount of page step for alpha.
- *
- * Measured for an alpha range from 0 (transparent) to 1 (opaque).
- *
- * The larger of two natural steps that a widget provides and
- * typically corresponds to the user pressing a key or using the mouse
- * wheel: The value will be incremented/decremented by the amount of this
- * value.
- *
- * The value is 10 times @ref singleStepChroma. This behavior
+ * The value is 10. This behavior
  * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
- * its single step. */
-constexpr qreal pageStepAlpha = 10 * singleStepAlpha;
-
-/** @internal
+ * its single step.
  *
- * @brief Amount of page step for chroma.
- *
- * Measured in LCH chroma units.
- *
- * The larger of two natural steps that a widget provides and
- * typically corresponds to the user pressing a key or using the mouse
- * wheel: The value will be incremented/decremented by the amount of this
- * value.
- *
- * The value is 10 times @ref singleStepChroma. This behavior
- * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
- * its single step. */
-constexpr int pageStepChroma = 10 * singleStepChroma;
-
-/** @internal
- *
- * @brief Amount of page step for hue.
- *
- * Measured in degree.
- *
- * The larger of two natural steps that a widget provides and
- * typically corresponds to the user pressing a key or using the mouse
- * wheel: The value will be incremented/decremented by the amount of this
- * value.
- *
- * The value is 10 times @ref singleStepHue. This behavior
- * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
- * its single step. */
-constexpr int pageStepHue = 10 * singleStepHue;
-
-/** @internal
- *
- * @brief Amount of page step for lightness.
- *
- * Measured in LCH lightness units.
- *
- * The larger of two natural steps that a widget provides and
- * typically corresponds to the user pressing a key or using the mouse
- * wheel: The value will be incremented/decremented by the amount of this
- * value.
- *
- * The value is 10 times @ref singleStepLightness. This behavior
- * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
- * its single step. */
-constexpr int pageStepLightness = 10 * singleStepLightness;
+ * @sa @ref LchValues::singleStepLabc
+ * @sa @ref singleStepHue
+ * @sa @ref singleStepAlpha
+ */
+constexpr quint8 pageStepFactor = 10;
 
 /** @internal
  *

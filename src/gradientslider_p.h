@@ -27,7 +27,7 @@ class ColorEngine;
 class GradientSliderPrivate
 {
 public:
-    explicit GradientSliderPrivate(GradientSlider *backLink);
+    explicit GradientSliderPrivate(GradientSlider *backLink, const LchSpace projectionSpace);
     virtual ~GradientSliderPrivate() noexcept;
 
     // Methods
@@ -38,8 +38,8 @@ public:
     [[nodiscard]] int physicalPixelThickness() const;
 
     // Data members
-    /** @brief Internal storage for property @ref GradientSlider::firstColorCieLchD50A */
-    GenericColor m_firstColorCieLchD50A;
+    /** @brief Internal storage for property @ref GradientSlider::firstColorLchA */
+    GenericColor m_firstColorLchA;
     /** @brief The gradient image (without the handle).
      *
      * Always at the left is the first color, always at the right
@@ -56,9 +56,13 @@ public:
     /** @brief Internal storage for property
      * @ref GradientSlider::pageStep */
     qreal m_pageStep = 0.1;
+    /**
+     * @brief The color space into which the gamut will be projected.
+     */
+    const LchSpace m_projectionSpace;
     /** @brief Internal storage for property
-     * @ref GradientSlider::secondColorCieLchD50A */
-    GenericColor m_secondColorCieLchD50A;
+     * @ref GradientSlider::secondColorLchA */
+    GenericColor m_secondColorLchA;
     /** @brief Internal storage for property
      * @ref GradientSlider::singleStep */
     qreal m_singleStep = 0.01;

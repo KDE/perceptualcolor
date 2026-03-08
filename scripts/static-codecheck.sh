@@ -21,19 +21,13 @@
 # NOTE Keep the following list synchronized
 # between scripts/static-codecheck.sh and src/CMakeLists.txt
 PUBLIC_HEADERS="
-    src/abstractdiagram.h
-    src/chromahuediagram.h
     src/colordialog.h
-    src/colorenginefactory.h
     src/colorpatch.h
-    src/colorwheel.h
     src/constpropagatinguniquepointer.h
-    src/gradientslider.h
     src/importexport.h
     src/multispinbox.h
     src/multispinboxsection.h
     src/settranslation.h
-    src/wheelcolorpicker.h
     src/version.in.hpp
     "
 CODE_WITHOUT_UNIT_TESTS="src/* tests utils examples"
@@ -224,11 +218,18 @@ grep \
 #    variables they allow the definition within the very same header,
 #    which is not only easier to read, but also protects against
 #    a double definition in different compiler units.
+#    Therefore, we have a negative lookahead (as --invert-match)
+#    [^()\/;]*=.*; excludes: static inline constexpr int myName = 42;
+#    [^\(]*\{ exlucde: static inline constexpr int myName {42};
 grep \
     --recursive --exclude-dir=testbed \
-    --perl-regexp "(^|[^a-zA-Z0-9\-])inline(?![^()\/;]*=.*;)" \
+    --line-number \
+    --perl-regexp "\binline\b" \
     $ALL_CODE \
-         | sed 's/^/Do not use inline functions respectively define inline variables at the same line.: /'
+    | grep --invert-match --perl-regexp "inline[^()\/;]*=.*;" \
+    | grep --invert-match --perl-regexp "inline[^\(]*\{" \
+         | sed 's/^/Do not use inline functions. To inline variables assign a value at the same line.: /'
+
 
 # -> In some Qt classes, devicePixelRatio() returns in integer.
 #    Don’t do that and use floating point precision instead. Often,

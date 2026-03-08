@@ -90,7 +90,7 @@ qreal standardWheelStepCount(QWheelEvent *event)
  *
  * @sa @ref AbstractDiagram::transparencyBackground()
  *
- * @todo NICETOHAVE The function @ref transparencyBackground
+ * @todo SHOULDHAVE The function @ref transparencyBackground
  * should have color management support! Currently, we use the
  * same value for red, green and blue, this might <em>not</em> be perfectly
  * neutral gray depending on the color profile of the monitor… And: We
@@ -100,9 +100,10 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * transparent color, in Lch space. For each Lab (not Lch!) channel:
  * result = opacity * foreground + (100% - opacity) * background.
  *
- * @todo NICETOHAVE Calculate the two color values in Oklab instead of RGB.
+ * @todo SHOULDHAVE Calculate the two color values in Oklab instead of RGB
+ * because @ref AbstractDiagram::neutralGray() also does.
  *
- * @todo NICETOHAVE On dual‑screen setups with different DPI scaling factors,
+ * @todo SHOULDHAVE On dual‑screen setups with different DPI scaling factors,
  * the current implementation rounds coordinates to full pixels. This makes the
  * transparency background squares appear slightly inconsistent across
  * displays. When many squares are painted, for example in GradientSlider,
@@ -115,6 +116,9 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * a reference to an existing QImage with an LTR/RTL parameter. Painting
  * should then be done with floating‑point precision on the given target
  * to ensure consistent rendering across different DPIs.
+ * It might help to set swareSizeInLogicalPixel to a multiple of 8, to make
+ * sure that at least common zoom factors like 125% or 137.5% are still crisp.
+ * Keep track of @ref AbstractDiagram::transparencyBackground().
  */
 QImage transparencyBackground(qreal devicePixelRatioF)
 {
@@ -555,8 +559,12 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  *
  * @internal
  *
- * @todo NICETOHAVE wcsBasicColors has a gray axis that makes diagram hue flip
- * around. It shouldn’t.
+ * @todo NICETOHAVE wcsBasicColors has a gray axis that makes (CIELchD50)
+ * diagram hue flip around. It shouldn’t.
+ *
+ * @todo NICETOHAVE The conversion of the calculated tints and shades could
+ * be done directly with Oklch->sRGB
+ * instead of passing through CIELchD50 first.
  */
 QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
 {

@@ -15,7 +15,7 @@
 #include <qtmetamacros.h>
 #endif
 
-#ifdef PERCEPTUALCOLORLIB_STATIC
+#ifdef PERCEPTUALCOLOR_STATIC
 #include <optional>
 #endif
 

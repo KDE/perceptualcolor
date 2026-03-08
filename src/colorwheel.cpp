@@ -8,7 +8,6 @@
 #include "colorwheel_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "cielchd50values.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -16,6 +15,7 @@
 #include "helperconstants.h"
 #include "helpermath.h"
 #include "helperposixmath.h"
+#include "lchvalues.h"
 #include "polarpointf.h"
 #include <qevent.h>
 #include <qimage.h>
@@ -31,13 +31,15 @@ namespace PerceptualColor
 /** @brief Constructor
  *
  * @param colorEngine The color engine with which this widget should operate.
- * Can be created with @ref createSrgbColorEngine().
  *
  * @param parent The widget’s parent widget. This parameter will be passed
- * to the base class’s constructor. */
-ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent)
+ * to the base class’s constructor.
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
+ */
+ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ColorWheelPrivate(this, colorEngine))
+    , d_pointer(new ColorWheelPrivate(this, colorEngine, projectionSpace))
 {
     // Setup the color engine must be the first thing to do because
     // other operations rely on a color engine being present.
@@ -70,15 +72,19 @@ ColorWheel::~ColorWheel() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
- *
  * @param colorEngine The color engine with which this widget should operate.
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
  */
-ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
-    : m_wheelImage(colorEngine)
+ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink,
+                                     const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                                     const PerceptualColor::LchSpace projectionSpace)
+    : m_projectionSpace(projectionSpace)
+    , m_wheelImage(colorEngine)
     , q_pointer(backLink)
 {
     // Initialization
-    m_hue = CielchD50Values::neutralHue;
+    m_hue = cielchD50Values.neutralHue;
 }
 
 /**
@@ -270,10 +276,10 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
         d_pointer->setHueNormalized(d_pointer->m_hue - singleStepHue);
         break;
     case Qt::Key_Insert:
-        d_pointer->setHueNormalized(d_pointer->m_hue + pageStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue + singleStepHue * pageStepFactor);
         break;
     case Qt::Key_Delete:
-        d_pointer->setHueNormalized(d_pointer->m_hue - pageStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue - singleStepHue * pageStepFactor);
         break;
     default:
         /* Quote from Qt documentation:
@@ -343,6 +349,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     d_pointer->m_wheelImage.setBorder(spaceForFocusIndicator() * devicePixelRatioF());
     d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
     d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
+    d_pointer->m_wheelImage.setProjectionSpace(d_pointer->m_projectionSpace);
     d_pointer->m_wheelImage.setWheelThickness(gradientThickness() * devicePixelRatioF());
     bufferPainter.drawImage(QPoint(0, 0), // image position (top-left)
                             d_pointer->m_wheelImage.getImage() // the image itself

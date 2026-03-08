@@ -5,7 +5,10 @@
 #define PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H
 
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
+#include "helperconversion.h"
 #include "importexport.h"
+#include "internalimportexport.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
@@ -15,6 +18,7 @@ class QHideEvent;
 class QShowEvent;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include "helperconversion.h"
 #include <qtmetamacros.h>
 #endif
 
@@ -22,7 +26,10 @@ namespace PerceptualColor
 {
 class AbstractDiagramPrivate;
 
-/** @brief Base class for LCH diagrams.
+/**
+ * @internal
+ *
+ * @brief Base class for LCH diagrams.
  *
  * Provides some elements that are common for all LCH diagrams in this
  * library.
@@ -51,7 +58,7 @@ class AbstractDiagramPrivate;
  * @ref AbstractDiagram::isActuallyVisible are not actually used.
  * Either use them or remove them?
  */
-class PERCEPTUALCOLOR_IMPORTEXPORT AbstractDiagram : public QWidget
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT AbstractDiagram : public QWidget
 {
     Q_OBJECT
 
@@ -71,9 +78,10 @@ protected:
     [[nodiscard]] int maximumPhysicalSquareSize() const;
     [[nodiscard]] qreal maximumWidgetSquareSize() const;
     [[nodiscard]] QSize physicalPixelSize() const;
-    [[nodiscard]] QColor handleColorFromBackgroundLightness(qreal lightness) const;
+    [[nodiscard]] static QColor handleColorFromBackgroundLightness(qreal lightness, PerceptualColor::LchSpace projectionSpace);
     [[nodiscard]] int handleOutlineThickness() const;
     [[nodiscard]] qreal handleRadius() const;
+    [[nodiscard]] static QColor neutralGray();
     virtual void showEvent(QShowEvent *event) override;
     [[nodiscard]] int spaceForFocusIndicator() const;
     [[nodiscard]] QImage transparencyBackground() const;

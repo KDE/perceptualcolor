@@ -7,7 +7,7 @@
 // Second, the private implementation.
 #include "swatchbook_p.h" // IWYU pragma: keep
 
-#include "colorenginefactory.h"
+#include "colorengine.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include <qboxlayout.h>
@@ -52,7 +52,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
     void provideStyleNamesAsData()
     {
@@ -138,13 +138,6 @@ private Q_SLOTS:
             "height.");
     }
 
-#ifndef MSVC_DLL
-    // The automatic export of otherwise private symbols on MSVC
-    // shared libraries via CMake's WINDOWS_EXPORT_ALL_SYMBOLS property
-    // does not work well for Qt meta objects, resulting in non-functional
-    // signals. Since the following unit tests require signals, it cannot be
-    // built for MSVC shared libraries.
-
     void testCurrentColor()
     {
         SwatchBook testWidget(m_colorEngine, //
@@ -194,8 +187,6 @@ private Q_SLOTS:
         QCOMPARE(testWidget.currentColor(), myQColorDialog.currentColor());
         QCOMPARE(lastSignalColor, myQColorDialog.currentColor());
     }
-
-#endif
 
     void testPatchSpacingH_data()
     {

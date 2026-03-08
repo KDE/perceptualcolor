@@ -20,11 +20,7 @@ class AbstractDiagramPrivate
 public:
     /** @brief Constructor */
     AbstractDiagramPrivate() = default;
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~AbstractDiagramPrivate() noexcept = default;
+    virtual ~AbstractDiagramPrivate() noexcept;
 
     /** @brief Internal storage for @ref AbstractDiagram::isActuallyVisible. */
     bool m_isActuallyVisible = false;

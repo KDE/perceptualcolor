@@ -12,6 +12,7 @@
 #include "helper.h"
 #include "helperconversion.h"
 #include "languagechangeeventfilter.h"
+#include "lchvalues.h"
 #include "rgbcolor.h"
 #include <lcms2.h>
 #include <optional>
@@ -74,11 +75,7 @@ public:
     static inline QString const customIdentifierPrefix = QStringLiteral("custom");
 
     explicit ColorDialogPrivate(ColorDialog *backLink, const QString &identifier);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    virtual ~ColorDialogPrivate() noexcept override = default;
+    virtual ~ColorDialogPrivate() noexcept override;
 
     /** @brief Horizontal count of swatches for history. */
     static constexpr qsizetype historyHSwatchCount = 10;
@@ -210,6 +207,10 @@ public:
     QPointer<QWidget> m_lightnessFirstWrapperWidget;
     /** @brief Pointer to the @ref GradientSlider for LCH lightness. */
     QPointer<GradientSlider> m_lchLightnessSelector;
+    /**
+     * @brief @ref LchValues for @ref m_projectionSpace.
+     */
+    LchValues m_lchValues;
     /** @brief Holds the receiver slot (if any) to be disconnected
      *  automatically after closing the dialog.
      *
@@ -235,6 +236,18 @@ public:
     QPointer<QAction> m_oklchSpinBoxGamutAction;
     /** @brief Pointer to the label for @ref m_oklchSpinBox. */
     QPointer<QLabel> m_oklchSpinBoxLabel;
+    /**
+     * @brief The color space into which the gamut will be projected.
+     */
+    const LchSpace m_projectionSpace = LchSpace::Oklch;
+    /**
+     * @brief The corresponding @ref ColorModel value
+     * for @ref m_projectionSpace.
+     */
+    const ColorModel m_projectionSpaceModel = //
+        (m_projectionSpace == LchSpace::CielchD50) //
+        ? ColorModel::CielchD50 //
+        : ColorModel::OklchD65;
     /** @brief Pointer to the basic colors widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookBasicColors;
     /** @brief Pointer to the basic colors widget. */

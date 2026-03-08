@@ -7,7 +7,7 @@
 // Second, the private implementation.
 #include "chromahuediagram_p.h" // IWYU pragma: keep
 
-#include "colorenginefactory.h"
+#include "colorengine.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "polarpointf.h"
@@ -32,13 +32,13 @@
 static void snippet01()
 {
     //! [instantiate]
-    auto myColorEngine = PerceptualColor::createSrgbColorEngine();
-    auto myDiagram = new PerceptualColor::ChromaHueDiagram(myColorEngine);
+    auto myColorEngine = PerceptualColor::ColorEngine::createSrgb();
+    auto myDiagram = new PerceptualColor::ChromaHueDiagram(myColorEngine, PerceptualColor::LchSpace::CielchD50);
     PerceptualColor::GenericColor myColor; // Lch
     myColor.first = 50; // Lightness
     myColor.second = 25; // Chroma
     myColor.third = 270; // Hue
-    myDiagram->setCurrentColorCielchD50(myColor);
+    myDiagram->setCurrentColorLch(myColor);
     myDiagram->show();
     //! [instantiate]
     delete myDiagram;
@@ -59,7 +59,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()
@@ -84,92 +84,92 @@ private Q_SLOTS:
 
     void testConstructorAndDestructor()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
     }
 
     void testShow()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         myDiagram.show();
     }
 
     void testKeyPressEvent()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         GenericColor referenceColorLch;
         referenceColorLch.first = 50;
         referenceColorLch.second = 0;
         referenceColorLch.third = 180;
-        myDiagram.setCurrentColorCielchD50(referenceColorLch);
-        if (myDiagram.currentColorCielchD50().third != 180) {
+        myDiagram.setCurrentColorLch(referenceColorLch);
+        if (myDiagram.currentColorLch().third != 180) {
             throw 0;
         }
-        if (myDiagram.currentColorCielchD50().second != 0) {
+        if (myDiagram.currentColorLch().second != 0) {
             throw 0;
         }
         GenericColor referenceColorChromaLch;
         referenceColorChromaLch.first = 50;
         referenceColorChromaLch.second = 10;
         referenceColorChromaLch.third = 180;
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
 
         QScopedPointer<QKeyEvent> myEvent;
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, 0, Qt::NoModifier));
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().second > 0, "Test Key_Up");
+        QVERIFY2(myDiagram.currentColorLch().second > 0, "Test Key_Up");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_PageUp, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().second > 0, "Test Key_PageUp");
+        QVERIFY2(myDiagram.currentColorLch().second > 0, "Test Key_PageUp");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().second < 10, "Test Key_Down");
+        QVERIFY2(myDiagram.currentColorLch().second < 10, "Test Key_Down");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_PageDown, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().second < 10, "Test Key_PageDown");
+        QVERIFY2(myDiagram.currentColorLch().second < 10, "Test Key_PageDown");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().second >= 0, "Test Key_Down never negative");
+        QVERIFY2(myDiagram.currentColorLch().second >= 0, "Test Key_Down never negative");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_PageDown, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().second >= 0, "Test Key_PageDown never negative");
+        QVERIFY2(myDiagram.currentColorLch().second >= 0, "Test Key_PageDown never negative");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().third > 180, "Test Key_Left");
+        QVERIFY2(myDiagram.currentColorLch().third > 180, "Test Key_Left");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_Home, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().third > 180, "Test Key_Home");
+        QVERIFY2(myDiagram.currentColorLch().third > 180, "Test Key_Home");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().third < 180, "Test Key_Right");
+        QVERIFY2(myDiagram.currentColorLch().third < 180, "Test Key_Right");
 
-        myDiagram.setCurrentColorCielchD50(referenceColorChromaLch);
+        myDiagram.setCurrentColorLch(referenceColorChromaLch);
         myEvent.reset(new QKeyEvent(QEvent::KeyPress, Qt::Key_End, Qt::NoModifier));
         myDiagram.keyPressEvent(myEvent.data());
-        QVERIFY2(myDiagram.currentColorCielchD50().third < 180, "Test Key_End");
+        QVERIFY2(myDiagram.currentColorLch().third < 180, "Test Key_End");
     }
 
     void testMinimumSizeHint()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         QVERIFY2(myDiagram.minimumSizeHint().width() > 0, "minimumSizeHint width is implemented.");
         QVERIFY2(myDiagram.minimumSizeHint().height() > 0, "minimumSizeHint height is implemented.");
         // Check that the hint is a square:
@@ -178,7 +178,7 @@ private Q_SLOTS:
 
     void testSizeHint()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         QVERIFY2(myDiagram.sizeHint().width() > myDiagram.minimumSizeHint().width(), "sizeHint width is bigger than minimumSizeHint width.");
         QVERIFY2(myDiagram.sizeHint().height() > myDiagram.minimumSizeHint().height(), "sizeHint height is bigger than minimumSizeHint height.");
         // Check that the hint is a square:
@@ -187,29 +187,29 @@ private Q_SLOTS:
 
     void testColorProperty()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
-        QSignalSpy mySpy(&myDiagram, &PerceptualColor::ChromaHueDiagram::currentColorCielchD50Changed);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
+        QSignalSpy mySpy(&myDiagram, &PerceptualColor::ChromaHueDiagram::currentColorLchChanged);
         GenericColor referenceColorLch;
         referenceColorLch.first = 50;
         referenceColorLch.second = 10;
         referenceColorLch.third = 180;
 
         // Test if signal for new color is emitted.
-        myDiagram.setCurrentColorCielchD50(referenceColorLch);
+        myDiagram.setCurrentColorLch(referenceColorLch);
         QCOMPARE(mySpy.size(), 1);
-        QVERIFY2(myDiagram.currentColorCielchD50() == referenceColorLch, //
+        QVERIFY2(myDiagram.currentColorLch() == referenceColorLch, //
                  "Verify that the color is equal to the reference color.");
 
         // Test that no signal is emitted for old color.
-        myDiagram.setCurrentColorCielchD50(referenceColorLch);
+        myDiagram.setCurrentColorLch(referenceColorLch);
         QCOMPARE(mySpy.size(), 1);
-        QVERIFY2(myDiagram.currentColorCielchD50() == referenceColorLch, //
+        QVERIFY2(myDiagram.currentColorLch() == referenceColorLch, //
                  "Verify that the color is equal to the reference color.");
     }
 
     void testDiagramOffset()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         myDiagram.show(); // Necessary to allow event processing
         myDiagram.resize(50, 50);
         qreal oldOffset = myDiagram.d_pointer->diagramOffset();
@@ -221,7 +221,7 @@ private Q_SLOTS:
 
     void testdiagramCenter()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         myDiagram.resize(100, 100);
         // Test conformance with diagramOffset()
         QCOMPARE(myDiagram.d_pointer->diagramCenter().x(), //
@@ -232,12 +232,12 @@ private Q_SLOTS:
 
     void testConversions()
     {
-        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_colorEngine, LchSpace::CielchD50);
         GenericColor myGrayColor;
         myGrayColor.third = 0;
         myGrayColor.first = 50;
         myGrayColor.second = 0;
-        myDiagram.setCurrentColorCielchD50(myGrayColor);
+        myDiagram.setCurrentColorLch(myGrayColor);
         myDiagram.show(); // Necessary to make sure resize events are processed
         constexpr int widgetSize = 300;
         myDiagram.resize(widgetSize, widgetSize);
@@ -247,15 +247,15 @@ private Q_SLOTS:
         myDiagram.d_pointer->setColorFromWidgetPixelPosition( //
             QPoint(testPosition, testPosition));
         QCOMPARE( //
-            myDiagram.d_pointer->m_currentColorCielchD50.first, //
+            myDiagram.d_pointer->m_currentColorLch.first, //
             myDiagram.d_pointer->fromWidgetPixelPositionToLab(QPoint(testPosition, testPosition)).L);
         QCOMPARE( //
-            PolarPointF(myDiagram.d_pointer->m_currentColorCielchD50.second, myDiagram.d_pointer->m_currentColorCielchD50.third).toCartesian().x(), //
+            PolarPointF(myDiagram.d_pointer->m_currentColorLch.second, myDiagram.d_pointer->m_currentColorLch.third).toCartesian().x(), //
             myDiagram.d_pointer->fromWidgetPixelPositionToLab(QPoint(testPosition, testPosition)).a);
         QCOMPARE( //
-            PolarPointF(myDiagram.d_pointer->m_currentColorCielchD50.second, myDiagram.d_pointer->m_currentColorCielchD50.third).toCartesian().y(),
+            PolarPointF(myDiagram.d_pointer->m_currentColorLch.second, myDiagram.d_pointer->m_currentColorLch.third).toCartesian().y(),
             myDiagram.d_pointer->fromWidgetPixelPositionToLab(QPoint(testPosition, testPosition)).b);
-        QCOMPARE(myDiagram.d_pointer->widgetCoordinatesFromCurrentColorCielchD50(), //
+        QCOMPARE(myDiagram.d_pointer->widgetCoordinatesFromCurrentColorLch(), //
                  QPoint(testPosition, testPosition) + QPointF(0.5, 0.5));
     }
 
@@ -266,7 +266,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        ChromaHueDiagram myWidget{m_colorEngine};
+        ChromaHueDiagram myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -312,26 +312,26 @@ private Q_SLOTS:
 
     void testOutOfGamutColors()
     {
-        ChromaHueDiagram myWidget{m_colorEngine};
+        ChromaHueDiagram myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
         // Test that setting out-of-gamut colors works
 
         const GenericColor myFirstColor{100, 150, 0};
-        myWidget.setCurrentColorCielchD50(myFirstColor);
-        QVERIFY(myFirstColor == myWidget.currentColorCielchD50());
-        QVERIFY(myFirstColor == myWidget.d_pointer->m_currentColorCielchD50);
+        myWidget.setCurrentColorLch(myFirstColor);
+        QVERIFY(myFirstColor == myWidget.currentColorLch());
+        QVERIFY(myFirstColor == myWidget.d_pointer->m_currentColorLch);
 
         const GenericColor mySecondColor{0, 150, 0};
-        myWidget.setCurrentColorCielchD50(mySecondColor);
-        QVERIFY(mySecondColor == myWidget.currentColorCielchD50());
-        QVERIFY(mySecondColor == myWidget.d_pointer->m_currentColorCielchD50);
+        myWidget.setCurrentColorLch(mySecondColor);
+        QVERIFY(mySecondColor == myWidget.currentColorLch());
+        QVERIFY(mySecondColor == myWidget.d_pointer->m_currentColorLch);
     }
 
     void testOutOfRange()
     {
-        ChromaHueDiagram myWidget{m_colorEngine};
+        ChromaHueDiagram myWidget{m_colorEngine, LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -339,14 +339,14 @@ private Q_SLOTS:
         // but also out of a reasonable range, works.
 
         const GenericColor myFirstColor{300, 550, -10};
-        myWidget.setCurrentColorCielchD50(myFirstColor);
-        QVERIFY(myFirstColor == myWidget.currentColorCielchD50());
-        QVERIFY(myFirstColor == myWidget.d_pointer->m_currentColorCielchD50);
+        myWidget.setCurrentColorLch(myFirstColor);
+        QVERIFY(myFirstColor == myWidget.currentColorLch());
+        QVERIFY(myFirstColor == myWidget.d_pointer->m_currentColorLch);
 
         const GenericColor mySecondColor{-100, -150, 890};
-        myWidget.setCurrentColorCielchD50(mySecondColor);
-        QVERIFY(mySecondColor == myWidget.currentColorCielchD50());
-        QVERIFY(mySecondColor == myWidget.d_pointer->m_currentColorCielchD50);
+        myWidget.setCurrentColorLch(mySecondColor);
+        QVERIFY(mySecondColor == myWidget.currentColorLch());
+        QVERIFY(mySecondColor == myWidget.d_pointer->m_currentColorLch);
     }
 
     void testSnipped01()

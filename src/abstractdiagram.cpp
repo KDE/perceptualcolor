@@ -7,7 +7,9 @@
 // Second, the private implementation.
 #include "abstractdiagram_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "helper.h"
+#include "lchvalues.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
@@ -35,6 +37,11 @@ AbstractDiagram::AbstractDiagram(QWidget *parent)
 AbstractDiagram::~AbstractDiagram() noexcept
 {
 }
+
+/**
+ * @brief Default destructor
+ */
+AbstractDiagramPrivate::~AbstractDiagramPrivate() noexcept = default;
 
 /** @brief The color for painting focus indicators
  * @returns The color for painting focus indicators. This color is based on
@@ -241,11 +248,16 @@ int AbstractDiagram::spaceForFocusIndicator() const
 /** @brief An appropriate color for a handle, depending on the background
  * lightness.
  * @param lightness The background lightness. Valid range: <tt>[0, 100]</tt>.
+ * @param projectionSpace The color space into which the gamut will be
+ * projected.
  * @returns An appropriate color for a handle. This color will provide
  * contrast to the background. */
-QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness) const
+QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness, PerceptualColor::LchSpace projectionSpace)
 {
-    if (lightness >= 50) {
+    const auto values = (projectionSpace == LchSpace::CielchD50) //
+        ? cielchD50Values //
+        : oklchValues;
+    if (lightness >= (values.maximumLightness * 0.5)) {
         return Qt::black;
     }
     return Qt::white;
@@ -337,6 +349,27 @@ void AbstractDiagram::hideEvent(QHideEvent *event)
 void AbstractDiagram::callUpdate()
 {
     update();
+}
+
+/**
+ * @brief A neutral gray color for the diagram background, returned as an
+ * sRGB value.
+ *
+ * @returns A neutral gray color for the diagram background, returned as an
+ * sRGB value.
+ *
+ * @internal
+ *
+ * @note This value corresponds to @ref LchValues::neutralGray() from
+ * @ref oklchValues, converted to sRGB. Using a consistent neutral gray across
+ * all widgets is desirable, regardless of which @ref LchSpace they operate in.
+ */
+QColor AbstractDiagram::neutralGray()
+{
+    static const QColor v = AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
+        AbsoluteColor::fromPolarToCartesian(oklchValues.neutralGray()) //
+            .reinterpretAsLabToCmscielab());
+    return v;
 }
 
 } // namespace PerceptualColor

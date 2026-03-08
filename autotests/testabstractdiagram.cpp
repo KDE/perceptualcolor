@@ -174,12 +174,50 @@ private Q_SLOTS:
     void testHandleColorFromBackgroundLightness()
     {
         AbstractDiagram temp;
-        QCOMPARE(temp.handleColorFromBackgroundLightness(-1), QColor(Qt::white));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(0), QColor(Qt::white));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(49), QColor(Qt::white));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(51), QColor(Qt::black));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(100), QColor(Qt::black));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(101), QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(-1, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(-0.1, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0.49, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0.51, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(1, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(1.01, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(49, LchSpace::CielchD50), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(51, LchSpace::CielchD50), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(100, LchSpace::CielchD50), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(101, LchSpace::CielchD50), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(-1, LchSpace::Oklch), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(-0.1, LchSpace::Oklch), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0, LchSpace::Oklch), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0.49, LchSpace::Oklch), //
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0.51, LchSpace::Oklch), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(1, LchSpace::Oklch), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(1.01, LchSpace::Oklch), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(49, LchSpace::Oklch), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(51, LchSpace::Oklch), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(100, LchSpace::Oklch), //
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(101, LchSpace::Oklch), //
+                 QColor(Qt::black));
     }
 };
 

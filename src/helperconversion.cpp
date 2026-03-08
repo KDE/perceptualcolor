@@ -10,21 +10,6 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
- *
- * @brief Conversion to @ref GenericColor with @ref ColorModel::CielabD50
- * @param value a point in Lab representation
- * @returns the same point as @ref GenericColor with
- * @ref ColorModel::CielabD50
- */
-GenericColor toGenericColorCielabD50(const cmsCIELab &value)
-{
-    cmsCIELCh tempLch;
-    cmsLab2LCh(&tempLch, &value);
-    return GenericColor(tempLch);
-}
-
 /** @internal
  *
  * @brief Conversion to <tt>cmsCIELab</tt>

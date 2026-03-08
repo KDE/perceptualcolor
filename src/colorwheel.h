@@ -27,7 +27,10 @@ class ColorWheelPrivate;
 
 class ColorEngine;
 
-/** @brief A color wheel widget.
+/**
+ * @internal
+ *
+ * @brief A color wheel widget.
  *
  * This widget allows the user to choose the hue (as defined in the LCH
  * color space).
@@ -46,7 +49,7 @@ class ColorEngine;
  *   accepted for clicks within the actual circle, but also for clicks
  *   anywhere within the (rectangular) widget.
  */
-class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -75,7 +78,9 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged USER true)
 
 public:
-    Q_INVOKABLE explicit ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                                    const PerceptualColor::LchSpace projectionSpace,
+                                    QWidget *parent = nullptr);
     virtual ~ColorWheel() noexcept override;
     /** @brief Getter for property @ref hue
      *  @returns the property @ref hue */

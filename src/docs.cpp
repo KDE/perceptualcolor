@@ -10,7 +10,6 @@
 /** @page build Build instructions and requirements
  *
  * Build-time dependencies:
- * - LittleCMS 2 (minimum version: 2.0)
  * - Qt 6 (minimum version: 6.0.0).
  *   Components: Core, Gui, Widgets, DBus, Test, Svg.
  * <!--
@@ -45,11 +44,6 @@
  *      In the CMakeLists.txt file, we set -std=c++17 and we set
  *      also -Wpedantic and -pedantic-errors to enforce it.
  * -->
- * - Optional: There is also a LittleCMS plugin called
- *   <em>fast_float plug-in</em> that you can include into the
- *   source code of your application and load it in your main function
- *   before using this library. This can make color management faster.
- *   (Note that this plugin has a different license than LittleCMS itself.)
  *
  * Additional mandatory run-time dependencies:
  * - QSvgIconEnginePlugin. Available plugins are loaded
@@ -243,6 +237,48 @@
  * add_executable(${PROJECT_NAME} …)
  * @endcode */
 
+/** @page colorspaces Color spaces
+ *
+ * Major operating systems assume sRGB (with the standard piecewise
+ * gamma function) as the default color space for application‑drawn content.
+ * This is either because the OS performs active color management and expects
+ * sRGB input, or because no color management is applied and most monitors
+ * interpret incoming data as sRGB. Consequently, when drawing in QWidget,
+ * colors should be specified in sRGB. This library therefore supports only
+ * the sRGB gamut to ensure correct rendering.
+ *
+ * The RGB color space itself is not perceptually uniform. A perceptually
+ * uniform color space is one in which equal numerical changes correspond
+ * to equal visual differences as perceived by humans. Human color
+ * perception is three‑dimensional, but it is not a Euclidean space and
+ * <a href="https://www.pnas.org/doi/10.1073/pnas.2119753119">may not even
+ * be Riemannian</a>>.  Therefore, every Euclidean “perceptually uniform”
+ * color space is only an approximation. Defining such spaces is always
+ * a trade‑off between closely matching human perception and providing
+ * efficient conversions. This library supports projections into the
+ * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">CIELab</a> and
+ * <a href="https://bottosson.github.io/posts/oklab/">Oklab</a> color spaces,
+ * both widely used today. Less common perceptually uniform spaces such as CAM16,
+ * <a href="https://de.wikipedia.org/wiki/DIN99-Farbraum">DIN99</a>, or Google’s
+ * <a href="https://github.com/material-foundation/material-color-utilities">
+ * HCT</a>, used <a href="https://m3.material.io/blog/science-of-color-design">
+ * in Material Design</a>, are not supported. Instead
+ * of Cartesian coordinates (Lab: Lightness, a, b), we prefer a
+ * <a href="https://en.wikipedia.org/wiki/Cylindrical_coordinate_system">
+ * cylindrical representation</a> (LCh: Lightness, Chroma radius, Hue angle),
+ * which corresponds more naturally to human perception.
+ *
+ * @internal
+ *
+ * Support for Wide Color Gamut (WCG) or High Dynamic Range (HDR) rendering
+ * requires using QOpenGLWidget and leveraging OpenGL directly. QRHI
+ * (https://doc.qt.io/qt-6/qrhi.html) is a semi‑private API with limited
+ * stability guarantees and is less appropriate than QOpenGLWidget. Since
+ * sRGB remains the most widely supported and reliable color space, WCG and
+ * HDR output are of limited practical importance in this context, and support
+ * for non‑sRGB output spaces is not a priority.
+ */
+
 /** @page compilercharacterset Compiler character sets
  *
  * @section compilercharacterset_ Compiler character sets
@@ -312,6 +348,59 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo SHOULDHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
+ *
+ * @todo SHOWSTOPPER SHOULDHAVE The sRGB gamut in the Oklab space has
+ * an irregular shape in the chroma-lightness diagram around 264.1°, see also
+ * https://github.com/color-js/color.js/issues/81 for details: There is a
+ * "cut" in the gamut body. Similar, sRGB in CieLch has at yellow hues
+ * on the chroma-lightness diagram some positions, where reducing chroma
+ * results in out-of-gamut colors. What we need: Appropriate user control code
+ * (mouse and keyboard, but also the move-into-gamut functions used for
+ * manually entered values) that deals correctly with all these pecularities.
+ * Code optimization for rendering for those slices that are not affected (most
+ * slices). And: A sort of pop-up information on hue 261.1 Oklch to explain
+ * that this gamut form is not a bug.
+ *
+ * @todo NICETOHAVE Test manually or in CI for ARM64.
+ *
+ * @todo SHOULDHAVE The color of the selection marker on the color wheel
+ * should change (black or white) depending on the lightness of the most
+ * chromatic color at the current hue. This was not necessary previously
+ * when we used always 50% lightness for all colors of the wheel. Now that
+ * we use instead the most chromatic color of each hue, lightness varies
+ * significantly, and changing the marker’s color will make it more
+ * legible (though less nice).
+ *
+ * @todo SHOULDHAVE SHOWSTOPPER In @ref PerceptualColor::WheelColorPicker
+ * there seems to be a discontinuity in hue wheel at blue hue, and at
+ * the same hue in the @ref PerceptualColor::ChromaLightnessDiagram
+ * there is a second rectangle/line below the normal gamut body.
+ *
+ * @todo SHOULDHAVE SHOWSTOPPER In @ref PerceptualColor::WheelColorPicker
+ * the width of the @ref PerceptualColor::ChromaLightnessDiagram is
+ * slightly too big. A wrong
+ * @ref PerceptualColor::LchValues::maximumChroma value?
+ *
+ * @todo SHOULDHAVE SHOWSTOPPER Get rid of lcms
+ *
+ * @todo SHOULDHAVE The re-rendering is too slow (not reactive enough)
+ * when changing the window size of @ref PerceptualColor::ColorDialog.
+ *
+ * @todo NICETOHAVE Define a global minimum size (as one-dimensional
+ * <tt>int</tt>, measured in device-independent pixel) for UI elements,
+ * appropriate for touch screens. There used to be
+ * <a href="https://doc.qt.io/archives/qt-5.15/qapplication-obsolete.html#globalStrut-prop">
+ * QApplication::globalStrut</a>, but it was deprecated in Qt 5.15 and
+ * removed in Qt 6, so we need our own definition. Than make sure that
+ * @ref PerceptualColor::AbstractDiagram::gradientThickness(),
+ * @ref PerceptualColor::ColorPatch::minimumSizeHint() and
+ * @ref PerceptualColor::SwatchBookPrivate::colorPatchesSizeWithMargin()
+ * respect this new global minimum.
+ *
+ * @todo SHOULDHAVE Optimize time-critical rendering (chroma-lightness and
+ * chroma-hue diagrams).
+ *
  * @todo NICETOHAVE Get rid of the “deprecated” warnings of Qt by using
  * conditional compiling while preserving Qt-5 compatibility.
  *
@@ -322,6 +411,10 @@
  * @todo NICETOHAVE Static codecheck: The doxygen command (at)sa must always
  * be followed by (at)ref, because (at)sa fails silently, but a following
  * (at)ref makes sure we get an error message.
+ *
+ * @todo NICETOHAVE When the CI tests for warnings, it should not only build
+ * and Clang/Clazy, but additionally also on GCC which produces some warnings
+ * that Clang/Clazy does not have.
  *
  * @todo SHOULDHAVE Check against Q_NAMESPACE and Q_ENUM_NS because they cannot
  * work reliably when namespaces do accross header files (a double declaration
@@ -398,7 +491,7 @@
  * @ref PerceptualColor::ColorEngine::reduceCielchD50ChromaToFitIntoGamut() or
  * @ref PerceptualColor::ColorEngine::isCielchD50InGamut() or
  * @ref PerceptualColor::ColorEngine::isCielabD50InGamut() or
- * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutCielchD50ByAdjustingChromaLightness(().
+ * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(().
  *
  * @todo SHOULDHAVE If using the Motif style (only available in Qt 5, not
  * in Qt 6), the @ref PerceptualColor::ChromaHueDiagram
@@ -410,6 +503,7 @@
  * Why doesn’t @ref PerceptualColor::ChromaHueDiagram also behave
  * like @ref PerceptualColor::WheelColorPicker? And
  * how does @ref PerceptualColor::ColorWheel behave?
+ * Anyway, why is this focus indicator painted at all? It should not!
  *
  * @todo SHOULDHAVE We do some hacks to get circle-like (instead of rectangular)
  * feeling for our circular widgets, which is not perfect when talking
@@ -463,7 +557,7 @@
  * good arguments for widgets to provide RESET?
  *
  * @todo SHOULDHAVE We prevent division by 0 in
- * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToCielchD50().
+ * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToLch().
  * We should make sure this happens also in the other diagram widgets!
  *
  * @todo NICETOHAVE Remove setDevicePixelRatioF from all *Image classes. (It is
@@ -614,8 +708,6 @@
  * manipulate the current color along the depth and vividness axis
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
- *
- * @todo SHOULDHAVE Move diagrams from Cielch to Oklch
  *
  * @todo NICETOHAVE In our custom CI, test (and fail) not only on clang
  * warnings but also on gcc warnings.
@@ -873,10 +965,10 @@
  * The widget of this library supports the Qt Style Sheet
  * <a href="https://doc.qt.io/qt-6/stylesheet-reference.html#list-of-stylable-widgets">
  * properties of the Qt class they are derived from</a> only where it
- * makes sense. So you set the <tt>background-color</tt> of
+ * makes sense. So you can set the <tt>background-color</tt> of
  * a @ref PerceptualColor::MultiSpinBox. But you should not set
- * it for a @ref PerceptualColor::GradientSlider because the point
- * of this widget is to always use the gradient as the background;
+ * it for a @ref PerceptualColor::ColorPatch because the point
+ * of this widget is to always use the given color as background;
  * the same applies for most widgets that showcase colors.
  *
  * When using class names of this library as
@@ -965,8 +1057,9 @@
  *
  * @internal
  *
- * @sa @ref PerceptualColor::CielchD50Values::maximumChroma
- * @sa @ref PerceptualColor::OklchValues::maximumChroma
+ * @sa @ref PerceptualColor::LchValues
+ * @sa @ref PerceptualColor::cielchD50Values
+ * @sa @ref PerceptualColor::oklchValues
  *
  * @todo NICETOHAVE Why is the exact extend of non-imaginary
  * colors unknown? Could it be deduced from the
@@ -1008,13 +1101,13 @@
  * In order to make a class to extend in the future you should follow these
  * rules:
  * - Add d-pointer. See below.
- * - Add non-inline virtual destructor even if the body is empty.
+ * - Add non-inlined virtual destructor even if the body is empty.
  * - Reimplement <tt>event</tt> in QObject-derived classes, even if the body
  *   for the function is just calling the base class' implementation. This is
  *   specifically to avoid problems caused by adding a reimplemented virtual
  *   function as discussed below.
- * - Make all constructors non-inline.
- * - Write non-inline implementations of the copy constructor and assignment
+ * - Make all constructors non-inlined.
+ * - Write non-inlined implementations of the copy constructor and assignment
  *   operator unless the class cannot be copied by value. (E.g. classes
  *   inherited from QObject can't be.)
  *
@@ -1047,6 +1140,8 @@
  * @todo SHOULDHAVE Remove things form the public API, leaving only the
  * absolutely minimal API that is required by the user, then remove this
  * item from the release checklist.
+ * Also change QColor to QRgb in all API
+ * that do not offer more than QRgb precision anyway.
  *
  * @todo SHOULDHAVE Consider
  * <a href="https://develop.kde.org/docs/getting-started/add-project/#kde-review">

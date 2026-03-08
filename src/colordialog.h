@@ -116,9 +116,6 @@ class ColorEngine;
  *
  * @internal
  *
- * @todo SHOWSTOPPER Use (exclusivly or alternatively) Oklab instead of CIELAB
- * as projection color space.
- *
  * @todo NICETOHAVE The
  * @ref ColorDialogPrivate::m_lchLightnessSelector has a different
  * scale than the @ref ColorDialogPrivate::m_chromaHueDiagram, but both are
@@ -197,8 +194,6 @@ class ColorEngine;
  * arguments for new-style connect statements, making use of compiler
  * checks.
  *
- * @todo SHOULDHAVE Use the <em>actual</em> color profile of the monitor.
- *
  * @todo NICETOHAVE
  * The LCh-hue (and so the graphical widgets) jumps forward and backward
  * when changing RGB-based values (also HSV) when entering and leaving the gray
@@ -219,17 +214,13 @@ class ColorEngine;
  * Cielab (feature parity with CSS Color 5), Okhsl?
  *
  * @todo NICETOHAVE Info about the whitepoint (D50, D65…) in the tooltip for
- * the ICC profile. And about the mean or average gamma, CIE’s shoe sole
- * diagram for gamut visualisation, gamma curve diagrams… At least
- * @ref ColorEngine::profileTagBlackpoint,
- * @ref ColorEngine::profileTagWhitepoint,
- * @ref ColorEngine::profileTagRedPrimary,
- * @ref ColorEngine::profileTagGreenPrimary,
- * @ref ColorEngine::profileTagBluePrimary are yet available. Since
- * LittleCMS 2.13 also <tt>cmsDetectRGBProfileGamma()</tt> is available.
+ * the sRGB group box.
  *
  * @todo NICETOHAVE Restore the previous window geometry when the dialog is
- * shown? We restore already the chosen tab and swatchbook page, but not the
+ * shown? Sessin management similiar to
+ * <a href="https://invent.kde.org/plasma/spectacle/-/merge_requests/501/diffs">
+ * the implementation in Speactacle</a>?
+ * We restore already the chosen tab and swatchbook page, but not the
  * window geometry. Would it make sense to do so app-wise or system-wise?
  * Would this work on Wayland at all, or maybe only for the window size, but
  * not for the window position? Anyway, the native QColorDialog does’t to

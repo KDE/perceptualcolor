@@ -131,9 +131,10 @@ mkdir --parents build \
     | grep --invert-match --perl-regexp "^Checking test dependency graph end" \
     | grep --invert-match --perl-regexp "^Total Test time" \
     | grep --invert-match --perl-regexp "^Parse Config file:.*DartConfiguration.tcl$" \
-    | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
-    | grep --invert-match --perl-regexp "^\d+: RESULT : " \
     | grep --invert-match --perl-regexp "^\d+: Working Directory: " \
     | grep --invert-match --perl-regexp "^      Start " \
     | grep --invert-match --perl-regexp "^$"
+# To filter out even benchmark results:
+#     | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
+#     | grep --invert-match --perl-regexp "^\d+: RESULT : " \
 )

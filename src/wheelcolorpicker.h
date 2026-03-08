@@ -24,7 +24,10 @@ class ColorEngine;
 
 class WheelColorPickerPrivate;
 
-/** @brief Complete wheel-based color picker widget
+/**
+ * @internal
+ *
+ * @brief Complete wheel-based color picker widget
  *
  * It is composed of a @ref ColorWheel and, in the middle of the wheel,
  * a chroma-lightness diagram.
@@ -36,35 +39,37 @@ class WheelColorPickerPrivate;
  * @todo NICETOHAVE Is the (double) focus indicator actually good design? Are
  * there better solutions?
  */
-class PERCEPTUALCOLOR_IMPORTEXPORT WheelColorPicker : public AbstractDiagram
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT WheelColorPicker : public AbstractDiagram
 {
     Q_OBJECT
 
     /** @brief Currently selected color
      *
-     * @sa READ @ref currentColorCielchD50() const
-     * @sa WRITE @ref setCurrentColorCielchD50()
-     * @sa NOTIFY @ref currentColorCielchD50Changed() */
+     * @sa READ @ref currentColorLch() const
+     * @sa WRITE @ref setCurrentColorLch()
+     * @sa NOTIFY @ref currentColorLchChanged() */
     // The Q_PROPERTY macro must be on a single line for correct compilation.
     // clang-format is disabled here to prevent automatic line breaks.
     // clang-format off
-    Q_PROPERTY(PerceptualColor::GenericColor currentColorCielchD50 READ currentColorCielchD50 WRITE setCurrentColorCielchD50 NOTIFY currentColorCielchD50Changed USER true)
+    Q_PROPERTY(PerceptualColor::GenericColor currentColorLch READ currentColorLch WRITE setCurrentColorLch NOTIFY currentColorLchChanged USER true)
     // clang-format on
 
 public:
-    Q_INVOKABLE explicit WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                                          const PerceptualColor::LchSpace projectionSpace,
+                                          QWidget *parent = nullptr);
     virtual ~WheelColorPicker() noexcept override;
-    /** @brief Getter for property @ref currentColorCielchD50
-     *  @returns the property @ref currentColorCielchD50 */
-    [[nodiscard]] PerceptualColor::GenericColor currentColorCielchD50() const;
+    /** @brief Getter for property @ref currentColorLch
+     *  @returns the property @ref currentColorLch */
+    [[nodiscard]] PerceptualColor::GenericColor currentColorLch() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
-    void setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
+    void setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch);
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColorCielchD50.
-     *  @param newCurrentColorCielchD50 the new current color */
-    void currentColorCielchD50Changed(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
+    /** @brief Notify signal for property @ref currentColorLch.
+     *  @param newCurrentColorLch the new current color */
+    void currentColorLchChanged(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;

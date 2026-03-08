@@ -7,9 +7,11 @@
 #include "genericcolor.h"
 #include "helperconversion.h"
 #include <array>
+#include <lcms2.h>
 #include <optional>
 #include <qhash.h>
 #include <qlist.h>
+#include <qrgb.h>
 
 namespace PerceptualColor
 {
@@ -18,7 +20,27 @@ namespace PerceptualColor
  *
  * @brief Toolbox for color conversions.
  *
- * @sa @ref RgbColor */
+ * This provides color conversion between absolutely defined color spaces.
+ *
+ * The functions named like fromXToY provide direct conversions between
+ * certain color spaces. The input and output data is @ref GenericColor.
+ * These functions have high precision, but are not necesarily optimed
+ * for speed. These functions are also registered in @ref convert() which
+ * allows to convert between arbitrary combinations of these color spaces.
+ *
+ * Furthermore, there are some functions prefixed with “fast”, for instance
+ * @ref fastFromOklabToSRgbOrTransparent(). These functions are optimized
+ * for speed, but might have a slightly lower precision. They convert
+ * between specific data formats and are created when more than one
+ * widget uses them and code can be shared.
+ *
+ * @sa @ref RgbColor
+ *
+ * @internal
+ *
+ * @todo NICETOHAVE This is a class with no instances. Use free functions
+ * in a sub-namespace instead?
+ */
 class AbsoluteColor
 {
 public:
@@ -26,16 +48,26 @@ public:
 
     [[nodiscard]] static QHash<ColorModel, GenericColor> allConversions(const ColorModel model, const GenericColor &value);
     [[nodiscard]] static std::optional<GenericColor> convert(const ColorModel from, const GenericColor &value, const ColorModel to);
-    static GenericColor fromXyzD50ToXyzD65(const GenericColor &value);
-    static GenericColor fromXyzD65ToXyzD50(const GenericColor &value);
-    static GenericColor fromXyzD65ToOklab(const GenericColor &value);
-    static GenericColor fromOklabToXyzD65(const GenericColor &value);
-    static GenericColor fromXyzD50ToCielabD50(const GenericColor &value);
-    static GenericColor fromCielabD50ToXyzD50(const GenericColor &value);
-    static GenericColor fromPolarToCartesian(const GenericColor &value);
-    static GenericColor fromCartesianToPolar(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromXyzD50ToXyzD65(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromXyzD65ToXyzD50(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromXyzD65ToOklab(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromOklabToXyzD65(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromXyzD50ToCielabD50(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromCielabD50ToXyzD50(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromPolarToCartesian(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromCartesianToPolar(const GenericColor &value);
+
+    [[nodiscard]] static QRgb fastFromOklabToSRgbOrTransparent(const cmsCIELab &lab);
+    [[nodiscard]] static QRgb fastFromOklabToSRgbClamped(const GenericColor &oklab);
 
 private:
+    /**
+     * @internal
+     *
+     * @brief Only for unit tests.
+     */
+    friend class TestAbsoluteColor;
+
     /** @brief Function pointer type for the conversion functions. */
     // NOTE std::function<> has nicer syntax for function pointers, but does
     // not allow constexpr.
@@ -68,6 +100,11 @@ private:
     [[nodiscard]] static QList<AbsoluteColor::Conversion> conversionsFrom(const ColorModel model);
 
     static void addDirectConversionsRecursivly(QHash<ColorModel, GenericColor> *values, const ColorModel model);
+
+private:
+    [[nodiscard]] static float linearToSRgb(float x);
+
+    [[nodiscard]] static quint8 toByte(float x);
 };
 
 } // namespace PerceptualColor

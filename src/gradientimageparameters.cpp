@@ -5,9 +5,11 @@
 // First the interface, which forces the header to be self-contained.
 #include "gradientimageparameters.h"
 
+#include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
 #include "colorengine.h"
 #include "helper.h"
+#include "lchvalues.h"
 #include <cmath>
 #include <qbrush.h>
 #include <qcolor.h>
@@ -21,19 +23,28 @@ namespace PerceptualColor
 /** @brief Constructor */
 GradientImageParameters::GradientImageParameters()
 {
-    setFirstColorCieLchD50A(GenericColor{0, 0, 0, 1});
-    setFirstColorCieLchD50A(GenericColor{1000, 0, 0, 1});
+    setFirstColorLchA(GenericColor{0, 0, 0, 1});
+    setFirstColorLchA(GenericColor{1000, 0, 0, 1});
 }
 
-/** @brief Normalizes the value and bounds it to the LCH color space.
+/**
+ * @brief Normalizes the value and bounds it to the current LCH color space.
+ *
  * @param color the color that should be treated.
+ *
  * @returns A normalized and bounded version. If the chroma was negative,
  * it gets positive (which implies turning the hue by 180°). The hue is
  * normalized to the range <tt>[0°, 360°[</tt>. Lightness is bounded to the
  * range <tt>[0, 100]</tt>. Alpha is bounded to the range <tt>[0, 1]</tt>. */
-GenericColor GradientImageParameters::completlyNormalizedAndBounded(const GenericColor &color)
+GenericColor GradientImageParameters::completlyNormalizedAndBounded(const GenericColor &color) const
 {
     GenericColor result;
+    const LchValues myLchValues = makeLchValues(m_projectionSpace);
+
+    // Lightness
+    result.first = qBound<double>(0, color.first, myLchValues.maximumLightness);
+
+    // Chroma und Hue
     if (color.second < 0) {
         result.second = color.second * (-1);
         result.third = fmod(color.third + 180, 360);
@@ -41,18 +52,22 @@ GenericColor GradientImageParameters::completlyNormalizedAndBounded(const Generi
         result.second = color.second;
         result.third = fmod(color.third, 360);
     }
+    result.second = qBound<double>(0, result.second, myLchValues.maximumChroma);
     if (result.third < 0) {
         result.third += 360;
     }
-    result.first = qBound<qreal>(0, color.first, 100);
-    result.fourth = qBound<qreal>(0, color.fourth, 1);
+
+    // Alpha
+    result.fourth = qBound<double>(0, color.fourth, 1);
+
+    // Return
     return result;
 }
 
 /** @brief Setter for the first color property.
  * @param newFirstColor The new first color.
  * @sa @ref m_firstColorCorrected */
-void GradientImageParameters::setFirstColorCieLchD50A(const GenericColor &newFirstColor)
+void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColor)
 {
     GenericColor correctedNewFirstColor = //
         completlyNormalizedAndBounded(newFirstColor);
@@ -67,7 +82,7 @@ void GradientImageParameters::setFirstColorCieLchD50A(const GenericColor &newFir
 /** @brief Setter for the second color property.
  * @param newSecondColor The new second color.
  * @sa @ref m_secondColorCorrectedAndAltered */
-void GradientImageParameters::setSecondColorCieLchD50A(const GenericColor &newSecondColor)
+void GradientImageParameters::setSecondColorLchA(const GenericColor &newSecondColor)
 {
     GenericColor correctedNewSecondColor = //
         completlyNormalizedAndBounded(newSecondColor);
@@ -138,15 +153,16 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
                         QImage::Format_ARGB32_Premultiplied);
     onePixelLine.fill(Qt::transparent); // Initialize image with transparency.
     GenericColor color;
-    GenericColor cielchD50;
     QColor temp;
     for (int i = 0; i < parameters.m_gradientLength; ++i) {
         color = parameters.colorFromValue( //
             (i + 0.5) / static_cast<qreal>(parameters.m_gradientLength));
-        cielchD50.first = color.first;
-        cielchD50.second = color.second;
-        cielchD50.third = color.third;
-        temp = parameters.colorEngine->fromCielchD50ToQRgbBound(cielchD50);
+        if (parameters.m_projectionSpace == LchSpace::CielchD50) {
+            temp = parameters.colorEngine->fromCielchD50ToQRgbBound(color);
+        } else {
+            temp = AbsoluteColor::fastFromOklabToSRgbClamped( //
+                AbsoluteColor::fromPolarToCartesian(color));
+        }
         temp.setAlphaF(
             // Reduce floating point precision if necessary.
             static_cast<float>(color.fourth));
@@ -267,6 +283,20 @@ void GradientImageParameters::setGradientLength(const int newGradientLength)
     }
 }
 
+/**
+ * @brief Setter for the projection space property.
+ *
+ * @param newProjectionSpace The new projection space
+ */
+void GradientImageParameters::setProjectionSpace(const LchSpace newProjectionSpace)
+{
+    if (m_projectionSpace != newProjectionSpace) {
+        m_projectionSpace = newProjectionSpace;
+        // Free the memory used by the old image.
+        m_image = QImage();
+    }
+}
+
 /** @brief Setter for the gradient thickness property.
  *
  * @param newGradientThickness The new gradient thickness, measured
@@ -301,6 +331,7 @@ bool GradientImageParameters::operator==(const GradientImageParameters &other) c
         && (m_secondColorCorrectedAndAltered.second == other.m_secondColorCorrectedAndAltered.second) //
         && (m_secondColorCorrectedAndAltered.third == other.m_secondColorCorrectedAndAltered.third) //
         && (m_secondColorCorrectedAndAltered.fourth == other.m_secondColorCorrectedAndAltered.fourth) //
+        && (m_projectionSpace == other.m_projectionSpace) //
     );
 }
 

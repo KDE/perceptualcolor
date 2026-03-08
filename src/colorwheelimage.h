@@ -4,6 +4,7 @@
 #ifndef PERCEPTUALCOLOR_COLORWHEELIMAGE_H
 #define PERCEPTUALCOLOR_COLORWHEELIMAGE_H
 
+#include "helperconversion.h"
 #include <qglobal.h>
 #include <qimage.h>
 #include <qsharedpointer.h>
@@ -78,6 +79,7 @@ public:
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
     void setImageSize(const int newImageSize);
     void setWheelThickness(const qreal newWheelThickness);
+    void setProjectionSpace(PerceptualColor::LchSpace newProjectionSpace);
 
 private:
     Q_DISABLE_COPY(ColorWheelImage)
@@ -108,6 +110,12 @@ private:
     int m_imageSizePhysical = 0;
     /** @brief Pointer to @ref ColorEngine object */
     QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
+    /**
+     * @brief Internal store for the projection space.
+     *
+     * @sa @ref setProjectionSpace()
+     */
+    PerceptualColor::LchSpace m_projectionSpace = PerceptualColor::LchSpace::CielchD50;
     /** @brief Internal store for the image size, measured in physical pixels.
      *
      * @sa @ref setWheelThickness() */

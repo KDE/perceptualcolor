@@ -7,7 +7,7 @@
 
 #include "asyncimageprovider.h"
 #include "asyncimagerendercallback.h"
-#include "colorenginefactory.h"
+#include "colorengine.h"
 #include "helper.h"
 #include <qbenchmark.h>
 #include <qcolor.h>
@@ -83,7 +83,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = createSrgbColorEngine();
+    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()
@@ -306,13 +306,28 @@ private Q_SLOTS:
         Q_UNUSED(m_imageProvider.getCache())
     }
 
-    void benchmarkRender()
+    void benchmarkRenderCielchD50()
     {
         ChromaLightnessImageParameters testProperties;
-        testProperties.colorEngine = createSrgbColorEngine();
+        testProperties.colorEngine = ColorEngine::createSrgb();
         Mockup myMockup;
         testProperties.hue = 0;
-        testProperties.imageSizePhysical = QSize(1000, 1000); // an even number
+        testProperties.projectionSpace = LchSpace::CielchD50;
+        testProperties.imageSizePhysical = QSize(1000, 2000); // an even number
+        QBENCHMARK {
+            testProperties.render(QVariant::fromValue(testProperties), //
+                                  myMockup);
+        }
+    }
+
+    void benchmarkRenderOklch()
+    {
+        ChromaLightnessImageParameters testProperties;
+        testProperties.colorEngine = ColorEngine::createSrgb();
+        Mockup myMockup;
+        testProperties.hue = 0;
+        testProperties.projectionSpace = LchSpace::Oklch;
+        testProperties.imageSizePhysical = QSize(1000, 2000); // an even number
         QBENCHMARK {
             testProperties.render(QVariant::fromValue(testProperties), //
                                   myMockup);

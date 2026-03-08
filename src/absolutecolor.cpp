@@ -4,6 +4,8 @@
 // Own header
 #include "absolutecolor.h"
 
+#include "helperconversion.h"
+#include "helperimage.h"
 #include "helpermath.h"
 #include "helperposixmath.h"
 #include <cmath>
@@ -20,36 +22,20 @@ namespace PerceptualColor
 // we instruct Doxygen with the @cond command to ignore  this part of the code.
 /// @cond
 
-// clang-format off
-
-// https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
-Q_GLOBAL_STATIC_WITH_ARGS(
+Q_GLOBAL_STATIC_WITH_ARGS( //
     const SquareMatrix3,
     m1,
-    (std::array<double, 9>{{
-        +0.8189330101, +0.3618667424, -0.1288597137,
-        +0.0329845436, +0.9293118715, +0.0361456387,
-        +0.0482003018, +0.2643662691, +0.6338517070}}.data()))
+    (oklabM1.data()))
 
-// https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
-Q_GLOBAL_STATIC_WITH_ARGS(
+Q_GLOBAL_STATIC_WITH_ARGS( //
     const SquareMatrix3,
     m2,
-    (std::array<double, 9>{{
-        +0.2104542553, +0.7936177850, -0.0040720468,
-        +1.9779984951, -2.4285922050, +0.4505937099,
-        +0.0259040371, +0.7827717662, -0.8086757660}}.data()))
+    (oklabM2.data()))
 
-// https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html
-Q_GLOBAL_STATIC_WITH_ARGS(
+Q_GLOBAL_STATIC_WITH_ARGS( //
     const SquareMatrix3,
     xyzD65ToXyzD50,
-    (std::array<double, 9>{{
-        +1.047886, +0.022919, -0.050216,
-        +0.029582, +0.990484, -0.017079,
-        -0.009252, +0.015073, +0.751678}}.data()))
-
-// clang-format on
+    (xyzD65ToXyzD50Matrix.data()))
 
 Q_GLOBAL_STATIC_WITH_ARGS( //
     const SquareMatrix3,
@@ -354,6 +340,167 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
         return temp.value(to);
     }
     return std::nullopt;
+}
+
+/**
+ * @internal
+ *
+ * @brief Speed-optimized function to convert from linear to gamma-corrected
+ * sRGB.
+ *
+ * @pre x ≥ 0 (otherwise, undefined behaviour)
+ *
+ * @param x An linear RGB component in the range [0..1].
+ *
+ * @returns The corresponding gamma-corrected sRGB value
+ * in the range [0..1] or slightly above or below because
+ * of rounding errors.
+ *
+ * @internal
+ *
+ * @note This function is based on the
+ * <a href="https://bottosson.github.io/posts/colorwrong/#what-can-we-do%3F">
+ * Ottonson’s code</a> and
+ * <a href="https://en.wikipedia.org/wiki/SRGB#Definition">Wikipedia</a>.
+ *
+ * @note Unfortunately, it cannot be <tt>constexpr</tt> because it relies
+ * on <a href="https://en.cppreference.com/w/cpp/numeric/math/pow.html">
+ * <tt>std::pow</tt></a> which only becomes <tt>constexpr</tt> in C++26,
+ * which is beyond our current target C++ standard.
+ */
+[[nodiscard]] float AbsoluteColor::linearToSRgb(float x)
+{
+    if (x <= 0.0031308f) {
+        return 12.92f * x;
+    }
+    return 1.055f * std::pow(x, 1.0f / 2.4f) - 0.055f;
+}
+
+/**
+ * @internal
+ *
+ * @brief Round <tt>float</tt> to <tt>quint8</tt>.
+ *
+ * @param x A floating point value in the range [0..255].
+ *
+ * @returns The rounded value as <tt>quint8</tt>. If the input value
+ * differes from the valid input range by 0.5 or more, than it returns
+ * an arbitrary value.
+ */
+[[nodiscard]] quint8 AbsoluteColor::toByte(float x)
+{
+    return static_cast<quint8>(x * 255.f + 0.5f);
+}
+
+/** @brief Conversion to QRgb.
+ *
+ * @param lab the original color
+ *
+ * @returns An opaque sRGB color matching the original one if it is within the
+ * gamut. Otherwise, returns a fully transparent color (alpha and RGB channels
+ * set to 0 to ensure compatibility with both, premultiplied and
+ * non-premultiplied data).
+ *
+ * @sa @ref ColorEngine::fromCielchD50ToQRgbBound()
+ *
+ * @internal
+ *
+ * @note This function is optimized for speed. It uses <tt>float</tt> instead
+ * of <tt>double</tt>, as double‑precision arithmetic is roughly 50% slower in
+ * this context. All functions called here are defined within the same
+ * translation unit, allowing the compiler to have their code inlined.
+ * Benchmarks show that these calls introduce no measurable overhead compared
+ * to writing the logic directly in place.
+ *
+ * @note This function is based on the
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab">
+ * original Oklab code</a>.
+ *
+ * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
+ * calls @ref linearToSRgb() which is not <tt>constexpr</tt>.
+ */
+// GenericColor might be an alternative, but it has double precision, while here
+// float precision would be appropriate.
+[[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbOrTransparent(const cmsCIELab &lab)
+{
+    // Original Lab values as float:
+    const float oLabL = static_cast<float>(lab.L);
+    const float oLabA = static_cast<float>(lab.a);
+    const float oLabB = static_cast<float>(lab.b);
+
+    const float l_ = oLabL + 0.3963377774f * oLabA + 0.2158037573f * oLabB;
+    const float m_ = oLabL - 0.1055613458f * oLabA - 0.0638541728f * oLabB;
+    const float s_ = oLabL - 0.0894841775f * oLabA - 1.2914855480f * oLabB;
+
+    const float l = l_ * l_ * l_;
+    const float m = m_ * m_ * m_;
+    const float s = s_ * s_ * s_;
+
+    const float r = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
+    const float g = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
+    const float b = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
+
+    // Check for in-range yet now to avoid unnecessary calls of toByte() and
+    // linearToSRgb(). Furthermore, linearToSRgb() has undefined behaviour
+    // for parameters < 0.
+    if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f) {
+        return qRgbTransparent;
+    }
+
+    return qRgba(toByte(linearToSRgb(r)), //
+                 toByte(linearToSRgb(g)), //
+                 toByte(linearToSRgb(b)),
+                 255);
+}
+
+/** @brief Conversion to QRgb.
+ *
+ * @param oklab the original color
+ *
+ * @returns An opaque sRGB color matching the original one if it is within the
+ * gamut. Otherwise, returns a more or less similar color.
+ *
+ * @sa @ref ColorEngine::fromCielchD50ToQRgbBound()
+ *
+ * @internal
+ *
+ * @note This function is optimized for speed. It uses <tt>float</tt> instead
+ * of <tt>double</tt>, as double‑precision arithmetic is roughly 50% slower in
+ * this context. All functions called here are defined within the same
+ * translation unit, allowing the compiler to have their code inlined.
+ * Benchmarks show that these calls introduce no measurable overhead compared
+ * to writing the logic directly in place.
+ *
+ * @note This function is based on the
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab">
+ * original Oklab code</a>.
+ *
+ * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
+ * calls @ref linearToSRgb() which is not <tt>constexpr</tt>.
+ */
+[[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbClamped(const GenericColor &oklab)
+{
+    // Original Lab values as float:
+    const float oLabL = static_cast<float>(oklab.first);
+    const float oLabA = static_cast<float>(oklab.second);
+    const float oLabB = static_cast<float>(oklab.third);
+
+    const float l_ = oLabL + 0.3963377774f * oLabA + 0.2158037573f * oLabB;
+    const float m_ = oLabL - 0.1055613458f * oLabA - 0.0638541728f * oLabB;
+    const float s_ = oLabL - 0.0894841775f * oLabA - 1.2914855480f * oLabB;
+
+    const float l = l_ * l_ * l_;
+    const float m = m_ * m_ * m_;
+    const float s = s_ * s_ * s_;
+
+    const float r = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
+    const float g = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
+    const float b = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
+
+    return qRgba(toByte(std::clamp<float>(linearToSRgb(r), 0, 1)), //
+                 toByte(std::clamp<float>(linearToSRgb(g), 0, 1)), //
+                 toByte(std::clamp<float>(linearToSRgb(b), 0, 1)),
+                 255);
 }
 
 } // namespace PerceptualColor

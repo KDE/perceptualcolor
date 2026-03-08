@@ -8,6 +8,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "importexport.h"
+#include "internalimportexport.h"
 #include <qglobal.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
@@ -34,7 +35,10 @@ class ColorEngine;
 
 namespace PerceptualColor
 {
-/** @brief A widget for selecting chroma and hue in LCH color space
+/**
+ * @internal
+ *
+ * @brief A widget for selecting chroma and hue in LCH color space
  *
  * This widget displays the plan of chroma and hue
  * (that means a diagram of the radius and the angle of the
@@ -97,8 +101,12 @@ namespace PerceptualColor
  *
  * @todo SHOULDHAVE Accept Key + like currently yet Key Left, and Key - like
  * currently yet Key Right, for consistency with @ref WheelColorPicker.
+ *
+ * @todo SHOULDHAVE When the line (chroma distance) of the marker is almost
+ * vertical and the zoom factor is on a certain percentage level, its
+ * anti-aliasing looks ugly.
  */
-class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -111,27 +119,29 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
      * The programmer can set this property to out-of-gamut values; the
      * user cannot.
      *
-     * @sa READ @ref currentColorCielchD50() const
-     * @sa WRITE @ref setCurrentColorCielchD50()
-     * @sa NOTIFY @ref currentColorCielchD50Changed() */
-    Q_PROPERTY(GenericColor currentColorCielchD50 READ currentColorCielchD50 WRITE setCurrentColorCielchD50 NOTIFY currentColorCielchD50Changed)
+     * @sa READ @ref currentColorLch() const
+     * @sa WRITE @ref setCurrentColorLch()
+     * @sa NOTIFY @ref currentColorLchChanged() */
+    Q_PROPERTY(GenericColor currentColorLch READ currentColorLch WRITE setCurrentColorLch NOTIFY currentColorLchChanged)
 
 public:
-    Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
+                                          const PerceptualColor::LchSpace projectionSpace,
+                                          QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
-    /** @brief Getter for property @ref currentColorCielchD50
-     *  @returns the property @ref currentColorCielchD50 */
-    [[nodiscard]] GenericColor currentColorCielchD50() const;
+    /** @brief Getter for property @ref currentColorLch
+     *  @returns the property @ref currentColorLch */
+    [[nodiscard]] GenericColor currentColorLch() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setCurrentColorCielchD50(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
+    void setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColorCielchD50.
-     *  @param newCurrentColorCielchD50 the new current color */
-    void currentColorCielchD50Changed(const PerceptualColor::GenericColor &newCurrentColorCielchD50);
+    /** @brief Notify signal for property @ref currentColorLch.
+     *  @param newCurrentColorLch the new current color */
+    void currentColorLchChanged(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;

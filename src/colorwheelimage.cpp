@@ -22,7 +22,7 @@ namespace PerceptualColor
 {
 /** @brief Constructor
  * @param colorEngine The color engine with which the image should operate.
- * Can be created with @ref createSrgbColorEngine(). */
+ * Can be created with @ref ColorEngine::createSrgb(). */
 ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
     : m_colorEngine(colorEngine)
 {
@@ -129,6 +129,22 @@ void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
     }
 }
 
+/**
+ * @brief Setter for the projection space property.
+ *
+ * The color space into which the working space is projected.
+ *
+ * @param newProjectionSpace The new wheel projection space.
+ */
+void ColorWheelImage::setProjectionSpace(PerceptualColor::LchSpace newProjectionSpace)
+{
+    if (m_projectionSpace != newProjectionSpace) {
+        m_projectionSpace = newProjectionSpace;
+        // Free the memory used by the old image.
+        m_image = QImage();
+    }
+}
+
 /** @brief Delivers an image of a color wheel
  *
  * @returns Delivers a square image of a color wheel. Its size
@@ -198,10 +214,17 @@ QImage ColorWheelImage::getImage()
                                                   maximumRadius);
             if (inWheel) {
                 const auto hue = polarCoordinates.angleDegree();
-                m_image.setPixelColor( //
-                    x, //
-                    y, //
-                    m_colorEngine->maxChromaColorByCielchD50Hue360(hue));
+                if (m_projectionSpace == LchSpace::CielchD50) {
+                    m_image.setPixelColor( //
+                        x, //
+                        y, //
+                        m_colorEngine->maxChromaColorByCielchD50Hue360(hue));
+                } else {
+                    m_image.setPixelColor( //
+                        x, //
+                        y, //
+                        m_colorEngine->maxChromaColorByOklabHue360(hue));
+                }
             }
         }
     }

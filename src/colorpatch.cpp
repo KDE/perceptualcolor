@@ -25,6 +25,7 @@
 #include <qevent.h>
 #include <qfont.h>
 #include <qframe.h>
+#include <qglobal.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qmath.h>

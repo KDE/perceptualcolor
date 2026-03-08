@@ -11,6 +11,8 @@
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
+#include "helperconversion.h"
+#include "lchvalues.h"
 #include <cmath>
 #include <functional>
 #include <limits>
@@ -33,12 +35,8 @@ class ColorEngine;
 class ChromaLightnessDiagramPrivate
 {
 public:
-    explicit ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~ChromaLightnessDiagramPrivate() noexcept = default;
+    explicit ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const LchSpace projectionSpace);
+    virtual ~ChromaLightnessDiagramPrivate() noexcept;
 
     // Member variables
     /** @brief The image of the chroma-lightness diagram itself. */
@@ -46,10 +44,18 @@ public:
     /** @brief Properties for @ref m_chromaLightnessImage. */
     ChromaLightnessImageParameters m_chromaLightnessImageParameters;
     /** @brief Internal storage of
-     * the @ref ChromaLightnessDiagram::currentColorCielchD50 property */
-    GenericColor m_currentColorCielchD50;
+     * the @ref ChromaLightnessDiagram::currentColorLch property */
+    GenericColor m_currentColorLch;
     /** @brief Pointer to ColorEngine() object */
     QSharedPointer<ColorEngine> m_colorEngine;
+    /**
+     * @brief Geometry of the current Lch color space.
+     * */
+    const LchValues m_lchValues;
+    /**
+     * @brief The color space into which the gamut will be projected.
+     */
+    const LchSpace m_projectionSpace;
 
     // Member functions
     [[nodiscard]] QSize calculateImageSizePhysical() const;
@@ -83,11 +89,11 @@ public:
         }
         return 0;
     }
-    [[nodiscard]] GenericColor fromWidgetPixelPositionToCielchD50(const QPoint widgetPixelPosition) const;
+    [[nodiscard]] GenericColor fromWidgetPixelPositionToLch(const QPoint widgetPixelPosition) const;
     [[nodiscard]] bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const;
     [[nodiscard]] int leftBorderDeviceIndependent() const;
     [[nodiscard]] int leftBorderPhysical() const;
-    [[nodiscard]] GenericColor nearestInGamutCielchD50ByAdjustingChromaLightness(const double chroma, const double lightness);
+    [[nodiscard]] GenericColor nearestInGamutLchByAdjustingChromaLightness(const double chroma, const double lightness);
     [[nodiscard]] std::optional<QPoint> nearestInGamutPixelPosition(const QPoint originalPixelPosition);
     [[nodiscard]] static std::optional<QPoint>
     nearestNeighborSearch(const QPoint point, const QRect boundingBox, const std::function<bool(const QPoint)> &doesPointExist);

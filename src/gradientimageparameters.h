@@ -5,6 +5,7 @@
 #define PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H
 
 #include "genericcolor.h"
+#include "helperconversion.h"
 #include <qglobal.h>
 #include <qimage.h>
 #include <qmetatype.h>
@@ -22,8 +23,8 @@ class ColorEngine;
  *
  * For usage with @ref AsyncImageProvider.
  *
- * As the hue is a circular property, there exists two ways to go one hue to
- * another (clockwise or counter-clockwise). This gradient takes always the
+ * As the hue is a circular property, there exists two ways to go from one hue
+ * to another (clockwise or counter-clockwise). This gradient takes always the
  * shortest way.
  *
  * The image has properties that can be accessed by the corresponding setters
@@ -44,17 +45,18 @@ public:
     [[nodiscard]] GenericColor colorFromValue(qreal value) const;
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
-    void setFirstColorCieLchD50A(const GenericColor &newFirstColor);
+    void setFirstColorLchA(const GenericColor &newFirstColor);
     void setGradientLength(const int newGradientLength);
     void setGradientThickness(const int newGradientThickness);
-    void setSecondColorCieLchD50A(const GenericColor &newFirstColor);
+    void setProjectionSpace(const LchSpace newProjectionSpace);
+    void setSecondColorLchA(const GenericColor &newSecondColor);
 
 private:
     /** @internal @brief Only for unit tests. */
     friend class TestGradientImageParameters;
 
     // Methods
-    [[nodiscard]] static GenericColor completlyNormalizedAndBounded(const GenericColor &color);
+    [[nodiscard]] GenericColor completlyNormalizedAndBounded(const GenericColor &color) const;
     void updateSecondColor();
 
     // Data members
@@ -87,6 +89,10 @@ private:
      * - If <tt>m_image.isNull()</tt> is <tt>false</tt>, than the cache
      *   is valid and can be used directly. */
     QImage m_image;
+    /**
+     * @brief The color space into which the gamut will be projected.
+     */
+    LchSpace m_projectionSpace = LchSpace::CielchD50;
     /** @brief Internal storage of the second color (corrected and altered
      * value).
      *
@@ -96,8 +102,8 @@ private:
      * from this color to @ref m_firstColorCorrected. This is necessary to
      * easily allow to calculate the intermediate colors of the gradient, so
      * that they take the shortest way through the color space.
-     * @sa @ref setFirstColorCieLchD50A()
-     * @sa @ref setSecondColorCieLchD50A()
+     * @sa @ref setFirstColorLchA()
+     * @sa @ref setSecondColorLchA()
      * @sa @ref completlyNormalizedAndBounded()
      * @sa @ref updateSecondColor() */
     GenericColor m_secondColorCorrectedAndAltered;

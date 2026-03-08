@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "colorwheelimage.h"
 
-#include "colorenginefactory.h"
+#include "colorengine.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
@@ -32,7 +32,7 @@ public:
     void testSnippet01()
     {
         //! [ColorWheelImage HiDPI usage]
-        auto myColorEngine = PerceptualColor::createSrgbColorEngine();
+        auto myColorEngine = PerceptualColor::ColorEngine::createSrgb();
         PerceptualColor::ColorWheelImage test{myColorEngine};
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
@@ -64,7 +64,7 @@ public:
     }
 
 private:
-    QSharedPointer<ColorEngine> colorEngine = createSrgbColorEngine();
+    QSharedPointer<ColorEngine> colorEngine = ColorEngine::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

@@ -4,6 +4,7 @@
 #ifndef PERCEPTUALCOLOR_SETTING_H
 #define PERCEPTUALCOLOR_SETTING_H
 
+#include "internalimportexport.h"
 #include "settingbase.h"
 #include "settings.h"
 #include <qbytearray.h>

@@ -4,6 +4,8 @@
 #ifndef PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H
 #define PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H
 
+#include "helperconversion.h"
+#include "internalimportexport.h"
 #include <qglobal.h>
 #include <qmetatype.h>
 #include <qsharedpointer.h>
@@ -39,7 +41,7 @@ class ColorEngine;
  * higher resolution (say two times higher, which would yet mean four times
  * more data), and then downscale it to the final resolution. This would be
  * too slow. */
-class ChromaLightnessImageParameters
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaLightnessImageParameters
 {
 public:
     [[nodiscard]] bool operator==(const ChromaLightnessImageParameters &other) const;
@@ -54,6 +56,10 @@ public:
     QSize imageSizePhysical;
     /** @brief Pointer to @ref ColorEngine object */
     QSharedPointer<PerceptualColor::ColorEngine> colorEngine;
+    /**
+     * @brief The color space into which the working space is projected.
+     */
+    LchSpace projectionSpace = LchSpace::CielchD50;
 
 private:
     /** @internal @brief Only for unit tests. */
@@ -73,12 +79,8 @@ private:
         return x + y * imageSizePhysical.width();
     }
 
-    static void renderByRow(const AsyncImageRenderCallback &callbackObject,
-                            uchar *const bytesPtr,
-                            const qsizetype bytesPerLine,
-                            const ChromaLightnessImageParameters parameters,
-                            int firstRow,
-                            int lastRow);
+    static void
+    renderByRow(uchar *const bytesPtr, const qsizetype bytesPerLine, const ChromaLightnessImageParameters parameters, const int firstRow, const int lastRow);
 };
 
 } // namespace PerceptualColor

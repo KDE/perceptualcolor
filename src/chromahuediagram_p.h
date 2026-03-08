@@ -12,6 +12,7 @@
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
+#include "lchvalues.h"
 #include "lcms2.h"
 #include <qglobal.h>
 #include <qpoint.h>
@@ -39,21 +40,24 @@ class ColorEngine;
 class ChromaHueDiagramPrivate
 {
 public:
-    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
+    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, const LchSpace projectionSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
-    ~ChromaHueDiagramPrivate() noexcept = default;
+    virtual ~ChromaHueDiagramPrivate() noexcept;
 
     // Member variables
     /** @brief The image of the chroma-hue diagram itself. */
     AsyncImageProvider<ChromaHueImageParameters> m_chromaHueImage;
+
     /** @brief Properties for @ref m_chromaHueImage. */
     ChromaHueImageParameters m_chromaHueImageParameters;
-    /** @brief Internal storage of the @ref ChromaHueDiagram::currentColorCielchD50()
+
+    /** @brief Internal storage of the @ref ChromaHueDiagram::currentColorLch()
      * property */
-    GenericColor m_currentColorCielchD50;
+    GenericColor m_currentColorLch;
+
     /** @brief Holds if currently a mouse event is active or not.
      *
      * Default value is <tt>false</tt>.
@@ -71,10 +75,25 @@ public:
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
+
+    /**
+     * @brief The details corresponding to @ref m_projectionSpace.
+     */
+    const LchValues m_lchValues;
+
+    /**
+     * @brief The color space into which the gamut will be projected.
+     *
+     * Get more details about the chosen projection space
+     * through @ref m_lchValues.
+     */
+    const LchSpace m_projectionSpace;
+
     /**
      * @brief Pointer to @ref ColorEngine object.
      */
     QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
+
     /** @brief The image of the color wheel. */
     ColorWheelImage m_wheelImage;
 
@@ -86,7 +105,7 @@ public:
     [[nodiscard]] bool isWidgetPixelPositionWithinDiagramCircle(const QPoint position) const;
     [[nodiscard]] bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);
-    [[nodiscard]] QPointF widgetCoordinatesFromCurrentColorCielchD50() const;
+    [[nodiscard]] QPointF widgetCoordinatesFromCurrentColorLch() const;
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)
