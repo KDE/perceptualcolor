@@ -1,13 +1,13 @@
 # Spanish translations for perceptualcolor-0_qt.po package.
-# Copyright (C) 2023-2025 This file is copyright:
+# Copyright (C) 2023-2026 This file is copyright:
 # This file is distributed under the same license as the perceptualcolor package.
 #
-# SPDX-FileCopyrightText: 2023, 2024, 2025 Eloy Cuadra <ecuadra@eloihr.net>
+# SPDX-FileCopyrightText: 2023, 2024, 2025, 2026 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2025-12-09 12:21+0100\n"
+"PO-Revision-Date: 2026-03-09 14:36+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.08.3\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #. @item A color model: X, Y, Z.
 #: colordialog.cpp:102
@@ -203,7 +203,7 @@ msgstr "Op&acidad:"
 #: colordialog.cpp:460
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:470
@@ -258,91 +258,3 @@ msgstr "+"
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr "Borrar"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Name:"
-#~ msgstr "Nombre:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "%L1 (estimated)"
-#~ msgstr "%L1 (estimado)"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Maximum CIELCh-D50 chroma:"
-#~ msgstr "Máximo croma CIELCh-D50:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Maximum Oklch chroma:"
-#~ msgstr "Máximo croma Oklch:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Display profile"
-#~ msgstr "Perfil de visualización"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Profile class:"
-#~ msgstr "Clase de perfil:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Color model:"
-#~ msgstr "Modelo de color:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Manufacturer:"
-#~ msgstr "Fabricante:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Device model:"
-#~ msgstr "Modelo del dispositivo:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Created:"
-#~ msgstr "Creado el:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "ICC format:"
-#~ msgstr "Formato ICC:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Implementation:"
-#~ msgstr "Implementación:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Matrices and color lookup tables"
-#~ msgstr "Matrices y tablas de búsqueda de color"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Matrices"
-#~ msgstr "Matrices"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Color lookup tables"
-#~ msgstr "Tablas de búsqueda de color"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "PCS color model:"
-#~ msgstr "Modelo de color PCS:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Copyright:"
-#~ msgstr "Copyright:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "File size:"
-#~ msgstr "Tamaño de archivo:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "File name:"
-#~ msgstr "Nombre de archivo:"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Color space information"
-#~ msgstr "Información del espacio de color"
-
-#~ msgctxt "PerceptualColor::ColorEngine|"
-#~ msgid "LittleCMS"
-#~ msgstr "LittleCMS"
-
-#~ msgctxt "PerceptualColor::ColorEngine|"
-#~ msgid "sRGB color space"
-#~ msgstr "Espacio de color sRGB"
