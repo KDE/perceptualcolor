@@ -199,7 +199,7 @@ msgstr "不透明度(&A)："
 #: colordialog.cpp:460
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:470
