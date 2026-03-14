@@ -149,7 +149,6 @@ if(BUILD_TESTING)
         testgenericcolor
         testgradientimageparameters
         testgradientslider
-        testhackyeyedropper
         testhelper
         testhelperaccessibility
         testhelperconstants

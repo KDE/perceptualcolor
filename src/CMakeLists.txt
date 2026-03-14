@@ -306,7 +306,6 @@ target_sources(
         # Add code that is currently not used, but that should be kept working
         # for possible use in the future.
         csscolor.cpp
-        hackyeyedropper.cpp
         )
 target_compile_definitions(
     ${INTERNAL_LIBRARY_NAME}

@@ -50,7 +50,7 @@ This library:
 - Is developed with unit tests.
 - Links only to Qt, so it is a Tier 1 library.
 - Uses only the public API of Qt, and no private
-  features of these libraries.
+  features of Qt.
 
 ## Links
 
