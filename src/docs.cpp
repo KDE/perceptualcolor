@@ -252,7 +252,7 @@
  * to equal visual differences as perceived by humans. Human color
  * perception is three‑dimensional, but it is not a Euclidean space and
  * <a href="https://www.pnas.org/doi/10.1073/pnas.2119753119">may not even
- * be Riemannian</a>>.  Therefore, every Euclidean “perceptually uniform”
+ * be Riemannian</a>.  Therefore, every Euclidean “perceptually uniform”
  * color space is only an approximation. Defining such spaces is always
  * a trade‑off between closely matching human perception and providing
  * efficient conversions. This library supports projections into the
@@ -348,7 +348,46 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo SHOULDHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
+ * @todo SHOWSTOPPER Define the precision of this library. We allow
+ * changing the number of decimals in the @ref PerceptualColor::ColorDialog
+ * though there is only a private API, not a public one. If so, maybe
+ * @ref PerceptualColor::SwatchBook should consider two colors only as
+ * equal if @ref PerceptualColor::ColorDialog has exactly the same in
+ * @ref PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorAbs and
+ * @ref PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorRgb.
+ * Document how exact the results of @ref PerceptualColor::ColorDialog are.
+ * If only 8 bit per channel, move to QRgb. Otherwise, either stay with
+ * QColor, but deliver exact results. Or even move to
+ * @ref PerceptualColor::GenericColor.
+ *
+ * @todo SHOULDHAVE / SHOWSTOPPER?
+ * In both diagrams that use circular handles, the chroma scaling should
+ * provide enough extra space beyond the maximum chroma value to accommodate
+ * half the diameter of the circular handle. This ensures that the handle
+ * will never extend outside the diagram area at the maximum‑chroma edge.
+ * At the gray axis of @ref PerceptualColor::ChromaLightnessDiagram, however,
+ * the handle will still exceed the diagram boundary. Adding extra space
+ * there would be extremely unintuitive, so this limitation is accepted.
+ *
+ * @todo SHOULDHAVE Support CSS colors using @ref PerceptualColor::CssColor
+ * by allowing copy (right-click on the @ref PerceptualColor::ColorPatch,
+ * however this will not work for keyboard-only usage because the context menu
+ * key cannot be used because this widget cannot get focus, or should that
+ * change?) and paste (maybe even whereever in the
+ * @ref PerceptualColor::ColorDialog, even within
+ * @ref PerceptualColor::MultiSpinBox. And also incoming drag-and-drop
+ * (outgoing drag-and-drop instead should use the standard clipboard format).
+ *
+ * @todo SHOWSTOPPER Remove @ref PerceptualColor::HackyEyedropper and other
+ * dead code.
+ *
+ * @todo SHOWSTOPPER Optimize rendering time.
+ *
+ * @todo SHOWSTOPPER Color conversions like in
+ * @ref PerceptualColor::AbsoluteColor or @ref PerceptualColor::ColorEngine
+ * must <em>be</em> thread-safe and also be <em>documented</em> as thread-save.
+ *
+ * @todo NICETOHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
  *
  * @todo SHOWSTOPPER SHOULDHAVE The sRGB gamut in the Oklab space has
  * an irregular shape in the chroma-lightness diagram around 264.1°, see also
@@ -361,6 +400,8 @@
  * Code optimization for rendering for those slices that are not affected (most
  * slices). And: A sort of pop-up information on hue 261.1 Oklch to explain
  * that this gamut form is not a bug.
+ * And: Control if possible optimizations
+ * are actually correct in all hue or lightness ranges where they are applied.
  *
  * @todo NICETOHAVE Test manually or in CI for ARM64.
  *

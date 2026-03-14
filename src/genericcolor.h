@@ -167,7 +167,17 @@ public:
     double second = 0;
     /** @brief Third value. */
     double third = 0;
-    /** @brief Forth value. */
+    /**
+     * @brief Forth value.
+     *
+     * @internal
+     *
+     * @todo SHOULDHAVE (SHOWSTOPPER if in public API): Is it a good idea to
+     * use this as alpha channel? Would it be better to explicitly name it
+     * “alpha”? Or remove it completly and treat alpha separately in another
+     * data type? Should this type have the potential
+     * to carry CMYK (four components) in the future, plus alpha?
+     */
     double fourth = 0;
 };
 

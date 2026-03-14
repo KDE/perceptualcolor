@@ -565,6 +565,12 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * @todo NICETOHAVE The conversion of the calculated tints and shades could
  * be done directly with Oklch->sRGB
  * instead of passing through CIELchD50 first.
+ *
+ * @todo SHOWSTOPPER SHOULDHAVE Columns of the same basic color have
+ * different Oklch hues. Shouldn't they have all the same hue?
+ *
+ * @todo SHOULDHAVE All values on the gray axis should have either the same
+ * Oklch hue or the same Cielch hue, probably 0°.
  */
 QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
 {

@@ -31,10 +31,10 @@ namespace PerceptualColor
  * <tt>std::unique_prt::reset()</tt> instead. As there is no
  * support for deleters anyway, this should be equivalent.
  *
- * @note A @ref ConstPropagatingUniquePointer pointer variable itself
- * may not be const! @internal (Otherwise, this would make <tt>const</tt>
- * <em>all</em> access even to non-const functions of the pointed
- * object.) @endinternal
+ * @note It also propagates the const-ness of the
+ * @ref ConstPropagatingUniquePointer pointer variable itself. Consequently
+ * <em>all</em> access to non-const functions is impossible if the pointer
+ * variable itself is <tt>const</tt>.
  *
  * @internal
  *
@@ -45,7 +45,10 @@ namespace PerceptualColor
  * the MSVC compiler when used with incomplete types, which is however
  * necessary for usage within @ref pimpl.
  *
- * @note This class could be replaced in the future by <tt>
+ * @note There are other implementation available. But it’s not worth to use
+ * https://github.com/jbcoe/propagate_const instead of having our own
+ * implementation, which is simpler, but just fine for our use case.
+ * This class could also be replaced in the future by <tt>
  * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
  * std::experimental::propagate_const</a></tt> if this one ever becomes
  * part of the C++ standard. (Experimental features however are optional
@@ -57,10 +60,6 @@ namespace PerceptualColor
  * std::indirect</a></tt> and <tt>
  * <a href="https://en.cppreference.com/w/cpp/memory/polymorphic.html">
  * std::polymorphic</a></tt>  anyway.
- *
- * @note There are other implementation available. But it’s not worth to use
- * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation, which is simpler, but just fine for our use case.
  */
 // NOTE No PERCEPTUALCOLOR_IMPORTEXPORT for generic template definitions!
 template<typename T>

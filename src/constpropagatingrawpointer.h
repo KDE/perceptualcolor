@@ -22,9 +22,6 @@ namespace PerceptualColor
  * it also casts implicitly to the corresponding raw pointer (but only
  * within non-<tt>const</tt> contexts).
  *
- * Think of this template as a simple alternative to
- * <tt>std::experimental::propagate_const&lt; T* &gt;</tt>
- *
  * Example code:
  * @snippet testconstpropagatingrawpointer.cpp example
  *
@@ -32,10 +29,10 @@ namespace PerceptualColor
  * or assignment constructors. Once constructed, an instance of
  * this class cannot be changed anymore.
  *
- * @note A @ref ConstPropagatingRawPointer pointer variable itself
- * may not be const! (Otherwise, this would make <tt>const</tt>
- * <em>all</em> access even to non-const functions of the pointed
- * object.)
+ * @note It also propagates the const-ness of the
+ * @ref ConstPropagatingRawPointer pointer variable itself. Consequently
+ * <em>all</em> access to non-const functions is impossible if the pointer
+ * variable itself is <tt>const</tt>.
  *
  * @sa @ref ConstPropagatingUniquePointer
  *
@@ -43,13 +40,7 @@ namespace PerceptualColor
  * https://github.com/jbcoe/propagate_const but we use nevertheless
  * our own light-wise implementation because this seems to be enough
  * for our limited use case.
- *
- * @note This class could be replaced in the future by <tt>
- * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
- * std::experimental::propagate_const</a></tt> if this one ever becomes
- * part of the C++ standard. (Experimental features however are optional
- * for compilers, so not all of them implement them. Furthermore, they
- * can still change. Therefore, we cannot use experimental features here.) */
+ */
 template<typename T>
 class ConstPropagatingRawPointer
 {
