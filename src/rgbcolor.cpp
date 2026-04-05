@@ -22,13 +22,15 @@ RgbColor::RgbColor()
  * <tt>QColor::Spec</tt>.
  * @param hue When empty, the hue is calculated automatically. Otherwise,
  * this value is used instead. Valid range: [0, 360[
- *
- * @post @ref hsl, @ref hsv, @ref hwb, @ref rgb255 and @ref rgbQColor are
- * set. */
+ */
 void RgbColor::fillAll(QColor color, std::optional<double> hue)
 {
-    // rgb255
-    rgb255 = GenericColor( //
+    rgb_1 = GenericColor( //
+        qBound<double>(0., static_cast<double>(color.redF()), 1.), //
+        qBound<double>(0., static_cast<double>(color.greenF()), 1.), //
+        qBound<double>(0., static_cast<double>(color.blueF()), 1.));
+
+    rgb_255 = GenericColor( //
         qBound<double>(0., static_cast<double>(color.redF() * 255), 255.), //
         qBound<double>(0., static_cast<double>(color.greenF() * 255), 255.), //
         qBound<double>(0., static_cast<double>(color.blueF() * 255), 255.));
@@ -44,17 +46,17 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
     // in this code.
     rgbHex6 = //
         QStringLiteral(u"#%1%2%3")
-            .arg(qBound(0, qRound(rgb255.first), 255), // The number itself
+            .arg(qBound(0, qRound(rgb_255.first), 255), // The number itself
                  2, // The minimal field width (2 digits)
                  16, // The base of the number representation (16, hexadecimal)
                  QChar::fromLatin1('0') // The fill character (leading zero)
                  )
-            .arg(qBound(0, qRound(rgb255.second), 255), // The number itself
+            .arg(qBound(0, qRound(rgb_255.second), 255), // The number itself
                  2, // The minimal field width (2 digits)
                  16, // The base of the number representation (16, hexadecimal)
                  QChar::fromLatin1('0') // The fill character (leading zero)
                  )
-            .arg(qBound(0, qRound(rgb255.third), 255), // The number itself
+            .arg(qBound(0, qRound(rgb_255.third), 255), // The number itself
                  2, // The minimal field width (2 digits)
                  16, // The base of the number representation (16, hexadecimal)
                  QChar::fromLatin1('0') // The fill character (leading zero)
@@ -109,16 +111,38 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
 RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> hue)
 {
     RgbColor result;
-    const float red = static_cast<float>(color.first / 255.0);
-    const float green = static_cast<float>(color.second / 255.0);
-    const float blue = static_cast<float>(color.third / 255.0);
-    constexpr float zero = 0;
-    constexpr float one = 1;
-    const QColor newRgbQColor = QColor::fromRgbF(qBound(zero, red, one), //
-                                                 qBound(zero, green, one), //
-                                                 qBound(zero, blue, one));
+    const float red = static_cast<float>(color.first / 255);
+    const float green = static_cast<float>(color.second / 255);
+    const float blue = static_cast<float>(color.third / 255);
+    const QColor newRgbQColor = QColor::fromRgbF(qBound<float>(0, red, 1), //
+                                                 qBound<float>(0, green, 1), //
+                                                 qBound<float>(0, blue, 1));
     result.fillAll(newRgbQColor, hue);
-    result.rgb255 = color;
+    result.rgb_255 = color;
+
+    return result;
+}
+
+/**
+ * @brief Static convenience function that returns a @ref RgbColor
+ * constructed from the given color.
+ *
+ * @param color Original color. Valid range: [0, 1]
+ * @param hue If not empty, this value is used instead of the actually
+ *            calculated hue value. Valid range: [0, 360[
+ * @returns A @ref RgbColor object representing this color.
+ */
+RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue)
+{
+    RgbColor result;
+    const float red = static_cast<float>(color.first);
+    const float green = static_cast<float>(color.second);
+    const float blue = static_cast<float>(color.third);
+    const QColor newRgbQColor = QColor::fromRgbF(qBound<float>(0, red, 1), //
+                                                 qBound<float>(0, green, 1), //
+                                                 qBound<float>(0, blue, 1));
+    result.fillAll(newRgbQColor, hue);
+    result.rgb_255 = GenericColor(color.first * 255, color.second * 255, color.third * 255, color.fourth);
 
     return result;
 }
@@ -257,7 +281,7 @@ bool RgbColor::operator==(const RgbColor &other) const
     return (hsl == other.hsl) //
         && (hsv == other.hsv) //
         && (hwb == other.hwb) //
-        && (rgb255 == other.rgb255) //
+        && (rgb_255 == other.rgb_255) //
         && (rgbHex6 == other.rgbHex6) //
         && (rgbQColor == other.rgbQColor);
 }
@@ -277,7 +301,7 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
         << " - hsl: " << value.hsl << "\n"
         << " - hsv: " << value.hsv << "\n"
         << " - hwb: " << value.hwb << "\n"
-        << " - rgb255: " << value.rgb255 << "\n"
+        << " - rgb255: " << value.rgb_255 << "\n"
         << " - rgbHex6: " << value.rgbHex6 << "\n"
         << " - rgbQColor: " << value.rgbQColor << "\n"
         << ")";

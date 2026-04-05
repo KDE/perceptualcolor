@@ -355,6 +355,9 @@
  * equal if @ref PerceptualColor::ColorDialog has exactly the same in
  * @ref PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorAbs and
  * @ref PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorRgb.
+ * Or it should depend on the visible value in the sRGB
+ * @ref PerceptualColor::MultiSpinBox, considering the number of decimals
+ * actually displayed there?
  * Document how exact the results of @ref PerceptualColor::ColorDialog are.
  * If only 8 bit per channel, move to QRgb. Otherwise, either stay with
  * QColor, but deliver exact results. Or even move to
@@ -1131,7 +1134,8 @@
  * MINOR_VERSION, PATCH_VERSION)
  *
  * @todo SHOULDHAVE <tt>operator&lt;&lt;</tt> and <tt>operator==</tt> actually
- * cover all data members.
+ * cover all data members. (Or: Switch from C++17 to C++20 and use default
+ * operators or <tt>operator&lt;==&lt;</tt>.)
  *
  * @todo SHOULDHAVE From
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">

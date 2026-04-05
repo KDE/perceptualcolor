@@ -360,7 +360,7 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
     if (ident == QStringLiteral("rgb") //
         || ident == QStringLiteral("rgba") //
         || hash.contains(ident)) {
-        model = ColorModel::Rgb1;
+        model = ColorModel::Rgb_1;
         rgbColorSpace = hash.value( //
             ident, //
             CssPredefinedRgbColorSpace::Srgb);
@@ -380,8 +380,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
         || ident == QStringLiteral("xyz-d65") //
         || ident == QStringLiteral("xyz")) {
         model = (ident == QStringLiteral("xyz-d50")) //
-            ? ColorModel::XyzD50
-            : ColorModel::XyzD65;
+            ? ColorModel::XyzD50_1
+            : ColorModel::XyzD65_1;
         rgbColorSpace = CssPredefinedRgbColorSpace::Invalid;
         for (int i = 0; i < 3; ++i) {
             const auto absValue = //
@@ -396,8 +396,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
         || ident == QStringLiteral("hsla") //
         || ident == QStringLiteral("hwb")) {
         model = (ident == QStringLiteral("hwb")) //
-            ? ColorModel::Hwb360_1_1
-            : ColorModel::Hsl360_1_1;
+            ? ColorModel::Hwb_360_1_1
+            : ColorModel::Hsl_360_1_1;
         rgbColorSpace = CssPredefinedRgbColorSpace::Srgb;
         const auto maybeHue = parseArgumentHueNoneTo360(arguments.value(0));
         if (maybeHue.has_value()) {
@@ -511,7 +511,7 @@ CssColor::CssColorValue CssColor::parse(const QString &string)
     if (srgb.has_value()) {
         const auto srgbValue = srgb.value();
         CssColorValue result;
-        result.model = ColorModel::Rgb1;
+        result.model = ColorModel::Rgb_1;
         result.rgbColorSpace = CssPredefinedRgbColorSpace::Srgb;
         result.color = GenericColor{qRed(srgbValue) / 255., //
                                     qGreen(srgbValue) / 255., //
@@ -775,8 +775,8 @@ QStringList CssColor::generateCss(const QHash<ColorModel, GenericColor> &input, 
                           .arg(opacity1String));
     }
 
-    if (input.contains(ColorModel::XyzD50)) {
-        const auto temp = input.value(ColorModel::XyzD50);
+    if (input.contains(ColorModel::XyzD50_1)) {
+        const auto temp = input.value(ColorModel::XyzD50_1);
         result.append(QStringLiteral("color (xyz-d50 %1 %2 %3%4)") //
                           .arg(temp.first, 0, 'f', decimals1) //
                           .arg(temp.second, 0, 'f', decimals1) //
@@ -784,8 +784,8 @@ QStringList CssColor::generateCss(const QHash<ColorModel, GenericColor> &input, 
                           .arg(opacity1String));
     }
 
-    if (input.contains(ColorModel::XyzD65)) {
-        const auto temp = input.value(ColorModel::XyzD65);
+    if (input.contains(ColorModel::XyzD65_1)) {
+        const auto temp = input.value(ColorModel::XyzD65_1);
         result.append(QStringLiteral("color (xyz-d65 %1 %2 %3%4)") //
                           .arg(temp.first, 0, 'f', decimals1) //
                           .arg(temp.second, 0, 'f', decimals1) //

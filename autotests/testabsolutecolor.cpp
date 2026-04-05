@@ -273,6 +273,101 @@ private:
             << oklabGray;
     }
 
+    void generateDataSRgbLinearSRgb()
+    {
+        QTest::addColumn<double>("srgb");
+        QTest::addColumn<double>("linearsrgb");
+
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+
+        QTest::newRow("0") //
+            << 0. //
+            << 0.;
+
+        QTest::newRow("0.001") //
+            << 0.001 //
+            << 0.00007739938080495357;
+
+        QTest::newRow("0.002") //
+            << 0.002 //
+            << 0.00015479876160990713;
+
+        QTest::newRow("0.05") //
+            << 0.05 //
+            << 0.003935939504088967;
+
+        QTest::newRow("0.3") //
+            << 0.3 //
+            << 0.07323895587840543;
+
+        QTest::newRow("0.6") //
+            << 0.6 //
+            << 0.31854677812509186;
+
+        QTest::newRow("0.9") //
+            << 0.9 //
+            << 0.7874122893956174;
+
+        QTest::newRow("0.99") //
+            << 0.99 //
+            << 0.9774019338064516;
+
+        QTest::newRow("0.999") //
+            << 0.999 //
+            << 0.9977266276926824;
+
+        QTest::newRow("1") //
+            << 1. //
+            << 1.;
+    }
+
+    void generateDataLinearSRgbXyzD65()
+    {
+        qRegisterMetaType<GenericColor>();
+        QTest::addColumn<GenericColor>("linearsrgb");
+        QTest::addColumn<GenericColor>("xyzd65");
+
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+
+        QTest::newRow("white") //
+            << GenericColor(1, 1, 1, 0.5) //
+            << GenericColor(0.9504559270516717, 1, 1.0890577507598784, 0.5);
+
+        QTest::newRow("red") //
+            << GenericColor(1, 0, 0, 0.5) //
+            << GenericColor(0.41239079926595934, 0.21263900587151027, 0.01933081871559182, 0.5);
+
+        QTest::newRow("green") //
+            << GenericColor(0, 1, 0, 0.5) //
+            << GenericColor(0.357584339383878, 0.715168678767756, 0.11919477979462598, 0.5);
+
+        QTest::newRow("blue") //
+            << GenericColor(0, 0, 1, 0.5) //
+            << GenericColor(0.1804807884018343, 0.07219231536073371, 0.9505321522496607, 0.5);
+
+        QTest::newRow("cyan") //
+            << GenericColor(0, 1, 1, 0.5) //
+            << GenericColor(0.5380651277857122, 0.7873609941284897, 1.0697269320442866, 0.5);
+
+        QTest::newRow("magenta") //
+            << GenericColor(1, 0, 1, 0.5) //
+            << GenericColor(0.5928715876677937, 0.284831321232244, 0.9698629709652525, 0.5);
+
+        QTest::newRow("yellow") //
+            << GenericColor(1, 1, 0, 0.5) //
+            << GenericColor(0.7699751386498374, 0.9278076846392663, 0.13852559851021778, 0.5);
+
+        QTest::newRow("black") //
+            << GenericColor(0, 0, 0, 0.5) //
+            << GenericColor(0, 0, 0, 0.5);
+
+        QTest::newRow("gray") //
+            << GenericColor(0.21586050011389926, 0.21586050011389926, 0.21586050011389926, 0.5) //
+            << GenericColor(0.2051658917495936, 0.21586050011389926, 0.23508455073194565, 0.5);
+    }
+
 private Q_SLOTS:
     void initTestCase()
     {
@@ -406,12 +501,98 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actualCielabD50.third, cmscielab.b, epsilon));
     }
 
-    void testLinearToSRgb()
+    void testChannelFromLinearSRgbToSRgb_data()
     {
-        QCOMPARE(AbsoluteColor::linearToSRgb(-0), 0);
-        QCOMPARE(AbsoluteColor::linearToSRgb(0), 0);
-        QCOMPARE(AbsoluteColor::linearToSRgb(+0), 0);
-        QVERIFY(AbsoluteColor::linearToSRgb(1) <= 1.001); // Allow for rounding errors
+        generateDataSRgbLinearSRgb();
+    }
+
+    void testChannelFromLinearSRgbToSRgb()
+    {
+        QFETCH(double, srgb);
+        QFETCH(double, linearsrgb);
+        QCOMPARE(AbsoluteColor::channelFromLinearSRgbToSRgb(linearsrgb), srgb);
+    }
+
+    void testChannelFromSRgbToLinearSRgb_data()
+    {
+        generateDataSRgbLinearSRgb();
+    }
+
+    void testChannelFromSRgbToLinearSRgb()
+    {
+        QFETCH(double, srgb);
+        QFETCH(double, linearsrgb);
+        QCOMPARE(AbsoluteColor::channelFromSRgbToLinearSRgb(srgb), linearsrgb);
+    }
+
+    void testFromLinearSRgbToSRgb_data()
+    {
+        generateDataSRgbLinearSRgb();
+    }
+
+    void testFromLinearSRgbToSRgb()
+    {
+        QFETCH(double, srgb);
+        QFETCH(double, linearsrgb);
+        GenericColor myLinearSRgb{linearsrgb, linearsrgb, linearsrgb, 0.5};
+        GenericColor mySRgb{srgb, srgb, srgb, 0.5};
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).first, myLinearSRgb.first);
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).second, myLinearSRgb.second);
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).third, myLinearSRgb.third);
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).fourth, myLinearSRgb.fourth);
+    }
+
+    void testFromSRgbToLinearSRgb_data()
+    {
+        generateDataSRgbLinearSRgb();
+    }
+
+    void testFromSRgbToLinearSRgb()
+    {
+        QFETCH(double, srgb);
+        QFETCH(double, linearsrgb);
+        GenericColor myLinearSRgb{linearsrgb, linearsrgb, linearsrgb, 0.5};
+        GenericColor mySRgb{srgb, srgb, srgb, 0.5};
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).first, myLinearSRgb.first);
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).second, myLinearSRgb.second);
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).third, myLinearSRgb.third);
+        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).fourth, myLinearSRgb.fourth);
+    }
+
+    void testFromXyzD65ToLinearSRgb_data()
+    {
+        generateDataLinearSRgbXyzD65();
+    }
+
+    void testFromXyzD65ToLinearSRgb()
+    {
+        QFETCH(GenericColor, linearsrgb);
+        QFETCH(GenericColor, xyzd65);
+        const auto actualResult = //
+            AbsoluteColor::fromXyzD65ToLinearSRgb(xyzd65);
+        constexpr double epsilon = 0.001;
+        QVERIFY(isNearlyEqual(actualResult.first, linearsrgb.first, epsilon));
+        QVERIFY(isNearlyEqual(actualResult.second, linearsrgb.second, epsilon));
+        QVERIFY(isNearlyEqual(actualResult.third, linearsrgb.third, epsilon));
+        QVERIFY(isNearlyEqual(actualResult.fourth, linearsrgb.fourth, epsilon));
+    }
+
+    void testFromLinearSRgbToXyzD65_data()
+    {
+        generateDataLinearSRgbXyzD65();
+    }
+
+    void testFromLinearSRgbToXyzD65()
+    {
+        QFETCH(GenericColor, linearsrgb);
+        QFETCH(GenericColor, xyzd65);
+        const auto actualResult = //
+            AbsoluteColor::fromLinearSRgbToXyzD65(linearsrgb);
+        constexpr double epsilon = 0.001;
+        QVERIFY(isNearlyEqual(actualResult.first, xyzd65.first, epsilon));
+        QVERIFY(isNearlyEqual(actualResult.second, xyzd65.second, epsilon));
+        QVERIFY(isNearlyEqual(actualResult.third, xyzd65.third, epsilon));
+        QVERIFY(isNearlyEqual(actualResult.fourth, xyzd65.fourth, epsilon));
     }
 
     void testToByte()

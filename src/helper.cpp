@@ -555,7 +555,11 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * the lightest and finishing with the darkest: 2 tints, the tone itself,
  * 2 shades).
  *
- * @note The RGB value is rounded to full integers in the range [0, 255].
+ * @note RGB values are rounded to integers in the range [0, 255].
+ *       When converting these rounded RGB values back to Oklch,
+ *       you would naturally expect all tints and shades of the same color
+ *       to retain the same hue. However, slight differences may appear
+ *       due to rounding.
  *
  * @internal
  *
@@ -565,9 +569,6 @@ ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
  * @todo NICETOHAVE The conversion of the calculated tints and shades could
  * be done directly with Oklch->sRGB
  * instead of passing through CIELchD50 first.
- *
- * @todo SHOWSTOPPER SHOULDHAVE Columns of the same basic color have
- * different Oklch hues. Shouldn't they have all the same hue?
  *
  * @todo SHOULDHAVE All values on the gray axis should have either the same
  * Oklch hue or the same Cielch hue, probably 0°.

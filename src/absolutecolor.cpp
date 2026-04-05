@@ -39,6 +39,11 @@ Q_GLOBAL_STATIC_WITH_ARGS( //
 
 Q_GLOBAL_STATIC_WITH_ARGS( //
     const SquareMatrix3,
+    linearSRgbToXyzD65,
+    (linearSRgbToXyzD65Matrix.data()))
+
+Q_GLOBAL_STATIC_WITH_ARGS( //
+    const SquareMatrix3,
     m1inverse,
     (inverseMatrix(*m1).value_or(SquareMatrix3())))
 
@@ -51,6 +56,11 @@ Q_GLOBAL_STATIC_WITH_ARGS( //
     const SquareMatrix3,
     xyzD50ToXyzD65,
     (inverseMatrix(*xyzD65ToXyzD50).value_or(SquareMatrix3())))
+
+Q_GLOBAL_STATIC_WITH_ARGS( //
+    const SquareMatrix3,
+    xyzD65ToLinearSRgb,
+    (inverseMatrix(*linearSRgbToXyzD65).value_or(SquareMatrix3())))
 
 /// @endcond
 
@@ -324,6 +334,72 @@ GenericColor AbsoluteColor::fromPolarToCartesian(const GenericColor &value)
                         value.fourth);
 }
 
+/**
+ * @internal
+ *
+ * @brief Color conversion.
+ *
+ * @param value Color to be converted.
+ *
+ * @returns the converted color
+ */
+GenericColor AbsoluteColor::fromLinearSRgbToSRgb(const GenericColor &value)
+{
+    return GenericColor(channelFromLinearSRgbToSRgb(value.first), //
+                        channelFromLinearSRgbToSRgb(value.second), //
+                        channelFromLinearSRgbToSRgb(value.third), //
+                        value.fourth);
+}
+
+/**
+ * @internal
+ *
+ * @brief Color conversion.
+ *
+ * @param value Color to be converted.
+ *
+ * @returns the converted color
+ */
+GenericColor AbsoluteColor::fromSRgbToLinearSRgb(const GenericColor &value)
+{
+    return GenericColor(channelFromSRgbToLinearSRgb(value.first), //
+                        channelFromSRgbToLinearSRgb(value.second), //
+                        channelFromSRgbToLinearSRgb(value.third), //
+                        value.fourth);
+}
+
+/**
+ * @internal
+ *
+ * @brief Color conversion.
+ *
+ * @param value Color to be converted.
+ *
+ * @returns the converted color
+ */
+GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
+{
+    auto result = GenericColor((*xyzD65ToLinearSRgb) * value.toTrio());
+    result.fourth = value.fourth;
+    return result;
+}
+
+/**
+ * @internal
+ *
+ * @brief Color conversion.
+ *
+ * @param value Color to be converted.
+ *
+ * @returns the converted color
+ */
+GenericColor AbsoluteColor::fromLinearSRgbToXyzD65(const GenericColor &value)
+{
+    auto result = GenericColor((*linearSRgbToXyzD65) * value.toTrio());
+    result.fourth = value.fourth;
+    return result;
+}
+
 /** @brief Convert a color from one color model to another.
  *
  * @param from The color model from which the conversion is made.
@@ -340,40 +416,6 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
         return temp.value(to);
     }
     return std::nullopt;
-}
-
-/**
- * @internal
- *
- * @brief Speed-optimized function to convert from linear to gamma-corrected
- * sRGB.
- *
- * @pre x ≥ 0 (otherwise, undefined behaviour)
- *
- * @param x An linear RGB component in the range [0..1].
- *
- * @returns The corresponding gamma-corrected sRGB value
- * in the range [0..1] or slightly above or below because
- * of rounding errors.
- *
- * @internal
- *
- * @note This function is based on the
- * <a href="https://bottosson.github.io/posts/colorwrong/#what-can-we-do%3F">
- * Ottonson’s code</a> and
- * <a href="https://en.wikipedia.org/wiki/SRGB#Definition">Wikipedia</a>.
- *
- * @note Unfortunately, it cannot be <tt>constexpr</tt> because it relies
- * on <a href="https://en.cppreference.com/w/cpp/numeric/math/pow.html">
- * <tt>std::pow</tt></a> which only becomes <tt>constexpr</tt> in C++26,
- * which is beyond our current target C++ standard.
- */
-[[nodiscard]] float AbsoluteColor::linearToSRgb(float x)
-{
-    if (x <= 0.0031308f) {
-        return 12.92f * x;
-    }
-    return 1.055f * std::pow(x, 1.0f / 2.4f) - 0.055f;
 }
 
 /**
@@ -417,7 +459,7 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
  * original Oklab code</a>.
  *
  * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
- * calls @ref linearToSRgb() which is not <tt>constexpr</tt>.
+ * calls @ref channelFromLinearSRgbToSRgb() which is not <tt>constexpr</tt>.
  */
 // GenericColor might be an alternative, but it has double precision, while here
 // float precision would be appropriate.
@@ -447,9 +489,9 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
         return qRgbTransparent;
     }
 
-    return qRgba(toByte(linearToSRgb(r)), //
-                 toByte(linearToSRgb(g)), //
-                 toByte(linearToSRgb(b)),
+    return qRgba(toByte(channelFromLinearSRgbToSRgb(r)), //
+                 toByte(channelFromLinearSRgbToSRgb(g)), //
+                 toByte(channelFromLinearSRgbToSRgb(b)),
                  255);
 }
 
@@ -476,7 +518,7 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
  * original Oklab code</a>.
  *
  * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
- * calls @ref linearToSRgb() which is not <tt>constexpr</tt>.
+ * calls @ref channelFromLinearSRgbToSRgb() which is not <tt>constexpr</tt>.
  */
 [[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbClamped(const GenericColor &oklab)
 {
@@ -497,9 +539,9 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
     const float g = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
     const float b = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
 
-    return qRgba(toByte(std::clamp<float>(linearToSRgb(r), 0, 1)), //
-                 toByte(std::clamp<float>(linearToSRgb(g), 0, 1)), //
-                 toByte(std::clamp<float>(linearToSRgb(b), 0, 1)),
+    return qRgba(toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(r), 0, 1)), //
+                 toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(g), 0, 1)), //
+                 toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(b), 0, 1)),
                  255);
 }
 

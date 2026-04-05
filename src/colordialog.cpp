@@ -1380,27 +1380,16 @@ void ColorDialogPrivate::updateColorPatch()
 /** @brief Overloaded function. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget)
 {
-    const auto cielchD50 = abs.value(ColorModel::CielchD50);
-    const auto rgb1 = m_colorEngine->fromCielchD50ToRgb1(cielchD50);
-    const auto rgb255 = GenericColor(rgb1.first * 255, //
-                                     rgb1.second * 255,
-                                     rgb1.third * 255);
-    const auto rgbColor = RgbColor::fromRgb255(rgb255);
-    setCurrentOpaqueColor(abs, rgbColor, ignoreWidget);
+    setCurrentOpaqueColor(abs, //
+                          RgbColor::fromRgb1(abs.value(ColorModel::SRgb_1)), //
+                          ignoreWidget);
 }
 
 /** @brief Overloaded function. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, QWidget *const ignoreWidget)
 {
-    const auto temp = rgb.rgb255;
-    const QColor myQColor = qColorFromRgbDouble( //
-        temp.first / 255., //
-        temp.second / 255., //
-        temp.third / 255.);
-    const auto cielchD50 = GenericColor( //
-        m_colorEngine->toCielchD50(myQColor.rgba64()));
     setCurrentOpaqueColor( //
-        AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50),
+        AbsoluteColor::allConversions(ColorModel::SRgb_1, rgb.rgb_1),
         rgb,
         ignoreWidget);
 }
@@ -1464,7 +1453,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
     // Update RGB widget
     if (m_rgbSpinBox != ignoreWidget) {
         m_rgbSpinBox->setValues( //
-            m_currentOpaqueColorRgb.rgb255.toQList3());
+            m_currentOpaqueColorRgb.rgb_255.toQList3());
     }
 
     // Update HSL widget

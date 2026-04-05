@@ -101,7 +101,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -113,7 +113,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -126,7 +126,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -140,7 +140,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -153,7 +153,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -166,7 +166,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -180,7 +180,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -194,7 +194,7 @@ private Q_SLOTS:
         QCOMPARE(myColor2.hsl, myColor1.hsl);
         QCOMPARE(myColor2.hsv, myColor1.hsv);
         QCOMPARE(myColor2.hwb, myColor1.hwb);
-        QCOMPARE(myColor2.rgb255, myColor1.rgb255);
+        QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
         QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
         QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
     }
@@ -203,12 +203,20 @@ private Q_SLOTS:
     {
         RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{113, 53, 23});
         QCOMPARE(myColor1.rgbQColor, QColor::fromRgb(113, 53, 23));
+        QVERIFY(isAlmostEqual(myColor1.rgb_1.first, 113. / 255, 0.1));
+        QVERIFY(isAlmostEqual(myColor1.rgb_1.second, 53. / 255, 0.1));
+        QVERIFY(isAlmostEqual(myColor1.rgb_1.third, 23. / 255, 0.1));
+        QCOMPARE(myColor1.rgb_1.fourth, 0);
     }
 
     void testFromRgbQColor()
     {
         RgbColor myColor1 = RgbColor::fromRgbQColor(Qt::yellow);
         QCOMPARE(myColor1.rgbQColor, Qt::yellow);
+        QCOMPARE(myColor1.rgb_1,
+                 GenericColor(QColor(Qt::yellow).redF(), //
+                              QColor(Qt::yellow).greenF(), //
+                              QColor(Qt::yellow).blueF()));
     }
 
     void testFromRgbQColorAlpha()
@@ -222,7 +230,8 @@ private Q_SLOTS:
         QCOMPARE(myValue.hsl.fourth, 0); // the fourth value is unused.
         QCOMPARE(myValue.hsv.fourth, 0); // the fourth value is unused.
         QCOMPARE(myValue.hwb.fourth, 0); // the fourth value is unused.
-        QCOMPARE(myValue.rgb255.fourth, 0); // the fourth value is unused.
+        QCOMPARE(myValue.rgb_255.fourth, 0); // the fourth value is unused.
+        QCOMPARE(myValue.rgb_1.fourth, 0); // the fourth value is unused.
     }
 
     void testRgbHue()
@@ -298,9 +307,13 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.second, 12));
         QVERIFY(isAlmostEqual<double>(value.hwb.third, 52));
 
-        QVERIFY(isAlmostEqual<double>(value.rgb255.first, 61));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.second, 122));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.third, 31));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 61));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 122));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.third, 31));
+
+        QVERIFY(isAlmostEqual<double>(value.rgb_1.first, 61. / 255));
+        QVERIFY(isAlmostEqual<double>(value.rgb_1.second, 122. / 255));
+        QVERIFY(isAlmostEqual<double>(value.rgb_1.third, 31. / 255));
     }
 
     void testFromHsv()
@@ -319,9 +332,13 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.second, 12));
         QVERIFY(isAlmostEqual<double>(value.hwb.third, 70));
 
-        QVERIFY(isAlmostEqual<double>(value.rgb255.first, 45));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.second, 76));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.third, 30));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 45));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 76));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.third, 30));
+
+        QVERIFY(isAlmostEqual<double>(value.rgb_1.first, 45. / 255));
+        QVERIFY(isAlmostEqual<double>(value.rgb_1.second, 76. / 255));
+        QVERIFY(isAlmostEqual<double>(value.rgb_1.third, 30. / 255));
     }
 
     void testSaturationSynchronizationForBlackFromHsv()
@@ -458,9 +475,9 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.second, 60));
         QVERIFY(isAlmostEqual<double>(value.hwb.third, 30)); //
 
-        QVERIFY(isAlmostEqual<double>(value.rgb255.first, 162));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.second, 179));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.third, 153)); //
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 162));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 179));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.third, 153)); //
     }
 
     void testFromHwbDenormalized()
@@ -480,9 +497,9 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual<double>(value.hwb.second, 70));
         QVERIFY(isAlmostEqual<double>(value.hwb.third, 70)); //
 
-        QVERIFY(isAlmostEqual<double>(value.rgb255.first, 128));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.second, 128));
-        QVERIFY(isAlmostEqual<double>(value.rgb255.third, 128)); //
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 128));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 128));
+        QVERIFY(isAlmostEqual<double>(value.rgb_255.third, 128)); //
     }
 
     void testEquality()
@@ -490,7 +507,7 @@ private Q_SLOTS:
         RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
         RgbColor myColor2 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
         QVERIFY(myColor1 == myColor2);
-        myColor2.rgb255.first += 1;
+        myColor2.rgb_255.first += 1;
         QVERIFY(!(myColor1 == myColor2));
     }
 

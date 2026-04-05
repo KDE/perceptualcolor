@@ -496,41 +496,6 @@ cmsCIELab ColorEngine::toCielabD50(const QRgba64 rgbColor) const
     return cielabD50;
 }
 
-/** @brief Conversion to CIELCh-D50.
- *
- * @param rgbColor The original color.
- * @returns The corresponding (opaque) CIELCh-D50 color.
- *
- * @note By definition, each RGB color in a given color space is an in-gamut
- * color in this very same color space. Nevertheless, because of rounding
- * errors, when converting colors that are near to the outer hull of the
- * gamut/color space, than @ref isCielchD50InGamut() might return
- * <tt>false</tt> for a return value of <em>this</em> function.
- */
-PerceptualColor::GenericColor ColorEngine::toCielchD50(const QRgba64 rgbColor) const
-{
-    constexpr qreal maximum = //
-        std::numeric_limits<decltype(rgbColor.red())>::max();
-    const double my_rgb[]{rgbColor.red() / maximum, //
-                          rgbColor.green() / maximum, //
-                          rgbColor.blue() / maximum};
-    cmsCIELab cielabD50;
-    cmsDoTransform(d_pointer->m_transformRgbToCielabD50Handle, // handle to transform
-                   &my_rgb, // input
-                   &cielabD50, // output
-                   1 // convert exactly 1 value
-    );
-    if (cielabD50.L < 0) {
-        // Workaround for https://github.com/mm2/Little-CMS/issues/395
-        cielabD50.L = 0;
-    }
-    cmsCIELCh cielchD50;
-    cmsLab2LCh(&cielchD50, // output
-               &cielabD50 // input
-    );
-    return GenericColor{cielchD50.L, cielchD50.C, cielchD50.h};
-}
-
 /**
  * @brief Conversion LCh polar coordinates to corresponding Lab Cartesian
  * coordinates.
@@ -725,28 +690,6 @@ QRgb ColorEngine::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
     // If in-gamut, return an opaque color.
     QColor temp = qColorFromRgbDouble(rgb[0], rgb[1], rgb[2]);
     return temp.rgb();
-}
-
-/** @brief Conversion to RGB.
- *
- * @param lch The original color.
- *
- * @returns If the original color is in-gamut, it returns the corresponding
- * in-range RGB color. If the original color is out-of-gamut, it returns an
- * RGB value which might be in-range or out-of range. The RGB value range
- * is [0, 1]. */
-PerceptualColor::GenericColor ColorEngine::fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const
-{
-    const auto cielabD50 = fromLchToCmsCIELab(lch);
-    double rgb[3];
-    cmsDoTransform(
-        // Parameters:
-        d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
-        &cielabD50, // input
-        &rgb, // output
-        1 // convert exactly 1 value
-    );
-    return GenericColor(rgb[0], rgb[1], rgb[2]);
 }
 
 /**

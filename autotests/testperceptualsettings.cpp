@@ -50,7 +50,7 @@ private:
         // dummy message handler that does not print messages
     }
 
-    inline static const QString id = QStringLiteral("testperceptualsettings");
+    static inline const QString id = QStringLiteral("testperceptualsettings");
 
 private Q_SLOTS:
     void initTestCase()

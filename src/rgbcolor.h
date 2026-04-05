@@ -52,6 +52,7 @@ public:
     [[nodiscard]] static RgbColor fromHsl(const GenericColor &color);
     [[nodiscard]] static RgbColor fromHsv(const GenericColor &color);
     [[nodiscard]] static RgbColor fromHwb(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromRgb1(const GenericColor &color, std::optional<double> hue = std::optional<double>());
     [[nodiscard]] static RgbColor fromRgb255(const GenericColor &color, std::optional<double> hue = std::optional<double>());
     [[nodiscard]] static RgbColor fromRgbQColor(const QColor &color);
 
@@ -59,9 +60,7 @@ public:
      *
      * This constructor is quite useless except for declaring variables
      * of this type. Use the static functions to get an actual color object.
-     *
-     * @warning As the data members are uninitialized, this implies that the
-     * count of <tt>QList</tt> items is not correct! */
+     */
     RgbColor();
     /** @brief Default copy constructor
      * @param other the object to copy */
@@ -70,22 +69,6 @@ public:
      * @param other the object to copy
      * @returns The default implementation’s return value. */
     RgbColor &operator=(const RgbColor &other) = default;
-    // NOTE About move constructor and move assignment operator:
-    // Declaring them with “= default” will create a compiler-generated
-    // implementation that, apparently, does not copy correctly
-    // the data members of type QList. Using “=delete” however
-    // will create a move constructor that it forbidden to be used.
-    // When some code needs a move constructor, the overload resolution
-    // will choose this move constructor, and the compilation fails
-    // because it is forbidden to be used. For details on this behaviour,
-    // see https://blog.knatten.org/2021/10/15/ Therefore, we do not declare
-    // the move constructor at all: Because the copy constructor exists, the
-    // move constructor will not be generated implicitly at all. When some
-    // code needs a move constructor, the overload resolution does not find
-    // one and falls back to the copy constructor (which is the default
-    // implementation, but apparently works correctly also for QList members).
-    // RgbColor &operator=(RgbColor &&other) noexcept = default;
-    // RgbColor(RgbColor &&other) noexcept = default;
 
     [[nodiscard]] bool operator==(const RgbColor &other) const;
     /** @brief HSL representation.
@@ -102,8 +85,12 @@ public:
     GenericColor hwb;
     /** @brief RGB representation.
      *
+     * Range: [0, 1] */
+    GenericColor rgb_1;
+    /** @brief RGB representation.
+     *
      * Range: [0, 255] */
-    GenericColor rgb255;
+    GenericColor rgb_255;
     /**
      * @brief RGB representation with 6 hexadecimal digits.
      *

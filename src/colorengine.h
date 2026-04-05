@@ -95,11 +95,9 @@ public:
     // clang-format on
     [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const;
     [[nodiscard]] Q_INVOKABLE virtual cmsCIELab toCielabD50(const QRgba64 rgbColor) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor toCielchD50(const QRgba64 rgbColor) const;
     [[nodiscard]] Q_INVOKABLE static cmsCIELab fromLchToCmsCIELab(const PerceptualColor::GenericColor &lch);
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielchD50ToQRgbBound(const PerceptualColor::GenericColor &cielchD50) const;
     [[nodiscard]] Q_INVOKABLE virtual QRgb fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const;
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor fromCielchD50ToRgb1(const PerceptualColor::GenericColor &lch) const;
 
 private:
     Q_DISABLE_COPY(ColorEngine)

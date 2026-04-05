@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
+#include "absolutecolor.h"
 #include "chromahuediagram.h"
 #include "chromalightnessdiagram.h"
 #include "colordialog.h"
@@ -310,9 +311,15 @@ static void makeScreenshots()
     // — has nevertheless a little bit of distance to the outer
     //   hull (which  puts the marker somewhere in the inner of
     //   the gamut, which makes the screenshots easier to understand).
-    const QColor defaultColorRgb = QColor::fromRgb(50, 127, 206);
+    constexpr QColor defaultColorRgb{101, 157, 219};
     const GenericColor defaultColorCielchD50 = //
-        m_colorEngine->toCielchD50(defaultColorRgb.rgba64());
+        AbsoluteColor::convert( //
+            ColorModel::SRgb_1,
+            GenericColor(static_cast<double>(defaultColorRgb.redF()), //
+                         static_cast<double>(defaultColorRgb.greenF()),
+                         static_cast<double>(defaultColorRgb.blueF())),
+            ColorModel::CielchD50)
+            .value();
     QColor myColor;
 
     {

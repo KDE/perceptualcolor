@@ -42,6 +42,18 @@ Q_NAMESPACE
  * in this header.
  */
 enum class ColorModel {
+    SRgb_1, /**< @internal The absolute sRGB color space, which by
+        definition always and exclusively uses a D65 illuminant.
+
+        R: [0, 1].<br/>
+        G: [0, 1].<br/>
+        B: [0, 1]. */
+    LinearSRgb_1, /**< @internal The absolute Linear sRGB color space, which by
+        definition always and exclusively uses a D65 illuminant.
+
+        R: [0, 1].<br/>
+        G: [0, 1].<br/>
+        B: [0, 1]. */
     CielabD50, /**< @internal The absolute Cielab color space using a D50
         illuminant.
 
@@ -54,7 +66,7 @@ enum class ColorModel {
         Lightness: [0, 100].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Hsl360_1_1, /**< @internal Any color space using the HSL color model, which
+    Hsl_360_1_1, /**< @internal Any color space using the HSL color model, which
         is a transformation of the RGB color model. Color values only have a
         well-defined absolute meaning when associated with a corresponding
         RGB color profile.
@@ -62,7 +74,7 @@ enum class ColorModel {
         Hue: [0, 360[.<br/>
         Saturation: [0, 1].<br/>
         Lightness: [0, 1]. */
-    Hwb360_1_1, /**< @internal Any color space using the HSL color model, which
+    Hwb_360_1_1, /**< @internal Any color space using the HSL color model, which
         is a transformation of the HWB color model. Color values only have a
         well-defined absolute meaning when associated with a corresponding
         RGB color profile.
@@ -83,20 +95,20 @@ enum class ColorModel {
         Lightness: [0, 1].<br/>
         Chroma: unbound.<br/>
         Hue: [0, 360[. */
-    Rgb1, /**< @internal Any color space using the RGB color model. Color
+    Rgb_1, /**< @internal Any color space using the RGB color model. Color
         values only have a well-defined absolute meaning when associated with a
         corresponding RGB color profile.
 
         R: [0, 1].<br/>
         G: [0, 1].<br/>
         B: [0, 1]. */
-    XyzD50, /**< @internal The absolute XYZ color space assuming chromatic
+    XyzD50_1, /**< @internal The absolute XYZ color space assuming chromatic
         adaption for the D50 illuminant.
 
         X: unbound.<br/>
         Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0<br/>
         Z: unbound. */
-    XyzD65 /**< @internal The absolute XYZ color space assuming chromatic
+    XyzD65_1 /**< @internal The absolute XYZ color space assuming chromatic
         adaption for the D65 illuminant.
 
         X: unbound.<br/>
@@ -218,6 +230,17 @@ inline constexpr std::array<double, 9> xyzD65ToXyzD50Matrix {{
     +1.047886, +0.022919, -0.050216,
     +0.029582, +0.990484, -0.017079,
     -0.009252, +0.015073, +0.751678}};
+
+/**
+ * @brief sRGB to XYZ D65 matrix.
+ *
+ * As in <a href="https://en.wikipedia.org/wiki/SRGB#Primaries">
+ * Wikipedia’s definition</a>.
+ */
+inline constexpr std::array<double, 9> linearSRgbToXyzD65Matrix {{
+    0.4124, 0.3576, 0.1805,
+    0.2126, 0.7152, 0.0722,
+    0.0193, 0.1192, 0.9505}};
 
 // clang-format on
 

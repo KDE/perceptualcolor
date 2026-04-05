@@ -56,6 +56,10 @@ public:
     [[nodiscard]] static GenericColor fromCielabD50ToXyzD50(const GenericColor &value);
     [[nodiscard]] static GenericColor fromPolarToCartesian(const GenericColor &value);
     [[nodiscard]] static GenericColor fromCartesianToPolar(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromLinearSRgbToSRgb(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromSRgbToLinearSRgb(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromLinearSRgbToXyzD65(const GenericColor &value);
+    [[nodiscard]] static GenericColor fromXyzD65ToLinearSRgb(const GenericColor &value);
 
     [[nodiscard]] static QRgb fastFromOklabToSRgbOrTransparent(const cmsCIELab &lab);
     [[nodiscard]] static QRgb fastFromOklabToSRgbClamped(const GenericColor &oklab);
@@ -85,13 +89,17 @@ private:
     };
 
     /** @brief List of all conversion accesses. */
-    static constexpr std::array<Conversion, 10> conversionList //
-        {{{ColorModel::XyzD50, ColorModel::XyzD65, fromXyzD50ToXyzD65},
-          {ColorModel::XyzD65, ColorModel::XyzD50, fromXyzD65ToXyzD50},
-          {ColorModel::OklabD65, ColorModel::XyzD65, fromOklabToXyzD65},
-          {ColorModel::XyzD65, ColorModel::OklabD65, fromXyzD65ToOklab},
-          {ColorModel::XyzD50, ColorModel::CielabD50, fromXyzD50ToCielabD50},
-          {ColorModel::CielabD50, ColorModel::XyzD50, fromCielabD50ToXyzD50},
+    static constexpr std::array<Conversion, 14> conversionList //
+        {{{ColorModel::XyzD50_1, ColorModel::XyzD65_1, fromXyzD50ToXyzD65},
+          {ColorModel::XyzD65_1, ColorModel::XyzD50_1, fromXyzD65ToXyzD50},
+          {ColorModel::SRgb_1, ColorModel::LinearSRgb_1, fromSRgbToLinearSRgb},
+          {ColorModel::LinearSRgb_1, ColorModel::SRgb_1, fromLinearSRgbToSRgb},
+          {ColorModel::XyzD65_1, ColorModel::LinearSRgb_1, fromXyzD65ToLinearSRgb},
+          {ColorModel::LinearSRgb_1, ColorModel::XyzD65_1, fromLinearSRgbToXyzD65},
+          {ColorModel::OklabD65, ColorModel::XyzD65_1, fromOklabToXyzD65},
+          {ColorModel::XyzD65_1, ColorModel::OklabD65, fromXyzD65ToOklab},
+          {ColorModel::XyzD50_1, ColorModel::CielabD50, fromXyzD50ToCielabD50},
+          {ColorModel::CielabD50, ColorModel::XyzD50_1, fromCielabD50ToXyzD50},
           {ColorModel::CielchD50, ColorModel::CielabD50, fromPolarToCartesian},
           {ColorModel::OklchD65, ColorModel::OklabD65, fromPolarToCartesian},
           {ColorModel::CielabD50, ColorModel::CielchD50, fromCartesianToPolar},
@@ -102,9 +110,91 @@ private:
     static void addDirectConversionsRecursivly(QHash<ColorModel, GenericColor> *values, const ColorModel model);
 
 private:
-    [[nodiscard]] static float linearToSRgb(float x);
-
     [[nodiscard]] static quint8 toByte(float x);
+
+    /**
+     * @internal
+     *
+     * @brief Convert a channel from linear sRGB to (gamma-encoded)
+     * sRGB.
+     *
+     * @param x An linear sRGB channel in the range [0..1].
+     *
+     * @returns The corresponding gamma-encoded sRGB channel
+     * in the range [0..1] or slightly above or below because
+     * of rounding errors.
+     *
+     * @note The implementations of @ref channelFromLinearSRgbToSRgb() and
+     *       @ref channelFromSRgbToLinearSRgb() strictly follow their official
+     *       definitions. As a result of rounding in the official
+     *       specifications, they do not form exact inverses.
+     *
+     * @internal
+     *
+     * @note This function is based on
+     * <a href="https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)">
+     * Wikipedia</a>.
+     *
+     * @note Unfortunately, it cannot be <tt>constexpr</tt> because it relies
+     * on <a href="https://en.cppreference.com/w/cpp/numeric/math/pow.html">
+     * <tt>std::pow</tt></a> which only becomes <tt>constexpr</tt> in C++26,
+     * which is beyond our current target C++ standard.
+     */
+    template<typename T>
+    [[nodiscard]] static T channelFromLinearSRgbToSRgb(T x)
+    {
+        static_assert(std::is_floating_point<T>::value, //
+                      "T must be a floating-point type");
+        if (x <= static_cast<T>(0.0031308)) {
+            return static_cast<T>(12.92) * x;
+        }
+        constexpr T exponent = static_cast<T>(1) / static_cast<T>(2.4);
+        return //
+            static_cast<T>(1.055) * std::pow(x, exponent) //
+            - static_cast<T>(0.055);
+    }
+
+    /**
+     * @internal
+     *
+     * @brief Convert a channel from sRGB to linear
+     * sRGB.
+     *
+     * @param x An linear sRGB channel in the range [0..1].
+     *
+     * @returns The corresponding linear sRGB channel
+     * in the range [0..1] or slightly above or below because
+     * of rounding errors.
+     *
+     * @note The implementations of @ref channelFromLinearSRgbToSRgb() and
+     *       @ref channelFromSRgbToLinearSRgb() strictly follow their official
+     *       definitions. As a result of rounding in the official
+     *       specifications, they do not form exact inverses.
+     *
+     * @internal
+     *
+     * @note This function is based on the
+     * <a href="https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)">
+     * Wikipedia</a>.
+     *
+     * @note Unfortunately, it cannot be <tt>constexpr</tt> because it relies
+     * on <a href="https://en.cppreference.com/w/cpp/numeric/math/pow.html">
+     * <tt>std::pow</tt></a> which only becomes <tt>constexpr</tt> in C++26,
+     * which is beyond our current target C++ standard.
+     */
+    template<typename T>
+    [[nodiscard]] static T channelFromSRgbToLinearSRgb(T x)
+    {
+        static_assert(std::is_floating_point<T>::value, //
+                      "T must be a floating-point type");
+
+        if (x <= static_cast<T>(0.04045)) {
+            return x / static_cast<T>(12.92);
+        }
+        return std::pow( //
+            (x + static_cast<T>(0.055)) / static_cast<T>(1.055), //
+            static_cast<T>(2.4));
+    }
 };
 
 } // namespace PerceptualColor
