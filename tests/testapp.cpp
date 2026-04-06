@@ -24,6 +24,7 @@
 #include "helperposixmath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
 #include "lchvalues.h" // IWYU pragma: keep
+#include "mat3.h" // IWYU pragma: keep
 #include "multispinbox.h" // IWYU pragma: keep
 #include "multispinboxsection.h" // IWYU pragma: keep
 #include "perceptualsettings.h" // IWYU pragma: keep
@@ -33,6 +34,7 @@
 #include "settingbase.h" // IWYU pragma: keep
 #include "settings.h" // IWYU pragma: keep
 #include "swatchbook.h" // IWYU pragma: keep
+#include "vec3.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
 #include "wheelcolorpicker.h" // IWYU pragma: keep
 #include <qaction.h> // IWYU pragma: keep

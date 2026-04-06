@@ -5,6 +5,7 @@
 // this forces the header to be self-contained.
 #include "absolutecolor.h"
 
+#include "blackhole.h"
 #include "genericcolor.h"
 #include "helperconversion.h"
 #include "helpermath.h"
@@ -655,7 +656,7 @@ private Q_SLOTS:
         lab.b = 0.1f;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                Q_UNUSED(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+                blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
             }
         }
     }
@@ -668,7 +669,7 @@ private Q_SLOTS:
         lab.b = 5.1f;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                Q_UNUSED(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+                blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
             }
         }
     }

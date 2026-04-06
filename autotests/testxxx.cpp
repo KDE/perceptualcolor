@@ -60,6 +60,8 @@ private Q_SLOTS:
 
         // Do something …
 
+        QVERIFY(false); // XXX Implement me!
+
         // Do not suppress warnings anymore
         qInstallMessageHandler(nullptr);
     }

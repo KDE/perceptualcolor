@@ -50,6 +50,7 @@ set(library_SRC
     iohandlerfactory.cpp
     iwyu.cpp
     languagechangeeventfilter.cpp
+    mat3.cpp
     multispinbox.cpp
     multispinboxsection.cpp
     perceptualsettings.cpp
@@ -61,6 +62,7 @@ set(library_SRC
     settranslation.cpp
     staticasserts.cpp
     swatchbook.cpp
+    vec3.cpp
     version.cpp
     wheelcolorpicker.cpp
 )

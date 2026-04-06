@@ -162,6 +162,7 @@ if(BUILD_TESTING)
         testiohandlerfactory
         testlanguagechangeeventfilter
         testlchvalues
+        testmat3
         testmultispinbox
         testmultispinboxsection
         testperceptualsettings
@@ -173,6 +174,7 @@ if(BUILD_TESTING)
         testsettings
         testsettranslation
         testswatchbook
+        testvec3
         testversion
         testwheelcolorpicker)
 
