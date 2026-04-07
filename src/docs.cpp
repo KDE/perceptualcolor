@@ -348,6 +348,8 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo SHOULDHAVE Screen for dead code and remove it.
+ *
  * @todo SHOWSTOPPER Define the precision of this library. We allow
  * changing the number of decimals in the @ref PerceptualColor::ColorDialog
  * though there is only a private API, not a public one. If so, maybe

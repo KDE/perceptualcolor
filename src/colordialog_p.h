@@ -347,7 +347,6 @@ public:
     void initializePortalEyedropper();
     void loadCustomColorsFromSettingsToSwatchBook();
     void loadHistoryFromSettingsToSwatchBook();
-    [[nodiscard]] QString translateColorModel(cmsColorSpaceSignature model);
 
 public Q_SLOTS:
     void readChromaHueDiagramValue();
