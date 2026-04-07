@@ -20,14 +20,6 @@ GenericColor::GenericColor(const QList<double> &list)
 {
 }
 
-/** @brief The values @ref first, @ref second, @ref third as @ref Trio.
- *
- * @returns The values @ref first, @ref second, @ref third as @ref Trio. */
-Trio GenericColor::toTrio() const
-{
-    return createMatrix<1, 3, double>(first, second, third);
-}
-
 /** @brief The values @ref first, @ref second, @ref third as QList.
  *
  * @returns The values @ref first, @ref second, @ref third as QList. */

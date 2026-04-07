@@ -5,6 +5,7 @@
 #define PERCEPTUALCOLOR_HELPERCONVERSION_H
 
 #include "genericcolor.h"
+#include "mat3.h"
 #include <array>
 #include <lcms2.h>
 #include <qcolor.h>
@@ -202,10 +203,19 @@ constexpr cmsCIEXYZ whitePointD65TwoDegree{0.95047, 1.00000, 1.08883};
  * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
  * Oklab definition</a>.
  */
-inline constexpr std::array<double, 9> oklabM1 {{
-    +0.8189330101, +0.3618667424, -0.1288597137,
-    +0.0329845436, +0.9293118715, +0.0361456387,
-    +0.0482003018, +0.2643662691, +0.6338517070}};
+inline constexpr Mat3ld oklabM1 {
+    +0.8189330101L, +0.3618667424L, -0.1288597137L,
+    +0.0329845436L, +0.9293118715L, +0.0361456387L,
+    +0.0482003018L, +0.2643662691L, +0.6338517070L};
+
+/**
+ * @brief Oklab M1 inverse matrix.
+ *
+ * As in the
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
+ * Oklab definition</a>.
+ */
+inline constexpr Mat3ld oklabM1inverse = oklabM1.inverse().value();
 
 /**
  * @brief Oklab M2 matrix.
@@ -214,10 +224,19 @@ inline constexpr std::array<double, 9> oklabM1 {{
  * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
  * Oklab definition</a>.
  */
-inline constexpr std::array<double, 9> oklabM2 {{
-    +0.2104542553, +0.7936177850, -0.0040720468,
-    +1.9779984951, -2.4285922050, +0.4505937099,
-    +0.0259040371, +0.7827717662, -0.8086757660}};
+inline constexpr Mat3ld oklabM2 {
+    +0.2104542553L, +0.7936177850L, -0.0040720468L,
+    +1.9779984951L, -2.4285922050L, +0.4505937099L,
+    +0.0259040371L, +0.7827717662L, -0.8086757660L};
+
+/**
+ * @brief Oklab M2 inverse matrix.
+ *
+ * As in the
+ * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
+ * Oklab definition</a>.
+ */
+inline constexpr Mat3ld oklabM2inverse = oklabM2.inverse().value();
 
 /**
  * @brief xyzD65 to xyzD50 conversion matrix.
@@ -226,21 +245,38 @@ inline constexpr std::array<double, 9> oklabM2 {{
  * <a href="https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html">
  * Bradford transformation</a>.
  */
-inline constexpr std::array<double, 9> xyzD65ToXyzD50Matrix {{
-    +1.047886, +0.022919, -0.050216,
-    +0.029582, +0.990484, -0.017079,
-    -0.009252, +0.015073, +0.751678}};
+inline constexpr Mat3ld xyzD65ToXyzD50Matrix {
+    +1.047886L, +0.022919L, -0.050216L,
+    +0.029582L, +0.990484L, -0.017079L,
+    -0.009252L, +0.015073L, +0.751678L};
 
 /**
- * @brief sRGB to XYZ D65 matrix.
+ * @brief xyzD50 to xyzD65 conversion matrix.
+ *
+ * As in the
+ * <a href="https://fujiwaratko.sakura.ne.jp/infosci/colorspace/bradford_e.html">
+ * Bradford transformation</a>.
+ */
+inline constexpr Mat3ld xyzD50ToXyzD65Matrix = xyzD65ToXyzD50Matrix.inverse().value();
+
+/**
+ * @brief Linear sRGB to XYZ D65 matrix.
  *
  * As in <a href="https://en.wikipedia.org/wiki/SRGB#Primaries">
  * Wikipedia’s definition</a>.
  */
-inline constexpr std::array<double, 9> linearSRgbToXyzD65Matrix {{
-    0.4124, 0.3576, 0.1805,
-    0.2126, 0.7152, 0.0722,
-    0.0193, 0.1192, 0.9505}};
+inline constexpr Mat3ld linearSRgbToXyzD65Matrix {
+    0.4124L, 0.3576L, 0.1805L,
+    0.2126L, 0.7152L, 0.0722L,
+    0.0193L, 0.1192L, 0.9505L};
+
+/**
+ * @brief XYZ D65 to Linear sRGB matrix.
+ *
+ * As in <a href="https://en.wikipedia.org/wiki/SRGB#Primaries">
+ * Wikipedia’s definition</a>.
+ */
+inline constexpr Mat3ld XyzD65ToLinearSRgbMatrix = linearSRgbToXyzD65Matrix.inverse().value();
 
 // clang-format on
 

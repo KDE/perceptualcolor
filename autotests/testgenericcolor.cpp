@@ -58,18 +58,6 @@ private Q_SLOTS:
         QCOMPARE(color.fourth, 0.0);
     }
 
-    void testConstructorWithTrio()
-    {
-        const Trio testValue = createMatrix<1, 3, double>(10., 20., 30.);
-        // NOTE Not using constexpr here because Trio is derived from
-        // QGenericMatrix which cannot be constructed as constexpr.
-        GenericColor color(testValue);
-        QCOMPARE(color.first, 10.0);
-        QCOMPARE(color.second, 20.0);
-        QCOMPARE(color.third, 30.0);
-        QCOMPARE(color.fourth, 0.0);
-    }
-
     void testConstructorWithCmsCIELab()
     {
         constexpr cmsCIELab testValue = {50, 20, 30};
@@ -83,6 +71,16 @@ private Q_SLOTS:
     void testConstructorWithCmsCIEXYZ()
     {
         constexpr cmsCIEXYZ testValue = {0.1, 0.2, 0.3};
+        constexpr GenericColor color(testValue);
+        QCOMPARE(color.first, 0.1);
+        QCOMPARE(color.second, 0.2);
+        QCOMPARE(color.third, 0.3);
+        QCOMPARE(color.fourth, 0.0);
+    }
+
+    void testConstructorWithVec3d()
+    {
+        constexpr Vec3d testValue = {0.1, 0.2, 0.3};
         constexpr GenericColor color(testValue);
         QCOMPARE(color.first, 0.1);
         QCOMPARE(color.second, 0.2);
@@ -108,13 +106,13 @@ private Q_SLOTS:
         QCOMPARE(color.fourth, 40.0);
     }
 
-    void testToTrio()
+    void testToVec3d()
     {
-        GenericColor color(10, 20, 30);
-        Trio trio = color.toTrio();
-        QCOMPARE(trio(0, 0), 10.0);
-        QCOMPARE(trio(1, 0), 20.0);
-        QCOMPARE(trio(2, 0), 30.0);
+        constexpr GenericColor color(50, 20, 30);
+        constexpr Vec3d vector = color.toVec3d();
+        QCOMPARE(vector.v[0], 50.0);
+        QCOMPARE(vector.v[1], 20.0);
+        QCOMPARE(vector.v[2], 30.0);
     }
 
     void testToCmsCIEXYZ()

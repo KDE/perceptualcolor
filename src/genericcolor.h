@@ -5,6 +5,7 @@
 #define PERCEPTUALCOLOR_GENERICCOLOR_H
 
 #include "helpermath.h"
+#include "vec3.h"
 #include <lcms2.h>
 #include <qdebug.h>
 #include <qlist.h>
@@ -27,17 +28,6 @@ struct GenericColor {
 public:
     /** @brief Default constructor. */
     constexpr GenericColor() noexcept = default;
-
-    /** @brief Constructor.
-     *
-     * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit GenericColor(const Trio &init)
-        : first(init(0, 0))
-        , second(init(1, 0))
-        , third(init(2, 0))
-        , fourth(0)
-    {
-    }
 
     /** @brief Constructor.
      *
@@ -68,6 +58,17 @@ public:
         : first(init.X)
         , second(init.Y)
         , third(init.Z)
+        , fourth(0)
+    {
+    }
+
+    /** @brief Constructor.
+     *
+     * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
+    explicit constexpr GenericColor(const Vec3d &init) noexcept
+        : first(init.v[0])
+        , second(init.v[1])
+        , third(init.v[2])
         , fourth(0)
     {
     }
@@ -159,7 +160,16 @@ public:
     }
 
     [[nodiscard]] QList<double> toQList3() const;
-    [[nodiscard]] Trio toTrio() const;
+
+    /**
+     * @brief The values @ref first, @ref second, @ref third as @ref Vec3d.
+     *
+     * @returns The values @ref first, @ref second, @ref third as @ref Vec3d.
+     */
+    [[nodiscard]] constexpr Vec3d toVec3d() const
+    {
+        return Vec3d{first, second, third};
+    }
 
     /** @brief First value. */
     double first = 0;

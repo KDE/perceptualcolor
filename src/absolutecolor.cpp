@@ -18,52 +18,6 @@
 namespace PerceptualColor
 {
 
-// Doxygen doesn’t handle correctly the Q_GLOBAL_STATIC_WITH_ARGS macro, so
-// we instruct Doxygen with the @cond command to ignore  this part of the code.
-/// @cond
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    m1,
-    (oklabM1.data()))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    m2,
-    (oklabM2.data()))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    xyzD65ToXyzD50,
-    (xyzD65ToXyzD50Matrix.data()))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    linearSRgbToXyzD65,
-    (linearSRgbToXyzD65Matrix.data()))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    m1inverse,
-    (inverseMatrix(*m1).value_or(SquareMatrix3())))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    m2inverse,
-    (inverseMatrix(*m2).value_or(SquareMatrix3())))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    xyzD50ToXyzD65,
-    (inverseMatrix(*xyzD65ToXyzD50).value_or(SquareMatrix3())))
-
-Q_GLOBAL_STATIC_WITH_ARGS( //
-    const SquareMatrix3,
-    xyzD65ToLinearSRgb,
-    (inverseMatrix(*linearSRgbToXyzD65).value_or(SquareMatrix3())))
-
-/// @endcond
-
 /** @brief List of all available conversions from this color model.
  *
  * @param model The color model from which to convert.
@@ -151,15 +105,15 @@ GenericColor AbsoluteColor::fromOklabToXyzD65(const GenericColor &value)
     // Oklab: “The inverse operation, going from Oklab to XYZ is done with
     // the following steps:”
 
-    auto lms = (*m2inverse) * value.toTrio(); // NOTE Entries might be negative.
+    auto lms = static_cast<Mat3d>(oklabM2inverse) * value.toVec3d(); // NOTE Entries might be negative.
     // LMS (long, medium, short) is the response of the three types of
     // cones of the human eye.
 
-    lms(/*row*/ 0, /*column*/ 0) = std::pow(lms(/*row*/ 0, /*column*/ 0), 3);
-    lms(/*row*/ 1, /*column*/ 0) = std::pow(lms(/*row*/ 1, /*column*/ 0), 3);
-    lms(/*row*/ 2, /*column*/ 0) = std::pow(lms(/*row*/ 2, /*column*/ 0), 3);
+    lms(0) = std::pow(lms(0), 3);
+    lms(1) = std::pow(lms(1), 3);
+    lms(2) = std::pow(lms(2), 3);
 
-    return GenericColor((*m1inverse) * lms);
+    return GenericColor(static_cast<Mat3d>(oklabM1inverse) * lms);
 }
 
 /** @internal
@@ -196,7 +150,7 @@ GenericColor AbsoluteColor::fromXyzD65ToOklab(const GenericColor &value)
     //
     // Oklab: “First the XYZ coordinates are converted to an approximate
     // cone responses:”
-    auto lms = (*m1) * value.toTrio(); // NOTE Entries might be negative.
+    auto lms = static_cast<Mat3d>(oklabM1) * value.toVec3d(); // NOTE Entries might be negative.
     // LMS (long, medium, short) is the response of the three types of
     // cones of the human eye.
 
@@ -217,12 +171,12 @@ GenericColor AbsoluteColor::fromXyzD65ToOklab(const GenericColor &value)
     // because it gives unique results for each x value. Therefore, here
     // we do the same, but using std::cbrt() instead of std::cbrtf() to
     // allow double precision instead of float precision.
-    lms(/*row*/ 0, /*column*/ 0) = std::cbrt(lms(/*row*/ 0, /*column*/ 0));
-    lms(/*row*/ 1, /*column*/ 0) = std::cbrt(lms(/*row*/ 1, /*column*/ 0));
-    lms(/*row*/ 2, /*column*/ 0) = std::cbrt(lms(/*row*/ 2, /*column*/ 0));
+    lms(0) = std::cbrt(lms(0));
+    lms(1) = std::cbrt(lms(1));
+    lms(2) = std::cbrt(lms(2));
 
     // Oklab: “Finally, this is transformed into the Lab-coordinates:”
-    return GenericColor((*m2) * lms);
+    return GenericColor(static_cast<Mat3d>(oklabM2) * lms);
 }
 
 /** @internal
@@ -234,7 +188,8 @@ GenericColor AbsoluteColor::fromXyzD65ToOklab(const GenericColor &value)
  * @returns the converted color */
 GenericColor AbsoluteColor::fromXyzD65ToXyzD50(const GenericColor &value)
 {
-    return GenericColor((*xyzD65ToXyzD50) * value.toTrio());
+    return GenericColor( //
+        static_cast<Mat3d>(xyzD65ToXyzD50Matrix) * value.toVec3d());
 }
 
 /** @internal
@@ -246,7 +201,8 @@ GenericColor AbsoluteColor::fromXyzD65ToXyzD50(const GenericColor &value)
  * @returns the converted color */
 GenericColor AbsoluteColor::fromXyzD50ToXyzD65(const GenericColor &value)
 {
-    return GenericColor((*xyzD50ToXyzD65) * value.toTrio());
+    return GenericColor( //
+        static_cast<Mat3d>(xyzD50ToXyzD65Matrix) * value.toVec3d());
 }
 
 /** @internal
@@ -379,7 +335,8 @@ GenericColor AbsoluteColor::fromSRgbToLinearSRgb(const GenericColor &value)
  */
 GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
 {
-    auto result = GenericColor((*xyzD65ToLinearSRgb) * value.toTrio());
+    auto result = GenericColor( //
+        static_cast<Mat3d>(XyzD65ToLinearSRgbMatrix) * value.toVec3d());
     result.fourth = value.fourth;
     return result;
 }
@@ -395,7 +352,8 @@ GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
  */
 GenericColor AbsoluteColor::fromLinearSRgbToXyzD65(const GenericColor &value)
 {
-    auto result = GenericColor((*linearSRgbToXyzD65) * value.toTrio());
+    auto result = GenericColor( //
+        static_cast<Mat3d>(linearSRgbToXyzD65Matrix) * value.toVec3d());
     result.fourth = value.fourth;
     return result;
 }
