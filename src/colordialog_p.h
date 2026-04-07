@@ -14,7 +14,6 @@
 #include "languagechangeeventfilter.h"
 #include "lchvalues.h"
 #include "rgbcolor.h"
-#include <lcms2.h>
 #include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>

@@ -18,7 +18,6 @@
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include <algorithm>
-#include <lcms2.h>
 #include <optional>
 #include <qaction.h>
 #include <qapplication.h>

@@ -583,14 +583,6 @@ private Q_SLOTS:
         QCOMPARE(test.isInRange(2, 2), false);
     }
 
-    void testLcmsIntentList()
-    {
-        QVERIFY(lcmsIntentList().contains(INTENT_PERCEPTUAL));
-        QVERIFY(lcmsIntentList().contains(INTENT_RELATIVE_COLORIMETRIC));
-        QVERIFY(lcmsIntentList().contains(INTENT_SATURATION));
-        QVERIFY(lcmsIntentList().contains(INTENT_ABSOLUTE_COLORIMETRIC));
-    }
-
     void testToOpaqueColorValidColor()
     {
         const QColor red = Qt::red;

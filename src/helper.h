@@ -5,7 +5,6 @@
 #define PERCEPTUALCOLOR_HELPER_H
 
 #include "helpermath.h"
-#include "lcms2.h"
 #include <QtCore/qsharedpointer.h>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
@@ -64,8 +63,6 @@ void drawQWidgetStyleSheetAware(QWidget *widget);
 QString fromMnemonicToRichText(const QString &mnemonicText);
 
 ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget);
-
-QMap<cmsUInt32Number, QString> lcmsIntentList();
 
 /** @internal
  *

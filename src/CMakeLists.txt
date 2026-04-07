@@ -47,7 +47,6 @@ set(library_SRC
     initializelibraryresources.cpp
     initializetranslation.cpp
     interlacingpass.cpp
-    iohandlerfactory.cpp
     iwyu.cpp
     languagechangeeventfilter.cpp
     mat3.cpp

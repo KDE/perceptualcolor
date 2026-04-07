@@ -191,8 +191,8 @@ template<typename T>
  * > Y = 100<br/>
  * > Z = 108.883”
  *
- * Normalizing this to Y = 1 as expected by LittleCMS, gives this value. */
-constexpr cmsCIEXYZ whitePointD65TwoDegree{0.95047, 1.00000, 1.08883};
+ * Normalizing this to Y = 1 gives this value. */
+constexpr Vec3ld whitePointD65TwoDegree{0.95047L, 1.00000L, 1.08883L};
 
 // clang-format off
 

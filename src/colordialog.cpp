@@ -28,7 +28,6 @@
 #include "swatchbook.h"
 #include "wheelcolorpicker.h"
 #include <algorithm>
-#include <lcms2.h>
 #include <memory>
 #include <optional>
 #include <qaction.h>

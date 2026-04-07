@@ -334,9 +334,8 @@
  *
  * @subsection wideexecutioncharacterset Wide execution character set
  *
- * We do not use actively the wide execution character set. There is
- * a usage when communicating with LittleCMS, but there we depend anyway
- * from LittleCMS. Therefore, currently, no static assert forces a specific
+ * We do not use actively the wide execution character set.
+ * Therefore, currently, no static assert forces a specific
  * wide execution character set.
  *
  * @internal
@@ -742,10 +741,6 @@
  * @todo SHOULDHAVE
  * Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.
- *
- * @todo SHOULDHAVE
- * Test linking against lcms.h in version 2.0.0 for compatibility
- * (or require more recent version?)
  *
  * @todo NICETOHAVE Would it be a good idea to have plus and minus buttons that
  * manipulate the current color along the depth and vividness axis

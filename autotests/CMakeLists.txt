@@ -159,7 +159,6 @@ if(BUILD_TESTING)
         testimportexport
         testinitializetranslation
         testinterlacingpass
-        testiohandlerfactory
         testlanguagechangeeventfilter
         testlchvalues
         testmat3

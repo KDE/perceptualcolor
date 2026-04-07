@@ -17,7 +17,6 @@
 #include "helperimage.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
-#include "iohandlerfactory.h"
 #include <algorithm>
 #include <limits>
 #include <optional>
