@@ -561,6 +561,13 @@
  * <a href="https://forum.qt.io/topic/118547/accept-reject-focus-coming-by-mouse-click-based-on-coordinates">
  * this Qt Forum thread</a>.
  *
+ * @todo SHOULDHAVE <a href="https://bugs.kde.org/show_bug.cgi?id=517274">
+ * Spectacle has a magnifier glass for cutting screenshots.</a> It would be
+ * cool to have this also for eyedropper; it could be even better if the
+ * magnifier would be round instead of rectangular. But eyedropper is not
+ * implemented within this library, but as a KDE portal providing this
+ * functionality. New features would have to be implemented there.
+ *
  * @todo SHOULDHAVE Support more of Qt Style Sheets, for example allow
  * customizing the neutral-gray background of diagrams? If
  * so, @ref PerceptualColor::drawQWidgetStyleSheetAware()
@@ -568,7 +575,7 @@
  * @ref PerceptualColor::drawQWidgetStyleSheetAware() from
  * this library.
  *
- * @todo NICETOHAVE Could we integrate more with QStyle? Apparently
+ * @todo SHOULDHAVE Could we integrate more with QStyle? Apparently
  *   <a href="https://api.kde.org/frameworks/frameworkintegration/html/classKStyle.html">
  *   KStyle</a> is a QCommonStyle-based class that provides
  *   support for QString-based query for custom style hints,
