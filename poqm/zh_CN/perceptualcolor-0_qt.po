@@ -236,15 +236,3 @@ msgstr "+"
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr "删除"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "XYZ"
-#~ msgstr "XYZ"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "Lab"
-#~ msgstr "Lab"
-
-#~ msgctxt "PerceptualColor::ColorDialogPrivate|"
-#~ msgid "RGB"
-#~ msgstr "RGB"
