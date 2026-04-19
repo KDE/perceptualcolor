@@ -7,6 +7,7 @@
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h" // IWYU pragma: keep
 
+#include "absolutecolor.h"
 #include "chromalightnessdiagram.h"
 #include "colorengine.h"
 #include "colorwheel.h"
@@ -223,7 +224,7 @@ private Q_SLOTS:
 
         // Now, the chroma-lightness coordinates are out-of-gamut for
         // the new hue. Test if they have been corrected:
-        QVERIFY(m_colorEngine->isCielchD50InGamut(myWidget.currentColorLch()));
+        QVERIFY(AbsoluteColor::isCielchD50InSRgbGamut(myWidget.currentColorLch()));
     }
 };
 

@@ -29,6 +29,7 @@ set(library_SRC
     asyncimagerenderthread.cpp
     chromahuediagram.cpp
     chromahueimageparameters.cpp
+    chromainfo.cpp
     chromalightnessdiagram.cpp
     chromalightnessimageparameters.cpp
     colordialog.cpp

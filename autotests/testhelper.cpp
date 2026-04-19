@@ -6,7 +6,6 @@
 #include "helper.h"
 
 #include "colorengine.h"
-#include <lcms2.h>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qevent.h>
@@ -507,8 +506,7 @@ private Q_SLOTS:
 
     void testWcsBasicColors()
     {
-        const auto colors = wcsBasicColors( //
-            ColorEngine::createSrgb());
+        const auto colors = wcsBasicColors();
         QCOMPARE(
             // For test, choose a value that is not in the center neither
             // horizontally nor vertically; this might detect mirroring bugs.

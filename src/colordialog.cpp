@@ -552,7 +552,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
 
     // initialize color engine and its dependencies
     m_colorEngine = colorEngine;
-    m_wcsBasicColors = wcsBasicColors(colorEngine);
+    m_wcsBasicColors = wcsBasicColors();
     m_wcsBasicDefaultColor = m_wcsBasicColors.value(4, 2);
 
     // create the graphical selectors
@@ -1698,7 +1698,7 @@ void ColorDialogPrivate::readLchNumericValues()
         return;
     }
     const GenericColor lchValues = GenericColor(m_cielchD50SpinBox->values());
-    if (m_colorEngine->isCielchD50InGamut(lchValues)) {
+    if (AbsoluteColor::isCielchD50InSRgbGamut(lchValues)) {
         m_cielchD50SpinBoxGamutAction->setVisible(false);
     } else {
         m_cielchD50SpinBoxGamutAction->setVisible(true);
@@ -1724,7 +1724,7 @@ void ColorDialogPrivate::readOklchNumericValues()
     originalOklch.first = m_oklchSpinBox->values().value(0);
     originalOklch.second = m_oklchSpinBox->values().value(1);
     originalOklch.third = m_oklchSpinBox->values().value(2);
-    if (m_colorEngine->isOklchInGamut(originalOklch)) {
+    if (AbsoluteColor::isOklchInSRgbGamut(originalOklch)) {
         m_oklchSpinBoxGamutAction->setVisible(false);
     } else {
         m_oklchSpinBoxGamutAction->setVisible(true);

@@ -11,6 +11,7 @@
 #include "abstractdiagram.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
+#include "chromainfo.h"
 #include "colorengine.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
@@ -20,7 +21,6 @@
 #include "helperconversion.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
-#include <lcms2.h>
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qevent.h>
@@ -46,8 +46,6 @@ ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEn
     : AbstractDiagram(parent)
     , d_pointer(new ChromaHueDiagramPrivate(this, colorEngine, projectionSpace))
 {
-    // Setup LittleCMS. This is the first thing to do, because other
-    // operations rely on a working LittleCMS.
     d_pointer->m_colorEngine = colorEngine;
 
     // Set focus policy
@@ -149,8 +147,8 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // Actually for in-gamut color:
         const bool isInGamut = //
             (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-            ? d_pointer->m_colorEngine->isCielabD50InGamut(lab.reinterpretAsLabToCmscielab()) //
-            : d_pointer->m_colorEngine->isOklabInGamut(lab);
+            ? AbsoluteColor::isCielabD50InSRgbGamut(lab) //
+            : AbsoluteColor::isOklabInSRgbGamut(lab);
 
         if (isInGamut) {
             setCursor(Qt::BlankCursor);
@@ -208,12 +206,12 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
         unsetCursor();
         return;
     }
-    const cmsCIELab lab = //
-        d_pointer->fromWidgetPixelPositionToLab(event->pos());
+    const GenericColor lab = GenericColor( //
+        d_pointer->fromWidgetPixelPositionToLab(event->pos()));
     const bool isInGamut = //
         (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-        ? d_pointer->m_colorEngine->isCielabD50InGamut(lab) //
-        : d_pointer->m_colorEngine->isOklabInGamut(GenericColor(lab));
+        ? AbsoluteColor::isCielabD50InSRgbGamut(lab) //
+        : AbsoluteColor::isOklabInSRgbGamut(GenericColor(lab));
     if (isInGamut) {
         setCursor(Qt::BlankCursor);
     } else {
@@ -530,8 +528,8 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorLch() const
 {
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
-        ? m_colorEngine->profileMaximumCielchD50Chroma()
-        : m_colorEngine->profileMaximumOklchChroma();
+        ? ChromaInfo::maxCielchD50Chroma()
+        : ChromaInfo::maxOklchChroma();
     const qreal scaleFactor = //
         (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder()) //
         / (2.0 * maximumChroma);
@@ -554,12 +552,12 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorLch() const
  * @returns The Lab coordinates of the currently displayed gamut diagram
  * for the (center of the) given pixel position.
  * @sa @ref ChromaHueMeasurement "Measurement details" */
-cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
+GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
 {
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
-        ? m_colorEngine->profileMaximumCielchD50Chroma()
-        : m_colorEngine->profileMaximumOklchChroma();
+        ? ChromaInfo::maxCielchD50Chroma()
+        : ChromaInfo::maxOklchChroma();
     const qreal scaleFactor = //
         (2.0 * maximumChroma) //
         / (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
@@ -568,11 +566,11 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
     // position 0.5 0.5. Its the center of the pixel that is our reference
     // for conversion, therefore we have to ship by 0.5 widget pixels.
     constexpr qreal pixelValueShift = 0.5;
-    cmsCIELab lab;
-    lab.L = m_currentColorLch.first;
-    lab.a = //
+    GenericColor lab;
+    lab.first = m_currentColorLch.first;
+    lab.second = //
         (position.x() + pixelValueShift - diagramOffset()) * scaleFactor;
-    lab.b = //
+    lab.third = //
         (position.y() + pixelValueShift - diagramOffset()) * scaleFactor * (-1);
     return lab;
 }
@@ -610,10 +608,8 @@ cmsCIELab ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint pos
  */
 void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
-    const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
-    cmsCIELCh lch;
-    cmsLab2LCh(&lch, &lab);
-    const GenericColor genericLch{lch};
+    const GenericColor lab = fromWidgetPixelPositionToLab(position);
+    const GenericColor genericLch = AbsoluteColor::fromCartesianToPolar(lab);
     const auto myColor = //
         (m_projectionSpace == LchSpace::CielchD50) //
         ? m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(genericLch) //

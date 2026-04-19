@@ -5,6 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimage.h"
 
+#include "chromainfo.h"
 #include "colorengine.h"
 #include "helperconstants.h"
 #include "helpermath.h"
@@ -218,12 +219,12 @@ QImage ColorWheelImage::getImage()
                     m_image.setPixelColor( //
                         x, //
                         y, //
-                        m_colorEngine->maxChromaColorByCielchD50Hue360(hue));
+                        ChromaInfo::maxChromaColorByCielchD50Hue360(hue));
                 } else {
                     m_image.setPixelColor( //
                         x, //
                         y, //
-                        m_colorEngine->maxChromaColorByOklabHue360(hue));
+                        ChromaInfo::maxChromaColorByOklabHue360(hue));
                 }
             }
         }

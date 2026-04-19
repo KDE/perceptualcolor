@@ -389,7 +389,7 @@ template<typename T = void>
     return platform.contains(QStringLiteral("xcb"), Qt::CaseInsensitive);
 }
 
-[[nodiscard]] QColorArray2D wcsBasicColors(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
+[[nodiscard]] QColorArray2D wcsBasicColors();
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType fallbackType);
 

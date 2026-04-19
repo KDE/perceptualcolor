@@ -137,6 +137,7 @@ if(BUILD_TESTING)
         testasyncimagerenderthread
         testchromahuediagram
         testchromahueimageparameters
+        testchromainfo
         testchromalightnessdiagram
         testchromalightnessimageparameters
         testcolordialog

@@ -13,7 +13,6 @@
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "lchvalues.h"
-#include "lcms2.h"
 #include <qglobal.h>
 #include <qpoint.h>
 #include <qsharedpointer.h>
@@ -101,7 +100,7 @@ public:
     [[nodiscard]] int diagramBorder() const;
     [[nodiscard]] QPointF diagramCenter() const;
     [[nodiscard]] qreal diagramOffset() const;
-    [[nodiscard]] cmsCIELab fromWidgetPixelPositionToLab(const QPoint position) const;
+    [[nodiscard]] GenericColor fromWidgetPixelPositionToLab(const QPoint position) const;
     [[nodiscard]] bool isWidgetPixelPositionWithinDiagramCircle(const QPoint position) const;
     [[nodiscard]] bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);

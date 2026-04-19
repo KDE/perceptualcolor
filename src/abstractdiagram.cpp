@@ -247,7 +247,8 @@ int AbstractDiagram::spaceForFocusIndicator() const
 
 /** @brief An appropriate color for a handle, depending on the background
  * lightness.
- * @param lightness The background lightness. Valid range: <tt>[0, 100]</tt>.
+ * @param lightness The background lightness. Valid range: <tt>[0, 100]</tt>
+ * for @ref LchSpace::CielchD50 and <tt>[0, 100]</tt> for @ref LchSpace::Oklch.
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  * @returns An appropriate color for a handle. This color will provide
@@ -367,8 +368,7 @@ void AbstractDiagram::callUpdate()
 QColor AbstractDiagram::neutralGray()
 {
     static const QColor v = AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
-        AbsoluteColor::fromPolarToCartesian(oklchValues.neutralGray()) //
-            .reinterpretAsLabToCmscielab());
+        AbsoluteColor::fromPolarToCartesian(oklchValues.neutralGray()));
     return v;
 }
 

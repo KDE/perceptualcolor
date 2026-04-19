@@ -376,32 +376,16 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
     return std::nullopt;
 }
 
-/**
- * @internal
- *
- * @brief Round <tt>float</tt> to <tt>quint8</tt>.
- *
- * @param x A floating point value in the range [0..255].
- *
- * @returns The rounded value as <tt>quint8</tt>. If the input value
- * differes from the valid input range by 0.5 or more, than it returns
- * an arbitrary value.
- */
-[[nodiscard]] quint8 AbsoluteColor::toByte(float x)
-{
-    return static_cast<quint8>(x * 255.f + 0.5f);
-}
-
 /** @brief Conversion to QRgb.
  *
- * @param lab the original color
+ * @param oklab the original color
  *
  * @returns An opaque sRGB color matching the original one if it is within the
  * gamut. Otherwise, returns a fully transparent color (alpha and RGB channels
  * set to 0 to ensure compatibility with both, premultiplied and
  * non-premultiplied data).
  *
- * @sa @ref ColorEngine::fromCielchD50ToQRgbBound()
+ * @sa @ref AbsoluteColor::fromCielchD50ToSRgbClamped()
  *
  * @internal
  *
@@ -421,12 +405,12 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
  */
 // GenericColor might be an alternative, but it has double precision, while here
 // float precision would be appropriate.
-[[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbOrTransparent(const cmsCIELab &lab)
+[[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbOrTransparent(const GenericColor &oklab)
 {
     // Original Lab values as float:
-    const float oLabL = static_cast<float>(lab.L);
-    const float oLabA = static_cast<float>(lab.a);
-    const float oLabB = static_cast<float>(lab.b);
+    const float oLabL = static_cast<float>(oklab.first);
+    const float oLabA = static_cast<float>(oklab.second);
+    const float oLabB = static_cast<float>(oklab.third);
 
     const float l_ = oLabL + 0.3963377774f * oLabA + 0.2158037573f * oLabB;
     const float m_ = oLabL - 0.1055613458f * oLabA - 0.0638541728f * oLabB;
@@ -453,6 +437,43 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
                  255);
 }
 
+/**
+ * @brief Check if a color is within the sRGB gamut.
+ *
+ * @param oklab the color
+ *
+ * @returns <tt>true</tt> if the color is in the sRGB gamut.
+ * <tt>false</tt> otherwise.
+ */
+bool AbsoluteColor::isOklabInSRgbGamut(const GenericColor &oklab)
+{
+    if (!isInRange<decltype(oklab.first)>(0, oklab.first, 1)) {
+        return false;
+    }
+
+    const auto xyzD65 = AbsoluteColor::fromOklabToXyzD65(oklab);
+    const auto linearSRgb = AbsoluteColor::fromXyzD65ToLinearSRgb(xyzD65);
+
+    const auto &r = linearSRgb.first;
+    const auto &g = linearSRgb.second;
+    const auto &b = linearSRgb.third;
+
+    return !(r < 0. || r > 1. || g < 0. || g > 1. || b < 0. || b > 1.);
+}
+
+/**
+ * @brief Check if a color is within the sRGB gamut.
+ *
+ * @param oklch the color
+ *
+ * @returns <tt>true</tt> if the color is in the sRGB gamut.
+ * <tt>false</tt> otherwise.
+ */
+bool AbsoluteColor::isOklchInSRgbGamut(const GenericColor &oklch)
+{
+    return isOklabInSRgbGamut(AbsoluteColor::fromPolarToCartesian(oklch));
+}
+
 /** @brief Conversion to QRgb.
  *
  * @param oklab the original color
@@ -460,7 +481,7 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
  * @returns An opaque sRGB color matching the original one if it is within the
  * gamut. Otherwise, returns a more or less similar color.
  *
- * @sa @ref ColorEngine::fromCielchD50ToQRgbBound()
+ * @sa @ref AbsoluteColor::fromCielchD50ToSRgbClamped()
  *
  * @internal
  *
@@ -497,10 +518,114 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
     const float g = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
     const float b = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
 
-    return qRgba(toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(r), 0, 1)), //
-                 toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(g), 0, 1)), //
-                 toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(b), 0, 1)),
+    return qRgba( //
+        toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(r), 0, 1)), //
+        toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(g), 0, 1)), //
+        toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(b), 0, 1)),
+        255);
+}
+
+/**
+ * @brief Check if a color is within the gamut.
+ * @param cielchD50 the color
+ * @returns <tt>true</tt> if the color is in the gamut.
+ * <tt>false</tt> otherwise.
+ */
+bool AbsoluteColor::isCielchD50InSRgbGamut(const GenericColor &cielchD50)
+{
+    return isCielabD50InSRgbGamut( //
+        AbsoluteColor::fromPolarToCartesian(cielchD50));
+}
+
+/**
+ * @brief Check if a color is within the gamut.
+ * @param cielabD50 the color
+ * @returns <tt>true</tt> if the color is in the gamut.
+ * <tt>false</tt> otherwise.
+ */
+bool AbsoluteColor::isCielabD50InSRgbGamut(const GenericColor &cielabD50)
+{
+    if (!isInRange<double>(0, cielabD50.first, 100)) {
+        return false;
+    }
+
+    const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
+    const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
+    const auto linearSRgb = AbsoluteColor::fromXyzD65ToLinearSRgb(xyzD65);
+
+    const auto &r = linearSRgb.first;
+    const auto &g = linearSRgb.second;
+    const auto &b = linearSRgb.third;
+
+    return !(r < 0. || r > 1. || g < 0. || g > 1. || b < 0. || b > 1.);
+}
+
+/** @brief Conversion to QRgb.
+ *
+ * @pre
+ * - Input Lightness: 0 ≤ lightness ≤ 100
+ * @pre
+ * - Input Chroma: − @ref ColorEngine::profileMaximumCielchD50Chroma ≤ chroma ≤
+ *   @ref ColorEngine::profileMaximumCielchD50Chroma
+ *
+ * @param cielabD50 the original color
+ *
+ * @returns An opaque color matching the original if it is within the gamut.
+ *          Otherwise, returns a fully transparent color (alpha and RGB
+ *          channels set to 0 to ensure ).
+ *
+ * @sa @ref fromCielchD50ToSRgbClamped */
+QRgb AbsoluteColor::fromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50)
+{
+    const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
+    const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
+    const auto linearSRgb = AbsoluteColor::fromXyzD65ToLinearSRgb(xyzD65);
+
+    const auto &r = linearSRgb.first;
+    const auto &g = linearSRgb.second;
+    const auto &b = linearSRgb.third;
+
+    // Check for in-range yet now to avoid unnecessary calls of toByte() and
+    // linearToSRgb(). Furthermore, linearToSRgb() has undefined behaviour
+    // for parameters < 0.
+    if (r < 0. || r > 1. || g < 0. || g > 1. || b < 0. || b > 1.) {
+        return qRgbTransparent;
+    }
+
+    return qRgba(toByte(channelFromLinearSRgbToSRgb(r)), //
+                 toByte(channelFromLinearSRgbToSRgb(g)), //
+                 toByte(channelFromLinearSRgbToSRgb(b)),
                  255);
+}
+
+/** @brief Conversion to QRgb.
+ *
+ * @param cielchD50 The original color.
+ *
+ * @returns If the original color is in-gamut, the corresponding
+ * (opaque) in-range RGB value. If the original color is out-of-gamut,
+ * a more or less similar (opaque) in-range RGB value.
+ *
+ * @note There is no guarantee <em>which</em> specific algorithm is used
+ * to fit out-of-gamut colors into the gamut.
+ *
+ * @sa @ref fromCielabD50ToSRgbOrTransparent */
+QRgb AbsoluteColor::fromCielchD50ToSRgbClamped(const GenericColor &cielchD50)
+{
+    const auto cielabD50 = AbsoluteColor::fromPolarToCartesian(cielchD50);
+    const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
+    const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
+    const auto linearSRgb = AbsoluteColor::fromXyzD65ToLinearSRgb(xyzD65);
+
+    const auto &r = linearSRgb.first;
+    const auto &g = linearSRgb.second;
+    const auto &b = linearSRgb.third;
+
+    return qRgba( //
+        toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(r), 0, 1)), //
+        toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(g), 0, 1)), //
+        toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(b), 0, 1)),
+        255);
 }
 
 } // namespace PerceptualColor

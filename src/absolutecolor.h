@@ -7,7 +7,6 @@
 #include "genericcolor.h"
 #include "helperconversion.h"
 #include <array>
-#include <lcms2.h>
 #include <optional>
 #include <qhash.h>
 #include <qlist.h>
@@ -40,6 +39,11 @@ namespace PerceptualColor
  *
  * @todo NICETOHAVE This is a class with no instances. Use free functions
  * in a sub-namespace instead?
+ *
+ * @todo SHOULDHAVE Test that all possible combinations actually convert.
+ * But HSL etc are not supported here, and on the other side @ref ColorModel is
+ * also used in @ref CssColor and HSL is needed there. Split into two different
+ * enums?
  */
 class AbsoluteColor
 {
@@ -61,8 +65,16 @@ public:
     [[nodiscard]] static GenericColor fromLinearSRgbToXyzD65(const GenericColor &value);
     [[nodiscard]] static GenericColor fromXyzD65ToLinearSRgb(const GenericColor &value);
 
-    [[nodiscard]] static QRgb fastFromOklabToSRgbOrTransparent(const cmsCIELab &lab);
+    [[nodiscard]] static QRgb fastFromOklabToSRgbOrTransparent(const GenericColor &oklab);
     [[nodiscard]] static QRgb fastFromOklabToSRgbClamped(const GenericColor &oklab);
+
+    [[nodiscard]] static QRgb fromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50);
+    [[nodiscard]] static QRgb fromCielchD50ToSRgbClamped(const GenericColor &cielchD50);
+
+    [[nodiscard]] static bool isCielchD50InSRgbGamut(const GenericColor &cielchD50);
+    [[nodiscard]] static bool isCielabD50InSRgbGamut(const GenericColor &cielabD50);
+    [[nodiscard]] static bool isOklabInSRgbGamut(const GenericColor &oklab);
+    [[nodiscard]] static bool isOklchInSRgbGamut(const GenericColor &oklch);
 
 private:
     /**
@@ -110,7 +122,25 @@ private:
     static void addDirectConversionsRecursivly(QHash<ColorModel, GenericColor> *values, const ColorModel model);
 
 private:
-    [[nodiscard]] static quint8 toByte(float x);
+    /**
+     * @internal
+     *
+     * @brief Convert a <tt>float</tt> in the range [0..1] to a <tt>quint8</tt>
+     * in the range [0..255].
+     *
+     * @param x A floating point value in the range [0..1].
+     *
+     * @returns The corresponding value in the range in the range [0..255],
+     * rounded to full integers. If the input value
+     * differes from the valid input range by more than 0.1, than it returns
+     * an arbitrary value.
+     */
+    template<typename T>
+    [[nodiscard]] static quint8 toByte(T x)
+    {
+        return static_cast<quint8>( //
+            x * static_cast<T>(255.f) + static_cast<T>(0.5f));
+    }
 
     /**
      * @internal

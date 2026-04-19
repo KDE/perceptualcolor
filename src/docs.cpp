@@ -531,8 +531,8 @@
  *
  * @todo NICETOHAVE Use <tt>QCache</tt> where is makes sense. Maybe
  * @ref PerceptualColor::ColorEngine::reduceCielchD50ChromaToFitIntoGamut() or
- * @ref PerceptualColor::ColorEngine::isCielchD50InGamut() or
- * @ref PerceptualColor::ColorEngine::isCielabD50InGamut() or
+ * @ref PerceptualColor::AbsoluteColor::isCielchD50InSRgbGamut() or
+ * @ref PerceptualColor::AbsoluteColor::isCielabD50InSRgbGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(().
  *
  * @todo SHOULDHAVE If using the Motif style (only available in Qt 5, not

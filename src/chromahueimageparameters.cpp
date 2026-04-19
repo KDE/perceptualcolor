@@ -7,6 +7,7 @@
 
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
+#include "chromainfo.h"
 #include "colorengine.h"
 #include "helper.h"
 #include "helperconstants.h"
@@ -15,7 +16,6 @@
 #include "interlacingpass.h"
 #include <atomic>
 #include <cmath>
-#include <lcms2.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qmath.h>
@@ -130,8 +130,8 @@ void ChromaHueImageParameters::renderByRow( //
     int firstRow,
     int lastRow)
 {
-    cmsCIELab lab;
-    lab.L = parameters.lightness;
+    GenericColor lab;
+    lab.first = parameters.lightness;
     QRgb tempColor;
     const auto threshold = //
         (chromaRange + 2 * scaleFactor) * (chromaRange + 2 * scaleFactor);
@@ -139,7 +139,7 @@ void ChromaHueImageParameters::renderByRow( //
          y <= lastRow; //
          y += currentPass.lineFrequency) //
     {
-        lab.b = chromaRange //
+        lab.third = chromaRange //
             - (y + shift) * scaleFactor;
         const auto rectangleHeight = // Make sure to stay within the image
             qMin(currentPass.rectangleSize.height(), //
@@ -148,12 +148,12 @@ void ChromaHueImageParameters::renderByRow( //
              x < parameters.imageSizePhysical; //
              x += currentPass.columnFrequency //
         ) {
-            lab.a = (x + shift) * scaleFactor - chromaRange;
-            if (qPow(lab.a, 2) + qPow(lab.b, 2) <= threshold) {
+            lab.second = (x + shift) * scaleFactor - chromaRange;
+            if (qPow(lab.second, 2) + qPow(lab.third, 2) <= threshold) {
                 tempColor = //
                     (parameters.projectionSpace == LchSpace::Oklch) //
                     ? AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab)
-                    : parameters.colorEngine->fromCielabD50ToQRgbOrTransparent(lab);
+                    : AbsoluteColor::fromCielabD50ToSRgbOrTransparent(lab);
                 const auto rectangleWidth =
                     // Make sure to stay within the image
                     qMin(currentPass.rectangleSize.width(), //
@@ -228,8 +228,8 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // Prepare for gamut painting
     const auto chromaRange = //
         (parameters.projectionSpace == LchSpace::Oklch) //
-        ? parameters.colorEngine->profileMaximumOklchChroma() //
-        : parameters.colorEngine->profileMaximumCielchD50Chroma();
+        ? ChromaInfo::maxOklchChroma() //
+        : ChromaInfo::maxCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
         // The following line will never be 0 because we have have
         // tested above that circleRadius is > 0, so this line will
@@ -394,15 +394,14 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
                                   scaleFactor,
                                   chromaRange] //
         (const double x, const double y) -> QRgb {
-        cmsCIELab myLab;
-        myLab.L = parameters.lightness;
-        myLab.b = chromaRange - (y + shift) * scaleFactor;
-        myLab.a = (x + shift) * scaleFactor - chromaRange;
+        GenericColor myLab;
+        myLab.first = parameters.lightness;
+        myLab.third = chromaRange - (y + shift) * scaleFactor;
+        myLab.second = (x + shift) * scaleFactor - chromaRange;
         if (parameters.projectionSpace == LchSpace::Oklch) {
             return AbsoluteColor::fastFromOklabToSRgbOrTransparent(myLab);
         }
-        return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
-            myLab);
+        return AbsoluteColor::fromCielabD50ToSRgbOrTransparent(myLab);
     };
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);
 

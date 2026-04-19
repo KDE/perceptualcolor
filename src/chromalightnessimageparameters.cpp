@@ -15,7 +15,6 @@
 #include "lchvalues.h"
 #include <atomic>
 #include <functional>
-#include <lcms2.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qnamespace.h>
@@ -86,23 +85,21 @@ void ChromaLightnessImageParameters::renderByRow( //
         ? oklchValues //
         : cielchD50Values;
     QRgb rgbColor;
-    cmsCIELCh lch;
-    lch.h = normalizedAngle360(parameters.hue);
+    GenericColor lch;
+    lch.third = normalizedAngle360(parameters.hue);
     for (int y = firstRow; y <= lastRow; ++y) {
         QRgb *line = //
             reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
-        lch.L = ranges.maximumLightness - (y + 0.5) * ranges.maximumLightness / parameters.imageSizePhysical.height();
+        lch.first = ranges.maximumLightness - (y + 0.5) * ranges.maximumLightness / parameters.imageSizePhysical.height();
         for (int x = 0; x < parameters.imageSizePhysical.width(); ++x) {
             // Using the same scale as on the y axis. floating point
-            lch.C = (x + 0.5) * ranges.maximumLightness / parameters.imageSizePhysical.height();
+            lch.second = (x + 0.5) * ranges.maximumLightness / parameters.imageSizePhysical.height();
+            const auto lab = AbsoluteColor::fromPolarToCartesian(lch);
             if (parameters.projectionSpace == LchSpace::Oklch) {
-                rgbColor = //
-                    AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
-                        toCmsLab(lch));
+                rgbColor = AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab);
             } else {
                 rgbColor = //
-                    parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
-                        toCmsLab(lch));
+                    AbsoluteColor::fromCielabD50ToSRgbOrTransparent(lab);
             }
             if (qAlpha(rgbColor) != 0) {
                 line[x] = rgbColor;
@@ -259,28 +256,29 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
                            imageHeight,
                            parameters] //
             (const double colorFunctionX, const double colorFunctionY) -> QRgb {
-            cmsCIELCh oklch;
-            oklch.h = normalizedHue;
+            GenericColor oklch;
+            oklch.third = normalizedHue;
             constexpr double maxLight = oklchValues.maximumLightness;
-            oklch.L = //
+            oklch.first = //
                 maxLight - (colorFunctionY + 0.5) * maxLight / imageHeight;
-            oklch.C = (colorFunctionX + 0.5) * maxLight / imageHeight;
+            oklch.second = (colorFunctionX + 0.5) * maxLight / imageHeight;
             return AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
-                toCmsLab(oklch));
+                AbsoluteColor::fromPolarToCartesian(oklch));
         };
     } else {
         myColorFunction = [normalizedHue, //
                            imageHeight,
                            parameters] //
             (const double colorFunctionX, const double colorFunctionY) -> QRgb {
-            cmsCIELCh myCielchD50;
-            myCielchD50.h = normalizedHue;
+            GenericColor myCielchD50;
+            myCielchD50.third = normalizedHue;
             constexpr double maxLight = cielchD50Values.maximumLightness;
-            myCielchD50.L = //
+            myCielchD50.first = //
                 maxLight - (colorFunctionY + 0.5) * maxLight / imageHeight;
-            myCielchD50.C = (colorFunctionX + 0.5) * maxLight / imageHeight;
-            return parameters.colorEngine->fromCielabD50ToQRgbOrTransparent( //
-                toCmsLab(myCielchD50));
+            myCielchD50.second = //
+                (colorFunctionX + 0.5) * maxLight / imageHeight;
+            return AbsoluteColor::fromCielabD50ToSRgbOrTransparent( //
+                AbsoluteColor::fromPolarToCartesian(myCielchD50));
         };
     }
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);

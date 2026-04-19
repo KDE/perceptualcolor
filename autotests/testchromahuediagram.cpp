@@ -11,7 +11,6 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "polarpointf.h"
-#include <lcms2.h>
 #include <qcoreevent.h>
 #include <qevent.h>
 #include <qglobal.h>
@@ -244,19 +243,22 @@ private Q_SLOTS:
         QCOMPARE(myDiagram.size(), QSize(widgetSize, widgetSize));
         // Chose a position near to, but different from the center.
         constexpr int testPosition = widgetSize / 2 + 10;
+        constexpr auto testPoint = QPoint(testPosition, testPosition);
+        const auto testLab = //
+            myDiagram.d_pointer->fromWidgetPixelPositionToLab(testPoint);
         myDiagram.d_pointer->setColorFromWidgetPixelPosition( //
-            QPoint(testPosition, testPosition));
+            testPoint);
         QCOMPARE( //
             myDiagram.d_pointer->m_currentColorLch.first, //
-            myDiagram.d_pointer->fromWidgetPixelPositionToLab(QPoint(testPosition, testPosition)).L);
+            testLab.first);
         QCOMPARE( //
             PolarPointF(myDiagram.d_pointer->m_currentColorLch.second, myDiagram.d_pointer->m_currentColorLch.third).toCartesian().x(), //
-            myDiagram.d_pointer->fromWidgetPixelPositionToLab(QPoint(testPosition, testPosition)).a);
+            testLab.second);
         QCOMPARE( //
             PolarPointF(myDiagram.d_pointer->m_currentColorLch.second, myDiagram.d_pointer->m_currentColorLch.third).toCartesian().y(),
-            myDiagram.d_pointer->fromWidgetPixelPositionToLab(QPoint(testPosition, testPosition)).b);
+            testLab.third);
         QCOMPARE(myDiagram.d_pointer->widgetCoordinatesFromCurrentColorLch(), //
-                 QPoint(testPosition, testPosition) + QPointF(0.5, 0.5));
+                 testPoint + QPointF(0.5, 0.5));
     }
 
     void testVerySmallWidgetSizes()

@@ -233,7 +233,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     candidate.second = 0;
     candidate.third = 0;
     candidate.first = 0;
-    while (!q_pointer->isCielchD50InGamut(candidate)) {
+    while (!AbsoluteColor::isCielchD50InSRgbGamut(candidate)) {
         candidate.first += gamutPrecisionCielab;
         if (candidate.first >= 100) {
             return false;
@@ -241,7 +241,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     }
     m_cielabD50BlackpointL = candidate.first;
     candidate.first = 100;
-    while (!q_pointer->isCielchD50InGamut(candidate)) {
+    while (!AbsoluteColor::isCielchD50InSRgbGamut(candidate)) {
         candidate.first -= gamutPrecisionCielab;
         if (candidate.first <= m_cielabD50BlackpointL) {
             return false;
@@ -250,7 +250,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     m_cielabD50WhitepointL = candidate.first;
     // For Oklab make sure that: 0 <= blackbpoint < whitepoint <= 1
     candidate.first = 0;
-    while (!q_pointer->isOklchInGamut(candidate)) {
+    while (!AbsoluteColor::isOklchInSRgbGamut(candidate)) {
         candidate.first += gamutPrecisionOklab;
         if (candidate.first >= 1) {
             return false;
@@ -258,7 +258,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     }
     m_oklabBlackpointL = candidate.first;
     candidate.first = 1;
-    while (!q_pointer->isOklchInGamut(candidate)) {
+    while (!AbsoluteColor::isOklchInSRgbGamut(candidate)) {
         candidate.first -= gamutPrecisionOklab;
         if (candidate.first <= m_oklabBlackpointL) {
             return false;
@@ -346,7 +346,7 @@ double ColorEngine::profileMaximumOklchChroma() const
  *
  * @param cielchD50color The color that will be adapted.
  *
- * @returns An @ref isCielchD50InGamut color. */
+ * @returns An sRGB in-gamut color. */
 PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const
 {
     GenericColor referenceColor = cielchD50color;
@@ -363,7 +363,7 @@ PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(c
                                   d_pointer->m_cielabD50WhitepointL);
 
     // Test special case: If we are yet in-gamut…
-    if (isCielchD50InGamut(referenceColor)) {
+    if (AbsoluteColor::isCielchD50InSRgbGamut(referenceColor)) {
         return referenceColor;
     }
 
@@ -372,7 +372,7 @@ PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(c
 
     // Create an in-gamut point on the gray axis:
     GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
-    if (!isCielchD50InGamut(lowerChroma)) {
+    if (!AbsoluteColor::isCielchD50InSRgbGamut(lowerChroma)) {
         // This is quite strange because every point between the blackpoint
         // and the whitepoint on the gray axis should be in-gamut on
         // normally shaped gamuts. But as we never know, we need a fallback,
@@ -389,7 +389,7 @@ PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(c
         // Our test candidate is half the way between lowerChroma
         // and upperChroma:
         temp.second = ((lowerChroma.second + upperChroma.second) / 2);
-        if (isCielchD50InGamut(temp)) {
+        if (AbsoluteColor::isCielchD50InSRgbGamut(temp)) {
             lowerChroma = temp;
         } else {
             upperChroma = temp;
@@ -410,7 +410,7 @@ PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(c
  *
  * @param oklchColor The color that will be adapted.
  *
- * @returns An @ref isOklchInGamut color. */
+ * @returns An sRGB in-gamut color. */
 PerceptualColor::GenericColor ColorEngine::reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const
 {
     GenericColor referenceColor = oklchColor;
@@ -427,7 +427,7 @@ PerceptualColor::GenericColor ColorEngine::reduceOklchChromaToFitIntoGamut(const
                                   d_pointer->m_oklabWhitepointL);
 
     // Test special case: If we are yet in-gamut…
-    if (isOklchInGamut(referenceColor)) {
+    if (AbsoluteColor::isOklchInSRgbGamut(referenceColor)) {
         return referenceColor;
     }
 
@@ -436,7 +436,7 @@ PerceptualColor::GenericColor ColorEngine::reduceOklchChromaToFitIntoGamut(const
 
     // Create an in-gamut point on the gray axis:
     GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
-    if (!isOklchInGamut(lowerChroma)) {
+    if (!AbsoluteColor::isOklchInSRgbGamut(lowerChroma)) {
         // This is quite strange because every point between the blackpoint
         // and the whitepoint on the gray axis should be in-gamut on
         // normally shaped gamuts. But as we never know, we need a fallback,
@@ -453,46 +453,13 @@ PerceptualColor::GenericColor ColorEngine::reduceOklchChromaToFitIntoGamut(const
         // Our test candidate is half the way between lowerChroma
         // and upperChroma:
         temp.second = ((lowerChroma.second + upperChroma.second) / 2);
-        if (isOklchInGamut(temp)) {
+        if (AbsoluteColor::isOklchInSRgbGamut(temp)) {
             lowerChroma = temp;
         } else {
             upperChroma = temp;
         }
     }
     return lowerChroma;
-}
-
-/** @brief Conversion to CIELab.
- *
- * @param rgbColor The original color.
- * @returns The corresponding (opaque) CIELab color.
- *
- * @note By definition, each RGB color in a given color space is an in-gamut
- * color in this very same color space. Nevertheless, because of rounding
- * errors, when converting colors that are near to the outer hull of the
- * gamut/color space, than @ref isCielabD50InGamut() might return <tt>false</tt> for
- * a return value of <em>this</em> function.
- *
- * @todo NICETOHAVE Write a unit test for this function.
- */
-cmsCIELab ColorEngine::toCielabD50(const QRgba64 rgbColor) const
-{
-    constexpr qreal maximum = //
-        std::numeric_limits<decltype(rgbColor.red())>::max();
-    const double my_rgb[]{rgbColor.red() / maximum, //
-                          rgbColor.green() / maximum, //
-                          rgbColor.blue() / maximum};
-    cmsCIELab cielabD50;
-    cmsDoTransform(d_pointer->m_transformRgbToCielabD50Handle, // handle to transform
-                   &my_rgb, // input
-                   &cielabD50, // output
-                   1 // convert exactly 1 value
-    );
-    if (cielabD50.L < 0) {
-        // Workaround for https://github.com/mm2/Little-CMS/issues/395
-        cielabD50.L = 0;
-    }
-    return cielabD50;
 }
 
 /**
@@ -507,7 +474,7 @@ cmsCIELab ColorEngine::toCielabD50(const QRgba64 rgbColor) const
  * @ref ColorModel::CielabD50, and from @ref ColorModel::OklchD65 to
  * @ref ColorModel::OklabD65.
  */
-cmsCIELab ColorEngine::fromLchToCmsCIELab(const GenericColor &lch)
+cmsCIELab ColorEnginePrivate::fromLchToCmsCIELab(const GenericColor &lch)
 {
     const cmsCIELCh myCmsCieLch = lch.reinterpretAsLchToCmscielch();
     cmsCIELab lab; // uses cmsFloat64Number internally
@@ -515,180 +482,6 @@ cmsCIELab ColorEngine::fromLchToCmsCIELab(const GenericColor &lch)
                &myCmsCieLch // input
     );
     return lab;
-}
-
-/** @brief Conversion to QRgb.
- *
- * @param cielchD50 The original color.
- *
- * @returns If the original color is in-gamut, the corresponding
- * (opaque) in-range RGB value. If the original color is out-of-gamut,
- * a more or less similar (opaque) in-range RGB value.
- *
- * @note There is no guarantee <em>which</em> specific algorithm is used
- * to fit out-of-gamut colors into the gamut.
- *
- * @sa @ref fromCielabD50ToQRgbOrTransparent */
-QRgb ColorEngine::fromCielchD50ToQRgbBound(const GenericColor &cielchD50) const
-{
-    const auto cielabD50 = fromLchToCmsCIELab(cielchD50);
-    cmsUInt16Number rgb_int[3];
-    cmsDoTransform(d_pointer->m_transformCielabD50ToRgb16Handle, // transform
-                   &cielabD50, // input
-                   rgb_int, // output
-                   1 // number of values to convert
-    );
-    constexpr qreal channelMaximumQReal = //
-        std::numeric_limits<cmsUInt16Number>::max();
-    constexpr quint8 rgbMaximum = 255;
-    return qRgb(qRound(rgb_int[0] / channelMaximumQReal * rgbMaximum), //
-                qRound(rgb_int[1] / channelMaximumQReal * rgbMaximum), //
-                qRound(rgb_int[2] / channelMaximumQReal * rgbMaximum));
-}
-
-/** @brief Check if a color is within the gamut.
- * @param lch the color
- * @returns <tt>true</tt> if the color is in the gamut.
- * <tt>false</tt> otherwise. */
-bool ColorEngine::isCielchD50InGamut(const GenericColor &lch) const
-{
-    if (!isInRange<decltype(lch.first)>(0, lch.first, 100)) {
-        return false;
-    }
-    if (!isInRange<decltype(lch.first)>( //
-            (-1) * d_pointer->m_profileMaximumCielchD50Chroma, //
-            lch.second, //
-            d_pointer->m_profileMaximumCielchD50Chroma //
-            )) {
-        return false;
-    }
-    const auto cielabD50 = fromLchToCmsCIELab(lch);
-    return qAlpha(fromCielabD50ToQRgbOrTransparent(cielabD50)) != 0;
-}
-
-/** @brief Check if a color is within the gamut.
- * @param lch the color
- * @returns <tt>true</tt> if the color is in the gamut.
- * <tt>false</tt> otherwise. */
-bool ColorEngine::isOklchInGamut(const GenericColor &lch) const
-{
-    if (!isInRange<decltype(lch.first)>(0, lch.first, 1)) {
-        return false;
-    }
-    if (!isInRange<decltype(lch.first)>( //
-            (-1) * d_pointer->m_profileMaximumOklchChroma, //
-            lch.second, //
-            d_pointer->m_profileMaximumOklchChroma //
-            )) {
-        return false;
-    }
-    const auto oklab = AbsoluteColor::fromPolarToCartesian(GenericColor(lch));
-    const auto xyzD65 = AbsoluteColor::fromOklabToXyzD65(oklab);
-    const auto xyzD50 = AbsoluteColor::fromXyzD65ToXyzD50(xyzD65);
-    const auto cielabD50 = AbsoluteColor::fromXyzD50ToCielabD50(xyzD50);
-    const auto cielabD50cms = cielabD50.reinterpretAsLabToCmscielab();
-    const auto rgb = fromCielabD50ToQRgbOrTransparent(cielabD50cms);
-    return (qAlpha(rgb) != 0);
-}
-
-/** @brief Check if a color is within the gamut.
- *
- * @param oklab the color
- *
- * @returns <tt>true</tt> if the color is in the gamut.
- * <tt>false</tt> otherwise. */
-bool ColorEngine::isOklabInGamut(const PerceptualColor::GenericColor &oklab) const
-{
-    if (!isInRange<decltype(oklab.first)>(0, oklab.first, 1)) {
-        return false;
-    }
-    const auto xyzD65 = AbsoluteColor::fromOklabToXyzD65(oklab);
-    const auto xyzD50 = AbsoluteColor::fromXyzD65ToXyzD50(xyzD65);
-    const auto cielabD50 = AbsoluteColor::fromXyzD50ToCielabD50(xyzD50);
-    const auto cielabD50cms = cielabD50.reinterpretAsLabToCmscielab();
-    const auto rgb = fromCielabD50ToQRgbOrTransparent(cielabD50cms);
-    return (qAlpha(rgb) != 0);
-}
-
-/** @brief Check if a color is within the gamut.
- * @param lab the color
- * @returns <tt>true</tt> if the color is in the gamut.
- * <tt>false</tt> otherwise. */
-bool ColorEngine::isCielabD50InGamut(const cmsCIELab &lab) const
-{
-    if (!isInRange<decltype(lab.L)>(0, lab.L, 100)) {
-        return false;
-    }
-    const auto chromaSquare = lab.a * lab.a + lab.b * lab.b;
-    const auto maximumChromaSquare = qPow(d_pointer->m_profileMaximumCielchD50Chroma, 2);
-    if (chromaSquare > maximumChromaSquare) {
-        return false;
-    }
-    return qAlpha(fromCielabD50ToQRgbOrTransparent(lab)) != 0;
-}
-
-/** @brief Conversion to QRgb.
- *
- * @pre
- * - Input Lightness: 0 ≤ lightness ≤ 100
- * @pre
- * - Input Chroma: − @ref ColorEngine::profileMaximumCielchD50Chroma ≤ chroma ≤
- *   @ref ColorEngine::profileMaximumCielchD50Chroma
- *
- * @param lab the original color
- *
- * @returns An opaque color matching the original if it is within the gamut.
- *          Otherwise, returns a fully transparent color (alpha and RGB
- *          channels set to 0 to ensure ).
- *
- * @sa @ref fromCielchD50ToQRgbBound */
-QRgb ColorEngine::fromCielabD50ToQRgbOrTransparent(const cmsCIELab &lab) const
-{
-    double rgb[3];
-    cmsDoTransform(
-        // Parameters:
-        d_pointer->m_transformCielabD50ToRgbHandle, // handle to transform function
-        &lab, // input
-        &rgb, // output
-        1 // convert exactly 1 value
-    );
-
-    // Detect if valid:
-    const bool colorIsValid = //
-        isInRange<double>(0, rgb[0], 1) //
-        && isInRange<double>(0, rgb[1], 1) //
-        && isInRange<double>(0, rgb[2], 1);
-    if (!colorIsValid) {
-        return qRgbTransparent;
-    }
-
-    // Detect deviation:
-    cmsCIELab roundtripCielabD50;
-    cmsDoTransform(
-        // Parameters:
-        d_pointer->m_transformRgbToCielabD50Handle, // handle to transform function
-        &rgb, // input
-        &roundtripCielabD50, // output
-        1 // convert exactly 1 value
-    );
-    const qreal actualDeviationSquare = //
-        qPow(lab.L - roundtripCielabD50.L, 2) //
-        + qPow(lab.a - roundtripCielabD50.a, 2) //
-        + qPow(lab.b - roundtripCielabD50.b, 2);
-    constexpr auto cielabDeviationLimitSquare = //
-        ColorEnginePrivate::cielabDeviationLimit //
-        * ColorEnginePrivate::cielabDeviationLimit;
-    const bool actualDeviationIsOkay = //
-        actualDeviationSquare <= cielabDeviationLimitSquare;
-
-    // If deviation is too big, return a transparent color.
-    if (!actualDeviationIsOkay) {
-        return qRgbTransparent;
-    }
-
-    // If in-gamut, return an opaque color.
-    QColor temp = qColorFromRgbDouble(rgb[0], rgb[1], rgb[2]);
-    return temp.rgb();
 }
 
 /**
@@ -720,19 +513,22 @@ void ColorEnginePrivate::initializeChromaticityBoundaries()
     m_profileMaximumCielchD50Chroma = 0;
     m_profileMaximumOklchChroma = 0;
     for (auto &color : chromaticityBoundaryQColor) {
-        const auto rgb = color.rgba64();
-        const auto cielabD50 = GenericColor(q_pointer->toCielabD50(rgb));
-
+        const auto rgb_1 = GenericColor( //
+            static_cast<double>(color.redF()), //
+            static_cast<double>(color.greenF()), //
+            static_cast<double>(color.blueF()));
+        const auto linearSRgb_1 = AbsoluteColor::fromSRgbToLinearSRgb(rgb_1);
+        const auto xyzD65 = AbsoluteColor::fromLinearSRgbToXyzD65(linearSRgb_1);
+        const auto oklab = AbsoluteColor::fromXyzD65ToOklab(xyzD65);
+        const auto oklch = AbsoluteColor::fromCartesianToPolar(oklab);
+        const auto xyzD50 = AbsoluteColor::fromXyzD65ToXyzD50(xyzD65);
+        const auto cielabD50 = AbsoluteColor::fromXyzD50ToCielabD50(xyzD50);
         const auto cielchD50 = AbsoluteColor::fromCartesianToPolar(cielabD50);
         m_profileMaximumCielchD50Chroma = qMax( //
             m_profileMaximumCielchD50Chroma, //
             cielchD50.second);
         m_chromaticityBoundaryByCielchD50Hue360[cielchD50.third] = color;
 
-        const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
-        const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
-        const auto oklab = AbsoluteColor::fromXyzD65ToOklab(xyzD65);
-        const auto oklch = AbsoluteColor::fromCartesianToPolar(oklab);
         m_profileMaximumOklchChroma = qMax( //
             m_profileMaximumOklchChroma, //
             oklch.second);

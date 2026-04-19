@@ -9,6 +9,7 @@
 
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
+#include "chromainfo.h"
 #include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -593,9 +594,9 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
 
     // Actually for in-gamut color:
     if (m_projectionSpace == LchSpace::CielchD50) {
-        return m_colorEngine->isCielchD50InGamut(color);
+        return AbsoluteColor::isCielchD50InSRgbGamut(color);
     }
-    return m_colorEngine->isOklchInGamut(color);
+    return AbsoluteColor::isOklchInSRgbGamut(color);
 }
 
 /** @brief Setter for the @ref currentColorLch() property.
@@ -673,8 +674,8 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const double profileMaxChroma = //
         (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-        ? d_pointer->m_colorEngine->profileMaximumCielchD50Chroma() //
-        : d_pointer->m_colorEngine->profileMaximumOklchChroma();
+        ? ChromaInfo::maxCielchD50Chroma() //
+        : ChromaInfo::maxOklchChroma();
     const double factor = profileMaxChroma / d_pointer->m_lchValues.maximumLightness;
     const int minimumHeight = qRound(
         // Top border and bottom border:
@@ -932,7 +933,10 @@ PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutLchBy
     // NOTE Calling isInGamut() is slower than simply testing for the pixel,
     // but it is more exact.
 
-    bool isInGamut = (m_projectionSpace == LchSpace::CielchD50) ? m_colorEngine->isCielchD50InGamut(temp) : m_colorEngine->isOklchInGamut(temp);
+    bool isInGamut = //
+        (m_projectionSpace == LchSpace::CielchD50) //
+        ? AbsoluteColor::isCielchD50InSRgbGamut(temp) //
+        : AbsoluteColor::isOklchInSRgbGamut(temp);
     if (isInGamut) {
         return temp;
     }

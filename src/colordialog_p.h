@@ -66,10 +66,16 @@ class ColorDialogPrivate : public QObject
 public:
     /**
      * @brief Identifier string for the built-in sRGB color space.
+     *
+     * @todo SHOWSTOPPER MUSTHAVE SHOULDHAVE Get rid of this, as of now we
+     * support exclusivly sRGB.
      */
     static inline QString const builtinsrgbIdentifier = QStringLiteral("builtinsrgb");
     /**
      * @brief Prefix for custom Identifier strings.
+     *
+     * @todo SHOWSTOPPER MUSTHAVE SHOULDHAVE Get rid of this, as of now we
+     * support exclusivly sRGB.
      */
     static inline QString const customIdentifierPrefix = QStringLiteral("custom");
 

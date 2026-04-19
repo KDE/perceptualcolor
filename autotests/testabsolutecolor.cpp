@@ -165,63 +165,63 @@ private:
 
     void generateDataSRgbOklab()
     {
-        qRegisterMetaType<cmsCIELab>();
         qRegisterMetaType<QRgb>();
+        qRegisterMetaType<GenericColor>();
         QTest::addColumn<QRgb>("srgb");
-        QTest::addColumn<cmsCIELab>("oklab");
+        QTest::addColumn<GenericColor>("oklab");
 
         // The following reference values have been calculated with the
         // online tool https://colorjs.io/apps/convert/
 
-        constexpr cmsCIELab oklabWhite //
+        constexpr GenericColor oklabWhite //
             {1.0000000000000002, -4.996003610813204e-16, 0};
         QTest::newRow("white 0xFF, 0xFF, 0xFF, 0xFF") //
             << qRgba(0xFF, 0xFF, 0xFF, 0xFF) //
             << oklabWhite;
 
-        constexpr cmsCIELab oklabRed //
+        constexpr GenericColor oklabRed //
             {0.6262871732047106, 0.22407052063705113, 0.12527327000309313};
         QTest::newRow("red 0xFE, 0x01, 0x01, 0xFF") //
             << qRgba(0xFE, 0x01, 0x01, 0xFF) //
             << oklabRed;
 
-        constexpr cmsCIELab oklabGreen //
+        constexpr GenericColor oklabGreen //
             {0.8639098058999964, -0.2330757717098325, 0.17886166282839522};
         QTest::newRow("green 0x01, 0xFE, 0x01, 0xFF") //
             << qRgba(0x01, 0xFE, 0x01, 0xFF) //
             << oklabGreen;
 
-        constexpr cmsCIELab oklabBlue //
+        constexpr GenericColor oklabBlue //
             {0.4511343049665099, -0.031935070958989176, -0.3103103423701257};
         QTest::newRow("blue 0x01, 0x01, 0xFE, 0xFF") //
             << qRgba(0x01, 0x01, 0xFE, 0xFF) //
             << oklabBlue;
 
-        constexpr cmsCIELab oklabCyan //
+        constexpr GenericColor oklabCyan //
             {0.9027384515389787, -0.14893819606031705, -0.03926738454235723};
         QTest::newRow("cyan 0x01, 0xFE, 0xFE, 0xFF") //
             << qRgba(0x01, 0xFE, 0xFE, 0xFF) //
             << oklabCyan;
 
-        constexpr cmsCIELab oklabMagenta //
+        constexpr GenericColor oklabMagenta //
             {0.6997232142868329, 0.27358575972682664, -0.16856336391920845};
         QTest::newRow("magenta 0xFE, 0x01, 0xFE, 0xFF") //
             << qRgba(0xFE, 0x01, 0xFE, 0xFF) //
             << oklabMagenta;
 
-        constexpr cmsCIELab oklabYellow //
+        constexpr GenericColor oklabYellow //
             {0.9651131560979367, -0.07111863396799117, 0.19788779483410568};
         QTest::newRow("yellow 0xFE, 0xFE, 0x01, 0xFF") //
             << qRgba(0xFE, 0xFE, 0x01, 0xFF) //
             << oklabYellow;
 
-        constexpr cmsCIELab oklabBlack //
+        constexpr GenericColor oklabBlack //
             {0, 0, 0};
         QTest::newRow("black 0x00, 0x00, 0x00, 0xFF") //
             << qRgba(0x00, 0x00, 0x00, 0xFF) //
             << oklabBlack;
 
-        constexpr cmsCIELab oklabGray //
+        constexpr GenericColor oklabGray //
             {0.5998708056221469, -5.551115123125783e-16, 0};
         QTest::newRow("gray 0x80, 0x80, 0x80, 0xFF") //
             << qRgba(0x80, 0x80, 0x80, 0xFF) //
@@ -572,31 +572,31 @@ private Q_SLOTS:
     void testFastFromOklabToSRgbOrTransparent()
     {
         QFETCH(QRgb, srgb);
-        QFETCH(cmsCIELab, oklab);
+        QFETCH(GenericColor, oklab);
 
         const QRgb actualResult = //
             AbsoluteColor::fastFromOklabToSRgbOrTransparent(oklab);
         QCOMPARE(actualResult, srgb);
     }
 
-    void fastFromOklabToSRgbClamped_data()
+    void testFastFromOklabToSRgbClamped_data()
     {
         generateDataSRgbOklab();
     }
 
-    void fastFromOklabToSRgbClamped()
+    void testFastFromOklabToSRgbClamped()
     {
         QFETCH(QRgb, srgb);
-        QFETCH(cmsCIELab, oklab);
+        QFETCH(GenericColor, oklab);
 
         const QRgb actualResult = //
-            AbsoluteColor::fastFromOklabToSRgbClamped(GenericColor(oklab));
+            AbsoluteColor::fastFromOklabToSRgbClamped(oklab);
         QCOMPARE(actualResult, srgb);
     }
 
     void testFastFromOklabToSRgbOrTransparentInvalid()
     {
-        const cmsCIELab invalid{0.5, 5, 6};
+        const GenericColor invalid{0.5, 5, 6};
         const QRgb actualResult = //
             AbsoluteColor::fastFromOklabToSRgbOrTransparent(invalid);
         QCOMPARE(actualResult, 0);
@@ -604,10 +604,10 @@ private Q_SLOTS:
 
     void benchmarkFastFromOklabToSRgbOrTransparentInGamut()
     {
-        cmsCIELab lab;
-        lab.L = 0.5f;
-        lab.a = 0.1f;
-        lab.b = 0.1f;
+        GenericColor lab;
+        lab.first = 0.5f;
+        lab.second = 0.1f;
+        lab.third = 0.1f;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
                 blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
@@ -617,15 +617,116 @@ private Q_SLOTS:
 
     void benchmarkFastFromOklabToSRgbOrTransparentOutOfGamut()
     {
-        cmsCIELab lab;
-        lab.L = 0.5f;
-        lab.a = 0.1f;
-        lab.b = 5.1f;
+        GenericColor lab;
+        lab.first = 0.5f;
+        lab.second = 0.1f;
+        lab.third = 5.1f;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
                 blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
             }
         }
+    }
+
+    void testFromCielchD50ToSRgbClamped()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        constexpr auto cielchD50 = GenericColor(87.81853436502792, //
+                                                113.331475355764, //
+                                                134.38385636182164);
+        const auto sRgbClamped = //
+            AbsoluteColor::fromCielchD50ToSRgbClamped(cielchD50);
+        QCOMPARE(qRed(sRgbClamped), 0);
+        QCOMPARE(qGreen(sRgbClamped), 255);
+        QCOMPARE(qBlue(sRgbClamped), 0);
+        QCOMPARE(qAlpha(sRgbClamped), 255);
+    }
+
+    void testFromCielabD50ToSRgbOrTransparent()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        constexpr auto cielabD50 = GenericColor(61.17920560892611, //
+                                                -6.770243071438198, //
+                                                -32.01054781975403);
+        const auto sRgb = //
+            AbsoluteColor::fromCielabD50ToSRgbOrTransparent(cielabD50);
+        QCOMPARE(qRed(sRgb), 0.4 * 255);
+        QCOMPARE(qGreen(sRgb), 0.6 * 255);
+        QCOMPARE(qBlue(sRgb), 0.8 * 255);
+        QCOMPARE(qAlpha(sRgb), 1 * 255);
+
+        constexpr auto cielabD50OutOfGamut = GenericColor(61.17920560892611, //
+                                                          -50, //
+                                                          -50);
+        const auto sRgbOutOfGamut = //
+            AbsoluteColor::fromCielabD50ToSRgbOrTransparent(cielabD50OutOfGamut);
+        QCOMPARE(qAlpha(sRgbOutOfGamut), 0);
+    }
+
+    void testIsCielchD50InSRgbGamut()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        constexpr auto cielchD50InGamut = //
+            GenericColor(87.81853436502792, //
+                         113.331475355764 - 1, //
+                         134.38385636182164);
+        QVERIFY(AbsoluteColor::isCielchD50InSRgbGamut(cielchD50InGamut));
+        constexpr auto cielchD50OutOfGamut = //
+            GenericColor(87.81853436502792, //
+                         113.331475355764 + 1, //
+                         134.38385636182164);
+        QVERIFY(!AbsoluteColor::isCielchD50InSRgbGamut(cielchD50OutOfGamut));
+    }
+
+    void testIsCielabD50InSRgbGamut()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        constexpr auto cielabD50InGamut = GenericColor( //
+            87.81853436502792, //
+            -79.27106077555146 + 1, //
+            80.99458148439912);
+        QVERIFY(AbsoluteColor::isCielabD50InSRgbGamut(cielabD50InGamut));
+        constexpr auto cielabD50OutOfGamut = GenericColor( //
+            87.81853436502792, //
+            -79.27106077555146 - 1, //
+            80.99458148439912);
+        QVERIFY(!AbsoluteColor::isCielabD50InSRgbGamut(cielabD50OutOfGamut));
+    }
+
+    void testIsOklchInSRgbGamut()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        constexpr auto oklchInGamut = GenericColor( //
+            0.8664396175234368, //
+            0.2948272245426958 - 0.1, //
+            142.4953450414439);
+        QVERIFY(AbsoluteColor::isOklchInSRgbGamut(oklchInGamut));
+        constexpr auto oklchOutOfGamut = GenericColor( //
+            0.8664396175234368, //
+            0.2948272245426958 + 0.1, //
+            142.4953450414439);
+        QVERIFY(!AbsoluteColor::isOklchInSRgbGamut(oklchOutOfGamut));
+    }
+
+    void testIsOklabInSRgbGamut()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        constexpr auto oklabInGamut = GenericColor( //
+            0.8664396175234368, //
+            -0.23388758093655815 + 0.1, //
+            0.1794984451609376 - 0.1);
+        QVERIFY(AbsoluteColor::isOklabInSRgbGamut(oklabInGamut));
+        constexpr auto oklabOutOfGamut = GenericColor( //
+            0.8664396175234368, //
+            -0.23388758093655815 - 0.1, //
+            0.1794984451609376 + 0.1);
+        QVERIFY(!AbsoluteColor::isOklabInSRgbGamut(oklabOutOfGamut));
     }
 };
 

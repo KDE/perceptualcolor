@@ -158,7 +158,7 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
         color = parameters.colorFromValue( //
             (i + 0.5) / static_cast<qreal>(parameters.m_gradientLength));
         if (parameters.m_projectionSpace == LchSpace::CielchD50) {
-            temp = parameters.colorEngine->fromCielchD50ToQRgbBound(color);
+            temp = AbsoluteColor::fromCielchD50ToSRgbClamped(color);
         } else {
             temp = AbsoluteColor::fastFromOklabToSRgbClamped( //
                 AbsoluteColor::fromPolarToCartesian(color));

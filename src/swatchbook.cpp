@@ -1019,16 +1019,14 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const auto selectedColor = d_pointer->m_swatchGrid.value( //
         d_pointer->m_selectedColumn,
         d_pointer->m_selectedRow);
-    const auto colorCielabD50 = d_pointer->m_colorEngine->toCielabD50( //
-        selectedColor.rgba64());
-    const auto colorOklab = AbsoluteColor::convert( //
-        ColorModel::CielabD50, //
-        GenericColor(colorCielabD50), //
-        ColorModel::OklabD65);
-    const double lightness = //
-        colorOklab.has_value() //
-        ? colorOklab.value().first //
-        : colorCielabD50.L / 100.; // fallback if conversion to Oklab has failed
+    const auto rgb_1 = GenericColor( //
+        static_cast<double>(selectedColor.redF()),
+        static_cast<double>(selectedColor.greenF()), //
+        static_cast<double>(selectedColor.blueF()));
+    const auto linearSRgb_1 = AbsoluteColor::fromSRgbToLinearSRgb(rgb_1);
+    const auto xyzD65 = AbsoluteColor::fromLinearSRgbToXyzD65(linearSRgb_1);
+    const auto oklab = AbsoluteColor::fromXyzD65ToOklab(xyzD65);
+    const double lightness = oklab.first;
     const QColor selectionMarkColor = //
         handleColorFromBackgroundLightness(lightness, LchSpace::Oklch);
     d_pointer->drawMark(offset, //

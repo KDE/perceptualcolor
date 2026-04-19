@@ -2117,8 +2117,8 @@ private Q_SLOTS:
             new ColorDialog(m_srgbBuildinColorEngine, id));
 
         // Start with Qt::yellow as initial color.
-        // If this RGB value is interpreted in the sRGB (LittleCMS build-in)
-        // profile, it has a particular property. Because of the irregular
+        // If this color is interpreted as sRGB and proyected into the CIELchD50
+        // space, it has a particular property. Because of the irregular
         // shape of the sRGB color space at this position, thinking in
         // LCH values, when reducing (!) the chroma step-by-step, we run
         // out-of-gamut, before going again in-gamut at even lower chroma

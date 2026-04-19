@@ -88,14 +88,14 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         SwatchBook testObject(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine),
+                              wcsBasicColors(),
                               {});
     }
 
     void testConstructorDefaultValues()
     {
         SwatchBook testObject(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine),
+                              wcsBasicColors(),
                               {});
         // Verify that initially by default no color is selected:
         QCOMPARE(testObject.d_pointer->m_selectedRow, -1);
@@ -114,7 +114,7 @@ private Q_SLOTS:
     void testMinimumSizeHint()
     {
         SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine),
+                              wcsBasicColors(),
                               {});
         QVERIFY2(testWidget.minimumSizeHint().width() > 0, //
                  "minimumSizeHint width is implemented.");
@@ -125,7 +125,7 @@ private Q_SLOTS:
     void testSizeHint()
     {
         SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine),
+                              wcsBasicColors(),
                               {});
         QVERIFY2( //
             testWidget.sizeHint().width() //
@@ -141,7 +141,7 @@ private Q_SLOTS:
     void testCurrentColor()
     {
         SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine),
+                              wcsBasicColors(),
                               {});
         // Prepare test
         QObject scopeMarker;
@@ -201,7 +201,7 @@ private Q_SLOTS:
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
             SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(m_colorEngine),
+                                  wcsBasicColors(),
                                   Qt::Orientation::Horizontal);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
@@ -226,7 +226,7 @@ private Q_SLOTS:
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
             SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(m_colorEngine),
+                                  wcsBasicColors(),
                                   Qt::Orientation::Vertical);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
@@ -251,7 +251,7 @@ private Q_SLOTS:
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
             SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(m_colorEngine),
+                                  wcsBasicColors(),
                                   {});
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
@@ -277,7 +277,7 @@ private Q_SLOTS:
             // has been destroyed.
             SwatchBook testWidget( //
                 m_colorEngine, //
-                wcsBasicColors(m_colorEngine), //
+                wcsBasicColors(), //
                 Qt::Orientation::Horizontal | Qt::Orientation::Vertical);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
@@ -302,7 +302,7 @@ private Q_SLOTS:
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
             SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(m_colorEngine), //
+                                  wcsBasicColors(), //
                                   {});
             testWidget.setStyle(style);
             QVERIFY(!testWidget.d_pointer->patchSizeInner().isEmpty());
@@ -328,7 +328,7 @@ private Q_SLOTS:
     void testRetranslateUI()
     {
         SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine), //
+                              wcsBasicColors(), //
                               {});
         // Test that function call does not crash:
         testWidget.d_pointer->retranslateUi();
@@ -337,7 +337,7 @@ private Q_SLOTS:
     void testInitStyleOptions()
     {
         SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine), //
+                              wcsBasicColors(), //
                               {});
 
         // Test that function call does not crash with regular object:
@@ -370,7 +370,7 @@ private Q_SLOTS:
             QVBoxLayout *mainLayout = new QVBoxLayout;
             SwatchBook *testWidget = new SwatchBook( //
                 m_colorEngine, //
-                wcsBasicColors(m_colorEngine), //
+                wcsBasicColors(), //
                 {},
                 mainWidget);
             QHBoxLayout *topLayout = new QHBoxLayout;
@@ -435,7 +435,7 @@ private Q_SLOTS:
         // the first selected color patch should be (0, 0) in
         // left-to-right (LTR) layouts.
 
-        const auto myBasicColors = wcsBasicColors(m_colorEngine);
+        const auto myBasicColors = wcsBasicColors();
         SwatchBook testWidget(m_colorEngine, //
                               myBasicColors,
                               {});
@@ -607,7 +607,7 @@ private Q_SLOTS:
         // the first selected color patch should be the top-right patch in
         // right-to-left (RTL) layouts.
 
-        const auto myBasicColors = wcsBasicColors(m_colorEngine);
+        const auto myBasicColors = wcsBasicColors();
         SwatchBook testWidget(m_colorEngine, //
                               myBasicColors,
                               {});
@@ -774,7 +774,7 @@ private Q_SLOTS:
 
     void testKeyboardMove()
     {
-        const auto myBasicColors = wcsBasicColors(m_colorEngine);
+        const auto myBasicColors = wcsBasicColors();
         SwatchBook testWidget(m_colorEngine, //
                               myBasicColors,
                               {});
@@ -787,7 +787,7 @@ private Q_SLOTS:
         // Starting point is (0, 0) on LTR layout
         testWidget.setCurrentColor(
             // A color that is not in the swatch book:
-            wcsBasicColors(m_colorEngine).value(0, 0));
+            wcsBasicColors().value(0, 0));
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
 
@@ -879,7 +879,7 @@ private Q_SLOTS:
     {
         // There might be holes in the swatch book (patches that are empty).
         // The keyboard should react correctly nevertheless.
-        const auto myBasicColors = wcsBasicColors(m_colorEngine);
+        const auto myBasicColors = wcsBasicColors();
         QColorArray2D array = myBasicColors;
         // Set some invalid values
         array.setValue(1, 1, QColor());
@@ -899,7 +899,7 @@ private Q_SLOTS:
         // Starting point is (0, 0) on LTR layout
         testWidget.setCurrentColor(
             // A color that is not in the swatch book:
-            wcsBasicColors(m_colorEngine).value(0, 0));
+            wcsBasicColors().value(0, 0));
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
 
@@ -1000,7 +1000,7 @@ private Q_SLOTS:
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
             SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(m_colorEngine), //
+                                  wcsBasicColors(), //
                                   {});
             testWidget.setStyle(style);
             QStyleOptionFrame temp;
@@ -1013,9 +1013,9 @@ private Q_SLOTS:
     void testSwatchGrid()
     {
         SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(m_colorEngine), //
+                              wcsBasicColors(), //
                               {});
-        QCOMPARE(testWidget.swatchGrid(), wcsBasicColors(m_colorEngine));
+        QCOMPARE(testWidget.swatchGrid(), wcsBasicColors());
         testWidget.setSwatchGrid(QColorArray2D());
         QCOMPARE(testWidget.swatchGrid(), QColorArray2D());
     }

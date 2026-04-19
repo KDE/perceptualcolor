@@ -8,6 +8,7 @@
 #include "wheelcolorpicker_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
+#include "chromainfo.h"
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
 #include "colorengine.h"
@@ -184,8 +185,8 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
      */
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
-        ? m_colorEngine->profileMaximumCielchD50Chroma() //
-        : m_colorEngine->profileMaximumOklchChroma();
+        ? ChromaInfo::maxCielchD50Chroma() //
+        : ChromaInfo::maxOklchChroma();
     const qreal r = m_lchValues.maximumLightness / maximumChroma;
     const qreal h = //
         m_chromaLightnessDiagram->d_pointer->leftBorderDeviceIndependent() //

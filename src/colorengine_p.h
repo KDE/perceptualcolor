@@ -5,9 +5,8 @@
 #define PERCEPTUALCOLOR_COLORENGINE_P_H
 
 // Include the header of the public class of this private implementation.
-// #include "colorengine.h"
-
 #include "colorengine.h"
+
 #include "constpropagatingrawpointer.h"
 #include "helperconversion.h"
 #include "lchvalues.h"
@@ -123,6 +122,7 @@ public:
 
     // Functions:
     static void deleteTransform(cmsHTRANSFORM *transformHandle);
+    [[nodiscard]] Q_INVOKABLE static cmsCIELab fromLchToCmsCIELab(const PerceptualColor::GenericColor &lch);
     void initializeChromaticityBoundaries();
     [[nodiscard]] bool initialize(cmsHPROFILE rgbProfileHandle);
     [[nodiscard]] Q_INVOKABLE QColor maxChromaColorByHue360(double oklabHue360, PerceptualColor::LchSpace type) const;

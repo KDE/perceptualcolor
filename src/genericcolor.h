@@ -43,17 +43,6 @@ public:
     /** @brief Constructor.
      *
      * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIELCh &init) noexcept
-        : first(init.L)
-        , second(init.C)
-        , third(init.h)
-        , fourth(0)
-    {
-    }
-
-    /** @brief Constructor.
-     *
-     * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
     explicit constexpr GenericColor(const cmsCIEXYZ &init) noexcept
         : first(init.X)
         , second(init.Y)
