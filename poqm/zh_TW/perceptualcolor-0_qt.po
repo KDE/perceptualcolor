@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2024, 2025 Kisaragi Hiu <mail@kisaragi-hiu.com>
+# SPDX-FileCopyrightText: 2024, 2025, 2026 Kisaragi Hiu <mail@kisaragi-hiu.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-07-01 22:14+0900\n"
+"PO-Revision-Date: 2026-04-20 02:23+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 25.07.70\n"
+"X-Generator: Lokalize 25.11.70\n"
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:111
@@ -175,16 +175,13 @@ msgstr "不透明度(&A)："
 #: colordialog.cpp:373
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:383
-#, fuzzy
-#| msgctxt "PerceptualColor::ColorDialogPrivate|"
-#| msgid "&Pick screen color"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color…"
-msgstr "挑選螢幕色彩(&P)"
+msgstr "挑選螢幕色彩(&P)…"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:396
