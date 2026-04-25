@@ -4,6 +4,8 @@
 // Own header
 #include "absolutecolor.h"
 
+#include "chromainfo.h"
+#include "helperconstants.h"
 #include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
@@ -474,6 +476,40 @@ bool AbsoluteColor::isOklchInSRgbGamut(const GenericColor &oklch)
     return isOklabInSRgbGamut(AbsoluteColor::fromPolarToCartesian(oklch));
 }
 
+/**
+ * @brief Check if a color is within the sRGB gamut.
+ *
+ * @param lab the color
+ * @param lchSpace the color space
+ *
+ * @returns <tt>true</tt> if the color is in the sRGB gamut.
+ * <tt>false</tt> otherwise.
+ */
+bool AbsoluteColor::isLabInSRgbGamut(const GenericColor &lab, const LchSpace lchSpace)
+{
+    if (lchSpace == LchSpace::CielchD50) {
+        return isCielabD50InSRgbGamut(lab);
+    }
+    return isOklabInSRgbGamut(lab);
+}
+
+/**
+ * @brief Check if a color is within the sRGB gamut.
+ *
+ * @param lch the color
+ * @param lchSpace the color space
+ *
+ * @returns <tt>true</tt> if the color is in the sRGB gamut.
+ * <tt>false</tt> otherwise.
+ */
+bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lchSpace)
+{
+    if (lchSpace == LchSpace::CielchD50) {
+        return isCielchD50InSRgbGamut(lch);
+    }
+    return isOklchInSRgbGamut(lch);
+}
+
 /** @brief Conversion to QRgb.
  *
  * @param oklab the original color
@@ -626,6 +662,80 @@ QRgb AbsoluteColor::fromCielchD50ToSRgbClamped(const GenericColor &cielchD50)
         toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(g), 0, 1)), //
         toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(b), 0, 1)),
         255);
+}
+
+/** @brief Reduces the chroma until the color fits into the gamut.
+ *
+ * It always preserves the hue. It preservers the lightness whenever
+ * possible.
+ *
+ * @note In some cases with very curvy color spaces, the nearest in-gamut
+ * color (with the same lightness and hue) might be at <em>higher</em>
+ * chroma. As this function always <em>reduces</em> the chroma,
+ * in this case the result is not the nearest in-gamut color.
+ *
+ * @param lch The color that will be adapted.
+ * @param lchSpace The color space
+ *
+ * @returns An sRGB in-gamut color. */
+GenericColor AbsoluteColor::reduceChromaToFitIntoGamut(const GenericColor &lch, const LchSpace lchSpace)
+{
+    GenericColor referenceColor = lch;
+
+    // Normalize the LCH coordinates
+    normalizePolar360(referenceColor.second, referenceColor.third);
+
+    // Bound to valid range:
+    const auto maxChroma = (lchSpace == LchSpace::CielchD50) //
+        ? ChromaInfo::maxCielchD50Chroma() //
+        : ChromaInfo::maxOklchChroma();
+    referenceColor.second = qMin<double>(referenceColor.second, maxChroma);
+    const auto minLightness = (lchSpace == LchSpace::CielchD50) //
+        ? ChromaInfo::cielabD50BlackpointL() //
+        : ChromaInfo::oklabBlackpointL();
+    const auto maxLightness = (lchSpace == LchSpace::CielchD50) //
+        ? ChromaInfo::cielabD50WhitepointL() //
+        : ChromaInfo::oklabWhitepointL();
+    referenceColor.first = qBound<double>(minLightness,
+                                          referenceColor.first, //
+                                          maxLightness);
+
+    // Test special case: If we are yet in-gamut…
+    if (AbsoluteColor::isLchInSRgbGamut(referenceColor, lchSpace)) {
+        return referenceColor;
+    }
+
+    // Now we know: We are out-of-gamut.
+    GenericColor temp;
+
+    // Create an in-gamut point on the gray axis:
+    GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
+    if (!AbsoluteColor::isLchInSRgbGamut(lowerChroma, lchSpace)) {
+        // This is quite strange because every point between the blackpoint
+        // and the whitepoint on the gray axis should be in-gamut on
+        // normally shaped gamuts. But as we never know, we need a fallback,
+        // which is guaranteed to be in-gamut. The blackpoint is 0 and it
+        // is in-gamut for sRGB both in CielchD50 projection as in Oklab
+        // projection.
+        referenceColor.first = 0;
+        lowerChroma.first = 0;
+    }
+    // Do a quick-approximate search:
+    GenericColor upperChroma{referenceColor};
+    // Now we know for sure that lowerChroma is in-gamut
+    // and upperChroma is out-of-gamut…
+    temp = upperChroma;
+    while (upperChroma.second - lowerChroma.second > gamutPrecisionOklab) {
+        // Our test candidate is half the way between lowerChroma
+        // and upperChroma:
+        temp.second = ((lowerChroma.second + upperChroma.second) / 2);
+        if (isLchInSRgbGamut(temp, lchSpace)) {
+            lowerChroma = temp;
+        } else {
+            upperChroma = temp;
+        }
+    }
+    return lowerChroma;
 }
 
 } // namespace PerceptualColor

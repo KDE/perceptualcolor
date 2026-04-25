@@ -7,6 +7,7 @@
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "abstractdiagram.h"
 #include "chromainfo.h"
 #include "chromalightnessdiagram.h"
@@ -73,10 +74,9 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEn
             lch.third = newHue;
             // We have to be sure that the color is in-gamut also for the
             // new hue. If it is not, we adjust it:
-            lch = //
-                (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-                ? d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(lch) //
-                : d_pointer->m_colorEngine->reduceOklchChromaToFitIntoGamut(lch);
+            lch = AbsoluteColor::reduceChromaToFitIntoGamut( //
+                lch, //
+                d_pointer->m_projectionSpace);
             d_pointer->m_chromaLightnessDiagram->setCurrentColorLch(lch);
         });
     connect(d_pointer->m_chromaLightnessDiagram,
@@ -99,9 +99,8 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEn
     // Default sRGB initial color:
     const auto versatileColor = d_pointer->m_lchValues.neutralGray();
     const auto reducedVersatileColor = //
-        (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-        ? d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(versatileColor) //
-        : d_pointer->m_colorEngine->reduceOklchChromaToFitIntoGamut(versatileColor);
+        AbsoluteColor::reduceChromaToFitIntoGamut(versatileColor, //
+                                                  d_pointer->m_projectionSpace);
     setCurrentColorLch(reducedVersatileColor);
 }
 

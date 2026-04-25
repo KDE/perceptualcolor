@@ -44,6 +44,8 @@ namespace PerceptualColor
  * But HSL etc are not supported here, and on the other side @ref ColorModel is
  * also used in @ref CssColor and HSL is needed there. Split into two different
  * enums?
+ *
+ * @todo SHOULDHAVE Refactoring of this class.
  */
 class AbsoluteColor
 {
@@ -70,11 +72,10 @@ public:
 
     [[nodiscard]] static QRgb fromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50);
     [[nodiscard]] static QRgb fromCielchD50ToSRgbClamped(const GenericColor &cielchD50);
+    [[nodiscard]] static bool isLabInSRgbGamut(const GenericColor &lab, const LchSpace lchSpace);
+    [[nodiscard]] static bool isLchInSRgbGamut(const GenericColor &lch, const LchSpace lchSpace);
 
-    [[nodiscard]] static bool isCielchD50InSRgbGamut(const GenericColor &cielchD50);
-    [[nodiscard]] static bool isCielabD50InSRgbGamut(const GenericColor &cielabD50);
-    [[nodiscard]] static bool isOklabInSRgbGamut(const GenericColor &oklab);
-    [[nodiscard]] static bool isOklchInSRgbGamut(const GenericColor &oklch);
+    [[nodiscard]] static GenericColor reduceChromaToFitIntoGamut(const GenericColor &lch, const LchSpace lchSpace);
 
 private:
     /**
@@ -121,7 +122,11 @@ private:
 
     static void addDirectConversionsRecursivly(QHash<ColorModel, GenericColor> *values, const ColorModel model);
 
-private:
+    [[nodiscard]] static bool isCielchD50InSRgbGamut(const GenericColor &cielchD50);
+    [[nodiscard]] static bool isCielabD50InSRgbGamut(const GenericColor &cielabD50);
+    [[nodiscard]] static bool isOklabInSRgbGamut(const GenericColor &oklab);
+    [[nodiscard]] static bool isOklchInSRgbGamut(const GenericColor &oklch);
+
     /**
      * @internal
      *

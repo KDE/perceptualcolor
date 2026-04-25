@@ -552,11 +552,8 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // keyPressEvent yet to the parent and returned.
 
     // Search for the nearest color without changing the hue:
-    if (d_pointer->m_projectionSpace == LchSpace::CielchD50) {
-        temp = d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(temp);
-    } else {
-        temp = d_pointer->m_colorEngine->reduceOklchChromaToFitIntoGamut(temp);
-    }
+    temp = AbsoluteColor::reduceChromaToFitIntoGamut(temp, //
+                                                     d_pointer->m_projectionSpace);
 
     // Set the new color (only takes effect when the color is indeed
     // different).
@@ -593,10 +590,7 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
     }
 
     // Actually for in-gamut color:
-    if (m_projectionSpace == LchSpace::CielchD50) {
-        return AbsoluteColor::isCielchD50InSRgbGamut(color);
-    }
-    return AbsoluteColor::isOklchInSRgbGamut(color);
+    return AbsoluteColor::isLchInSRgbGamut(color, m_projectionSpace);
 }
 
 /** @brief Setter for the @ref currentColorLch() property.
@@ -934,9 +928,7 @@ PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutLchBy
     // but it is more exact.
 
     bool isInGamut = //
-        (m_projectionSpace == LchSpace::CielchD50) //
-        ? AbsoluteColor::isCielchD50InSRgbGamut(temp) //
-        : AbsoluteColor::isOklchInSRgbGamut(temp);
+        AbsoluteColor::isLchInSRgbGamut(temp, m_projectionSpace);
     if (isInGamut) {
         return temp;
     }

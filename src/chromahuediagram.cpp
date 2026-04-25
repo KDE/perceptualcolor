@@ -146,9 +146,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 
         // Actually for in-gamut color:
         const bool isInGamut = //
-            (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-            ? AbsoluteColor::isCielabD50InSRgbGamut(lab) //
-            : AbsoluteColor::isOklabInSRgbGamut(lab);
+            AbsoluteColor::isLabInSRgbGamut(lab, d_pointer->m_projectionSpace);
 
         if (isInGamut) {
             setCursor(Qt::BlankCursor);
@@ -209,9 +207,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
     const GenericColor lab = GenericColor( //
         d_pointer->fromWidgetPixelPositionToLab(event->pos()));
     const bool isInGamut = //
-        (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-        ? AbsoluteColor::isCielabD50InSRgbGamut(lab) //
-        : AbsoluteColor::isOklabInSRgbGamut(GenericColor(lab));
+        AbsoluteColor::isLabInSRgbGamut(lab, d_pointer->m_projectionSpace);
     if (isInGamut) {
         setCursor(Qt::BlankCursor);
     } else {
@@ -296,9 +292,8 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         GenericColor newColor = d_pointer->m_currentColorLch;
         newColor.third += standardWheelStepCount(event) * singleStepHue;
         const GenericColor newColorReduced = //
-            (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-            ? d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(newColor) //
-            : d_pointer->m_colorEngine->reduceOklchChromaToFitIntoGamut(newColor);
+            AbsoluteColor::reduceChromaToFitIntoGamut(newColor, //
+                                                      d_pointer->m_projectionSpace);
         setCurrentColorLch(newColorReduced);
 
     } else {
@@ -387,9 +382,8 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     }
     // Move the value into gamut (if necessary):
     const GenericColor newColorReduced = //
-        (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-        ? d_pointer->m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(newColor) //
-        : d_pointer->m_colorEngine->reduceOklchChromaToFitIntoGamut(newColor);
+        AbsoluteColor::reduceChromaToFitIntoGamut(newColor, //
+                                                  d_pointer->m_projectionSpace);
     // Apply the new value:
     setCurrentColorLch(newColorReduced);
 }
@@ -610,10 +604,9 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
 {
     const GenericColor lab = fromWidgetPixelPositionToLab(position);
     const GenericColor genericLch = AbsoluteColor::fromCartesianToPolar(lab);
-    const auto myColor = //
-        (m_projectionSpace == LchSpace::CielchD50) //
-        ? m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(genericLch) //
-        : m_colorEngine->reduceOklchChromaToFitIntoGamut(genericLch);
+    const auto myColor = AbsoluteColor::reduceChromaToFitIntoGamut( //
+        genericLch, //
+        m_projectionSpace);
     q_pointer->setCurrentColorLch(myColor);
 }
 

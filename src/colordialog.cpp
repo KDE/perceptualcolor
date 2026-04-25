@@ -1465,7 +1465,8 @@ void ColorDialogPrivate::readLightnessValue()
         cielchD50.first = //
             m_lchLightnessSelector->value() * m_lchValues.maximumLightness;
         cielchD50 = GenericColor( //
-            m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(cielchD50));
+            AbsoluteColor::reduceChromaToFitIntoGamut(cielchD50, //
+                                                      LchSpace::CielchD50));
         setCurrentOpaqueColor( //
             AbsoluteColor::allConversions(ColorModel::CielchD50, cielchD50), //
             m_lchLightnessSelector);
@@ -1475,7 +1476,7 @@ void ColorDialogPrivate::readLightnessValue()
         oklch.first = //
             m_lchLightnessSelector->value() * m_lchValues.maximumLightness;
         oklch = GenericColor( //
-            m_colorEngine->reduceOklchChromaToFitIntoGamut(oklch));
+            AbsoluteColor::reduceChromaToFitIntoGamut(oklch, LchSpace::Oklch));
         setCurrentOpaqueColor( //
             AbsoluteColor::allConversions(ColorModel::OklchD65, oklch), //
             m_lchLightnessSelector);
@@ -1698,13 +1699,13 @@ void ColorDialogPrivate::readLchNumericValues()
         return;
     }
     const GenericColor lchValues = GenericColor(m_cielchD50SpinBox->values());
-    if (AbsoluteColor::isCielchD50InSRgbGamut(lchValues)) {
+    if (AbsoluteColor::isLchInSRgbGamut(lchValues, LchSpace::CielchD50)) {
         m_cielchD50SpinBoxGamutAction->setVisible(false);
     } else {
         m_cielchD50SpinBoxGamutAction->setVisible(true);
     }
     const auto myColor = GenericColor( //
-        m_colorEngine->reduceCielchD50ChromaToFitIntoGamut(lchValues));
+        AbsoluteColor::reduceChromaToFitIntoGamut(lchValues, LchSpace::CielchD50));
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::CielchD50, myColor),
         // widget that will ignored during updating:
@@ -1724,13 +1725,14 @@ void ColorDialogPrivate::readOklchNumericValues()
     originalOklch.first = m_oklchSpinBox->values().value(0);
     originalOklch.second = m_oklchSpinBox->values().value(1);
     originalOklch.third = m_oklchSpinBox->values().value(2);
-    if (AbsoluteColor::isOklchInSRgbGamut(originalOklch)) {
+    if (AbsoluteColor::isLchInSRgbGamut(originalOklch, LchSpace::Oklch)) {
         m_oklchSpinBoxGamutAction->setVisible(false);
     } else {
         m_oklchSpinBoxGamutAction->setVisible(true);
     }
     const auto inGamutOklch = GenericColor( //
-        m_colorEngine->reduceOklchChromaToFitIntoGamut(originalOklch));
+        AbsoluteColor::reduceChromaToFitIntoGamut(originalOklch, //
+                                                  LchSpace::Oklch));
     const auto inGamutColor = //
         AbsoluteColor::allConversions(ColorModel::OklchD65, inGamutOklch);
     setCurrentOpaqueColor(inGamutColor,

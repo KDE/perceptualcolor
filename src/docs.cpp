@@ -347,6 +347,9 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo NICETOHAVE Get rid of Qt5 support if we have enough Qt6 QStyle
+ * implementations for testing.
+ *
  * @todo SHOULDHAVE Screen for dead code and remove it.
  *
  * @todo SHOWSTOPPER Define the precision of this library. We allow
@@ -530,7 +533,7 @@
  * this avoids the time-consuming memory allocations at each paint event!
  *
  * @todo NICETOHAVE Use <tt>QCache</tt> where is makes sense. Maybe
- * @ref PerceptualColor::ColorEngine::reduceCielchD50ChromaToFitIntoGamut() or
+ * @ref PerceptualColor::AbsoluteColor::reduceChromaToFitIntoGamut() or
  * @ref PerceptualColor::AbsoluteColor::isCielchD50InSRgbGamut() or
  * @ref PerceptualColor::AbsoluteColor::isCielabD50InSRgbGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(().

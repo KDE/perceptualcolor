@@ -233,7 +233,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     candidate.second = 0;
     candidate.third = 0;
     candidate.first = 0;
-    while (!AbsoluteColor::isCielchD50InSRgbGamut(candidate)) {
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::CielchD50)) {
         candidate.first += gamutPrecisionCielab;
         if (candidate.first >= 100) {
             return false;
@@ -241,7 +241,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     }
     m_cielabD50BlackpointL = candidate.first;
     candidate.first = 100;
-    while (!AbsoluteColor::isCielchD50InSRgbGamut(candidate)) {
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::CielchD50)) {
         candidate.first -= gamutPrecisionCielab;
         if (candidate.first <= m_cielabD50BlackpointL) {
             return false;
@@ -250,7 +250,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     m_cielabD50WhitepointL = candidate.first;
     // For Oklab make sure that: 0 <= blackbpoint < whitepoint <= 1
     candidate.first = 0;
-    while (!AbsoluteColor::isOklchInSRgbGamut(candidate)) {
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::Oklch)) {
         candidate.first += gamutPrecisionOklab;
         if (candidate.first >= 1) {
             return false;
@@ -258,7 +258,7 @@ bool ColorEnginePrivate::initialize(cmsHPROFILE rgbProfileHandle)
     }
     m_oklabBlackpointL = candidate.first;
     candidate.first = 1;
-    while (!AbsoluteColor::isOklchInSRgbGamut(candidate)) {
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::Oklch)) {
         candidate.first -= gamutPrecisionOklab;
         if (candidate.first <= m_oklabBlackpointL) {
             return false;
@@ -332,134 +332,6 @@ double ColorEngine::profileMaximumCielchD50Chroma() const
 double ColorEngine::profileMaximumOklchChroma() const
 {
     return d_pointer->m_profileMaximumOklchChroma;
-}
-
-/** @brief Reduces the chroma until the color fits into the gamut.
- *
- * It always preserves the hue. It preservers the lightness whenever
- * possible.
- *
- * @note In some cases with very curvy color spaces, the nearest in-gamut
- * color (with the same lightness and hue) might be at <em>higher</em>
- * chroma. As this function always <em>reduces</em> the chroma,
- * in this case the result is not the nearest in-gamut color.
- *
- * @param cielchD50color The color that will be adapted.
- *
- * @returns An sRGB in-gamut color. */
-PerceptualColor::GenericColor ColorEngine::reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const
-{
-    GenericColor referenceColor = cielchD50color;
-
-    // Normalize the LCH coordinates
-    normalizePolar360(referenceColor.second, referenceColor.third);
-
-    // Bound to valid range:
-    referenceColor.second = qMin<decltype(referenceColor.second)>( //
-        referenceColor.second, //
-        profileMaximumCielchD50Chroma());
-    referenceColor.first = qBound(d_pointer->m_cielabD50BlackpointL, //
-                                  referenceColor.first, //
-                                  d_pointer->m_cielabD50WhitepointL);
-
-    // Test special case: If we are yet in-gamut…
-    if (AbsoluteColor::isCielchD50InSRgbGamut(referenceColor)) {
-        return referenceColor;
-    }
-
-    // Now we know: We are out-of-gamut.
-    GenericColor temp;
-
-    // Create an in-gamut point on the gray axis:
-    GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
-    if (!AbsoluteColor::isCielchD50InSRgbGamut(lowerChroma)) {
-        // This is quite strange because every point between the blackpoint
-        // and the whitepoint on the gray axis should be in-gamut on
-        // normally shaped gamuts. But as we never know, we need a fallback,
-        // which is guaranteed to be in-gamut:
-        referenceColor.first = d_pointer->m_cielabD50BlackpointL;
-        lowerChroma.first = d_pointer->m_cielabD50BlackpointL;
-    }
-    // Do a quick-approximate search:
-    GenericColor upperChroma{referenceColor};
-    // Now we know for sure that lowerChroma is in-gamut
-    // and upperChroma is out-of-gamut…
-    temp = upperChroma;
-    while (upperChroma.second - lowerChroma.second > gamutPrecisionCielab) {
-        // Our test candidate is half the way between lowerChroma
-        // and upperChroma:
-        temp.second = ((lowerChroma.second + upperChroma.second) / 2);
-        if (AbsoluteColor::isCielchD50InSRgbGamut(temp)) {
-            lowerChroma = temp;
-        } else {
-            upperChroma = temp;
-        }
-    }
-    return lowerChroma;
-}
-
-/** @brief Reduces the chroma until the color fits into the gamut.
- *
- * It always preserves the hue. It preservers the lightness whenever
- * possible.
- *
- * @note In some cases with very curvy color spaces, the nearest in-gamut
- * color (with the same lightness and hue) might be at <em>higher</em>
- * chroma. As this function always <em>reduces</em> the chroma,
- * in this case the result is not the nearest in-gamut color.
- *
- * @param oklchColor The color that will be adapted.
- *
- * @returns An sRGB in-gamut color. */
-PerceptualColor::GenericColor ColorEngine::reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const
-{
-    GenericColor referenceColor = oklchColor;
-
-    // Normalize the LCH coordinates
-    normalizePolar360(referenceColor.second, referenceColor.third);
-
-    // Bound to valid range:
-    referenceColor.second = qMin<decltype(referenceColor.second)>( //
-        referenceColor.second, //
-        profileMaximumOklchChroma());
-    referenceColor.first = qBound(d_pointer->m_oklabBlackpointL,
-                                  referenceColor.first, //
-                                  d_pointer->m_oklabWhitepointL);
-
-    // Test special case: If we are yet in-gamut…
-    if (AbsoluteColor::isOklchInSRgbGamut(referenceColor)) {
-        return referenceColor;
-    }
-
-    // Now we know: We are out-of-gamut.
-    GenericColor temp;
-
-    // Create an in-gamut point on the gray axis:
-    GenericColor lowerChroma{referenceColor.first, 0, referenceColor.third};
-    if (!AbsoluteColor::isOklchInSRgbGamut(lowerChroma)) {
-        // This is quite strange because every point between the blackpoint
-        // and the whitepoint on the gray axis should be in-gamut on
-        // normally shaped gamuts. But as we never know, we need a fallback,
-        // which is guaranteed to be in-gamut:
-        referenceColor.first = d_pointer->m_oklabBlackpointL;
-        lowerChroma.first = d_pointer->m_oklabBlackpointL;
-    }
-    // Do a quick-approximate search:
-    GenericColor upperChroma{referenceColor};
-    // Now we know for sure that lowerChroma is in-gamut
-    // and upperChroma is out-of-gamut…
-    temp = upperChroma;
-    while (upperChroma.second - lowerChroma.second > gamutPrecisionOklab) {
-        // Our test candidate is half the way between lowerChroma
-        // and upperChroma:
-        temp.second = ((lowerChroma.second + upperChroma.second) / 2);
-        if (AbsoluteColor::isOklchInSRgbGamut(temp)) {
-            lowerChroma = temp;
-        } else {
-            upperChroma = temp;
-        }
-    }
-    return lowerChroma;
 }
 
 /**

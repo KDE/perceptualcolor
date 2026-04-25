@@ -46,13 +46,6 @@ public: // Static factory functions
 
 public:
     virtual ~ColorEngine() noexcept override;
-    // The function declaration is kept on a single line to prevent issues
-    // with Doxygen parsing.
-    // clang-format is disabled here to prevent automatic line breaks.
-    // clang-format off
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor reduceCielchD50ChromaToFitIntoGamut(const PerceptualColor::GenericColor &cielchD50color) const;
-    // clang-format on
-    [[nodiscard]] Q_INVOKABLE virtual PerceptualColor::GenericColor reduceOklchChromaToFitIntoGamut(const PerceptualColor::GenericColor &oklchColor) const;
 
 private:
     Q_DISABLE_COPY(ColorEngine)

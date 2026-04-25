@@ -5,6 +5,7 @@
 // this forces the header to be self-contained.
 #include "chromainfo.h"
 
+#include "helpermath.h"
 #include <qtest.h>
 #include <qtestcase.h>
 
@@ -79,6 +80,26 @@ private Q_SLOTS:
     {
         const auto temp = ChromaInfo::maxChromaColorByOklabHue360(42);
         Q_UNUSED(temp);
+    }
+
+    void testCielabD50BlackpointL()
+    {
+        QVERIFY(isInRange<double>(0, ChromaInfo::cielabD50BlackpointL(), 1));
+    }
+
+    void testCielabD50WhitepointL()
+    {
+        QVERIFY(isInRange<double>(99, ChromaInfo::cielabD50WhitepointL(), 100));
+    }
+
+    void testOklabBlackpointL()
+    {
+        QVERIFY(isInRange<double>(0, ChromaInfo::oklabBlackpointL(), 0.01));
+    }
+
+    void testOklabWhitepointL()
+    {
+        QVERIFY(isInRange<double>(0.99, ChromaInfo::oklabWhitepointL(), 1));
     }
 };
 

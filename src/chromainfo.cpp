@@ -43,7 +43,7 @@ namespace PerceptualColor
  *
  * @returns Meyer’s singleton: Provides the instance of this class as reference.
  */
-ChromaInfo &ChromaInfo::instance()
+const ChromaInfo &ChromaInfo::instance()
 {
     static ChromaInfo s;
     return s;
@@ -82,6 +82,51 @@ double ChromaInfo::maxOklchChroma()
  */
 ChromaInfo::ChromaInfo()
 {
+    // Find blackpoint and whitepoint.
+    // For CielabD50 make sure that: 0 <= blackpoint < whitepoint <= 100
+    GenericColor candidate;
+    candidate.second = 0;
+    candidate.third = 0;
+    candidate.first = 0;
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::CielchD50)) {
+        candidate.first += gamutPrecisionCielab;
+        if (candidate.first >= 100) {
+            candidate.first = 100;
+            break;
+        }
+    }
+    m_cielabD50BlackpointL = candidate.first;
+    candidate.first = 100;
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::CielchD50)) {
+        candidate.first -= gamutPrecisionCielab;
+        if (candidate.first <= m_cielabD50BlackpointL) {
+            candidate.first = m_cielabD50BlackpointL;
+            break;
+        }
+    }
+    m_cielabD50WhitepointL = candidate.first;
+    // For Oklab make sure that: 0 <= blackbpoint < whitepoint <= 1
+    candidate.first = 0;
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::Oklch)) {
+        candidate.first += gamutPrecisionOklab;
+        if (candidate.first >= 1) {
+            candidate.first = 1;
+            break;
+        }
+    }
+    m_oklabBlackpointL = candidate.first;
+    candidate.first = 1;
+    while (!AbsoluteColor::isLchInSRgbGamut(candidate, LchSpace::Oklch)) {
+        candidate.first -= gamutPrecisionOklab;
+        if (candidate.first <= m_oklabBlackpointL) {
+            candidate.first = m_oklabBlackpointL;
+            break;
+        }
+    }
+    m_oklabWhitepointL = candidate.first;
+
+    // Now, calculate the properties who’s calculation depends on a fully
+    // initialized object.
     QList<QColor> chromaticityBoundaryQColor;
     chromaticityBoundaryQColor.reserve(256 * 6);
     for (int value = 0; value <= 255; ++value) {
@@ -229,6 +274,54 @@ QColor ChromaInfo::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpa
     } else {
         return greaterOrEqual->second;
     }
+}
+
+/**
+ * @brief The darkest in-gamut point on the L* axis.
+ *
+ * @returns The darkest in-gamut point on the L* axis.
+ *
+ * @sa @ref m_cielabD50WhitepointL()
+ */
+double ChromaInfo::cielabD50BlackpointL()
+{
+    return instance().m_cielabD50BlackpointL;
+}
+
+/**
+ * @brief The lightest in-gamut point on the L* axis.
+ *
+ * @returns The lightest in-gamut point on the L* axis.
+ *
+ * @sa @ref m_cielabD50BlackpointL()
+ */
+double ChromaInfo::cielabD50WhitepointL()
+{
+    return instance().m_cielabD50WhitepointL;
+}
+
+/**
+ * @brief The darkest in-gamut point on the L* axis.
+ *
+ * @returns The darkest in-gamut point on the L* axis.
+ *
+ * @sa @ref m_oklabWhitepointL()
+ */
+double ChromaInfo::oklabBlackpointL()
+{
+    return instance().m_oklabBlackpointL;
+}
+
+/**
+ * @brief The lightest in-gamut point on the L* axis.
+ *
+ * @returns The lightest in-gamut point on the L* axis.
+ *
+ * @sa @ref m_oklabBlackpointL()
+ */
+double ChromaInfo::oklabWhitepointL()
+{
+    return instance().m_oklabWhitepointL;
 }
 
 } // namespace PerceptualColor

@@ -224,7 +224,7 @@ private Q_SLOTS:
 
         // Now, the chroma-lightness coordinates are out-of-gamut for
         // the new hue. Test if they have been corrected:
-        QVERIFY(AbsoluteColor::isCielchD50InSRgbGamut(myWidget.currentColorLch()));
+        QVERIFY(AbsoluteColor::isLchInSRgbGamut(myWidget.currentColorLch(), LchSpace::CielchD50));
     }
 };
 

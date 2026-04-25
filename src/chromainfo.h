@@ -37,10 +37,14 @@ namespace PerceptualColor
 class ChromaInfo
 {
 public:
+    [[nodiscard]] static double cielabD50BlackpointL();
+    [[nodiscard]] static double cielabD50WhitepointL();
     [[nodiscard]] static QColor maxChromaColorByCielchD50Hue360(double hue360);
     [[nodiscard]] static QColor maxChromaColorByOklabHue360(double hue360);
     [[nodiscard]] static double maxCielchD50Chroma();
     [[nodiscard]] static double maxOklchChroma();
+    [[nodiscard]] static double oklabBlackpointL();
+    [[nodiscard]] static double oklabWhitepointL();
 
 private:
     Q_DISABLE_COPY(ChromaInfo)
@@ -52,7 +56,7 @@ private:
     friend class TestChromaInfo;
 
     ChromaInfo();
-    [[nodiscard]] static ChromaInfo &instance();
+    [[nodiscard]] static const ChromaInfo &instance();
     virtual ~ChromaInfo() noexcept;
 
     [[nodiscard]] static QColor maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type);
@@ -91,6 +95,27 @@ private:
      * The hue is normalized to the range [0, 360].
      */
     std::map<double, QColor> m_chromaticityBoundaryByOklabHue360;
+
+    /** @brief The darkest in-gamut point on the L* axis.
+     *
+     * @sa @ref m_cielabD50WhitepointL()
+     */
+    qreal m_cielabD50BlackpointL = 0;
+    /** @brief The lightest in-gamut point on the L* axis.
+     *
+     * @sa @ref m_cielabD50BlackpointL()
+     */
+    qreal m_cielabD50WhitepointL = 100;
+    /** @brief The darkest in-gamut point on the L* axis.
+     *
+     * @sa @ref m_oklabWhitepointL()
+     */
+    qreal m_oklabBlackpointL = 0;
+    /** @brief The lightest in-gamut point on the L* axis.
+     *
+     * @sa @ref m_oklabBlackpointL()
+     */
+    qreal m_oklabWhitepointL = 1;
     /**
      * @brief Internal storage.
      */
