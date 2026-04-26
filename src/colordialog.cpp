@@ -54,6 +54,7 @@
 #include <qlist.h>
 #include <qlocale.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qregularexpression.h>
@@ -73,15 +74,12 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-class QShowEvent;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qobjectdefs.h>
-#endif
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
 #include <qstylehints.h>
 #endif
+
+class QShowEvent;
 
 namespace PerceptualColor
 {

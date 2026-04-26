@@ -83,13 +83,10 @@
 #include <qstylefactory.h> // IWYU pragma: keep
 #include <qthread.h> // IWYU pragma: keep
 #include <qtimer.h> // IWYU pragma: keep
+#include <qtmetamacros.h> // IWYU pragma: keep
 #include <qtranslator.h> // IWYU pragma: keep
 #include <type_traits> // IWYU pragma: keep
 #include <utility> // IWYU pragma: keep
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h> // IWYU pragma: keep
-#endif
 
 using namespace PerceptualColor;
 
@@ -105,11 +102,6 @@ static_assert(std::is_enum_v<MyEnum>);
 // This is just a program for testing purposes.
 int main(int argc, char *argv[])
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    // Prepare configuration before instantiating the application object
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-
     // Instantiate the application object
     QApplication app(argc, argv);
 
@@ -156,12 +148,11 @@ int main(int argc, char *argv[])
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Cleanlooks")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("IaOra"))); // https://store.kde.org/p/1183616
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("motif")));
-    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastik"))); // From https://github.com/MartinF99/PlastikStyle (Qt5 + Qt6)
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastik"))); // From https://github.com/MartinF99/PlastikStyle
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastique")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Oxygen")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Breeze")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Windows")));
-    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("chameleon"))); // From package dde-qt5integration (deepin desktop environment)
 
     // QScopedPointer<QStyle> tempStyle(QStyleFactory::create(QStringLiteral("Fusion")));
     // qDebug() << tempStyle->standardPalette();
@@ -336,17 +327,20 @@ int main(int argc, char *argv[])
     // box.show();
     QObject::connect(&box, //
                      &MultiSpinBox::valuesChangedAsQString, //
-                     [=](const QString &v) {
+                     &box,
+                     [](const QString &v) {
                          qDebug() << "textChanged()" << v;
                      });
     QObject::connect(&box, //
                      &MultiSpinBox::valuesChanged, //
-                     [=](const QList<double> &newValues) {
+                     &box,
+                     [](const QList<double> &newValues) {
                          qDebug() << "valueChanged()" << newValues;
                      });
     QObject::connect(&box, //
                      &MultiSpinBox::editingFinished, //
-                     [=]() {
+                     &box,
+                     []() {
                          qDebug() << "Editing finished!";
                      });
 

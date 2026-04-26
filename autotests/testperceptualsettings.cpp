@@ -17,10 +17,7 @@
 #include <qtest.h>
 #include <qtest_gui.h>
 #include <qtestcase.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
 
 static void snippet01()
 {

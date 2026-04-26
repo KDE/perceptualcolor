@@ -34,13 +34,10 @@
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
 #include <qtestsupport_widgets.h>
+#include <qtmetamacros.h>
 #include <qvalidator.h>
 #include <qvariant.h>
 #include <qwidget.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 // From Qt documentation:
 //     “Note: This function is not declared in any of Qt's header files. To

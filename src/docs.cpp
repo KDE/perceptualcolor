@@ -12,31 +12,12 @@
  * Build-time dependencies:
  * - Qt 6 (minimum version: 6.0.0).
  *   Components: Core, Gui, Widgets, DBus, Test, Svg.
- * <!--
- *     This library officially supports only Qt 6. Qt 5.15 builds are
- *     maintained solely for internal testing purposes and are not part of the
- *     public API contract. Qt 5.15 provides an API that is yet largely similar
- *     to Qt 6 and includes many of the newer functions, allowing us to avoid
- *     deprecated or removed legacy calls in Qt 6 production code. Note that
- *     Qt 5 support is minimal, intended only for internal use.  For Qt 6, we
- *     aim to keep compiler warnings to a minimum. For Qt 5, compiler warnings
- *     are not a concern.
- *
- *     We keep internal builds working with Qt 5.15 because it offers a
- *     significantly wider range of QStyle implementations than Qt 6. This is
- *     a widget UI library, and thorough testing across diverse styles is
- *     essential.
- * -->
  * - CMake
  * - ECM (Extra CMake Modules from KDE)
  * - C++17
  * - Both, the input character set and the execution character set, have
  *   to be UTF8. (See @ref compilercharacterset for more details.)
  * <!--
- *      Qt 5.6 only required C++03. Only starting
- *      with Qt 5.7, Qt itself requires C++11. Source:
- *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
- *
  *      Qt 6 requires minimum C++17, as
  *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
  *      explains.
@@ -347,8 +328,19 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo NICETOHAVE Get rid of Qt5 support if we have enough Qt6 QStyle
- * implementations for testing.
+ * @todo NICETOHAVE Raise Qt version beyond 6.0.0, raise
+ * QT_DISABLE_DEPRECATED_UP_TO and QT_ENABLE_STRICT_MODE_UP_TO in CMake and
+ * remove QT_VERSION usages in the codebase? What would be an appropriate
+ * target version? What policy do KDE libraries have for Qt version?
+ * And our Ubuntu-22.04-based unit tests currently only provide Qt 6.2.4,
+ * or is there an Ubuntu repository that provides a newer Qt version, maybe
+ * the KDE repository? See also
+ * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
+ * Policy</a>
+ *
+ * @todo SHOULDHAVE Comply with
+ * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
+ * Policy</a>
  *
  * @todo SHOULDHAVE Screen for dead code and remove it.
  *
@@ -446,9 +438,6 @@
  * @todo SHOULDHAVE Optimize time-critical rendering (chroma-lightness and
  * chroma-hue diagrams).
  *
- * @todo NICETOHAVE Get rid of the “deprecated” warnings of Qt by using
- * conditional compiling while preserving Qt-5 compatibility.
- *
  * @todo SHOULDHAVE When using the ITUR profiles, the relation between the
  * diagrams and the numeric values seems strange. And there are artefacts
  * in the diagrams.
@@ -537,18 +526,6 @@
  * @ref PerceptualColor::AbsoluteColor::isCielchD50InSRgbGamut() or
  * @ref PerceptualColor::AbsoluteColor::isCielabD50InSRgbGamut() or
  * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(().
- *
- * @todo SHOULDHAVE If using the Motif style (only available in Qt 5, not
- * in Qt 6), the @ref PerceptualColor::ChromaHueDiagram
- * widget, which has circular look-and-feel, has a rectangular focus
- * indicator corresponding the rectangular widget geometry, which looks
- * quite ugly. On the other hand, @ref PerceptualColor::WheelColorPicker
- * has also circular  look-and-feel, but no rectangular focus indicator
- * corresponding the rectangular widget geometry, which looks better.
- * Why doesn’t @ref PerceptualColor::ChromaHueDiagram also behave
- * like @ref PerceptualColor::WheelColorPicker? And
- * how does @ref PerceptualColor::ColorWheel behave?
- * Anyway, why is this focus indicator painted at all? It should not!
  *
  * @todo SHOULDHAVE We do some hacks to get circle-like (instead of rectangular)
  * feeling for our circular widgets, which is not perfect when talking
@@ -1142,7 +1119,9 @@
  *
  * @todo SHOULDHAVE <tt>operator&lt;&lt;</tt> and <tt>operator==</tt> actually
  * cover all data members. (Or: Switch from C++17 to C++20 and use default
- * operators or <tt>operator&lt;==&lt;</tt>.)
+ * operators or <tt>operator&lt;==&lt;</tt>, which is allowed as by
+ * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
+ * Policy</a>)
  *
  * @todo SHOULDHAVE From
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">

@@ -12,10 +12,7 @@
 #include <qlist.h>
 #include <qmetatype.h>
 #include <qstring.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

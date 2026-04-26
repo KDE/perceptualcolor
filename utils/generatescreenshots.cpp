@@ -27,6 +27,7 @@
 #include <qcombobox.h>
 #include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
+#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qdebug.h>
@@ -54,10 +55,6 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qcontainerfwd.h>
-#endif
 
 using namespace PerceptualColor;
 
@@ -568,11 +565,6 @@ int main(int argc, char *argv[])
         // destroyed and a new one has been created.
         qputenv("QT_SCALE_FACTOR", QString::number(qtScaleFactor).toUtf8());
     }
-
-    // Prepare configuration before instantiating the application object
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
 
     // Instantiate the application object
     QApplication app(argc, argv);

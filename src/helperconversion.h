@@ -10,11 +10,8 @@
 #include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
-#include <type_traits>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <type_traits>
 
 /** @internal
  *
@@ -131,10 +128,6 @@ enum class LchSpace {
     adaption to the D50 whitepoint. */
 };
 Q_ENUM_NS(LchSpace)
-
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-uint qHash(const ColorModel t, uint seed = 0); // clazy:exclude=qt6-qhash-signature
-#endif
 
 /** @internal
  *

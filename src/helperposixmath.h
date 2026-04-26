@@ -16,7 +16,7 @@ namespace PerceptualColor
  *
  * @brief pi
  *
- * Alternaive to <tt>std::numbers::pi</tt> (only available starting with
+ * Alternative to <tt>std::numbers::pi</tt> (only available starting with
  * C++20, be we have C++17 compatibility here), and to M_PI.
  *
  * From <tt>&lt;qmath.h&gt;</tt> documentation:

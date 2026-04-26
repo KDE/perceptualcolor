@@ -70,11 +70,7 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
 {
     // Mutex protection
     static QMutex mutex;
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     QMutexLocker<QMutex> mutexLocker(&mutex);
-#else
-    QMutexLocker mutexLocker(&mutex);
-#endif
 
     // Check of pre-conditions
     // The mutex lowers the risk when using QCoreApplication::instance()

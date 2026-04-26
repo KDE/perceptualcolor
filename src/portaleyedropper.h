@@ -8,10 +8,7 @@
 #include <qcontainerfwd.h>
 #include <qglobal.h>
 #include <qobject.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
 
 class QWidget;
 

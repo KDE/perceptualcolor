@@ -29,13 +29,10 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
+#include <qtmetamacros.h>
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

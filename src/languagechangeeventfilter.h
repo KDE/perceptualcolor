@@ -6,11 +6,8 @@
 
 #include <qglobal.h>
 #include <qobject.h>
-class QEvent;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+class QEvent;
 
 namespace PerceptualColor
 {

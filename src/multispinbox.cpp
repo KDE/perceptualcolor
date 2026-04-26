@@ -1252,7 +1252,7 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
     // The same also applies to suffix.
     // That means, Qt documentation is wrong, because
     // https://doc.qt.io/qt-6/qstring.html#distinction-between-null-and-empty-strings
-    // (and at its Qt-5-counterpart) says:
+    // says:
     //     “All functions except isNull() treat null strings the same
     //      as empty strings.”
     // This is apparently wrong (at least for Qt 5).

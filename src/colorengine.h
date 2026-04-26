@@ -19,12 +19,9 @@
 #include <qrgb.h>
 #include <qsharedpointer.h>
 #include <qstring.h>
+#include <qtmetamacros.h>
 #include <qversionnumber.h>
 class QRgba64;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 Q_DECLARE_METATYPE(cmsColorSpaceSignature)
 Q_DECLARE_METATYPE(cmsProfileClassSignature)

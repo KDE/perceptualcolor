@@ -202,14 +202,24 @@ add_compile_definitions(
     QT_USE_QSTRINGBUILDER
     QT_NO_KEYWORDS
     QT_NO_FOREACH
-    # DQT_DISABLE_DEPRECATED_BEFORE disables all deprecated features.
+    QT_NO_QEXCHANGE
+    QT_NO_CONTEXTLESS_CONNECT
+    QT_NO_QASCONST
+    QT_USE_NODISCARD_FILE_OPEN
+    QT_NO_QSNPRINTF
+    QT_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD
+    # Disables all deprecated features.
     # While normal deprecation warnings are NOT issued for ALL deprecated
     # features, THIS flag actually seems to block actually all deprecated
     # features:
-    QT_DISABLE_DEPRECATED_BEFORE=0x060000
-    # Do not issue warnings for Qt API that was deprecated from Qt 6.0 on
-    # because avoiding them usually means break Qt 5 compaptibility.
+    QT_DISABLE_DEPRECATED_UP_TO=0x050F00
+    # Do not issue warnings for Qt API that was deprecated from Qt 6.0.
     QT_WARN_DEPRECATED_UP_TO=0x060000
+    # WARNING: Define QT_ENABLE_STRICT_MODE_UP_TO only after
+    # QT_DISABLE_DEPRECATED_UP_TO. Otherwise, Qt would redefine
+    # QT_DISABLE_DEPRECATED_UP_TO and we would lose
+    # control over its value.
+    QT_ENABLE_STRICT_MODE_UP_TO=0x060A00
     # This might crash on older Qt versions on Windows,
     # see https://bugreports.qt.io/browse/AUTOSUITE-946.
     # But we do not support older Qt versions anyway:
@@ -552,17 +562,7 @@ find_package(
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-option(BUILD_WITH_QT6 "ON = build with Qt6. OFF = build with Qt5." ON)
-if(BUILD_WITH_QT6)
-    set(QT_MAJOR_VERSION 6)
-else()
-    set(QT_MAJOR_VERSION 5)
-endif()
-message(
-    STATUS
-    "Building against Qt${QT_MAJOR_VERSION}.\n"
-    "   You can control this with “-DBUILD_WITH_QT6=ON” (build with Qt6)\n"
-    "   or “-DBUILD_WITH_QT6=OFF” (build with Qt5).")
+set(QT_MAJOR_VERSION 6)
 find_package(
     Qt${QT_MAJOR_VERSION}
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!

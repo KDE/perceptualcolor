@@ -12,11 +12,8 @@
 #include <qmetaobject.h>
 #include <qmetatype.h>
 #include <qstring.h>
-#include <qvariant.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <qvariant.h>
 
 class QObject;
 
@@ -113,10 +110,6 @@ Setting<T>::Setting(const QString &key, Settings *settings, QObject *parent)
     // QSettings seems to use indirectly QMetaType::load() which requires
     // to register all custom types as QMetaType.
     qRegisterMetaType<T>();
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    // Also stream operators are required.
-    qRegisterMetaTypeStreamOperators<T>();
-#endif
 
     if constexpr (m_isEnum) {
         m_qMetaEnum = QMetaEnum::fromType<T>();

@@ -8,10 +8,7 @@
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
 
 class QSettings;
 

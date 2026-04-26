@@ -26,6 +26,7 @@
 #include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qtmetamacros.h>
 class QAction;
 class QComboBox;
 class QDialogButtonBox;
@@ -40,10 +41,6 @@ class QStackedLayout;
 class QTabWidget;
 class QToolButton;
 class QWidget;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

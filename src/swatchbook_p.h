@@ -18,12 +18,9 @@
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyleoption.h>
+#include <qtmetamacros.h>
 #include <utility>
 class QPainter;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

@@ -16,11 +16,8 @@
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>
-class QDoubleValidator;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+class QDoubleValidator;
 
 namespace PerceptualColor
 {

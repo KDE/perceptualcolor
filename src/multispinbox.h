@@ -14,11 +14,8 @@
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qsize.h>
-#include <qvalidator.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <qvalidator.h>
 
 class QAction;
 class QActionEvent;

@@ -14,14 +14,11 @@
 #include <qnamespace.h>
 #include <qsharedpointer.h>
 #include <qstring.h>
+#include <qtmetamacros.h>
 class QEvent;
 class QObject;
 class QShowEvent;
 class QWidget;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

@@ -56,14 +56,11 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
+#include <qtmetamacros.h>
 #include <qtoolbutton.h> // IWYU pragma: keep
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 // From Qt documentation:
 //     “Note: This function is not declared in any of Qt's header files. To
@@ -806,12 +803,8 @@ private Q_SLOTS:
             QCOMPARE(testClassProperty.notifySignal().typeName(), //
                      referenceClassProperty.notifySignal().typeName());
         }
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QCOMPARE(testClassProperty.metaType(), //
                  referenceClassProperty.metaType());
-#else
-        QCOMPARE(testClassProperty.type(), referenceClassProperty.type());
-#endif
         QCOMPARE(testClassProperty.typeName(), //
                  referenceClassProperty.typeName());
         QCOMPARE(testClassProperty.userType(), //

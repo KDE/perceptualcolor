@@ -19,12 +19,9 @@
 #include <qrgb.h>
 #include <qsharedpointer.h>
 #include <qstring.h>
+#include <qtmetamacros.h>
 #include <qversionnumber.h>
 class QRgba64;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {
@@ -33,6 +30,9 @@ namespace PerceptualColor
  * @internal
  *
  * @brief Access to chroma-related data.
+ *
+ * @todo SHOULDHAVE Rename this class, because it is not only about chroma,
+ * but also about lightness.
  */
 class ChromaInfo
 {

@@ -19,11 +19,8 @@
 #include <qglobal.h>
 #include <qlist.h>
 #include <qstring.h>
-#include <qversionnumber.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <qversionnumber.h>
 
 namespace PerceptualColor
 {

@@ -13,14 +13,11 @@
 #include <qglobal.h>
 #include <qimage.h>
 #include <qsize.h>
+#include <qtmetamacros.h>
 #include <qwidget.h>
+
 class QHideEvent;
 class QShowEvent;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include "helperconversion.h"
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

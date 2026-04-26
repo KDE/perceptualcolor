@@ -63,11 +63,7 @@ AsyncImageRenderThread::~AsyncImageRenderThread()
  * The rendering will emit the signal @ref interlacingPassCompleted(). */
 void AsyncImageRenderThread::startRenderingAsync(const QVariant &parameters)
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     QMutexLocker<QMutex> loopLocker(&m_loopMutex);
-#else
-    QMutexLocker loopLocker(&m_loopMutex);
-#endif
 
     if (m_imageParameters == parameters) {
         // Nothing to do here.
@@ -77,11 +73,7 @@ void AsyncImageRenderThread::startRenderingAsync(const QVariant &parameters)
     m_imageParameters = parameters;
 
     {
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
         QMutexLocker<QMutex> syncLocker(&m_syncMutex);
-#else
-        QMutexLocker syncLocker(&m_syncMutex);
-#endif
         m_syncIsIdle = false;
     }
     if (!isRunning()) {
@@ -142,11 +134,7 @@ void AsyncImageRenderThread::run()
         //      looping indefinitely while there's nothing to do.”
         m_loopMutex.lock();
         if (!m_loopRestart && !m_loopAbort) {
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
             QMutexLocker<QMutex> syncLocker(&m_syncMutex);
-#else
-            QMutexLocker syncLocker(&m_syncMutex);
-#endif
             m_syncIsIdle = true;
             m_syncCondition.wakeOne();
         }

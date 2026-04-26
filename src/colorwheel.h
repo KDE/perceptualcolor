@@ -10,16 +10,13 @@
 #include <qglobal.h>
 #include <qsharedpointer.h>
 #include <qsize.h>
+#include <qtmetamacros.h>
 class QKeyEvent;
 class QMouseEvent;
 class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
 class QWidget;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-#include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

@@ -12,11 +12,8 @@
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>
-#include <qvariant.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <qvariant.h>
 
 //! [How to create]
 // Provide a data type that contains

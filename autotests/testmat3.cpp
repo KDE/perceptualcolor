@@ -10,11 +10,8 @@
 #include <qgenericmatrix.h>
 #include <qtest.h>
 #include <qtestcase.h>
-#include <type_traits>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <type_traits>
 
 namespace PerceptualColor
 {

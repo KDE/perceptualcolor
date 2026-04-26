@@ -16,10 +16,7 @@ class QMouseEvent;
 class QPaintEvent;
 class QResizeEvent;
 class QWidget;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
 
 namespace PerceptualColor
 {

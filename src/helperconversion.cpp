@@ -23,24 +23,4 @@ cmsCIELab toCmsLab(const cmsCIELCh &value)
     return lab;
 }
 
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-/** @internal
- *
- * @brief A qHash function for @ref ColorModel.
- *
- * Qt5 needs a qHash function if QHash’s key is an enum class. Qt6 does not
- * need this. Therefore, this function is only compiled into the Qt5 builds.
- *
- * @warning This is not part of the public API! It can change or be
- * removed totally at any time. */
-uint qHash(const ColorModel t, uint seed) // clazy:exclude=qt6-qhash-signature
-{
-    using UnderlyingType = std::underlying_type<ColorModel>::type;
-    const auto underlyingValue = static_cast<UnderlyingType>(t);
-    // “::” selects one of Qt’s qHash functions (instead of recursively calling
-    // this very same function).
-    return ::qHash(underlyingValue, seed);
-}
-#endif
-
 } // namespace PerceptualColor

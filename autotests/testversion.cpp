@@ -9,11 +9,8 @@
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>
-#include <qversionnumber.h>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #include <qtmetamacros.h>
-#endif
+#include <qversionnumber.h>
 
 static void snippet01()
 {
