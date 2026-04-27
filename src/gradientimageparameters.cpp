@@ -7,7 +7,6 @@
 
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
-#include "colorengine.h"
 #include "helper.h"
 #include "lchvalues.h"
 #include <cmath>
@@ -130,9 +129,6 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
     }
     const GradientImageParameters parameters = //
         variantParameters.value<GradientImageParameters>();
-    if (parameters.colorEngine.isNull()) {
-        return;
-    }
 
     // From Qt Example’s documentation:
     //
@@ -326,7 +322,6 @@ bool GradientImageParameters::operator==(const GradientImageParameters &other) c
         && (m_firstColorCorrected.fourth == other.m_firstColorCorrected.fourth) //
         && (m_gradientLength == other.m_gradientLength) //
         && (m_gradientThickness == other.m_gradientThickness) //
-        && (colorEngine == other.colorEngine) //
         && (m_secondColorCorrectedAndAltered.first == other.m_secondColorCorrectedAndAltered.first) //
         && (m_secondColorCorrectedAndAltered.second == other.m_secondColorCorrectedAndAltered.second) //
         && (m_secondColorCorrectedAndAltered.third == other.m_secondColorCorrectedAndAltered.third) //

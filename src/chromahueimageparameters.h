@@ -16,17 +16,12 @@ class QSize;
 namespace PerceptualColor
 {
 class AsyncImageRenderCallback;
-class ColorEngine;
 
 /** @internal
  *
  * @brief Parameters for an image of a chroma hue plane.
  *
  * For usage with @ref AsyncImageProvider.
- *
- * @warning The default constructor constructs an object with an empty
- * @ref colorEngine. Before using this object, you should initialize
- * @ref colorEngine.
  *
  * This is a cut through the gamut body. The cut is orthogonal to
  * the L axis, so it shows the a‑b diagram (speaking in terms of
@@ -70,12 +65,6 @@ public:
      *
      * Range: <tt>[0, 100]</tt> */
     qreal lightness = 50;
-    /** @brief Pointer to @ref ColorEngine object
-     *
-     * @warning The default constructor constructs an object with an empty
-     * @ref colorEngine. Before using this object, you must initialize
-     * @ref colorEngine. */
-    QSharedPointer<PerceptualColor::ColorEngine> colorEngine = nullptr;
     /**
      * @brief The color space into which the working space is projected.
      */
@@ -91,6 +80,7 @@ private:
 
     static void renderByRow(uchar *const bytesPtr,
                             const qsizetype bytesPerLine,
+                            // cppcheck-suppress passedByValue
                             const ChromaHueImageParameters parameters,
                             const qreal shift,
                             const qreal scaleFactor,

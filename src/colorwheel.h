@@ -22,8 +22,6 @@ namespace PerceptualColor
 {
 class ColorWheelPrivate;
 
-class ColorEngine;
-
 /**
  * @internal
  *
@@ -75,9 +73,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorWheel : public AbstractDiagram
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged USER true)
 
 public:
-    Q_INVOKABLE explicit ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                    const PerceptualColor::LchSpace projectionSpace,
-                                    QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~ColorWheel() noexcept override;
     /** @brief Getter for property @ref hue
      *  @returns the property @ref hue */

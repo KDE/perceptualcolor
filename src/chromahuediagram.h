@@ -22,15 +22,9 @@ class QWidget;
 
 namespace PerceptualColor
 {
-class ChromaHueDiagramPrivate;
-}
-namespace PerceptualColor
-{
-class ColorEngine;
-}
 
-namespace PerceptualColor
-{
+class ChromaHueDiagramPrivate;
+
 /**
  * @internal
  *
@@ -121,9 +115,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaHueDiagram : public AbstractDi
     Q_PROPERTY(GenericColor currentColorLch READ currentColorLch WRITE setCurrentColorLch NOTIFY currentColorLchChanged)
 
 public:
-    Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                          const PerceptualColor::LchSpace projectionSpace,
-                                          QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
     /** @brief Getter for property @ref currentColorLch
      *  @returns the property @ref currentColorLch */

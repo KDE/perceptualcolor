@@ -17,7 +17,6 @@ class QWidget;
 
 namespace PerceptualColor
 {
-class ColorEngine;
 
 class WheelColorPickerPrivate;
 
@@ -52,9 +51,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT WheelColorPicker : public AbstractDi
     // clang-format on
 
 public:
-    Q_INVOKABLE explicit WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                          const PerceptualColor::LchSpace projectionSpace,
-                                          QWidget *parent = nullptr);
+    Q_INVOKABLE explicit WheelColorPicker(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~WheelColorPicker() noexcept override;
     /** @brief Getter for property @ref currentColorLch
      *  @returns the property @ref currentColorLch */

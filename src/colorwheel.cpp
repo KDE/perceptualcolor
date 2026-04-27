@@ -30,21 +30,15 @@ namespace PerceptualColor
 {
 /** @brief Constructor
  *
- * @param colorEngine The color engine with which this widget should operate.
- *
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor.
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  */
-ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
+ColorWheel::ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ColorWheelPrivate(this, colorEngine, projectionSpace))
+    , d_pointer(new ColorWheelPrivate(this, projectionSpace))
 {
-    // Setup the color engine must be the first thing to do because
-    // other operations rely on a color engine being present.
-    d_pointer->m_colorEngine = colorEngine;
-
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
     // either not accepted at all or accepted always for the hole rectangular
@@ -72,15 +66,12 @@ ColorWheel::~ColorWheel() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
- * @param colorEngine The color engine with which this widget should operate.
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  */
-ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink,
-                                     const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                     const PerceptualColor::LchSpace projectionSpace)
+ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const PerceptualColor::LchSpace projectionSpace)
     : m_projectionSpace(projectionSpace)
-    , m_wheelImage(colorEngine)
+    , m_wheelImage()
     , q_pointer(backLink)
 {
     // Initialization

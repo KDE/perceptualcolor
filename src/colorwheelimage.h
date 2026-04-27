@@ -11,7 +11,6 @@
 
 namespace PerceptualColor
 {
-class ColorEngine;
 
 /** @internal
  *
@@ -73,7 +72,7 @@ class ColorEngine;
 class ColorWheelImage
 {
 public:
-    explicit ColorWheelImage(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
+    explicit ColorWheelImage();
     [[nodiscard]] QImage getImage();
     void setBorder(const qreal newBorder);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
@@ -108,8 +107,6 @@ private:
      *
      * @sa @ref setImageSize() */
     int m_imageSizePhysical = 0;
-    /** @brief Pointer to @ref ColorEngine object */
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
     /**
      * @brief Internal store for the projection space.
      *

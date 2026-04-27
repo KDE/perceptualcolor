@@ -33,7 +33,6 @@ set(library_SRC
     chromalightnessdiagram.cpp
     chromalightnessimageparameters.cpp
     colordialog.cpp
-    colorengine.cpp
     colorpatch.cpp
     colorwheel.cpp
     colorwheelimage.cpp

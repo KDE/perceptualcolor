@@ -10,7 +10,6 @@
 #include "chromalightnessimageparameters.h" // IWYU pragma: keep
 #include "colordialog.h" // IWYU pragma: keep
 #include "colordialog_p.h" // IWYU pragma: keep
-#include "colorengine.h" // IWYU pragma: keep
 #include "colorpatch.h" // IWYU pragma: keep
 #include "colorpatch_p.h" // IWYU pragma: keep
 #include "colorwheel.h" // IWYU pragma: keep
@@ -122,10 +121,7 @@ int main(int argc, char *argv[])
 
     // Initialize the color dialog
 
-    auto myColorEngine = PerceptualColor::ColorEngine::createSrgb();
-
-    PerceptualColor::ColorDialog m_colorDialog(myColorEngine, //
-                                               QStringLiteral("testapp"));
+    PerceptualColor::ColorDialog m_colorDialog(QStringLiteral("testapp"));
     // For session management, according to https://doc.qt.io/qt-6/session.html
     //     “you must identify your top level widgets with
     //      unique application-wide object names”
@@ -368,7 +364,6 @@ int main(int argc, char *argv[])
 
 #ifndef MSVC_DLL
     ChromaLightnessImageParameters m_imageParameters;
-    m_imageParameters.colorEngine = myColorEngine;
     m_imageParameters.imageSizePhysical = QSize(500, 500);
     m_imageParameters.projectionSpace = LchSpace::Oklch;
     for (int i = 264; i < 265; i += 2) {
@@ -390,19 +385,19 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    // ChromaLightnessDiagram myDiagram(myColorEngine, LchSpace::Oklch);
+    // ChromaLightnessDiagram myDiagram(LchSpace::Oklch);
     // auto color = myDiagram.currentColorLch();
     // color.third = 264;
     // myDiagram.setCurrentColorLch(color);
     // myDiagram.show();
     //
-    // ColorWheel myWheel(myColorEngine, LchSpace::Oklch);
+    // ColorWheel myWheel(LchSpace::Oklch);
     // myWheel.show();
 
-    WheelColorPicker myWheelPicker(myColorEngine, LchSpace::Oklch);
+    WheelColorPicker myWheelPicker(LchSpace::Oklch);
     // myWheelPicker.show();
 
-    // ChromaHueDiagram myChromaHueDiagram(myColorEngine, LchSpace::Oklch);
+    // ChromaHueDiagram myChromaHueDiagram(LchSpace::Oklch);
     // myChromaHueDiagram.setCurrentColorLch(GenericColor(0.45, 0, 0));
     // myChromaHueDiagram.show();
 

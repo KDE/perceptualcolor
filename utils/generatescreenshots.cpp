@@ -6,7 +6,6 @@
 #include "chromalightnessdiagram.h"
 #include "colordialog.h"
 #include "colordialog_p.h"
-#include "colorengine.h"
 #include "colorpatch.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
@@ -299,9 +298,6 @@ static void setCurrentSwatchBookSelector(ColorDialog *dialog, int index)
 
 static void makeScreenshots()
 {
-    // Variables
-    QSharedPointer<ColorEngine> m_colorEngine = //
-        ColorEngine::createSrgb();
     // Chose a default color:
     // — that is present in the basic colors (to show the selection mark)
     // — is quite chromatic (which looks nice on screenshots)
@@ -320,13 +316,13 @@ static void makeScreenshots()
     QColor myColor;
 
     {
-        ChromaHueDiagram m_chromaHueDiagram(m_colorEngine, LchSpace::CielchD50);
+        ChromaHueDiagram m_chromaHueDiagram(LchSpace::CielchD50);
         m_chromaHueDiagram.setCurrentColorLch(defaultColorCielchD50);
         screenshotDelayed(&m_chromaHueDiagram);
     }
 
     {
-        ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorEngine, LchSpace::CielchD50);
+        ChromaLightnessDiagram m_chromaLightnessDiagram(LchSpace::CielchD50);
         m_chromaLightnessDiagram.setCurrentColorLch(defaultColorCielchD50);
         screenshotDelayed(&m_chromaLightnessDiagram);
     }
@@ -414,13 +410,13 @@ static void makeScreenshots()
     }
 
     {
-        ColorWheel m_colorWheel(m_colorEngine, LchSpace::CielchD50);
+        ColorWheel m_colorWheel(LchSpace::CielchD50);
         m_colorWheel.setHue(defaultColorCielchD50.third);
         screenshotDelayed(&m_colorWheel);
     }
 
     {
-        GradientSlider m_gradientSlider(m_colorEngine, LchSpace::CielchD50);
+        GradientSlider m_gradientSlider(LchSpace::CielchD50);
         m_gradientSlider.setValue(0.2);
         m_gradientSlider.setOrientation(Qt::Horizontal);
         screenshotDelayed(&m_gradientSlider);
@@ -477,15 +473,13 @@ static void makeScreenshots()
     }
 
     {
-        WheelColorPicker m_wheelColorPicker(m_colorEngine, LchSpace::CielchD50);
+        WheelColorPicker m_wheelColorPicker(LchSpace::CielchD50);
         m_wheelColorPicker.setCurrentColorLch(defaultColorCielchD50);
         screenshotDelayed(&m_wheelColorPicker);
     }
 
     {
-        SwatchBook m_swatchBook(m_colorEngine, //
-                                wcsBasicColors(),
-                                Qt::Orientation::Horizontal);
+        SwatchBook m_swatchBook(wcsBasicColors(), Qt::Orientation::Horizontal);
         m_swatchBook.setCurrentColor(defaultColorRgb);
         screenshotDelayed(&m_swatchBook);
     }
@@ -496,9 +490,7 @@ static void makeScreenshots()
         myColorList.append(Qt::green);
         myColorList.append(Qt::blue);
         const QColorArray2D mySwatches(4, 4, myColorList);
-        SwatchBook m_swatchBook(m_colorEngine, //
-                                mySwatches,
-                                Qt::Orientation::Horizontal);
+        SwatchBook m_swatchBook(mySwatches, Qt::Orientation::Horizontal);
         m_swatchBook.setCurrentColor(defaultColorRgb);
         m_swatchBook.setEditable(true);
         screenshotDelayed(&m_swatchBook, QStringLiteral("Editable"));

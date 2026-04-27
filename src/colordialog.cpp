@@ -9,7 +9,6 @@
 
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
-#include "colorengine.h"
 #include "colorpatch.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -96,12 +95,6 @@ namespace PerceptualColor
  * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
  * Qt Designer, which also provides a function of the same name in
  * uic-generated code</a>.
- *
- * @internal
- *
- * @todo NICETOHAVE Add to the color-space tooltip information about
- * the RGB profile illuminant? (This would have to be implemented
- * in @ref ColorEngine first.)
  */
 void ColorDialogPrivate::retranslateUi()
 {
@@ -535,12 +528,9 @@ void ColorDialogPrivate::reloadIcons()
 
 /** @brief Basic initialization.
  *
- * @param colorEngine The color engine with which this widget should operate.
- * Can be created with @ref ColorEngine::createSrgb().
- *
  * Code that is shared between the various overloaded constructors.
  */
-void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
+void ColorDialogPrivate::initialize()
 {
     // Do not show the “?” button in the window title. This button is displayed
     // by default on widgets that inherit from QDialog. But we do not want the
@@ -548,14 +538,12 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
     // the button would be confusing.
     q_pointer->setWindowFlag(Qt::WindowContextHelpButtonHint, false);
 
-    // initialize color engine and its dependencies
-    m_colorEngine = colorEngine;
+    // initialize colors
     m_wcsBasicColors = wcsBasicColors();
     m_wcsBasicDefaultColor = m_wcsBasicColors.value(4, 2);
 
     // create the graphical selectors
-    m_swatchBookBasicColors = new SwatchBook(m_colorEngine, //
-                                             m_wcsBasicColors, //
+    m_swatchBookBasicColors = new SwatchBook(m_wcsBasicColors, //
                                              Qt::Orientation::Horizontal);
     auto swatchBookBasicColorsLayout = new QGridLayout();
     auto swatchBookBasicColorsLayoutWidget = new QWidget();
@@ -565,8 +553,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
     swatchBookBasicColorsLayout->addWidget(m_swatchBookBasicColors);
     swatchBookBasicColorsLayout->setRowStretch(1, 1);
     swatchBookBasicColorsLayout->setColumnStretch(1, 1);
-    m_swatchBookHistory = new SwatchBook(m_colorEngine, //
-                                         QColorArray2D(), //
+    m_swatchBookHistory = new SwatchBook(QColorArray2D(), //
                                          Qt::Orientation::Vertical);
     auto swatchBookHistoryLayout = new QGridLayout();
     auto swatchBookHistoryLayoutWidget = new QWidget();
@@ -578,7 +565,6 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
     swatchBookHistoryLayout->setColumnStretch(1, 1);
     loadHistoryFromSettingsToSwatchBook();
     m_swatchBookCustomColors = new SwatchBook( //
-        m_colorEngine, //
         QColorArray2D(), //
         Qt::Orientation::Horizontal | Qt::Orientation::Vertical);
     m_swatchBookCustomColors->setEditable(true);
@@ -646,13 +632,13 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
             &Setting<PerceptualSettings::ColorList>::valueChanged,
             this,
             &ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook);
-    m_wheelColorPicker = new WheelColorPicker(m_colorEngine, m_projectionSpace);
+    m_wheelColorPicker = new WheelColorPicker(m_projectionSpace);
     m_hueFirstWrapperWidget = new QWidget;
     QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
     tempHueFirstLayout->addWidget(m_wheelColorPicker);
     m_hueFirstWrapperWidget->setLayout(tempHueFirstLayout);
 
-    m_lchLightnessSelector = new GradientSlider(m_colorEngine, m_projectionSpace);
+    m_lchLightnessSelector = new GradientSlider(m_projectionSpace);
     GenericColor blackLch;
     blackLch.first = 0;
     blackLch.second = 0;
@@ -664,7 +650,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
     whiteLch.third = 0;
     whiteLch.fourth = 1;
     m_lchLightnessSelector->setColors(blackLch, whiteLch);
-    m_chromaHueDiagram = new ChromaHueDiagram(m_colorEngine, m_projectionSpace);
+    m_chromaHueDiagram = new ChromaHueDiagram(m_projectionSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
     tempLightnesFirstLayout->addWidget(m_chromaHueDiagram);
@@ -792,9 +778,7 @@ void ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::ColorE
 
     // Create widgets for alpha value
     QHBoxLayout *m_alphaLayout = new QHBoxLayout();
-    m_alphaGradientSlider = new GradientSlider(m_colorEngine, //
-                                               m_projectionSpace,
-                                               Qt::Orientation::Horizontal);
+    m_alphaGradientSlider = new GradientSlider(m_projectionSpace, Qt::Orientation::Horizontal);
     m_alphaGradientSlider->setSingleStep(singleStepAlpha);
     m_alphaGradientSlider->setPageStep(singleStepAlpha * pageStepFactor);
     m_alphaSpinBox = new QDoubleSpinBox();
@@ -1083,7 +1067,7 @@ ColorDialog::ColorDialog(QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
 {
-    d_pointer->initialize(ColorEngine::createSrgb());
+    d_pointer->initialize();
     setCurrentColor(d_pointer->defaultColor());
 }
 
@@ -1101,7 +1085,7 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
 {
-    d_pointer->initialize(ColorEngine::createSrgb());
+    d_pointer->initialize();
     // Calling setCurrentColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
@@ -1112,19 +1096,18 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
 
 /** @brief Constructor
  *
- *  @param colorEngine The color engine with which this widget should operate.
  *  @param gamutIdentifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
  *                   settings. Must contain only the lowercase letters a-z.
  *  @param parent pointer to the parent widget, if any
  *  @post The @ref currentColor property is set to a default value. */
-ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, const QString &gamutIdentifier, QWidget *parent)
+ColorDialog::ColorDialog(const QString &gamutIdentifier, QWidget *parent)
     : QDialog(parent)
     , d_pointer(
           new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(gamutIdentifier)))
 {
-    d_pointer->initialize(colorEngine);
+    d_pointer->initialize();
     setCurrentColor(d_pointer->defaultColor());
 }
 
@@ -1143,7 +1126,6 @@ QColor ColorDialogPrivate::defaultColor() const
 
 /** @brief Constructor
  *
- *  @param colorEngine The color engine with which this widget should operate.
  *  @param gamutIdentifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
@@ -1156,15 +1138,12 @@ QColor ColorDialogPrivate::defaultColor() const
  *  this dialog is constructed by default without alpha support, the
  *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
  *  used. */
-ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                         const QString &gamutIdentifier,
-                         const QColor &initial,
-                         QWidget *parent)
+ColorDialog::ColorDialog(const QString &gamutIdentifier, const QColor &initial, QWidget *parent)
     : QDialog(parent)
     , d_pointer(
           new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(gamutIdentifier)))
 {
-    d_pointer->initialize(colorEngine);
+    d_pointer->initialize();
     // Calling setCurrentColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
@@ -1178,9 +1157,6 @@ ColorDialog::~ColorDialog() noexcept
 {
     // All the layouts and widgets used here are automatically child widgets
     // of this dialog widget. Therefor they are deleted automatically.
-    // Also m_colorEngine is of type ColorEngine(), which
-    // inherits from QObject, and is a child of this dialog widget, does
-    // not need to be deleted manually.
 }
 
 /** @brief Constructor
@@ -2062,7 +2038,6 @@ bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
 /** @brief Pops up a modal color dialog, lets the user choose a color, and
  *  returns that color.
  *
- * @param colorEngine The color engine with which this widget should operate.
  * @param gamutIdentifier The identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
@@ -2077,14 +2052,10 @@ bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
  *                   selected; or an invalid color if the user has canceled the
  *                   dialog.
  */
-QColor ColorDialog::getColor(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                             const QString &gamutIdentifier,
-                             const QColor &initial,
-                             QWidget *parent,
-                             const QString &title,
-                             QColorDialog::ColorDialogOptions options)
+QColor
+ColorDialog::getColor(const QString &gamutIdentifier, const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
 {
-    return ColorDialogPrivate::getColorCommon(colorEngine, gamutIdentifier, initial, parent, title, options);
+    return ColorDialogPrivate::getColorCommon(gamutIdentifier, initial, parent, title, options);
 }
 
 /** @brief Pops up a modal color dialog, lets the user choose a color, and
@@ -2102,7 +2073,7 @@ QColor ColorDialog::getColor(const QSharedPointer<PerceptualColor::ColorEngine> 
  */
 QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
 {
-    return ColorDialogPrivate::getColorCommon(std::nullopt, std::nullopt, initial, parent, title, options);
+    return ColorDialogPrivate::getColorCommon(std::nullopt, initial, parent, title, options);
 }
 
 /** @brief Internal helper function for @ref ColorDialog::getColor()
@@ -2115,8 +2086,6 @@ QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QStri
  * all of them are ignored and instead, the constructor is used that does
  * not specify them.
  *
- * @param colorEngine Optional color engine with which this widget should
- *                   operate.
  * @param gamutIdentifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
@@ -2131,17 +2100,15 @@ QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QStri
  *                   selected; or an invalid color if the user has canceled the
  *                   dialog.
  */
-QColor ColorDialogPrivate::getColorCommon(std::optional<const QSharedPointer<PerceptualColor::ColorEngine>> colorEngine,
-                                          std::optional<const QString> gamutIdentifier,
+QColor ColorDialogPrivate::getColorCommon(std::optional<const QString> gamutIdentifier,
                                           const QColor &initial,
                                           QWidget *parent,
                                           const QString &title,
                                           QColorDialog::ColorDialogOptions options)
 {
     std::unique_ptr<ColorDialog> tempDialog;
-    if (colorEngine.has_value() && gamutIdentifier.has_value()) {
-        tempDialog = std::make_unique<ColorDialog>(colorEngine.value(), //
-                                                   gamutIdentifier.value(), //
+    if (gamutIdentifier.has_value()) {
+        tempDialog = std::make_unique<ColorDialog>(gamutIdentifier.value(), //
                                                    parent);
     } else {
         tempDialog = std::make_unique<ColorDialog>(parent);

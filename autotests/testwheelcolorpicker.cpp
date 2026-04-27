@@ -9,7 +9,6 @@
 
 #include "absolutecolor.h"
 #include "chromalightnessdiagram.h"
-#include "colorengine.h"
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
@@ -35,9 +34,6 @@ public:
     {
     }
 
-private:
-    QSharedPointer<ColorEngine> m_colorEngine = ColorEngine::createSrgb();
-
 private Q_SLOTS:
     void initTestCase()
     {
@@ -62,12 +58,12 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         // Test for crash in constructor or destructor
-        WheelColorPicker test{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker test{LchSpace::CielchD50};
     }
 
     void testCurrentColorLchProperty()
     {
-        WheelColorPicker test{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker test{LchSpace::CielchD50};
         GenericColor color;
         color.first = 50;
         color.second = 20;
@@ -99,7 +95,7 @@ private Q_SLOTS:
 
     void testSizeHints()
     {
-        WheelColorPicker test{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker test{LchSpace::CielchD50};
         QVERIFY(test.minimumSizeHint().width() <= test.sizeHint().width());
         QVERIFY(test.minimumSizeHint().height() <= test.sizeHint().height());
     }
@@ -111,7 +107,7 @@ private Q_SLOTS:
         // is bigger than 0 because of borders or offsets. We test this
         // here with various small sizes, always forcing in immediate
         // re-paint.
-        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker myWidget{LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize());
         myWidget.repaint();
@@ -157,7 +153,7 @@ private Q_SLOTS:
 
     void testSetOutOfGamutColors()
     {
-        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker myWidget{LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -182,7 +178,7 @@ private Q_SLOTS:
 
     void testSetOutOfRangeColors()
     {
-        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker myWidget{LchSpace::CielchD50};
         myWidget.show();
         myWidget.resize(QSize(400, 400));
 
@@ -208,7 +204,7 @@ private Q_SLOTS:
 
     void testHueChanges()
     {
-        WheelColorPicker myWidget{m_colorEngine, LchSpace::CielchD50};
+        WheelColorPicker myWidget{LchSpace::CielchD50};
         myWidget.resize(QSize(400, 400));
 
         // Choose a color with an extreme, but still clearly in-gamut chroma

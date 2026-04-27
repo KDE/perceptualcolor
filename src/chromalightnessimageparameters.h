@@ -16,7 +16,6 @@ namespace PerceptualColor
 {
 
 class AsyncImageRenderCallback;
-class ColorEngine;
 
 /** @internal
  *
@@ -54,8 +53,6 @@ public:
     qreal hue = 0;
     /** @brief Image size, measured in physical pixels. */
     QSize imageSizePhysical;
-    /** @brief Pointer to @ref ColorEngine object */
-    QSharedPointer<PerceptualColor::ColorEngine> colorEngine;
     /**
      * @brief The color space into which the working space is projected.
      */

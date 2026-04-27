@@ -23,8 +23,6 @@ namespace PerceptualColor
 {
 class ChromaLightnessDiagramPrivate;
 
-class ColorEngine;
-
 /** @internal
  *
  * @brief A widget that displays a chroma-lightness diagram for a given hue.
@@ -74,9 +72,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaLightnessDiagram : public Abst
     // clang-format on
 
 public:
-    Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                                const PerceptualColor::LchSpace projectionSpace,
-                                                QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaLightnessDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~ChromaLightnessDiagram() noexcept override;
     /**
      * @brief Getter for property @ref currentColorLch

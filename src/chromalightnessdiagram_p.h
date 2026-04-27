@@ -26,7 +26,6 @@ class QPoint;
 namespace PerceptualColor
 {
 class ChromaLightnessDiagram;
-class ColorEngine;
 
 /** @internal
  *
@@ -46,8 +45,6 @@ public:
     /** @brief Internal storage of
      * the @ref ChromaLightnessDiagram::currentColorLch property */
     GenericColor m_currentColorLch;
-    /** @brief Pointer to ColorEngine() object */
-    QSharedPointer<ColorEngine> m_colorEngine;
     /**
      * @brief Geometry of the current Lch color space.
      * */

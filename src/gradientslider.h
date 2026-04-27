@@ -25,8 +25,6 @@ namespace PerceptualColor
 {
 class GradientSliderPrivate;
 
-class ColorEngine;
-
 /**
  * @internal
  *
@@ -183,13 +181,8 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT GradientSlider : public AbstractDiag
     Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
-    Q_INVOKABLE explicit GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                        const PerceptualColor::LchSpace projectionSpace,
-                                        QWidget *parent = nullptr);
-    Q_INVOKABLE explicit GradientSlider(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                        const PerceptualColor::LchSpace projectionSpace,
-                                        Qt::Orientation orientation,
-                                        QWidget *parent = nullptr);
+    Q_INVOKABLE explicit GradientSlider(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit GradientSlider(const PerceptualColor::LchSpace projectionSpace, Qt::Orientation orientation, QWidget *parent = nullptr);
     virtual ~GradientSlider() noexcept override;
     /** @brief Getter for property @ref firstColorLchA
      *  @returns the property */

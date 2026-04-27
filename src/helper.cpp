@@ -5,7 +5,6 @@
 #include "helper.h"
 
 #include "absolutecolor.h"
-#include "colorengine.h"
 #include "genericcolor.h"
 #include "helperconversion.h"
 #include "initializelibraryresources.h"

@@ -23,7 +23,6 @@ class QWidget;
 namespace PerceptualColor
 {
 
-class ColorEngine;
 class SwatchBookPrivate;
 
 /** @internal
@@ -93,10 +92,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT SwatchBook : public AbstractDiagram
     Q_PROPERTY(QColorArray2D swatchGrid READ swatchGrid WRITE setSwatchGrid NOTIFY swatchGridChanged)
 
 public:
-    Q_INVOKABLE explicit SwatchBook(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                    const PerceptualColor::QColorArray2D &swatchGrid,
-                                    Qt::Orientations wideSpacing,
-                                    QWidget *parent = nullptr);
+    Q_INVOKABLE explicit SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing, QWidget *parent = nullptr);
     virtual ~SwatchBook() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */

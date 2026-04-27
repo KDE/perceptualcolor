@@ -600,9 +600,6 @@ bool AbsoluteColor::isCielabD50InSRgbGamut(const GenericColor &cielabD50)
  *
  * @pre
  * - Input Lightness: 0 ≤ lightness ≤ 100
- * @pre
- * - Input Chroma: − @ref ColorEngine::profileMaximumCielchD50Chroma ≤ chroma ≤
- *   @ref ColorEngine::profileMaximumCielchD50Chroma
  *
  * @param cielabD50 the original color
  *

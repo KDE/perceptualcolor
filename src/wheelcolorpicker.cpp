@@ -12,7 +12,6 @@
 #include "chromainfo.h"
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
-#include "colorengine.h"
 #include "colorwheel.h"
 #include "colorwheel_p.h" // IWYU pragma: keep
 #include "constpropagatingrawpointer.h"
@@ -38,23 +37,17 @@ namespace PerceptualColor
  * @internal
  *
  * @brief Constructor
- * @param colorEngine The color engine this widget should use.
- * Can be created with @ref ColorEngine::createSrgb().
+ *
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                   const PerceptualColor::LchSpace projectionSpace,
-                                   QWidget *parent)
+WheelColorPicker::WheelColorPicker(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new WheelColorPickerPrivate(this, projectionSpace))
 {
-    d_pointer->m_colorEngine = colorEngine;
-    d_pointer->m_colorWheel = new ColorWheel(colorEngine, projectionSpace, this);
+    d_pointer->m_colorWheel = new ColorWheel(projectionSpace, this);
     d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(
-        // Same color engine for this widget:
-        colorEngine,
         // Projection into which Lch space
         projectionSpace,
         // This widget is smaller than the color wheel. It will be a child

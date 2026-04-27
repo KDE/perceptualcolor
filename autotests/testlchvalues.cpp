@@ -6,7 +6,6 @@
 #include "lchvalues.h"
 
 #include "chromainfo.h"
-#include "colorengine.h"
 #include "genericcolor.h"
 #include "helperposixmath.h"
 #include <qglobal.h>
@@ -102,7 +101,6 @@ private Q_SLOTS:
     {
         QVERIFY(cielchD50Values.maximumChroma > 0);
 
-        const auto mySpace = ColorEngine::createSrgb();
         const auto maxOkChroma = ChromaInfo::maxCielchD50Chroma();
         QVERIFY(cielchD50Values.maximumChroma > maxOkChroma);
     }
@@ -111,7 +109,6 @@ private Q_SLOTS:
     {
         QVERIFY(oklchValues.maximumChroma > 0);
 
-        const auto mySpace = ColorEngine::createSrgb();
         const auto maxOkChroma = ChromaInfo::maxOklchChroma();
         QVERIFY(oklchValues.maximumChroma > maxOkChroma);
     }

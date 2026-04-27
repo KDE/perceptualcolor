@@ -380,7 +380,7 @@
  * @todo SHOWSTOPPER Optimize rendering time.
  *
  * @todo SHOWSTOPPER Color conversions like in
- * @ref PerceptualColor::AbsoluteColor or @ref PerceptualColor::ColorEngine
+ * @ref PerceptualColor::AbsoluteColor
  * must <em>be</em> thread-safe and also be <em>documented</em> as thread-save.
  *
  * @todo NICETOHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
@@ -664,12 +664,6 @@
  * @todo NICETOHAVE
  * Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
- *
- * @todo SHOULDHAVE
- * Check in all classes that take a @ref PerceptualColor::ColorEngine
- * that the shared pointer is actually not a <tt>nullptr</tt>. If is
- * <em>is</em> a <tt>nullptr</tt> than throw an exception. Throwing the
- * exception early might make error detection easier for users of the library.
  *
  * @todo SHOULDHAVE
  * Avoid default arguments like <tt>void test(int i = 0)</tt> in

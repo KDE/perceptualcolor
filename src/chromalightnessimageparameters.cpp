@@ -7,7 +7,6 @@
 
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
-#include "colorengine.h"
 #include "helper.h"
 #include "helperconversion.h"
 #include "helperimage.h"
@@ -40,7 +39,6 @@ bool ChromaLightnessImageParameters::operator==(const ChromaLightnessImageParame
     return ( //
         (hue == other.hue) //
         && (imageSizePhysical == other.imageSizePhysical) //
-        && (colorEngine == other.colorEngine) //
         && (projectionSpace == other.projectionSpace) //
     );
 }
@@ -160,7 +158,6 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
 
     // Initialization
     const int imageHeight = parameters.imageSizePhysical.height();
-    const auto colorEngine = parameters.colorEngine;
     auto &poolReference = getLibraryQThreadPoolInstance();
     const auto threadCount = qMax(1, poolReference.maxThreadCount());
 
@@ -252,9 +249,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
 
     std::function<QRgb(const double x, const double y)> myColorFunction;
     if (parameters.projectionSpace == LchSpace::Oklch) {
-        myColorFunction = [normalizedHue, //
-                           imageHeight,
-                           parameters] //
+        myColorFunction = [normalizedHue, imageHeight] //
             (const double colorFunctionX, const double colorFunctionY) -> QRgb {
             GenericColor oklch;
             oklch.third = normalizedHue;
@@ -266,9 +261,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
                 AbsoluteColor::fromPolarToCartesian(oklch));
         };
     } else {
-        myColorFunction = [normalizedHue, //
-                           imageHeight,
-                           parameters] //
+        myColorFunction = [normalizedHue, imageHeight] //
             (const double colorFunctionX, const double colorFunctionY) -> QRgb {
             GenericColor myCielchD50;
             myCielchD50.third = normalizedHue;

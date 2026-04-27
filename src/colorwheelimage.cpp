@@ -6,7 +6,6 @@
 #include "colorwheelimage.h"
 
 #include "chromainfo.h"
-#include "colorengine.h"
 #include "helperconstants.h"
 #include "helpermath.h"
 #include "polarpointf.h"
@@ -22,10 +21,8 @@
 namespace PerceptualColor
 {
 /** @brief Constructor
- * @param colorEngine The color engine with which the image should operate.
- * Can be created with @ref ColorEngine::createSrgb(). */
-ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine)
-    : m_colorEngine(colorEngine)
+ */
+ColorWheelImage::ColorWheelImage()
 {
 }
 

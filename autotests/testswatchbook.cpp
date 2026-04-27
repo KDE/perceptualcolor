@@ -7,7 +7,6 @@
 // Second, the private implementation.
 #include "swatchbook_p.h" // IWYU pragma: keep
 
-#include "colorengine.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include <qboxlayout.h>
@@ -36,7 +35,6 @@
 
 namespace PerceptualColor
 {
-class ColorEngine;
 
 class TestSwatchBook : public QObject
 {
@@ -47,9 +45,6 @@ public:
         : QObject(parent)
     {
     }
-
-private:
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine = ColorEngine::createSrgb();
 
     void provideStyleNamesAsData()
     {
@@ -84,16 +79,12 @@ private Q_SLOTS:
 
     void testConstructorDestructor()
     {
-        SwatchBook testObject(m_colorEngine, //
-                              wcsBasicColors(),
-                              {});
+        SwatchBook testObject(wcsBasicColors(), {});
     }
 
     void testConstructorDefaultValues()
     {
-        SwatchBook testObject(m_colorEngine, //
-                              wcsBasicColors(),
-                              {});
+        SwatchBook testObject(wcsBasicColors(), {});
         // Verify that initially by default no color is selected:
         QCOMPARE(testObject.d_pointer->m_selectedRow, -1);
         QCOMPARE(testObject.d_pointer->m_selectedColumn, -1);
@@ -103,16 +94,12 @@ private Q_SLOTS:
     void testConstructorNoCrahOnEmptyArray()
     {
         const QColorArray2D emptyArray{0, 0, {}};
-        SwatchBook testObject(m_colorEngine, //
-                              emptyArray,
-                              {});
+        SwatchBook testObject(emptyArray, {});
     }
 
     void testMinimumSizeHint()
     {
-        SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(),
-                              {});
+        SwatchBook testWidget(wcsBasicColors(), {});
         QVERIFY2(testWidget.minimumSizeHint().width() > 0, //
                  "minimumSizeHint width is implemented.");
         QVERIFY2(testWidget.minimumSizeHint().height() > 0, //
@@ -121,9 +108,7 @@ private Q_SLOTS:
 
     void testSizeHint()
     {
-        SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(),
-                              {});
+        SwatchBook testWidget(wcsBasicColors(), {});
         QVERIFY2( //
             testWidget.sizeHint().width() //
                 >= testWidget.minimumSizeHint().width(), //
@@ -137,9 +122,7 @@ private Q_SLOTS:
 
     void testCurrentColor()
     {
-        SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(),
-                              {});
+        SwatchBook testWidget(wcsBasicColors(), {});
         // Prepare test
         QObject scopeMarker;
         QColor lastSignalColor;
@@ -197,9 +180,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(),
-                                  Qt::Orientation::Horizontal);
+            SwatchBook testWidget(wcsBasicColors(), Qt::Orientation::Horizontal);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
             QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
@@ -222,9 +203,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(),
-                                  Qt::Orientation::Vertical);
+            SwatchBook testWidget(wcsBasicColors(), Qt::Orientation::Vertical);
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
             QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
@@ -247,9 +226,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(),
-                                  {});
+            SwatchBook testWidget(wcsBasicColors(), {});
             testWidget.setStyle(style);
             QVERIFY(testWidget.d_pointer->horizontalPatchSpacing() > 0);
             QVERIFY(testWidget.d_pointer->verticalPatchSpacing() > 0);
@@ -273,7 +250,6 @@ private Q_SLOTS:
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
             SwatchBook testWidget( //
-                m_colorEngine, //
                 wcsBasicColors(), //
                 Qt::Orientation::Horizontal | Qt::Orientation::Vertical);
             testWidget.setStyle(style);
@@ -298,8 +274,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(), //
+            SwatchBook testWidget(wcsBasicColors(), //
                                   {});
             testWidget.setStyle(style);
             QVERIFY(!testWidget.d_pointer->patchSizeInner().isEmpty());
@@ -324,8 +299,7 @@ private Q_SLOTS:
 
     void testRetranslateUI()
     {
-        SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(), //
+        SwatchBook testWidget(wcsBasicColors(), //
                               {});
         // Test that function call does not crash:
         testWidget.d_pointer->retranslateUi();
@@ -333,8 +307,7 @@ private Q_SLOTS:
 
     void testInitStyleOptions()
     {
-        SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(), //
+        SwatchBook testWidget(wcsBasicColors(), //
                               {});
 
         // Test that function call does not crash with regular object:
@@ -366,7 +339,6 @@ private Q_SLOTS:
             QWidget *mainWidget = new QWidget;
             QVBoxLayout *mainLayout = new QVBoxLayout;
             SwatchBook *testWidget = new SwatchBook( //
-                m_colorEngine, //
                 wcsBasicColors(), //
                 {},
                 mainWidget);
@@ -398,9 +370,7 @@ private Q_SLOTS:
         array.setValue(1, 0, Qt::green);
         array.setValue(2, 0, Qt::blue);
         array.setValue(3, 0, QColor()); // invalid color
-        SwatchBook testWidget(m_colorEngine, //
-                              array,
-                              {});
+        SwatchBook testWidget(array, {});
         testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
         testWidget.setCurrentColor(Qt::red);
@@ -433,9 +403,7 @@ private Q_SLOTS:
         // left-to-right (LTR) layouts.
 
         const auto myBasicColors = wcsBasicColors();
-        SwatchBook testWidget(m_colorEngine, //
-                              myBasicColors,
-                              {});
+        SwatchBook testWidget(myBasicColors, {});
         testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
 
         testWidget.setCurrentColor(
@@ -605,9 +573,7 @@ private Q_SLOTS:
         // right-to-left (RTL) layouts.
 
         const auto myBasicColors = wcsBasicColors();
-        SwatchBook testWidget(m_colorEngine, //
-                              myBasicColors,
-                              {});
+        SwatchBook testWidget(myBasicColors, {});
         testWidget.setLayoutDirection(Qt::LayoutDirection::RightToLeft);
 
         testWidget.setCurrentColor(
@@ -772,9 +738,7 @@ private Q_SLOTS:
     void testKeyboardMove()
     {
         const auto myBasicColors = wcsBasicColors();
-        SwatchBook testWidget(m_colorEngine, //
-                              myBasicColors,
-                              {});
+        SwatchBook testWidget(myBasicColors, {});
         const auto count = //
             qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
                  testWidget.d_pointer->m_swatchGrid.jCount())
@@ -884,9 +848,7 @@ private Q_SLOTS:
         array.setValue(3, 3, QColor());
         array.setValue(4, 4, QColor());
         array.setValue(9, 5, QColor());
-        SwatchBook testWidget(m_colorEngine, //
-                              array,
-                              {});
+        SwatchBook testWidget(array, {});
         const auto count = //
             qMax(testWidget.d_pointer->m_swatchGrid.iCount(), //
                  testWidget.d_pointer->m_swatchGrid.jCount())
@@ -996,8 +958,7 @@ private Q_SLOTS:
         {
             // Own block to make sure style will be deleted _after_ testWidget
             // has been destroyed.
-            SwatchBook testWidget(m_colorEngine, //
-                                  wcsBasicColors(), //
+            SwatchBook testWidget(wcsBasicColors(), //
                                   {});
             testWidget.setStyle(style);
             QStyleOptionFrame temp;
@@ -1009,8 +970,7 @@ private Q_SLOTS:
 
     void testSwatchGrid()
     {
-        SwatchBook testWidget(m_colorEngine, //
-                              wcsBasicColors(), //
+        SwatchBook testWidget(wcsBasicColors(), //
                               {});
         QCOMPARE(testWidget.swatchGrid(), wcsBasicColors());
         testWidget.setSwatchGrid(QColorArray2D());
@@ -1025,9 +985,7 @@ private Q_SLOTS:
         QColorArray2D array = QColorArray2D(1, 1);
         const QColor myColor = QColor(50, 100, 150, 200);
         array.setValue(0, 0, myColor);
-        SwatchBook testWidget(m_colorEngine, //
-                              array,
-                              {});
+        SwatchBook testWidget(array, {});
         QCOMPARE(testWidget.swatchGrid().value(0, 0).alphaF(), 1);
     }
 
@@ -1036,9 +994,7 @@ private Q_SLOTS:
         // The widget does not support transparency. When assigning a swatch
         // grid, all colors should bet treated as opaque, even if the
         // assigned values might contain transparency.
-        SwatchBook testWidget(m_colorEngine, //
-                              {},
-                              {});
+        SwatchBook testWidget({}, {});
         QColorArray2D array = QColorArray2D(1, 1);
         const QColor myColor = QColor(50, 100, 150, 200);
         array.setValue(0, 0, myColor);
@@ -1052,9 +1008,7 @@ private Q_SLOTS:
         // means "empty swatch".
         QColorArray2D array = QColorArray2D(1, 1);
         array.setValue(0, 0, QColor());
-        SwatchBook testWidget(m_colorEngine, //
-                              array,
-                              {});
+        SwatchBook testWidget(array, {});
         QVERIFY(!testWidget.swatchGrid().value(0, 0).isValid());
     }
 };

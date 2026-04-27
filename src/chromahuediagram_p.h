@@ -20,7 +20,6 @@
 namespace PerceptualColor
 {
 class ChromaHueDiagram;
-class ColorEngine;
 
 /** @internal
  *
@@ -39,7 +38,7 @@ class ColorEngine;
 class ChromaHueDiagramPrivate
 {
 public:
-    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine, const LchSpace projectionSpace);
+    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const LchSpace projectionSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -87,11 +86,6 @@ public:
      * through @ref m_lchValues.
      */
     const LchSpace m_projectionSpace;
-
-    /**
-     * @brief Pointer to @ref ColorEngine object.
-     */
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
 
     /** @brief The image of the color wheel. */
     ColorWheelImage m_wheelImage;

@@ -24,7 +24,7 @@ class QPainter;
 
 namespace PerceptualColor
 {
-class ColorEngine;
+
 class SwatchBook;
 
 /** @internal
@@ -96,8 +96,6 @@ public:
     ColorSchemeType m_colorSchemeCache = ColorSchemeType::Light;
     /** @brief Internal storage for property @ref SwatchBook::editable */
     bool m_isEditable = false;
-    /** @brief Pointer to the ColorEngine object. */
-    QSharedPointer<PerceptualColor::ColorEngine> m_colorEngine;
     /** @brief Selected column.
      *
      * If one of the swatches in the book is selected, this is

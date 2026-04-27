@@ -10,7 +10,6 @@
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
 #include "chromainfo.h"
-#include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
@@ -36,22 +35,14 @@ namespace PerceptualColor
 {
 /** @brief The constructor.
  *
- * @param colorEngine The color engine with which the widget should operate.
- * Can be created with @ref ColorEngine::createSrgb().
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  *
  * @param parent Passed to the QWidget base class constructor */
-ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                               const PerceptualColor::LchSpace projectionSpace,
-                                               QWidget *parent)
+ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ChromaLightnessDiagramPrivate(this, projectionSpace))
 {
-    // Setup the color engine must be the first thing to do because
-    // other operations rely on a working color engine.
-    d_pointer->m_colorEngine = colorEngine;
-
     // Initialization
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -59,7 +50,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
         d_pointer->calculateImageSizePhysical();
     d_pointer->m_chromaLightnessImageParameters.projectionSpace = //
         projectionSpace;
-    d_pointer->m_chromaLightnessImageParameters.colorEngine = colorEngine;
     d_pointer->m_chromaLightnessImage.setImageParameters( //
         d_pointer->m_chromaLightnessImageParameters);
 

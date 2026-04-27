@@ -5,7 +5,6 @@
 // this forces the header to be self-contained.
 #include "helper.h"
 
-#include "colorengine.h"
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qevent.h>

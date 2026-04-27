@@ -39,8 +39,6 @@ class QWidget;
 namespace PerceptualColor
 {
 
-class ColorEngine;
-
 /**
  * @internal
  *

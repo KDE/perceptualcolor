@@ -49,7 +49,6 @@ class ColorPatch;
 class GradientSlider;
 class MultiSpinBox;
 class PerceptualSettings;
-class ColorEngine;
 class SwatchBook;
 class WheelColorPicker;
 
@@ -96,8 +95,7 @@ public:
         historyHSwatchCount * historyVSwatchCount;
 
     static QString fixedIdentifierWithoutHyphenMinus(const QString &input);
-    static QColor getColorCommon(std::optional<const QSharedPointer<PerceptualColor::ColorEngine>> colorEngine,
-                                 std::optional<const QString> gamutIdentifier,
+    static QColor getColorCommon(std::optional<const QString> gamutIdentifier,
                                  const QColor &initial,
                                  QWidget *parent,
                                  const QString &title,
@@ -277,8 +275,6 @@ public:
     QPointer<QObject> m_receiverToBeDisconnected;
     /** @brief Internal storage for property @ref ColorDialog::options */
     QColorDialog::ColorDialogOptions m_options;
-    /** @brief Pointer to the ColorEngine object. */
-    QSharedPointer<ColorEngine> m_colorEngine;
     /** @brief Group box that contains all RGB widgets and all widget for
      * color spaces that are defined with RGB as base (HSV, Hex…). */
     QPointer<QGroupBox> m_rgbGroupBox;
@@ -315,7 +311,9 @@ public:
     QHash<QPointer<QWidget> *, QString> m_tabTable;
     /** @brief Pointer to the tab widget. */
     QPointer<QTabWidget> m_tabWidget;
-    /** @brief @ref m_wcsBasicColors for @ref m_colorEngine. */
+    /**
+     * @brief Basic color, represented as sRGB values.
+     */
     QColorArray2D m_wcsBasicColors;
     /** @brief A default color within @ref m_wcsBasicColors.
      *
@@ -344,7 +342,7 @@ public:
     void applyLayoutDimensions();
     [[nodiscard]] QColor defaultColor() const;
     static QIcon getGamutIcon(PerceptualColor::ColorSchemeType type);
-    void initialize(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine);
+    void initialize();
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializePortalEyedropper();
     void loadCustomColorsFromSettingsToSwatchBook();

@@ -9,7 +9,6 @@
 
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
-#include "colorengine.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
@@ -192,7 +191,6 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
 
 /** @brief Constructor
  *
- * @param colorEngine The color engine that will be used.
  * @param swatchGrid Initial value for property @ref swatchGrid
  * @param wideSpacing Set of axis where the spacing should be wider than
  *        normal. This is useful to give some visual structure: When your
@@ -200,16 +198,11 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
  *        <tt>Qt::Orientation::Horizontal</tt> here. To use normal spacing
  *        everywhere, simply set this parameter to <tt>{}</tt>.
  * @param parent The parent of the widget, if any */
-SwatchBook::SwatchBook(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                       const PerceptualColor::QColorArray2D &swatchGrid,
-                       Qt::Orientations wideSpacing,
-                       QWidget *parent)
+SwatchBook::SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new SwatchBookPrivate(this, wideSpacing))
 {
     qRegisterMetaType<QColorArray2D>();
-
-    d_pointer->m_colorEngine = colorEngine;
 
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 

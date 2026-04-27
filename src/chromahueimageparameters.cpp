@@ -8,7 +8,6 @@
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
 #include "chromainfo.h"
-#include "colorengine.h"
 #include "helper.h"
 #include "helperconstants.h"
 #include "helperimage.h"
@@ -45,7 +44,6 @@ bool ChromaHueImageParameters::operator==(const ChromaHueImageParameters &other)
         && (devicePixelRatioF == other.devicePixelRatioF) //
         && (imageSizePhysical == other.imageSizePhysical) //
         && (lightness == other.lightness) //
-        && (colorEngine == other.colorEngine) //
         && (projectionSpace == other.projectionSpace) //
     );
 }
@@ -119,9 +117,11 @@ InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSiz
 // designed for threaded execution, we avoid passing by reference whenever
 // possible to prevent potential pitfalls, even though copying by value may
 // introduce slight overhead.
+
 void ChromaHueImageParameters::renderByRow( //
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
+    // cppcheck-suppress passedByValue
     const ChromaHueImageParameters parameters, // clazy:exclude=function-args-by-ref
     const qreal shift,
     const qreal scaleFactor,
@@ -202,12 +202,9 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // transparent).
     const qreal circleRadius = //
         (parameters.imageSizePhysical - 2 * parameters.borderPhysical) / 2.;
-    if ((circleRadius <= 0) || parameters.colorEngine.isNull()) {
+    if ((circleRadius <= 0)) {
         // The border is too big the and image size too small: The size
-        // of the circle is zero. Or: There is no color engine with which
-        // we can work (and dereferencing parameters.colorEngine will
-        // crash).
-        // In either case: The image will therefore be transparent.
+        // of the circle is zero. The image will therefore be transparent.
         // Initialize the image as completely transparent and return.
         myImage.fill(Qt::transparent);
         // Set the correct scaling information for the image and return

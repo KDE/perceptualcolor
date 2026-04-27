@@ -12,7 +12,6 @@
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "chromainfo.h"
-#include "colorengine.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -35,19 +34,15 @@
 namespace PerceptualColor
 {
 /** @brief The constructor.
- * @param colorEngine The color engine with which this widget should operate.
+ *
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                   const PerceptualColor::LchSpace projectionSpace,
-                                   QWidget *parent)
+ChromaHueDiagram::ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ChromaHueDiagramPrivate(this, colorEngine, projectionSpace))
+    , d_pointer(new ChromaHueDiagramPrivate(this, projectionSpace))
 {
-    d_pointer->m_colorEngine = colorEngine;
-
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is either
     // not accepted at all or accepted always for the hole rectangular
@@ -82,18 +77,13 @@ ChromaHueDiagram::~ChromaHueDiagram() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  *                 is the private implementation.
- * @param colorEngine The color engine with which this widget
- *                   should operate.
  * @param projectionSpace The color space into which the gamut will be
  * projected.
  */
-ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink,
-                                                 const QSharedPointer<PerceptualColor::ColorEngine> &colorEngine,
-                                                 const LchSpace projectionSpace)
+ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const LchSpace projectionSpace)
     : m_currentColorLch{0, 0, 0} // dummy value
     , m_lchValues(makeLchValues(projectionSpace))
     , m_projectionSpace(projectionSpace)
-    , m_wheelImage(colorEngine)
     , q_pointer(backLink)
 {
     m_chromaHueImageParameters.projectionSpace = projectionSpace;
@@ -595,7 +585,7 @@ GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint 
  *
  * @todo SHOULDHAVE What when the mouse goes outside the
  * gray circle,  but more gamut is available outside (because
- * @ref ColorEngine::profileMaximumCielchD50Chroma()
+ * @ref ChromaInfo::maxCielchD50Chroma()
  * was chosen too small)? For consistency, the handle of the diagram should
  * stay within the gray circle, and this should be interpreted also actually
  * as the value at the position of the handle.
@@ -770,8 +760,6 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     d_pointer->m_chromaHueImageParameters.lightness = temp;
     d_pointer->m_chromaHueImageParameters.devicePixelRatioF = //
         devicePixelRatioF();
-    d_pointer->m_chromaHueImageParameters.colorEngine = //
-        d_pointer->m_colorEngine;
     d_pointer->m_chromaHueImage.setImageParameters( //
         d_pointer->m_chromaHueImageParameters);
     d_pointer->m_chromaHueImage.refreshAsync();
