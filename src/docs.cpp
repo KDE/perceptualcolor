@@ -419,8 +419,6 @@
  * slightly too big. A wrong
  * @ref PerceptualColor::LchValues::maximumChroma value?
  *
- * @todo SHOULDHAVE SHOWSTOPPER Get rid of lcms
- *
  * @todo SHOULDHAVE The re-rendering is too slow (not reactive enough)
  * when changing the window size of @ref PerceptualColor::ColorDialog.
  *

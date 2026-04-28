@@ -43,15 +43,11 @@ if(BUILD_TESTING)
     # unit test links against the “perceptualcolorinternal” library, which
     # exports all symbols as public symbols, which makes white box tests
     # possible. Furthermore, every unit test links against Qt::Test to
-    # provide a test framework, and against LCMS2 to simplify white box tests.
-    # For the sake of simplicity, all these libraries are always linked to
-    # regardless of the actual needs of the individual unit test.
+    # provide a test framework.
     function(add_unit_tests)
         foreach(test_name IN LISTS ARGV)
             set(test_target_name "${test_name}")
             add_executable("${test_target_name}")
-            target_compile_definitions("${test_target_name}"
-                PRIVATE CMS_NO_REGISTER_KEYWORD)
             set(test_sources "${test_name}.cpp")
             if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${test_name}.qrc")
                 # Add all resources from the .qrt file to our sources
@@ -79,7 +75,7 @@ if(BUILD_TESTING)
                 PRIVATE
                     "perceptualcolorinternal-${MAJOR_VERSION}"
                     Qt::Test
-                    ${LCMS2_LIBRARIES})
+            )
 
             # The CMakeLists.txt in the main directory might add
             # -Weverything as compile option when the user requests

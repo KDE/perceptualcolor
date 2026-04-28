@@ -6,7 +6,6 @@
 #include "genericcolor.h"
 
 #include "helpermath.h"
-#include <lcms2.h>
 #include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
@@ -55,26 +54,6 @@ private Q_SLOTS:
         QCOMPARE(color.fourth, 0.0);
     }
 
-    void testConstructorWithCmsCIELab()
-    {
-        constexpr cmsCIELab testValue = {50, 20, 30};
-        constexpr GenericColor color(testValue);
-        QCOMPARE(color.first, 50.0);
-        QCOMPARE(color.second, 20.0);
-        QCOMPARE(color.third, 30.0);
-        QCOMPARE(color.fourth, 0.0);
-    }
-
-    void testConstructorWithCmsCIEXYZ()
-    {
-        constexpr cmsCIEXYZ testValue = {0.1, 0.2, 0.3};
-        constexpr GenericColor color(testValue);
-        QCOMPARE(color.first, 0.1);
-        QCOMPARE(color.second, 0.2);
-        QCOMPARE(color.third, 0.3);
-        QCOMPARE(color.fourth, 0.0);
-    }
-
     void testConstructorWithVec3d()
     {
         constexpr Vec3d testValue = {0.1, 0.2, 0.3};
@@ -110,33 +89,6 @@ private Q_SLOTS:
         QCOMPARE(vector.v[0], 50.0);
         QCOMPARE(vector.v[1], 20.0);
         QCOMPARE(vector.v[2], 30.0);
-    }
-
-    void testToCmsCIEXYZ()
-    {
-        constexpr GenericColor color(0.1, 0.2, 0.3);
-        constexpr cmsCIEXYZ ciexyz = color.reinterpretAsXyzToCmsciexyz();
-        QCOMPARE(ciexyz.X, 0.1);
-        QCOMPARE(ciexyz.Y, 0.2);
-        QCOMPARE(ciexyz.Z, 0.3);
-    }
-
-    void testToCmsCIELab()
-    {
-        constexpr GenericColor color(50, 20, 30);
-        constexpr cmsCIELab cielab = color.reinterpretAsLabToCmscielab();
-        QCOMPARE(cielab.L, 50.0);
-        QCOMPARE(cielab.a, 20.0);
-        QCOMPARE(cielab.b, 30.0);
-    }
-
-    void testToCmsCIELCh()
-    {
-        constexpr GenericColor color(50, 20, 30);
-        constexpr cmsCIELCh cielch = color.reinterpretAsLchToCmscielch();
-        QCOMPARE(cielch.L, 50.0);
-        QCOMPARE(cielch.C, 20.0);
-        QCOMPARE(cielch.h, 30.0);
     }
 
     void testEqualityOperatorsEqual1()

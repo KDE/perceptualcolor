@@ -8,7 +8,6 @@
 #include "mat3.h"
 #include "perceptualcolornamespace.h"
 #include <array>
-#include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qtmetamacros.h>

@@ -7,7 +7,6 @@
 #include "genericcolor.h"
 #include "mat3.h"
 #include <array>
-#include <lcms2.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qtmetamacros.h>

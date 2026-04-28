@@ -7,8 +7,6 @@
 
 ################# Tool launching the color dialog #################
 add_executable(perceptualcolorpicker)
-target_compile_definitions(perceptualcolorpicker
-    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(
@@ -19,7 +17,7 @@ target_link_libraries(
     # Transitive dependencies (PUBLIC, INTERFACE) don’t make sense
     # for executables, since you can’t link against an executable.
     # Therefore using PRIVAT:
-    PRIVATE "perceptualcolor-${MAJOR_VERSION}" ${LCMS2_LIBRARIES})
+    PRIVATE "perceptualcolor-${MAJOR_VERSION}")
 
 
 
@@ -27,8 +25,6 @@ target_link_libraries(
 
 ################# Test tool #################
 add_executable(testapp)
-target_compile_definitions(testapp
-    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(
@@ -42,4 +38,4 @@ target_link_libraries(
     # Transitive dependencies (PUBLIC, INTERFACE) don’t make sense
     # for executables, since you can’t link against an executable.
     # Therefore using PRIVAT:
-    PRIVATE "perceptualcolorinternal-${MAJOR_VERSION}" ${LCMS2_LIBRARIES})
+    PRIVATE "perceptualcolorinternal-${MAJOR_VERSION}")

@@ -216,12 +216,12 @@ GenericColor AbsoluteColor::fromXyzD50ToXyzD65(const GenericColor &value)
  * @returns the converted color */
 GenericColor AbsoluteColor::fromXyzD50ToCielabD50(const GenericColor &value)
 {
-    const cmsCIEXYZ cmsXyzD50 = value.reinterpretAsXyzToCmsciexyz();
+    const cmsCIEXYZ cmsXyzD50{value.first, value.second, value.third};
     cmsCIELab result;
     cmsXYZ2Lab(cmsD50_XYZ(), // white point (for both, XYZ and also Cielab)
                &result, // output
                &cmsXyzD50); // input
-    return GenericColor(result);
+    return GenericColor(result.L, result.a, result.b);
 }
 
 /** @internal
@@ -233,12 +233,13 @@ GenericColor AbsoluteColor::fromXyzD50ToCielabD50(const GenericColor &value)
  * @returns the converted color */
 GenericColor AbsoluteColor::fromCielabD50ToXyzD50(const GenericColor &value)
 {
-    const auto temp = value.reinterpretAsLabToCmscielab();
+    const cmsCIELab temp{value.first, value.second, value.third};
+    ;
     cmsCIEXYZ xyzD50;
     cmsLab2XYZ(cmsD50_XYZ(), // white point (for both, XYZ and also Lab)
                &xyzD50, // output
                &temp); // input
-    return GenericColor(xyzD50);
+    return GenericColor(xyzD50.X, xyzD50.Y, xyzD50.Z);
 }
 
 /** @internal
@@ -566,6 +567,8 @@ bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lch
  * @param cielchD50 the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise.
+ *
+ * @todo SHOULDHAVE SHOWSTOPPER Get rid of lcms completly in the hole library
  */
 bool AbsoluteColor::isCielchD50InSRgbGamut(const GenericColor &cielchD50)
 {

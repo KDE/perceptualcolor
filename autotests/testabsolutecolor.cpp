@@ -11,7 +11,6 @@
 #include "helpermath.h"
 #include <algorithm>
 #include <cmath>
-#include <lcms2.h>
 #include <optional>
 #include <qbenchmark.h>
 #include <qgenericmatrix.h>
@@ -24,8 +23,6 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtmetamacros.h>
-
-Q_DECLARE_METATYPE(cmsCIELab)
 
 namespace PerceptualColor
 {
@@ -110,8 +107,7 @@ private:
     void generateDataCielabd50Oklab()
     {
         qRegisterMetaType<Vec3d>();
-        qRegisterMetaType<cmsCIELab>();
-        QTest::addColumn<cmsCIELab>("cmscielab");
+        QTest::addColumn<GenericColor>("cielab");
         QTest::addColumn<Vec3d>("oklab");
 
         // The following reference values have been calculated with the
@@ -119,44 +115,44 @@ private:
 
         // NOTE The lightness value is out-of-bound! (Valid range: 0..100)
         QTest::newRow("special white 100., 0., 0.") //
-            << cmsCIELab({100., 0., 0.}) //
+            << GenericColor(100., 0., 0.) //
             << Vec3d(1.0000000010492212, -1.0775085046432764e-8, 5.03845311028428e-8);
 
         // NOTE The lightness value is out-of-bound! (Valid range: 0..100)
         QTest::newRow("white 100.00000139649632, -0.000007807961277528364, 0.000006766250648659877") //
-            << cmsCIELab({100.00000139649632, -0.000007807961277528364, 0.000006766250648659877}) //
+            << GenericColor(100.00000139649632, -0.000007807961277528364, 0.000006766250648659877) //
             << Vec3d(1.000000009791752, -3.3637913787742946e-8, 6.836016341882356e-8);
 
         QTest::newRow("red 54.29054294696968 80.80492033462421 69.89098825896275") //
-            << cmsCIELab({54.29054294696968, 80.80492033462421, 69.89098825896275}) //
+            << GenericColor(54.29054294696968, 80.80492033462421, 69.89098825896275) //
             << Vec3d(0.627955380062011, 0.22486300104638587, 0.1258463407318262);
 
         QTest::newRow("green 46.27770902748027 -47.55240796497723 48.58629466423457") //
-            << cmsCIELab({46.27770902748027, -47.55240796497723, 48.58629466423457}) //
+            << GenericColor(46.27770902748027, -47.55240796497723, 48.58629466423457) //
             << Vec3d(0.5197518404266431, -0.14030239549323664, 0.10767592658888475);
 
         QTest::newRow("blue 29.56829715344471 68.28740665215547 -112.02971798617645") //
-            << cmsCIELab({29.56829715344471, 68.28740665215547, -112.02971798617645}) //
+            << GenericColor(29.56829715344471, 68.28740665215547, -112.02971798617645) //
             << Vec3d(0.4520136952286447, -0.03245661282391282, -0.3115281896078159);
 
         QTest::newRow("cyan 90.66601315791455 -50.65651077286893 -14.961666625736525") //
-            << cmsCIELab({90.66601315791455, -50.65651077286893, -14.961666625736525}) //
+            << GenericColor(90.66601315791455, -50.65651077286893, -14.961666625736525) //
             << Vec3d(0.9053992412363845, -0.14944395453880494, -0.03939813576103679);
 
         QTest::newRow("magenta 60.16894098715946 93.53959546199253 -60.50080231921204") //
-            << cmsCIELab({60.16894098715946, 93.53959546199253, -60.50080231921204}) //
+            << GenericColor(60.16894098715946, 93.53959546199253, -60.50080231921204) //
             << Vec3d(0.7016738534591195, 0.2745663787537365, -0.16915605971312353);
 
         QTest::newRow("yellow 97.60701009682253 -15.749846639252663 93.39361164266089") //
-            << cmsCIELab({97.60701009682253, -15.749846639252663, 93.39361164266089}) //
+            << GenericColor(97.60701009682253, -15.749846639252663, 93.39361164266089) //
             << Vec3d(0.9679827459780366, -0.0713691921107204, 0.1985698110545745);
 
         QTest::newRow("black 0. 0. 0.") //
-            << cmsCIELab({0., 0., 0.}) //
+            << GenericColor(0., 0., 0.) //
             << Vec3d(0., 0., 0.);
 
         QTest::newRow("gray 53.5850142898864 -0.0000046837680400813 0.00000405887623511347") //
-            << cmsCIELab({53.5850142898864, -0.0000046837680400813, 0.00000405887623511347}) //
+            << GenericColor(53.5850142898864, -0.0000046837680400813, 0.00000405887623511347) //
             << Vec3d(0.599870811495933, -2.0178402559967168e-8, 4.1007266304848855e-8);
     }
 
@@ -408,18 +404,18 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actualXyzD65.third, z, epsilon));
     }
 
-    void testFromCmscielabD50ToOklab_data()
+    void testFromCielabD50ToOklab_data()
     {
         generateDataCielabd50Oklab();
     }
 
-    void testFromCmscielabD50ToOklab()
+    void testFromCielabD50ToOklab()
     {
-        QFETCH(cmsCIELab, cmscielab);
+        QFETCH(GenericColor, cielab);
         QFETCH(Vec3d, oklab);
         const auto actualResult = AbsoluteColor::convert( //
                                       ColorModel::CielabD50, //
-                                      GenericColor(cmscielab), //
+                                      cielab, //
                                       ColorModel::OklabD65) //
                                       .value();
         constexpr double epsilon = 0.001;
@@ -428,14 +424,14 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actualResult.third, oklab(2), epsilon));
     }
 
-    void testFromOklabToCmscielabD50_data()
+    void testFromOklabToCielabD50_data()
     {
         generateDataCielabd50Oklab();
     }
 
-    void testFromOklabToCmscielabD50()
+    void testFromOklabToCielabD50()
     {
-        QFETCH(cmsCIELab, cmscielab);
+        QFETCH(GenericColor, cielab);
         QFETCH(Vec3d, oklab);
         const auto actualCielabD50 = AbsoluteColor::convert( //
                                          ColorModel::OklabD65, //
@@ -448,9 +444,9 @@ private Q_SLOTS:
         // As we use the same data to check the inverse conversion, we have
         // to choose a higher epsilon:
         constexpr double epsilon = 0.05;
-        QVERIFY(isNearlyEqual(actualCielabD50.first, cmscielab.L, epsilon));
-        QVERIFY(isNearlyEqual(actualCielabD50.second, cmscielab.a, epsilon));
-        QVERIFY(isNearlyEqual(actualCielabD50.third, cmscielab.b, epsilon));
+        QVERIFY(isNearlyEqual(actualCielabD50.first, cielab.first, epsilon));
+        QVERIFY(isNearlyEqual(actualCielabD50.second, cielab.second, epsilon));
+        QVERIFY(isNearlyEqual(actualCielabD50.third, cielab.third, epsilon));
     }
 
     void testChannelFromLinearSRgbToSRgb_data()

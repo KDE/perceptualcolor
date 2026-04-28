@@ -6,7 +6,6 @@
 
 #include "helpermath.h"
 #include "vec3.h"
-#include <lcms2.h>
 #include <qdebug.h>
 #include <qlist.h>
 #include <qmetatype.h>
@@ -28,28 +27,6 @@ struct GenericColor {
 public:
     /** @brief Default constructor. */
     constexpr GenericColor() noexcept = default;
-
-    /** @brief Constructor.
-     *
-     * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIELab &init) noexcept
-        : first(init.L)
-        , second(init.a)
-        , third(init.b)
-        , fourth(0)
-    {
-    }
-
-    /** @brief Constructor.
-     *
-     * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
-    explicit constexpr GenericColor(const cmsCIEXYZ &init) noexcept
-        : first(init.X)
-        , second(init.Y)
-        , third(init.Z)
-        , fourth(0)
-    {
-    }
 
     /** @brief Constructor.
      *
@@ -116,36 +93,6 @@ public:
     [[nodiscard]] constexpr bool operator!=(const GenericColor &other) const noexcept
     {
         return !(*this == other);
-    }
-
-    /** @brief Type conversion.
-     *
-     * @warning Interprets the current data members as XZY.
-     *
-     * @returns Type conversion. */
-    [[nodiscard]] constexpr cmsCIEXYZ reinterpretAsXyzToCmsciexyz() const noexcept
-    {
-        return cmsCIEXYZ{first, second, third};
-    }
-
-    /** @brief Type conversion.
-     *
-     * @warning Interprets the current data members as Lab.
-     *
-     * @returns Type conversion. */
-    [[nodiscard]] constexpr cmsCIELab reinterpretAsLabToCmscielab() const noexcept
-    {
-        return cmsCIELab{first, second, third};
-    }
-
-    /** @brief Type conversion.
-     *
-     * @warning Interprets the current data members as LCh.
-     *
-     * @returns Type conversion. */
-    [[nodiscard]] constexpr cmsCIELCh reinterpretAsLchToCmscielch() const noexcept
-    {
-        return cmsCIELCh{first, second, third};
     }
 
     [[nodiscard]] QList<double> toQList3() const;
