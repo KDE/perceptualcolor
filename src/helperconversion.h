@@ -61,8 +61,6 @@ template<typename T>
                             static_cast<float>(blue));
 }
 
-[[nodiscard]] cmsCIELab toCmsLab(const cmsCIELCh &value);
-
 /** @internal
  *
  * @brief White point D65 for 2°-observer.
