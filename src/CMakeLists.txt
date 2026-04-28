@@ -52,6 +52,7 @@ set(library_SRC
     mat3.cpp
     multispinbox.cpp
     multispinboxsection.cpp
+    perceptualcolornamespace.cpp
     perceptualsettings.cpp
     polarpointf.cpp
     portaleyedropper.cpp

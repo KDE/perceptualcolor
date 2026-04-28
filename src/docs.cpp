@@ -1210,10 +1210,6 @@
  * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR
  * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH */
 
-/** @brief The namespace of this library.
- *
- * All symbols that are provided in this library are encapsulated within this
- * namespace. */
 namespace PerceptualColor
 {
 } // namespace PerceptualColor
