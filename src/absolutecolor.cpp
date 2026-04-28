@@ -11,7 +11,6 @@
 #include "helpermath.h"
 #include "helperposixmath.h"
 #include <cmath>
-#include <lcms2.h>
 #include <optional>
 #include <qgenericmatrix.h>
 #include <qglobal.h>
@@ -603,8 +602,6 @@ bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lch
  * @param cielchD50 the color
  * @returns <tt>true</tt> if the color is in the gamut.
  * <tt>false</tt> otherwise.
- *
- * @todo SHOULDHAVE SHOWSTOPPER Get rid of lcms completly in the hole library
  */
 bool AbsoluteColor::isCielchD50InSRgbGamut(const GenericColor &cielchD50)
 {

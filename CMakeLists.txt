@@ -524,24 +524,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_compile_options(/utf-8)
 endif()
 
-# Given that the "register" keyword has been deprecated in C++ since C++17,
-# the compiler may generate a warning when encountering its usage. It’s worth
-# noting that the LittleCMS header "lcms2.h," which we rely on, is a C header
-# and not specifically designed for C++. In this header, the "register" keyword
-# is extensively used. Since modifying the external header is not possible, we
-# need a different solution. Since lcms 2.10, defining
-# “#define CMS_NO_REGISTER_KEYWORD” before including “#include <lcms2.h>”
-# configures LittleCMS to not use the register keyword. We use this by adding
-# “target_compile_definitions(mytarget PRIVATE CMS_NO_REGISTER_KEYWORD)” to
-# all targets in our CMake code. But to support lcms < 2.10, we disable the
-# warning at least for some well-known compilers:
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_compile_options(/wd5033)
-endif()
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR ON_CLANG_DERIVATE)
-    add_compile_options(-Wno-register)
-endif()
-
 
 
 
@@ -550,12 +532,6 @@ endif()
 # Use also our local FIND modules
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-find_package( # Necessary for find_package(LCMS2)
-    PkgConfig
-    REQUIRED)
-find_package(
-    LCMS2
-    REQUIRED)
 find_package(
     ECM 5.82
     REQUIRED

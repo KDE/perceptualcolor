@@ -181,8 +181,6 @@ set(LIBRARY_NAME "perceptualcolor-${MAJOR_VERSION}")
 # Add library. If it will build as STATIC or as SHARED library is not
 # hardcoded, so add_library() it use BUILD_SHARED_LIBS to decide.
 add_library(${LIBRARY_NAME})
-target_compile_definitions(${LIBRARY_NAME}
-    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # The headers have to be added here explicitly because otherwise Qt’s MOC
 # would not find them because they are not in the same directory as the
 # corresponding .cpp files
@@ -227,7 +225,7 @@ target_include_directories(
         $<INSTALL_INTERFACE:include/${LIBRARY_NAME}/>
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/"
-        "${LCMS2_INCLUDE_DIRS}")
+)
 # target_link_libraries, despite its name, does not only mean “link”, but
 # actually rather “use”. It uses transitive dependencies:
 # - If only our source files #include headers of the external library: PRIVATE
@@ -242,8 +240,7 @@ target_link_libraries(
     ${LIBRARY_NAME}
     PUBLIC
         Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Svg
-    PRIVATE
-        ${LCMS2_LIBRARIES})
+)
 install(
     DIRECTORY
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
@@ -295,8 +292,6 @@ set(INTERNAL_LIBRARY_NAME "perceptualcolorinternal-${MAJOR_VERSION}")
 # Add library. If it will build as STATIC or as SHARED library is not
 # hardcoded, so add_library() it use BUILD_SHARED_LIBS to decide.
 add_library(${INTERNAL_LIBRARY_NAME})
-target_compile_definitions(${INTERNAL_LIBRARY_NAME}
-    PRIVATE CMS_NO_REGISTER_KEYWORD)
 # target_sources should normally always use PRIVATE. Details:
 # crascit.com/2016/01/31/enhanced-source-file-handling-with-target_sources
 target_sources(
@@ -372,18 +367,9 @@ target_include_directories(
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated/>
         # No $<INSTALL_INTERFACE:SOMETHING> because this target is only meant to
         # be build as part of this project, and not by external projects.
-        # NOTE It's necessary for LittleCMS to be marked as PUBLIC for the
-        # internal build since users of the internal build have full access
-        # to internal headers. These headers may include LittleCMS, and without
-        # public access, users wouldn't be able to use the library as intended.
-        ${LCMS2_INCLUDE_DIRS})
+)
 target_link_libraries(
     ${INTERNAL_LIBRARY_NAME}
-    # NOTE It's necessary for LittleCMS to be marked as PUBLIC for the
-    # internal build since users of the internal build have full access
-    # to internal headers. These headers may include LittleCMS, and without
-    # public access, users wouldn't be able to use the library as intended.
     PUBLIC
         Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Svg
-        ${LCMS2_LIBRARIES}
 )
