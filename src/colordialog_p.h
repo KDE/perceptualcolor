@@ -239,7 +239,7 @@ public:
     /**
      * @brief The color space into which the gamut will be projected.
      */
-    const LchSpace m_projectionSpace = LchSpace::Oklch;
+    const LchSpace m_projectionSpace = LchSpace::CielchD50;
     /**
      * @brief The corresponding @ref ColorModel value
      * for @ref m_projectionSpace.

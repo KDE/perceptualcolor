@@ -216,12 +216,31 @@ GenericColor AbsoluteColor::fromXyzD50ToXyzD65(const GenericColor &value)
  * @returns the converted color */
 GenericColor AbsoluteColor::fromXyzD50ToCielabD50(const GenericColor &value)
 {
-    const cmsCIEXYZ cmsXyzD50{value.first, value.second, value.third};
-    cmsCIELab result;
-    cmsXYZ2Lab(cmsD50_XYZ(), // white point (for both, XYZ and also Cielab)
-               &result, // output
-               &cmsXyzD50); // input
-    return GenericColor(result.L, result.a, result.b);
+    // Conversion function as described in
+    // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIE_XYZ_to_CIELAB
+
+    constexpr Vec3d whitepoint = static_cast<Vec3d>(whitePointD50TwoDegree);
+
+    auto f = [](double t) {
+        constexpr double delta = 6.0 / 29.0;
+        constexpr double delta2 = delta * delta;
+        constexpr double delta3 = delta * delta * delta;
+        if (t > delta3) {
+            return std::cbrt(t);
+        } else {
+            return (t / (3.0 * delta2)) + (4.0 / 29.0);
+        }
+    };
+
+    const auto fx = f(value.first / whitepoint(0));
+    const auto fy = f(value.second / whitepoint(1));
+    const auto fz = f(value.third / whitepoint(2));
+
+    const double l = 116.0 * fy - 16.0;
+    const double a = 500.0 * (fx - fy);
+    const double b = 200.0 * (fy - fz);
+
+    return {l, a, b};
 }
 
 /** @internal
@@ -233,13 +252,30 @@ GenericColor AbsoluteColor::fromXyzD50ToCielabD50(const GenericColor &value)
  * @returns the converted color */
 GenericColor AbsoluteColor::fromCielabD50ToXyzD50(const GenericColor &value)
 {
-    const cmsCIELab temp{value.first, value.second, value.third};
-    ;
-    cmsCIEXYZ xyzD50;
-    cmsLab2XYZ(cmsD50_XYZ(), // white point (for both, XYZ and also Lab)
-               &xyzD50, // output
-               &temp); // input
-    return GenericColor(xyzD50.X, xyzD50.Y, xyzD50.Z);
+    // Conversion function as described in
+    // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIE_XYZ_to_CIELAB
+
+    constexpr Vec3d whitepoint = static_cast<Vec3d>(whitePointD50TwoDegree);
+
+    const double fy = (value.first + 16.0) / 116.0;
+    const double fz = fy - value.third / 200.0;
+    const double fx = value.second / 500.0 + fy;
+
+    auto f_1 = [](const double f) {
+        constexpr double delta = 6.0 / 29.0;
+        constexpr double delta2 = delta * delta;
+        if (f > delta) {
+            return f * f * f;
+        } else {
+            return 3.0 * delta2 * (f - 4.0 / 29.0);
+        }
+    };
+
+    const double X = whitepoint(0) * f_1(fx);
+    const double Y = whitepoint(1) * f_1(fy);
+    const double Z = whitepoint(2) * f_1(fz);
+
+    return {X, Y, Z};
 }
 
 /** @internal

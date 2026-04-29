@@ -721,6 +721,49 @@ private Q_SLOTS:
             0.1794984451609376 + 0.1);
         QVERIFY(!AbsoluteColor::isOklabInSRgbGamut(oklabOutOfGamut));
     }
+
+    void testFromXyzD50ToCielabD50()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        const auto actual = AbsoluteColor::fromXyzD50ToCielabD50( //
+            GenericColor(0.1994705855190846, //
+                         0.2034061073987922, //
+                         0.5832095638004905));
+        constexpr auto expected = GenericColor(52.220147197813006, //
+                                               1.6532433081309361, //
+                                               -60.53563834950426);
+        constexpr double epsilon = 0.003;
+        QVERIFY(isNearlyEqual(actual.first, expected.first, epsilon));
+        QVERIFY(isNearlyEqual(actual.second, expected.second, epsilon));
+        QVERIFY(isNearlyEqual(actual.third, expected.third, epsilon));
+    }
+
+    void testFromCielabD50ToXyzD50()
+    {
+        // The following reference values have been calculated with the
+        // online tool https://colorjs.io/apps/convert/
+        const auto actual = AbsoluteColor::fromCielabD50ToXyzD50( //
+            GenericColor(52.220147197813006, //
+                         1.6532433081309361, //
+                         -60.53563834950426));
+        constexpr auto expected = GenericColor(0.1994705855190846, //
+                                               0.2034061073987922, //
+                                               0.5832095638004905);
+        constexpr double epsilon = 0.0002;
+        QVERIFY(isNearlyEqual(actual.first, expected.first, epsilon));
+        QVERIFY(isNearlyEqual(actual.second, expected.second, epsilon));
+        QVERIFY(isNearlyEqual(actual.third, expected.third, epsilon));
+
+        const auto actual2 = AbsoluteColor::fromCielabD50ToXyzD50( //
+            GenericColor(0.1, 0.1, 0.1));
+        constexpr auto expected2 = GenericColor(0.00013151966616406293, //
+                                                0.00011070564598794539, //
+                                                0.000038364369971991364);
+        QVERIFY(isNearlyEqual(actual2.first, expected2.first, epsilon));
+        QVERIFY(isNearlyEqual(actual2.second, expected2.second, epsilon));
+        QVERIFY(isNearlyEqual(actual2.third, expected2.third, epsilon));
+    }
 };
 
 } // namespace PerceptualColor

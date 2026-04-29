@@ -62,7 +62,21 @@ template<typename T>
 
 /** @internal
  *
- * @brief White point D65 for 2°-observer.
+ * @brief White point D50 for 2°-observer, normalized to Y = 1.
+ *
+ * @note According to
+ * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIE_XYZ_to_CIELAB">
+ * Wikipedia</a>, this would be (0.964212, 1, 0.825188).
+ * However, many software implementations, for example
+ * <a href="mathworks.com/help/images/ref/whitepoint.html">Mathworks</a>, use
+ * a different value (0.9642, 1, 0.8249). Not sure which values are the correct
+ * ones.
+ */
+constexpr Vec3ld whitePointD50TwoDegree{0.9642L, 1.0000L, 0.8249L};
+
+/** @internal
+ *
+ * @brief White point D65 for 2°-observer, normalized to Y = 1.
  *
  * According to
  * <a href="https://en.wikipedia.org/w/index.php?title=Illuminant_D65&oldid=1100467073#Definition">
