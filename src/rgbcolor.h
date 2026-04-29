@@ -70,7 +70,25 @@ public:
      * @returns The default implementation’s return value. */
     RgbColor &operator=(const RgbColor &other) = default;
 
-    [[nodiscard]] bool operator==(const RgbColor &other) const;
+    /**
+     * @brief Equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if all data members have exactly the same
+     * coordinates. <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator==(const RgbColor &other) const = default;
+
+    /**
+     * @brief Not-equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns Logical opposite of @ref operator==.
+     */
+    [[nodiscard]] bool operator!=(const RgbColor &other) const = default;
+
     /** @brief HSL representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */

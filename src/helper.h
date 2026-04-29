@@ -175,24 +175,14 @@ public:
      * @param other The object to compare with.
      *
      * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
-    bool operator==(const Array2D &other) const
-    {
-        return ( //
-            (m_data == other.m_data) //
-            && (m_iCount == other.m_iCount) //
-            && (m_jCount == other.m_jCount) //
-        );
-    }
+    [[nodiscard]] bool operator==(const Array2D &other) const = default;
 
     /** @brief Unequal operator
      *
      * @param other The object to compare with.
      *
      * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
-    bool operator!=(const Array2D &other) const
-    {
-        return !(*this == other);
-    }
+    [[nodiscard]] bool operator!=(const Array2D &other) const = default;
 
     /** @brief If a given indices combination is in range.
      *

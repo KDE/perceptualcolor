@@ -29,30 +29,6 @@
 namespace PerceptualColor
 {
 
-/** @brief Equal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
-bool ChromaLightnessImageParameters::operator==(const ChromaLightnessImageParameters &other) const
-{
-    return ( //
-        (hue == other.hue) //
-        && (imageSizePhysical == other.imageSizePhysical) //
-        && (projectionSpace == other.projectionSpace) //
-    );
-}
-
-/** @brief Unequal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
-bool ChromaLightnessImageParameters::operator!=(const ChromaLightnessImageParameters &other) const
-{
-    return !(*this == other);
-}
-
 /**
  * @brief Render some rows of the image directly to the buffer.
  *

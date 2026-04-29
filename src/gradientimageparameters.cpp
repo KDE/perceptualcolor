@@ -73,8 +73,6 @@ void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColo
     if (!(m_firstColorCorrected == correctedNewFirstColor)) {
         m_firstColorCorrected = correctedNewFirstColor;
         updateSecondColor();
-        // Free the memory used by the old image.
-        m_image = QImage();
     }
 }
 
@@ -88,8 +86,6 @@ void GradientImageParameters::setSecondColorLchA(const GenericColor &newSecondCo
     if (!(m_secondColorCorrectedAndAltered == correctedNewSecondColor)) {
         m_secondColorCorrectedAndAltered = correctedNewSecondColor;
         updateSecondColor();
-        // Free the memory used by the old image.
-        m_image = QImage();
     }
 }
 
@@ -257,12 +253,7 @@ GenericColor GradientImageParameters::colorFromValue(qreal value) const
  * considered as <tt>1.0</tt>.) */
 void GradientImageParameters::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
 {
-    const qreal tempDevicePixelRatioF = qMax<qreal>(1, newDevicePixelRatioF);
-    if (m_devicePixelRatioF != tempDevicePixelRatioF) {
-        m_devicePixelRatioF = tempDevicePixelRatioF;
-        // Free the memory used by the old image.
-        m_image = QImage();
-    }
+    m_devicePixelRatioF = qMax<qreal>(1, newDevicePixelRatioF);
 }
 
 /** @brief Setter for the gradient length property.
@@ -271,12 +262,7 @@ void GradientImageParameters::setDevicePixelRatioF(const qreal newDevicePixelRat
  * in <em>physical pixels</em>. */
 void GradientImageParameters::setGradientLength(const int newGradientLength)
 {
-    const int temp = qMax(0, newGradientLength);
-    if (m_gradientLength != temp) {
-        m_gradientLength = temp;
-        // Free the memory used by the old image.
-        m_image = QImage();
-    }
+    m_gradientLength = qMax(0, newGradientLength);
 }
 
 /**
@@ -286,11 +272,7 @@ void GradientImageParameters::setGradientLength(const int newGradientLength)
  */
 void GradientImageParameters::setProjectionSpace(const LchSpace newProjectionSpace)
 {
-    if (m_projectionSpace != newProjectionSpace) {
-        m_projectionSpace = newProjectionSpace;
-        // Free the memory used by the old image.
-        m_image = QImage();
-    }
+    m_projectionSpace = newProjectionSpace;
 }
 
 /** @brief Setter for the gradient thickness property.
@@ -299,45 +281,7 @@ void GradientImageParameters::setProjectionSpace(const LchSpace newProjectionSpa
  * in <em>physical pixels</em>. */
 void GradientImageParameters::setGradientThickness(const int newGradientThickness)
 {
-    const int temp = qMax(0, newGradientThickness);
-    if (m_gradientThickness != temp) {
-        m_gradientThickness = temp;
-        // Free the memory used by the old image.
-        m_image = QImage();
-    }
-}
-
-/** @brief Equal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
-bool GradientImageParameters::operator==(const GradientImageParameters &other) const
-{
-    return ( //
-        (m_devicePixelRatioF == other.m_devicePixelRatioF) //
-        && (m_firstColorCorrected.first == other.m_firstColorCorrected.first) //
-        && (m_firstColorCorrected.second == other.m_firstColorCorrected.second) //
-        && (m_firstColorCorrected.third == other.m_firstColorCorrected.third) //
-        && (m_firstColorCorrected.fourth == other.m_firstColorCorrected.fourth) //
-        && (m_gradientLength == other.m_gradientLength) //
-        && (m_gradientThickness == other.m_gradientThickness) //
-        && (m_secondColorCorrectedAndAltered.first == other.m_secondColorCorrectedAndAltered.first) //
-        && (m_secondColorCorrectedAndAltered.second == other.m_secondColorCorrectedAndAltered.second) //
-        && (m_secondColorCorrectedAndAltered.third == other.m_secondColorCorrectedAndAltered.third) //
-        && (m_secondColorCorrectedAndAltered.fourth == other.m_secondColorCorrectedAndAltered.fourth) //
-        && (m_projectionSpace == other.m_projectionSpace) //
-    );
-}
-
-/** @brief Unequal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
-bool GradientImageParameters::operator!=(const GradientImageParameters &other) const
-{
-    return !(*this == other);
+    m_gradientThickness = qMax(0, newGradientThickness);
 }
 
 } // namespace PerceptualColor

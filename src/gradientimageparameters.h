@@ -35,8 +35,24 @@ class AsyncImageRenderCallback;
 struct GradientImageParameters {
 public:
     explicit GradientImageParameters();
-    [[nodiscard]] bool operator==(const GradientImageParameters &other) const;
-    [[nodiscard]] bool operator!=(const GradientImageParameters &other) const;
+
+    /**
+     * @brief Equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator==(const GradientImageParameters &other) const = default;
+
+    /**
+     * @brief Unequal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator!=(const GradientImageParameters &other) const = default;
 
     [[nodiscard]] GenericColor colorFromValue(qreal value) const;
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
@@ -75,16 +91,6 @@ private:
      *
      * @sa @ref setGradientThickness() */
     int m_gradientThickness = 0;
-    /** @brief Internal storage of the image (cache).
-     *
-     * - If <tt>m_image.isNull()</tt> than either no cache is available
-     *   or @ref m_gradientLength or @ref m_gradientThickness is <tt>0</tt>.
-     *   Before using it, a new image has to be rendered. (If
-     *   @ref m_gradientLength or @ref m_gradientThickness is
-     *   <tt>0</tt>, this will be extremly fast.)
-     * - If <tt>m_image.isNull()</tt> is <tt>false</tt>, than the cache
-     *   is valid and can be used directly. */
-    QImage m_image;
     /**
      * @brief The color space into which the gamut will be projected.
      */

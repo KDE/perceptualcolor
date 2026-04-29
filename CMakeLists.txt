@@ -129,7 +129,7 @@ set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 ################# C++ standard #################
 # Our choice for the required C++ standard is documented via Doxygen (main
 # page of the documentation).
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS FALSE) # Try to disable compiler-specific extensions.
 

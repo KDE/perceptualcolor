@@ -70,8 +70,23 @@ public:
      */
     LchSpace projectionSpace = LchSpace::CielchD50;
 
-    [[nodiscard]] bool operator==(const ChromaHueImageParameters &other) const;
-    [[nodiscard]] bool operator!=(const ChromaHueImageParameters &other) const;
+    /**
+     * @brief Equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator==(const ChromaHueImageParameters &other) const = default;
+
+    /**
+     * @brief Unequal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator!=(const ChromaHueImageParameters &other) const = default;
 
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
 

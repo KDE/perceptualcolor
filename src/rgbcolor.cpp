@@ -269,23 +269,6 @@ RgbColor RgbColor::fromHwb(const GenericColor &color)
     return result;
 }
 
-/** @brief Equal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if all data members have exactly the same
- * coordinates. <tt>false</tt> otherwise. */
-bool RgbColor::operator==(const RgbColor &other) const
-{
-    // Test equality for all data members
-    return (hsl == other.hsl) //
-        && (hsv == other.hsv) //
-        && (hwb == other.hwb) //
-        && (rgb_255 == other.rgb_255) //
-        && (rgbHex6 == other.rgbHex6) //
-        && (rgbQColor == other.rgbQColor);
-}
-
 /** @internal
  *
  * @brief Adds QDebug() support for data type

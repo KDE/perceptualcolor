@@ -43,8 +43,24 @@ class AsyncImageRenderCallback;
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaLightnessImageParameters
 {
 public:
-    [[nodiscard]] bool operator==(const ChromaLightnessImageParameters &other) const;
-    [[nodiscard]] bool operator!=(const ChromaLightnessImageParameters &other) const;
+    /**
+     * @brief Equal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator==(const ChromaLightnessImageParameters &other) const = default;
+
+    /**
+     * @brief Unequal operator
+     *
+     * @param other The object to compare with.
+     *
+     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise.
+     */
+    [[nodiscard]] bool operator!=(const ChromaLightnessImageParameters &other) const = default;
+
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
 
     /** @brief The LCH-hue.

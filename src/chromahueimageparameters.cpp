@@ -32,31 +32,6 @@
 
 namespace PerceptualColor
 {
-/** @brief Equal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
-bool ChromaHueImageParameters::operator==(const ChromaHueImageParameters &other) const
-{
-    return ( //
-        (borderPhysical == other.borderPhysical) //
-        && (devicePixelRatioF == other.devicePixelRatioF) //
-        && (imageSizePhysical == other.imageSizePhysical) //
-        && (lightness == other.lightness) //
-        && (projectionSpace == other.projectionSpace) //
-    );
-}
-
-/** @brief Unequal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
-bool ChromaHueImageParameters::operator!=(const ChromaHueImageParameters &other) const
-{
-    return !(*this == other);
-}
 
 /**
  * @brief A new interlacing object with an appropriate number of interlacing

@@ -14,7 +14,7 @@
  *   Components: Core, Gui, Widgets, DBus, Test, Svg.
  * - CMake
  * - ECM (Extra CMake Modules from KDE)
- * - C++17
+ * - C++20
  * - Both, the input character set and the execution character set, have
  *   to be UTF8. (See @ref compilercharacterset for more details.)
  * <!--
@@ -22,7 +22,13 @@
  *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
  *      explains.
  *
- *      In the CMakeLists.txt file, we set -std=c++17 and we set
+ *      KDE Frameworks Policy https://community.kde.org/Frameworks/Policies
+ *      says:
+ *          “KDE Frameworks can use features of the previous to latest
+ *           C++ standard, at the time of writing (December 2025) that
+ *           means C++20.”
+ *
+ *      In the CMakeLists.txt file, we set -std=c++20 and we set
  *      also -Wpedantic and -pedantic-errors to enforce it.
  * -->
  *

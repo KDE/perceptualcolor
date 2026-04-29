@@ -75,25 +75,14 @@ public:
      * @param other The object to compare with.
      *
      * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
-    [[nodiscard]] constexpr bool operator==(const GenericColor &other) const noexcept
-    {
-        return ( //
-            (first == other.first) //
-            && (second == other.second) //
-            && (third == other.third) //
-            && (fourth == other.fourth) //
-        );
-    }
+    [[nodiscard]] constexpr bool operator==(const GenericColor &other) const noexcept = default;
 
     /** @brief Unequal operator
      *
      * @param other The object to compare with.
      *
      * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
-    [[nodiscard]] constexpr bool operator!=(const GenericColor &other) const noexcept
-    {
-        return !(*this == other);
-    }
+    [[nodiscard]] constexpr bool operator!=(const GenericColor &other) const noexcept = default;
 
     [[nodiscard]] QList<double> toQList3() const;
 
