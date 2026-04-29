@@ -5,8 +5,8 @@
 #include "csscolor.h"
 
 #include "helpermath.h"
-#include "helperposixmath.h"
 #include <array>
+#include <numbers>
 #include <optional>
 #include <qhash.h>
 #include <qlist.h>
@@ -269,7 +269,7 @@ std::optional<double> CssColor::parseArgumentHueNoneTo360(const QString &argumen
     }
     if (cleanArgument.endsWith(QStringLiteral("rad"))) {
         cleanArgument.truncate(cleanArgument.length() - 3);
-        correctionFactor = 360. / (2 * pi);
+        correctionFactor = 360. / (2 * std::numbers::pi);
     }
     if (cleanArgument.endsWith(QStringLiteral("turn"))) {
         cleanArgument.truncate(cleanArgument.length() - 4);

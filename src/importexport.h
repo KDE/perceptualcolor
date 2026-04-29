@@ -132,7 +132,7 @@
  * support for deprecating symbols. However, since C++14 there is
  * <a href="https://en.cppreference.com/w/cpp/language/attributes/deprecated">
  * <tt>[[deprecated(string-literal)]]</tt></a> part of the standard.
- * As we require even C++17 anyway, we can use this as a portable standard
+ * We can use this as a portable standard
  * instead of CMake’s macros.
  *
  * @sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries

@@ -14,9 +14,9 @@
 #include "helper.h"
 #include "helperconstants.h"
 #include "helpermath.h"
-#include "helperposixmath.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
+#include <numbers>
 #include <qevent.h>
 #include <qimage.h>
 #include <qnamespace.h>
@@ -469,7 +469,7 @@ QSize ColorWheel::minimumSizeHint() const
     // (0° red, 90° yellow, 180° green, 270° blue). So the circumference of
     // the inner circle of the wheel is 4 × gradientMinimumLength(). By
     // dividing it by π, we get the required inner diameter:
-    const qreal innerDiameter = 4 * gradientMinimumLength() / pi;
+    const qreal innerDiameter = 4 * gradientMinimumLength() / std::numbers::pi;
     const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * spaceForFocusIndicator());
     // Expand to the global minimum size for GUI elements
     return QSize(size, size);

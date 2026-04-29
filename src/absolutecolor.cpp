@@ -9,8 +9,8 @@
 #include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
-#include "helperposixmath.h"
 #include <cmath>
+#include <numbers>
 #include <optional>
 #include <qgenericmatrix.h>
 #include <qglobal.h>
@@ -302,7 +302,7 @@ GenericColor AbsoluteColor::fromCartesianToPolar(const GenericColor &value)
     if (y >= 0) {
         result.third = qRadiansToDegrees(acos(x / radius));
     } else {
-        result.third = qRadiansToDegrees(2 * pi - acos(x / radius));
+        result.third = qRadiansToDegrees(2 * std::numbers::pi - acos(x / radius));
     }
     return result;
 }

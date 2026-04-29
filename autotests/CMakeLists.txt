@@ -152,7 +152,6 @@ if(BUILD_TESTING)
         testhelperconversion
         testhelperimage
         testhelpermath
-        testhelperposixmath
         testimportexport
         testinitializetranslation
         testinterlacingpass

@@ -20,7 +20,8 @@
  * <!--
  *      Qt 6 requires minimum C++17, as
  *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
- *      explains.
+ *      explains. However, as https://doc.qt.io/qt-6/cpp20-overview.html
+ *      explains, some additinal features get available if compiled with C++20.
  *
  *      KDE Frameworks Policy https://community.kde.org/Frameworks/Policies
  *      says:
@@ -1115,11 +1116,9 @@
  * @todo SHOULDHAVE Increase version number in CMakeLists.txt (MAJOR_VERSION,
  * MINOR_VERSION, PATCH_VERSION)
  *
- * @todo SHOULDHAVE <tt>operator&lt;&lt;</tt> and <tt>operator==</tt> actually
- * cover all data members. (Or: Switch from C++17 to C++20 and use default
- * operators or <tt>operator&lt;==&lt;</tt>, which is allowed as by
+ * @todo SHOULDHAVE Follow
  * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
- * Policy</a>)
+ * Policy</a>.
  *
  * @todo SHOULDHAVE From
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">

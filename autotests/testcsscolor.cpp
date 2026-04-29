@@ -7,7 +7,7 @@
 
 #include "genericcolor.h"
 #include "helperconversion.h"
-#include <helperposixmath.h>
+#include <numbers>
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qdebug.h>
@@ -976,15 +976,15 @@ private Q_SLOTS:
         QCOMPARE(CssColor::parseArgumentHueNoneTo360( //
                      QStringLiteral("-1rad"))
                      .value_or(42),
-                 -1. / (2 * pi) * 360 + 360);
+                 -1. / (2 * std::numbers::pi) * 360 + 360);
         QCOMPARE(CssColor::parseArgumentHueNoneTo360( //
                      QStringLiteral("1rad"))
                      .value_or(42),
-                 1. / (2 * pi) * 360);
+                 1. / (2 * std::numbers::pi) * 360);
         QCOMPARE(CssColor::parseArgumentHueNoneTo360( //
                      QStringLiteral("9rad"))
                      .value_or(42),
-                 9. / (2 * pi) * 360 - 360);
+                 9. / (2 * std::numbers::pi) * 360 - 360);
 
         QVERIFY(!CssColor::parseArgumentHueNoneTo360( //
                      QStringLiteral("1 turn"))

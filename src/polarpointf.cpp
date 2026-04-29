@@ -6,8 +6,8 @@
 
 // Other includes
 #include "helpermath.h"
-#include "helperposixmath.h"
 #include <cmath>
+#include <numbers>
 #include <qdebug.h>
 #include <qmath.h>
 #include <type_traits>
@@ -56,7 +56,7 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
             acos(cartesianCoordiantes.x() / m_radius));
     } else {
         m_angleDegree = qRadiansToDegrees( //
-            2 * pi - acos(cartesianCoordiantes.x() / m_radius));
+            2 * std::numbers::pi - acos(cartesianCoordiantes.x() / m_radius));
     }
 }
 

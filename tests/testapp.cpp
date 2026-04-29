@@ -20,7 +20,6 @@
 #include "helperconstants.h" // IWYU pragma: keep
 #include "helperconversion.h" // IWYU pragma: keep
 #include "helpermath.h" // IWYU pragma: keep
-#include "helperposixmath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
 #include "lchvalues.h" // IWYU pragma: keep
 #include "mat3.h" // IWYU pragma: keep
@@ -36,6 +35,7 @@
 #include "vec3.h" // IWYU pragma: keep
 #include "version.h" // IWYU pragma: keep
 #include "wheelcolorpicker.h" // IWYU pragma: keep
+#include <numbers> // IWYU pragma: keep
 #include <qaction.h> // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
 #include <qcolor.h> // IWYU pragma: keep

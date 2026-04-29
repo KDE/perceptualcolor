@@ -7,7 +7,6 @@
 
 #include "chromainfo.h"
 #include "genericcolor.h"
-#include "helperposixmath.h"
 #include <qglobal.h>
 #include <qobject.h>
 #include <qsharedpointer.h>
