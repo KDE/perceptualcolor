@@ -533,22 +533,22 @@ endif()
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(
-    ECM 5.82
+    ECM 5.92 # maximum allowed by our current CI runners
     REQUIRED
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-set(QT_MAJOR_VERSION 6)
+set(REQUIRED_QT_VERSION 6.2.4) # maximum allowed by our current CI runners
 find_package(
-    Qt${QT_MAJOR_VERSION}
+    Qt6 ${REQUIRED_QT_VERSION}
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
     COMPONENTS Core Gui Widgets DBus Test Svg
     REQUIRED)
 message(STATUS
         "Using Qt version: "
-        "${Qt${QT_MAJOR_VERSION}_VERSION_MAJOR}."
-        "${Qt${QT_MAJOR_VERSION}_VERSION_MINOR}."
-        "${Qt${QT_MAJOR_VERSION}_VERSION_PATCH}")
+        "${Qt6_VERSION_MAJOR}."
+        "${Qt6_VERSION_MINOR}."
+        "${Qt6_VERSION_PATCH}")
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC TRUE)
 # Instruct CMake to create code from Qt designer ui files

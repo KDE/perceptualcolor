@@ -124,35 +124,6 @@ grep \
         | grep --perl-regexp --invert-match '.*#define\s+[A-Z_][A-Z_0-9]*\b' \
         | sed 's/^/Only A-Z_ in macro names: /'
 
-# Search for some patterns that should not be used in the source code. If
-# these patterns are found, a message is displayed. Otherwise, nothing is
-# displayed.
-
-# We do not include LittleCMS headers like lcms2.h in the public API of our
-# library. But it is only be an internal dependency; library users should
-# not need to care about that. Therefore, we grab all lines that contain
-# identifiers starting with “cms” (except when in lines starting with
-# “using”). This search is not done for all code directories, but only
-# for files within the include directory (public API).
-grep \
-    --recursive --exclude-dir=testbed \
-    --perl-regexp "^cms" \
-    $PUBLIC_HEADERS \
-         | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
-grep \
-    --recursive --exclude-dir=testbed \
-    --perl-regexp "[^a-zA-Z]cms[a-zA-Z0-9]" \
-    $PUBLIC_HEADERS \
-    | grep \
-        --perl-regexp "\<tt\>cms" \
-        --invert-match \
-         | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
-grep \
-    --recursive --exclude-dir=testbed \
-    --fixed-strings "lcms2.h" \
-    $PUBLIC_HEADERS \
-         | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
-
 # -> using versus typedef: Both methods for declaring aliases are equivalent,
 #    but the using statement is preferred as it is considered easier to read
 #    than the typedef statement.

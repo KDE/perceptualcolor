@@ -829,17 +829,7 @@
  * @copyright
  * - We follow the <a href="https://reuse.software/">“Reuse”
  *   specification</a>.
- * - The files from which the library (and this documentation as well)
- *   are generated do not all have the same license; instead, each file
- *   is subject to one of the following permissive licenses:
- *   - BSD-2-Clause OR MIT (for example, some C++ source code files)
- *   - MIT (for example, some icons)
- *   - BSD-3-Clause (for example, some CMake files)
- *   - CC0-1.0 (for example, some color profiles)
- * - Other parts of the codebase (which will
- *   <em>not</em> be installed by CMake, examples include <em>autotests</em>
- *   and <em>utils</em>) might have different licenses and/or include
- *   compiled-in resources that have different licenses. */
+ */
 
 /** @internal
  *

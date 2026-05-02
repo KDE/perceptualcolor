@@ -47,7 +47,6 @@ mkdir --parents build \
         -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=/usr/bin/iwyu \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
         -DADDITIONAL_WARNINGS=ON \
-        -DBUILD_WITH_QT6=ON \
         .. \
         > /dev/null \
     && nice --adjustment 19 \

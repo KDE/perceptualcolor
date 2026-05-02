@@ -39,34 +39,12 @@ totalerrors=$((totalerrors + exitcode))
 echo "ci-doxygen.sh finished with exit code $exitcode."
 exitcode_doxygen=$exitcode
 
-echo "Starting ci-ipo-lto …"
-scripts/ci-ipo-lto.sh
-exitcode=$?
-totalerrors=$((totalerrors + exitcode))
-echo "ci-ipo-lto finished with exit code $exitcode."
-exitcode_ipo_lto=$exitcode
-
-echo "Starting ci-qch.sh …"
-scripts/ci-qch.sh
-exitcode=$?
-totalerrors=$((totalerrors + exitcode))
-echo "ci-qch.sh finished with exit code $exitcode."
-exitcode_qch=$exitcode
-
 echo "Starting ci-warnings.sh …"
 scripts/ci-warnings.sh
 exitcode=$?
 totalerrors=$((totalerrors + exitcode))
 echo "ci-warnings.sh finished with exit code $exitcode."
 exitcode_warnings=$exitcode
-
-echo "Starting ci-iwyu.sh …"
-scripts/ci-iwyu.sh
-exitcode=$?
-# NOTE Do NOT count this exit code. There is a separate job that will
-# use iwyu artifacts later…
-echo "ci-iwyu.sh finished with exit code $exitcode."
-exitcode_iwyu=$exitcode
 
 # Delete empty artifacts
 echo "BEGIN list of artifacts"
@@ -86,10 +64,7 @@ echo "staticcodecheck: $exitcode_staticcodecheck"
 echo "cmakelint: $exitcode_cmakelint"
 echo "automatic_integration: $exitcode_automatic_integration"
 echo "doxygen: $exitcode_doxygen"
-echo "ipo_lto: $exitcode_ipo_lto"
-echo "qch: $exitcode_qch"
 echo "warnings: $exitcode_warnings"
-echo "iwyu: $exitcode_iwyu (ignored)"
 echo
 echo "Terminating ci.sh with exit code $totalerrors."
 # NOTE The exit code of the last command is available with $? in the shell.

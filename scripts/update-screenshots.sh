@@ -37,7 +37,7 @@ echo "Build generatescreenshots."
 echo Number of available CPU threads: $PARALLEL_PROCESSES
 mkdir --parents build
 cd build
-cmake -DBUILD_WITH_QT6=ON ..
+cmake ..
 cmake --build . --target generatescreenshots --parallel $PARALLEL_PROCESSES
 cd ..
 echo "Build generatescreenshots finished."

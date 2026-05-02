@@ -14,7 +14,7 @@
 set -euo pipefail
 errorcount=0
 
-echo "iwyu (include what you use) against Qt6 started."
+echo "iwyu (include what you use) started."
 # The “.” command will execute the given script within the context of
 # the current script, which is necessary in order to preserve the
 # environment variables that are set by the given script.
@@ -28,7 +28,6 @@ cmake \
     -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu;-Xiwyu;--verbose=1" \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
-    -DBUILD_WITH_QT6=ON \
     ..
 cmake --build . --parallel $PARALLEL_PROCESSES 2>../artifact_iwyu.txt
 make install
@@ -41,7 +40,6 @@ cmake \
     -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu;-Xiwyu;--verbose=1" \
         -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE \
-    -DBUILD_WITH_QT6=ON \
     ../examples
 cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_iwyu.txt
 
@@ -64,7 +62,20 @@ N
 
 cd ..
 [ -s artifact_iwyu.txt ] && ((errorcount++))
-echo "iwyu (include what you use) against Qt6 finished."
+echo "iwyu (include what you use) finished."
+
+# Delete empty artifacts
+echo "BEGIN list of artifacts"
+for file in artifact_*
+do
+  if [ -s "$file" ]
+  then
+    echo "$file"
+  else
+    rm "$file"
+  fi
+done
+echo "END list of artifacts"
 
 echo Terminating continuous integration with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.

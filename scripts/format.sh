@@ -48,6 +48,6 @@ done
 # so that after this we go back to the original working directory.
 mkdir --parents buildclangformat
 cd buildclangformat
-cmake -DBUILD_WITH_QT6=ON ..
+cmake ..
 cmake --build . --parallel $PARALLEL_PROCESSES --target clang-format
 cd ..
