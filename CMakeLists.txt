@@ -529,11 +529,8 @@ endif()
 
 
 ################# Setup external library dependencies #################
-# Use also our local FIND modules
-list(APPEND CMAKE_MODULE_PATH
-    "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(
-    ECM 5.92 # maximum allowed by our current CI runners
+    ECM 6.10
     REQUIRED
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
