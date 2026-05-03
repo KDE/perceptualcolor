@@ -8,9 +8,6 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <optional>
-#include <qgenericmatrix.h>
-#include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>

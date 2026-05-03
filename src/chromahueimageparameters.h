@@ -4,11 +4,10 @@
 #ifndef PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H
 #define PERCEPTUALCOLOR_CHROMAHUEIMAGEPARAMETERS_H
 
-#include "helperconversion.h"
 #include "interlacingpass.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qmetatype.h>
-#include <qsharedpointer.h>
 #include <qvariant.h>
 
 class QSize;

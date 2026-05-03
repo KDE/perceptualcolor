@@ -54,7 +54,7 @@ do
   then
     echo "$file"
   else
-    rm "$file"
+    rm -f "$file"
   fi
 done
 echo "END list of artifacts"

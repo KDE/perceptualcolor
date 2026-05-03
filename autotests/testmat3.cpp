@@ -6,12 +6,18 @@
 #include "mat3.h"
 
 #include "blackhole.h"
+#include "vec3.h"
 #include <array>
+#include <optional>
+#include <qbenchmark.h>
+#include <qdebug.h>
 #include <qgenericmatrix.h>
+#include <qglobal.h>
+#include <qobject.h>
+#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
-#include <type_traits>
 
 namespace PerceptualColor
 {

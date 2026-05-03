@@ -8,7 +8,6 @@
 #include "colordialog.h"
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
-#include <qglobal.h>
 #include <qlist.h>
 #include <qlocale.h>
 #include <qobject.h>

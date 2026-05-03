@@ -6,12 +6,11 @@
 #include "csscolor.h"
 
 #include "genericcolor.h"
-#include "helperconversion.h"
+#include "perceptualcolornamespace.h"
 #include <numbers>
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qdebug.h>
-#include <qglobal.h>
 #include <qhash.h>
 #include <qlist.h>
 #include <qobject.h>

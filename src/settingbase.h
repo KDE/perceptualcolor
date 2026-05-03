@@ -4,7 +4,6 @@
 #ifndef PERCEPTUALCOLOR_SETTINGBASE_H
 #define PERCEPTUALCOLOR_SETTINGBASE_H
 
-#include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>

@@ -8,12 +8,11 @@
 // #include "wheelcolorpicker.h"
 
 #include "constpropagatingrawpointer.h"
-#include "helperconversion.h"
 #include "lchvalues.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qtmetamacros.h>
 class QWidget;

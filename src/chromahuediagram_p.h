@@ -13,9 +13,9 @@
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "lchvalues.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 
 namespace PerceptualColor
 {

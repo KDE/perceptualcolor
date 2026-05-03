@@ -8,6 +8,7 @@
 #include <qchar.h>
 #include <qcoreapplication.h>
 #include <qdebug.h>
+#include <qglobal.h>
 #include <qhash.h>
 #include <qsettings.h>
 #include <qsharedpointer.h>

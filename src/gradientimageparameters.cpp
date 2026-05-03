@@ -15,7 +15,6 @@
 #include <qimage.h>
 #include <qnamespace.h>
 #include <qpainter.h>
-#include <qsharedpointer.h>
 
 namespace PerceptualColor
 {

@@ -5,9 +5,12 @@
 #include "csscolor.h"
 
 #include "helpermath.h"
+#include "perceptualcolornamespace.h"
 #include <array>
 #include <numbers>
 #include <optional>
+#include <qchar.h>
+#include <qglobal.h>
 #include <qhash.h>
 #include <qlist.h>
 #include <qnamespace.h>

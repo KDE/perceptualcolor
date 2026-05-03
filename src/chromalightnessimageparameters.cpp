@@ -7,8 +7,8 @@
 
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
+#include "genericcolor.h"
 #include "helper.h"
-#include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
 #include "lchvalues.h"
@@ -21,7 +21,6 @@
 #include <qrgb.h>
 #include <qrunnable.h>
 #include <qsemaphore.h>
-#include <qsharedpointer.h>
 #include <qthreadpool.h>
 #include <type_traits>
 #include <utility>

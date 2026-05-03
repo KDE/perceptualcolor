@@ -6,8 +6,8 @@
 
 #include "absolutecolor.h"
 #include "genericcolor.h"
-#include "helperconversion.h"
 #include "initializelibraryresources.h"
+#include "perceptualcolornamespace.h"
 #include <array>
 #include <optional>
 #include <qchar.h>
@@ -28,7 +28,6 @@
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 namespace PerceptualColor
 {

@@ -12,10 +12,9 @@
 #include "colorwheel.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
-#include <qglobal.h>
+#include "perceptualcolornamespace.h"
 #include <qobject.h>
 #include <qpointer.h>
-#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qtest.h>

@@ -4,6 +4,10 @@
 // Own header
 #include "mat3.h"
 
+#include <algorithm>
+#include <qbytearray.h>
+#include <qglobal.h>
+#include <qstring.h>
 namespace PerceptualColor
 {
 

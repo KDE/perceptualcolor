@@ -4,8 +4,8 @@
 #ifndef PERCEPTUALCOLOR_GENERICCOLOR_H
 #define PERCEPTUALCOLOR_GENERICCOLOR_H
 
-#include "helpermath.h"
 #include "vec3.h"
+#include <array>
 #include <qdebug.h>
 #include <qlist.h>
 #include <qmetatype.h>

@@ -11,14 +11,13 @@
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
-#include "helperconversion.h"
 #include "lchvalues.h"
+#include "perceptualcolornamespace.h"
 #include <cmath>
 #include <functional>
 #include <limits>
 #include <optional>
 #include <qglobal.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 class QRect;
 class QPoint;

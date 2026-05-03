@@ -9,10 +9,10 @@
 
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
+#include "perceptualcolornamespace.h"
 #include "polarpointf.h"
 #include <qglobal.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 
 namespace PerceptualColor
 {

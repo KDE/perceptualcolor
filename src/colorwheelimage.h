@@ -4,10 +4,9 @@
 #ifndef PERCEPTUALCOLOR_COLORWHEELIMAGE_H
 #define PERCEPTUALCOLOR_COLORWHEELIMAGE_H
 
-#include "helperconversion.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qimage.h>
-#include <qsharedpointer.h>
 
 namespace PerceptualColor
 {

@@ -4,13 +4,11 @@
 #ifndef PERCEPTUALCOLOR_PERCEPTUALCOLORNAMESPACE_H
 #define PERCEPTUALCOLOR_PERCEPTUALCOLORNAMESPACE_H
 
-#include "genericcolor.h"
-#include "mat3.h"
-#include <array>
-#include <qcolor.h>
-#include <qglobal.h>
+// For Q_NAMESPACE and Q_ENUM_NS, including just qtmetamacros.h is not enough.
+// The build would fail it qobject.h is not included also. IWYU does not detect
+// this dependency and issues a false positive.
+#include <qobject.h> // IWYU pragma: keep
 #include <qtmetamacros.h>
-#include <type_traits>
 
 /**
  * @internal

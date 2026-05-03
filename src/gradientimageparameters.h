@@ -5,11 +5,9 @@
 #define PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H
 
 #include "genericcolor.h"
-#include "helperconversion.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
-#include <qimage.h>
 #include <qmetatype.h>
-#include <qsharedpointer.h>
 #include <qvariant.h>
 
 namespace PerceptualColor

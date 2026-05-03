@@ -11,6 +11,7 @@
 #include "genericcolor.h"
 #include "helper.h"
 #include "helpermath.h"
+#include "perceptualcolornamespace.h"
 #include <cmath>
 #include <limits>
 #include <qglobal.h>
@@ -19,7 +20,6 @@
 #include <qobject.h>
 #include <qpoint.h>
 #include <qrect.h>
-#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qtest.h>

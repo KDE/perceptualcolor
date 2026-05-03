@@ -6,6 +6,9 @@
 #include "chromainfo.h"
 
 #include "helpermath.h"
+#include <qglobal.h>
+#include <qobject.h>
+#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>

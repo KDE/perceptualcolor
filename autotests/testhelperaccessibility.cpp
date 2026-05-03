@@ -6,7 +6,6 @@
 #include "helperaccessibility.h"
 
 #include <qaccessiblewidget.h>
-#include <qglobal.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
 #include <qstringliteral.h>

@@ -13,7 +13,6 @@
 #include <qimage.h>
 #include <qlist.h>
 #include <qlocale.h>
-#include <qmap.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpair.h>

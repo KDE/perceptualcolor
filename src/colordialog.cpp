@@ -15,11 +15,11 @@
 #include "gradientslider.h"
 #include "helper.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
 #include "initializetranslation.h"
 #include "lchvalues.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
+#include "perceptualcolornamespace.h"
 #include "perceptualsettings.h"
 #include "portaleyedropper.h"
 #include "rgbcolor.h"
@@ -38,10 +38,8 @@
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
-#include <qdatetime.h>
 #include <qdebug.h>
 #include <qdialogbuttonbox.h>
-#include <qfontmetrics.h>
 #include <qformlayout.h>
 #include <qgridlayout.h>
 #include <qgroupbox.h>
@@ -51,14 +49,12 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
-#include <qlocale.h>
 #include <qobject.h>
 #include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qregularexpression.h>
 #include <qscreen.h>
-#include <qsharedpointer.h>
 #include <qshortcut.h>
 #include <qsize.h>
 #include <qsizepolicy.h>
@@ -69,7 +65,6 @@
 #include <qtabwidget.h>
 #include <qtoolbutton.h>
 #include <qvalidator.h>
-#include <qversionnumber.h>
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>

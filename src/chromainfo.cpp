@@ -6,34 +6,12 @@
 #include "chromainfo.h"
 
 #include "absolutecolor.h"
-#include "constpropagatingrawpointer.h"
-#include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
-#include "helper.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
-#include "helperimage.h"
-#include "helpermath.h"
-#include "initializetranslation.h"
 #include <algorithm>
-#include <limits>
-#include <optional>
-#include <qbytearray.h>
 #include <qcolor.h>
-#include <qcontainerfwd.h>
-#include <qcoreapplication.h>
-#include <qfileinfo.h>
-#include <qglobal.h>
 #include <qlist.h>
-#include <qlocale.h>
-#include <qmath.h>
-#include <qrgba64.h>
-#include <qsharedpointer.h>
-#include <qstringliteral.h>
-#include <qtimezone.h>
-#include <type_traits>
 #include <utility>
-#include <vector>
 
 namespace PerceptualColor
 {

@@ -13,9 +13,10 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "gradientslider.h"
-#include "helperconversion.h"
 #include "initializetranslation.h"
+#include "lchvalues.h"
 #include "multispinbox.h"
+#include "perceptualcolornamespace.h"
 #include "rgbcolor.h"
 #include "settranslation.h"
 #include "wheelcolorpicker.h"
@@ -43,14 +44,12 @@
 #include <qpushbutton.h>
 #include <qscopedpointer.h>
 #include <qset.h>
-#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qspinbox.h>
 #include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qtabwidget.h>
-#include <qtemporaryfile.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>

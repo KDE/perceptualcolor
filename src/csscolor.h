@@ -5,11 +5,10 @@
 #define PERCEPTUALCOLOR_CSSCOLOR_H
 
 #include "genericcolor.h"
-#include "helperconversion.h"
 #include "internalimportexport.h"
+#include "perceptualcolornamespace.h"
 #include <optional>
 #include <qcontainerfwd.h>
-#include <qglobal.h>
 #include <qhash.h>
 #include <qrgb.h>
 #include <qstring.h>

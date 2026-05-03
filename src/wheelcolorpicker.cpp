@@ -17,7 +17,6 @@
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
 #include "lchvalues.h"
 #include <math.h>
 #include <qapplication.h>
@@ -26,7 +25,6 @@
 #include <qpoint.h>
 #include <qpointer.h>
 #include <qrect.h>
-#include <qsharedpointer.h>
 #include <utility>
 class QResizeEvent;
 class QWidget;

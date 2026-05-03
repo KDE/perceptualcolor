@@ -5,7 +5,6 @@
 // this forces the header to be self-contained.
 #include "helperconstants.h"
 
-#include <qglobal.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
 #include <qstring.h>

@@ -8,8 +8,8 @@
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
 #include "chromainfo.h"
+#include "genericcolor.h"
 #include "helper.h"
-#include "helperconstants.h"
 #include "helperimage.h"
 #include "helpermath.h"
 #include "interlacingpass.h"
@@ -24,7 +24,6 @@
 #include <qrgb.h>
 #include <qrunnable.h>
 #include <qsemaphore.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qthreadpool.h>
 #include <type_traits>

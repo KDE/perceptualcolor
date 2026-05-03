@@ -17,7 +17,6 @@
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
 #include <qbrush.h>
@@ -28,7 +27,6 @@
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 #include <qwidget.h>
 
 namespace PerceptualColor

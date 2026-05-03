@@ -9,6 +9,7 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
+#include "perceptualcolornamespace.h"
 #include "polarpointf.h"
 #include <qcoreevent.h>
 #include <qevent.h>
@@ -17,7 +18,6 @@
 #include <qobject.h>
 #include <qpoint.h>
 #include <qscopedpointer.h>
-#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qtest.h>

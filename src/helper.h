@@ -5,7 +5,6 @@
 #define PERCEPTUALCOLOR_HELPER_H
 
 #include "helpermath.h"
-#include <QtCore/qsharedpointer.h>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -15,7 +14,6 @@
 #include <qicon.h>
 #include <qimage.h>
 #include <qlist.h>
-#include <qmap.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
 #include <qnamespace.h>

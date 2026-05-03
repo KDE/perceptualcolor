@@ -11,7 +11,6 @@
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qnamespace.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qtmetamacros.h>
 class QEvent;

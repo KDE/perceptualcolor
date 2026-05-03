@@ -4,11 +4,10 @@
 #ifndef PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H
 #define PERCEPTUALCOLOR_CHROMALIGHTNESSIMAGEPARAMETERS_H
 
-#include "helperconversion.h"
 #include "internalimportexport.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qmetatype.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qvariant.h>
 

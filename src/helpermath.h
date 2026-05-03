@@ -6,10 +6,7 @@
 
 #include <cmath>
 #include <limits>
-#include <optional>
-#include <qgenericmatrix.h>
 #include <qglobal.h>
-#include <qmetatype.h>
 #include <type_traits>
 
 /** @internal

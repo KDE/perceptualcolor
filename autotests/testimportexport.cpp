@@ -5,7 +5,6 @@
 // this forces the header to be self-contained.
 #include "importexport.h"
 
-#include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtmetamacros.h>

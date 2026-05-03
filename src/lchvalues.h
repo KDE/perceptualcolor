@@ -4,8 +4,8 @@
 #ifndef PERCEPTUALCOLOR_LCHVALUES_H
 #define PERCEPTUALCOLOR_LCHVALUES_H
 
+#include "perceptualcolornamespace.h"
 #include <genericcolor.h>
-#include <helperconversion.h>
 #include <stdint.h>
 
 namespace PerceptualColor

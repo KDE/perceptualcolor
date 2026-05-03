@@ -13,9 +13,9 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "helper.h"
-#include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
+#include "perceptualcolornamespace.h"
 #include <algorithm>
 #include <optional>
 #include <qaction.h>
@@ -37,7 +37,6 @@
 #include <qpen.h>
 #include <qpoint.h>
 #include <qrect.h>
-#include <qsharedpointer.h>
 #include <qsizepolicy.h>
 #include <qstringliteral.h>
 #include <qstyle.h>

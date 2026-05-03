@@ -61,21 +61,14 @@ N
 }' ../artifact_iwyu.txt
 
 cd ..
+
+# Delete empty artifact
+if [ ! -s artifact_iwyu.txt ]; then
+  rm -f artifact_iwyu.txt
+fi
+
 [ -s artifact_iwyu.txt ] && ((errorcount++))
 echo "iwyu (include what you use) finished."
-
-# Delete empty artifacts
-echo "BEGIN list of artifacts"
-for file in artifact_*
-do
-  if [ -s "$file" ]
-  then
-    echo "$file"
-  else
-    rm "$file"
-  fi
-done
-echo "END list of artifacts"
 
 echo Terminating continuous integration with exit code $errorcount.
 # NOTE The exit code of the last command is available with $? in the shell.

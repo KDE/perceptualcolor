@@ -7,9 +7,9 @@
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
-#include "importexport.h"
+#include "internalimportexport.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qtmetamacros.h>
 class QResizeEvent;

@@ -4,6 +4,12 @@
 // Own header
 #include "vec3.h"
 
+#include <algorithm>
+#include <qbytearray.h>
+#include <qglobal.h>
+#include <qlist.h>
+#include <qstring.h>
+
 namespace PerceptualColor
 {
 

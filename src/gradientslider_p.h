@@ -11,9 +11,9 @@
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "gradientimageparameters.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qnamespace.h>
-#include <qsharedpointer.h>
 class QPoint;
 
 namespace PerceptualColor

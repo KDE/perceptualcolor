@@ -5,8 +5,8 @@
 // this forces the header to be self-contained.
 #include "genericcolor.h"
 
-#include "helpermath.h"
-#include <qglobal.h>
+#include "vec3.h"
+#include <array>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>

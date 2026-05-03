@@ -8,12 +8,12 @@
 #include "asyncimageprovider.h"
 #include "asyncimagerendercallback.h"
 #include "helper.h"
+#include "perceptualcolornamespace.h"
 #include <qbenchmark.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
 #include <qobject.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>

@@ -9,7 +9,6 @@
 #include <qglobal.h>
 #include <qimage.h>
 #include <qobject.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>

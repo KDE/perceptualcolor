@@ -6,6 +6,7 @@
 #include "abstractdiagram.h"
 
 #include "helpermath.h"
+#include "perceptualcolornamespace.h"
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qglobal.h>

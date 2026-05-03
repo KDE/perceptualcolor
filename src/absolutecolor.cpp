@@ -9,10 +9,12 @@
 #include "helperconversion.h"
 #include "helperimage.h"
 #include "helpermath.h"
+#include "mat3.h"
+#include "vec3.h"
+#include <algorithm>
 #include <cmath>
 #include <numbers>
 #include <optional>
-#include <qgenericmatrix.h>
 #include <qglobal.h>
 #include <qmath.h>
 

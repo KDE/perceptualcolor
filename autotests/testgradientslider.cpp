@@ -9,12 +9,11 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
-#include "gradientimageparameters.h"
+#include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qsizepolicy.h>

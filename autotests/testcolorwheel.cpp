@@ -9,6 +9,7 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
+#include "perceptualcolornamespace.h"
 #include <qapplication.h>
 #include <qboxlayout.h>
 #include <qglobal.h>
@@ -16,7 +17,6 @@
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qtest.h>

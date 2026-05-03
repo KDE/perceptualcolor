@@ -6,7 +6,6 @@
 
 #include "internalimportexport.h"
 #include <qfilesystemwatcher.h>
-#include <qglobal.h>
 #include <qobject.h>
 #include <qsettings.h>
 #include <qstring.h>

@@ -18,7 +18,6 @@
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyle.h>

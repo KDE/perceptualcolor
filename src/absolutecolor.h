@@ -5,12 +5,15 @@
 #define PERCEPTUALCOLOR_ABSOLUTECOLOR_H
 
 #include "genericcolor.h"
-#include "helperconversion.h"
+#include "perceptualcolornamespace.h"
 #include <array>
+#include <math.h>
 #include <optional>
+#include <qglobal.h>
 #include <qhash.h>
 #include <qlist.h>
 #include <qrgb.h>
+#include <type_traits>
 
 namespace PerceptualColor
 {

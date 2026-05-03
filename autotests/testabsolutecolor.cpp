@@ -7,14 +7,13 @@
 
 #include "blackhole.h"
 #include "genericcolor.h"
-#include "helperconversion.h"
 #include "helpermath.h"
+#include "perceptualcolornamespace.h"
+#include "vec3.h"
 #include <algorithm>
 #include <cmath>
 #include <optional>
 #include <qbenchmark.h>
-#include <qgenericmatrix.h>
-#include <qglobal.h>
 #include <qhash.h>
 #include <qmetatype.h>
 #include <qobject.h>

@@ -10,9 +10,9 @@
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "helper.h"
-#include "helperconversion.h"
 #include "languagechangeeventfilter.h"
 #include "lchvalues.h"
+#include "perceptualcolornamespace.h"
 #include "rgbcolor.h"
 #include <optional>
 #include <qbytearray.h>
@@ -23,7 +23,6 @@
 #include <qicon.h>
 #include <qobject.h>
 #include <qpointer.h>
-#include <qsharedpointer.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qtmetamacros.h>

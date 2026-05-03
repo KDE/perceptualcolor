@@ -4,24 +4,11 @@
 #ifndef PERCEPTUALCOLOR_CHROMAINFO_H
 #define PERCEPTUALCOLOR_CHROMAINFO_H
 
-#include "constpropagatinguniquepointer.h"
-#include "genericcolor.h"
-#include "helperconversion.h"
 #include "lchvalues.h"
-#include <optional>
+#include "perceptualcolornamespace.h"
+#include <map>
 #include <qcolor.h>
-#include <qcontainerfwd.h>
-#include <qdatetime.h>
 #include <qglobal.h>
-#include <qmap.h>
-#include <qmetatype.h>
-#include <qobject.h>
-#include <qrgb.h>
-#include <qsharedpointer.h>
-#include <qstring.h>
-#include <qtmetamacros.h>
-#include <qversionnumber.h>
-class QRgba64;
 
 namespace PerceptualColor
 {

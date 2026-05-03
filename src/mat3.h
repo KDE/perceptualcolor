@@ -5,10 +5,11 @@
 #define PERCEPTUALCOLOR_MAT3_H
 
 #include "vec3.h"
+#include <array>
 #include <optional>
 #include <qdebug.h>
 #include <qmetatype.h>
-#include <qpoint.h>
+#include <stddef.h>
 
 namespace PerceptualColor
 {

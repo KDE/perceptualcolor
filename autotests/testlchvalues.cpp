@@ -9,7 +9,6 @@
 #include "genericcolor.h"
 #include <qglobal.h>
 #include <qobject.h>
-#include <qsharedpointer.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>

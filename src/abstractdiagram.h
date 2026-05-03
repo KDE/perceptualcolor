@@ -5,10 +5,8 @@
 #define PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H
 
 #include "constpropagatinguniquepointer.h"
-#include "genericcolor.h"
-#include "helperconversion.h"
-#include "importexport.h"
 #include "internalimportexport.h"
+#include "perceptualcolornamespace.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>

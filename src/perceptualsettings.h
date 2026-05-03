@@ -8,7 +8,6 @@
 #include "setting.h"
 #include "settings.h"
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qlist.h>
 #include <qmetatype.h>
 #include <qstring.h>

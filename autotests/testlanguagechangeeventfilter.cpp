@@ -7,7 +7,6 @@
 
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
-#include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>

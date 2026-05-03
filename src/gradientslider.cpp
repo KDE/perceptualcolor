@@ -12,7 +12,6 @@
 #include "constpropagatinguniquepointer.h"
 #include "gradientimageparameters.h"
 #include "helperconstants.h"
-#include "helperconversion.h"
 #include <helper.h>
 #include <qevent.h>
 #include <qguiapplication.h>
@@ -20,7 +19,6 @@
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpoint.h>
-#include <qsharedpointer.h>
 #include <qsizepolicy.h>
 #include <qtransform.h>
 #include <qwidget.h>

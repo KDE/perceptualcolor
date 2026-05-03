@@ -10,7 +10,6 @@
 #include <limits>
 #include <qdebug.h>
 #include <qfile.h>
-#include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qsettings.h>

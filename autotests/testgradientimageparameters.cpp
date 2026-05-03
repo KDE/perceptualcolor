@@ -10,7 +10,6 @@
 #include <qglobal.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
-#include <qsharedpointer.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>

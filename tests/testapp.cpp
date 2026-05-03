@@ -25,6 +25,7 @@
 #include "mat3.h" // IWYU pragma: keep
 #include "multispinbox.h" // IWYU pragma: keep
 #include "multispinboxsection.h" // IWYU pragma: keep
+#include "perceptualcolornamespace.h" // IWYU pragma: keep
 #include "perceptualsettings.h" // IWYU pragma: keep
 #include "polarpointf.h" // IWYU pragma: keep
 #include "portaleyedropper.h" // IWYU pragma: keep

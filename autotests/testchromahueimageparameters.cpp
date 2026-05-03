@@ -9,12 +9,13 @@
 #include "asyncimagerendercallback.h"
 #include "genericcolor.h"
 #include "helpermath.h"
+#include "perceptualcolornamespace.h"
+#include <optional>
 #include <qbenchmark.h>
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qimage.h>
 #include <qobject.h>
-#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>

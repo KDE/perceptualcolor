@@ -88,7 +88,20 @@ codecheck_iwyu:
     # NOTE For some obscure reason, iwyu does not print anything if clazy
     # is not installed. So we would even have to install it, when we would
     # not need it otherwise.
-    - apt-get install --assume-yes --no-install-recommends cmake make clang pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools clazy iwyu
+    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git clazy iwyu qt6-documentation-tools
+    # Get an up-to-date ECM version
+    - git clone https://invent.kde.org/frameworks/extra-cmake-modules.git
+    - cd extra-cmake-modules
+    - git checkout v6.10.0
+    - mkdir build && cd build
+    - cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+    - make -j$(nproc)
+    - make install
+    - cd ../..
+    - rm -r extra-cmake-modules
+    # Version information about installed software:
+    - cmake --find-package -DNAME=ECM -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
+    - grep "set(PACKAGE_VERSION " /usr/share/ECM/cmake/ECMConfigVersion.cmake | sed 's/^/ECM /'
   script:
     - scripts/ci-iwyu.sh
 
@@ -115,7 +128,7 @@ codecheck_quality:
   stage: check2
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy qt6-documentation-tools texlive-latex-base libqt6sql6-sqlite
+    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy qt6-documentation-tools texlive-latex-base libqt6sql6-sqlite
     # Get an up-to-date ECM version
     - git clone https://invent.kde.org/frameworks/extra-cmake-modules.git
     - cd extra-cmake-modules
