@@ -44,9 +44,9 @@ QDebug operator<<(QDebug dbg, const Vec3d &value)
     }
 
     // Output with Unicode braces, right-aligned
-    dbg.nospace() << "\n⎡ " << encoded[0].constData() << " ⎤\n"
-                  << "⎢ " << encoded[1].constData() << " ⎥\n"
-                  << "⎣ " << encoded[2].constData() << " ⎦";
+    dbg.nospace() << "\n⎡ " << encoded[0] << " ⎤\n"
+                  << "⎢ " << encoded[1] << " ⎥\n"
+                  << "⎣ " << encoded[2] << " ⎦";
 
     return dbg;
 }

@@ -45,9 +45,9 @@ QDebug operator<<(QDebug dbg, const Mat3d &value)
     }
 
     // Output with Unicode braces, right-aligned
-    dbg.nospace() << "\n⎡ " << encoded[0].constData() << " " << encoded[1].constData() << " " << encoded[2].constData() << " ⎤\n"
-                  << "⎢ " << encoded[3].constData() << " " << encoded[4].constData() << " " << encoded[5].constData() << " ⎥\n"
-                  << "⎣ " << encoded[6].constData() << " " << encoded[7].constData() << " " << encoded[8].constData() << " ⎦";
+    dbg.nospace() << "\n⎡ " << encoded[0] << " " << encoded[1] << " " << encoded[2] << " ⎤\n"
+                  << "⎢ " << encoded[3] << " " << encoded[4] << " " << encoded[5] << " ⎥\n"
+                  << "⎣ " << encoded[6] << " " << encoded[7] << " " << encoded[8] << " ⎦";
 
     return dbg;
 }
