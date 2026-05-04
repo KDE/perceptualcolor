@@ -335,6 +335,12 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo NICETOHAVE Speed up CI (warnings and iwyu) jobs by only building
+ * libperceptualcolorinternal, and not libperceptualcolor? Would this speed
+ * up much or isn't it worth the effort? We would have to make sure that
+ * the default CI jobs continue to build everything to be sure everything
+ * compiles. And: Could be add a GCC job with additional warnings?
+ *
  * @todo NICETOHAVE Raise Qt version beyond 6.0.0, raise
  * QT_DISABLE_DEPRECATED_UP_TO and QT_ENABLE_STRICT_MODE_UP_TO in CMake and
  * remove QT_VERSION usages in the codebase? What would be an appropriate
