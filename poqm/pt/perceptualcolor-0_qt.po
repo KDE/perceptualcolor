@@ -18,21 +18,21 @@ msgstr ""
 "X-POFile-SpellExtra: RRGGBB RR FF GG BB LittleCMS sRGB\n"
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
-#: colordialog.cpp:102
+#: colordialog.cpp:97
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1%"
 msgstr "%1%"
 
 #. @item/plain Arc-degree value in a spinbox. Range: 0°–360°.
-#: colordialog.cpp:105
+#: colordialog.cpp:100
 #, qt-format
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1°"
 msgstr "%1°"
 
 #. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
-#: colordialog.cpp:109
+#: colordialog.cpp:104
 #, fuzzy
 #| msgctxt "PerceptualColor::ColorDialogPrivate|"
 #| msgid "CIEHL&C D50:"
@@ -41,7 +41,7 @@ msgid "&CIELCH D50:"
 msgstr "CIEHL&C D50:"
 
 #. @label:spinbox Label for Oklch color model, based on Lightness, Chroma, Hue, and using the D65 illuminant as white point.
-#: colordialog.cpp:113
+#: colordialog.cpp:108
 #, fuzzy
 #| msgctxt "PerceptualColor::ColorDialogPrivate|"
 #| msgid "Oklch:"
@@ -50,79 +50,79 @@ msgid "O&klch:"
 msgstr "Oklch:"
 
 #. @label:spinbox Label for RGB color model, based on Red, Green, Blue.
-#: colordialog.cpp:116
+#: colordialog.cpp:111
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&RGB:"
 msgstr "&RGB:"
 
 #. @label:textbox Label for hexadecimal RGB representation like #12ab45
-#: colordialog.cpp:119
+#: colordialog.cpp:114
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "He&x:"
 msgstr "He&x:"
 
 #. @title:tab The tab contains swatch books showing colors.
-#: colordialog.cpp:125
+#: colordialog.cpp:120
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Swatch book"
 msgstr ""
 
 #. @title:tab The tab contains a visual UI to choose first the hue, and in a second step chroma and lightness.
-#: colordialog.cpp:137
+#: colordialog.cpp:132
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Hue-based"
 msgstr "Baseado no &tom"
 
 #. @title:tab The tab contains a visual UI to choose first the lightness, and in a second step chroma and hue. “Lightness” is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:151
+#: colordialog.cpp:146
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Lightness-based"
 msgstr "Baseado na &luminosidade"
 
 #. @title:tab The tab contains a UI to describe the color with numbers: Spin boxes and line edits containing values like “#2A7845” or “RGB 85 45 12”.
-#: colordialog.cpp:163
+#: colordialog.cpp:158
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Numeric"
 msgstr "&Numérico"
 
 #. @label:spinbox HSL (hue, saturation, lightness)
-#: colordialog.cpp:171
+#: colordialog.cpp:166
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "HS&L:"
 msgstr "HS&L:"
 
 #. @label:spinbox HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model.
-#: colordialog.cpp:175
+#: colordialog.cpp:170
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "HS&V/HSB:"
 msgstr "HS&V/HSB:"
 
 #. @label:spinbox HWB (hue, whiteness, blackness)
-#: colordialog.cpp:178
+#: colordialog.cpp:173
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "H&WB:"
 msgstr "H&WB:"
 
 #. @action:button
-#: colordialog.cpp:181
+#: colordialog.cpp:176
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&OK"
 msgstr "&OK"
 
 #. @action:button
-#: colordialog.cpp:184
+#: colordialog.cpp:179
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Cancel"
 msgstr "&Cancelar"
 
 #. @info:tooltip Help text for RGB spinbox.
-#: colordialog.cpp:188
+#: colordialog.cpp:183
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Red: 0⁠–⁠255</p><p>Green: 0⁠–⁠255</p><p>Blue: 0⁠–⁠255</p>"
 msgstr "<p>Vermelho: 0⁠–⁠255</p><p>Verde: 0⁠–⁠255</p><p>Azul: 0⁠–⁠255</p>"
 
 #. @info:tooltip Help text for hexadecimal code.
-#: colordialog.cpp:195
+#: colordialog.cpp:190
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hexadecimal color code, as used in HTML: #RRGGBB</p><p>RR: two-digit code "
@@ -135,7 +135,7 @@ msgstr ""
 "azul: 00⁠–⁠FF</p>"
 
 #. @info:tooltip Help text for HSL (hue, saturation, lightness). Saturation: 0 means something on the grey axis; 255 means something between the grey axis and the most colorful color. This is different from “chroma” and should therefore get a different translation. Lightness: 0 means always black; 255 means always white. This is different from “brightness” and should therefore get a different translation.
-#: colordialog.cpp:208
+#: colordialog.cpp:203
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
@@ -143,13 +143,13 @@ msgstr ""
 "<p>Tom: 0°⁠–⁠360°</p><p>Saturação HSL: 0%⁠–⁠100%</p><p>Luminosidade: 0%⁠–⁠100%</p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
-#: colordialog.cpp:222
+#: colordialog.cpp:217
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Whiteness: 0%⁠–⁠100%</p><p>Blackness: 0%⁠–⁠100%</p>"
 msgstr "<p>Tom: 0°⁠–⁠360°</p><p>Branco: 0%⁠–⁠100%</p><p>Preto: 0%⁠–⁠100%</p>"
 
 #. @info:tooltip Help text for HSV/HSB. HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model. Saturation: 0 means something between black and white; 255 means something between black and the most colorful color. This is different from “chroma” and should therefore get a different translation. Brightness/value: 0 means always black; 255 means something between white and the most colorful color. This is different from “lightness” and should therefore get a different translation.
-#: colordialog.cpp:235
+#: colordialog.cpp:230
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
@@ -159,13 +159,13 @@ msgstr ""
 "0%⁠–⁠100%</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:246
+#: colordialog.cpp:241
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Lightness"
 msgstr "Luminosidade"
 
 #. @info:tooltip Help text for CIELCH. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:251
+#: colordialog.cpp:246
 #, fuzzy
 #| msgctxt "PerceptualColor::ColorDialogPrivate|"
 #| msgid ""
@@ -178,7 +178,7 @@ msgstr ""
 "branco: D65</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
-#: colordialog.cpp:260
+#: colordialog.cpp:255
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
@@ -188,7 +188,7 @@ msgstr ""
 "branco: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
-#: colordialog.cpp:273
+#: colordialog.cpp:268
 #, fuzzy
 #| msgctxt "PerceptualColor::ColorDialogPrivate|"
 #| msgid "O&pacity:"
@@ -197,13 +197,13 @@ msgid "Op&acity:"
 msgstr "O&pacidade:"
 
 #. @item Name of the sRGB color space.
-#: colordialog.cpp:364
+#: colordialog.cpp:359
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "sRGB"
 msgstr ""
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
-#: colordialog.cpp:374
+#: colordialog.cpp:369
 #, fuzzy
 #| msgctxt "PerceptualColor::ColorDialogPrivate|"
 #| msgid "&Pick Screen Color"
@@ -212,13 +212,13 @@ msgid "&Pick screen color…"
 msgstr "&Escolher uma Cor do Ecrã"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
-#: colordialog.cpp:387
+#: colordialog.cpp:382
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
 msgstr ""
 
 #. @item:inlistbox/plain The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
-#: colordialog.cpp:399
+#: colordialog.cpp:394
 #, fuzzy
 #| msgctxt "PerceptualColor::ColorDialogPrivate|"
 #| msgid "&Basic colors"
@@ -227,37 +227,37 @@ msgid "Basic colors"
 msgstr "Cores &básicas"
 
 #. @item:inlistbox/plain The swatch grid showing the history of previously selected colors.
-#: colordialog.cpp:404
+#: colordialog.cpp:399
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "History"
 msgstr ""
 
 #. @item:inlistbox/plain The swatch grid showing custom colors, allowing users to add or remove colors as desired.
-#: colordialog.cpp:409
+#: colordialog.cpp:404
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Custom Colors"
 msgstr ""
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:1001
+#: colordialog.cpp:996
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "Seleccionar uma cor"
 
 #. @item Indicate the selected color in the swatch book. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:103
+#: swatchbook.cpp:102
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
 
 #. @item Indicate that you can click on this empty patch to add a new color to it. This symbol should be translated to whatever symbol is most appropriate for “add” in the translation language. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:112
+#: swatchbook.cpp:111
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
 msgstr ""
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
-#: swatchbook.cpp:157
+#: swatchbook.cpp:156
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr ""
