@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
     m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::Expanded);
     // m_colorDialog.setEnabled(false);
-    // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
+    // m_colorDialog.setStyleSheet(QStringLiteral("background: yellow; color: red; border: 15px solid #FF0000;"));
     m_colorDialog.show();
 
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("kvantum")));

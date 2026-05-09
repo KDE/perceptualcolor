@@ -54,8 +54,6 @@ enum class ColorSchemeType {
     Dark /**< @internal Dark theme. */
 };
 
-void drawQWidgetStyleSheetAware(QWidget *widget);
-
 QString fromMnemonicToRichText(const QString &mnemonicText);
 
 ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget);

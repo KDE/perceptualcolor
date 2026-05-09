@@ -140,34 +140,6 @@ QImage transparencyBackground(qreal devicePixelRatioF)
 
 /** @internal
  *
- * @brief Draws a QWidget respecting Qt Style Sheets.
- *
- * When subclassing QWidget-derived classes, the Qt Style Sheets are
- * considered automatically. But when subclassing QWidget itself, the
- * Qt Style Sheets are <em>not</em> considered automatically. Also,
- * calling <tt>QWidget::paintEvent()</tt> from the subclass’s paint
- * event does not help. Instead, call this function from within your
- * subclass’s paint event. It uses some special code as documented
- * in the <em>Qt Style Sheets Reference</em> in the section about QWidget.
- *
- * @warning This function creates a QPainter for the widget. As there
- * should be not more than one QPainter at the same time for a given
- * paint device, you may not call this function while a QPainter
- * exists for the widget. Therefore, it is best to call this
- * function as very first statement in your paintEvent() implementation,
- * before initializing any QPainter.
- *
- * @param widget the widget */
-void drawQWidgetStyleSheetAware(QWidget *widget)
-{
-    QStyleOption opt;
-    opt.initFrom(widget);
-    QPainter p(widget);
-    widget->style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, widget);
-}
-
-/** @internal
- *
  * @brief Provides prefix and suffix of a value from a given format string.
  *
  * A typical use case: You want to put a percent value into a spinbox. The

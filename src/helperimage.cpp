@@ -31,7 +31,7 @@ namespace PerceptualColor
  *
  * @returns A list of all coordinate points on both sides of the boundary.
  *
- * @note This function is thread-save as long as there is no more than one
+ * @note This function is thread-safe as long as there is no more than one
  * thread of this function operating on the same data on the same time.
  */
 QList<QPoint> findBoundary(const QImage &image)

@@ -339,7 +339,7 @@
  * libperceptualcolorinternal, and not libperceptualcolor? Would this speed
  * up much or isn't it worth the effort? We would have to make sure that
  * the default CI jobs continue to build everything to be sure everything
- * compiles. And: Could be add a GCC job with additional warnings?
+ * compiles.
  *
  * @todo NICETOHAVE Raise Qt version beyond 6.0.0, raise
  * QT_DISABLE_DEPRECATED_UP_TO and QT_ENABLE_STRICT_MODE_UP_TO in CMake and
@@ -392,12 +392,6 @@
  *
  * @todo SHOWSTOPPER Optimize rendering time.
  *
- * @todo SHOWSTOPPER Color conversions like in
- * @ref PerceptualColor::AbsoluteColor
- * must <em>be</em> thread-safe and also be <em>documented</em> as thread-save.
- *
- * @todo NICETOHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
- *
  * @todo SHOWSTOPPER SHOULDHAVE The sRGB gamut in the Oklab space has
  * an irregular shape in the chroma-lightness diagram around 264.1°, see also
  * https://github.com/color-js/color.js/issues/81 for details: There is a
@@ -423,35 +417,12 @@
  * legible (though less nice).
  *
  * @todo SHOULDHAVE SHOWSTOPPER In @ref PerceptualColor::WheelColorPicker
- * there seems to be a discontinuity in hue wheel at blue hue, and at
- * the same hue in the @ref PerceptualColor::ChromaLightnessDiagram
- * there is a second rectangle/line below the normal gamut body.
- *
- * @todo SHOULDHAVE SHOWSTOPPER In @ref PerceptualColor::WheelColorPicker
  * the width of the @ref PerceptualColor::ChromaLightnessDiagram is
  * slightly too big. A wrong
  * @ref PerceptualColor::LchValues::maximumChroma value?
  *
  * @todo SHOULDHAVE The re-rendering is too slow (not reactive enough)
  * when changing the window size of @ref PerceptualColor::ColorDialog.
- *
- * @todo NICETOHAVE Define a global minimum size (as one-dimensional
- * <tt>int</tt>, measured in device-independent pixel) for UI elements,
- * appropriate for touch screens. There used to be
- * <a href="https://doc.qt.io/archives/qt-5.15/qapplication-obsolete.html#globalStrut-prop">
- * QApplication::globalStrut</a>, but it was deprecated in Qt 5.15 and
- * removed in Qt 6, so we need our own definition. Than make sure that
- * @ref PerceptualColor::AbstractDiagram::gradientThickness(),
- * @ref PerceptualColor::ColorPatch::minimumSizeHint() and
- * @ref PerceptualColor::SwatchBookPrivate::colorPatchesSizeWithMargin()
- * respect this new global minimum.
- *
- * @todo SHOULDHAVE Optimize time-critical rendering (chroma-lightness and
- * chroma-hue diagrams).
- *
- * @todo SHOULDHAVE When using the ITUR profiles, the relation between the
- * diagrams and the numeric values seems strange. And there are artefacts
- * in the diagrams.
  *
  * @todo NICETOHAVE Static codecheck: The doxygen command (at)sa must always
  * be followed by (at)ref, because (at)sa fails silently, but a following
@@ -460,14 +431,6 @@
  * @todo NICETOHAVE When the CI tests for warnings, it should not only build
  * and Clang/Clazy, but additionally also on GCC which produces some warnings
  * that Clang/Clazy does not have.
- *
- * @todo SHOULDHAVE Check against Q_NAMESPACE and Q_ENUM_NS because they cannot
- * work reliably when namespaces do accross header files (a double declaration
- * would break Q_NAMESPACE), and the gain isn't work the problems.
- *
- * @todo SHOULDHAVE <tt>/usr/share/color/icc/sRGB_v4_ICC_preference.icc</tt>
- * has a strange blackpoint in chroma-lightness diagram (1/10 above the
- * 0 line)
  *
  * @todo NCIETOHAVE Add <tt>QToolTip</tt> value explaining the accepted keys
  * and mouse movements?
@@ -559,13 +522,6 @@
  * implemented within this library, but as a KDE portal providing this
  * functionality. New features would have to be implemented there.
  *
- * @todo SHOULDHAVE Support more of Qt Style Sheets, for example allow
- * customizing the neutral-gray background of diagrams? If
- * so, @ref PerceptualColor::drawQWidgetStyleSheetAware()
- * is available. Otherwise, remove the currently not used
- * @ref PerceptualColor::drawQWidgetStyleSheetAware() from
- * this library.
- *
  * @todo SHOULDHAVE Could we integrate more with QStyle? Apparently
  *   <a href="https://api.kde.org/frameworks/frameworkintegration/html/classKStyle.html">
  *   KStyle</a> is a QCommonStyle-based class that provides
@@ -648,7 +604,7 @@
  * on Wayland? And how does it work, because Wayland is very strict about
  * security?
  *
- * @todo SHOULDHAVE KDE is switching from
+ * @todo SHOWSTOPPER KDE is switching from
  * Doxygen to QDoc, at least for Frameworks. The
  * <a href="https://mail.kde.org/pipermail/kde-devel/2025-June/003710.html">
  * QDoc-based documentation it built within CMake targets</a> and requires
@@ -672,10 +628,6 @@
  * https://api.kde.org/frameworks/plasma-framework/html/classUnits.html#ab22ad7033b2e3d00a862650e82f5ba5e
  * for details. Use this instead of interlacing big images?
  *
- * @todo NICETOHAVE
- * Support more color spaces? https://pypi.org/project/colorio/ for
- * example supports a lot of (also perceptually uniform) color spaces…
- *
  * @todo SHOULDHAVE
  * Avoid default arguments like <tt>void test(int i = 0)</tt> in
  * public headers, as changes require re-compilation of the client application
@@ -687,8 +639,6 @@
  * @todo SHOULDHAVE mark all public
  * non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
- *
- * @todo SHOULDHAVE KDE Frameworks / https://marketplace.qt.io/ ?
  *
  * @todo SHOULDHAVE Property bindings: Can a Q_PROPERTY declaration be changed
  * afterwards without breaking binary compatibility? If not, we have to
@@ -739,15 +689,8 @@
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
  *
- * @todo NICETOHAVE In our custom CI, test (and fail) not only on clang
- * warnings but also on gcc warnings.
- *
  * @todo SHOULDHAVE Test RTL functionality and text layout, using the yet
  * available Arabic translation.
- *
- * @todo NICETOHAVE How can the diagrams actually output 16 bits per channel on
- * the screen instead of the current 8 bits? There isn’t any Qt API for that,
- * isn’t it?
  */
 
 /** @page hidpisupport High DPI support
@@ -1137,6 +1080,9 @@
  * simple implementation that just calls the implementation of the base class.
  * This reduces the risk to have to break binary compatibility and make a new
  * mayor version release in the future.
+ *
+ * @todo SHOULDHAVE Test rendering manually for common QStyle (including
+ * Breeze, Kvantum, Adwaita, Fusion) and style sheets.
  *
  * @todo SHOULDHAVE
  * Add d-pointer using @ref PerceptualColor::ConstPropagatingUniquePointer to

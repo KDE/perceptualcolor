@@ -1091,16 +1091,19 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
 
 /** @brief Constructor
  *
- *  @param gamutIdentifier Optional identifier used to save the settings for
+ *  @param identifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
  *                   settings. Must contain only the lowercase letters a-z.
  *  @param parent pointer to the parent widget, if any
- *  @post The @ref currentColor property is set to a default value. */
-ColorDialog::ColorDialog(const QString &gamutIdentifier, QWidget *parent)
+ *  @post The @ref currentColor property is set to a default value.
+ *
+ * @note This constructor es useful in unit tests to not interfer with
+ * existing setting files on the system.
+ */
+ColorDialog::ColorDialog(const QString &identifier, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(
-          new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(gamutIdentifier)))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(identifier)))
 {
     d_pointer->initialize();
     setCurrentColor(d_pointer->defaultColor());
@@ -1121,7 +1124,7 @@ QColor ColorDialogPrivate::defaultColor() const
 
 /** @brief Constructor
  *
- *  @param gamutIdentifier Optional identifier used to save the settings for
+ *  @param identifier Optional identifier used to save the settings for
  *                   this @ref ColorDialog. For each identifier, the
  *                   @ref ColorDialog saves its own, independent set of
  *                   settings. Must contain only the lowercase letters a-z.
@@ -1132,11 +1135,14 @@ QColor ColorDialogPrivate::defaultColor() const
  *  that will be applied before setting the current color. Especially, as
  *  this dialog is constructed by default without alpha support, the
  *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
- *  used. */
-ColorDialog::ColorDialog(const QString &gamutIdentifier, const QColor &initial, QWidget *parent)
+ *  used.
+ *
+ * @note This constructor es useful in unit tests to not interfer with
+ * existing setting files on the system.
+ */
+ColorDialog::ColorDialog(const QString &identifier, const QColor &initial, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(
-          new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(gamutIdentifier)))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::customIdentifierPrefix + ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(identifier)))
 {
     d_pointer->initialize();
     // Calling setCurrentColor() guaranties to update all widgets
@@ -1230,10 +1236,6 @@ void ColorDialog::setCurrentColor(const QColor &color)
  *
  * @param receiver the object that will receive the @ref colorSelected() signal
  * @param member the slot that will receive the @ref colorSelected() signal
- *
- * @todo SHOULDHAVE Use new-style-type-save syntax instead, like
- * template<typename Func> void open(QObject *receiver, Func slot) {
- * connect(this, SIGNAL(colorSelected(QColor)), receiver, slot);
  */
 void ColorDialog::open(QObject *receiver, const char *member)
 {

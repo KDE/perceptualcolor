@@ -88,8 +88,7 @@ class ColorDialogPrivate;
  * @note @anchor qdialogsourceompatibility The API of this class is mostly
  * source-compatible to the API of QColorDialog. This is a list of
  * incompatibilities:
- * - As this dialog does not provide functionality for custom colors and
- *   standard color, the corresponding static functions of QColorDialog are
+ * - A QColorDialog-like API for customColor and standardColor is
  *   not available in this class.
  * - The option <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
  *   will always remain <tt>false</tt> (even if set explicitly), because it’s
@@ -116,6 +115,9 @@ class ColorDialogPrivate;
  * directly side-by-side in the dialog. Would it make sense to use the
  * same scale for both?
  *
+ * @todo NICETOHAVE Implement QColorDialog-like API
+ * for customColor and standardColor
+ *
  * @todo NICETOHAVE Provide <tt>setResizable(bool resizable)</tt>. Do not
  * provide a property, because in the background this is setting <em>two</em>
  * different values, which might be conflicting in the moment when read
@@ -136,10 +138,6 @@ class ColorDialogPrivate;
  * tooltip information available for touch-screen users, maybe displaying them
  * when the user clicks the button?
  *
- * @todo NICETOHAVE KDE merged something that displays tooltips and integrates a
- * link that calls the <tt>QWhatsThis</tt> which has more information. Would
- * this be helpful here also?
- *
  * @todo NICETOHAVE Provide (on demand) two patches,
  * like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new
@@ -154,16 +152,6 @@ class ColorDialogPrivate;
  * as default value in the class itself. For the other widgets, a
  * help text could be defined here within <em>this</em> class,
  * if appropriate.
- *
- * @todo NICETOHAVE Touch screen compatibility:
- * A spin box can also be used on mobile phone (putting the numbers
- * with on-screen keyboard). But the + and - button for increasing
- * or decreasing the values might be too small. And mobile UI uses
- * often wheels for this use case…
- *
- * @todo NICETOHAVE The QLineEdit for the hexadecimal RGB values: Maybe it
- * could even be switched to @ref MultiSpinBox (but that would mean implement
- * support for hexadecimal digits in @ref MultiSpinBox).
  *
  * @todo NICETOHAVE Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
  * functionality as the gamut button in the HCL @ref MultiSpinBox.
@@ -367,8 +355,8 @@ public:
     Q_ENUM(DialogLayoutDimensions)
     Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
     Q_INVOKABLE explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
-    Q_INVOKABLE explicit ColorDialog(const QString &gamutIdentifier, QWidget *parent = nullptr);
-    Q_INVOKABLE explicit ColorDialog(const QString &gamutIdentifier, const QColor &initial, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorDialog(const QString &identifier, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorDialog(const QString &identifier, const QColor &initial, QWidget *parent = nullptr);
     virtual ~ColorDialog() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
