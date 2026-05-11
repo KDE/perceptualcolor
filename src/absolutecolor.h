@@ -70,11 +70,10 @@ public:
     [[nodiscard]] static GenericColor fromLinearSRgbToXyzD65(const GenericColor &value);
     [[nodiscard]] static GenericColor fromXyzD65ToLinearSRgb(const GenericColor &value);
 
+    [[nodiscard]] static QRgb fastFromCielchD50ToSRgbClamped(const GenericColor &cielchD50);
+    [[nodiscard]] static QRgb fastFromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50);
+    [[nodiscard]] static QRgb fastFromOklchToSRgbClamped(const GenericColor &oklch);
     [[nodiscard]] static QRgb fastFromOklabToSRgbOrTransparent(const GenericColor &oklab);
-    [[nodiscard]] static QRgb fastFromOklabToSRgbClamped(const GenericColor &oklab);
-
-    [[nodiscard]] static QRgb fromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50);
-    [[nodiscard]] static QRgb fromCielchD50ToSRgbClamped(const GenericColor &cielchD50);
     [[nodiscard]] static bool isLabInSRgbGamut(const GenericColor &lab, const LchSpace lchSpace);
     [[nodiscard]] static bool isLchInSRgbGamut(const GenericColor &lch, const LchSpace lchSpace);
 

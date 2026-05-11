@@ -302,9 +302,9 @@ GenericColor AbsoluteColor::fromCartesianToPolar(const GenericColor &value)
         return result;
     }
     if (y >= 0) {
-        result.third = qRadiansToDegrees(acos(x / radius));
+        result.third = qRadiansToDegrees(std::acos(x / radius));
     } else {
-        result.third = qRadiansToDegrees(2 * std::numbers::pi - acos(x / radius));
+        result.third = qRadiansToDegrees(2 * std::numbers::pi - std::acos(x / radius));
     }
     return result;
 }
@@ -324,9 +324,10 @@ GenericColor AbsoluteColor::fromPolarToCartesian(const GenericColor &value)
 {
     const auto &radius = value.second;
     const auto &angleDegree = value.third;
+    const auto angleRadians = qDegreesToRadians(angleDegree);
     return GenericColor(value.first, //
-                        radius * cos(qDegreesToRadians(angleDegree)),
-                        radius * sin(qDegreesToRadians(angleDegree)),
+                        radius * std::cos(angleRadians),
+                        radius * std::sin(angleRadians),
                         value.fourth);
 }
 
@@ -376,7 +377,7 @@ GenericColor AbsoluteColor::fromSRgbToLinearSRgb(const GenericColor &value)
 GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
 {
     auto result = GenericColor( //
-        static_cast<Mat3d>(XyzD65ToLinearSRgbMatrix) * value.toVec3d());
+        static_cast<Mat3d>(xyzD65ToLinearSRgbMatrix) * value.toVec3d());
     result.fourth = value.fourth;
     return result;
 }
@@ -425,7 +426,7 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
  * set to 0 to ensure compatibility with both, premultiplied and
  * non-premultiplied data).
  *
- * @sa @ref AbsoluteColor::fromCielchD50ToSRgbClamped()
+ * @sa @ref AbsoluteColor::fastFromCielchD50ToSRgbClamped()
  *
  * @internal
  *
@@ -550,12 +551,12 @@ bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lch
 
 /** @brief Conversion to QRgb.
  *
- * @param oklab the original color
+ * @param oklch the original color
  *
  * @returns An opaque sRGB color matching the original one if it is within the
  * gamut. Otherwise, returns a more or less similar color.
  *
- * @sa @ref AbsoluteColor::fromCielchD50ToSRgbClamped()
+ * @sa @ref AbsoluteColor::fastFromCielchD50ToSRgbClamped()
  *
  * @internal
  *
@@ -573,8 +574,10 @@ bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lch
  * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
  * calls @ref channelFromLinearSRgbToSRgb() which is not <tt>constexpr</tt>.
  */
-[[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbClamped(const GenericColor &oklab)
+[[nodiscard]] QRgb AbsoluteColor::fastFromOklchToSRgbClamped(const GenericColor &oklch)
 {
+    const auto oklab = AbsoluteColor::fromPolarToCartesian(oklch);
+
     // Original Lab values as float:
     const float oLabL = static_cast<float>(oklab.first);
     const float oLabA = static_cast<float>(oklab.second);
@@ -645,21 +648,47 @@ bool AbsoluteColor::isCielabD50InSRgbGamut(const GenericColor &cielabD50)
  *          Otherwise, returns a fully transparent color (alpha and RGB
  *          channels set to 0 to ensure ).
  *
- * @sa @ref fromCielchD50ToSRgbClamped */
-QRgb AbsoluteColor::fromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50)
+ * @sa @ref fastFromCielchD50ToSRgbClamped */
+QRgb AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50)
 {
-    const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
-    const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
-    const auto linearSRgb = AbsoluteColor::fromXyzD65ToLinearSRgb(xyzD65);
+    // Conversion function as described in
+    // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIE_XYZ_to_CIELAB
 
-    const auto &r = linearSRgb.first;
-    const auto &g = linearSRgb.second;
-    const auto &b = linearSRgb.third;
+    constexpr Vec3f whitepoint = static_cast<Vec3f>(whitePointD50TwoDegree);
+
+    const float fy = (static_cast<float>(cielabD50.first) + 16.0f) / 116.0f;
+    const float fz = fy - static_cast<float>(cielabD50.third) / 200.0f;
+    const float fx = static_cast<float>(cielabD50.second) / 500.0f + fy;
+
+    auto f_1 = [](const float f) {
+        constexpr float delta = 6.0f / 29.0f;
+        constexpr float delta2 = delta * delta;
+        if (f > delta) {
+            return f * f * f;
+        } else {
+            return 3.0f * delta2 * (f - 4.0f / 29.0f);
+        }
+    };
+
+    const float X = whitepoint(0) * f_1(fx);
+    const float Y = whitepoint(1) * f_1(fy);
+    const float Z = whitepoint(2) * f_1(fz);
+
+    const Vec3f xyzD50{X, Y, Z};
+
+    constexpr Mat3f xyzD50ToLinearSRgbMatrix = static_cast<Mat3f>( //
+        xyzD65ToLinearSRgbMatrix * xyzD50ToXyzD65Matrix);
+
+    auto linearSRgb = xyzD50ToLinearSRgbMatrix * xyzD50;
+
+    const auto &r = linearSRgb(0);
+    const auto &g = linearSRgb(1);
+    const auto &b = linearSRgb(2);
 
     // Check for in-range yet now to avoid unnecessary calls of toByte() and
     // linearToSRgb(). Furthermore, linearToSRgb() has undefined behaviour
     // for parameters < 0.
-    if (r < 0. || r > 1. || g < 0. || g > 1. || b < 0. || b > 1.) {
+    if (r < 0.f || r > 1.f || g < 0.f || g > 1.f || b < 0.f || b > 1.f) {
         return qRgbTransparent;
     }
 
@@ -680,22 +709,53 @@ QRgb AbsoluteColor::fromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD
  * @note There is no guarantee <em>which</em> specific algorithm is used
  * to fit out-of-gamut colors into the gamut.
  *
- * @sa @ref fromCielabD50ToSRgbOrTransparent */
-QRgb AbsoluteColor::fromCielchD50ToSRgbClamped(const GenericColor &cielchD50)
+ * @sa @ref fastFromCielabD50ToSRgbOrTransparent */
+QRgb AbsoluteColor::fastFromCielchD50ToSRgbClamped(const GenericColor &cielchD50)
 {
-    const auto cielabD50 = AbsoluteColor::fromPolarToCartesian(cielchD50);
-    const auto xyzD50 = AbsoluteColor::fromCielabD50ToXyzD50(cielabD50);
-    const auto xyzD65 = AbsoluteColor::fromXyzD50ToXyzD65(xyzD50);
-    const auto linearSRgb = AbsoluteColor::fromXyzD65ToLinearSRgb(xyzD65);
+    const float angleRadians = qDegreesToRadians( //
+        static_cast<float>(cielchD50.third));
+    const float radius = static_cast<float>(cielchD50.second);
+    const float cielabD50a = radius * std::cos(angleRadians);
+    const float cielabD50b = radius * std::sin(angleRadians);
 
-    const auto &r = linearSRgb.first;
-    const auto &g = linearSRgb.second;
-    const auto &b = linearSRgb.third;
+    // Conversion function as described in
+    // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIE_XYZ_to_CIELAB
+
+    constexpr Vec3f whitepoint = static_cast<Vec3f>(whitePointD50TwoDegree);
+
+    const float fy = (static_cast<float>(cielchD50.first) + 16.0f) / 116.0f;
+    const float fz = fy - static_cast<float>(cielabD50b) / 200.0f;
+    const float fx = static_cast<float>(cielabD50a) / 500.0f + fy;
+
+    auto f_1 = [](const float f) {
+        constexpr float delta = 6.0f / 29.0f;
+        constexpr float delta2 = delta * delta;
+        if (f > delta) {
+            return f * f * f;
+        } else {
+            return 3.0f * delta2 * (f - 4.0f / 29.0f);
+        }
+    };
+
+    const float X = whitepoint(0) * f_1(fx);
+    const float Y = whitepoint(1) * f_1(fy);
+    const float Z = whitepoint(2) * f_1(fz);
+
+    const Vec3f xyzD50{X, Y, Z};
+
+    constexpr Mat3f xyzD50ToLinearSRgbMatrix = static_cast<Mat3f>( //
+        xyzD65ToLinearSRgbMatrix * xyzD50ToXyzD65Matrix);
+
+    auto linearSRgb = xyzD50ToLinearSRgbMatrix * xyzD50;
+
+    const auto &r = linearSRgb(0);
+    const auto &g = linearSRgb(1);
+    const auto &b = linearSRgb(2);
 
     return qRgba( //
-        toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(r), 0, 1)), //
-        toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(g), 0, 1)), //
-        toByte(std::clamp<double>(channelFromLinearSRgbToSRgb(b), 0, 1)),
+        toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(r), 0.f, 1.f)), //
+        toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(g), 0.f, 1.f)), //
+        toByte(std::clamp<float>(channelFromLinearSRgbToSRgb(b), 0.f, 1.f)),
         255);
 }
 

@@ -595,7 +595,7 @@ QColorArray2D wcsBasicColors()
                                                 ColorModel::CielchD50 //
                                                 )
                                                 .value_or(GenericColor());
-            const auto variationRgb = AbsoluteColor::fromCielchD50ToSRgbClamped( //
+            const auto variationRgb = AbsoluteColor::fastFromCielchD50ToSRgbClamped( //
                 variationCielchD50);
             wcsSwatches.setValue(i, //
                                  j,
@@ -613,7 +613,7 @@ QColorArray2D wcsBasicColors()
                                    ColorModel::CielchD50 //
                                    )
                                    .value_or(GenericColor());
-        const auto rgb = AbsoluteColor::fromCielchD50ToSRgbClamped(cielchD50);
+        const auto rgb = AbsoluteColor::fastFromCielchD50ToSRgbClamped(cielchD50);
         wcsSwatches.setValue(columnCount - 1, j, rgb);
     }
 

@@ -53,10 +53,10 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
     // approach seems fine.
     if (cartesianCoordiantes.y() >= 0) {
         m_angleDegree = qRadiansToDegrees( //
-            acos(cartesianCoordiantes.x() / m_radius));
+            std::acos(cartesianCoordiantes.x() / m_radius));
     } else {
         m_angleDegree = qRadiansToDegrees( //
-            2 * std::numbers::pi - acos(cartesianCoordiantes.x() / m_radius));
+            2 * std::numbers::pi - std::acos(cartesianCoordiantes.x() / m_radius));
     }
 }
 
@@ -101,8 +101,8 @@ double PolarPointF::angleDegree() const
  * @returns the corresponding Cartesian coordinates */
 QPointF PolarPointF::toCartesian() const
 {
-    return QPointF(m_radius * cos(qDegreesToRadians(m_angleDegree)), //
-                   m_radius * sin(qDegreesToRadians(m_angleDegree)));
+    return QPointF(m_radius * std::cos(qDegreesToRadians(m_angleDegree)), //
+                   m_radius * std::sin(qDegreesToRadians(m_angleDegree)));
 }
 
 /** @internal

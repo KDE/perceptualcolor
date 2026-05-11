@@ -127,7 +127,7 @@ void ChromaHueImageParameters::renderByRow( //
                 tempColor = //
                     (parameters.projectionSpace == LchSpace::Oklch) //
                     ? AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab)
-                    : AbsoluteColor::fromCielabD50ToSRgbOrTransparent(lab);
+                    : AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab);
                 const auto rectangleWidth =
                     // Make sure to stay within the image
                     qMin(currentPass.rectangleSize.width(), //
@@ -372,7 +372,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         if (parameters.projectionSpace == LchSpace::Oklch) {
             return AbsoluteColor::fastFromOklabToSRgbOrTransparent(myLab);
         }
-        return AbsoluteColor::fromCielabD50ToSRgbOrTransparent(myLab);
+        return AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(myLab);
     };
     doAntialias(myImage, antiAliasCoordinates, myColorFunction);
 

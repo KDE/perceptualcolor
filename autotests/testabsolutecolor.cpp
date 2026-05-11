@@ -582,7 +582,8 @@ private Q_SLOTS:
         QFETCH(GenericColor, oklab);
 
         const QRgb actualResult = //
-            AbsoluteColor::fastFromOklabToSRgbClamped(oklab);
+            AbsoluteColor::fastFromOklchToSRgbClamped( //
+                AbsoluteColor::fromCartesianToPolar(oklab));
         QCOMPARE(actualResult, srgb);
     }
 
@@ -597,9 +598,9 @@ private Q_SLOTS:
     void benchmarkFastFromOklabToSRgbOrTransparentInGamut()
     {
         GenericColor lab;
-        lab.first = 0.5f;
-        lab.second = 0.1f;
-        lab.third = 0.1f;
+        lab.first = 0.5;
+        lab.second = 0.1;
+        lab.third = 0.1;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
                 blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
@@ -610,12 +611,51 @@ private Q_SLOTS:
     void benchmarkFastFromOklabToSRgbOrTransparentOutOfGamut()
     {
         GenericColor lab;
-        lab.first = 0.5f;
-        lab.second = 0.1f;
-        lab.third = 5.1f;
+        lab.first = 0.5;
+        lab.second = 0.1;
+        lab.third = 5.1;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
                 blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+            }
+        }
+    }
+
+    void benchmarkfastFromCielabD50ToSRgbOrTransparentInGamut()
+    {
+        GenericColor lab;
+        lab.first = 50;
+        lab.second = 10;
+        lab.third = 10;
+        QBENCHMARK {
+            for (int i = 0; i < 1000000; ++i) {
+                blackhole(AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab));
+            }
+        }
+    }
+
+    void benchmarkfastFromCielabD50ToSRgbOrTransparentOutOfGamut()
+    {
+        GenericColor lab;
+        lab.first = 50;
+        lab.second = 10;
+        lab.third = 510;
+        QBENCHMARK {
+            for (int i = 0; i < 1000000; ++i) {
+                blackhole(AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab));
+            }
+        }
+    }
+
+    void benchmarkfastFromCielchD50ToSRgbClamped()
+    {
+        GenericColor lch;
+        lch.first = 50;
+        lch.second = 10;
+        lch.third = 10;
+        QBENCHMARK {
+            for (int i = 0; i < 1000000; ++i) {
+                blackhole(AbsoluteColor::fastFromCielchD50ToSRgbClamped(lch));
             }
         }
     }
@@ -628,7 +668,7 @@ private Q_SLOTS:
                                                 113.331475355764, //
                                                 134.38385636182164);
         const auto sRgbClamped = //
-            AbsoluteColor::fromCielchD50ToSRgbClamped(cielchD50);
+            AbsoluteColor::fastFromCielchD50ToSRgbClamped(cielchD50);
         QCOMPARE(qRed(sRgbClamped), 0);
         QCOMPARE(qGreen(sRgbClamped), 255);
         QCOMPARE(qBlue(sRgbClamped), 0);
@@ -643,7 +683,7 @@ private Q_SLOTS:
                                                 -6.770243071438198, //
                                                 -32.01054781975403);
         const auto sRgb = //
-            AbsoluteColor::fromCielabD50ToSRgbOrTransparent(cielabD50);
+            AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(cielabD50);
         QCOMPARE(qRed(sRgb), 0.4 * 255);
         QCOMPARE(qGreen(sRgb), 0.6 * 255);
         QCOMPARE(qBlue(sRgb), 0.8 * 255);
@@ -653,7 +693,7 @@ private Q_SLOTS:
                                                           -50, //
                                                           -50);
         const auto sRgbOutOfGamut = //
-            AbsoluteColor::fromCielabD50ToSRgbOrTransparent(cielabD50OutOfGamut);
+            AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(cielabD50OutOfGamut);
         QCOMPARE(qAlpha(sRgbOutOfGamut), 0);
     }
 

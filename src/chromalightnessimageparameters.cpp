@@ -72,7 +72,7 @@ void ChromaLightnessImageParameters::renderByRow( //
                 rgbColor = AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab);
             } else {
                 rgbColor = //
-                    AbsoluteColor::fromCielabD50ToSRgbOrTransparent(lab);
+                    AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab);
             }
             if (qAlpha(rgbColor) != 0) {
                 line[x] = rgbColor;
@@ -245,7 +245,7 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
                 maxLight - (colorFunctionY + 0.5) * maxLight / imageHeight;
             myCielchD50.second = //
                 (colorFunctionX + 0.5) * maxLight / imageHeight;
-            return AbsoluteColor::fromCielabD50ToSRgbOrTransparent( //
+            return AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent( //
                 AbsoluteColor::fromPolarToCartesian(myCielchD50));
         };
     }

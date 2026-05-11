@@ -174,7 +174,7 @@ inline constexpr Mat3ld linearSRgbToXyzD65Matrix {
  * As in <a href="https://en.wikipedia.org/wiki/SRGB#Primaries">
  * Wikipedia’s definition</a>.
  */
-inline constexpr Mat3ld XyzD65ToLinearSRgbMatrix = linearSRgbToXyzD65Matrix.inverse().value();
+inline constexpr Mat3ld xyzD65ToLinearSRgbMatrix = linearSRgbToXyzD65Matrix.inverse().value();
 
 // clang-format on
 
