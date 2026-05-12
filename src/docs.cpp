@@ -557,10 +557,6 @@
  * As we provide widgets, this should not be too important. Are there also
  * good arguments for widgets to provide RESET?
  *
- * @todo SHOULDHAVE We prevent division by 0 in
- * @ref PerceptualColor::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToLch().
- * We should make sure this happens also in the other diagram widgets!
- *
  * @todo NICETOHAVE Remove setDevicePixelRatioF from all *Image classes. (It is
  * confusing, and at the same time there is no real need/benefit.)
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,

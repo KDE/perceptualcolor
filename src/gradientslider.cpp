@@ -514,6 +514,10 @@ int GradientSliderPrivate::physicalPixelThickness() const
  * @sa @ref measurementdetails */
 qreal GradientSliderPrivate::fromWidgetPixelPositionToValue(QPoint pixelPosition)
 {
+    // Prevent division by 0 in code below
+    if (q_pointer->size().isEmpty()) {
+        return 0;
+    }
     // We are interested in the point in the middle of the given pixel.
     const QPointF coordinatePoint = pixelPosition + QPointF(0.5, 0.5);
     qreal temp;

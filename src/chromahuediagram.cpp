@@ -540,9 +540,11 @@ GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint 
         (m_projectionSpace == LchSpace::CielchD50) //
         ? ChromaInfo::maxCielchD50Chroma()
         : ChromaInfo::maxOklchChroma();
+    const auto quotient = (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
     const qreal scaleFactor = //
-        (2.0 * maximumChroma) //
-        / (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
+        (quotient == 0) //
+        ? 1 //
+        : (2.0 * maximumChroma) / quotient;
     // The pixel at position 0 0 has its top left border at position 0 0
     // and its bottom right border at position 1 1 and its center at
     // position 0.5 0.5. Its the center of the pixel that is our reference
