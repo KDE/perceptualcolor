@@ -267,7 +267,7 @@ QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness, Perc
 /** @brief If this widget is actually visible.
  *
  * Unlike <tt>QWidget::isVisible</tt>, minimized windows are <em>not</em>
- * considered visible.
+ * considered visible by this function.
  *
  * Changes can be observed with
  * @ref AbstractDiagram::actualVisibilityToggledEvent.

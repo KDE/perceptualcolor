@@ -32,13 +32,7 @@ class AsyncImageRenderCallback;
  * Each pixel show the color of the coordinate point at its center. So
  * the pixel at pixel position <tt>(2, 3)</tt> shows the color corresponding
  * to coordinate point <tt>(2.5, 3.5)</tt>.
- *
- * @note Intentionally there is no anti-aliasing because this would be much
- * slower: As there is no mathematical description of the shape of the color
- * solid, the only easy way to get anti-aliasing would be to render at a
- * higher resolution (say two times higher, which would yet mean four times
- * more data), and then downscale it to the final resolution. This would be
- * too slow. */
+ */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaLightnessImageParameters
 {
 public:

@@ -392,6 +392,13 @@
  *
  * @todo SHOWSTOPPER Optimize rendering time.
  *
+ * @todo NICETOHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
+ * which is used in unit tests to exclude some tests that would otherwise
+ * fail to link on MSVC, probably because of missing symbol exports.
+ * Probably @ref PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT can help to export
+ * the symbols explicitly for the unit tests, making most
+ * <tt>ifndef MSVC_DLL</tt> obsolete.
+ *
  * @todo SHOWSTOPPER SHOULDHAVE The sRGB gamut in the Oklab space has
  * an irregular shape in the chroma-lightness diagram around 264.1°, see also
  * https://github.com/color-js/color.js/issues/81 for details: There is a
@@ -469,12 +476,6 @@
  * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
  * Would this make sense also for our library?
  *
- * @todo SHOULDHAVE
- * ITUR profile: Minimum widget size must be smaller! On high sizes, the
- * inner focus indicator of color wheel too narrow to hue circle.
- * On RGB 255 0 0 no value indicator is visible. The high-chroma values
- * are empty in the diagram!
- *
  * @todo NICETOHAVE
  * All scripts (both, local and CI scripts) should break and stop
  * on every error. When implementing this, be beware of side effects
@@ -522,29 +523,33 @@
  * implemented within this library, but as a KDE portal providing this
  * functionality. New features would have to be implemented there.
  *
- * @todo SHOULDHAVE Could we integrate more with QStyle? Apparently
- *   <a href="https://api.kde.org/frameworks/frameworkintegration/html/classKStyle.html">
- *   KStyle</a> is a QCommonStyle-based class that provides
- *   support for QString-based query for custom style hints,
- *   control elements and sub elements. There is also
- *   <a href="https://api.kde.org/frameworks/kwidgetsaddons/html/namespaceKStyleExtensions.html">
- *   KStyleExtensions</a> that allows apparently custom widgets to query
- *   for these QString-based custom support, which allows to make the same
- *   query independently of the actual style, without the need to hard-code
- *   individual custom enum values for QStyle::ControlElement (and similar
- *   enum) for each individual style. KStyleExtensions works for all
- *   styles, also for these that are <em>not</em> subclasses of
- *   <tt>KStyle</tt>. It reports if a given query is supported or not
- *   by the underlying style. However, even Breeze, KDE’s default style,
- *   seems not to inherit from KStyle, so the question is if KStyle is
- *   not rather deprecated yet. An alternative would be if a style
- *   has special functions just for PerceptualColor rendering, like
- *   <tt>renderColorWheel</tt>. Than, we could cast the current QStyle
- *   of the application to this style (if the actual current
- *   style <em>is</em> this style), and call these functions. Big
- *   disadvantage: We would have to <em>link</em> against all styles
- *   that we want to support, which makes our library <em>depend</em>
- *   on them, which is not reasonable.
+ * @todo SHOULDHAVE Consider deeper integration with QStyle. KStyle
+ * (<a href="https://invent.kde.org/frameworks/frameworkintegration/-/tree/master/src/kstyle?ref_type=heads">
+ * code</a> / <a href="https://api.kde.org/kstyle.html">documentation</a>) is a
+ * QCommonStyle‑derived class that enables QString‑based queries for custom
+ * style hints, control elements, and sub‑elements. The Tier‑1 framework
+ * KWidgetsAddons provides the namespace
+ * <a href="https://api.kde.org/kstyleextensions.html">KStyleExtensions</a>,
+ * which allows custom widgets to perform these queries independently of the
+ * active style, avoiding the need to hard‑code custom enum values for
+ * QStyle::ControlElement (and similar enums) in each style. KStyleExtensions
+ * works with all styles inheriting from KStyle and, in theory, could also
+ * function with non‑KStyle styles that implement the required interface (see
+ * <a href="https://codebrowser.dev/kde/kwidgetsaddons/src/kstyleextensions.cpp.html#14">
+ * source</a>), though this is unlikely. It reports whether a given query is
+ * supported by the underlying style. Breeze, KDE’s default style, inherits
+ * either from KStyle or directly from QCommonStyle depending on build
+ * configuration; when using KStyle it leverages this mechanism to provide
+ * custom elements such as <tt>CE_CapacityBar</tt> (see
+ * <a href="https://invent.kde.org/plasma/breeze/-/blob/bdeab2b04c82a1e3b0e14976c67db1d70042d842/kstyle/breezestyle.cpp#L271">
+ * example 1</a>,
+ * <a href="https://invent.kde.org/plasma/breeze/-/blob/bdeab2b04c82a1e3b0e14976c67db1d70042d842/kstyle/breezestyle.cpp#L1417">
+ * example 2</a>,
+ * <a href="https://invent.kde.org/plasma/breeze/-/blob/master/kstyle/breezestyle.h?ref_type=heads#L528">
+ * header</a>), which is used in KWidgetsAddons’
+ * <a href="https://api.kde.org/kcapacitybar.html">KCapacityBar widget</a>.
+ * This approach could similarly enable style‑dependent rendering functions for
+ * PerceptualColor widgets, such as <tt>renderColorWheel</tt>.
  *
  * @todo NICETOHAVE
  * In https://phabricator.kde.org/T12359 is recommended to provide

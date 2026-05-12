@@ -48,10 +48,6 @@ class AbstractDiagramPrivate;
  * QGraphicsLayout’s subclasses”. Therefore, it’s better not to use at all
  * these features; that’s the only way to provide a consistent and good
  * user experience.
- *
- * @todo NICETOHAVE @ref AbstractDiagram::actualVisibilityToggledEvent and
- * @ref AbstractDiagram::isActuallyVisible are not actually used.
- * Either use them or remove them?
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT AbstractDiagram : public QWidget
 {
