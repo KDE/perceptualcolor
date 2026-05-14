@@ -390,8 +390,6 @@
  * @ref PerceptualColor::MultiSpinBox. And also incoming drag-and-drop
  * (outgoing drag-and-drop instead should use the standard clipboard format).
  *
- * @todo SHOWSTOPPER Optimize rendering time.
- *
  * @todo NICETOHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
  * which is used in unit tests to exclude some tests that would otherwise
  * fail to link on MSVC, probably because of missing symbol exports.

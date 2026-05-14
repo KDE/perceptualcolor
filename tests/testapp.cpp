@@ -402,6 +402,78 @@ int main(int argc, char *argv[])
     // myChromaHueDiagram.setCurrentColorLch(GenericColor(0.45, 0, 0));
     // myChromaHueDiagram.show();
 
+    /*
+    // Search for lines in ChromeHueImage where, starting from the left,
+    // opaque pixels are followed by transparent pixels, and then opaque
+    // pixels appear again.
+    // NOTE This requires ChromaHueImage to NOT do antialiasing.
+    QSet<int> brokenLines;
+    QSet<double> brokenHues;
+    PerceptualColor::AsyncImageProvider<ChromaLightnessImageParameters> myImageProvider;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    constexpr int imageWidth = 1750;
+    constexpr int imageHeight = 5000;
+    constexpr int steps = 4000;
+    constexpr double minHue = 264.05;
+    constexpr double maxHue = 264.21;
+    auto myFunnction = [&i, &j, &k, &myImageProvider, &brokenHues, &brokenLines]() {
+        ChromaLightnessImageParameters myParameters;
+        myParameters.imageSizePhysical = QSize(imageWidth, imageHeight);
+        myParameters.projectionSpace = LchSpace::Oklch;
+        for (i = 0; i <= steps; ++i) {
+            const double hue = minHue + i / static_cast<double>(steps) * (maxHue - minHue);
+            myParameters.hue = hue;
+            myImageProvider.setImageParameters(myParameters);
+            myImageProvider.refreshAsync();
+            myImageProvider.refreshSync();
+            QCoreApplication::processEvents();
+        }
+        if (brokenHues.count() > 0 && brokenLines.count() > 0) {
+            const int smallestLine = *std::min_element(brokenLines.constBegin(), brokenLines.constEnd());
+            const int largestLine = *std::max_element(brokenLines.constBegin(), brokenLines.constEnd());
+            const auto smallestHue = *std::min_element(brokenHues.constBegin(), brokenHues.constEnd());
+            const auto largestHue = *std::max_element(brokenHues.constBegin(), brokenHues.constEnd());
+            qDebug() << "hue" << smallestHue << largestHue << "line" << smallestLine << largestLine;
+        }
+        qDebug() << "Finished.";
+    };
+    QPushButton *button = new QPushButton(QStringLiteral("Drück mich"));
+    QObject::connect( //
+        &myImageProvider, //
+        &AsyncImageProvider<ChromaLightnessImageParameters>::interlacingPassCompleted, //
+        button,
+        [&myImageProvider, &i, &j, &k, &brokenLines, &brokenHues]() {
+            const auto myImage = myImageProvider.getCache();
+
+            bool foundBrokenLines = false;
+
+            for (j = 0; j < imageHeight; ++j) {
+                bool transparencyFound = false;
+                for (k = 0; k < imageWidth; ++k) {
+                    if (qAlpha(myImage.pixel(k, j)) == 0) {
+                        transparencyFound = true;
+                    } else {
+                        if (transparencyFound) {
+                            foundBrokenLines = true;
+                            brokenLines.insert(j);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (foundBrokenLines) {
+                brokenHues.insert(myImageProvider.imageParameters().hue);
+            }
+        });
+    QObject::connect(button, //
+                     &QPushButton::clicked, //
+                     button, //
+                     myFunnction);
+    button->show();
+    */
+
     // Run
     return app.exec();
 }

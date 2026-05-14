@@ -156,6 +156,10 @@ void ChromaHueImageParameters::renderByRow( //
  * @param variantParameters A <tt>QVariant</tt> that contains the
  *        image parameters.
  * @param callbackObject Pointer to the object for the callbacks.
+ *
+ * @todo SHOWSTOPPER Optimize rendering time: Discard (or move into an
+ * <tt>if constexpr</tt> the Adam-interlacing and calculate directly the hole
+ * image. And allow for abort during anti-aliasing.
  */
 void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {

@@ -60,6 +60,39 @@ void ChromaLightnessImageParameters::renderByRow( //
     QRgb rgbColor;
     GenericColor lch;
     lch.third = normalizedAngle360(parameters.hue);
+
+    // Out-of-gamut handling:
+    //
+    // The image maps chroma on the x-axis and lightness on the y-axis,
+    // drawn line by line from low chroma to high chroma at a fixed lightness.
+    // Once a pixel in a row is out-of-gamut, all subsequent
+    // pixels to the right are likely out-of-gamut as well. This suggests
+    // a possible optimization: break the loop early. However, this assumption
+    // is not universally valid, so we must explicitly mark ranges where
+    // optimization is unsafe.
+    //
+    // Test renderings at 5000-pixel lightness resolution revealed exceptions:
+    // - In CIELCH: hue 95.4518°–102.575° combined with lightness 93.64%–98.6%.
+    //   To ensure coverage, we expand this region by ~10%: hue 95°–103°,
+    //   lightness 93%–99%.
+    // - In OKLCH: hue 264.052°–264.208° combined with lightness 0.0028–0.4704.
+    //   Expanded by ~10%: hue 264.03°–264.23°, lightness 0.00–0.53.
+    //
+    // Within these unsafe ranges, early termination must be disabled to
+    // guarantee correctness.
+    const bool optimizationIsSafe = //
+        (parameters.projectionSpace == LchSpace::Oklch) //
+        ? !isInRange(264.03, lch.third, 264.23) //
+        : !isInRange(95., lch.third, 103.);
+    const double unsafeLightnessLowerBound = //
+        (parameters.projectionSpace == LchSpace::Oklch) //
+        ? 0 //
+        : 93;
+    const double unsafeLightnessUpperBound = //
+        (parameters.projectionSpace == LchSpace::Oklch) //
+        ? 0.53 //
+        : 99;
+
     for (int y = firstRow; y <= lastRow; ++y) {
         QRgb *line = //
             reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
@@ -76,17 +109,10 @@ void ChromaLightnessImageParameters::renderByRow( //
             }
             if (qAlpha(rgbColor) != 0) {
                 line[x] = rgbColor;
-                // If color is out-of-gamut: We have chroma on the
-                // x axis and lightness on the y axis. We are drawing
-                // the pixmap line per line, so we go for given
-                // lightness from low chroma to high chroma. Because of
-                // the nature of many gamuts, if once in a line we have
-                // an out-of-gamut value, often all other pixels that
-                // are more at the right will be out-of-gamut also. So
-                // we could optimize our code and break here. But as we
-                // are not sure about this: It’s just likely, but not
-                // always correct. We do not know the gamut at compile
-                // time, so for the moment we do not optimize the code.
+            } else {
+                if (optimizationIsSafe || lch.first > unsafeLightnessUpperBound || lch.first < unsafeLightnessLowerBound) {
+                    break;
+                }
             }
         }
     }
