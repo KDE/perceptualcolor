@@ -1,14 +1,14 @@
 # Translation for perceptualcolor-0_qt.po to Euskara/Basque (eu).
-# Copyright (C) 2023-2025 This file is copyright:
+# Copyright (C) 2023-2026 This file is copyright:
 # This file is distributed under the same license as the original file.
-# SPDX-FileCopyrightText: 2025 KDE euskaratzeko proiektuaren arduraduna <xalba@ni.eus>
+# SPDX-FileCopyrightText: 2025-2026 KDE euskaratzeko proiektuaren arduraduna <xalba@ni.eus>
 #
 # Translators:
-# SPDX-FileCopyrightText: 2023, 2024, 2025 Iñigo Salvador Azurmendi <xalba@ni.eus>.
+# SPDX-FileCopyrightText: 2023, 2024, 2025, Iñigo Salvador Azurmendi <xalba@ni.eus>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-12-25 19:34+0100\n"
+"PO-Revision-Date: 2026-05-17 17:36+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.12.0\n"
+"X-Generator: Lokalize 26.04.1\n"
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:97
@@ -188,7 +188,7 @@ msgstr "Op&akutasuna:"
 #: colordialog.cpp:359
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:369
