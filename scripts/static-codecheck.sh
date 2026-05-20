@@ -74,7 +74,7 @@ grep \
 # breaking binary compatibility. Other headers should avoid it also.
 grep \
     --recursive --exclude-dir=testbed \
-    --perl-regexp --files-with-matches '(^|[[:space:]])final([[:space:]]|$)' \
+    --perl-regexp --files-with-matches '(^|[ \t])final([ \t]|$)' \
     $ALL_CODE \
     | grep \
         --perl-regexp "\.cpp$" \
