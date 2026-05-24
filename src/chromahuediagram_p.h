@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
 #ifndef PERCEPTUALCOLOR_CHROMAHUEDIAGRAM_P_H
@@ -91,11 +91,11 @@ public:
     ColorWheelImage m_wheelImage;
 
     // Member functions
-    [[nodiscard]] int diagramBorder() const;
+    [[nodiscard]] int gamutBorder() const;
     [[nodiscard]] QPointF diagramCenter() const;
     [[nodiscard]] qreal diagramOffset() const;
     [[nodiscard]] GenericColor fromWidgetPixelPositionToLab(const QPoint position) const;
-    [[nodiscard]] bool isWidgetPixelPositionWithinDiagramCircle(const QPoint position) const;
+    [[nodiscard]] bool isWidgetPixelPositionWithinGamutCircle(const QPoint position) const;
     [[nodiscard]] bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);
     [[nodiscard]] QPointF widgetCoordinatesFromCurrentColorLch() const;

@@ -188,7 +188,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 
     d_pointer->setColorFromWidgetPixelPosition(event->pos());
 
-    if (!d_pointer->isWidgetPixelPositionWithinDiagramCircle(event->pos())) {
+    if (!d_pointer->isWidgetPixelPositionWithinGamutCircle(event->pos())) {
         unsetCursor();
         return;
     }
@@ -401,7 +401,7 @@ QSize ChromaHueDiagram::minimumSizeHint() const
         // Considering the gradient length two times, as the diagram
         // shows the center of the coordinate system in the middle,
         // and each side of the center should be well visible.
-        2 * d_pointer->diagramBorder() + 2 * gradientMinimumLength();
+        2 * d_pointer->gamutBorder() + 2 * gradientMinimumLength();
     // Expand to the global minimum size for GUI elements
     return QSize(mySize, mySize);
 }
@@ -513,7 +513,7 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorLch() const
         ? ChromaInfo::maxCielchD50Chroma()
         : ChromaInfo::maxOklchChroma();
     const qreal scaleFactor = //
-        (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder()) //
+        (q_pointer->maximumWidgetSquareSize() - 2.0 * gamutBorder()) //
         / (2.0 * maximumChroma);
     QPointF currentColor = //
         PolarPointF(m_currentColorLch.second, m_currentColorLch.third).toCartesian();
@@ -540,7 +540,7 @@ GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint 
         (m_projectionSpace == LchSpace::CielchD50) //
         ? ChromaInfo::maxCielchD50Chroma()
         : ChromaInfo::maxOklchChroma();
-    const auto quotient = (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
+    const auto quotient = (q_pointer->maximumWidgetSquareSize() - 2.0 * gamutBorder());
     const qreal scaleFactor = //
         (quotient == 0) //
         ? 1 //
@@ -622,10 +622,15 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
 }
 
 /**
- * @brief Tests if a widget pixel position is within the diagram circle.
+ * @brief Tests if a widget pixel position is within the gamut circle.
  *
- * The diagram circle is the inner gray circle (on which the
+ * The gamut circle is the circle that is reserved for painting the gamut.
+ * Note that this is slightly smaller than the inner gray circle (on which the
  * gamut diagram is painted).
+ * This is because we preserve a small extra space to make sure that the
+ * color handle will never be outside the gray circle, not even on
+ * maximum-chroma colors.
+ *
  * @param position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
@@ -633,7 +638,7 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
  * @returns <tt>true</tt> if the (center of the) pixel at the given position
  * is within the circle, <tt>false</tt> otherwise.
  */
-bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinDiagramCircle(const QPoint position) const
+bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinGamutCircle(const QPoint position) const
 {
     const qreal mouseRadius = PolarPointF(
                                   // Position relative to
@@ -648,7 +653,7 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinDiagramCircle(const QPo
                                   .radius();
 
     const qreal diagramCircleRadius = //
-        q_pointer->maximumWidgetSquareSize() / 2.0 - diagramBorder();
+        q_pointer->maximumWidgetSquareSize() / 2.0 - gamutBorder();
 
     return (mouseRadius <= diagramCircleRadius);
 }
@@ -741,7 +746,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // not emit events or signals for scale factor changes, here is our only
     // reliable point to apply the correct dimensions.
     d_pointer->m_chromaHueImageParameters.borderPhysical = //
-        d_pointer->diagramBorder() * devicePixelRatioF();
+        d_pointer->gamutBorder() * devicePixelRatioF();
     d_pointer->m_chromaHueImageParameters.imageSizePhysical =
         // Guaranteed to be ≥ 0:
         maximumPhysicalSquareSize();
@@ -936,7 +941,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
  *
  * @returns The border. This is the space where the surrounding color wheel
  * and the focus indicator are painted. */
-int ChromaHueDiagramPrivate::diagramBorder() const
+int ChromaHueDiagramPrivate::gamutBorder() const
 {
     return
         // The space outside the wheel:
