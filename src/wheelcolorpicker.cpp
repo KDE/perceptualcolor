@@ -178,9 +178,19 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
         ? ChromaInfo::maxCielchD50Chroma() //
         : ChromaInfo::maxOklchChroma();
     const qreal r = m_lchValues.maximumLightness / maximumChroma;
-    const qreal h = //
-        m_chromaLightnessDiagram->d_pointer->leftBorderDeviceIndependent() //
-        + m_chromaLightnessDiagram->d_pointer->defaultBorderDeviceIndependant();
+    const qreal h =
+        // The left border
+        m_chromaLightnessDiagram->d_pointer->leftBorderDeviceIndependent()
+        // The right border consists of two parts:
+        // 1. The actual border area, which is excluded from the diagram
+        //    when painting. No diagram background is drawn here.
+        // 2. An additional margin inside the diagram, rendered as part of the
+        //    diagram background. This margin ensures that, even at maximum
+        //    chroma, the handle remains fully contained within the diagram
+        //    area. It also guarantees a small gap between the handle’s edge
+        //    and the diagram’s right boundary.
+        + m_chromaLightnessDiagram->d_pointer->defaultBorderDeviceIndependant() + m_chromaLightnessDiagram->handleRadius()
+        + m_chromaLightnessDiagram->handleOutlineThickness() * 1.5;
     const qreal v = //
         2 * m_chromaLightnessDiagram->d_pointer->defaultBorderDeviceIndependant();
     const qreal d = m_colorWheel->d_pointer->innerDiameter();

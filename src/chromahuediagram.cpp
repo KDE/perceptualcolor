@@ -580,15 +580,6 @@ GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint 
  * off in the visible diagram, this does not influence this function.
  *
  * @sa @ref ChromaHueMeasurement "Measurement details"
- *
- * @internal
- *
- * @todo SHOULDHAVE What when the mouse goes outside the
- * gray circle,  but more gamut is available outside (because
- * @ref ChromaInfo::maxCielchD50Chroma()
- * was chosen too small)? For consistency, the handle of the diagram should
- * stay within the gray circle, and this should be interpreted also actually
- * as the value at the position of the handle.
  */
 void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
@@ -686,7 +677,8 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinDiagramCircle(const QPo
  * @todo NICETOHAVE
  * The radial guide line from the diagram center to the handle (which marks the
  * selected gamut point) shows poor anti‑aliasing in certain cases. When the
- * line is nearly horizontal and its color is black, faint visual artifacts
+ * line is nearly horizontal or vertical and its color
+ * is black, faint visual artifacts
  * appear under Wayland on a single display scaled to 175%.
  *
  * @todo NICETOHAVE Show the indicator on
@@ -763,8 +755,13 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     d_pointer->m_chromaHueImage.setImageParameters( //
         d_pointer->m_chromaHueImageParameters);
     d_pointer->m_chromaHueImage.refreshAsync();
+    // Draw the background slightly larger than the effective diagram area
+    // so that it blends seamlessly with the color wheel. The circle overlaps
+    // the wheel by half its width, ensuring that when the wheel is rendered
+    // on top, the transition looks smooth and anti‑aliasing produces clean
+    // edges.
     const qreal circleRadius = //
-        (maximumWidgetSquareSize() - 2 * d_pointer->diagramBorder()) / 2.0;
+        (maximumWidgetSquareSize() - gradientThickness()) / 2.0;
     bufferPainter.setRenderHint(QPainter::Antialiasing, true);
     bufferPainter.setPen(QPen(Qt::NoPen));
     bufferPainter.setBrush(neutralGray());
@@ -931,6 +928,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 
 /** @brief The border around the round diagram.
  *
+ * This is the maximum size of the drawn color gamut. Note that the diagram
+ * background itself is larger, to make sure that the color handle will not
+ * overlap with the sourrounding color wheel even on maximimum-chroma values.
+ *
  * Measured in <em>device-independent pixels</em>.
  *
  * @returns The border. This is the space where the surrounding color wheel
@@ -942,8 +943,9 @@ int ChromaHueDiagramPrivate::diagramBorder() const
         q_pointer->spaceForFocusIndicator()
         // Add space for the wheel itself:
         + q_pointer->gradientThickness()
-        // Add extra space between wheel and diagram:
-        + 2 * q_pointer->handleOutlineThickness();
+        // Add extra space between wheel and the handle at maximum-chroma:
+        + qCeil(1.5 * q_pointer->handleOutlineThickness() //
+                + q_pointer->handleRadius());
 }
 
 } // namespace PerceptualColor

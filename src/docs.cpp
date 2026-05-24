@@ -372,15 +372,6 @@
  * QColor, but deliver exact results. Or even move to
  * @ref PerceptualColor::GenericColor.
  *
- * @todo SHOULDHAVE / SHOWSTOPPER?
- * In both diagrams that use circular handles, the chroma scaling should
- * provide enough extra space beyond the maximum chroma value to accommodate
- * half the diameter of the circular handle. This ensures that the handle
- * will never extend outside the diagram area at the maximum‑chroma edge.
- * At the gray axis of @ref PerceptualColor::ChromaLightnessDiagram, however,
- * the handle will still exceed the diagram boundary. Adding extra space
- * there would be extremely unintuitive, so this limitation is accepted.
- *
  * @todo SHOULDHAVE Support CSS colors using @ref PerceptualColor::CssColor
  * by allowing copy (right-click on the @ref PerceptualColor::ColorPatch,
  * however this will not work for keyboard-only usage because the context menu

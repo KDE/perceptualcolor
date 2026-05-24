@@ -63,13 +63,6 @@ class ChromaHueDiagramPrivate;
  *
  * @internal
  *
- * @todo NICETOHAVE The hue circle around
- * chroma-hue diagram might be confusing because
- * it is colored, but it is not a usable slider like all other colored
- * elements. We could remove it. But on the other hand, it is also useful
- * to have it. Maybe make it look different than for @ref WheelColorPicker,
- * for instance make it thinner and make it touch the gray diagram area?
- *
  * @todo NICETOHAVE Questin: Use a cross cursor when the mouse cursor hovers
  * above the diagrams, for better usability? The cross cursor indicates
  * to the user that an area can be clicked in. Do it only within the gamut
@@ -90,10 +83,6 @@ class ChromaHueDiagramPrivate;
  *
  * @todo SHOULDHAVE Accept Key + like currently yet Key Left, and Key - like
  * currently yet Key Right, for consistency with @ref WheelColorPicker.
- *
- * @todo SHOULDHAVE When the line (chroma distance) of the marker is almost
- * vertical and the zoom factor is on a certain percentage level, its
- * anti-aliasing looks ugly.
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
