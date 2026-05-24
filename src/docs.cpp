@@ -412,13 +412,13 @@
  * significantly, and changing the marker’s color will make it more
  * legible (though less nice).
  *
- * @todo SHOULDHAVE SHOWSTOPPER In @ref PerceptualColor::WheelColorPicker
- * the width of the @ref PerceptualColor::ChromaLightnessDiagram is
- * slightly too big. A wrong
- * @ref PerceptualColor::LchValues::maximumChroma value?
- *
- * @todo SHOULDHAVE The re-rendering is too slow (not reactive enough)
- * when changing the window size of @ref PerceptualColor::ColorDialog.
+ * @todo NICETOHAVE The re-rendering is a bit slow (not reactive enough)
+ * when changing the window size of @ref PerceptualColor::ColorDialog
+ * for @ref PerceptualColor::ChromaHueDiagram and to a minor degree
+ * also the @ref PerceptualColor::GradientSlider with the lightness at
+ * the left, and also @ref PerceptualColor::ChromaLightnessDiagram.
+ * Would it make sense to use simply image scaling with
+ * Qt::SmoothTransformation while waiting for the high-DPI image?
  *
  * @todo NICETOHAVE Static codecheck: The doxygen command (at)sa must always
  * be followed by (at)ref, because (at)sa fails silently, but a following
