@@ -4,6 +4,7 @@
 // Own header
 #include "rgbcolor.h"
 
+#include "helperconversion.h"
 #include <qchar.h>
 #include <qglobal.h>
 #include <qstringliteral.h>
@@ -156,10 +157,8 @@ RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue
 RgbColor RgbColor::fromRgbQColor(const QColor &color)
 {
     RgbColor result;
-    const QColor newRgbQColor = QColor::fromRgbF( //
-        qBound<float>(0, color.redF(), 1), //
-        qBound<float>(0, color.greenF(), 1), //
-        qBound<float>(0, color.blueF(), 1));
+    QColor newRgbQColor = toRgbExact(color);
+    newRgbQColor.setAlpha(255);
     result.fillAll(newRgbQColor, std::nullopt);
 
     return result;

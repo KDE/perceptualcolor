@@ -46,7 +46,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT SwatchBook : public AbstractDiagram
 
     /** @brief The current color.
      *
-     * This property can contain any valid color, including colors
+     * This property can contain any color, including colors
      * that are not in the swatch book.
      *
      * If you set this property exactly to an RGB color that is in the

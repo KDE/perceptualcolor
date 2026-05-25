@@ -41,24 +41,7 @@ template<typename T>
     return static_cast<quint8>(bounded);
 }
 
-/** @internal
- *
- * @brief Like <tt>QColor::fromRgbF</tt> but for all floating point types.
- *
- * @param red Red component. Range: <tt>[0, 1]</tt>
- * @param green See above.
- * @param blue See above.
- * @returns A corresponding <tt>QColor</tt> object. */
-template<typename T>
-[[nodiscard]] QColor qColorFromRgbDouble(T red, T green, T blue)
-{
-    static_assert( //
-        std::is_floating_point<T>::value, //
-        "Template fromFloatingToEightBit() only works with floating point types");
-    return QColor::fromRgbF(static_cast<float>(red), //
-                            static_cast<float>(green), //
-                            static_cast<float>(blue));
-}
+QColor toRgbExact(const QColor &color);
 
 /** @internal
  *

@@ -48,6 +48,31 @@ private Q_SLOTS:
         constexpr quint8 value = fromFloatingToEightBit(1.0);
         static_assert(value == 255);
     }
+
+    void testToRgb()
+    {
+        QVERIFY(!toRgbExact(QColor()).isValid());
+        QCOMPARE(toRgbExact(Qt::red).spec(), QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromHsl(1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromHslF(1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromHsv(1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromHsvF(1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromCmyk(1, 1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromCmykF(1, 1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromRgb(1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE(toRgbExact(QColor::fromRgbF(1, 1, 1)).spec(), //
+                 QColor::Spec::Rgb);
+        QCOMPARE( // QColor::Spec::ExtendedRgb
+            toRgbExact(QColor::fromRgbF(2, 2, 2)).spec(),
+            QColor::Spec::Rgb);
+    }
 };
 
 } // namespace PerceptualColor

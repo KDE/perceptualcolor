@@ -15,6 +15,7 @@
 #include "gradientslider.h"
 #include "helper.h"
 #include "helperconstants.h"
+#include "helperconversion.h"
 #include "initializetranslation.h"
 #include "lchvalues.h"
 #include "multispinbox.h"
@@ -1209,7 +1210,7 @@ void ColorDialog::setCurrentColor(const QColor &color)
     QColor temp;
     if (color.isValid()) {
         // Make sure that the QColor::spec() is QColor::Spec::Rgb.
-        temp = color.toRgb();
+        temp = toRgbExact(color);
     } else {
         // For invalid colors same behavior as QColorDialog
         temp = QColor(Qt::black);

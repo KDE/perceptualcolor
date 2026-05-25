@@ -13,6 +13,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "helper.h"
+#include "helperconversion.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include "perceptualcolornamespace.h"
@@ -299,18 +300,7 @@ QColor SwatchBook::currentColor() const
 void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 {
     // Convert to RGB:
-    QColor temp = newCurrentColor;
-    if (temp.spec() != QColor::Spec::Rgb) {
-        // Make sure that the QColor::spec() is QColor::Spec::Rgb.
-        // QColorDialog apparently calls QColor.rgb() within its
-        // setCurrentColor function; this will however round to 8 bit
-        // per channel. We prefer a more exact conversion to RGB:
-        temp = QColor::fromRgbF( //
-            temp.redF(),
-            temp.greenF(),
-            temp.blueF(),
-            temp.alphaF());
-    }
+    const QColor temp = toRgbExact(newCurrentColor);
 
     if (temp == d_pointer->m_currentColor) {
         return;
@@ -412,6 +402,16 @@ void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentCol
  * or none if there is no corresponding swatch. */
 void SwatchBookPrivate::selectSwatchFromCurrentColor()
 {
+    if (!m_currentColor.isValid()) {
+        // An invalid m_currentColor means no selection should be made.
+        // However, within the swatch grid, an invalid color means an empty
+        // swatch. Therefore, catching invalid colors here to prevent
+        // false matches with empty swatches.
+        m_selectedColumn = -1;
+        m_selectedRow = -1;
+        return;
+    }
+
     if ((m_selectedColumn >= 0) && (m_selectedRow >= 0)) {
         if (m_swatchGrid.value(m_selectedColumn, m_selectedRow) == m_currentColor) {
             return;

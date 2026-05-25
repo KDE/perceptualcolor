@@ -156,15 +156,6 @@ private Q_SLOTS:
         QCOMPARE(testWidget.currentColor(), Qt::green);
         QCOMPARE(signalCount, oldSignalCount + 1);
         QCOMPARE(lastSignalColor, Qt::green);
-
-        // Test conformance with QColorDialog when assigning invalid colors
-        testWidget.setCurrentColor(Qt::blue);
-        QColorDialog myQColorDialog;
-        myQColorDialog.setCurrentColor(Qt::blue);
-        testWidget.setCurrentColor(QColor());
-        myQColorDialog.setCurrentColor(QColor());
-        QCOMPARE(testWidget.currentColor(), myQColorDialog.currentColor());
-        QCOMPARE(lastSignalColor, myQColorDialog.currentColor());
     }
 
     void testPatchSpacingH_data()
