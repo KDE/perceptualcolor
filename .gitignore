@@ -22,3 +22,4 @@
 # the .gitignore level:
 .directory
 *.kdev4
+.cache
