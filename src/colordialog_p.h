@@ -126,11 +126,6 @@ public:
     QPointer<QLabel> m_cielchD50SpinBoxLabel;
     /** @brief Pointer to the @ref ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
-    /** @brief Holds the currently used icon theme.
-     *
-     * Initially this is set to an arbitrary value. Once @ref reloadIcons() has
-     * been called, it has an actual value. */
-    ColorSchemeType m_currentIconThemeType = ColorSchemeType::Light;
     /** @brief Current color without alpha information
      *
      * Holds the color in absolutely defined color models.
@@ -334,7 +329,7 @@ public:
 
     void applyLayoutDimensions();
     [[nodiscard]] QColor defaultColor() const;
-    static QIcon getGamutIcon(PerceptualColor::ColorSchemeType type);
+    static QIcon getGamutIcon();
     void initialize();
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializePortalEyedropper();

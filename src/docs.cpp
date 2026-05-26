@@ -388,7 +388,7 @@
  * the symbols explicitly for the unit tests, making most
  * <tt>ifndef MSVC_DLL</tt> obsolete.
  *
- * @todo SHOWSTOPPER SHOULDHAVE The sRGB gamut in the Oklab space has
+ * @todo SHOWSTOPPER The sRGB gamut in the Oklab space has
  * an irregular shape in the chroma-lightness diagram around 264.1°, see also
  * https://github.com/color-js/color.js/issues/81 for details: There is a
  * "cut" in the gamut body. Similar, sRGB in CieLch has at yellow hues
@@ -396,11 +396,6 @@
  * results in out-of-gamut colors. What we need: Appropriate user control code
  * (mouse and keyboard, but also the move-into-gamut functions used for
  * manually entered values) that deals correctly with all these pecularities.
- * Code optimization for rendering for those slices that are not affected (most
- * slices). And: A sort of pop-up information on hue 261.1 Oklch to explain
- * that this gamut form is not a bug.
- * And: Control if possible optimizations
- * are actually correct in all hue or lightness ranges where they are applied.
  *
  * @todo NICETOHAVE Test manually or in CI for ARM64.
  *

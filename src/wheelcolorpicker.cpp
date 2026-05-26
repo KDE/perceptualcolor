@@ -147,6 +147,29 @@ void WheelColorPicker::resizeEvent(QResizeEvent *event)
     d_pointer->resizeChildWidgets();
 }
 
+/** @brief Handle state changes.
+ *
+ * Implements reaction on <tt>QEvent::LanguageChange</tt>.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The event. */
+void WheelColorPicker::changeEvent(QEvent *event)
+{
+    const auto type = event->type();
+
+    if (type == QEvent::LanguageChange) {
+        // Retranslate all child widgets that actually need to be retranslated:
+        {
+            QEvent eventForChromaLightnessDiagram(QEvent::LanguageChange);
+            QApplication::sendEvent(d_pointer->m_chromaLightnessDiagram, //
+                                    &eventForChromaLightnessDiagram);
+        }
+    }
+
+    AbstractDiagram::changeEvent(event);
+}
+
 /** @brief Calculate the optimal size for the inner diagram.
  *
  * @returns The maximum possible size of the diagram within the

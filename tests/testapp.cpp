@@ -350,8 +350,7 @@ int main(int argc, char *argv[])
         {QStringLiteral("list-add")}, // Available in Plasma/Breeze
         // {QStringLiteral("help-browser")}, // Available in Plasma/Breeze
         // {QStringLiteral("abcdefg")}, // Not available in Plasma/Breeze
-        QString(), //
-        ColorSchemeType::Light); // Should not always be ColorSchemeType::Light
+        QString());
     Q_UNUSED(myIcon)
 
     // app.processEvents(); // Work around https://bugreports.qt.io/browse/QTBUG-120957

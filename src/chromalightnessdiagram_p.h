@@ -18,7 +18,11 @@
 #include <limits>
 #include <optional>
 #include <qglobal.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qpointer.h>
 #include <qsize.h>
+#include <qtoolbutton.h>
 class QRect;
 class QPoint;
 
@@ -30,11 +34,13 @@ class ChromaLightnessDiagram;
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class ChromaLightnessDiagramPrivate
+class ChromaLightnessDiagramPrivate : public QObject
 {
+    Q_OBJECT
+
 public:
     explicit ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const LchSpace projectionSpace);
-    virtual ~ChromaLightnessDiagramPrivate() noexcept;
+    virtual ~ChromaLightnessDiagramPrivate() noexcept override;
 
     // Member variables
     /** @brief The image of the chroma-lightness diagram itself. */
@@ -44,6 +50,24 @@ public:
     /** @brief Internal storage of
      * the @ref ChromaLightnessDiagram::currentColorLch property */
     GenericColor m_currentColorLch;
+
+    /**
+     * @brief The info button for irregular gamut shapes.
+     */
+    // NOTE This could be replaced by KWidgetsAddons’
+    // https://api.kde.org/kcontextualhelpbutton.html
+    // KContextualHelpButton, which is more sophisticated and the
+    // QWidget-based alternative to
+    // https://api.kde.org/qml-org-kde-kirigami-contextualhelpbutton.html
+    // org.kde.kirigami.ContextualHelpButton QML Type. However,
+    // this is a Tier-1 library and therefore cannot use them.
+    QPointer<QToolButton> m_infoButton = nullptr;
+
+    /**
+     * @brief Layout for positionning @ref m_infoButton.
+     */
+    QPointer<QGridLayout> m_layout = nullptr;
+
     /**
      * @brief Geometry of the current Lch color space.
      * */
@@ -93,8 +117,11 @@ public:
     [[nodiscard]] std::optional<QPoint> nearestInGamutPixelPosition(const QPoint originalPixelPosition);
     [[nodiscard]] static std::optional<QPoint>
     nearestNeighborSearch(const QPoint point, const QRect boundingBox, const std::function<bool(const QPoint)> &doesPointExist);
+    void reloadIcons();
+    void retranslateUi();
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
     void updateImageDimensions();
+    void updateLayoutMargins();
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)

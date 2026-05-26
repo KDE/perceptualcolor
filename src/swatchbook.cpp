@@ -220,7 +220,7 @@ SwatchBook::SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Ori
                           std::optional<QStringList>());
     d_pointer->retranslateUi();
 
-    d_pointer->updateColorSchemeCache();
+    d_pointer->updateIsDarkColorSchemeCache();
 
     setSwatchGrid(swatchGrid);
 }
@@ -769,8 +769,7 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
             QIcon::ThemeIcon::ListAdd,
 #endif
             {QStringLiteral("list-add")},
-            QString(), // Do not use “fallback” from the resources
-            ColorSchemeType::Light // Not actually used (“fallback” is empty)
+            QString() // Do not use “fallback” from the resources
         );
         myMark = m_addMarkAvailableInCurrentFont;
         break;
@@ -786,7 +785,7 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
                      Qt::AlignCenter, //
                      QIcon::Mode::Normal, //
                      QIcon::State::On);
-    } else if (!myMark.isEmpty()) { // Dram the text
+    } else if (!myMark.isEmpty()) { // Draw the text
         QPainterPath textPath;
         // Render the mark string in the path
         textPath.addText(0, 0, q_pointer->font(), myMark);
@@ -960,8 +959,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const qsizetype columnCount = d_pointer->m_swatchGrid.iCount();
     const int myCornerRadius = d_pointer->cornerRadius();
     qsizetype visualColumn;
-    const auto currentScheme = d_pointer->m_colorSchemeCache;
-    const QColor addMarkColor = (currentScheme == ColorSchemeType::Dark) //
+    const QColor addMarkColor = (d_pointer->m_isDarkColorSchemeCache) //
         ? Qt::white
         : Qt::black;
     for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
@@ -1175,7 +1173,7 @@ void SwatchBook::changeEvent(QEvent *event)
     }
 
     if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
-        d_pointer->updateColorSchemeCache();
+        d_pointer->updateIsDarkColorSchemeCache();
         update();
     }
 
@@ -1183,11 +1181,11 @@ void SwatchBook::changeEvent(QEvent *event)
 }
 
 /**
- * @brief Updates @ref m_colorSchemeCache
+ * @brief Updates @ref m_isDarkColorSchemeCache
  */
-void SwatchBookPrivate::updateColorSchemeCache()
+void SwatchBookPrivate::updateIsDarkColorSchemeCache()
 {
-    m_colorSchemeCache = guessColorSchemeTypeFromWidget(q_pointer);
+    m_isDarkColorSchemeCache = isDarkColorScheme();
 }
 
 /** @brief Size necessary to render the color patches, including a margin.

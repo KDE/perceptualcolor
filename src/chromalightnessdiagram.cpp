@@ -12,12 +12,15 @@
 #include "chromainfo.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
+#include "helper.h"
 #include "helperconstants.h"
 #include "lchvalues.h"
 #include <optional>
 #include <qcolor.h>
 #include <qevent.h>
 #include <qimage.h>
+#include <qlabel.h>
+#include <qlayout.h>
 #include <qlist.h>
 #include <qmath.h>
 #include <qnamespace.h>
@@ -26,12 +29,47 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include <qsizepolicy.h>
+#include <qstyle.h>
+#include <qstylehints.h>
+#include <qwhatsthis.h>
 #include <qwidget.h>
+#include <qwidgetaction.h>
 #include <type_traits>
 #include <utility>
 
 namespace PerceptualColor
 {
+
+/** @brief Retranslate the UI with all user-visible strings.
+ *
+ * This function updates all user-visible strings by using
+ * <tt>Qt::tr()</tt> to get up-to-date translations.
+ *
+ * This function is meant to be called at the end of the constructor and
+ * additionally after each <tt>QEvent::LanguageChange</tt> event.
+ *
+ * @note This is the same concept as
+ * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
+ * Qt Designer, which also provides a function of the same name in
+ * uic-generated code</a>. */
+void ChromaLightnessDiagramPrivate::retranslateUi()
+{
+    /*: @info:tooltip/plain In color diagrams, gamuts can take on unusual
+    shapes that may appear visually incorrect. For example, in a
+    chroma‑lightness diagram of the sRGB gamut in Oklch projection at
+    high‑chroma blue hues, the outline resembles a triangle as expected, but
+    also shows a spike extending from the lower‑left corner to the middle of
+    the right edge. This shape is mathematically correct according to the sRGB
+    and Oklch definitions, but users may mistake it for a rendering error. To
+    avoid confusion, an info button is displayed in such cases, showing the
+    following tooltip. */
+    const QString infoText = tr( //
+        "The color gamut shows an unusual shape here, "
+        "which is correct as defined by the projection.");
+
+    m_infoButton->setToolTip(infoText);
+}
+
 /** @brief The constructor.
  *
  * @param projectionSpace The color space into which the gamut will be
@@ -57,6 +95,39 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace p
             &AsyncImageProvider<ChromaLightnessImageParameters>::interlacingPassCompleted, //
             this, //
             &ChromaLightnessDiagram::callUpdate);
+
+    // Info button for strange gamut shapes
+    d_pointer->m_infoButton = new QToolButton(this);
+    d_pointer->m_infoButton->setCursor(Qt::WhatsThisCursor);
+    connect(d_pointer->m_infoButton, //
+            &QToolButton::clicked, //
+            this, //
+            [this]() {
+                QWhatsThis::showText( //
+                    d_pointer->m_infoButton->mapToGlobal(QPoint()),
+                    d_pointer->m_infoButton->toolTip(),
+                    d_pointer->m_infoButton);
+            });
+    d_pointer->m_layout = new QGridLayout(this);
+    d_pointer->m_layout->addWidget( //
+        d_pointer->m_infoButton,
+        0,
+        1,
+        Qt::AlignRight | Qt::AlignTop);
+    d_pointer->m_layout->setColumnStretch(0, 1);
+    d_pointer->m_layout->setSpacing(0);
+    setLayout(d_pointer->m_layout);
+    d_pointer->m_infoButton->show();
+
+    d_pointer->updateLayoutMargins();
+    d_pointer->retranslateUi();
+    d_pointer->reloadIcons();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
+    connect(qGuiApp->styleHints(), // sender
+            &QStyleHints::colorSchemeChanged, // signal
+            d_pointer.get(), // receiver
+            &ChromaLightnessDiagramPrivate::reloadIcons);
+#endif
 }
 
 /** @brief Default destructor */
@@ -80,9 +151,73 @@ ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiag
 }
 
 /**
+ * @brief Updates the margins of @ref m_layout
+ */
+void ChromaLightnessDiagramPrivate::updateLayoutMargins()
+{
+    const auto margin = defaultBorderDeviceIndependant() //
+        + q_pointer->style()->pixelMetric(QStyle::PM_DefaultFrameWidth) //
+        + q_pointer->style()->pixelMetric(QStyle::PM_LayoutHorizontalSpacing);
+
+    m_layout->setContentsMargins(0, // left
+                                 margin, // top
+                                 margin, // right
+                                 0 // bottom
+    );
+}
+
+/**
+ * @brief Reloads all icons, adapting to the current color schema and
+ * widget style.
+ */
+void ChromaLightnessDiagramPrivate::reloadIcons()
+{
+    static const QStringList candidates //
+        {QStringLiteral("help-contextual"), //
+         QStringLiteral("help-hint"), //
+         QStringLiteral("help-about"), //
+         QStringLiteral("dialog-information-symbolic")};
+    if (!m_infoButton.isNull()) {
+        m_infoButton->setIcon(qIconFromTheme( //
+            candidates, // Try loading from system’s icon theme
+            QStringLiteral("info-circle")) // Fallback from resources
+        );
+    }
+}
+
+/**
  * @brief Default destructor
  */
 ChromaLightnessDiagramPrivate::~ChromaLightnessDiagramPrivate() noexcept = default;
+
+/**
+ * @brief Handle state changes.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The event.
+ */
+void ChromaLightnessDiagram::changeEvent(QEvent *event)
+{
+    const auto type = event->type();
+
+    if (type == QEvent::LanguageChange) {
+        // From QCoreApplication documentation:
+        //     “Installing or removing a QTranslator, or changing an installed
+        //      QTranslator generates a LanguageChange event for the
+        //      QCoreApplication instance. A QApplication instance will
+        //      propagate the event to all toplevel widgets […].
+        // Retranslate this widget itself:
+        d_pointer->retranslateUi();
+    }
+
+    if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
+        d_pointer->reloadIcons();
+        d_pointer->updateLayoutMargins();
+    }
+
+    QWidget::changeEvent(event);
+}
 
 /**
  * @brief Updates @ref ChromaLightnessDiagram::currentColorLch

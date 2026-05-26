@@ -66,7 +66,7 @@ public:
     void retranslateUi();
     void selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow);
     void selectSwatchFromCurrentColor();
-    void updateColorSchemeCache();
+    void updateIsDarkColorSchemeCache();
     [[nodiscard]] int verticalPatchSpacing() const;
     [[nodiscard]] int widePatchSpacing() const;
 
@@ -90,9 +90,9 @@ public:
     /**
      * @brief Cache for the current color scheme of this widget.
      *
-     * @sa @ref updateColorSchemeCache()
+     * @sa @ref updateIsDarkColorSchemeCache()
      */
-    ColorSchemeType m_colorSchemeCache = ColorSchemeType::Light;
+    bool m_isDarkColorSchemeCache = false;
     /** @brief Internal storage for property @ref SwatchBook::editable */
     bool m_isEditable = false;
     /** @brief Selected column.

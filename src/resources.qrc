@@ -21,6 +21,9 @@ SPDX-License-Identifier: BSD-2-Clause OR MIT
         <file alias="lighttheme/color-swatch.svg">../icons/lighttheme/color-swatch.svg</file>
         <file alias="darktheme/color-swatch.svg">../icons/darktheme/color-swatch.svg</file>
 
+        <file alias="lighttheme/info-circle.svg">../icons/lighttheme/info-circle.svg</file>
+        <file alias="darktheme/info-circle.svg">../icons/darktheme/info-circle.svg</file>
+
         <file alias="lighttheme/steering-wheel.svg">../icons/lighttheme/steering-wheel.svg</file>
         <file alias="darktheme/steering-wheel.svg">../icons/darktheme/steering-wheel.svg</file>
 

@@ -24,6 +24,7 @@
 #include <qsize.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
+#include <qstylehints.h>
 #include <qstyleoption.h>
 #include <qwidget.h>
 #include <type_traits>
@@ -202,14 +203,13 @@ QImage transparencyBackground(qreal devicePixelRatioF)
  *        themes are searched for this. These themes are commonly available
  *        on Linux, but typically absent on other platforms.
  * @param fallback A fallback icon from the built-in resources, used if no
- *        native or theme icon is found.
- * @param fallbackType The intended widget color scheme, used to select an
- *        appropriate fallback icon.
+ *        native or theme icon is found. Automatically selects light or dark
+ *        variant according to the current color scheme.
  *
  * @returns An icon from one of the available sources, or an empty icon if none
  * are found.
  */
-QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType fallbackType)
+QIcon qIconFromTheme(const QStringList &names, const QString &fallback)
 {
     // Try to find icon in system themes
     for (auto const &name : std::as_const(names)) {
@@ -222,7 +222,7 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSch
     // Return fallback icon
     initializeLibraryResources();
     const QString pattern = //
-        (fallbackType == ColorSchemeType::Dark) //
+        (isDarkColorScheme()) //
         ? QStringLiteral(":/PerceptualColor/icons/darktheme/%1.svg") //
         : QStringLiteral(":/PerceptualColor/icons/lighttheme/%1.svg");
     const QString path = pattern.arg(fallback);
@@ -253,22 +253,21 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSch
  *        are searched for this. These themes are commonly available on Linux,
  *        but typically absent on other platforms.
  * @param fallback A fallback icon from the built-in resources, used if no
- *        native or theme icon is found.
- * @param fallbackType The intended widget color scheme, used to select an
- *        appropriate fallback icon.
+ *        native or theme icon is found. Automatically selects light or dark
+ *        variant according to the current color scheme.
  *
  * @returns An icon from one of the available sources, or an empty icon if none
  * are found.
  *
  * @note This function is only available when Qt ≥ 6.7.
  */
-QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback, ColorSchemeType fallbackType)
+QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback)
 {
     const QIcon myIcon = QIcon::fromTheme(nativeIcon);
     if (!myIcon.isNull()) {
         return myIcon;
     }
-    return qIconFromTheme(names, fallback, fallbackType);
+    return qIconFromTheme(names, fallback);
 }
 #endif
 
@@ -340,83 +339,45 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
 
 /** @internal
  *
- * @brief Guess the actual @ref ColorSchemeType of a given widget.
+ * @brief If the current color scheme is dark.
  *
- * It guesses the color scheme type actually used by the current widget style,
- * and not the type of the current color palette. This makes a difference
- * for example on the Windows Vista style, which might ignore the palette and
- * use always a light theme instead.
- *
- * @param widget The widget to evaluate
- *
- * @returns The guessed scheme.
- *
- * @note The exact implementation of the guess  might change over time.
+ * @returns <tt>true</tt> if <tt>Qt::ColorScheme::Dark</tt>. <tt>false</tt>
+ * otherwise.
  *
  * @note It might be usefull to react on changes affecting the palette by
  * reimplementing <tt>QWidget::changeEvent()</tt> and add <tt>
- * if ((type == QEvent::PaletteChange) || (type ==
- * QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
- * doSomething(); } </tt>
+ * if ((type == QEvent::PaletteChange)
+ * || (type == QEvent::ApplicationPaletteChange)
+ * || (type == QEvent::StyleChange)) {
+ * doSomething();
+ * } </tt>
  *
  * @internal
  *
- * The current implementation creates a QLabel as child widget of the current
- * widget, than takes a screenshot of the QLabel and calculates
- * the average lightness of this screenshot and determines the color schema
- * type accordingly.
- *
- * @note With Qt 6.5, there is
+ * @note Since Qt 6.5, there is
  * <a href="https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5">
- * better access to color themes</a>. Apparently, the Windows Vista style
+ * better access to color themes</a>. We can use
+ * <tt>QGuiApplication::styleHints()->colorScheme()</tt>. This
+ * is what KDE recommends since Qt 6.10. See also on
+ * <a href="https://stackoverflow.com/questions/75457687">Stackoverflow</a>.
+ * Apparently, since Qt 6.5, even the Windows Vista style
  * now seems to polish the widgets by setting a light color palette, so
  * also on Windows Vista style we could simply rely on the color palette
  * and test if the text color is lighter or darker than the background color
- * to determine the color scheme type. This would also give us more reliable
- * results with color schemes that have background colors around 50% lightness,
- * which our currently implementation has problems to get right. An example
- * implementaion would be <tt>if (QGuiApplication::styleHints()->colorScheme()
- * == Qt::ColorScheme::Dark) { return ColorSchemeType::Dark; } else { return
- * ColorSchemeType::Light; }</tt>. This
- * is what KDE recommends since Qt 6.10. But on
- * the other hand, other styles like Kvantum might still chose to ignore
- * the color palette. And the new Qt 6.5 solution might
- * <a href="https://stackoverflow.com/questions/75457687">not work reliably
- * on some Linux desktops</a>. So it seems safer to stay with the current
- * implementation.
+ * to determine the color scheme type. This is still used as fallback, if
+ * Qt 6.5 is not available.
  */
-ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget)
+bool isDarkColorScheme()
 {
-    if (widget == nullptr) {
-        return ColorSchemeType::Light;
-    }
-
-    // Create a QLabel
-    QScopedPointer<QLabel> label{new QLabel(widget)};
-    label->setText(QStringLiteral("abc"));
-    label->resize(label->sizeHint()); // Smaller size means faster guess.
-
-    // Take a screenshot of the QLabel
-    const QImage screenshot = label->grab().toImage();
-    if (screenshot.size().isEmpty()) {
-        return ColorSchemeType::Light;
-    }
-
-    // Calculate the average lightness of the screenshot
-    float lightnessSum = 0;
-    for (int y = 0; y < screenshot.height(); ++y) {
-        for (int x = 0; x < screenshot.width(); ++x) {
-            lightnessSum += QColor(screenshot.pixel(x, y)).lightnessF();
-        }
-    }
-    const auto pixelCount = screenshot.width() * screenshot.height();
-    constexpr float threeshold = 0.5;
-    const bool isDark = //
-        (lightnessSum / static_cast<float>(pixelCount)) < threeshold;
-    if (isDark) {
-        return ColorSchemeType::Dark;
-    }
-    return ColorSchemeType::Light;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+    const auto scheme = QGuiApplication::styleHints()->colorScheme();
+    return (scheme == Qt::ColorScheme::Dark);
+#else
+    const QPalette defaultPalette;
+    const auto textColor = defaultPalette.color(QPalette::WindowText);
+    const auto windowColor = defaultPalette.color(QPalette::Window);
+    return textColor.lightness() > windowColor.lightness();
+#endif // QT_VERSION
 }
 
 /**

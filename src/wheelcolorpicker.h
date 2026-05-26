@@ -66,6 +66,7 @@ Q_SIGNALS:
     void currentColorLchChanged(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 protected:
+    virtual void changeEvent(QEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private:

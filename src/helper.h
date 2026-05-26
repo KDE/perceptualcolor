@@ -37,26 +37,9 @@ class QWidget;
 namespace PerceptualColor
 {
 
-/**
- * @internal
- *
- * @brief Represents the appearance of a theme.
- *
- * @sa @ref guessColorSchemeTypeFromWidget()
- *
- * @note This is similar to
- * <a href="https://doc-snapshots.qt.io/qt6-dev/qt.html#ColorScheme-enum"><tt>
- * enum class Qt::ColorScheme</tt></a> which is available since Qt 6.
- * However, this enum class here has no “unknown” option, so it guarantees
- * always a defined value. */
-enum class ColorSchemeType {
-    Light, /**< @internal Light theme. */
-    Dark /**< @internal Dark theme. */
-};
-
 QString fromMnemonicToRichText(const QString &mnemonicText);
 
-ColorSchemeType guessColorSchemeTypeFromWidget(QWidget *widget);
+bool isDarkColorScheme();
 
 /** @internal
  *
@@ -375,10 +358,10 @@ template<typename T = void>
 
 [[nodiscard]] QColorArray2D wcsBasicColors();
 
-[[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback, ColorSchemeType fallbackType);
+[[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
-[[nodiscard]] QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback, ColorSchemeType fallbackType);
+[[nodiscard]] QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback);
 #endif
 
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);

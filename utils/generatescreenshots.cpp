@@ -453,8 +453,7 @@ static void makeScreenshots()
         // Out-of-gamut button for the HLC spin box
         QAction *myAction = new QAction(
             // Icon:
-            ColorDialogPrivate::getGamutIcon( //
-                guessColorSchemeTypeFromWidget(&m_multiSpinBox)),
+            ColorDialogPrivate::getGamutIcon(),
             // Text:
             QString(),
             // Parent object:

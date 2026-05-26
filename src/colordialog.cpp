@@ -101,7 +101,7 @@ void ColorDialogPrivate::retranslateUi()
     const QString arcDegreeInSpinbox = tr("%1°");
 
     /*: @label:spinbox Label for CIE’s CIELCH color model, based on Lightness,
-     * Chroma and Hue, and using the D50 illuminant as white point.*/
+    Chroma and Hue, and using the D50 illuminant as white point.*/
     m_cielchD50SpinBoxLabel->setText(tr("&CIELCH D50:"));
 
     /*: @label:spinbox Label for Oklch color model, based on Lightness, Chroma,
@@ -423,11 +423,9 @@ void ColorDialogPrivate::retranslateUi()
 /**
  * @brief Gamut icon for a given color scheme.
  *
- * @param type Type of color scheme
- *
  * @returns Gamut icon for a given color scheme.
  */
-QIcon ColorDialogPrivate::getGamutIcon(PerceptualColor::ColorSchemeType type)
+QIcon ColorDialogPrivate::getGamutIcon()
 {
     static const QStringList gamutIconNames //
         {
@@ -439,16 +437,13 @@ QIcon ColorDialogPrivate::getGamutIcon(PerceptualColor::ColorSchemeType type)
         QIcon::ThemeIcon::DialogWarning,
 #endif
         gamutIconNames, //
-        QStringLiteral("eye-exclamation"),
-        type);
+        QStringLiteral("eye-exclamation"));
 }
 
 /** @brief Reloads all icons, adapting to the current color schema and
  * widget style. */
 void ColorDialogPrivate::reloadIcons()
 {
-    m_currentIconThemeType = guessColorSchemeTypeFromWidget(q_pointer);
-
     static const QStringList swatchBookIcons //
         {QStringLiteral("paint-swatch"),
          // For “symbolic” (monochromatic) vs “full-color” icons, see
@@ -460,8 +455,7 @@ void ColorDialogPrivate::reloadIcons()
     if (swatchBookIndex >= 0) {
         m_tabWidget->setTabIcon(swatchBookIndex, //
                                 qIconFromTheme(swatchBookIcons, //
-                                               QStringLiteral("color-swatch"),
-                                               m_currentIconThemeType));
+                                               QStringLiteral("color-swatch")));
     }
 
     static const QStringList hueFirstIcons //
@@ -471,10 +465,9 @@ void ColorDialogPrivate::reloadIcons()
     const int hueFirstIndex = //
         m_tabWidget->indexOf(m_hueFirstWrapperWidget);
     if (hueFirstIndex >= 0) {
-        m_tabWidget->setTabIcon(hueFirstIndex, //
-                                qIconFromTheme(hueFirstIcons, //
-                                               QStringLiteral("steering-wheel"),
-                                               m_currentIconThemeType));
+        m_tabWidget->setTabIcon( //
+            hueFirstIndex, //
+            qIconFromTheme(hueFirstIcons, QStringLiteral("steering-wheel")));
     }
 
     static const QStringList lightnessFirstIcons //
@@ -484,10 +477,9 @@ void ColorDialogPrivate::reloadIcons()
     const int lightnessFirstIndex = //
         m_tabWidget->indexOf(m_lightnessFirstWrapperWidget);
     if (lightnessFirstIndex >= 0) {
-        m_tabWidget->setTabIcon(lightnessFirstIndex, //
-                                qIconFromTheme(lightnessFirstIcons, //
-                                               QStringLiteral("brightness-2"),
-                                               m_currentIconThemeType));
+        m_tabWidget->setTabIcon( //
+            lightnessFirstIndex, //
+            qIconFromTheme(lightnessFirstIcons, QStringLiteral("brightness-2")));
     }
 
     static const QStringList numericIcons //
@@ -497,14 +489,13 @@ void ColorDialogPrivate::reloadIcons()
     const int numericIndex = //
         m_tabWidget->indexOf(m_numericalWidget);
     if (numericIndex >= 0) {
-        m_tabWidget->setTabIcon(numericIndex, //
-                                qIconFromTheme(numericIcons, //
-                                               QStringLiteral("123"),
-                                               m_currentIconThemeType));
+        m_tabWidget->setTabIcon( //
+            numericIndex, //
+            qIconFromTheme(numericIcons, QStringLiteral("123")));
     }
 
     // Gamut button for some spin boxes
-    const QIcon gamutIcon = getGamutIcon(m_currentIconThemeType);
+    const QIcon gamutIcon = getGamutIcon();
     m_cielchD50SpinBoxGamutAction->setIcon(gamutIcon);
     m_oklchSpinBoxGamutAction->setIcon(gamutIcon);
 
@@ -516,9 +507,7 @@ void ColorDialogPrivate::reloadIcons()
         };
     if (!m_eyedropperButton.isNull()) {
         m_eyedropperButton->setIcon( //
-            qIconFromTheme(candidates, //
-                           QStringLiteral("color-picker"),
-                           m_currentIconThemeType));
+            qIconFromTheme(candidates, QStringLiteral("color-picker")));
     }
 }
 
@@ -2372,6 +2361,11 @@ void ColorDialog::changeEvent(QEvent *event)
             QEvent eventForButtonCancel(QEvent::LanguageChange);
             QApplication::sendEvent(d_pointer->m_buttonOK, //
                                     &eventForButtonCancel);
+        }
+        {
+            QEvent eventForWheelColorPicker(QEvent::LanguageChange);
+            QApplication::sendEvent(d_pointer->m_wheelColorPicker, //
+                                    &eventForWheelColorPicker);
         }
     }
 

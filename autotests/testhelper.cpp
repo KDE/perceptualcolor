@@ -425,8 +425,7 @@ private Q_SLOTS:
     {
         // Test that this does not crash.
         const QIcon icon = qIconFromTheme(QStringList(), //
-                                          QStringLiteral("eye-exclamation"),
-                                          ColorSchemeType::Light);
+                                          QStringLiteral("eye-exclamation"));
         Q_UNUSED(icon)
     }
 
@@ -488,15 +487,13 @@ private Q_SLOTS:
                  QStringLiteral("Test & Test"));
     }
 
-    void testGuessColorSchemeTypeFromWidget()
+    void testIsDarkColorScheme()
     {
         QWidget myWidget;
 
-        // Should not crash on nullptr
-        guessColorSchemeTypeFromWidget(nullptr);
-
-        // Should not crash on normal widget.
-        guessColorSchemeTypeFromWidget(&myWidget);
+        // Should not crash
+        const auto result = isDarkColorScheme();
+        Q_UNUSED(result)
     }
 
     void testWcsBasicColors()
