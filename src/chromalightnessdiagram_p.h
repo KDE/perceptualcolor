@@ -121,6 +121,7 @@ public:
     void retranslateUi();
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
     void updateImageDimensions();
+    void updateInfoButtonVisibility();
     void updateLayoutMargins();
 
 private:

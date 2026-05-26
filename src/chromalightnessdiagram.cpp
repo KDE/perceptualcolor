@@ -128,6 +128,7 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace p
             d_pointer.get(), // receiver
             &ChromaLightnessDiagramPrivate::reloadIcons);
 #endif
+    d_pointer->updateInfoButtonVisibility();
 }
 
 /** @brief Default destructor */
@@ -735,9 +736,28 @@ void ChromaLightnessDiagram::setCurrentColorLch(const PerceptualColor::GenericCo
             d_pointer->m_currentColorLch.third;
         d_pointer->m_chromaLightnessImage.setImageParameters( //
             d_pointer->m_chromaLightnessImageParameters);
+        d_pointer->updateInfoButtonVisibility();
     }
     update(); // Schedule a paint event
     Q_EMIT currentColorLchChanged(newCurrentColorLch);
+}
+
+/**
+ * @brief Shows or hides @ref m_infoButton.
+ *
+ * The info button is shown only when the gamut shape is very strange.
+ */
+void ChromaLightnessDiagramPrivate::updateInfoButtonVisibility()
+{
+    if (m_projectionSpace == LchSpace::Oklch) {
+        const double hue = m_currentColorLch.third;
+        m_infoButton->setVisible( //
+            ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, hue));
+    } else {
+        // The unusual shape in CielchD50 is much less extreme than for Oklch.
+        // No need to display the info button.
+        m_infoButton->setVisible(false);
+    }
 }
 
 /** @brief React on a resize event.

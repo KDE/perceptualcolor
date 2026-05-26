@@ -825,6 +825,40 @@ private Q_SLOTS:
         QCOMPARE(ChromaLightnessDiagramPrivate::nearestNeighborSearch(QPoint(8, -2), boundingBox, doesExist), //
                  QPoint(5, 5));
     }
+
+    void testInfoButtonCielchD50()
+    {
+        ChromaLightnessDiagram myWidget{LchSpace::CielchD50};
+        myWidget.show();
+        myWidget.setCurrentColorLch(GenericColor(50, 0, 0));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(50, 0, 99));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(50, 0, 110));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(50, 0, 359));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(50, 0, 360));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+    }
+
+    void testInfoButtonOklch()
+    {
+        ChromaLightnessDiagram myWidget{LchSpace::Oklch};
+        myWidget.show();
+        myWidget.setCurrentColorLch(GenericColor(0.5, 0, 0));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(0.5, 0, 264));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(0.5, 0, 264.2));
+        QVERIFY(myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(0.5, 0, 264.3));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(0.5, 0, 359));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+        myWidget.setCurrentColorLch(GenericColor(0.5, 0, 360));
+        QVERIFY(!myWidget.d_pointer->m_infoButton->isVisible());
+    }
 };
 
 } // namespace PerceptualColor

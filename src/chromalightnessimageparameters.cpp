@@ -7,6 +7,7 @@
 
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
+#include "colorspaceinfo.h"
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperimage.h"
@@ -80,19 +81,7 @@ void ChromaLightnessImageParameters::renderByRow( //
     //
     // Within these unsafe ranges, early termination must be disabled to
     // guarantee correctness.
-    const bool optimizationIsSafe = //
-        (parameters.projectionSpace == LchSpace::Oklch) //
-        ? !isInRange(264.03, lch.third, 264.23) //
-        : !isInRange(95., lch.third, 103.);
-    const double unsafeLightnessLowerBound = //
-        (parameters.projectionSpace == LchSpace::Oklch) //
-        ? 0 //
-        : 93;
-    const double unsafeLightnessUpperBound = //
-        (parameters.projectionSpace == LchSpace::Oklch) //
-        ? 0.53 //
-        : 99;
-
+    const bool optimizationIsSafe = !ColorSpaceInfo::isUnusualShapeAtHue(parameters.projectionSpace, lch.third);
     for (int y = firstRow; y <= lastRow; ++y) {
         QRgb *line = //
             reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
@@ -110,7 +99,7 @@ void ChromaLightnessImageParameters::renderByRow( //
             if (qAlpha(rgbColor) != 0) {
                 line[x] = rgbColor;
             } else {
-                if (optimizationIsSafe || lch.first > unsafeLightnessUpperBound || lch.first < unsafeLightnessLowerBound) {
+                if (optimizationIsSafe || !ColorSpaceInfo::isUnusualShapeAtLightness(parameters.projectionSpace, lch.first)) {
                     break;
                 }
             }

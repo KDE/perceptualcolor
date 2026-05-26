@@ -101,6 +101,44 @@ private Q_SLOTS:
     {
         QVERIFY(isInRange<double>(0.99, ColorSpaceInfo::oklabWhitepointL(), 1));
     }
+
+    void testUnusualHueCielchD50()
+    {
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 0));
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 99));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 110));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 359));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 360));
+    }
+
+    void testUnusualHueOklch()
+    {
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 0));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 264));
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 264.2));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 264.3));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 359));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 360));
+    }
+
+    void testUnusualLightnessCielchD50()
+    {
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 0));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 92));
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 94));
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 98));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 100));
+    }
+
+    void testUnusualLightnessOklch()
+    {
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.2));
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.52));
+        QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.53));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.54));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.99));
+        QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 1));
+    }
 };
 
 } // namespace PerceptualColor
