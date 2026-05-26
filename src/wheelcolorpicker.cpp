@@ -9,9 +9,9 @@
 
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
-#include "chromainfo.h"
 #include "chromalightnessdiagram.h"
 #include "chromalightnessdiagram_p.h" // IWYU pragma: keep
+#include "colorspaceinfo.h"
 #include "colorwheel.h"
 #include "colorwheel_p.h" // IWYU pragma: keep
 #include "constpropagatingrawpointer.h"
@@ -198,8 +198,8 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
      */
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::maxCielchD50Chroma() //
-        : ChromaInfo::maxOklchChroma();
+        ? ColorSpaceInfo::maxCielchD50Chroma() //
+        : ColorSpaceInfo::maxOklchChroma();
     const qreal r = m_lchValues.maximumLightness / maximumChroma;
     const qreal h =
         // The left border

@@ -9,7 +9,7 @@
 
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
@@ -792,8 +792,8 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const double profileMaxChroma = //
         (d_pointer->m_projectionSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::maxCielchD50Chroma() //
-        : ChromaInfo::maxOklchChroma();
+        ? ColorSpaceInfo::maxCielchD50Chroma() //
+        : ColorSpaceInfo::maxOklchChroma();
     const double factor = profileMaxChroma / d_pointer->m_lchValues.maximumLightness;
     const int minimumHeight = qRound(
         // Top border and bottom border:

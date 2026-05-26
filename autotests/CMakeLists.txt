@@ -133,11 +133,11 @@ if(BUILD_TESTING)
         testasyncimagerenderthread
         testchromahuediagram
         testchromahueimageparameters
-        testchromainfo
         testchromalightnessdiagram
         testchromalightnessimageparameters
         testcolordialog
         testcolorpatch
+        testcolorspaceinfo
         testcolorwheel
         testcolorwheelimage
         testconstpropagatingrawpointer

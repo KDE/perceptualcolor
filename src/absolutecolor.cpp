@@ -4,7 +4,7 @@
 // Own header
 #include "absolutecolor.h"
 
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 #include "helperconstants.h"
 #include "helperconversion.h"
 #include "helperimage.h"
@@ -782,15 +782,15 @@ GenericColor AbsoluteColor::reduceChromaToFitIntoGamut(const GenericColor &lch, 
 
     // Bound to valid range:
     const auto maxChroma = (lchSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::maxCielchD50Chroma() //
-        : ChromaInfo::maxOklchChroma();
+        ? ColorSpaceInfo::maxCielchD50Chroma() //
+        : ColorSpaceInfo::maxOklchChroma();
     referenceColor.second = qMin<double>(referenceColor.second, maxChroma);
     const auto minLightness = (lchSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::cielabD50BlackpointL() //
-        : ChromaInfo::oklabBlackpointL();
+        ? ColorSpaceInfo::cielabD50BlackpointL() //
+        : ColorSpaceInfo::oklabBlackpointL();
     const auto maxLightness = (lchSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::cielabD50WhitepointL() //
-        : ChromaInfo::oklabWhitepointL();
+        ? ColorSpaceInfo::cielabD50WhitepointL() //
+        : ColorSpaceInfo::oklabWhitepointL();
     referenceColor.first = qBound<double>(minLightness,
                                           referenceColor.first, //
                                           maxLightness);

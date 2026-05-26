@@ -7,7 +7,7 @@
 
 #include "absolutecolor.h"
 #include "asyncimagerendercallback.h"
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperimage.h"
@@ -203,8 +203,8 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
     // Prepare for gamut painting
     const auto chromaRange = //
         (parameters.projectionSpace == LchSpace::Oklch) //
-        ? ChromaInfo::maxOklchChroma() //
-        : ChromaInfo::maxCielchD50Chroma();
+        ? ColorSpaceInfo::maxOklchChroma() //
+        : ColorSpaceInfo::maxCielchD50Chroma();
     const qreal scaleFactor = static_cast<qreal>(2 * chromaRange)
         // The following line will never be 0 because we have have
         // tested above that circleRadius is > 0, so this line will

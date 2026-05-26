@@ -11,7 +11,7 @@
 #include "abstractdiagram.h"
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
@@ -510,8 +510,8 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorLch() const
 {
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::maxCielchD50Chroma()
-        : ChromaInfo::maxOklchChroma();
+        ? ColorSpaceInfo::maxCielchD50Chroma()
+        : ColorSpaceInfo::maxOklchChroma();
     const qreal scaleFactor = //
         (q_pointer->maximumWidgetSquareSize() - 2.0 * gamutBorder()) //
         / (2.0 * maximumChroma);
@@ -538,8 +538,8 @@ GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint 
 {
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
-        ? ChromaInfo::maxCielchD50Chroma()
-        : ChromaInfo::maxOklchChroma();
+        ? ColorSpaceInfo::maxCielchD50Chroma()
+        : ColorSpaceInfo::maxOklchChroma();
     const auto quotient = (q_pointer->maximumWidgetSquareSize() - 2.0 * gamutBorder());
     const qreal scaleFactor = //
         (quotient == 0) //

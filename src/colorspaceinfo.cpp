@@ -3,7 +3,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 
 #include "absolutecolor.h"
 #include "genericcolor.h"
@@ -21,16 +21,16 @@ namespace PerceptualColor
  *
  * @returns Meyer’s singleton: Provides the instance of this class as reference.
  */
-const ChromaInfo &ChromaInfo::instance()
+const ColorSpaceInfo &ColorSpaceInfo::instance()
 {
-    static ChromaInfo s;
+    static ColorSpaceInfo s;
     return s;
 }
 
 /**
  * @brief Destructor.
  */
-ChromaInfo::~ChromaInfo() noexcept
+ColorSpaceInfo::~ColorSpaceInfo() noexcept
 {
 }
 
@@ -39,7 +39,7 @@ ChromaInfo::~ChromaInfo() noexcept
  *
  * @return The maximum possible chroma value in the sRGB gamut.
  */
-double ChromaInfo::maxCielchD50Chroma()
+double ColorSpaceInfo::maxCielchD50Chroma()
 {
     return instance().m_profileMaximumCielchD50Chroma;
 }
@@ -49,7 +49,7 @@ double ChromaInfo::maxCielchD50Chroma()
  *
  * @return The maximum possible chroma value in the sRGB gamut.
  */
-double ChromaInfo::maxOklchChroma()
+double ColorSpaceInfo::maxOklchChroma()
 {
     return instance().m_profileMaximumOklchChroma;
 }
@@ -58,7 +58,7 @@ double ChromaInfo::maxOklchChroma()
  * @brief Initialization for various data items related to the chromatic
  * boundary.
  */
-ChromaInfo::ChromaInfo()
+ColorSpaceInfo::ColorSpaceInfo()
 {
     // Find blackpoint and whitepoint.
     // For CielabD50 make sure that: 0 <= blackpoint < whitepoint <= 100
@@ -182,7 +182,7 @@ ChromaInfo::ChromaInfo()
  *
  * @returns the most chromatic color for the given hue in the sRGB gamut.
  */
-QColor ChromaInfo::maxChromaColorByOklabHue360(double hue360)
+QColor ColorSpaceInfo::maxChromaColorByOklabHue360(double hue360)
 {
     return maxChromaColorByHue360( //
         hue360, //
@@ -196,7 +196,7 @@ QColor ChromaInfo::maxChromaColorByOklabHue360(double hue360)
  *
  * @returns the most chromatic color for the given hue in the sRGB gamut.
  */
-QColor ChromaInfo::maxChromaColorByCielchD50Hue360(double hue360)
+QColor ColorSpaceInfo::maxChromaColorByCielchD50Hue360(double hue360)
 {
     return maxChromaColorByHue360( //
         hue360, //
@@ -211,7 +211,7 @@ QColor ChromaInfo::maxChromaColorByCielchD50Hue360(double hue360)
  *
  * @returns the most chromatic color for the given hue in the sRGB gamut.
  */
-QColor ChromaInfo::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type)
+QColor ColorSpaceInfo::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type)
 {
     const auto &table = (type == LchSpace::CielchD50) //
         ? instance().m_chromaticityBoundaryByCielchD50Hue360 //
@@ -261,7 +261,7 @@ QColor ChromaInfo::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpa
  *
  * @sa @ref m_cielabD50WhitepointL()
  */
-double ChromaInfo::cielabD50BlackpointL()
+double ColorSpaceInfo::cielabD50BlackpointL()
 {
     return instance().m_cielabD50BlackpointL;
 }
@@ -273,7 +273,7 @@ double ChromaInfo::cielabD50BlackpointL()
  *
  * @sa @ref m_cielabD50BlackpointL()
  */
-double ChromaInfo::cielabD50WhitepointL()
+double ColorSpaceInfo::cielabD50WhitepointL()
 {
     return instance().m_cielabD50WhitepointL;
 }
@@ -285,7 +285,7 @@ double ChromaInfo::cielabD50WhitepointL()
  *
  * @sa @ref m_oklabWhitepointL()
  */
-double ChromaInfo::oklabBlackpointL()
+double ColorSpaceInfo::oklabBlackpointL()
 {
     return instance().m_oklabBlackpointL;
 }
@@ -297,7 +297,7 @@ double ChromaInfo::oklabBlackpointL()
  *
  * @sa @ref m_oklabBlackpointL()
  */
-double ChromaInfo::oklabWhitepointL()
+double ColorSpaceInfo::oklabWhitepointL()
 {
     return instance().m_oklabWhitepointL;
 }

@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "lchvalues.h"
 
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 #include "genericcolor.h"
 #include <qglobal.h>
 #include <qobject.h>
@@ -99,7 +99,7 @@ private Q_SLOTS:
     {
         QVERIFY(cielchD50Values.maximumChroma > 0);
 
-        const auto maxOkChroma = ChromaInfo::maxCielchD50Chroma();
+        const auto maxOkChroma = ColorSpaceInfo::maxCielchD50Chroma();
         QVERIFY(cielchD50Values.maximumChroma > maxOkChroma);
     }
 
@@ -107,7 +107,7 @@ private Q_SLOTS:
     {
         QVERIFY(oklchValues.maximumChroma > 0);
 
-        const auto maxOkChroma = ChromaInfo::maxOklchChroma();
+        const auto maxOkChroma = ColorSpaceInfo::maxOklchChroma();
         QVERIFY(oklchValues.maximumChroma > maxOkChroma);
     }
 };

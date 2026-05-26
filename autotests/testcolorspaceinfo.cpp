@@ -3,7 +3,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "chromainfo.h"
+#include "colorspaceinfo.h"
 
 #include "helpermath.h"
 #include <qglobal.h>
@@ -15,12 +15,12 @@
 
 namespace PerceptualColor
 {
-class TestChromaInfo : public QObject
+class TestColorSpaceInfo : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TestChromaInfo(QObject *parent = nullptr)
+    explicit TestColorSpaceInfo(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -54,58 +54,58 @@ private Q_SLOTS:
 
     void testConstructor()
     {
-        const ChromaInfo temp;
+        const ColorSpaceInfo temp;
         Q_UNUSED(temp);
     }
 
     void testMaxOklchChroma()
     {
-        QVERIFY(ChromaInfo::maxOklchChroma() > 0.3);
-        QVERIFY(ChromaInfo::maxOklchChroma() < 0.4);
+        QVERIFY(ColorSpaceInfo::maxOklchChroma() > 0.3);
+        QVERIFY(ColorSpaceInfo::maxOklchChroma() < 0.4);
     }
 
     void testMaxCielchD50Chroma()
     {
-        QVERIFY(ChromaInfo::maxCielchD50Chroma() > 130);
-        QVERIFY(ChromaInfo::maxCielchD50Chroma() < 140);
+        QVERIFY(ColorSpaceInfo::maxCielchD50Chroma() > 130);
+        QVERIFY(ColorSpaceInfo::maxCielchD50Chroma() < 140);
     }
 
     void testMaxChromaColorByCielchD50Hue360()
     {
-        const auto temp = ChromaInfo::maxChromaColorByCielchD50Hue360(42);
+        const auto temp = ColorSpaceInfo::maxChromaColorByCielchD50Hue360(42);
         Q_UNUSED(temp);
     }
 
     void testMaxChromaColorByOklabHue360()
     {
-        const auto temp = ChromaInfo::maxChromaColorByOklabHue360(42);
+        const auto temp = ColorSpaceInfo::maxChromaColorByOklabHue360(42);
         Q_UNUSED(temp);
     }
 
     void testCielabD50BlackpointL()
     {
-        QVERIFY(isInRange<double>(0, ChromaInfo::cielabD50BlackpointL(), 1));
+        QVERIFY(isInRange<double>(0, ColorSpaceInfo::cielabD50BlackpointL(), 1));
     }
 
     void testCielabD50WhitepointL()
     {
-        QVERIFY(isInRange<double>(99, ChromaInfo::cielabD50WhitepointL(), 100));
+        QVERIFY(isInRange<double>(99, ColorSpaceInfo::cielabD50WhitepointL(), 100));
     }
 
     void testOklabBlackpointL()
     {
-        QVERIFY(isInRange<double>(0, ChromaInfo::oklabBlackpointL(), 0.01));
+        QVERIFY(isInRange<double>(0, ColorSpaceInfo::oklabBlackpointL(), 0.01));
     }
 
     void testOklabWhitepointL()
     {
-        QVERIFY(isInRange<double>(0.99, ChromaInfo::oklabWhitepointL(), 1));
+        QVERIFY(isInRange<double>(0.99, ColorSpaceInfo::oklabWhitepointL(), 1));
     }
 };
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestChromaInfo)
+QTEST_MAIN(PerceptualColor::TestColorSpaceInfo)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testchromainfo.moc"
+#include "testcolorspaceinfo.moc"

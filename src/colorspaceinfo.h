@@ -1,8 +1,8 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#ifndef PERCEPTUALCOLOR_CHROMAINFO_H
-#define PERCEPTUALCOLOR_CHROMAINFO_H
+#ifndef PERCEPTUALCOLOR_COLORSPACEINFO_H
+#define PERCEPTUALCOLOR_COLORSPACEINFO_H
 
 #include "lchvalues.h"
 #include "perceptualcolornamespace.h"
@@ -16,12 +16,9 @@ namespace PerceptualColor
 /**
  * @internal
  *
- * @brief Access to chroma-related data.
- *
- * @todo SHOULDHAVE Rename this class, because it is not only about chroma,
- * but also about lightness.
+ * @brief Access to color-space related data.
  */
-class ChromaInfo
+class ColorSpaceInfo
 {
 public:
     [[nodiscard]] static double cielabD50BlackpointL();
@@ -34,17 +31,17 @@ public:
     [[nodiscard]] static double oklabWhitepointL();
 
 private:
-    Q_DISABLE_COPY(ChromaInfo)
+    Q_DISABLE_COPY(ColorSpaceInfo)
 
     /**
-     *@internal
+     * @internal
      * @brief Only for unit tests.
      */
-    friend class TestChromaInfo;
+    friend class TestColorSpaceInfo;
 
-    ChromaInfo();
-    [[nodiscard]] static const ChromaInfo &instance();
-    virtual ~ChromaInfo() noexcept;
+    ColorSpaceInfo();
+    [[nodiscard]] static const ColorSpaceInfo &instance();
+    virtual ~ColorSpaceInfo() noexcept;
 
     [[nodiscard]] static QColor maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type);
 
@@ -115,4 +112,4 @@ private:
 
 } // namespace PerceptualColor
 
-#endif // PERCEPTUALCOLOR_CHROMAINFO_H
+#endif // PERCEPTUALCOLOR_COLORSPACEINFO_H
