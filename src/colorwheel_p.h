@@ -7,7 +7,7 @@
 // Include the header of the public class of this private implementation.
 // #include "colorwheel.h"
 
-#include "colorwheelimage.h"
+#include "colorwheelimageparameters.h"
 #include "constpropagatingrawpointer.h"
 #include "perceptualcolornamespace.h"
 #include "polarpointf.h"
@@ -52,7 +52,7 @@ public:
      */
     const LchSpace m_projectionSpace;
     /** @brief The image of the wheel itself. */
-    ColorWheelImage m_wheelImage;
+    ColorWheelImageParameters m_wheelImage;
 
     [[nodiscard]] int border() const;
     [[nodiscard]] QPointF fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const;

@@ -335,11 +335,10 @@ void AbstractDiagram::hideEvent(QHideEvent *event)
  * </tt> is surprisingly difficult, at least if you want to use the functor
  * syntax (which provides compile-time checks) for the connection. A simple
  * connection fails to compile because it fails to do a correct  overload
- * resolution, as there is more than one slot called <tt>update</tt>. Now, <tt>
- * <a href="https://doc.qt.io/qt-6/qtglobal.html#qOverload">qOverload&lt;&gt;()
- * </a></tt> can be used to choose the correct overload, but in this special
- * case, <tt><a href="https://doc.qt.io/qt-6/qtglobal.html#qOverload">
- * qOverload&lt;&gt;()</a></tt> generates compiler warnings.
+ * resolution, as there is more than one slot called <tt>update</tt>. Now,
+ * <tt><a href="https://doc.qt.io/qt-6/qtglobal.html#qOverload">qOverload&lt;&gt;()</a></tt>
+ * can be used to choose the correct overload, but in some
+ * case, it might generate compiler warnings.
  *
  * Instead of connecting to <tt>
  * <a href="https://doc.qt.io/qt-6/qwidget.html#update">QWidget::update()

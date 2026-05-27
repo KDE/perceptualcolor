@@ -8,7 +8,8 @@
 #include "colorwheel_p.h" // IWYU pragma: associated
 
 #include "abstractdiagram.h"
-#include "colorwheelimage.h"
+#include "colorwheelimageparameters.h"
+#include "colorwheelimageprovider.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
@@ -21,6 +22,7 @@
 #include <qimage.h>
 #include <qnamespace.h>
 #include <qpainter.h>
+#include <qpainterpath.h>
 #include <qpen.h>
 #include <qpoint.h>
 #include <qwidget.h>
@@ -52,6 +54,12 @@ ColorWheel::ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget 
     // circle. Therefore, this class simply defaults to
     // Qt::FocusPolicy::TabFocus for QWidget::focusPolicy().
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
+
+    if (d_pointer->m_projectionSpace == LchSpace::Oklch) {
+        ColorWheelImageProvider<LchSpace::Oklch>::connectPaintEvent(this);
+    } else {
+        ColorWheelImageProvider<LchSpace::CielchD50>::connectPaintEvent(this);
+    }
 }
 
 /**
@@ -333,17 +341,24 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     QPainter bufferPainter(&paintBuffer);
 
     // Paint the color wheel
-    bufferPainter.setRenderHint(QPainter::Antialiasing, false);
-    // As devicePixelRatioF() might have changed, we make sure everything
-    // that might depend on devicePixelRatioF() is updated before painting.
-    d_pointer->m_wheelImage.setBorder(spaceForFocusIndicator() * devicePixelRatioF());
-    d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
-    d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
-    d_pointer->m_wheelImage.setProjectionSpace(d_pointer->m_projectionSpace);
-    d_pointer->m_wheelImage.setWheelThickness(gradientThickness() * devicePixelRatioF());
-    bufferPainter.drawImage(QPoint(0, 0), // image position (top-left)
-                            d_pointer->m_wheelImage.getImage() // the image itself
-    );
+    const double wheelCenter = maximumWidgetSquareSize() / 2.;
+    const QPointF wheelCenterPoint(wheelCenter, wheelCenter);
+    const double outerRadius = wheelCenter - spaceForFocusIndicator();
+    if (d_pointer->m_projectionSpace == LchSpace::Oklch) {
+        ColorWheelImageProvider<LchSpace::Oklch>::drawColorWheel( //
+            bufferPainter,
+            devicePixelRatioF(),
+            wheelCenterPoint,
+            outerRadius,
+            gradientThickness());
+    } else {
+        ColorWheelImageProvider<LchSpace::CielchD50>::drawColorWheel( //
+            bufferPainter,
+            devicePixelRatioF(),
+            wheelCenterPoint,
+            outerRadius,
+            gradientThickness());
+    }
 
     // Paint the handle
     const qreal wheelOuterRadius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
@@ -407,7 +422,7 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
     Q_UNUSED(event)
 
     // Update the widget content
-    d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
+    d_pointer->m_wheelImage.imageSizePhysical = maximumPhysicalSquareSize();
     /* As by Qt documentation:
      *     “The widget will be erased and receive a paint event immediately
      *      after processing the resize event. No drawing need be (or should

@@ -428,11 +428,6 @@
  *
  * @todo SHOULDHAVE Circular diagrams should be right-aligned on RTL layouts.
  *
- * @todo NICETOHAVE Could we get better rendering performance? Even online
- * tools like <a href="https://bottosson.github.io/misc/colorpicker/#ff2a00">
- * this</a> or <a href="https://oklch.evilmartians.io/#65.4,0.136,146.7,100">
- * this</a> get quite good rendering performance. How do they do that?
- *
  * @todo NICETOHAVE Use words as hints for color ranges? Muted/dull colors have
  * a low chroma value. The dark ones (getrübte/gebrochene Farben) are created by
  * adding black (and possibly a bit of white) and include both, warm tones (the
@@ -460,11 +455,6 @@
  * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
  * Would this make sense also for our library?
  *
- * @todo NICETOHAVE
- * All scripts (both, local and CI scripts) should break and stop
- * on every error. When implementing this, be beware of side effects
- * (some local scripts are also called from the CI and so on…).
- *
  * @todo NICETOHAVE A design question: Should we use
  * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum"><tt>
  * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
@@ -479,12 +469,6 @@
  * application, that is than shared between all the widgets of our library?
  * This buffer would never be freed, so it will always occupy memory. But
  * this avoids the time-consuming memory allocations at each paint event!
- *
- * @todo NICETOHAVE Use <tt>QCache</tt> where is makes sense. Maybe
- * @ref PerceptualColor::AbsoluteColor::reduceChromaToFitIntoGamut() or
- * @ref PerceptualColor::AbsoluteColor::isCielchD50InSRgbGamut() or
- * @ref PerceptualColor::AbsoluteColor::isCielabD50InSRgbGamut() or
- * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(().
  *
  * @todo SHOULDHAVE We do some hacks to get circle-like (instead of rectangular)
  * feeling for our circular widgets, which is not perfect when talking
@@ -544,7 +528,6 @@
  * @todo NICETOHAVE Remove setDevicePixelRatioF from all *Image classes. (It is
  * confusing, and at the same time there is no real need/benefit.)
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
- * @ref PerceptualColor::ColorWheelImage,
  * @ref PerceptualColor::GradientImageParameters.
  *
  * @todo SHOULDHAVE When setting <tt>currentColor</tt> to an out-of-gamut color,

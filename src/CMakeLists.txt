@@ -35,7 +35,7 @@ set(library_SRC
     colorpatch.cpp
     colorspaceinfo.cpp
     colorwheel.cpp
-    colorwheelimage.cpp
+    colorwheelimageparameters.cpp
     docs.cpp
     genericcolor.cpp
     gradientimageparameters.cpp

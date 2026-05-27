@@ -9,7 +9,7 @@
 
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
-#include "colorwheelimage.h"
+#include "colorwheelimageparameters.h"
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "lchvalues.h"
@@ -88,7 +88,7 @@ public:
     const LchSpace m_projectionSpace;
 
     /** @brief The image of the color wheel. */
-    ColorWheelImage m_wheelImage;
+    ColorWheelImageParameters m_wheelImage;
 
     // Member functions
     [[nodiscard]] int gamutBorder() const;

@@ -139,7 +139,8 @@ if(BUILD_TESTING)
         testcolorpatch
         testcolorspaceinfo
         testcolorwheel
-        testcolorwheelimage
+        testcolorwheelimageparameters
+        testcolorwheelimageprovider
         testconstpropagatingrawpointer
         testconstpropagatinguniquepointer
         testcsscolor

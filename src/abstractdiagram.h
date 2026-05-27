@@ -55,7 +55,7 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT AbstractDiagram : public QWidget
 
 public:
     Q_INVOKABLE explicit AbstractDiagram(QWidget *parent = nullptr);
-    /** @brief Default destructor */
+
     virtual ~AbstractDiagram() noexcept override;
 
 protected:

@@ -12,7 +12,8 @@
 #include "asyncimageprovider.h"
 #include "chromahueimageparameters.h"
 #include "colorspaceinfo.h"
-#include "colorwheelimage.h"
+#include "colorwheelimageparameters.h"
+#include "colorwheelimageprovider.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
@@ -61,6 +62,11 @@ ChromaHueDiagram::ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpa
             &AsyncImageProvider<ChromaHueImageParameters>::interlacingPassCompleted, //
             this,
             &ChromaHueDiagram::callUpdate);
+    if (d_pointer->m_projectionSpace == LchSpace::Oklch) {
+        ColorWheelImageProvider<LchSpace::Oklch>::connectPaintEvent(this);
+    } else {
+        ColorWheelImageProvider<LchSpace::CielchD50>::connectPaintEvent(this);
+    }
 
     // Initialize the color
     setCurrentColorLch(cielchD50Values.neutralGray());
@@ -85,7 +91,7 @@ ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, con
     , q_pointer(backLink)
 {
     m_chromaHueImageParameters.projectionSpace = projectionSpace;
-    m_wheelImage.setProjectionSpace(projectionSpace);
+    m_wheelImage.projectionSpace = projectionSpace;
 }
 
 /**
@@ -483,7 +489,7 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
     Q_UNUSED(event)
 
     // Update the widget content
-    d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
+    d_pointer->m_wheelImage.imageSizePhysical = maximumPhysicalSquareSize();
     d_pointer->m_chromaHueImageParameters.imageSizePhysical =
         // Guaranteed to be ≥ 0:
         maximumPhysicalSquareSize();
@@ -789,19 +795,24 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         circleRadius);
 
     // Paint a color wheel around
-    bufferPainter.setRenderHint(QPainter::Antialiasing, false);
-    // As devicePixelRatioF() might have changed, we make sure everything
-    // that might depend on devicePixelRatioF() is updated before painting.
-    d_pointer->m_wheelImage.setBorder( //
-        spaceForFocusIndicator() * devicePixelRatioF());
-    d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
-    d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
-    d_pointer->m_wheelImage.setWheelThickness( //
-        gradientThickness() * devicePixelRatioF());
-    bufferPainter.drawImage( //
-        QPoint(0, 0), // position of the image
-        d_pointer->m_wheelImage.getImage() // the image itself
-    );
+    const double wheelCenter = maximumWidgetSquareSize() / 2.;
+    const QPointF wheelCenterPoint(wheelCenter, wheelCenter);
+    const double outerRadius = wheelCenter - spaceForFocusIndicator();
+    if (d_pointer->m_projectionSpace == LchSpace::Oklch) {
+        ColorWheelImageProvider<LchSpace::Oklch>::drawColorWheel( //
+            bufferPainter,
+            devicePixelRatioF(),
+            wheelCenterPoint,
+            outerRadius,
+            gradientThickness());
+    } else {
+        ColorWheelImageProvider<LchSpace::CielchD50>::drawColorWheel( //
+            bufferPainter,
+            devicePixelRatioF(),
+            wheelCenterPoint,
+            outerRadius,
+            gradientThickness());
+    }
 
     // Paint a handle on the color wheel (only if a mouse event is
     // currently active).

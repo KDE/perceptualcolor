@@ -81,33 +81,7 @@ namespace PerceptualColor
  * at all). The performance impact should be minimal when interlacing is
  * used. And if no interlacing is available, the impact should not be
  * too bad either.
- *
- * @note It would be nice to merge @ref AsyncImageProviderBase and
- * @ref AsyncImageProvider into one single class (that is <em>not</em> a
- * template, but image parameters are now given in form of a QVariant).
- * It would take @ref AsyncImageRenderThread::pointerToRenderFunction as
- * argument in the constructor to be able to call the constructor of
- * @ref AsyncImageRenderThread.
- * <br/>
- * <b>Advantage:</b>
- * <br/>
- * → Only one class is compiled, instead of a whole bunch of template classes.
- *   The binary will therefore be smaller.
- * <br/>
- * <b>Disadvantage:</b>
- * <br/>
- * → In the future, maybe we could add support within the template for a
- *   per-class inter-object cache, so that if two objects of the same class
- *   have the same @ref imageParameters then the rendering is done only once
- *   and the result is shared between these two instances. This would
- *   obviously be impossible if there are no longer different classes
- *   for different type of images. Or it would at least require a special
- *   solution…
- * <br/>
- * → Calling @ref setImageParameters would be done with a <tt>QVariant</tt>
- *   (or an <tt>std::any</tt>?), so there would be no compile-time error
- *   anymore if the data type of the parameters is wrong – but is this
- *   really a big issue in practice?  */
+ */
 template<typename T>
 class AsyncImageProvider : public AsyncImageProviderBase
 {
