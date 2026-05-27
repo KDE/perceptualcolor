@@ -109,6 +109,8 @@ private Q_SLOTS:
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 110));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 359));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 360));
+        constexpr auto temp = ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::CielchD50, 0);
+        Q_UNUSED(temp)
     }
 
     void testUnusualHueOklch()
@@ -119,6 +121,8 @@ private Q_SLOTS:
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 264.3));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 359));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 360));
+        constexpr auto temp = ColorSpaceInfo::isUnusualShapeAtHue(LchSpace::Oklch, 0);
+        Q_UNUSED(temp)
     }
 
     void testUnusualLightnessCielchD50()
@@ -128,6 +132,8 @@ private Q_SLOTS:
         QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 94));
         QVERIFY(ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 98));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 100));
+        constexpr auto temp = ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::CielchD50, 0);
+        Q_UNUSED(temp)
     }
 
     void testUnusualLightnessOklch()
@@ -138,6 +144,8 @@ private Q_SLOTS:
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.54));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0.99));
         QVERIFY(!ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 1));
+        constexpr auto temp = ColorSpaceInfo::isUnusualShapeAtLightness(LchSpace::Oklch, 0);
+        Q_UNUSED(temp)
     }
 };
 
