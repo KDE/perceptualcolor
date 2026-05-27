@@ -56,7 +56,7 @@ codecheck_cppcheck:
     - when: always
       allow_failure: false
   artifacts:
-    expire_in: 20 weeks
+    expire_in: 2 weeks
     when: always
     paths:
       - artifact_cppcheck.json
@@ -76,7 +76,7 @@ codecheck_iwyu:
     - when: manual
       allow_failure: true
   artifacts:
-    expire_in: 20 weeks
+    expire_in: 2 weeks
     when: always
     paths:
       - artifact_iwyu.txt
@@ -118,7 +118,7 @@ codecheck_quality:
     - when: on_success
     - allow_failure: false
   artifacts:
-    expire_in: 20 weeks
+    expire_in: 2 weeks
     when: always
     paths:
       - artifact_*
