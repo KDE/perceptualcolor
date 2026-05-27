@@ -13,6 +13,14 @@ msgstr ""
 "X-Qt-Contexts: true\n"
 "X-Generator: Poedit 3.5\n"
 
+#. @info:tooltip/plain In color diagrams, gamuts can take on unusual shapes that may appear visually incorrect. For example, in a chroma‑lightness diagram of the sRGB gamut in Oklch projection at high‑chroma blue hues, the outline resembles a triangle as expected, but also shows a spike extending from the lower‑left corner to the middle of the right edge. This shape is mathematically correct according to the sRGB and Oklch definitions, but users may mistake it for a rendering error. To avoid confusion, an info button is displayed in such cases, showing the following tooltip.
+#: chromalightnessdiagram.cpp:66
+msgctxt "PerceptualColor::ChromaLightnessDiagramPrivate|"
+msgid ""
+"The color gamut shows an unusual shape here, which is correct as defined by "
+"the projection."
+msgstr ""
+
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:98
 #, qt-format
@@ -27,7 +35,7 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "%1°"
 msgstr "%1°"
 
-#. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, * Chroma and Hue, and using the D50 illuminant as white point.
+#. @label:spinbox Label for CIE’s CIELCH color model, based on Lightness, Chroma and Hue, and using the D50 illuminant as white point.
 #: colordialog.cpp:105
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&CIELCH D50:"
@@ -215,7 +223,7 @@ msgid "Custom Colors"
 msgstr "მომხმარებლის ფერები"
 
 #. @title:window Default window title. Same text as in QColorDialog
-#: colordialog.cpp:997
+#: colordialog.cpp:986
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Select color"
 msgstr "ფერის არჩევა"
