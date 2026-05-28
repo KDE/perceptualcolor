@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2026-03-09 08:55+0200\n"
+"PO-Revision-Date: 2026-05-27 07:57+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -21,6 +21,8 @@ msgid ""
 "The color gamut shows an unusual shape here, which is correct as defined by "
 "the projection."
 msgstr ""
+"Тут палітру кольорів показано незвичною формою, яка є правильною за "
+"визначенням цієї проєкції."
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:98
