@@ -769,8 +769,7 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
             QIcon::ThemeIcon::ListAdd,
 #endif
             {QStringLiteral("list-add")},
-            QString() // Do not use “fallback” from the resources
-        );
+            QStringLiteral("new-section"));
         myMark = m_addMarkAvailableInCurrentFont;
         break;
     default:
