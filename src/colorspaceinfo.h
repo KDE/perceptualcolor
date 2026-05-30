@@ -52,9 +52,11 @@ public:
      * - In OKLCH: hue 264.052°–264.208° combined with lightness 0.0028–0.4704.
      *   Expanded by ~10%: hue 264.03°–264.23°, lightness 0.00–0.53.
      *   In Oklch projection at high‑chroma blue hues, the outline resembles
-     *   a triangle as expected, but also shows a spike extending from the
-     *   lower‑left corner to the middle of the right edge. This shape is
-     *   mathematically correct according to the sRGB and Oklch definitions,
+     *   a triangle as expected, but also
+     *   <a href=" https://github.com/color-js/color.js/issues/81">
+     *   shows a spike extending from the lower‑left corner to
+     *   the middle of the right edge. This shape is mathematically correct
+     *   according to the sRGB and Oklch definitions,</a>
      *   but users may mistake it for a rendering error.
      *
      * Within these unsafe ranges, early termination must be disabled to
