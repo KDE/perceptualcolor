@@ -22,7 +22,7 @@ msgctxt "PerceptualColor::ChromaLightnessDiagramPrivate|"
 msgid ""
 "The color gamut shows an unusual shape here, which is correct as defined by "
 "the projection."
-msgstr ""
+msgstr "色域在此处的形状或许显得奇怪，但它符合此色域投影的数学定义。"
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:98

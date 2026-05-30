@@ -23,6 +23,8 @@ msgid ""
 "The color gamut shows an unusual shape here, which is correct as defined by "
 "the projection."
 msgstr ""
+"Farebný gamut tu zobrazuje nezvyčajný tvar, ktorý je správny podľa definície "
+"projekcie."
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:98
