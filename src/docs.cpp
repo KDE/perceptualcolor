@@ -10,7 +10,7 @@
 /** @page build Build instructions and requirements
  *
  * Build-time dependencies:
- * - Qt 6 (minimum version: 6.0.0).
+ * - Qt 6 (minimum version: 6.2.0).
  *   Components: Core, Gui, Widgets, DBus, Test, Svg.
  * - CMake
  * - ECM (Extra CMake Modules from KDE)
@@ -341,20 +341,6 @@
  * the default CI jobs continue to build everything to be sure everything
  * compiles.
  *
- * @todo NICETOHAVE Raise Qt version beyond 6.0.0, raise
- * QT_DISABLE_DEPRECATED_UP_TO and QT_ENABLE_STRICT_MODE_UP_TO in CMake and
- * remove QT_VERSION usages in the codebase? What would be an appropriate
- * target version? What policy do KDE libraries have for Qt version?
- * And our Ubuntu-22.04-based unit tests currently only provide Qt 6.2.4,
- * or is there an Ubuntu repository that provides a newer Qt version, maybe
- * the KDE repository? See also
- * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
- * Policy</a>
- *
- * @todo SHOULDHAVE Comply with
- * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
- * Policy</a>
- *
  * @todo SHOULDHAVE Screen for dead code and remove it.
  *
  * @todo SHOWSTOPPER Define the precision of this library. We allow
@@ -633,9 +619,6 @@
  * Apparently QWidget cannot be used from QML. (Though there is
  * https://www.kdab.com/declarative-widgets/ – how does that work?)
  *
- * @todo SHOULDHAVE Comply with <a href="https://community.kde.org/Policies">KDE
- * policies</a>.
- *
  * @todo SHOULDHAVE Remove all qDebug calls from the source
  *
  * @todo NICETOHAVE
@@ -731,14 +714,6 @@
  * <tt><a href="https://doc.qt.io/qt-6/qwidget.html#locale-prop">
  * QWidget::locale()</a></tt> property. Changing the localization dynamically
  * (during program execution) is currently not supported.
- *
- * @internal
- *
- * @todo NICETOHAVE Support changing the localization  (like which decimal
- * separator to use or which date format to use) dynamically (during program
- * execution). This affects also @ref PerceptualColor::MultiSpinBox and
- * the <tt>QSpinBox</tt> in @ref PerceptualColor::ColorDialog that is
- * used for the opacity and maybe also the RGB-Hex-LineEdit.
  */
 
 /** @page licenseinfo License
@@ -891,6 +866,23 @@
  * @ref PerceptualColor::ConstPropagatingRawPointer as it would change also
  * all the access rights to the pointed object to always <tt>const</tt>. */
 
+/** @internal
+ *
+ * @page policies Policies
+ *
+ * - https://community.kde.org/Policies and child pages
+ * - https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B
+ * - https://community.kde.org/Frameworks/Policies
+ * - https://community.kde.org/Frameworks/Frameworks_Localization_Policy
+ * - https://community.kde.org/Frameworks/Frameworks_Documentation_Policy
+ * - https://develop.kde.org/docs/getting-started/common-programming-mistakes/
+ *
+ * @todo SHOULDHAVE https://community.kde.org/Policies/Application_Lifecycle
+ *
+ * @todo SHOULDHAVE
+ * https://community.kde.org/Frameworks/Frameworks_Logging_Policy
+ */
+
 /** @page qtstylesheetssupport Qt Style Sheets support
  *
  * The widget of this library supports the Qt Style Sheet
@@ -991,15 +983,6 @@
  * @sa @ref PerceptualColor::LchValues
  * @sa @ref PerceptualColor::cielchD50Values
  * @sa @ref PerceptualColor::oklchValues
- *
- * @todo NICETOHAVE Why is the exact extend of non-imaginary
- * colors unknown? Could it be deduced from the
- * <a href="https://en.m.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space">
- * CIE xy chromacity diagram</a>? And: Are CIELCh chroma 255 and
- * Oklch chroma 2.00 enough even for large color
- * spaces like <a href="https://en.m.wikipedia.org/wiki/Rec._2020">
- * Rec. 2020</a> or <a href="https://en.m.wikipedia.org/wiki/DCI-P3">
- * DCI-P3</a>?
  */
 
 /** @internal
@@ -1022,10 +1005,6 @@
  *
  * @todo SHOULDHAVE Increase version number in CMakeLists.txt (MAJOR_VERSION,
  * MINOR_VERSION, PATCH_VERSION)
- *
- * @todo SHOULDHAVE Follow
- * <a href="https://community.kde.org/Frameworks/Policies">KDE Frameworks
- * Policy</a>.
  *
  * @todo SHOULDHAVE From
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">

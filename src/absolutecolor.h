@@ -40,9 +40,6 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo NICETOHAVE This is a class with no instances. Use free functions
- * in a sub-namespace instead?
- *
  * @todo SHOULDHAVE Test that all possible combinations actually convert.
  * But HSL etc are not supported here, and on the other side @ref ColorModel is
  * also used in @ref CssColor and HSL is needed there. Split into two different

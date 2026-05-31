@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
     QScopedPointer<QTranslator> myTranslator;
     QTimer::singleShot(5000, // delay in milliseconds
                        QCoreApplication::instance(), // context object
-                       [defaultColorDialog, &myTranslator]() {
+                       [&m_colorDialog, &myTranslator]() {
                            // lambda to be executed
                            QLocale::setDefault(QLocale::German);
                            PerceptualColor::initializeTranslation( //
@@ -239,13 +239,13 @@ int main(int argc, char *argv[])
                            QCoreApplication::installTranslator( //
                                 myTranslator.data());
                            QEvent languageChangeEvent(QEvent::LanguageChange);
-                           QCoreApplication::sendEvent(defaultColorDialog, //
+                           QCoreApplication::sendEvent(&m_colorDialog, //
                                                        &languageChangeEvent);
                        } //
     );
     QTimer::singleShot(10000, // delay in milliseconds
                        QCoreApplication::instance(), // context object
-                       [defaultColorDialog, &myTranslator]() {
+                       [&m_colorDialog, &myTranslator]() {
                            // lambda to be executed
                            QLocale::setDefault(QLocale::German);
                            PerceptualColor::initializeTranslation( //
@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
                            QCoreApplication::installTranslator( //
                                 myTranslator.data());
                            QEvent languageChangeEvent(QEvent::LanguageChange);
-                           QCoreApplication::sendEvent(defaultColorDialog, //
+                           QCoreApplication::sendEvent(&m_colorDialog, //
                                                        &languageChangeEvent);
                        } //
     );

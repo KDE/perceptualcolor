@@ -535,7 +535,7 @@ find_package(
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-set(REQUIRED_QT_VERSION 6.2.4) # maximum allowed by our current CI runners
+set(REQUIRED_QT_VERSION 6.2.0) # maximum allowed by our current CI runners
 find_package(
     Qt6 ${REQUIRED_QT_VERSION}
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!

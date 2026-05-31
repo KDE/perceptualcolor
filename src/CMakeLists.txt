@@ -124,12 +124,7 @@ foreach(po_file_original ${po_file_list})
     # into the library binary itself. First, this avoids that
     # translations can ever  be lost. Second, ecm_create_qm_loader does
     # not work on static libraries. So ecm_process_po_files_as_qm is a
-    # safer choice. However, its API documentation does not explain in
-    # which destination folder the generated qm files will be stored.
-    # Indeed, the destination folder has changed in the past:
-    # https://invent.kde.org/frameworks/extra-cmake-modules/-/merge_requests/351
-    # Therefore, we use our own copy of ECMPoQmTools (located at
-    # cmake/Modules) to make sure we get a defined behaviour.
+    # safer choice.
     ecm_process_po_files_as_qm(
         ${lang}
         ALL # Add this target to the ALL target.
@@ -250,27 +245,27 @@ install(
     # directory. And in RPM, SHARED libraries are part of a normal package,
     # while STATIC libraries go to “%package devel”.
     TARGETS ${LIBRARY_NAME}
-    EXPORT "${LIBRARY_NAME}"
+    EXPORT "${LIBRARY_NAME}Targets"
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_NAME}")
-install(EXPORT ${LIBRARY_NAME}
-        FILE ${LIBRARY_NAME}.cmake
+install(EXPORT ${LIBRARY_NAME}Targets
+        FILE ${LIBRARY_NAME}Targets.cmake
         NAMESPACE "PerceptualColor::"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}ConfigVersion.cmake"
     VERSION "${FULL_VERSION}"
     COMPATIBILITY AnyNewerVersion
 )
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}Config.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 install(
     FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}-config-version.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}ConfigVersion.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
 

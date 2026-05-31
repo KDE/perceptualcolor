@@ -68,10 +68,6 @@ class QCoreApplication;
  * could also reload its own translations while we are using tr(). At least,
  * we could make sure our classes that use translations
  * cannot be instantiated outside of the main thread.
- *
- * @todo SHOULDHAVE
- * LocaleChange could be important for spin boxes to accept the new
- * QLocale’s number format.
  */
 
 namespace PerceptualColor
