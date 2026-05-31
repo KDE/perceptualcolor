@@ -306,14 +306,14 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
  * @internal
  *
  * @brief Determines whether the current session is running under the
- * X Window System.
+ * Wayland Window System.
  *
  * @pre A valid QApplication instance must be available to perform detection.
  *
  * @warning Throws an exception if no QApplication instance exists.
  *
  * @returns
- * - <tt>true</tt> if X is detected as the active window system.
+ * - <tt>true</tt> if Wayland is detected as the active window system.
  * - <tt>false</tt> if another window system is detected.
  */
 template<typename T = void>
