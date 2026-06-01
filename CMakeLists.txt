@@ -397,6 +397,9 @@ if(ADDITIONAL_WARNINGS
         # │ Level 3 │    very few    │       few      │
         # ╰─────────┴────────────────┴────────────────╯
         -Wstrict-aliasing=1
+        # We do not use default statements on switch statments to make sure
+        # we get a warning when not all enum values are covered.
+        -Wno-switch-default
         -Wswitch-enum
         -Wtrigraphs
         -Wuninitialized
@@ -436,8 +439,8 @@ if(ADDITIONAL_WARNINGS AND ON_CLANG_DERIVATE)
         -Weverything
         # Disable some of the warnings enabled by "-Everything"
         # that generate false positives…
-        # We do know want to be compatible with C++98:
         -Wno-c++98-compat
+        -Wno-c++20-compat
         # Causes false-positives on older compilers for qCWarning()
         -Wno-gnu-zero-variadic-macro-arguments
         # We allow redundant parentheses because sometimes they
