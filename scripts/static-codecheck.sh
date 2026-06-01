@@ -36,9 +36,6 @@ ALL_CODE="$CODE_WITHOUT_UNIT_TESTS $UNIT_TESTS"
 
 EXCLUDE_PUBLIC_HEADER_FROM_GREP="--exclude=$(echo $PUBLIC_HEADERS | sed 's/ / --exclude=/g')"
 
-# TODO Test for qDebug() which should not be used never in production
-# code. Exception: Unit tests.
-
 # Search for files that do not start with a byte-order-mark (BOM).
 # We do this because Microsoft’s compiler does require a BOM at the start
 # of the file in order to interpret it as UTF-8.
@@ -96,6 +93,46 @@ grep \
     --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
     $CODE_WITHOUT_UNIT_TESTS \
          | sed 's/^/Internal files may not use PERCEPTUALCOLOR_IMPORTEXPORT macro: /'
+
+# Do not use neither qDebug() nor qCDebug() in production code
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qCDebug()' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Do not use qCDebug() in production code: /'
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qDebug' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Do not use qDebug() in production code: /'
+
+# https://community.kde.org/Frameworks/Frameworks_Logging_Policy
+# describes the KDE logging policy. Make sure logging uses categories.
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qDebug' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Use qCDebug() instead of qDebug(): /'
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qInfo' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Use qCInfo() instead of qInfo(): /'
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qFatal' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Use qCFatal() instead of qFatal(): /'
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qWarning' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Use qCWarning() instead of qWarning(): /'
+grep \
+    --recursive --exclude=testapp.cpp \
+    --files-with-matches 'qCritical' \
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Use qCCritical() instead of qCritical(): /'
 
 # Do not use constexpr in public headers as when we change the value
 # later, compile time value and run time value might be different, and

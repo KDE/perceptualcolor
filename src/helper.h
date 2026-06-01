@@ -5,6 +5,7 @@
 #define PERCEPTUALCOLOR_HELPER_H
 
 #include "helpermath.h"
+#include "logging.h"
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -14,6 +15,7 @@
 #include <qicon.h>
 #include <qimage.h>
 #include <qlist.h>
+#include <qloggingcategory.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
@@ -310,8 +312,6 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
  *
  * @pre A valid QApplication instance must be available to perform detection.
  *
- * @warning Throws an exception if no QApplication instance exists.
- *
  * @returns
  * - <tt>true</tt> if Wayland is detected as the active window system.
  * - <tt>false</tt> if another window system is detected.
@@ -322,8 +322,7 @@ template<typename T = void>
     QApplication *app = //
         qobject_cast<QApplication *>(QCoreApplication::instance());
     if (app == nullptr) {
-        qWarning() << "onWayland() called, but no QApplication exists.";
-        throw 0;
+        qCWarning(logging) << "onWayland() called, but no QApplication exists.";
     }
     const QString platform = QGuiApplication::platformName();
     return platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive);
@@ -337,8 +336,6 @@ template<typename T = void>
  *
  * @pre A valid QApplication instance must be available to perform detection.
  *
- * @warning Throws an exception if no QApplication instance exists.
- *
  * @returns
  * - <tt>true</tt> if X is detected as the active window system.
  * - <tt>false</tt> if another window system is detected.
@@ -349,8 +346,7 @@ template<typename T = void>
     QApplication *app = //
         qobject_cast<QApplication *>(QCoreApplication::instance());
     if (app == nullptr) {
-        qWarning() << "onX() called, but no QApplication exists.";
-        throw 0;
+        qCWarning(logging) << "onX() called, but no QApplication exists.";
     }
     const QString platform = QGuiApplication::platformName();
     return platform.contains(QStringLiteral("xcb"), Qt::CaseInsensitive);

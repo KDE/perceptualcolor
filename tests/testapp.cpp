@@ -22,6 +22,7 @@
 #include "helpermath.h" // IWYU pragma: keep
 #include "initializetranslation.h" // IWYU pragma: keep
 #include "lchvalues.h" // IWYU pragma: keep
+#include "logging.h" // IWYU pragma: keep
 #include "mat3.h" // IWYU pragma: keep
 #include "multispinbox.h" // IWYU pragma: keep
 #include "multispinboxsection.h" // IWYU pragma: keep
@@ -60,6 +61,7 @@
 #include <qlineedit.h> // IWYU pragma: keep
 #include <qlist.h> // IWYU pragma: keep
 #include <qlocale.h> // IWYU pragma: keep
+#include <qloggingcategory.h> // IWYU pragma: keep
 #include <qmath.h> // IWYU pragma: keep
 #include <qmetaobject.h> // IWYU pragma: keep
 #include <qnamespace.h> // IWYU pragma: keep

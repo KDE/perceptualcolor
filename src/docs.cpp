@@ -619,8 +619,6 @@
  * Apparently QWidget cannot be used from QML. (Though there is
  * https://www.kdab.com/declarative-widgets/ – how does that work?)
  *
- * @todo SHOULDHAVE Remove all qDebug calls from the source
- *
  * @todo NICETOHAVE
  * Qt Designer support for the widgets. Quote from a blog from Viking
  * about Qt Designer plugins:
@@ -875,12 +873,10 @@
  * - https://community.kde.org/Frameworks/Policies
  * - https://community.kde.org/Frameworks/Frameworks_Localization_Policy
  * - https://community.kde.org/Frameworks/Frameworks_Documentation_Policy
+ * - https://community.kde.org/Frameworks/Frameworks_Logging_Policy
  * - https://develop.kde.org/docs/getting-started/common-programming-mistakes/
  *
  * @todo SHOULDHAVE https://community.kde.org/Policies/Application_Lifecycle
- *
- * @todo SHOULDHAVE
- * https://community.kde.org/Frameworks/Frameworks_Logging_Policy
  */
 
 /** @page qtstylesheetssupport Qt Style Sheets support

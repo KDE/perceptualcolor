@@ -49,6 +49,7 @@ set(library_SRC
     interlacingpass.cpp
     iwyu.cpp
     languagechangeeventfilter.cpp
+    logging.cpp
     mat3.cpp
     multispinbox.cpp
     multispinboxsection.cpp

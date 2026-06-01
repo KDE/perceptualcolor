@@ -18,6 +18,7 @@
 #include "helperconversion.h"
 #include "initializetranslation.h"
 #include "lchvalues.h"
+#include "logging.h"
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "perceptualcolornamespace.h"
@@ -50,6 +51,7 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
+#include <qloggingcategory.h>
 #include <qobject.h>
 #include <qobjectdefs.h>
 #include <qpointer.h>
@@ -274,7 +276,7 @@ void ColorDialogPrivate::retranslateUi()
     QList<MultiSpinBoxSection> hslSections = //
         m_hslSpinBox->format();
     if (hslSections.size() != 3) {
-        qWarning() //
+        qCWarning(logging) //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
             << hslSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
@@ -291,7 +293,7 @@ void ColorDialogPrivate::retranslateUi()
     QList<MultiSpinBoxSection> hwbSections = //
         m_hwbSpinBox->format();
     if (hwbSections.size() != 3) {
-        qWarning() //
+        qCWarning(logging) //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
             << hwbSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
@@ -308,7 +310,7 @@ void ColorDialogPrivate::retranslateUi()
     QList<MultiSpinBoxSection> hsvSections = //
         m_hsvSpinBox->format();
     if (hsvSections.size() != 3) {
-        qWarning() //
+        qCWarning(logging) //
             << "Expected 3 sections in HSV MultiSpinBox, but got" //
             << hsvSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
@@ -325,7 +327,7 @@ void ColorDialogPrivate::retranslateUi()
     QList<MultiSpinBoxSection> cielchD50Sections = //
         m_cielchD50SpinBox->format();
     if (cielchD50Sections.size() != 3) {
-        qWarning() //
+        qCWarning(logging) //
             << "Expected 3 sections in CIELCH-D50 MultiSpinBox, but got" //
             << cielchD50Sections.size() //
             << "instead. This is a bug in libperceptualcolor.";
@@ -343,7 +345,7 @@ void ColorDialogPrivate::retranslateUi()
     QList<MultiSpinBoxSection> oklchSections = //
         m_oklchSpinBox->format();
     if (oklchSections.size() != 3) {
-        qWarning() //
+        qCWarning(logging) //
             << "Expected 3 sections in Oklch MultiSpinBox, but got" //
             << oklchSections.size() //
             << "instead. This is a bug in libperceptualcolor.";
@@ -2500,10 +2502,10 @@ QString ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(const QString &inp
         }
     }
     if (result != input) {
-        qWarning() //
+        qCWarning(logging) //
             << "Gamut identifier contains invalid characters:" //
             << input;
-        qWarning() //
+        qCWarning(logging) //
             << "Gamut identifier has been substituted by:" //
             << result;
     }

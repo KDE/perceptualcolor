@@ -6,11 +6,13 @@
 #include "initializetranslation.h"
 
 #include "initializelibraryresources.h"
+#include "logging.h"
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qlist.h>
 #include <qlocale.h>
+#include <qloggingcategory.h>
 #include <qmutex.h>
 #include <qpointer.h>
 #include <qstring.h>
@@ -73,17 +75,15 @@ void initializeTranslation(QCoreApplication *instance, std::optional<QStringList
     // and QThread::currentThread(), which are not explicitly documented
     // as thread-safe.
     if (instance == nullptr) {
-        qWarning() //
+        qCWarning(logging) //
             << __func__ //
             << "must not be called without a QCoreApplication object.";
-        throw 0;
     }
     if (QThread::currentThread() != QCoreApplication::instance()->thread()) {
-        qWarning() //
+        qCWarning(logging) //
             << __func__ //
             << "must not be called by any other thread "
                "except the QCoreApplication thread.";
-        throw 0;
     }
 
     // Static variables

@@ -11,6 +11,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "helperaccessibility.h"
 #include "helpermath.h"
+#include "logging.h"
 #include "multispinboxsection.h"
 #include <math.h>
 #include <qaccessible.h>
@@ -22,6 +23,7 @@
 #include <qglobal.h>
 #include <qlineedit.h>
 #include <qlocale.h>
+#include <qloggingcategory.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpointer.h>
@@ -929,14 +931,15 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
     } else {
         // The text does not start with the correct characters.
         // This is an error.
-        qWarning() << "The function" << __func__ //
-                   << "in file" << __FILE__ //
-                   << "near to line" << __LINE__ //
-                   << "was called with the invalid “lineEditText“ argument “" //
-                   << lineEditText //
-                   << "” that does not start with the expected character sequence “" //
-                   << m_textBeforeCurrentValue << ". " //
-                   << "The call is ignored. This is a bug.";
+        qCWarning(logging) //
+            << "The function" << __func__ //
+            << "in file" << __FILE__ //
+            << "near to line" << __LINE__ //
+            << "was called with the invalid “lineEditText“ argument “" //
+            << lineEditText //
+            << "” that does not start with the expected character sequence “" //
+            << m_textBeforeCurrentValue << ". " //
+            << "The call is ignored. This is a bug.";
         return;
     }
     if (cleanText.endsWith(m_textAfterCurrentValue)) {
@@ -944,14 +947,15 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
     } else {
         // The text does not start with the correct characters.
         // This is an error.
-        qWarning() << "The function" << __func__ //
-                   << "in file" << __FILE__ //
-                   << "near to line" << __LINE__ //
-                   << "was called with the invalid “lineEditText“ argument “" //
-                   << lineEditText //
-                   << "” that does not end with the expected character sequence “" //
-                   << m_textAfterCurrentValue << ". " //
-                   << "The call is ignored. This is a bug.";
+        qCWarning(logging) //
+            << "The function" << __func__ //
+            << "in file" << __FILE__ //
+            << "near to line" << __LINE__ //
+            << "was called with the invalid “lineEditText“ argument “" //
+            << lineEditText //
+            << "” that does not end with the expected character sequence “" //
+            << m_textAfterCurrentValue << ". " //
+            << "The call is ignored. This is a bug.";
         return;
     }
 

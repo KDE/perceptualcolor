@@ -5,11 +5,13 @@
 // First the interface, which forces the header to be self-contained.
 #include "perceptualsettings.h"
 
+#include "logging.h"
 #include <qchar.h>
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qhash.h>
+#include <qloggingcategory.h>
 #include <qsettings.h>
 #include <qsharedpointer.h>
 #include <qstringbuilder.h>
@@ -47,10 +49,10 @@ QString PerceptualSettings::fixedIdentifierWithHyphenMinus(const QString &input)
         }
     }
     if (result != input) {
-        qWarning() //
+        qCWarning(logging) //
             << "PerceptualSettings identifier contains invalid characters:" //
             << input;
-        qWarning() //
+        qCWarning(logging) //
             << "PerceptualSettings identifier has been substituted by:" //
             << result;
     }

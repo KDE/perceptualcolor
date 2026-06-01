@@ -6,11 +6,13 @@
 #include "settranslation.h"
 
 #include "initializetranslation.h"
+#include "logging.h"
 #include <optional>
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qlist.h>
+#include <qloggingcategory.h>
 #include <qthread.h>
 
 namespace PerceptualColor
@@ -53,13 +55,13 @@ void setTranslation(QCoreApplication *instance, const QStringList &newUiLanguage
     // and QThread::currentThread(), which are not explicitly documented
     // as thread-safe.
     if (instance == nullptr) {
-        qWarning() //
+        qCWarning(logging) //
             << __func__ //
             << "must not be called without a QCoreApplication object.";
         return;
     }
     if (QThread::currentThread() != QCoreApplication::instance()->thread()) {
-        qWarning() //
+        qCWarning(logging) //
             << __func__ //
             << "must not be called by any other thread "
                "except the QCoreApplication thread.";

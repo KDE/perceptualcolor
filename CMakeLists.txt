@@ -438,6 +438,8 @@ if(ADDITIONAL_WARNINGS AND ON_CLANG_DERIVATE)
         # that generate false positives…
         # We do know want to be compatible with C++98:
         -Wno-c++98-compat
+        # Causes false-positives on older compilers for qCWarning()
+        -Wno-gnu-zero-variadic-macro-arguments
         # We allow redundant parentheses because sometimes they
         # make code more readable:
         -Wno-redundant-parens

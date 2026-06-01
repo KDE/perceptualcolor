@@ -163,7 +163,7 @@ static void initWidgetAppearance(QApplication *app)
         // The following colors are missing in Fusion’s standard palette:
         // They appear in Qt’s documentation of QPalette::ColorRole,
         // but do not appear when passing Fusion’s standard palette to
-        // qDebug. Therefore, we set them explicitly to the default values
+        // QDebug. Therefore, we set them explicitly to the default values
         // that are mentioned in the documentation of QPalette::ColorRole.
         tempPalette.setColor(QPalette::Link, Qt::blue);
         tempPalette.setColor(QPalette::Link, Qt::magenta);
@@ -218,7 +218,8 @@ static void initFonts(QApplication *app, const QStringList &fontfiles)
     for (const QString &fontfile : std::as_const(fontfiles)) {
         const int id = QFontDatabase::addApplicationFont(fontfile);
         if (id == -1) {
-            qWarning() << "Font file could not be loaded:" << fontfile;
+            qCWarning(logging) << "Font file could not be loaded:" //
+                               << fontfile;
             std::exit(-1);
         }
         fontFamilies.append(QFontDatabase::applicationFontFamilies(id));
@@ -248,7 +249,8 @@ static void initFonts(QApplication *app, const QStringList &fontfiles)
     // the actually used family (available via QFontInfo) with the
     // originally requested family (available via QFont):
     if (QFontInfo(myFont).family() != myFont.family()) {
-        qWarning() << "Could not load font correctly:" << myFont.family();
+        qCWarning(logging) << "Could not load font correctly:" //
+                           << myFont.family();
     }
     app->setFont(myFont);
 }
