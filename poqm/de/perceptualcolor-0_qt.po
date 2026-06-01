@@ -1,17 +1,18 @@
 # SPDX-FileCopyrightText: 2023 Frederik Schwarzer <schwarzer@kde.org>
 # SPDX-FileCopyrightText: 2025 Alois Spitzbart <spitz234@hotmail.com>
+# SPDX-FileCopyrightText: 2026 Philipp Kiemle <l10n.daphipz@fastmail.de>
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
-"PO-Revision-Date: 2025-12-14 14:31+0100\n"
-"Last-Translator: Alois Spitzbart <spitz234@hotmail.com>\n"
+"PO-Revision-Date: 2026-05-26 23:13+0200\n"
+"Last-Translator: Philipp Kiemle <l10n.daphipz@fastmail.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.08.3\n"
+"X-Generator: Lokalize 25.12.3\n"
 "X-Qt-Contexts: true\n"
 
 #. @info:tooltip/plain In color diagrams, gamuts can take on unusual shapes that may appear visually incorrect. For example, in a chroma‑lightness diagram of the sRGB gamut in Oklch projection at high‑chroma blue hues, the outline resembles a triangle as expected, but also shows a spike extending from the lower‑left corner to the middle of the right edge. This shape is mathematically correct according to the sRGB and Oklch definitions, but users may mistake it for a rendering error. To avoid confusion, an info button is displayed in such cases, showing the following tooltip.
@@ -192,13 +193,13 @@ msgstr "&Deckkraft:"
 #: colordialog.cpp:360
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. @action:button (eye dropper/pipette). A click on the button transforms the mouse cursor to a cross and lets the user choose a color from the screen by doing a left-click. Same text as in QColorDialog
 #: colordialog.cpp:370
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "&Pick screen color…"
-msgstr "&Farbe vom Bildschirm wählen …"
+msgstr "&Farbe vom Bildschirm wählen …"
 
 #. @info:tooltip Tooltip for the gamut-correction action. The icon for this action is only visible in the UI while the color value within the corresponding spinbox is an out-of-gamut value. A click on the icon will change the spinbox’s values to the nearest in-gamut color (and make the icon disappear).
 #: colordialog.cpp:383
