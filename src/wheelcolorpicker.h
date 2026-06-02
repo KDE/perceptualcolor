@@ -30,6 +30,8 @@ class WheelColorPickerPrivate;
  *
  * @image html WheelColorPicker.png "WheelColorPicker"
  *
+ * See @ref circularwidgets for some pecularities of this widget.
+ *
  * @internal
  *
  * @todo NICETOHAVE Is the (double) focus indicator actually good design? Are

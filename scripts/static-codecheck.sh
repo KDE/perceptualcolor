@@ -27,6 +27,7 @@ PUBLIC_HEADERS="
     src/importexport.h
     src/multispinbox.h
     src/multispinboxsection.h
+    src/portaleyedropper.h
     src/settranslation.h
     src/version.in.hpp
     "

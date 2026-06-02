@@ -83,6 +83,7 @@ set(lib_PUBLICHEADERS
     importexport.h
     multispinbox.h
     multispinboxsection.h
+    portaleyedropper.h
     settranslation.h
     ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
 )

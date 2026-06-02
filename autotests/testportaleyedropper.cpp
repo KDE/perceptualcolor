@@ -4,6 +4,8 @@
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
 #include "portaleyedropper.h"
+// Second, the private implementation.
+#include "portaleyedropper_p.h" // IWYU pragma: keep
 
 #include <qcontainerfwd.h>
 #include <qglobal.h>
@@ -69,7 +71,7 @@ private Q_SLOTS:
     {
         auto &myEyedropper = PortalEyedropper::getInstance();
         // Difficult to test. Make sure that at least it does not crash.
-        myEyedropper.getPortalResponse(1, QVariantMap());
+        myEyedropper.d_pointer->getPortalResponse(1, QVariantMap());
     }
 };
 

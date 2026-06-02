@@ -118,8 +118,6 @@ void ChromaLightnessImageParameters::renderByRow( //
  * @param variantParameters A <tt>QVariant</tt> that contains the
  *        image parameters.
  * @param callbackObject Pointer to the object for the callbacks.
- *
- * @todo SHOULDHAVE Interlacing support (for faster reactions)
  */
 void ChromaLightnessImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {

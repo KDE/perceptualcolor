@@ -4,6 +4,8 @@
 #ifndef PERCEPTUALCOLOR_PORTALEYEDROPPER
 #define PERCEPTUALCOLOR_PORTALEYEDROPPER
 
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
 #include <optional>
 #include <qcontainerfwd.h>
 #include <qglobal.h>
@@ -14,9 +16,9 @@ class QWidget;
 
 namespace PerceptualColor
 {
+class PortalEyedropperPrivate;
 
 /**
- * @internal
  *
  * @brief Pick a color from the screen using Portal.
  *
@@ -30,11 +32,8 @@ namespace PerceptualColor
  * Flatpak intended to provide access to desktop functionality for
  * sandboxed Flatpak applications. It is usually present on many
  * Unix desktop environments.
- *
- * @todo NICETOHAVE Make this class part of the public API (introduce d_pointer
- * before)
  */
-class PortalEyedropper : public QObject
+class PERCEPTUALCOLOR_IMPORTEXPORT PortalEyedropper : public QObject
 {
     Q_OBJECT
 
@@ -100,19 +99,23 @@ Q_SIGNALS:
 private:
     Q_DISABLE_COPY_MOVE(PortalEyedropper)
 
-    /** @internal @brief Only for unit tests. */
+    /**
+     * @internal
+     *
+     * @brief Only for unit tests.
+     */
     friend class TestPortalEyedropper;
 
     explicit PortalEyedropper();
+
     virtual ~PortalEyedropper() override;
 
     /**
-     * @brief Internal storage for property
-     * @ref isAvailable */
-    std::optional<bool> m_isAvailable = std::nullopt;
-
-private Q_SLOTS:
-    void getPortalResponse(uint exitCode, const QVariantMap &responseArguments);
+     * @internal
+     *
+     * @brief Pointer to implementation (pimpl)
+     */
+    ConstPropagatingUniquePointer<PortalEyedropperPrivate> d_pointer;
 };
 
 } // namespace PerceptualColor

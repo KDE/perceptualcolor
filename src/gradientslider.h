@@ -76,8 +76,6 @@ class GradientSliderPrivate;
  * hand, this would be different to the slider handles of the color
  * wheels…)
  *
- * @todo NICETOHAVE A better focus indicator.
- *
  * @todo SHOULDHAVE This class @ref GradientSlider and also the class
  * @ref ColorWheel could be subclasses of QAbstractSlider. This
  * might integrate better with the user’s Qt code. On the other hand,

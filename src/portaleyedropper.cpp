@@ -1,7 +1,12 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "portaleyedropper.h"
+// Second, the private implementation.
+#include "portaleyedropper_p.h" // IWYU pragma: associated
+
 #include <qdbusargument.h>
 #include <qdbusconnection.h>
 #include <qdbusextratypes.h>
@@ -30,6 +35,7 @@ namespace PerceptualColor
  * support @ref isAvailable.
  */
 PortalEyedropper::PortalEyedropper()
+    : d_pointer(new PortalEyedropperPrivate(this))
 {
     QDBusMessage message = QDBusMessage::createMethodCall( //
         QStringLiteral("org.freedesktop.portal.Desktop"), // service
@@ -61,8 +67,8 @@ PortalEyedropper::PortalEyedropper()
                         temp = true;
                     }
                 }
-                m_isAvailable = temp;
-                Q_EMIT isAvailableChanged(m_isAvailable);
+                d_pointer->m_isAvailable = temp;
+                Q_EMIT isAvailableChanged(d_pointer->m_isAvailable);
             });
 }
 
@@ -70,6 +76,24 @@ PortalEyedropper::PortalEyedropper()
  * @brief Destructor
  */
 PortalEyedropper::~PortalEyedropper()
+{
+}
+
+/**
+ * @brief Constructor
+ *
+ * @param backLink Pointer to the object from which <em>this</em> object
+ *                 is the private implementation.
+ */
+PortalEyedropperPrivate::PortalEyedropperPrivate(PortalEyedropper *backLink)
+    : q_pointer(backLink)
+{
+}
+
+/**
+ * @brief Destructor
+ */
+PortalEyedropperPrivate::~PortalEyedropperPrivate() noexcept
 {
 }
 
@@ -88,7 +112,7 @@ PortalEyedropper &PortalEyedropper::getInstance()
 // and its getters are in the header)
 std::optional<bool> PortalEyedropper::isAvailable() const
 {
-    return m_isAvailable;
+    return d_pointer->m_isAvailable;
 }
 
 /**
@@ -169,7 +193,7 @@ void PortalEyedropper::startPicking(QWidget *eyedropperParent)
                         // name
                         QStringLiteral("Response"),
                         // receiver
-                        this,
+                        d_pointer.get(),
                         // slot
                         SLOT(getPortalResponse(uint, QVariantMap)));
                     // Ignoring the result of connect() because subsequent
@@ -187,7 +211,7 @@ void PortalEyedropper::startPicking(QWidget *eyedropperParent)
  * @param exitCode The exit code of the answer.
  * @param responseArguments The arguments of teh answer.
  */
-void PortalEyedropper::getPortalResponse(uint exitCode, const QVariantMap &responseArguments)
+void PortalEyedropperPrivate::getPortalResponse(uint exitCode, const QVariantMap &responseArguments)
 {
     if (exitCode != 0) {
         return;
@@ -207,7 +231,7 @@ void PortalEyedropper::getPortalResponse(uint exitCode, const QVariantMap &respo
         // The documentation of Portal claims to return always sRGB values,
         // so if the screen has a different color space, portal is supposed
         // to apply color management and return the sRGB correspondence.
-        Q_EMIT newColor(rgb.at(0), rgb.at(1), rgb.at(2));
+        Q_EMIT q_pointer->newColor(rgb.at(0), rgb.at(1), rgb.at(2));
     }
 }
 

@@ -14,6 +14,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "helperconstants.h"
+#include "initializetranslation.h"
 #include "lchvalues.h"
 #include <optional>
 #include <qcolor.h>
@@ -120,6 +121,12 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace p
     d_pointer->m_infoButton->show();
 
     d_pointer->updateLayoutMargins();
+    initializeTranslation(QCoreApplication::instance(),
+                          // An empty std::optional means: If an initialization
+                          // had been done yet, repeat this initialization.
+                          // If not, do a new initialization now with default
+                          // values.
+                          std::optional<QStringList>());
     d_pointer->retranslateUi();
     d_pointer->reloadIcons();
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
@@ -614,18 +621,6 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  * Other key events are forwarded to the base class.
  *
  * @param event the event
- *
- * @internal
- *
- * @todo NICETOHAVE From noahdvs in Matrix: “I noticed an issue with the arrow
- * key navigation of the lightness/saturation picker in the "Hue-based" tab.
- * If you press Up or Down, the point is able to climb up or down until it
- * reaches the maximum/minimum lightness (good). If you press Right, the point
- * gets stuck when it reaches an edge rather than being able to continue to the
- * right until maximum saturation is reached (bad).” Using
- * @ref ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness()
- * might help here, though its precision depends on the rendering size of the
- * image.
  */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {

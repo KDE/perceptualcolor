@@ -32,17 +32,7 @@ class ColorWheelPrivate;
  *
  * @image html ColorWheel.png "ColorWheel"
  *
- * @note This widget <em>always</em> accepts focus by a mouse click within
- * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
- * property:
- * - If you set the <tt>QWidget::focusPolicy</tt> property to a
- *   value that does not accept focus by mouse click, the focus
- *   will nevertheless be accepted for clicks within the actual circle.
- *   (This is the default behavior.)
- * - If you set the <tt>QWidget::focusPolicy</tt> property to a
- *   value that accepts focus by mouse click, the focus will not only be
- *   accepted for clicks within the actual circle, but also for clicks
- *   anywhere within the (rectangular) widget.
+ * See @ref circularwidgets for some pecularities of this widget.
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {

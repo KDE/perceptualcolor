@@ -422,7 +422,7 @@ private:
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class ColorDialogPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+    /** @internal @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ColorDialogPrivate> d_pointer;
 
     /** @internal @brief Only for unit tests. */

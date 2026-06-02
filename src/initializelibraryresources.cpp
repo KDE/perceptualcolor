@@ -13,7 +13,8 @@
 
 /** @internal
  *
- * @brief Helper function for @ref PerceptualColor::initializeTranslation().
+ * @brief Helper function
+ * for @ref PerceptualColor::initializeLibraryResources().
  *
  * <tt>Q_INIT_RESOURCE</tt> may not be used within a namespace.
  * Therefore exists this function which is not part of any namespace. To avoid

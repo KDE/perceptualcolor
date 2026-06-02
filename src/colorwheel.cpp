@@ -147,7 +147,8 @@ QPointF ColorWheelPrivate::fromWheelToWidgetCoordinates(const PolarPointF wheelC
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
     const qreal radius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
-    PolarPointF myPolarPoint = d_pointer->fromWidgetPixelPositionToWheelCoordinates(event->pos());
+    PolarPointF myPolarPoint = //
+        d_pointer->fromWidgetPixelPositionToWheelCoordinates(event->pos());
 
     // Ignore clicks outside the wheel
     if (myPolarPoint.radius() > radius) {
@@ -248,7 +249,8 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
         && (event->angleDelta().y() != 0)
         // then:
     ) {
-        d_pointer->setHueNormalized(d_pointer->m_hue + standardWheelStepCount(event) * singleStepHue);
+        d_pointer->setHueNormalized( //
+            d_pointer->m_hue + standardWheelStepCount(event) * singleStepHue);
     } else {
         event->ignore();
     }
@@ -300,16 +302,6 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
  * Reimplemented from base class.
  *
  * @param event the paint event
- *
- * @internal
- *
- * The wheel is painted using @ref ColorWheelPrivate::m_wheelImage.
- * The focus indicator (if any) and the handle are painted on-the-fly.
- *
- * @todo SHOULDHAVE Make the wheel to be drawn
- * horizontally and vertically aligned?? Or
- * better top-left aligned for LTR layouts and top-right aligned for RTL
- * layouts?
  */
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
@@ -361,7 +353,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     }
 
     // Paint the handle
-    const qreal wheelOuterRadius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
+    const qreal wheelOuterRadius = //
+        maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
     // Get widget coordinates for the handle
     QPointF myHandleInner = d_pointer->fromWheelToWidgetCoordinates(
         // Inner point at the wheel:
@@ -484,7 +477,8 @@ QSize ColorWheel::minimumSizeHint() const
     // the inner circle of the wheel is 4 × gradientMinimumLength(). By
     // dividing it by π, we get the required inner diameter:
     const qreal innerDiameter = 4 * gradientMinimumLength() / std::numbers::pi;
-    const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * spaceForFocusIndicator());
+    const int size = qRound( //
+        innerDiameter + 2 * gradientThickness() + 2 * spaceForFocusIndicator());
     // Expand to the global minimum size for GUI elements
     return QSize(size, size);
 }

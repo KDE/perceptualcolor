@@ -1030,7 +1030,7 @@ void ColorDialogPrivate::initialize()
         QLineEdit::ActionPosition::TrailingPosition);
 
     initializeTranslation(QCoreApplication::instance(),
-                          // An empty std::optional means: If in initialization
+                          // An empty std::optional means: If an initialization
                           // had been done yet, repeat this initialization.
                           // If not, do a new initialization now with default
                           // values.

@@ -59,6 +59,48 @@
  * make build_test test
  * @endcode */
 
+/**
+ * @internal
+ *
+ * @page circularwidgets Circular widgets
+ *
+ * This library provides several circular widgets, such as
+ * @ref PerceptualColor::WheelColorPicker, @ref PerceptualColor::ColorWheel,
+ * and @ref PerceptualColor::ChromaHueDiagram.
+ *
+ * These widgets are designed with a circular look-and-feel. Although the
+ * layout system treats them as rectangular (like any other QWidget), user
+ * interaction is truly circular. From the user’s perspective, they behave as
+ * circular widgets in both painting and mouse interaction. For example, a
+ * mouse click outside the circle but inside the surrounding rectangle is
+ * ignored by the widget; in particular, it does not even grant focus. If the
+ * current widget style allows dragging the window by left-click-and-hold in
+ * empty space, this action remains possible in the outer rectangular area.
+ *
+ * @note This widget <em>always</em> accepts focus when the mouse clicks inside
+ * the circle, regardless of the <tt>QWidget::focusPolicy</tt> setting:
+ * - If <tt>QWidget::focusPolicy</tt> is set to disallow mouse focus, clicks
+ *   inside the circle will still grant focus (default behavior).
+ * - If <tt>QWidget::focusPolicy</tt> allows mouse focus, then clicks inside
+ *   the circle as well as anywhere within the rectangular widget will grant
+ *   focus.
+ *
+ * @internal
+ *
+ * See also:
+ * <a href="https://forum.qt.io/topic/118547/accept-reject-focus-coming-by-mouse-click-based-on-coordinates">
+ * this Qt Forum thread</a>.
+ *
+ * An alternative approach could be using <tt>QWidget::setMask()</tt> to
+ * restrict mouse events and painting to a circular mask. However, we avoid
+ * this method due to several drawbacks:
+ * - It is unclear whether focus management is correctly handled with masks.
+ * - Documentation warns of performance penalties for complex shapes. Is a
+ *   circle considered complex in this context?
+ * - Most importantly, masking may interfere with our anti-aliased circle
+ *   rendering.
+ */
+
 /** @internal
  *
  * @page codingstyle Coding style
@@ -361,7 +403,9 @@
  * @todo SHOULDHAVE Support CSS colors using @ref PerceptualColor::CssColor
  * by allowing copy (right-click on the @ref PerceptualColor::ColorPatch,
  * however this will not work for keyboard-only usage because the context menu
- * key cannot be used because this widget cannot get focus, or should that
+ * key (Qt::Key_Menu and maybe Qt::Key_MenuKB and Qt::Key_MenuPB
+ * but rather not Qt::Key_TopMenu)
+ * cannot be used because this widget cannot get focus, or should that
  * change?) and paste (maybe even whereever in the
  * @ref PerceptualColor::ColorDialog, even within
  * @ref PerceptualColor::MultiSpinBox. And also incoming drag-and-drop
@@ -382,8 +426,15 @@
  * results in out-of-gamut colors. What we need: Appropriate user control code
  * (mouse and keyboard, but also the move-into-gamut functions used for
  * manually entered values) that deals correctly with all these pecularities.
- *
- * @todo NICETOHAVE Test manually or in CI for ARM64.
+ * And from noahdvs in Matrix: “I noticed an issue with the arrow
+ * key navigation of the lightness/saturation picker in the "Hue-based" tab.
+ * If you press Up or Down, the point is able to climb up or down until it
+ * reaches the maximum/minimum lightness (good). If you press Right, the point
+ * gets stuck when it reaches an edge rather than being able to continue to the
+ * right until maximum saturation is reached (bad).” Using
+ * @ref PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness()
+ * might help here, though its precision depends on the rendering size of the
+ * image.
  *
  * @todo SHOULDHAVE The color of the selection marker on the color wheel
  * should change (black or white) depending on the lightness of the most
@@ -446,30 +497,6 @@
  * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
  * @ref PerceptualColor::GradientSlider?
  *
- * @todo NICETOHAVE Most widgets of this library allocate in each paint event
- * a new buffer to paint on, before painting on the widget. This is also done
- * because only <tt>QImage</tt> guarantees the same result on all platforms,
- * while <tt>QPixmap</tt> is platform-dependent and Qt does not guarantee that
- * for example <tt>QPainter::Antialiasing</tt> is available on all platforms.
- * Could we at least instantiate only one single buffer per
- * application, that is than shared between all the widgets of our library?
- * This buffer would never be freed, so it will always occupy memory. But
- * this avoids the time-consuming memory allocations at each paint event!
- *
- * @todo SHOULDHAVE We do some hacks to get circle-like (instead of rectangular)
- * feeling for our circular widgets, which is not perfect when talking
- * about mouse events. It seems that QWidget::setMask() offers an
- * alternative, restricting mouse events (and painting) to a given
- * mask. Does this actually work also for mouse focus management?
- * If so: Has it performance penalties? If not, we should probably use
- * it! And document that those widgets are circular widgets and from
- * a user perspective behave like circular widgets (both paint event
- * and mouse cursor reactions/usage feeling), though from an application
- * programmer (that uses this library) perspective, they are of course
- * rectangular in the layout system. And: Post the results on
- * <a href="https://forum.qt.io/topic/118547/accept-reject-focus-coming-by-mouse-click-based-on-coordinates">
- * this Qt Forum thread</a>.
- *
  * @todo SHOULDHAVE <a href="https://bugs.kde.org/show_bug.cgi?id=517274">
  * Spectacle has a magnifier glass for cutting screenshots.</a> It would be
  * cool to have this also for eyedropper; it could be even better if the
@@ -516,12 +543,7 @@
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
  * @ref PerceptualColor::GradientImageParameters.
  *
- * @todo SHOULDHAVE When setting <tt>currentColor</tt> to an out-of-gamut color,
- * what happens? Does @ref PerceptualColor::ChromaHueDiagram preserve
- * lightness, while @ref PerceptualColor::ChromaLightnessDiagram preserves
- * hue? Would this make sense?
- *
- * @todo NICETOHAVE Paint grayed-out
+ * @todo NICETOHAVE STYLING Paint grayed-out
  * handles for all widgets when <tt>setReadOnly(false)</tt>
  * is used! For example 25% lightness instead of black. And 75% lightness
  * instead of white. But: Provide this information
@@ -628,10 +650,6 @@
  * built in debug mode as well. So you can’t just always use the same
  * compiler as you build the application with, if you use the system Qt or
  * a downloaded Qt version.
- *
- * @todo SHOULDHAVE
- * Use <a href="https://lvc.github.io/abi-compliance-checker/">
- * abi-compliance-checker</a> to control ABI compatibility.
  *
  * @todo NICETOHAVE Would it be a good idea to have plus and minus buttons that
  * manipulate the current color along the depth and vividness axis
@@ -875,8 +893,6 @@
  * - https://community.kde.org/Frameworks/Frameworks_Documentation_Policy
  * - https://community.kde.org/Frameworks/Frameworks_Logging_Policy
  * - https://develop.kde.org/docs/getting-started/common-programming-mistakes/
- *
- * @todo SHOULDHAVE https://community.kde.org/Policies/Application_Lifecycle
  */
 
 /** @page qtstylesheetssupport Qt Style Sheets support
@@ -1018,6 +1034,10 @@
  *   operator unless the class cannot be copied by value. (E.g. classes
  *   inherited from QObject can't be.)
  *
+ * @todo SHOULDHAVE
+ * Use <a href="https://lvc.github.io/abi-compliance-checker/">
+ * abi-compliance-checker</a> to control ABI compatibility.
+ *
  * @todo SHOULDHAVE Additional to <tt>event()</tt>, reimplement also all other
  * virtual functions that might potentially be useful in the future, using a
  * simple implementation that just calls the implementation of the base class.
@@ -1055,9 +1075,12 @@
  *
  * @todo SHOULDHAVE Consider
  * <a href="https://develop.kde.org/docs/getting-started/add-project/#kde-review">
- * KDE review</a>, then remove this item from the release checklist.
+ * KDE review</a> and
+ * <a href="https://community.kde.org/Policies/Application_Lifecycle">
+ * Application Application_Lifecycle</a>, then remove this item from the
+ * release checklist.
  *
- * @todo SHOULDHAVE Test on MacOS and Big-Endian, which are both not in the
+ * @todo SHOULDHAVE Test on MacOS and Big-Endian and ARM, which are not in the
  * normal CI pipeline.
  *
  * @todo SHOULDHAVE Full-featured
@@ -1097,7 +1120,3 @@
  * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR
  * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR
  * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH */
-
-namespace PerceptualColor
-{
-} // namespace PerceptualColor
