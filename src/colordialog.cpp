@@ -1708,13 +1708,6 @@ void ColorDialogPrivate::readOklchNumericValues()
  *
  * @post If supported, @ref m_eyedropperButton
  * is created. Otherwise, it stays <tt>nullptr</tt>.
- *
- * @todo SHOULDHAVE Currently, there is no color
- * management for the result of the screen color picking. Instead,
- * we should assume that the result of the screen color picking is sRGB
- * and convert it into the actual working color space of this
- * widget (which might happen to be also sRGB, but could also
- * be different).
  */
 void ColorDialogPrivate::initializePortalEyedropper()
 {

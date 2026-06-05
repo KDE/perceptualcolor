@@ -300,6 +300,21 @@
  *
  * @internal
  *
+ * In addition to the classic Lightness, Chroma, and Hue coordinates,
+ * several extended axes have been proposed. For example, Roy S. Berns
+ * (<a href="https://onlinelibrary.wiley.com/doi/10.1002/col.21833?msockid=12ef4d3764cb69042be95a18657e6859">
+ * Extending CIELAB – Vividness V, Depth D, and Clarity T</a>) introduces
+ * the attribute <em>clarity</em> (T), which describes a color relative to its
+ * background. This concept is not supported in this library. The other
+ * proposed attributes, <em>vividness</em> (V) and <em>>depth</em> (D), are
+ * functions of LCh chroma and lightness only, independent of hue. This
+ * makes them impractical in our context: if users were allowed to adjust
+ * vividness directly, there would be no unique formula to compute the
+ * change. Either L, C, or both could be modified to achieve the new
+ * vividness value, but it is unclear which parameter should be altered.
+ * Because this leads to non‑intuitive behavior and ambiguous results,
+ * vividness, depth, and clarity are not implemented in this library.
+ *
  * Support for Wide Color Gamut (WCG) or High Dynamic Range (HDR) rendering
  * requires using QOpenGLWidget and leveraging OpenGL directly. QRHI
  * (https://doc.qt.io/qt-6/qrhi.html) is a semi‑private API with limited
@@ -377,14 +392,6 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo NICETOHAVE Speed up CI (warnings and iwyu) jobs by only building
- * libperceptualcolorinternal, and not libperceptualcolor? Would this speed
- * up much or isn't it worth the effort? We would have to make sure that
- * the default CI jobs continue to build everything to be sure everything
- * compiles.
- *
- * @todo SHOULDHAVE Screen for dead code and remove it.
- *
  * @todo SHOWSTOPPER Define the precision of this library. We allow
  * changing the number of decimals in the @ref PerceptualColor::ColorDialog
  * though there is only a private API, not a public one. If so, maybe
@@ -452,16 +459,23 @@
  * Would it make sense to use simply image scaling with
  * Qt::SmoothTransformation while waiting for the high-DPI image?
  *
- * @todo NICETOHAVE Static codecheck: The doxygen command (at)sa must always
- * be followed by (at)ref, because (at)sa fails silently, but a following
- * (at)ref makes sure we get an error message.
- *
  * @todo NICETOHAVE When the CI tests for warnings, it should not only build
  * and Clang/Clazy, but additionally also on GCC which produces some warnings
  * that Clang/Clazy does not have.
  *
- * @todo NCIETOHAVE Add <tt>QToolTip</tt> value explaining the accepted keys
+ * @todo NICETOHAVE Provide more <tt>tooltip()</tt> help for widgets. For
+ * Fot @ref PerceptualColor::WheelColorPicker and
+   @ref PerceptualColor::ChromaLightnessDiagram, this
+ * help text could describe the accepted keyboard controls
  * and mouse movements?
+ * These tooltips could be integrated
+ * as default value in the class itself. For the other widgets, a
+ * help text could be defined within @ref PerceptualColor::ColorDialog,
+ * if appropriate.
+ * There, we could also add a tooltip about the
+ * whitepoint (D65) of sRGB in the sRGB group box. But maybe this is overkill
+ * and we should instead do the opposide and remove the whitepoint information
+ * from the Oklch tooltip.
  *
  * @todo SHOULDHAVE Circular diagrams should be right-aligned on RTL layouts.
  *
@@ -492,7 +506,7 @@
  * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
  * Would this make sense also for our library?
  *
- * @todo NICETOHAVE A design question: Should we use
+ * @todo NICETOHAVE STYLING Should we use
  * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum"><tt>
  * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
  * @ref PerceptualColor::GradientSlider?
@@ -504,7 +518,7 @@
  * implemented within this library, but as a KDE portal providing this
  * functionality. New features would have to be implemented there.
  *
- * @todo SHOULDHAVE Consider deeper integration with QStyle. KStyle
+ * @todo SHOULDHAVE STYLING Consider deeper integration with QStyle. KStyle
  * (<a href="https://invent.kde.org/frameworks/frameworkintegration/-/tree/master/src/kstyle?ref_type=heads">
  * code</a> / <a href="https://api.kde.org/kstyle.html">documentation</a>) is a
  * QCommonStyle‑derived class that enables QString‑based queries for custom
@@ -538,7 +552,7 @@
  * As we provide widgets, this should not be too important. Are there also
  * good arguments for widgets to provide RESET?
  *
- * @todo NICETOHAVE Remove setDevicePixelRatioF from all *Image classes. (It is
+ * @todo NICETOHAVE Remove setDevicePixelRatioF from these classes. (It is
  * confusing, and at the same time there is no real need/benefit.)
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
  * @ref PerceptualColor::GradientImageParameters.
@@ -552,11 +566,11 @@
  * maybe even the gamut itself invisible when <tt>setEnabled(false)</tt>
  * is used.
  *
- * @todo SHOULDHAVE Switch AbstractDiagram::handleOutlineThickness() and
+ * @todo SHOULDHAVE STYLING Switch AbstractDiagram::handleOutlineThickness() and
  * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
  * (PM_DefaultFrameWidth seems to be used yet in ColorPatch.)
  *
- * @todo SHOULDHAVE
+ * @todo SHOULDHAVE STYLING
  * It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
  * <em>(Horizontal margin that the focus frame will outset the widget
  * by.)</em> Or: <tt>QStyle::PM_FocusFrameVMargin</tt>. Using this for the
@@ -590,6 +604,10 @@
  * manual.</a> Is it possible to support both, Doxygen and QDoc, at the same
  * time? If not, can we get with QDoc as much error tracking in
  * Continious Integration as we get currently with Doxygen?
+ * As long as Doxygen is supported: The doxygen command (at)sa must always
+ * be followed by (at)ref, because (at)sa fails silently, but a following
+ * (at)ref makes sure we get an error message; we should have a static
+ * codecheck for this.
  *
  * @todo NICETOHAVE KDE provides an interesting
  * recommendation: <tt>int Units::humanMoment = 2000;</tt> <em>Time in
@@ -641,7 +659,7 @@
  * Apparently QWidget cannot be used from QML. (Though there is
  * https://www.kdab.com/declarative-widgets/ – how does that work?)
  *
- * @todo NICETOHAVE
+ * @todo NICETOHAVE Qt Creator and
  * Qt Designer support for the widgets. Quote from a blog from Viking
  * about Qt Designer plugins:
  * The problem is that you have to build it with exactly the same compiler
@@ -650,11 +668,6 @@
  * built in debug mode as well. So you can’t just always use the same
  * compiler as you build the application with, if you use the system Qt or
  * a downloaded Qt version.
- *
- * @todo NICETOHAVE Would it be a good idea to have plus and minus buttons that
- * manipulate the current color along the depth and vividness axis
- * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
- * by Roy S. Berns?
  *
  * @todo SHOULDHAVE Test RTL functionality and text layout, using the yet
  * available Arabic translation.
@@ -1001,24 +1014,35 @@
  *
  * @page releasechecklist Release checklist
  *
- * @todo SHOULDHAVE https://keepachangelog.com/en/1.1.0/
+ * Update iwyu.cpp and run iwyu and fix all notifications.
  *
- * @todo SHOULDHAVE Add missing friend declarations for unit
+ * Qt Designer support for the widgets. Quote from a blog from Viking
+ * about Qt Designer plugins:
+ * The problem is that you have to build it with exactly the same compiler
+ * tool chain as designer was built with, and you have to do it in release
+ * mode. Unless your Qt is built in debug, then your plugin needs to be
+ * built in debug mode as well. So you can’t just always use the same
+ * compiler as you build the application with, if you use the system Qt or
+ * a downloaded Qt version.
+ *
+ * https://keepachangelog.com/en/1.1.0/
+ *
+ * Add missing friend declarations for unit
  * tests in Public API.
  *
- * @todo SHOULDHAVE Execute all scritps
+ * Execute all scritps
  *
- * @todo SHOULDHAVE Update screenshots
+ * Update screenshots
  *
- * @todo SHOULDHAVE Control compile warnings in default CI jobs
+ * Control compile warnings in default CI jobs
  *
- * @todo SHOULDHAVE Manually control that only actual Public API appears in the
+ * Manually control that only actual Public API appears in the
  * Public API documentation.
  *
- * @todo SHOULDHAVE Increase version number in CMakeLists.txt (MAJOR_VERSION,
+ * Increase version number in CMakeLists.txt (MAJOR_VERSION,
  * MINOR_VERSION, PATCH_VERSION)
  *
- * @todo SHOULDHAVE From
+ * From
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * KDE’s binary compatibility info page</a>:
  * In order to make a class to extend in the future you should follow these
@@ -1034,25 +1058,23 @@
  *   operator unless the class cannot be copied by value. (E.g. classes
  *   inherited from QObject can't be.)
  *
- * @todo SHOULDHAVE
  * Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.
  *
- * @todo SHOULDHAVE Additional to <tt>event()</tt>, reimplement also all other
+ * Additional to <tt>event()</tt>, reimplement also all other
  * virtual functions that might potentially be useful in the future, using a
  * simple implementation that just calls the implementation of the base class.
  * This reduces the risk to have to break binary compatibility and make a new
  * mayor version release in the future.
  *
- * @todo SHOULDHAVE Test rendering manually for common QStyle (including
+ * Test rendering manually for common QStyle (including
  * Breeze, Kvantum, Adwaita, Fusion) and style sheets.
  *
- * @todo SHOULDHAVE
  * Add d-pointer using @ref PerceptualColor::ConstPropagatingUniquePointer to
  * all public classes, including the non-pimpl classes, to allow for later
  * enhancements.
  *
- * @todo SHOULDHAVE Following
+ * Following
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * KDE’s binary compatibility info page</a> you cannot:
  * “Add a virtual function to a class that doesn't have any virtual functions
@@ -1061,29 +1083,28 @@
  * it seems to be impossible to add new virtual functions on Windows while
  * staying binary compatible.)
  *
- * @todo SHOULDHAVE
  * <a href="https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#c37-make-destructors-noexcept">
  * The C++ core guidelines recommand that destructors should
  * be <tt>noexcept</tt>, either implicitly or explicitly.</a>. Make sure
  * that in our Public API, every destructor is explicitly <tt>noexcept</tt>.
  *
- * @todo SHOULDHAVE Remove things form the public API, leaving only the
+ * Remove things form the public API, leaving only the
  * absolutely minimal API that is required by the user, then remove this
  * item from the release checklist.
  * Also change QColor to QRgb in all API
  * that do not offer more than QRgb precision anyway.
  *
- * @todo SHOULDHAVE Consider
+ * Consider
  * <a href="https://develop.kde.org/docs/getting-started/add-project/#kde-review">
  * KDE review</a> and
  * <a href="https://community.kde.org/Policies/Application_Lifecycle">
  * Application Application_Lifecycle</a>, then remove this item from the
  * release checklist.
  *
- * @todo SHOULDHAVE Test on MacOS and Big-Endian and ARM, which are not in the
+ * Test on MacOS and Big-Endian and ARM, which are not in the
  * normal CI pipeline.
  *
- * @todo SHOULDHAVE Full-featured
+ * Full-featured
  *   <a href="https://doc.qt.io/qt-6/accessible-qwidget.html">Qt Widget
  *   accessibility support</a>. @ref PerceptualColor::AccessibleMultiSpinBox
  *   has currently not even an actual implementation! And: More work on other

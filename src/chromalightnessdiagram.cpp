@@ -1009,18 +1009,6 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
  * used to reduce the search rectangle significantly.
  * Or we could use the gamut boundary, mayby still available from the boundary
  * anti-aliasing.
- *
- * @todo NICETOHAVE RGB 0 28 253: When moving
- * the curser outside the gamut, below the
- * dark blue shadows, but still near to the gamut, the selection marker
- * “jumps” where the gamut boundary in nearly horizontal and there are
- * one-pixel stairs. That's not that nice. Maybe we could preserve the
- * high-resolution anti-alias data that was yet calculated in the
- * @ref ChromaLightnessImageParameters::render() function which in return
- * calls @ref doAntialias(). This would give us a high-resolution information.
- * But wouldn‘t that mean to increase signaificantly the memory usage?
- * And make the algorithm more complicate because it will have to deal
- * with two different pixel resolutions?
  */
 std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition(const QPoint originalPixelPosition)
 {

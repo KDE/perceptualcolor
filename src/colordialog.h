@@ -88,8 +88,11 @@ class ColorDialogPrivate;
  * @note @anchor qdialogsourceompatibility The API of this class is mostly
  * source-compatible to the API of QColorDialog. This is a list of
  * incompatibilities:
- * - A QColorDialog-like API for customColor and standardColor is
+ * - A QColorDialog-like API for customCount, customColor and standardColor is
  *   not available in this class.
+ *   Note that Qt‘s platform theme has no support for these functions either,
+ *   so if QColorDialog actually uses the platform’s dialog, like on MacOS,
+ *   those functions have no effect.
  * - The option <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
  *   will always remain <tt>false</tt> (even if set explicitly), because it’s
  *   just the point of this library to provide an own, non-native dialog.
@@ -109,15 +112,6 @@ class ColorDialogPrivate;
  *
  * @internal
  *
- * @todo NICETOHAVE The
- * @ref ColorDialogPrivate::m_lchLightnessSelector has a different
- * scale than the @ref ColorDialogPrivate::m_chromaHueDiagram, but both are
- * directly side-by-side in the dialog. Would it make sense to use the
- * same scale for both?
- *
- * @todo NICETOHAVE Implement QColorDialog-like API
- * for customColor and standardColor
- *
  * @todo NICETOHAVE Provide <tt>setResizable(bool resizable)</tt>. Do not
  * provide a property, because in the background this is setting <em>two</em>
  * different values, which might be conflicting in the moment when read
@@ -128,16 +122,6 @@ class ColorDialogPrivate;
  * default), the user can make the window very big, which might increase
  * the rendering time considerable.
  *
- * @todo NICETOHAVE In KDE systemsettings, in “Fonts” settings, there are small
- * buttons showing a “i” symbol (for “information”) that has no functionality,
- * but a tooltip for the widget at the left. Would this be also good for
- * @ref ColorDialog?
- * The button does nothing when it’s clicked, but when hovering with the mouse,
- * it shows the tooltip. This might be interesting at least for the tooltip of
- * the color-space information, which is quite big. And could this help to make
- * tooltip information available for touch-screen users, maybe displaying them
- * when the user clicks the button?
- *
  * @todo NICETOHAVE Provide (on demand) two patches,
  * like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new
@@ -145,13 +129,6 @@ class ColorDialogPrivate;
  * named “before” and the other “after”. Or maybe make this configurable?
  * And put an arrow between the patches, from “before” to “after”. (Be aware:
  * RTL support necessary!)
- *
- * @todo NICETOHAVE Provide more <tt>tooltip()</tt> help for widgets. For
- * @ref WheelColorPicker and @ref ChromaLightnessDiagram, this
- * help text could describe the keyboard controls and be integrated
- * as default value in the class itself. For the other widgets, a
- * help text could be defined here within <em>this</em> class,
- * if appropriate.
  *
  * @todo NICETOHAVE Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
  * functionality as the gamut button in the HCL @ref MultiSpinBox.
@@ -166,31 +143,12 @@ class ColorDialogPrivate;
  * in-gamut value is RGB 255 251 202, which is really quite far from
  * Qt::yellow RGB 255 255 0 (much more pale).
  *
- * @todo SHOULDHAVE Provide an overloaded version of @ref open() that accepts
- * arguments for new-style connect statements, making use of compiler
- * checks.
- *
- * @todo NICETOHAVE
- * The LCh-hue (and so the graphical widgets) jumps forward and backward
- * when changing RGB-based values (also HSV) when entering and leaving the gray
- * axis, due to lack of hue information. Would it be an option to store the
- * old hue to get a meaningful hue?
- * Should it be only really for the gray axis, or allow a certain tolerance
- * around the gray axis is necessary to make this work well - and if so,
- * how much tolerance? Would it be useful to define a certain hue, for
- * example 0°, as default hue for when no old hue is available but the
- * new value is on the gray axis?
- *
  * @todo NICETOHAVE Support for other models like
  * Munsell? With an option to enable or disable them? (NCS not, because
  * it is not free…)
- *
- * @todo NICETOHAVE Add more @ref MultiSpinBox for
+ * Or, additional to the polar coordinates Oklch/Cielch support also:
  * Oklab (feature parity with CSS Color 5),
  * Cielab (feature parity with CSS Color 5), Okhsl?
- *
- * @todo NICETOHAVE Info about the whitepoint (D50, D65…) in the tooltip for
- * the sRGB group box.
  *
  * @todo NICETOHAVE Restore the previous window geometry when the dialog is
  * shown? Sessin management similiar to
@@ -205,12 +163,6 @@ class ColorDialogPrivate;
  * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
  * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
  * for compatibility?
- *
- * @todo NICETOHAVE A property in @ref ColorDialog that substitutes
- * @ref ColorDialogPrivate::decimals and so provides an API to change this
- * within a reasonably range like [0..2].
- *
- * @todo NICETOHAVE Implement more of the <tt>QColorDialog</tt> API here.
  *
  * @note The swatch book has the basic color page, which provides a perceptual
  * color palette. Commom palettes like QColorDialog’s standard colors or the

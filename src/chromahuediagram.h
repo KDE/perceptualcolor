@@ -53,7 +53,7 @@ class ChromaHueDiagramPrivate;
  *
  * @internal
  *
- * @todo NICETOHAVE Questin: Use a cross cursor when the mouse cursor hovers
+ * @todo NICETOHAVE STYLING Use a cross cursor when the mouse cursor hovers
  * above the diagrams, for better usability? The cross cursor indicates
  * to the user that an area can be clicked in. Do it only within the gamut
  * (where the color handle can actually go) or in the hole gray circle,

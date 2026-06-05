@@ -57,9 +57,6 @@ Q_NAMESPACE
  * <a href="https://doc-snapshots.qt.io/qt6-dev/qcolorspace.html#ColorModel-enum">
  * <tt>enum QColorSpace::NamedColorSpace</tt></a> might also be useful in
  * the future.
- *
- * @todo NICETOHAVE Write unit tests for all functions and function templates
- * in this header.
  */
 enum class ColorModel {
     SRgb_1, /**< @internal The absolute sRGB color space, which by

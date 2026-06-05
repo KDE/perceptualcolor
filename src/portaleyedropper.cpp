@@ -116,29 +116,18 @@ std::optional<bool> PortalEyedropper::isAvailable() const
 }
 
 /**
- * @brief Start the screen color picking.
+ * @brief Initiates screen color picking via the Portal service.
  *
  * @param eyedropperParent Pointer to the parent widget for this call, or
- * <tt>std::nullptr</tt> for no parent. In the rare case that Portal displays
- * user interface elements like e.g. a message box to request user permission
- * for the  eyedropper functionality, some portal implementations might use
- * this information to improve positioning.
+ * <tt>std::nullptr</tt> if no parent is provided. In rare cases where the Portal
+ * displays user interface elements (e.g. a message box requesting user permission
+ * for eyedropper functionality), then under the X Window System this dialog will be
+ * centered relative to the given parent widget. On other window systems, including
+ * Wayland, placement is at the discretion of the Portal service.
  *
- * @post If Portal support for eyedropper functionality is available, it is
- * started. Results can be obtained via @ref newColor. If not supported,
- * no action is taken.
- *
- * @internal
- *
- * @todo NICETOHAVE Currently, placing Portal dialogs for user interaction
- * relative to the center of the parent widget only works on X11. On Wayland,
- * QWidget->winID() returns pseudo values instead of the actual
- * native wl_surface handle, which would be necessary.
- * It is possible to get the actual handle through a
- * <a href="https://codebrowser.dev/qt6/qtbase/src/plugins/platforms/wayland/qwaylandnativeinterface.cpp.html">
- * QWaylandNativeInterface</a> object, which in return can be obtained through
- * <tt>QGuiApplication::platformNativeInterface()</tt>, but all this is
- * private API, which we do not use by policy.
+ * @post If Portal support for eyedropper functionality is available, the
+ * process is started. Results can be obtained via @ref newColor. If not
+ * supported, no action is taken.
  */
 void PortalEyedropper::startPicking(QWidget *eyedropperParent)
 {
@@ -146,16 +135,27 @@ void PortalEyedropper::startPicking(QWidget *eyedropperParent)
         return;
     }
 
-    // The format of the handle to identify the parent window is defined in
+    // The format of the parent window handle is defined in:
     // https://flatpak.github.io/xdg-desktop-portal/#parent_window
-    // and has different content for X11 and Wayland. X11 is easy to
-    // implement through QWidget::winId(), which returns it. Unfortunately, on
-    // Wayland, QWidget::inId() does not the necessary wl_surface from Wayland,
-    // but instead an internal reference number. To get the corrent handle
-    // on Wayland would require to call the the xdg_foreign protocol. For other
-    // windowing systems, an empty string should be used. While tests show that
-    // it works fine with an empty string in X11, we provide at least the easy
-    // identifier for X11.
+    // It differs between X11 and Wayland.
+    //
+    // On X11, this is straightforward: QWidget::winId() returns the required
+    // identifier.
+    //
+    // On Wayland, however, QWidget::winId() returns only a pseudo value
+    // (an internal reference number) rather than the actual native wl_surface
+    // handle. The actual handle can be retrieved via
+    // QWaylandNativeInterface, see:
+    // https://codebrowser.dev/qt6/qtbase/src/plugins/platforms/wayland/qwaylandnativeinterface.cpp.html
+    // It is accessible through  QGuiApplication::platformNativeInterface().
+    // However, this is private API, which we avoid by policy.
+    // The xdg_foreign protocol is also not useful here, since QWidget does not
+    // expose its surfaces through it.
+    //
+    // For other windowing systems, an empty string should be passed.
+    //
+    // In summary: we provide a parent window identifier only under the
+    // X11 window system.
     QString parentWindowIdentifier;
     if (QGuiApplication::platformName() == QStringLiteral("xcb")) {
         if (eyedropperParent != nullptr) {
@@ -196,11 +196,11 @@ void PortalEyedropper::startPicking(QWidget *eyedropperParent)
                         d_pointer.get(),
                         // slot
                         SLOT(getPortalResponse(uint, QVariantMap)));
-                    // Ignoring the result of connect() because subsequent
-                    // calls might occur with the same path(), which will
-                    // make connect() return “false” because the connection
-                    // is yet established, which is okay and not a failure;
-                    // the slot will be called only once nevertheless.
+                    // We ignore the return value of connect() because repeated
+                    // calls with the same path() will return false once the
+                    // connection is already established. This is expected and
+                    // not an error; the slot will still be invoked exactly
+                    // once.
                 }
             });
 }

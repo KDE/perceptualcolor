@@ -695,11 +695,6 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinGamutCircle(const QPoin
  * @todo NICETOHAVE Show the indicator on
  * the color wheel not only while a mouse button
  * is pressed, but also while a keyboard button is pressed.
- *
- * @todo SHOULDHAVE What when
- * @ref ChromaHueDiagramPrivate::m_currentColorLch has a valid
- * in-gamut color, but this color is out of the <em>displayed</em> diagram?
- * How to handle that?
  */
 void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 {

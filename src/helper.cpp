@@ -487,18 +487,6 @@ bool isDarkColorScheme()
  *       you would naturally expect all tints and shades of the same color
  *       to retain the same hue. However, slight differences may appear
  *       due to rounding.
- *
- * @internal
- *
- * @todo NICETOHAVE wcsBasicColors has a gray axis that makes (CIELchD50)
- * diagram hue flip around. It shouldn’t.
- *
- * @todo NICETOHAVE The conversion of the calculated tints and shades could
- * be done directly with Oklch->sRGB
- * instead of passing through CIELchD50 first.
- *
- * @todo SHOULDHAVE All values on the gray axis should have either the same
- * Oklch hue or the same Cielch hue, probably 0°.
  */
 QColorArray2D wcsBasicColors()
 {
@@ -568,13 +556,7 @@ QColorArray2D wcsBasicColors()
     QList<double> lightnesses{1, 0.75, 0.5, 0.25, 0};
     for (int j = 0; j < lightnesses.size(); ++j) {
         const GenericColor myOklab{lightnesses.at(j), 0, 0};
-        const auto cielchD50 = AbsoluteColor::convert( //
-                                   ColorModel::OklabD65, //
-                                   myOklab, //
-                                   ColorModel::CielchD50 //
-                                   )
-                                   .value_or(GenericColor());
-        const auto rgb = AbsoluteColor::fastFromCielchD50ToSRgbClamped(cielchD50);
+        const auto rgb = AbsoluteColor::fastFromOklchToSRgbClamped(myOklab);
         wcsSwatches.setValue(columnCount - 1, j, rgb);
     }
 

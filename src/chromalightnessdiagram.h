@@ -38,6 +38,12 @@ class ChromaLightnessDiagramPrivate;
  * - If the widget is twice as wide as it is tall, lightness still
  *   spans 0 to 1, but chroma spans 0 to 2.
  *
+ * @warning Ensure that the widget’s width is sufficiently large relative
+ * to its height so that the maximum‑chroma color of the current gamut
+ * remains fully visible within the diagram. If the diagram surface is too
+ * narrow, the rightmost portion of the gamut will be clipped, and user
+ * interaction in that area will not function correctly.
+ *
  * @internal
  *
  * @note This class is not part of the public API because its interface
