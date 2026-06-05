@@ -42,6 +42,7 @@
 #include <qcoreevent.h>
 #include <qdebug.h>
 #include <qdialogbuttonbox.h>
+#include <qevent.h>
 #include <qformlayout.h>
 #include <qgridlayout.h>
 #include <qgroupbox.h>
@@ -2510,6 +2511,40 @@ QString ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(const QString &inp
             << result;
     }
     return result;
+}
+
+/**
+ * @brief This function handles keyboard input.
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The key press event
+ */
+void ColorDialog::keyPressEvent(QKeyEvent *event)
+{
+    // QTabWidget natively supports Ctrl+Tab and Ctrl+Shift+Tab navigation,
+    // but only when the keyboard focus is on one of its child widgets.
+    // In this dialog, we also intercept these events when the focus lies
+    // on other controls. This ensures consistent tab switching behavior,
+    // which is reasonable given that the QTabWidget occupies a central
+    // position within the dialog.
+    std::optional<int> shift;
+    if (event->key() == Qt::Key_Tab && event->modifiers() == Qt::ControlModifier) {
+        shift = 1;
+    }
+    if (event->key() == Qt::Key_Backtab && event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
+        shift = -1;
+    }
+    if (shift.has_value()) {
+        const auto oldIndex = d_pointer->m_tabWidget->currentIndex();
+        const auto count = d_pointer->m_tabWidget->count();
+        const int newIndex = (oldIndex + shift.value_or(0) + count) % count;
+        d_pointer->m_tabWidget->setCurrentIndex(newIndex);
+        event->accept();
+        return;
+    }
+
+    QDialog::keyPressEvent(event);
 }
 
 } // namespace PerceptualColor

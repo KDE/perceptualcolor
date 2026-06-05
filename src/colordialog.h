@@ -158,12 +158,6 @@ class ColorDialogPrivate;
  * But attention: If a library user <em>embeds</em> the dialog, he does
  * not want his shortcuts to be intercepted!
  *
- * @todo NICETOHAVE It might be nice to
- * support keyboard shortcuts for switching tabs
- * like in browsers, which is a concept many users might be familiar to.
- * Crtl+Tab to switch to the next tab in the list. Crtl+Shift+Tab to switch
- * to the previous tab in the list.
- *
  * @todo NICETOHAVE Start with dialog with Qt::yellow RGB 255 255 0. You get
  * CIELchD50 98% 95 100°. Change the value, than enter manually
  * CIELchD50 98% 95 100°. Expected result: Ideally there would be no rounding
@@ -410,6 +404,7 @@ Q_SIGNALS:
 protected:
     virtual void changeEvent(QEvent *event) override;
     virtual void done(int result) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void showEvent(QShowEvent *event) override;
 
 private:
