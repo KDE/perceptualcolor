@@ -77,51 +77,6 @@ private Q_SLOTS:
         QCOMPARE(test.d_pointer->m_orientation, Qt::Vertical);
     }
 
-    void testFirstColor()
-    {
-        GradientSlider testSlider(LchSpace::CielchD50, Qt::Vertical);
-        GenericColor color;
-        color.first = 50;
-        color.second = 50;
-        color.third = 50;
-        color.fourth = 1;
-        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::firstColorLchAChanged);
-        testSlider.setFirstColorLchA(color);
-        QVERIFY(testSlider.firstColorLchA() == color);
-        QCOMPARE(spy.size(), 1);
-    }
-
-    void testSecondColor()
-    {
-        GradientSlider testSlider(LchSpace::CielchD50, Qt::Vertical);
-        GenericColor color;
-        color.first = 50;
-        color.second = 50;
-        color.third = 50;
-        color.fourth = 1;
-        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::secondColorLchAChanged);
-        testSlider.setSecondColorLchA(color);
-        QVERIFY(testSlider.secondColorLchA() == color);
-        QCOMPARE(spy.size(), 1);
-    }
-
-    void testSetColors()
-    {
-        GradientSlider testSlider(LchSpace::CielchD50, Qt::Vertical);
-        GenericColor color;
-        color.first = 50;
-        color.second = 50;
-        color.third = 50;
-        color.fourth = 1;
-        QSignalSpy spyFirst(&testSlider, &PerceptualColor::GradientSlider::firstColorLchAChanged);
-        QSignalSpy spySecond(&testSlider, &PerceptualColor::GradientSlider::secondColorLchAChanged);
-        testSlider.setColors(color, color);
-        QVERIFY(testSlider.firstColorLchA() == color);
-        QCOMPARE(spyFirst.size(), 1);
-        QVERIFY(testSlider.secondColorLchA() == color);
-        QCOMPARE(spySecond.size(), 1);
-    }
-
     void testMinimumSizeHint()
     {
         GradientSlider testWidget(LchSpace::CielchD50);
@@ -412,14 +367,16 @@ private Q_SLOTS:
         myWidget.resize(QSize(100, 100));
 
         // Test that setting out-of-gamut colors works
-        const GenericColor myFirstColor{100, 150, 0, 1};
-        const GenericColor mySecondColor{0, 150, 0, 1};
-        myWidget.setFirstColorLchA(myFirstColor);
-        myWidget.setSecondColorLchA(mySecondColor);
-        QVERIFY(myFirstColor == myWidget.firstColorLchA());
-        QVERIFY(myFirstColor == myWidget.d_pointer->m_firstColorLchA);
-        QVERIFY(mySecondColor == myWidget.secondColorLchA());
-        QVERIFY(mySecondColor == myWidget.d_pointer->m_secondColorLchA);
+        const GenericColor myFirstColor{
+            100,
+            150,
+            0,
+        };
+        const GenericColor mySecondColor{0, 150, 0};
+        myWidget.setFirstColorLchA(myFirstColor, 1);
+        myWidget.setSecondColorLchA(mySecondColor, 1);
+        QVERIFY(myFirstColor == myWidget.d_pointer->m_firstColorLch);
+        QVERIFY(mySecondColor == myWidget.d_pointer->m_secondColorLch);
     }
 
     void testOutOfRange()
@@ -430,14 +387,12 @@ private Q_SLOTS:
 
         // Test that setting colors, that are not only out-of-gamut colors
         // but also out of a reasonable range, works.
-        const GenericColor myFirstColor{300, 550, -10, 1};
-        const GenericColor mySecondColor{-100, -150, 890, 1};
-        myWidget.setFirstColorLchA(myFirstColor);
-        myWidget.setSecondColorLchA(mySecondColor);
-        QVERIFY(myFirstColor == myWidget.firstColorLchA());
-        QVERIFY(myFirstColor == myWidget.d_pointer->m_firstColorLchA);
-        QVERIFY(mySecondColor == myWidget.secondColorLchA());
-        QVERIFY(mySecondColor == myWidget.d_pointer->m_secondColorLchA);
+        const GenericColor myFirstColor{300, 550, -10};
+        const GenericColor mySecondColor{-100, -150, 890};
+        myWidget.setFirstColorLchA(myFirstColor, 1);
+        myWidget.setSecondColorLchA(mySecondColor, 1);
+        QVERIFY(myFirstColor == myWidget.d_pointer->m_firstColorLch);
+        QVERIFY(mySecondColor == myWidget.d_pointer->m_secondColorLch);
     }
 };
 

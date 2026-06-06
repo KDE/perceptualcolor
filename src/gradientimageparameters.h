@@ -55,11 +55,11 @@ public:
     [[nodiscard]] GenericColor colorFromValue(qreal value) const;
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
-    void setFirstColorLchA(const GenericColor &newFirstColor);
+    void setFirstColorLchA(const GenericColor &newFirstColorLch, const double newFirstColorAlpha);
     void setGradientLength(const int newGradientLength);
     void setGradientThickness(const int newGradientThickness);
     void setProjectionSpace(const LchSpace newProjectionSpace);
-    void setSecondColorLchA(const GenericColor &newSecondColor);
+    void setSecondColorLchA(const GenericColor &newSecondColorLch, const double newSecondColorAlpha);
 
 private:
     /** @internal @brief Only for unit tests. */
@@ -74,39 +74,58 @@ private:
      *
      * @sa @ref setDevicePixelRatioF() */
     qreal m_devicePixelRatioF = 1;
+
+    /**
+     * @brief Internal storage of the first color‘s alpha.
+     *
+     * The alpha is bound to [0..1].
+     */
+    double m_firstColorAlphaCorrected = 0;
+
     /** @brief Internal storage of the first color.
      *
      * The color is normalized and bound to the LCH color space.
      * @sa @ref completlyNormalizedAndBounded() */
-    GenericColor m_firstColorCorrected;
+    GenericColor m_firstColorLchCorrected;
+
     /** @brief Internal storage for the gradient length, measured in
      * physical pixels.
      *
      * @sa @ref setGradientLength() */
     int m_gradientLength = 0;
+
     /** @brief Internal storage for the gradient thickness, measured in
      * physical pixels.
      *
      * @sa @ref setGradientThickness() */
     int m_gradientThickness = 0;
+
     /**
      * @brief The color space into which the gamut will be projected.
      */
     LchSpace m_projectionSpace = LchSpace::CielchD50;
+
+    /**
+     * @brief Internal storage of the second color‘s alpha.
+     *
+     * The alpha is bound to [0..1].
+     */
+    double m_secondColorAlphaCorrected = 0;
+
     /** @brief Internal storage of the second color (corrected and altered
      * value).
      *
      * The color is normalized and bound to the LCH color space. In an
      * additional step, it has been altered (by increasing or decreasing the
      * hue component in steps of 360°) to minimize the distance in hue
-     * from this color to @ref m_firstColorCorrected. This is necessary to
+     * from this color to @ref m_firstColorLchCorrected. This is necessary to
      * easily allow to calculate the intermediate colors of the gradient, so
      * that they take the shortest way through the color space.
      * @sa @ref setFirstColorLchA()
      * @sa @ref setSecondColorLchA()
      * @sa @ref completlyNormalizedAndBounded()
      * @sa @ref updateSecondColor() */
-    GenericColor m_secondColorCorrectedAndAltered;
+    GenericColor m_secondColorLchCorrectedAndAltered;
 };
 
 } // namespace PerceptualColor

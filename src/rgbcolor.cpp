@@ -143,7 +143,7 @@ RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue
                                                  qBound<float>(0, green, 1), //
                                                  qBound<float>(0, blue, 1));
     result.fillAll(newRgbQColor, hue);
-    result.rgb_255 = GenericColor(color.first * 255, color.second * 255, color.third * 255, color.fourth);
+    result.rgb_255 = GenericColor(color.first * 255, color.second * 255, color.third * 255);
 
     return result;
 }

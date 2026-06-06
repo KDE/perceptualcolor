@@ -327,8 +327,7 @@ GenericColor AbsoluteColor::fromPolarToCartesian(const GenericColor &value)
     const auto angleRadians = qDegreesToRadians(angleDegree);
     return GenericColor(value.first, //
                         radius * std::cos(angleRadians),
-                        radius * std::sin(angleRadians),
-                        value.fourth);
+                        radius * std::sin(angleRadians));
 }
 
 /**
@@ -344,8 +343,7 @@ GenericColor AbsoluteColor::fromLinearSRgbToSRgb(const GenericColor &value)
 {
     return GenericColor(channelFromLinearSRgbToSRgb(value.first), //
                         channelFromLinearSRgbToSRgb(value.second), //
-                        channelFromLinearSRgbToSRgb(value.third), //
-                        value.fourth);
+                        channelFromLinearSRgbToSRgb(value.third));
 }
 
 /**
@@ -361,8 +359,7 @@ GenericColor AbsoluteColor::fromSRgbToLinearSRgb(const GenericColor &value)
 {
     return GenericColor(channelFromSRgbToLinearSRgb(value.first), //
                         channelFromSRgbToLinearSRgb(value.second), //
-                        channelFromSRgbToLinearSRgb(value.third), //
-                        value.fourth);
+                        channelFromSRgbToLinearSRgb(value.third));
 }
 
 /**
@@ -378,7 +375,6 @@ GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
 {
     auto result = GenericColor( //
         static_cast<Mat3d>(xyzD65ToLinearSRgbMatrix) * value.toVec3d());
-    result.fourth = value.fourth;
     return result;
 }
 
@@ -395,7 +391,6 @@ GenericColor AbsoluteColor::fromLinearSRgbToXyzD65(const GenericColor &value)
 {
     auto result = GenericColor( //
         static_cast<Mat3d>(linearSRgbToXyzD65Matrix) * value.toVec3d());
-    result.fourth = value.fourth;
     return result;
 }
 

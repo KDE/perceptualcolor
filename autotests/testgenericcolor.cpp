@@ -51,7 +51,6 @@ private Q_SLOTS:
         QCOMPARE(color.first, 0.0);
         QCOMPARE(color.second, 0.0);
         QCOMPARE(color.third, 0.0);
-        QCOMPARE(color.fourth, 0.0);
     }
 
     void testConstructorWithVec3d()
@@ -61,7 +60,6 @@ private Q_SLOTS:
         QCOMPARE(color.first, 0.1);
         QCOMPARE(color.second, 0.2);
         QCOMPARE(color.third, 0.3);
-        QCOMPARE(color.fourth, 0.0);
     }
 
     void testConstructorWith3Args()
@@ -70,16 +68,6 @@ private Q_SLOTS:
         QCOMPARE(color.first, 10.0);
         QCOMPARE(color.second, 20.0);
         QCOMPARE(color.third, 30.0);
-        QCOMPARE(color.fourth, 0);
-    }
-
-    void testConstructorWith4Args()
-    {
-        constexpr GenericColor color(10, 20, 30, 40);
-        QCOMPARE(color.first, 10.0);
-        QCOMPARE(color.second, 20.0);
-        QCOMPARE(color.third, 30.0);
-        QCOMPARE(color.fourth, 40.0);
     }
 
     void testToVec3d()

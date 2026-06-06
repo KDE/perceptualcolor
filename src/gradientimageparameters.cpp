@@ -21,8 +21,8 @@ namespace PerceptualColor
 /** @brief Constructor */
 GradientImageParameters::GradientImageParameters()
 {
-    setFirstColorLchA(GenericColor{0, 0, 0, 1});
-    setFirstColorLchA(GenericColor{1000, 0, 0, 1});
+    setFirstColorLchA(GenericColor{0, 0, 0}, 1);
+    setSecondColorLchA(GenericColor{1000, 0, 0}, 1);
 }
 
 /**
@@ -55,52 +55,71 @@ GenericColor GradientImageParameters::completlyNormalizedAndBounded(const Generi
         result.third += 360;
     }
 
-    // Alpha
-    result.fourth = qBound<double>(0, color.fourth, 1);
-
     // Return
     return result;
 }
 
 /** @brief Setter for the first color property.
- * @param newFirstColor The new first color.
- * @sa @ref m_firstColorCorrected */
-void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColor)
+ *
+ * @param newFirstColorLch The new first color Lch value
+ * @param newFirstColorAlpha The new first color alpha value.
+ *
+ * @sa @ref m_firstColorLchCorrected
+ * @sa @ref m_firstColorAlphaCorrected
+ */
+void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColorLch, const double newFirstColorAlpha)
 {
-    GenericColor correctedNewFirstColor = //
-        completlyNormalizedAndBounded(newFirstColor);
-    if (!(m_firstColorCorrected == correctedNewFirstColor)) {
-        m_firstColorCorrected = correctedNewFirstColor;
-        updateSecondColor();
+    const GenericColor correctedNewFirstColorLch = //
+        completlyNormalizedAndBounded(newFirstColorLch);
+    const auto correctedNewFirstColorAlpha = qBound<double>(0, newFirstColorAlpha, 1);
+    if ((m_firstColorLchCorrected == correctedNewFirstColorLch) && (m_firstColorAlphaCorrected == correctedNewFirstColorAlpha)) {
+        return;
     }
+
+    m_firstColorLchCorrected = correctedNewFirstColorLch;
+    updateSecondColor();
 }
 
-/** @brief Setter for the second color property.
- * @param newSecondColor The new second color.
- * @sa @ref m_secondColorCorrectedAndAltered */
-void GradientImageParameters::setSecondColorLchA(const GenericColor &newSecondColor)
+/**
+ * @brief Setter for the second color.
+ *
+ * @param newSecondColorLch The new second color Lch value.
+ * @param newSecondColorAlpha The new second color alpha value.
+ *
+ * @sa @ref m_secondColorLchCorrectedAndAltered
+ * @sa @ref m_secondColorAlphaCorrected
+ */
+void GradientImageParameters::setSecondColorLchA(const GenericColor &newSecondColorLch, const double newSecondColorAlpha)
 {
     GenericColor correctedNewSecondColor = //
-        completlyNormalizedAndBounded(newSecondColor);
-    if (!(m_secondColorCorrectedAndAltered == correctedNewSecondColor)) {
-        m_secondColorCorrectedAndAltered = correctedNewSecondColor;
-        updateSecondColor();
+        completlyNormalizedAndBounded(newSecondColorLch);
+    const auto correctedNewSecondColorAlpha = //
+        qBound<double>(0, newSecondColorAlpha, 1);
+    if ((m_secondColorLchCorrectedAndAltered == correctedNewSecondColor) //
+        && (m_secondColorAlphaCorrected == correctedNewSecondColorAlpha)) {
+        return;
     }
+    m_secondColorLchCorrectedAndAltered = correctedNewSecondColor;
+    m_secondColorAlphaCorrected = correctedNewSecondColorAlpha;
+    updateSecondColor();
 }
 
-/** @brief Updates @ref m_secondColorCorrectedAndAltered
+/**
+ * @brief Updates @ref m_secondColorLchCorrectedAndAltered
  *
  * This update takes into account the current values of
- * @ref m_firstColorCorrected and @ref m_secondColorCorrectedAndAltered. */
+ * @ref m_firstColorLchCorrected and
+ * @ref m_secondColorLchCorrectedAndAltered.
+ */
 void GradientImageParameters::updateSecondColor()
 {
-    m_secondColorCorrectedAndAltered = //
-        completlyNormalizedAndBounded(m_secondColorCorrectedAndAltered);
-    if (qAbs(m_firstColorCorrected.third - m_secondColorCorrectedAndAltered.third) > 180) {
-        if (m_firstColorCorrected.third > m_secondColorCorrectedAndAltered.third) {
-            m_secondColorCorrectedAndAltered.third += 360;
+    m_secondColorLchCorrectedAndAltered = //
+        completlyNormalizedAndBounded(m_secondColorLchCorrectedAndAltered);
+    if (qAbs(m_firstColorLchCorrected.third - m_secondColorLchCorrectedAndAltered.third) > 180) {
+        if (m_firstColorLchCorrected.third > m_secondColorLchCorrectedAndAltered.third) {
+            m_secondColorLchCorrectedAndAltered.third += 360;
         } else {
-            m_secondColorCorrectedAndAltered.third -= 360;
+            m_secondColorLchCorrectedAndAltered.third -= 360;
         }
     }
 }
@@ -143,19 +162,20 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
                         1, //
                         QImage::Format_ARGB32_Premultiplied);
     onePixelLine.fill(Qt::transparent); // Initialize image with transparency.
-    GenericColor color;
+    GenericColor colorLch;
     QColor temp;
     for (int i = 0; i < parameters.m_gradientLength; ++i) {
-        color = parameters.colorFromValue( //
-            (i + 0.5) / static_cast<qreal>(parameters.m_gradientLength));
+        const auto value = //
+            (i + 0.5) / static_cast<qreal>(parameters.m_gradientLength);
+        colorLch = parameters.colorFromValue(value);
         if (parameters.m_projectionSpace == LchSpace::CielchD50) {
-            temp = AbsoluteColor::fastFromCielchD50ToSRgbClamped(color);
+            temp = AbsoluteColor::fastFromCielchD50ToSRgbClamped(colorLch);
         } else {
-            temp = AbsoluteColor::fastFromOklchToSRgbClamped(color);
+            temp = AbsoluteColor::fastFromOklchToSRgbClamped(colorLch);
         }
-        temp.setAlphaF(
-            // Reduce floating point precision if necessary.
-            static_cast<float>(color.fourth));
+        const auto alpha = parameters.m_firstColorAlphaCorrected //
+            + (parameters.m_secondColorAlphaCorrected - parameters.m_firstColorAlphaCorrected) * value;
+        temp.setAlphaF(static_cast<float>(alpha));
         onePixelLine.setPixelColor(i, 0, temp);
     }
     if (callbackObject.shouldAbort()) {
@@ -176,8 +196,8 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
 
     // Transparency background
     if ( //
-        (parameters.m_firstColorCorrected.fourth != 1) //
-        || (parameters.m_secondColorCorrectedAndAltered.fourth != 1) //
+        (parameters.m_firstColorAlphaCorrected != 1) //
+        || (parameters.m_secondColorAlphaCorrected != 1) //
     ) {
         // Fill the image with tiles. (QBrush will ignore
         // the devicePixelRatioF of the image of the tile.)
@@ -219,14 +239,12 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
 GenericColor GradientImageParameters::colorFromValue(qreal value) const
 {
     GenericColor color;
-    color.first = m_firstColorCorrected.first //
-        + (m_secondColorCorrectedAndAltered.first - m_firstColorCorrected.first) * value;
-    color.second = m_firstColorCorrected.second + //
-        (m_secondColorCorrectedAndAltered.second - m_firstColorCorrected.second) * value;
-    color.third = m_firstColorCorrected.third + //
-        (m_secondColorCorrectedAndAltered.third - m_firstColorCorrected.third) * value;
-    color.fourth = m_firstColorCorrected.fourth + //
-        (m_secondColorCorrectedAndAltered.fourth - m_firstColorCorrected.fourth) * value;
+    color.first = m_firstColorLchCorrected.first //
+        + (m_secondColorLchCorrectedAndAltered.first - m_firstColorLchCorrected.first) * value;
+    color.second = m_firstColorLchCorrected.second + //
+        (m_secondColorLchCorrectedAndAltered.second - m_firstColorLchCorrected.second) * value;
+    color.third = m_firstColorLchCorrected.third + //
+        (m_secondColorLchCorrectedAndAltered.third - m_firstColorLchCorrected.third) * value;
     return color;
 }
 

@@ -38,8 +38,17 @@ public:
     [[nodiscard]] int physicalPixelThickness() const;
 
     // Data members
-    /** @brief Internal storage for property @ref GradientSlider::firstColorLchA */
-    GenericColor m_firstColorLchA;
+
+    /**
+     * @brief Internal storage.
+     */
+    double m_firstColorAlpha;
+
+    /**
+     * @brief Internal storage.
+     */
+    GenericColor m_firstColorLch;
+
     /** @brief The gradient image (without the handle).
      *
      * Always at the left is the first color, always at the right
@@ -60,9 +69,16 @@ public:
      * @brief The color space into which the gamut will be projected.
      */
     const LchSpace m_projectionSpace;
-    /** @brief Internal storage for property
-     * @ref GradientSlider::secondColorLchA */
-    GenericColor m_secondColorLchA;
+
+    /**
+     * @brief Internal storage.
+     */
+    double m_secondColorAlpha;
+    /**
+     * @brief Internal storage.
+     */
+    GenericColor m_secondColorLch;
+
     /** @brief Internal storage for property
      * @ref GradientSlider::singleStep */
     qreal m_singleStep = 0.01;

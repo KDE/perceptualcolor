@@ -203,7 +203,6 @@ private Q_SLOTS:
         QVERIFY(isAlmostEqual(myColor1.rgb_1.first, 113. / 255, 0.1));
         QVERIFY(isAlmostEqual(myColor1.rgb_1.second, 53. / 255, 0.1));
         QVERIFY(isAlmostEqual(myColor1.rgb_1.third, 23. / 255, 0.1));
-        QCOMPARE(myColor1.rgb_1.fourth, 0);
     }
 
     void testFromRgbQColor()
@@ -214,21 +213,6 @@ private Q_SLOTS:
                  GenericColor(QColor(Qt::yellow).redF(), //
                               QColor(Qt::yellow).greenF(), //
                               QColor(Qt::yellow).blueF()));
-    }
-
-    void testFromRgbQColorAlpha()
-    {
-        QColor semiTransparend = QColor(127, 127, 127, 127);
-
-        // It's supposed that the alpha channel is ignored.
-        const auto myValue = RgbColor::fromRgbQColor(semiTransparend);
-
-        QCOMPARE(myValue.rgbQColor.alphaF(), 1); // color is opaque.
-        QCOMPARE(myValue.hsl.fourth, 0); // the fourth value is unused.
-        QCOMPARE(myValue.hsv.fourth, 0); // the fourth value is unused.
-        QCOMPARE(myValue.hwb.fourth, 0); // the fourth value is unused.
-        QCOMPARE(myValue.rgb_255.fourth, 0); // the fourth value is unused.
-        QCOMPARE(myValue.rgb_1.fourth, 0); // the fourth value is unused.
     }
 
     void testRgbHue()

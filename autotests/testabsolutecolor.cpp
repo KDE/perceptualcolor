@@ -279,40 +279,40 @@ private:
         // online tool https://colorjs.io/apps/convert/
 
         QTest::newRow("white") //
-            << GenericColor(1, 1, 1, 0.5) //
-            << GenericColor(0.9504559270516717, 1, 1.0890577507598784, 0.5);
+            << GenericColor(1, 1, 1) //
+            << GenericColor(0.9504559270516717, 1, 1.0890577507598784);
 
         QTest::newRow("red") //
-            << GenericColor(1, 0, 0, 0.5) //
-            << GenericColor(0.41239079926595934, 0.21263900587151027, 0.01933081871559182, 0.5);
+            << GenericColor(1, 0, 0) //
+            << GenericColor(0.41239079926595934, 0.21263900587151027, 0.01933081871559182);
 
         QTest::newRow("green") //
-            << GenericColor(0, 1, 0, 0.5) //
-            << GenericColor(0.357584339383878, 0.715168678767756, 0.11919477979462598, 0.5);
+            << GenericColor(0, 1, 0) //
+            << GenericColor(0.357584339383878, 0.715168678767756, 0.11919477979462598);
 
         QTest::newRow("blue") //
-            << GenericColor(0, 0, 1, 0.5) //
-            << GenericColor(0.1804807884018343, 0.07219231536073371, 0.9505321522496607, 0.5);
+            << GenericColor(0, 0, 1) //
+            << GenericColor(0.1804807884018343, 0.07219231536073371, 0.9505321522496607);
 
         QTest::newRow("cyan") //
-            << GenericColor(0, 1, 1, 0.5) //
-            << GenericColor(0.5380651277857122, 0.7873609941284897, 1.0697269320442866, 0.5);
+            << GenericColor(0, 1, 1) //
+            << GenericColor(0.5380651277857122, 0.7873609941284897, 1.0697269320442866);
 
         QTest::newRow("magenta") //
-            << GenericColor(1, 0, 1, 0.5) //
-            << GenericColor(0.5928715876677937, 0.284831321232244, 0.9698629709652525, 0.5);
+            << GenericColor(1, 0, 1) //
+            << GenericColor(0.5928715876677937, 0.284831321232244, 0.9698629709652525);
 
         QTest::newRow("yellow") //
-            << GenericColor(1, 1, 0, 0.5) //
-            << GenericColor(0.7699751386498374, 0.9278076846392663, 0.13852559851021778, 0.5);
+            << GenericColor(1, 1, 0) //
+            << GenericColor(0.7699751386498374, 0.9278076846392663, 0.13852559851021778);
 
         QTest::newRow("black") //
-            << GenericColor(0, 0, 0, 0.5) //
-            << GenericColor(0, 0, 0, 0.5);
+            << GenericColor(0, 0, 0) //
+            << GenericColor(0, 0, 0);
 
         QTest::newRow("gray") //
-            << GenericColor(0.21586050011389926, 0.21586050011389926, 0.21586050011389926, 0.5) //
-            << GenericColor(0.2051658917495936, 0.21586050011389926, 0.23508455073194565, 0.5);
+            << GenericColor(0.21586050011389926, 0.21586050011389926, 0.21586050011389926) //
+            << GenericColor(0.2051658917495936, 0.21586050011389926, 0.23508455073194565);
     }
 
 private Q_SLOTS:
@@ -481,12 +481,11 @@ private Q_SLOTS:
     {
         QFETCH(double, srgb);
         QFETCH(double, linearsrgb);
-        GenericColor myLinearSRgb{linearsrgb, linearsrgb, linearsrgb, 0.5};
-        GenericColor mySRgb{srgb, srgb, srgb, 0.5};
+        GenericColor myLinearSRgb{linearsrgb, linearsrgb, linearsrgb};
+        GenericColor mySRgb{srgb, srgb, srgb};
         QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).first, myLinearSRgb.first);
         QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).second, myLinearSRgb.second);
         QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).third, myLinearSRgb.third);
-        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).fourth, myLinearSRgb.fourth);
     }
 
     void testFromSRgbToLinearSRgb_data()
@@ -498,12 +497,11 @@ private Q_SLOTS:
     {
         QFETCH(double, srgb);
         QFETCH(double, linearsrgb);
-        GenericColor myLinearSRgb{linearsrgb, linearsrgb, linearsrgb, 0.5};
-        GenericColor mySRgb{srgb, srgb, srgb, 0.5};
+        GenericColor myLinearSRgb{linearsrgb, linearsrgb, linearsrgb};
+        GenericColor mySRgb{srgb, srgb, srgb};
         QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).first, myLinearSRgb.first);
         QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).second, myLinearSRgb.second);
         QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).third, myLinearSRgb.third);
-        QCOMPARE(AbsoluteColor::fromSRgbToLinearSRgb(mySRgb).fourth, myLinearSRgb.fourth);
     }
 
     void testFromXyzD65ToLinearSRgb_data()
@@ -521,7 +519,6 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actualResult.first, linearsrgb.first, epsilon));
         QVERIFY(isNearlyEqual(actualResult.second, linearsrgb.second, epsilon));
         QVERIFY(isNearlyEqual(actualResult.third, linearsrgb.third, epsilon));
-        QVERIFY(isNearlyEqual(actualResult.fourth, linearsrgb.fourth, epsilon));
     }
 
     void testFromLinearSRgbToXyzD65_data()
@@ -539,7 +536,6 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actualResult.first, xyzd65.first, epsilon));
         QVERIFY(isNearlyEqual(actualResult.second, xyzd65.second, epsilon));
         QVERIFY(isNearlyEqual(actualResult.third, xyzd65.third, epsilon));
-        QVERIFY(isNearlyEqual(actualResult.fourth, xyzd65.fourth, epsilon));
     }
 
     void testToByte()

@@ -1099,12 +1099,6 @@ private Q_SLOTS:
         // widget rounds the given value to the current decimal precision
         // it’s using. Therefore, it’s pointless to control here
         // for rounding errors.
-
-        const auto sliderColor = //
-            m_perceptualDialog->d_pointer->m_alphaGradientSlider->secondColorLchA();
-        QCOMPARE(sliderColor.first, color.first);
-        QCOMPARE(sliderColor.second, color.second);
-        QCOMPARE(sliderColor.third, color.third);
     }
 #endif
 

@@ -631,13 +631,11 @@ void ColorDialogPrivate::initialize()
     blackLch.first = 0;
     blackLch.second = 0;
     blackLch.third = 0;
-    blackLch.fourth = 1;
     GenericColor whiteLch;
     whiteLch.first = m_lchValues.maximumLightness;
     whiteLch.second = 0;
     whiteLch.third = 0;
-    whiteLch.fourth = 1;
-    m_lchLightnessSelector->setColors(blackLch, whiteLch);
+    m_lchLightnessSelector->setColors(blackLch, 1, whiteLch, 1);
     m_chromaHueDiagram = new ChromaHueDiagram(m_projectionSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
@@ -1395,10 +1393,8 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
         tempColor.first = projectionSpaceLch.first;
         tempColor.second = projectionSpaceLch.second;
         tempColor.third = projectionSpaceLch.third;
-        tempColor.fourth = 0;
-        m_alphaGradientSlider->setFirstColorLchA(tempColor);
-        tempColor.fourth = 1;
-        m_alphaGradientSlider->setSecondColorLchA(tempColor);
+        m_alphaGradientSlider->setFirstColorLchA(tempColor, 0);
+        m_alphaGradientSlider->setSecondColorLchA(tempColor, 1);
     }
 
     // Update widgets that take alpha information

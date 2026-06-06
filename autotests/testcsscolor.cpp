@@ -565,261 +565,260 @@ private Q_SLOTS:
         QTest::addColumn<double>("first");
         QTest::addColumn<double>("second");
         QTest::addColumn<double>("third");
-        QTest::addColumn<double>("forth");
         QTest::addColumn<double>("alpha1");
 
         QTest::newRow("rgb(1 2 3)") //
             << QStringLiteral("rgb(1 2 3)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 1.;
         QTest::newRow("rgba(1 2 3)") //
             << QStringLiteral("rgba(1 2 3)") //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0. << 0. << 0. << 0. //
+            << 0. << 0. << 0. //
             << 0.;
         QTest::newRow("rgb(1 2 3 / 0.5)") //
             << QStringLiteral("rgb(1 2 3 / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 0.5;
         QTest::newRow("rgb(1 2 / 3)") //
             << QStringLiteral("rgb(1 2 / 3)") //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0. << 0. << 0. << 0. //
+            << 0. << 0. << 0. //
             << 0.;
         QTest::newRow("rgb(1, 2, 3, 0.5)") //
             << QStringLiteral("rgb(1, 2, 3, 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 0.5;
         QTest::newRow("rgba(1, 2, 3, 0.5)") //
             << QStringLiteral("rgba(1, 2, 3, 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 0.5;
         QTest::newRow("rgb(100% 50% 0% / 0.5)") //
             << QStringLiteral("rgb(100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
         QTest::newRow("rgb(100% 50% 0% / 50%)") //
             << QStringLiteral("rgb(100% 50% 0% / 50%)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
         QTest::newRow("rgb(100% 50% 0% / none)") //
             << QStringLiteral("rgb(100% 50% 0% / none)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 1.;
         QTest::newRow("rgb(100% 50% 0% / )") //
             << QStringLiteral("rgb(100% 50% 0% / )") //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0. << 0. << 0. << 0. //
+            << 0. << 0. << 0. //
             << 0.;
         QTest::newRow("rgb(100% 50% 0%)") //
             << QStringLiteral("rgb(100% 50% 0%)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 1.;
         QTest::newRow("rgb(none 50% 0%)") //
             << QStringLiteral("rgb(none 50% 0%)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 0. << 0.5 << 0. << 0. //
+            << 0. << 0.5 << 0. //
             << 1.;
 
         QTest::newRow("color(srgb 100% 50% 0% / 0.5)") //
             << QStringLiteral("color(srgb 100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
         QTest::newRow("color(srgb 0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("color(srgb 0.1 0.2 0.3 / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
 
         QTest::newRow("color(srgb-linear 100% 50% 0% / 0.5)") //
             << QStringLiteral("color(srgb-linear 100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::SrgbLinear //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
 
         QTest::newRow("color(display-p3 100% 50% 0% / 0.5)") //
             << QStringLiteral("color(display-p3 100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::DisplayP3 //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
 
         QTest::newRow("color(a98-rgb 100% 50% 0% / 0.5)") //
             << QStringLiteral("color(a98-rgb 100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::A98Rgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
 
         QTest::newRow("color(prophoto-rgb 100% 50% 0% / 0.5)") //
             << QStringLiteral("color(prophoto-rgb 100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::ProphotoRgb //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
 
         QTest::newRow("color(rec2020 100% 50% 0% / 0.5)") //
             << QStringLiteral("color(rec2020 100% 50% 0% / 0.5)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Rec2020 //
-            << 1. << 0.5 << 0. << 0. //
+            << 1. << 0.5 << 0. //
             << 0.5;
 
         QTest::newRow("color(xyz 0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("color(xyz 0.1 0.2 0.3 / 0.5)") //
             << ColorModel::XyzD65_1 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
         QTest::newRow("color(xyz 10% 20% 30% / 50%)") //
             << QStringLiteral("color(xyz 10% 20% 30% / 50%)") //
             << ColorModel::XyzD65_1 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
         QTest::newRow("color(xyz-d65 0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("color(xyz-d65 0.1 0.2 0.3 / 0.5)") //
             << ColorModel::XyzD65_1 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
         QTest::newRow("color(xyz-d50 0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("color(xyz-d50 0.1 0.2 0.3 / 0.5)") //
             << ColorModel::XyzD50_1 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
 
         QTest::newRow("hsl(0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("hsl(0.1 0.2 0.3 / 0.5)") //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0. << 0. << 0. << 0. //
+            << 0. << 0. << 0. //
             << 0.;
         QTest::newRow("hsl(3 10% 20% / 0.5)") //
             << QStringLiteral("hsl(3 10% 20% / 0.5)") //
             << ColorModel::Hsl_360_1_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 3. << 0.1 << 0.2 << 0. //
+            << 3. << 0.1 << 0.2 //
             << 0.5;
         QTest::newRow("hsla(3, 10%, 20%, 0.5)") //
             << QStringLiteral("hsla(3, 10%, 20%, 0.5)") //
             << ColorModel::Hsl_360_1_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 3. << 0.1 << 0.2 << 0. //
+            << 3. << 0.1 << 0.2 //
             << 0.5;
         QTest::newRow("hwb(3 10% 20% / 0.5)") //
             << QStringLiteral("hwb(3 10% 20% / 0.5)") //
             << ColorModel::Hwb_360_1_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 3. << 0.1 << 0.2 << 0. //
+            << 3. << 0.1 << 0.2 //
             << 0.5;
         QTest::newRow("hwb(3 none 20% / 0.5)") //
             << QStringLiteral("hwb(3 none 20% / 0.5)") //
             << ColorModel::Hwb_360_1_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 3. << 0. << 0.2 << 0. //
+            << 3. << 0. << 0.2 //
             << 0.5;
         QTest::newRow("hwb(none 10% 20% / 0.5)") //
             << QStringLiteral("hwb(none 10% 20% / 0.5)") //
             << ColorModel::Hwb_360_1_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 0. << 0.1 << 0.2 << 0. //
+            << 0. << 0.1 << 0.2 //
             << 0.5;
 
         QTest::newRow("oklab(0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("oklab(0.1 0.2 0.3 / 0.5)") //
             << ColorModel::OklabD65 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
         QTest::newRow("oklab(30% 50% 150% / 0.5)") //
             << QStringLiteral("oklab(30% 50% 150% / 0.5)") //
             << ColorModel::OklabD65 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.3 << 0.2 << 0.6 << 0. //
+            << 0.3 << 0.2 << 0.6 //
             << 0.5;
 
         QTest::newRow("lab(0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("lab(0.1 0.2 0.3 / 0.5)") //
             << ColorModel::CielabD50 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
         QTest::newRow("lab(30% 50% 150% / 0.5)") //
             << QStringLiteral("lab(30% 50% 150% / 0.5)") //
             << ColorModel::CielabD50 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 30. << 62.5 << 187.5 << 0. //
+            << 30. << 62.5 << 187.5 //
             << 0.5;
 
         QTest::newRow("oklch(0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("oklch(0.1 0.2 0.3 / 0.5)") //
             << ColorModel::OklchD65 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
         QTest::newRow("oklch(0.1 0.2 0.75turn / 0.5)") //
             << QStringLiteral("oklch(0.1 0.2 0.75turn / 0.5)") //
             << ColorModel::OklchD65 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 270. << 0. //
+            << 0.1 << 0.2 << 270. //
             << 0.5;
         QTest::newRow("oklch(30% 50% 150 / 0.5)") //
             << QStringLiteral("oklch(30% 50% 150 / 0.5)") //
             << ColorModel::OklchD65 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.3 << 0.2 << 150. << 0. //
+            << 0.3 << 0.2 << 150. //
             << 0.5;
 
         QTest::newRow("lch(0.1 0.2 0.3 / 0.5)") //
             << QStringLiteral("lch(0.1 0.2 0.3 / 0.5)") //
             << ColorModel::CielchD50 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 0.3 << 0. //
+            << 0.1 << 0.2 << 0.3 //
             << 0.5;
 
         QTest::newRow("lch(0.1 0.2 0.75turn / 0.5)") //
             << QStringLiteral("lch(0.1 0.2 0.75turn / 0.5)") //
             << ColorModel::CielchD50 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0.1 << 0.2 << 270. << 0. //
+            << 0.1 << 0.2 << 270. //
             << 0.5;
         QTest::newRow("lch(30% 50% 0.8 / 0.5)") //
             << QStringLiteral("lch(30% 50% 0.8 / 0.5)") //
             << ColorModel::CielchD50 //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 30. << 75. << 0.8 << 0. //
+            << 30. << 75. << 0.8 //
             << 0.5;
         QTest::newRow("lch(30% 50% 0.8% / 0.5)") //
             << QStringLiteral("lch(30% 50% 0.8% / 0.5)") //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0. << 0. << 0. << 0. //
+            << 0. << 0. << 0. //
             << 0.;
     }
 
@@ -831,7 +830,6 @@ private Q_SLOTS:
         QFETCH(double, first);
         QFETCH(double, second);
         QFETCH(double, third);
-        QFETCH(double, forth);
         QFETCH(double, alpha1);
 
         const auto temp = CssColor::parseAbsoluteColorFunction(function);
@@ -840,7 +838,6 @@ private Q_SLOTS:
         QCOMPARE(temp.color.first, first);
         QCOMPARE(temp.color.second, second);
         QCOMPARE(temp.color.third, third);
-        QCOMPARE(temp.color.fourth, forth);
         QCOMPARE(temp.alpha1, alpha1);
     }
 #endif
@@ -1034,50 +1031,49 @@ private Q_SLOTS:
         QTest::addColumn<double>("first");
         QTest::addColumn<double>("second");
         QTest::addColumn<double>("third");
-        QTest::addColumn<double>("forth");
         QTest::addColumn<double>("alpha1");
 
         QTest::newRow("") //
             << QString() //
             << ColorModel::Invalid //
             << CssColor::CssPredefinedRgbColorSpace::Invalid //
-            << 0. << 0. << 0. << 0. //
+            << 0. << 0. << 0. //
             << 0.;
         QTest::newRow("rgb(1 2 3)") //
             << QStringLiteral("rgb(1 2 3)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 1.;
         QTest::newRow("rgb(1 2 3);") //
             << QStringLiteral("rgb(1 2 3)") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 1.;
         QTest::newRow("#010203") //
             << QStringLiteral("#010203") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 1.;
         QTest::newRow(" #010203 ") //
             << QStringLiteral(" #010203 ") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 1. / 255. << 2. / 255. << 3. / 255. << 0. //
+            << 1. / 255. << 2. / 255. << 3. / 255. //
             << 1.;
         QTest::newRow("aliceblue") //
             << QStringLiteral("aliceblue") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 240. / 255. << 248. / 255. << 1. << 0. //
+            << 240. / 255. << 248. / 255. << 1. //
             << 1.;
         QTest::newRow(" aliceblue ") //
             << QStringLiteral(" aliceblue ") //
             << ColorModel::Rgb_1 //
             << CssColor::CssPredefinedRgbColorSpace::Srgb //
-            << 240. / 255. << 248. / 255. << 1. << 0. //
+            << 240. / 255. << 248. / 255. << 1. //
             << 1.;
     }
 
@@ -1089,7 +1085,6 @@ private Q_SLOTS:
         QFETCH(double, first);
         QFETCH(double, second);
         QFETCH(double, third);
-        QFETCH(double, forth);
         QFETCH(double, alpha1);
 
         const auto temp = CssColor::parse(function);
@@ -1098,7 +1093,6 @@ private Q_SLOTS:
         QCOMPARE(temp.color.first, first);
         QCOMPARE(temp.color.second, second);
         QCOMPARE(temp.color.third, third);
-        QCOMPARE(temp.color.fourth, forth);
         QCOMPARE(temp.alpha1, alpha1);
     }
 #endif
@@ -1121,7 +1115,6 @@ private Q_SLOTS:
         QCOMPARE(roundtrip.color.first, 0.5);
         QCOMPARE(roundtrip.color.second, 0.2);
         QCOMPARE(roundtrip.color.third, 10);
-        QCOMPARE(roundtrip.color.fourth, 0);
     }
 #endif
 };

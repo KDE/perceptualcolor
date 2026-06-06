@@ -30,12 +30,12 @@ public:
 
     /** @brief Constructor.
      *
-     * @param init Initial value. @ref fourth is set to <tt>0</tt>. */
+     * @param init Initial value.
+     */
     explicit constexpr GenericColor(const Vec3d &init) noexcept
         : first(init.v[0])
         , second(init.v[1])
         , third(init.v[2])
-        , fourth(0)
     {
     }
 
@@ -44,27 +44,11 @@ public:
      * @param v1 Initial value for @ref first
      * @param v2 Initial value for @ref second
      * @param v3 Initial value for @ref third
-     *
-     * @ref fourth is set to <tt>0</tt>. */
+     */
     constexpr GenericColor(const double v1, const double v2, const double v3) noexcept
         : first(v1)
         , second(v2)
         , third(v3)
-        , fourth(0)
-    {
-    }
-
-    /** @brief Constructor.
-     *
-     * @param v1 Initial value for @ref first
-     * @param v2 Initial value for @ref second
-     * @param v3 Initial value for @ref third
-     * @param v4 Initial value for @ref fourth */
-    constexpr GenericColor(const double v1, const double v2, const double v3, const double v4) noexcept
-        : first(v1)
-        , second(v2)
-        , third(v3)
-        , fourth(v4)
     {
     }
 
@@ -102,18 +86,6 @@ public:
     double second = 0;
     /** @brief Third value. */
     double third = 0;
-    /**
-     * @brief Forth value.
-     *
-     * @internal
-     *
-     * @todo SHOULDHAVE Is it a good idea to
-     * use this as alpha channel? Would it be better to explicitly name it
-     * “alpha”? Or remove it completly and treat alpha separately in another
-     * data type? Should this type have the potential
-     * to carry CMYK (four components) in the future, plus alpha?
-     */
-    double fourth = 0;
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::GenericColor &value);

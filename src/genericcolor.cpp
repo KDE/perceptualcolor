@@ -16,7 +16,6 @@ GenericColor::GenericColor(const QList<double> &list)
     : first(list.value(0, 0))
     , second(list.value(1, 0))
     , third(list.value(2, 0))
-    , fourth(list.value(3, 0))
 {
 }
 
@@ -42,8 +41,7 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::GenericColor &value)
         << "GenericColor(" << //
         value.first << ", " //
         << value.second << ", " //
-        << value.third << ", " //
-        << value.fourth << ")";
+        << value.third << ")";
     return dbg.maybeSpace();
 }
 
