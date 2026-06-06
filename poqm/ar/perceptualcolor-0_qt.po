@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2026-03-09 21:12+0400\n"
+"PO-Revision-Date: 2026-06-05 13:46+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -21,6 +21,7 @@ msgid ""
 "The color gamut shows an unusual shape here, which is correct as defined by "
 "the projection."
 msgstr ""
+"يظهر نطاق الألوان هنا شكلاً غير معتاد، وهو صحيح كما هو محدد بواسطة الإسقاط."
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:100
