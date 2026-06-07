@@ -114,6 +114,9 @@
  *   heap and use raw pointers or guarded pointers (`QPointer`). If not,
  *   allocate on the stack or use smart pointers. Prefer Qt’s smart pointers
  *   over the <tt>std</tt> smart pointers of C++.
+ * - Specifier order: static, extern,
+ *   inline, <!-- =; prevent static codecheck form complaining about inline -->
+ *   const, constexpr, volatile.
  * - Use KDE’s
  *   <a href="https://community.kde.org/Policies/Frameworks_Coding_Style">
  *   Frameworks Coding Style</a>. This can be done automatically with
@@ -121,7 +124,6 @@
  * - Comments within the code should have this form: <tt>// comment</tt>
  *   <br/> This allows to comment out quickly large parts of the code for
  *   testing purposes.
- * - Comments for Doxygen should have this form: <tt>/⁠** Comment *⁠/</tt>
  *
  * @section codingstylecmake CMake
  *

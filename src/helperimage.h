@@ -36,7 +36,7 @@ QThreadPool &getLibraryQThreadPoolInstance();
  *
  * @brief Thread priority for calculating images in the background.
  */
-constexpr QThread::Priority imageThreadPriority = QThread::Priority::LowPriority;
+inline constexpr QThread::Priority imageThreadPriority = QThread::Priority::LowPriority;
 
 /**
  * @internal
@@ -44,7 +44,7 @@ constexpr QThread::Priority imageThreadPriority = QThread::Priority::LowPriority
  * @brief A transparent value, compatible with both the premultiplied and the
  * non-premultiplied format.
  */
-constexpr QRgb qRgbTransparent = 0;
+inline constexpr QRgb qRgbTransparent = 0;
 
 } // namespace PerceptualColor
 

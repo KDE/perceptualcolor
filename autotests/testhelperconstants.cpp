@@ -85,13 +85,12 @@ private Q_SLOTS:
 
     void testRichTextMarkerIsRecognized()
     {
-        const QString myMarker = richTextMarker;
-        QVERIFY(myMarker.size() > 0);
-        QVERIFY(Qt::mightBeRichText(myMarker));
+        QVERIFY(richTextMarker.size() > 0);
+        QVERIFY(Qt::mightBeRichText(richTextMarker.toString()));
 
         const QString myText = QStringLiteral(u"abc");
         QVERIFY(!Qt::mightBeRichText(myText)); // Assertion
-        QVERIFY(Qt::mightBeRichText(myMarker + myText));
+        QVERIFY(Qt::mightBeRichText(richTextMarker + myText));
     }
 
     void testRichTextMarkerSnippet()

@@ -24,7 +24,7 @@ namespace PerceptualColor
  * We have to search sometimes for the gamut boundary. This value defines
  * the precision of the search:  Smaller values mean better precision and
  * slower processing. */
-constexpr qreal gamutPrecisionCielab = 0.001;
+inline constexpr qreal gamutPrecisionCielab = 0.001;
 
 /** @internal
  *
@@ -33,7 +33,7 @@ constexpr qreal gamutPrecisionCielab = 0.001;
  * We have to search sometimes for the gamut boundary. This value defines
  * the precision of the search:  Smaller values mean better precision and
  * slower processing. */
-constexpr qreal gamutPrecisionOklab = gamutPrecisionCielab / 100;
+inline constexpr qreal gamutPrecisionOklab = gamutPrecisionCielab / 100;
 
 /** @internal
  *
@@ -46,7 +46,7 @@ constexpr qreal gamutPrecisionOklab = gamutPrecisionCielab / 100;
  * values, and at 45°, going from one edge of a pixel to the opposite edge
  * yet has a distance of √2 ≈ 1,41, which we round up to <tt>2</tt> just
  * to be sure. */
-constexpr int overlap = 2;
+inline constexpr int overlap = 2;
 
 /** @internal
  *
@@ -57,7 +57,7 @@ constexpr int overlap = 2;
  * <tt>minimumSizeHint</tt> to get an appropriate <tt>sizeHint</tt>.
  * This scale factor is meant for gradient-based widgets. */
 // This value is somewhat arbitrary…
-constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
+inline constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
 
 /** @internal
  *
@@ -73,7 +73,7 @@ constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
  * Use @ref pageStepFactor to calculate corresponding page step (the
  * larger of two natural steps).
  */
-constexpr qreal singleStepAlpha = 0.01;
+inline constexpr qreal singleStepAlpha = 0.01;
 
 /** @internal
  *
@@ -89,7 +89,7 @@ constexpr qreal singleStepAlpha = 0.01;
  * Use @ref pageStepFactor to calculate corresponding page step (the
  * larger of two natural steps).
  */
-constexpr int singleStepHue = 360 / 100;
+inline constexpr int singleStepHue = 360 / 100;
 
 /** @internal
  *
@@ -111,7 +111,7 @@ constexpr int singleStepHue = 360 / 100;
  * @sa @ref singleStepHue
  * @sa @ref singleStepAlpha
  */
-constexpr quint8 pageStepFactor = 10;
+inline constexpr quint8 pageStepFactor = 10;
 
 /** @internal
  *
@@ -131,7 +131,7 @@ constexpr quint8 pageStepFactor = 10;
  *
  * Usage example:
  * @snippet testhelperconstants.cpp richTextMarkerExample */
-inline const QString richTextMarker = QStringLiteral(u"<a/>");
+inline constexpr QStringView richTextMarker{u"<a/>"};
 
 } // namespace PerceptualColor
 

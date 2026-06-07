@@ -107,14 +107,14 @@ public:
  *
  * @brief @ref LchValues for CielchD50 as of @ref lchrangerationale.
  */
-constexpr LchValues cielchD50Values{100, 255, 360, 50, 0, 0, 1};
+inline constexpr LchValues cielchD50Values{100, 255, 360, 50, 0, 0, 1};
 
 /**
  * @internal
  *
  * @brief @ref LchValues for Oklch as of @ref lchrangerationale.
  */
-constexpr LchValues oklchValues{1, 2, 360, 0.5, 0, 0, 0.01};
+inline constexpr LchValues oklchValues{1, 2, 360, 0.5, 0, 0, 0.01};
 
 /**
  * @internal

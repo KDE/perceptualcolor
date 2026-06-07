@@ -55,7 +55,7 @@ QColor toRgbExact(const QColor &color);
  * a different value (0.9642, 1, 0.8249). Not sure which values are the correct
  * ones.
  */
-constexpr Vec3ld whitePointD50TwoDegree{0.9642L, 1.0000L, 0.8249L};
+inline constexpr Vec3ld whitePointD50TwoDegree{0.9642L, 1.0000L, 0.8249L};
 
 /** @internal
  *
@@ -73,7 +73,7 @@ constexpr Vec3ld whitePointD50TwoDegree{0.9642L, 1.0000L, 0.8249L};
  * > Z = 108.883”
  *
  * Normalizing this to Y = 1 gives this value. */
-constexpr Vec3ld whitePointD65TwoDegree{0.95047L, 1.00000L, 1.08883L};
+inline constexpr Vec3ld whitePointD65TwoDegree{0.95047L, 1.00000L, 1.08883L};
 
 // clang-format off
 

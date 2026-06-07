@@ -62,11 +62,11 @@ public:
     /**
      * @brief Identifier string for the built-in sRGB color space.
      */
-    static inline QString const builtinsrgbIdentifier = QStringLiteral("builtinsrgb");
+    static inline constexpr QStringView builtinsrgbIdentifier{u"builtinsrgb"};
     /**
      * @brief Prefix for custom Identifier strings.
      */
-    static inline QString const customIdentifierPrefix = QStringLiteral("custom");
+    static inline constexpr QStringView customIdentifierPrefix = {u"custom"};
 
     explicit ColorDialogPrivate(ColorDialog *backLink, const QString &identifier);
     virtual ~ColorDialogPrivate() noexcept override;
@@ -212,7 +212,7 @@ public:
      *
      * This string is introduced between two sections
      * within a @ref MultiSpinBox. */
-    static inline const QString m_multispinboxSectionSeparator = QStringLiteral(u" ");
+    static inline constexpr QStringView m_multispinboxSectionSeparator{u" "};
     /** @brief Shortcut to show the tab with @ref m_numericalWidget. */
     QPointer<QShortcut> m_numericalTabShortcut;
     /** @brief Pointer to the widget that holds the numeric color
@@ -291,7 +291,7 @@ public:
      *
      * To use it, call QString::arg() twice: Once with the content of the
      * first column and once with the content of the second column. */
-    const QString tableRow = QStringLiteral(u"<tr><td>%1</td><td>%2</td></tr>");
+    static inline constexpr QStringView tableRow{u"<tr><td>%1</td><td>%2</td></tr>"};
     /** @brief Table assigning to each tab a value for the @ref Settings.
      *
      * This helps to convert from QString values stored in @ref Settings

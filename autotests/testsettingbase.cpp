@@ -29,10 +29,10 @@ public:
     }
 
 private:
-    static const inline QString organization = QStringLiteral("kde.org");
+    static inline constexpr QStringView organization{u"kde.org"};
     // Avoid side-effects on the actual configuration file of the actual
     // library: Use a value different application name:
-    static const inline QString application = QStringLiteral("libperceptualcolortestsettings");
+    static inline constexpr QStringView application{u"libperceptualcolortestsettings"};
 
 private Q_SLOTS:
     void initTestCase()
@@ -41,8 +41,8 @@ private Q_SLOTS:
 
         const QString fileName = QSettings(QSettings::IniFormat, //
                                            QSettings::UserScope, //
-                                           organization, //
-                                           application)
+                                           organization.toString(), //
+                                           application.toString())
                                      .fileName();
         QFile(fileName).remove();
     }
@@ -53,8 +53,8 @@ private Q_SLOTS:
 
         const QString fileName = QSettings(QSettings::IniFormat, //
                                            QSettings::UserScope, //
-                                           organization, //
-                                           application)
+                                           organization.toString(), //
+                                           application.toString())
                                      .fileName();
         QFile(fileName).remove();
     }
@@ -65,8 +65,8 @@ private Q_SLOTS:
 
         const QString fileName = QSettings(QSettings::IniFormat, //
                                            QSettings::UserScope, //
-                                           organization, //
-                                           application)
+                                           organization.toString(), //
+                                           application.toString())
                                      .fileName();
         QFile(fileName).remove();
     }
@@ -77,8 +77,8 @@ private Q_SLOTS:
 
         const QString fileName = QSettings(QSettings::IniFormat, //
                                            QSettings::UserScope, //
-                                           organization, //
-                                           application)
+                                           organization.toString(), //
+                                           application.toString())
                                      .fileName();
         QFile(fileName).remove();
     }
@@ -86,8 +86,8 @@ private Q_SLOTS:
     void testConstuctorDestructor()
     {
         Settings mySettings(QSettings::UserScope, //
-                            organization, //
-                            application);
+                            organization.toString(), //
+                            application.toString());
         {
             SettingBase mySettingBase(QStringLiteral("group/key"), //
                                       &mySettings,
@@ -98,8 +98,8 @@ private Q_SLOTS:
     void testParent()
     {
         Settings mySettings(QSettings::UserScope, //
-                            organization, //
-                            application);
+                            organization.toString(), //
+                            application.toString());
         QPointer<SettingBase> mySettingBase;
         {
             QObject myParent;
@@ -115,8 +115,8 @@ private Q_SLOTS:
     void testKey()
     {
         Settings mySettings(QSettings::UserScope, //
-                            organization, //
-                            application);
+                            organization.toString(), //
+                            application.toString());
         SettingBase mySettingBase(QStringLiteral("group/key"), //
                                   &mySettings,
                                   nullptr);

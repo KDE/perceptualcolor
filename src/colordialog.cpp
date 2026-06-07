@@ -1051,7 +1051,7 @@ void ColorDialogPrivate::initialize()
  *  @post The @ref currentColor property is set to a default value. */
 ColorDialog::ColorDialog(QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier.toString()))
 {
     d_pointer->initialize();
     setCurrentColor(d_pointer->defaultColor());
@@ -1069,7 +1069,7 @@ ColorDialog::ColorDialog(QWidget *parent)
  *  used. */
 ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier))
+    , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier.toString()))
 {
     d_pointer->initialize();
     // Calling setCurrentColor() guaranties to update all widgets
