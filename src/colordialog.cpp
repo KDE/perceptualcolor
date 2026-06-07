@@ -512,6 +512,17 @@ void ColorDialogPrivate::reloadIcons()
         m_eyedropperButton->setIcon( //
             qIconFromTheme(candidates, QStringLiteral("color-picker")));
     }
+
+    const int iconSize = //
+        m_tabWidget->style()->pixelMetric(QStyle::PM_LargeIconSize);
+    // Alternative:
+    // const auto &style = m_tabWidget->style();
+    // const int iconSize = std::max({
+    //     style->pixelMetric(QStyle::PM_ToolBarIconSize),
+    //     style->pixelMetric(QStyle::PM_SmallIconSize),
+    //     style->pixelMetric(QStyle::PM_TabBarIconSize),
+    //     style->pixelMetric(QStyle::PM_ButtonIconSize)});
+    m_tabWidget->setIconSize(QSize(iconSize, iconSize));
 }
 
 /** @brief Basic initialization.
@@ -646,17 +657,6 @@ void ColorDialogPrivate::initialize()
     initializePortalEyedropper();
 
     m_tabWidget = new QTabWidget;
-    // It would be good to have bigger icons. Via QStyle::pixelMetrics()
-    // we could get values for this. QStyle::PM_LargeIconSize seems to large,
-    // be we could use std::max() with QStyle::PM_ToolBarIconSize,
-    // QStyle::PM_SmallIconSize, QStyle::PM_TabBarIconSize,
-    // QStyle::PM_ButtonIconSize. But the problem is a regression in Qt6
-    // (compared to Qt5) that breaks rendering of bigger icons via
-    // QTabWidget::iconSize(): https://bugreports.qt.io/browse/QTBUG-114849
-    // Furthermore, it appears that the MacOS style does not adjust the height
-    // of the tab bar to match the icon height. This causes larger icons to
-    // simply overflow, which looks like a rendering issue. Therefore,
-    // currently we stick with the default icons size for tab bars.
     m_tabWidget->addTab(m_swatchBookWrapperWidget, QString());
     m_swatchBookTabShortcut = new QShortcut(q_pointer);
     connect(m_swatchBookTabShortcut, //
