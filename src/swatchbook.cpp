@@ -902,12 +902,6 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
  * Wayland setups where scale factors can differ between screens and change
  * dynamically as windows move. To ensure consistent sizing across all scale
  * factors, pixel alignment is deliberately avoided in this function.
- *
- * @todo SHOULDHAVE STYLING In Qt 6, the Breeze
- * style no longer draws a blue focus border when a
- * widget gains focus. This behavior was present in Qt 5, making it a
- * regression specific to Breeze. While not all styles support this visual cue,
- * Breeze previously did.
  */
 void SwatchBook::paintEvent(QPaintEvent *event)
 {
@@ -936,18 +930,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
         const QMargins margins(shrink, shrink, shrink, shrink);
         auto shrunkFrameStyleOption = frameStyleOption;
         shrunkFrameStyleOption.rect = frameStyleOption.rect - margins;
-        // NOTE On ukui style, drawing this primitive results in strange
-        // rendering on mouse hover. Actual behaviour: The whole panel
-        // background is drawn blue. Expected behaviour: Only the frame is
-        // drawn blue (as ukui actually does when rendering a QLineEdit).
-        // Playing around with PE_FrameLineEdit instead of or additional to
-        // PE_PanelLineEdit did not give better results either.
-        // As ukui has many, many graphical glitches and bugs (up to crashs not
-        // having been fixed for years), we assume that this is a problem of
-        // ukui, and not of our code. Furthermore, while the behavior is
-        // unexpected, the rendering doesn’t look completely terrible; we
-        // can live with that.
-        style()->drawPrimitive(QStyle::PE_PanelLineEdit, //
+        style()->drawPrimitive(QStyle::PE_FrameLineEdit, //
                                &shrunkFrameStyleOption,
                                &widgetPainter,
                                this);
