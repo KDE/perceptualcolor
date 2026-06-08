@@ -70,17 +70,6 @@ namespace PerceptualColor
  * macro and templates cannot be combined.</a> Therefore,
  * @ref AsyncImageProviderBase serves as a base class to provide
  * signals for @ref AsyncImageProvider.
- *
- * @todo SHOULDHAVE In @ref ChromaLightnessImageParameters::render(),
- * @ref ChromaHueImageParameters::render(),
- * @ref GradientImageParameters::render()  Do not cancel rendering
- * until the first (interlacing) result has been delivered to make sure that
- * slowly but continuously moving slider see at least sometimes updates… (and
- * it's more likely the current value is near to the last value than to the
- * old value still in the buffer before the user started moving the cursor
- * at all). The performance impact should be minimal when interlacing is
- * used. And if no interlacing is available, the impact should not be
- * too bad either.
  */
 template<typename T>
 class AsyncImageProvider : public AsyncImageProviderBase

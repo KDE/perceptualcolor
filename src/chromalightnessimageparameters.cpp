@@ -162,9 +162,6 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
         const int segmentsCount = static_cast<int>(segments.size());
         QSemaphore semaphore(0);
-        if (callbackObject.shouldAbort()) {
-            return;
-        }
         std::atomic_thread_fence(std::memory_order_seq_cst); // memory barrier
         for (const auto &segment : segments) {
             const auto myLambda = [bytesPtr, //

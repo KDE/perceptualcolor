@@ -144,17 +144,6 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
     const GradientImageParameters parameters = //
         variantParameters.value<GradientImageParameters>();
 
-    // From Qt Example’s documentation:
-    //
-    //     “If we discover […] that restart has been set
-    //      to true (by render()), we break out […] immediately […].
-    //      Similarly, if we discover that abort has been set
-    //      to true (by the […] destructor), we return from the
-    //      function immediately […].”
-    if (callbackObject.shouldAbort()) {
-        return;
-    }
-
     // First, create an image of the gradient with only one pixel thickness.
     // (Color management operations are expensive in CPU time; we try to
     // minimize this.)
@@ -177,9 +166,6 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
             + (parameters.m_secondColorAlphaCorrected - parameters.m_firstColorAlphaCorrected) * value;
         temp.setAlphaF(static_cast<float>(alpha));
         onePixelLine.setPixelColor(i, 0, temp);
-    }
-    if (callbackObject.shouldAbort()) {
-        return;
     }
 
     // Now, create a full image of the gradient
@@ -217,10 +203,6 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
     }
 
     result.setDevicePixelRatio(parameters.m_devicePixelRatioF);
-
-    if (callbackObject.shouldAbort()) {
-        return;
-    }
 
     callbackObject.deliverInterlacingPass( //
         result, //
