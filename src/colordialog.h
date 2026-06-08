@@ -121,6 +121,7 @@ class ColorDialogPrivate;
  * Document the performance impact: When resizing is allowed (which is the
  * default), the user can make the window very big, which might increase
  * the rendering time considerable.
+ * Set to no-resizable by default to avoid performance problems.
  *
  * @todo NICETOHAVE Provide (on demand) two patches,
  * like Scribus also does: One for the
@@ -163,6 +164,10 @@ class ColorDialogPrivate;
  * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
  * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
  * for compatibility?
+ *
+ * @todo SHOULDHAVE Unit test if (and how) QColorDialog normalized
+ * currentColor to RGB-QColor if the API user had set a HSL-QColor etc, and
+ * compare this with this class‘ behavior.
  *
  * @note The swatch book has the basic color page, which provides a perceptual
  * color palette. Commom palettes like QColorDialog’s standard colors or the

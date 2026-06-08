@@ -44,8 +44,6 @@ namespace PerceptualColor
  * But HSL etc are not supported here, and on the other side @ref ColorModel is
  * also used in @ref CssColor and HSL is needed there. Split into two different
  * enums?
- *
- * @todo SHOULDHAVE Refactoring of this class.
  */
 class AbsoluteColor
 {

@@ -400,6 +400,11 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo SHOULDHAVE In the CI (as defined by our current configuration), we
+ * get muss less warnings than when we run locally with
+ * <tt>-DADDITIONAL_WARNINGS=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE
+ * -DCMAKE_CXX_COMPILER=clazy</tt>.
+ *
  * @todo SHOWSTOPPER Define the precision of this library. We allow
  * changing the number of decimals in the @ref PerceptualColor::ColorDialog
  * though there is only a private API, not a public one. If so, maybe
@@ -425,6 +430,8 @@
  * @ref PerceptualColor::ColorDialog, even within
  * @ref PerceptualColor::MultiSpinBox. And also incoming drag-and-drop
  * (outgoing drag-and-drop instead should use the standard clipboard format).
+ * And maybe accept something that can be parsed also when Crtl-V or dragged
+ * to a multispinbox if it can be interpreted as such a value.
  *
  * @todo NICETOHAVE Remove remaining usage of <tt>ifndef MSVC_DLL</tt>
  * which is used in unit tests to exclude some tests that would otherwise

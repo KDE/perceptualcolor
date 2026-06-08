@@ -45,7 +45,11 @@ namespace PerceptualColor
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
  *
- * @sa @ref AbsoluteColor */
+ * @sa @ref AbsoluteColor
+ *
+ * @todo NICETOHAVE Implement our own conversions from RGB to HSL etc. to
+ * get higher precsion than we currently get by relying on QColor.
+ */
 class RgbColor
 {
 public:
