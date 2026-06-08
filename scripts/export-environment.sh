@@ -70,7 +70,6 @@ qhash-with-char-pointer-key,\
 qproperty-type-mismatch,\
 qrequiredresult-candidates,\
 qstring-varargs,\
-qt4-qstring-from-array,\
 qt6-deprecated-api-fixes,\
 qt6-qhash-signature,\
 qt6-qlatin1stringchar-to-u,\

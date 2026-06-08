@@ -12,11 +12,8 @@
 # run in a compatibility mode that makes sure we get the exact same result
 # as if actually CMake in the indicated version would have been invoked.
 #
-# Qt 6.0 requires at least CMake version 3.16.
-# https://doc.qt.io/archives/qt-6.0/cmake-get-started.html
-# Qt 6.2 LTS requires at least CMake version 3.16 for the Qt shared library
-# and CMake version 3.21.1 for Qt static library.
-# https://doc.qt.io/archives/qt-6.2/cmake-get-started.html
+# CMake minimum version required by Qt as of
+# https://doc.qt.io/qt-6/cmake-supported-cmake-versions.html
 cmake_minimum_required(VERSION 3.22.0)
 message(STATUS "CMAKE_VERSION: ${CMAKE_VERSION}")
 
@@ -540,9 +537,11 @@ find_package(
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-set(REQUIRED_QT_VERSION 6.2.0) # maximum allowed by our current CI runners
-find_package(
-    Qt6 ${REQUIRED_QT_VERSION}
+# NOTE Keep in sync
+# - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
+# - CMakeLists.txt: find_package(Qt6
+# - docs.cpp: Qt 6 (minimum version:
+find_package(Qt6 6.9
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
     COMPONENTS Core Gui Widgets DBus Test Svg
     REQUIRED)

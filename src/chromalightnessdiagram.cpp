@@ -129,12 +129,10 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace p
                           std::optional<QStringList>());
     d_pointer->retranslateUi();
     d_pointer->reloadIcons();
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
     connect(qGuiApp->styleHints(), // sender
             &QStyleHints::colorSchemeChanged, // signal
             d_pointer.get(), // receiver
             &ChromaLightnessDiagramPrivate::reloadIcons);
-#endif
     d_pointer->updateInfoButtonVisibility();
 }
 

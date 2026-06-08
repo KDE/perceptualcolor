@@ -765,9 +765,7 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
         break;
     case Mark::Add:
         myIcon = qIconFromTheme( //
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
             QIcon::ThemeIcon::ListAdd,
-#endif
             {QStringLiteral("list-add")},
             QStringLiteral("new-section"));
         myMark = m_addMarkAvailableInCurrentFont;

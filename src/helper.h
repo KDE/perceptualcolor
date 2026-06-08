@@ -356,9 +356,7 @@ template<typename T = void>
 
 [[nodiscard]] QIcon qIconFromTheme(const QStringList &names, const QString &fallback);
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
 [[nodiscard]] QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback);
-#endif
 
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 
@@ -424,12 +422,7 @@ template<typename T>
         // signed/unsigned does not matter for QMetaEnum!
     );
 
-    const auto value = //
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
-        static_cast<quint64>(enumerator);
-#else
-        static_cast<int>(enumerator);
-#endif
+    const auto value = static_cast<quint64>(enumerator);
     const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
     // QMetaEnum::valueToKeys (identifier with a final s) returns all existing
@@ -484,12 +477,7 @@ template<typename T>
         // signed/unsigned does not matter for QMetaEnum!
     );
 
-    const auto value = //
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
-        static_cast<quint64>(enumerator);
-#else
-        static_cast<int>(enumerator);
-#endif
+    const auto value = static_cast<quint64>(enumerator);
     const QMetaEnum myMeta = QMetaEnum::fromType<T>();
 
     // QMetaEnum::valueToKeys (identifier with a final s) returns all existing

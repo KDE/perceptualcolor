@@ -236,7 +236,6 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback)
     return QIcon();
 }
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
 /**
  * @internal
  *
@@ -269,7 +268,6 @@ QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names
     }
     return qIconFromTheme(names, fallback);
 }
-#endif
 
 /** @internal
  *
@@ -360,24 +358,11 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  * <tt>QGuiApplication::styleHints()->colorScheme()</tt>. This
  * is what KDE recommends since Qt 6.10. See also on
  * <a href="https://stackoverflow.com/questions/75457687">Stackoverflow</a>.
- * Apparently, since Qt 6.5, even the Windows Vista style
- * now seems to polish the widgets by setting a light color palette, so
- * also on Windows Vista style we could simply rely on the color palette
- * and test if the text color is lighter or darker than the background color
- * to determine the color scheme type. This is still used as fallback, if
- * Qt 6.5 is not available.
  */
 bool isDarkColorScheme()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     const auto scheme = QGuiApplication::styleHints()->colorScheme();
     return (scheme == Qt::ColorScheme::Dark);
-#else
-    const QPalette defaultPalette;
-    const auto textColor = defaultPalette.color(QPalette::WindowText);
-    const auto windowColor = defaultPalette.color(QPalette::Window);
-    return textColor.lightness() > windowColor.lightness();
-#endif // QT_VERSION
 }
 
 /**

@@ -187,12 +187,7 @@ void Setting<T>::setValue(const T &newValue)
     if (newValue != m_value) {
         m_value = newValue;
         if constexpr (m_isEnum) {
-            const auto newValueAsIntegral = //
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
-                static_cast<quint64>(newValue);
-#else
-                static_cast<int>(newValue);
-#endif
+            const auto newValueAsIntegral = static_cast<quint64>(newValue);
             const QString string = QString::fromUtf8( //
                 m_qMetaEnum.valueToKeys(newValueAsIntegral));
             underlyingQSettings()->setValue(m_key, string);

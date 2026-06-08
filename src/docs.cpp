@@ -10,7 +10,13 @@
 /** @page build Build instructions and requirements
  *
  * Build-time dependencies:
- * - Qt 6 (minimum version: 6.2.0).
+ * - Qt 6 (minimum version: 6.9).
+ * <!--
+ *     NOTE  Keep in sync
+ *     - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
+ *     - CMakeLists.txt: find_package(Qt6
+ *     - docs.cpp: Qt 6 (minimum version:
+ * -->
  *   Components: Core, Gui, Widgets, DBus, Test, Svg.
  * - CMake
  * - ECM (Extra CMake Modules from KDE)

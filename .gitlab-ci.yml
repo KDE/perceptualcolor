@@ -68,7 +68,11 @@ codecheck_cppcheck:
 
 
 codecheck_iwyu:
-  image: ubuntu:22.04
+  # Keep in sync
+  # - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu CI image‘s Qt version
+  # - CMakeLists.txt: find_package(Qt6
+  # - docs.cpp: Qt 6 (minimum version:
+  image: ubuntu:25.10
   tags:
     - Linux
   interruptible: true
@@ -88,20 +92,12 @@ codecheck_iwyu:
     # NOTE For some obscure reason, iwyu does not print anything if clazy
     # is not installed. So we would even have to install it, when we would
     # not need it otherwise.
-    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git clazy iwyu qt6-documentation-tools
-    # Get an up-to-date ECM version
-    - git clone https://invent.kde.org/frameworks/extra-cmake-modules.git
-    - cd extra-cmake-modules
-    - git checkout v6.10.0
-    - mkdir build && cd build
-    - cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-    - make -j$(nproc)
-    - make install
-    - cd ../..
-    - rm -r extra-cmake-modules
+    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git clazy iwyu qt6-documentation-tools build-essential
     # Version information about installed software:
     - cmake --find-package -DNAME=ECM -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
     - grep "set(PACKAGE_VERSION " /usr/share/ECM/cmake/ECMConfigVersion.cmake | sed 's/^/ECM /'
+    - export LANG=C.UTF-8
+    - export LC_ALL=C.UTF-8
   script:
     - scripts/ci-iwyu.sh
 
@@ -110,7 +106,11 @@ codecheck_iwyu:
 
 
 codecheck_quality:
-  image: ubuntu:22.04
+  # NOTE Keep in sync
+  # - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
+  # - CMakeLists.txt: find_package(Qt6
+  # - docs.cpp: Qt 6 (minimum version:
+  image: ubuntu:25.10
   tags:
     - Linux
   interruptible: true
@@ -128,24 +128,16 @@ codecheck_quality:
   stage: check2
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy qt6-documentation-tools texlive-latex-base libqt6sql6-sqlite
-    # Get an up-to-date ECM version
-    - git clone https://invent.kde.org/frameworks/extra-cmake-modules.git
-    - cd extra-cmake-modules
-    - git checkout v6.10.0
-    - mkdir build && cd build
-    - cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-    - make -j$(nproc)
-    - make install
-    - cd ../..
-    - rm -r extra-cmake-modules
+    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy qt6-documentation-tools texlive-latex-base libqt6sql6-sqlite pipx build-essential
     # Version information about installed software:
     - echo "pip version:" && pip --version
-    - pip install cmakelint
+    - echo "pipx version:" && pipx --version
+    # Add pipx install directory to path:
+    - export PATH=$PATH:/root/.local/bin
+    - pipx install cmakelint
     - echo "cmakelint version:" && cmakelint --version
     - echo "doxygen version:" && doxygen --version
     - echo "graphviz dot version:" && dot -V
-    - /usr/lib/qt6/bin/qhelpgenerator -v
     - cmake --find-package -DNAME=ECM -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
     - grep "set(PACKAGE_VERSION " /usr/share/ECM/cmake/ECMConfigVersion.cmake | sed 's/^/ECM /'
     # The following commands make a graphical shell available
@@ -160,6 +152,8 @@ codecheck_quality:
     - Xvfb :90 -ac -screen 0 1600x1200x24+32 &
     - sleep 5s
     - openbox &
+    - export LANG=C.UTF-8
+    - export LC_ALL=C.UTF-8
   script:
     - scripts/ci-test.sh
 

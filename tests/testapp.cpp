@@ -344,11 +344,9 @@ int main(int argc, char *argv[])
                      });
 
     QIcon myIcon = qIconFromTheme( //
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
         QIcon::ThemeIcon::ListAdd, // Available in Plasma/Breeze
-    // QIcon::ThemeIcon::SyncError, // Not available in Plasma/Breeze
-    // QIcon::ThemeIcon::DocumentPrint, // Available in Plasma/Breeze
-#endif
+        // QIcon::ThemeIcon::SyncError, // Not available in Plasma/Breeze
+        // QIcon::ThemeIcon::DocumentPrint, // Available in Plasma/Breeze
         {QStringLiteral("list-add")}, // Available in Plasma/Breeze
         // {QStringLiteral("help-browser")}, // Available in Plasma/Breeze
         // {QStringLiteral("abcdefg")}, // Not available in Plasma/Breeze

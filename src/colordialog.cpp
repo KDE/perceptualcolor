@@ -66,16 +66,13 @@
 #include <qstackedlayout.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <qstylehints.h>
 #include <qtabwidget.h>
 #include <qtoolbutton.h>
 #include <qvalidator.h>
 #include <qwidget.h>
 #include <type_traits>
 #include <utility>
-
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
-#include <qstylehints.h>
-#endif
 
 class QShowEvent;
 
@@ -435,12 +432,9 @@ QIcon ColorDialogPrivate::getGamutIcon()
             QStringLiteral("data-warning"),
             QStringLiteral("dialog-warning-symbolic"),
         };
-    return qIconFromTheme(
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 7, 0))
-        QIcon::ThemeIcon::DialogWarning,
-#endif
-        gamutIconNames, //
-        QStringLiteral("eye-exclamation"));
+    return qIconFromTheme(QIcon::ThemeIcon::DialogWarning,
+                          gamutIconNames, //
+                          QStringLiteral("eye-exclamation"));
 }
 
 /** @brief Reloads all icons, adapting to the current color schema and
@@ -1037,12 +1031,10 @@ void ColorDialogPrivate::initialize()
     retranslateUi();
 
     reloadIcons();
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
     connect(qGuiApp->styleHints(), // sender
             &QStyleHints::colorSchemeChanged, // signal
             this, // receiver
             &ColorDialogPrivate::reloadIcons);
-#endif
 }
 
 /** @brief Constructor
@@ -1742,11 +1734,9 @@ void ColorDialogPrivate::updateEyedropperButtonVisibility()
 {
     std::optional<bool> newVisibility = //
         PortalEyedropper::getInstance().isAvailable();
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
     if (m_options.testFlag(QColorDialog::NoEyeDropperButton)) {
         newVisibility = false;
     };
-#endif
     m_eyedropperButton->setVisible(newVisibility.value_or(false));
 }
 

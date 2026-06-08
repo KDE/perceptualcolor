@@ -2733,7 +2733,6 @@ private Q_SLOTS:
         }
     }
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 6, 0))
     void testEyedropperButton()
     {
         ColorDialog myDialog;
@@ -2742,7 +2741,6 @@ private Q_SLOTS:
             QVERIFY(!myDialog.d_pointer->m_eyedropperButton->isVisible());
         }
     }
-#endif
 
     void testFixedIdentifierWithoutHyphenMinus()
     {

@@ -206,6 +206,12 @@ static void initWidgetAppearance(QApplication *app)
                                     QLocale(QLocale::English).uiLanguages());
 }
 
+// Indirection to avoid compiler warnings about out-of-range enum casts.
+static QFont::StyleStrategy staticCastHelper(int value)
+{
+    return static_cast<QFont::StyleStrategy>(value);
+}
+
 // We try to be as explicit as possible about the fonts.
 // std::exit() is called if one of the fontfiles couldn’t be loaded.
 static void initFonts(QApplication *app, const QStringList &fontfiles)
@@ -238,7 +244,7 @@ static void initFonts(QApplication *app, const QStringList &fontfiles)
     // Anti-alias might be different on different systems. Disabling it
     // entirely would look too ugly, but we disable subpixel antialias to make
     // the results between different systems at least smaller.
-    constexpr auto styleStrategy = static_cast<QFont::StyleStrategy>( //
+    const auto styleStrategy = staticCastHelper( //
         QFont::PreferAntialias | QFont::NoSubpixelAntialias);
     myFont.setStyleStrategy(styleStrategy);
     myFont.setStyleHint(QFont::SansSerif, styleStrategy);
