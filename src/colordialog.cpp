@@ -998,26 +998,63 @@ void ColorDialogPrivate::initialize()
     // The q_pointer’s object is still not fully initialized at this point,
     // but it’s base class constructor has fully run; this should be enough
     // to use functionality based on QWidget, so we can use it as parent.
+
     m_cielchD50SpinBoxGamutAction = new QAction(q_pointer);
+    new QShortcut(QKeySequence(Qt::Key_F5), //
+                  m_cielchD50SpinBox, // parent
+                  m_cielchD50SpinBoxGamutAction.data(), // receiver
+                  &QAction::trigger, // slot
+                  &QAction::trigger, // slot
+                  Qt::WidgetWithChildrenShortcut);
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_R), //
+                  m_cielchD50SpinBox, // parent
+                  m_cielchD50SpinBoxGamutAction.data(), // receiver
+                  &QAction::trigger, // slot
+                  &QAction::trigger, // slot
+                  Qt::WidgetWithChildrenShortcut);
+    new QShortcut(QKeySequence::Refresh, //
+                  m_cielchD50SpinBox, // parent
+                  m_cielchD50SpinBoxGamutAction.data(), // receiver
+                  &QAction::trigger, // slot
+                  &QAction::trigger, // slot
+                  Qt::WidgetWithChildrenShortcut);
     connect(m_cielchD50SpinBoxGamutAction, // sender
             &QAction::triggered, // signal
             this, // receiver
             &ColorDialogPrivate::updateCielchD50ButBlockSignals // slot
     );
+    m_cielchD50SpinBoxGamutAction->setVisible(false);
+    m_cielchD50SpinBoxGamutAction->setEnabled(false);
+    m_cielchD50SpinBox->addActionButton( //
+        m_cielchD50SpinBoxGamutAction, //
+        QLineEdit::ActionPosition::TrailingPosition);
+
     m_oklchSpinBoxGamutAction = new QAction(q_pointer);
+    new QShortcut(QKeySequence(Qt::Key_F5), //
+                  m_oklchSpinBox, // parent
+                  m_oklchSpinBoxGamutAction.data(), // receiver
+                  &QAction::trigger, // slot
+                  &QAction::trigger, // slot
+                  Qt::WidgetWithChildrenShortcut);
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_R), //
+                  m_oklchSpinBox, // parent
+                  m_oklchSpinBoxGamutAction.data(), // receiver
+                  &QAction::trigger, // slot
+                  &QAction::trigger, // slot
+                  Qt::WidgetWithChildrenShortcut);
+    new QShortcut(QKeySequence::Refresh, //
+                  m_oklchSpinBox, // parent
+                  m_oklchSpinBoxGamutAction.data(), // receiver
+                  &QAction::trigger, // slot
+                  &QAction::trigger, // slot
+                  Qt::WidgetWithChildrenShortcut);
     connect(m_oklchSpinBoxGamutAction, // sender
             &QAction::triggered, // signal
             this, // receiver
             &ColorDialogPrivate::updateOklchButBlockSignals // slot
     );
-    // However, here we hide the action because initially the
-    // current color should be in-gamut, so no need for the gamut action
-    // to be visible.
-    m_cielchD50SpinBoxGamutAction->setVisible(false);
-    m_cielchD50SpinBox->addActionButton( //
-        m_cielchD50SpinBoxGamutAction, //
-        QLineEdit::ActionPosition::TrailingPosition);
     m_oklchSpinBoxGamutAction->setVisible(false);
+    m_oklchSpinBoxGamutAction->setEnabled(false);
     m_oklchSpinBox->addActionButton( //
         m_oklchSpinBoxGamutAction, //
         QLineEdit::ActionPosition::TrailingPosition);
@@ -1627,6 +1664,7 @@ void ColorDialogPrivate::updateCielchD50ButBlockSignals()
     const auto cielchD50 = m_currentOpaqueColorAbs.value(ColorModel::CielchD50);
     m_cielchD50SpinBox->setValues(cielchD50.toQList3());
     m_cielchD50SpinBoxGamutAction->setVisible(false);
+    m_cielchD50SpinBoxGamutAction->setEnabled(false);
 }
 
 /** @brief Updates the Oklch spin box to @ref m_currentOpaqueColorAbs.
@@ -1640,6 +1678,7 @@ void ColorDialogPrivate::updateOklchButBlockSignals()
     const auto oklch = m_currentOpaqueColorAbs.value(ColorModel::OklchD65);
     m_oklchSpinBox->setValues(oklch.toQList3());
     m_oklchSpinBoxGamutAction->setVisible(false);
+    m_oklchSpinBoxGamutAction->setEnabled(false);
 }
 
 /** @brief If no @ref m_isColorChangeInProgress, reads the LCH numbers
@@ -1653,8 +1692,10 @@ void ColorDialogPrivate::readLchNumericValues()
     const GenericColor lchValues = GenericColor(m_cielchD50SpinBox->values());
     if (AbsoluteColor::isLchInSRgbGamut(lchValues, LchSpace::CielchD50)) {
         m_cielchD50SpinBoxGamutAction->setVisible(false);
+        m_cielchD50SpinBoxGamutAction->setEnabled(false);
     } else {
         m_cielchD50SpinBoxGamutAction->setVisible(true);
+        m_cielchD50SpinBoxGamutAction->setEnabled(true);
     }
     const auto myColor = GenericColor( //
         AbsoluteColor::reduceChromaToFitIntoGamut(lchValues, LchSpace::CielchD50));
@@ -1679,8 +1720,10 @@ void ColorDialogPrivate::readOklchNumericValues()
     originalOklch.third = m_oklchSpinBox->values().value(2);
     if (AbsoluteColor::isLchInSRgbGamut(originalOklch, LchSpace::Oklch)) {
         m_oklchSpinBoxGamutAction->setVisible(false);
+        m_oklchSpinBoxGamutAction->setEnabled(false);
     } else {
         m_oklchSpinBoxGamutAction->setVisible(true);
+        m_oklchSpinBoxGamutAction->setEnabled(true);
     }
     const auto inGamutOklch = GenericColor( //
         AbsoluteColor::reduceChromaToFitIntoGamut(originalOklch, //

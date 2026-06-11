@@ -131,11 +131,6 @@ class ColorDialogPrivate;
  * And put an arrow between the patches, from “before” to “after”. (Be aware:
  * RTL support necessary!)
  *
- * @todo NICETOHAVE Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
- * functionality as the gamut button in the HCL @ref MultiSpinBox.
- * But attention: If a library user <em>embeds</em> the dialog, he does
- * not want his shortcuts to be intercepted!
- *
  * @todo NICETOHAVE Start with dialog with Qt::yellow RGB 255 255 0. You get
  * CIELchD50 98% 95 100°. Change the value, than enter manually
  * CIELchD50 98% 95 100°. Expected result: Ideally there would be no rounding
