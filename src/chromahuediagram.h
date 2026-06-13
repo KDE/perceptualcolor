@@ -70,9 +70,6 @@ class ChromaHueDiagramPrivate;
  * Make sure that @ref ChromaHueDiagram always shows at least at the
  * central physical pixel with an in-gamut color? Solution: Limit the range
  * of the lightness selector?
- *
- * @todo SHOULDHAVE Accept Key + like currently yet Key Left, and Key - like
- * currently yet Key Right, for consistency with @ref WheelColorPicker.
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {

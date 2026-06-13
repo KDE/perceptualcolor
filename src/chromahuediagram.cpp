@@ -335,9 +335,11 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
         newColor.second -= singleStepLabc;
         break;
     case Qt::Key_Left:
+    case Qt::Key_Plus:
         newColor.third += singleStepHue;
         break;
     case Qt::Key_Right:
+    case Qt::Key_Minus:
         newColor.third -= singleStepHue;
         break;
     case Qt::Key_PageUp:
