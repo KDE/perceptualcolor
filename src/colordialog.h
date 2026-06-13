@@ -131,30 +131,12 @@ class ColorDialogPrivate;
  * And put an arrow between the patches, from “before” to “after”. (Be aware:
  * RTL support necessary!)
  *
- * @todo NICETOHAVE Start with dialog with Qt::yellow RGB 255 255 0. You get
- * CIELchD50 98% 95 100°. Change the value, than enter manually
- * CIELchD50 98% 95 100°. Expected result: Ideally there would be no rounding
- * difference at all and we get RGB 255 255 0. Actual result:
- * CIELchD50 98% 95 100° is marked as out-of-gamut. The correspondingly used
- * in-gamut value is RGB 255 251 202, which is really quite far from
- * Qt::yellow RGB 255 255 0 (much more pale).
- *
  * @todo NICETOHAVE Support for other models like
  * Munsell? With an option to enable or disable them? (NCS not, because
  * it is not free…)
  * Or, additional to the polar coordinates Oklch/Cielch support also:
  * Oklab (feature parity with CSS Color 5),
  * Cielab (feature parity with CSS Color 5), Okhsl?
- *
- * @todo NICETOHAVE Restore the previous window geometry when the dialog is
- * shown? Sessin management similiar to
- * <a href="https://invent.kde.org/plasma/spectacle/-/merge_requests/501/diffs">
- * the implementation in Speactacle</a>?
- * We restore already the chosen tab and swatchbook page, but not the
- * window geometry. Would it make sense to do so app-wise or system-wise?
- * Would this work on Wayland at all, or maybe only for the window size, but
- * not for the window position? Anyway, the native QColorDialog does’t to
- * that.
  *
  * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
  * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
