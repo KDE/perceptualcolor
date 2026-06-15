@@ -77,6 +77,7 @@ void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColo
     }
 
     m_firstColorLchCorrected = correctedNewFirstColorLch;
+    m_firstColorAlphaCorrected = correctedNewFirstColorAlpha;
     updateSecondColor();
 }
 
