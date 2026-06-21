@@ -164,9 +164,7 @@ public:
 private:
     static inline constexpr QStringView id{u"testcolordialog"};
     QScopedPointer<ColorDialog> m_perceptualDialog;
-    QScopedPointer<ColorDialog> m_perceptualDialog2;
     QScopedPointer<QColorDialog> m_qDialog;
-    QScopedPointer<QColorDialog> m_qDialog2;
     QColor m_color;
 
     static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)

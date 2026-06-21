@@ -265,7 +265,7 @@ static void setCurrentTab(ColorDialog *dialog, int index)
 {
     QList<QTabWidget *> tabWidgetList = dialog->findChildren<QTabWidget *>();
     if (tabWidgetList.size() != 1) {
-        throw 0;
+        qFatal("Invariant violated in generateScreenshots");
     }
     QTabWidget *myTabWidget = tabWidgetList.first();
     const auto count = myTabWidget->count();
@@ -287,7 +287,7 @@ static void setCurrentSwatchBookSelector(ColorDialog *dialog, int index)
 {
     QList<QComboBox *> comboBoxList = dialog->findChildren<QComboBox *>();
     if (comboBoxList.size() != 1) {
-        throw 0;
+        qFatal("Invariant violated in generateScreenshots");
     }
     QComboBox *myComboBox = comboBoxList.first();
     const auto count = myComboBox->count();

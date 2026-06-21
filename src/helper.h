@@ -199,13 +199,6 @@ public:
      * @brief Converts the array to a QList.
      *
      * @return Converts the array to a QList. */
-    // Disable cppcheck's returnByReference warning.
-    // Note: cppcheck is giving bad advice here. Returning by (const)
-    // reference can lead to unexpected behavior: the underlying data might
-    // be modified later by the original owner, making it a risky practice.
-    // Anyway, we return a QList. Since QList uses implicit sharing,
-    // creating a copy from it is efficient and inexpensive.
-    // cppcheck-suppress returnByReference
     QList<T> toQList() const
     {
         return m_data;

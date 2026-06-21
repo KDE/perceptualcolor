@@ -131,6 +131,7 @@ void AsyncImageRenderThread::run()
         //      restart is true. There's no use in keeping a worker thread
         //      looping indefinitely while there's nothing to do.”
         m_loopMutex.lock();
+        // cppcheck-suppress knownConditionTrueFalse // false positive
         if (!m_loopRestart && !m_loopAbort) {
             QMutexLocker<QMutex> syncLocker(&m_syncMutex);
             m_syncIsIdle = true;

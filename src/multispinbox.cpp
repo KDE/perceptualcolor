@@ -247,18 +247,18 @@ QSize MultiSpinBox::sizeHint() const
  *
  * Reimplemented from base class.
  *
- * @param event The event to process */
-void MultiSpinBox::changeEvent(QEvent *event)
+ * @param eventParameter The event to process */
+void MultiSpinBox::changeEvent(QEvent *eventParameter)
 {
     // QEvent::StyleChange or QEvent::FontChange are not handled here
     // because they trigger yet a content and geometry update in the
     // base class’s implementation of this function.
     if ( //
-        (event->type() == QEvent::LanguageChange) //
-        || (event->type() == QEvent::LocaleChange) //
+        (eventParameter->type() == QEvent::LanguageChange) //
+        || (eventParameter->type() == QEvent::LocaleChange) //
         // The base class’s implementation for QEvent::LayoutDirectionChange
         // would only call update, not updateGeometry…
-        || (event->type() == QEvent::LayoutDirectionChange) //
+        || (eventParameter->type() == QEvent::LayoutDirectionChange) //
     ) {
         d_pointer->m_validator->setLocale(locale());
         d_pointer->updatePrefixValueSuffixText();
@@ -270,7 +270,7 @@ void MultiSpinBox::changeEvent(QEvent *event)
         update();
         updateGeometry();
     }
-    QAbstractSpinBox::changeEvent(event);
+    QAbstractSpinBox::changeEvent(eventParameter);
 }
 
 /**
@@ -601,15 +601,13 @@ void MultiSpinBoxPrivate::setPendingValuesWithoutFurtherUpdating(const QList<dou
     // Make sure the new section values are
     // valid (minimum <= value <= maximum):
     MultiSpinBoxSection myConfig;
-    double rangeWidth;
-    double temp;
     for (int i = 0; i < sectionCount; ++i) {
         myConfig = m_format.at(i);
         fixedNewValues[i] =
             // Round value _before_ applying boundaries/wrapping.
             roundToDigits(fixedNewValues.at(i), myConfig.decimals());
         if (myConfig.isWrapping()) {
-            rangeWidth = myConfig.maximum() - myConfig.minimum();
+            const double rangeWidth = myConfig.maximum() - myConfig.minimum();
             if (rangeWidth <= 0) {
                 // This is a special case.
                 // This happens when minimum == maximum (or
@@ -617,7 +615,7 @@ void MultiSpinBoxPrivate::setPendingValuesWithoutFurtherUpdating(const QList<dou
                 fixedNewValues[i] = myConfig.minimum();
             } else {
                 // floating-point modulo (fmod) operation
-                temp = fmod(
+                double temp = fmod(
                     // Dividend:
                     fixedNewValues.at(i) - myConfig.minimum(),
                     // Divisor:
@@ -770,12 +768,12 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
  * Updates the widget (except for windows that do not
  * specify a <tt>focusPolicy()</tt>).
  *
- * @param event the <tt>QEvent::FocusOut</tt> to be handled. */
-void MultiSpinBox::focusOutEvent(QFocusEvent *event)
+ * @param eventParameter the <tt>QEvent::FocusOut</tt> to be handled. */
+void MultiSpinBox::focusOutEvent(QFocusEvent *eventParameter)
 {
     // When the context menu (right mouse click) pops up, this should not
     // modify the current text selection.
-    if (event->reason() != Qt::PopupFocusReason) {
+    if (eventParameter->reason() != Qt::PopupFocusReason) {
         d_pointer->updatePrefixValueSuffixText();
         d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
             d_pointer->m_currentIndex);
@@ -785,7 +783,7 @@ void MultiSpinBox::focusOutEvent(QFocusEvent *event)
         d_pointer->applyPendingValuesAndEmitSignals();
     }
 
-    QAbstractSpinBox::focusOutEvent(event);
+    QAbstractSpinBox::focusOutEvent(eventParameter);
 }
 
 /** @brief Handles a <tt>QEvent::FocusIn</tt>.
@@ -795,11 +793,11 @@ void MultiSpinBox::focusOutEvent(QFocusEvent *event)
  * Updates the widget (except for windows that do not
  * specify a <tt>focusPolicy()</tt>).
  *
- * @param event the <tt>QEvent::FocusIn</tt> to be handled. */
-void MultiSpinBox::focusInEvent(QFocusEvent *event)
+ * @param eventParameter the <tt>QEvent::FocusIn</tt> to be handled. */
+void MultiSpinBox::focusInEvent(QFocusEvent *eventParameter)
 {
-    QAbstractSpinBox::focusInEvent(event);
-    switch (event->reason()) {
+    QAbstractSpinBox::focusInEvent(eventParameter);
+    switch (eventParameter->reason()) {
     case Qt::ShortcutFocusReason:
     case Qt::TabFocusReason:
         d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
@@ -831,11 +829,11 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
  *
  * Reimplemented from base class.
  *
- * @param event The key press event
+ * @param eventParameter The key press event
  */
-void MultiSpinBox::keyPressEvent(QKeyEvent *event)
+void MultiSpinBox::keyPressEvent(QKeyEvent *eventParameter)
 {
-    const auto eventText = event->text();
+    const auto eventText = eventParameter->text();
     if (!eventText.isEmpty() && !lineEdit()->hasSelectedText()) {
         const auto i = d_pointer->m_currentIndex;
         const bool hasNextSection = //
@@ -859,7 +857,7 @@ void MultiSpinBox::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    const auto key = event->key();
+    const auto key = eventParameter->key();
     if ((key == Qt::Key_Enter) || (key == Qt::Key_Return)) {
         d_pointer->updatePrefixValueSuffixText();
         d_pointer->setCurrentIndexAndUpdateTextAndSelectValue( //
@@ -871,7 +869,7 @@ void MultiSpinBox::keyPressEvent(QKeyEvent *event)
     // it is called AFTER our own treatment and AFTER our own signals about
     // value changes have been emitted. So editingFinished() is the last signal
     // just like in Qt’s own subclasses of QAbstractSpinBox.
-    QAbstractSpinBox::keyPressEvent(event);
+    QAbstractSpinBox::keyPressEvent(eventParameter);
 }
 
 /** @brief Increase or decrease the current section’s value.
@@ -1032,7 +1030,7 @@ int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
  *
  * Reimplemented from base class.
  *
- * @param event the event to be handled.
+ * @param eventParameter the event to be handled.
  *
  * @returns The base class’s return value.
  *
@@ -1040,9 +1038,9 @@ int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
  *
  * @note For future extensions.
  */
-bool MultiSpinBox::event(QEvent *event)
+bool MultiSpinBox::event(QEvent *eventParameter)
 {
-    return QAbstractSpinBox::event(event);
+    return QAbstractSpinBox::event(eventParameter);
 }
 
 /** @brief Updates the widget according to the new cursor position.
@@ -1309,14 +1307,14 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
  * Makes sure that actions added by @ref addActionButton are handled as
  * expected.
  *
- * @param event The action event
+ * @param eventParameter The action event
  */
-void MultiSpinBox::actionEvent(QActionEvent *event)
+void MultiSpinBox::actionEvent(QActionEvent *eventParameter)
 {
-    if (event->type() == QEvent::ActionRemoved) {
-        lineEdit()->removeAction(event->action());
+    if (eventParameter->type() == QEvent::ActionRemoved) {
+        lineEdit()->removeAction(eventParameter->action());
     }
-    QAbstractSpinBox::actionEvent(event);
+    QAbstractSpinBox::actionEvent(eventParameter);
 }
 
 qsizetype MultiSpinBox::sectionCount() const

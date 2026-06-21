@@ -35,7 +35,7 @@ codecheck_cppcheck:
   # when C++ code has changed. And it provides its results directly as
   # well-formatted JSON.
   stage: check1
-  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt515:latest
+  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt611:latest
   tags:
     - Linux
   interruptible: true

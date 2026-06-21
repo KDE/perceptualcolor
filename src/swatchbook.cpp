@@ -563,7 +563,7 @@ void SwatchBookPrivate::initStyleOption(QStyleOptionFrame *option) const
  *
  * @returns The pixel position of the top-left pixel of the content area
  * which can be used for the color patches. */
-QPoint SwatchBookPrivate::offset(const QStyleOptionFrame &styleOptionFrame) const
+QPoint SwatchBookPrivate::contentOffset(const QStyleOptionFrame &styleOptionFrame) const
 {
     const QPoint innerMarginOffset = QPoint( //
         q_pointer->style()->pixelMetric(QStyle::PM_LayoutLeftMargin),
@@ -616,7 +616,7 @@ std::pair<qsizetype, qsizetype> SwatchBookPrivate::logicalColumnRowFromPosition(
     const int myPatchHeight = myColorPatchSize.height();
     QStyleOptionFrame myFrameStyleOption;
     initStyleOption(&myFrameStyleOption);
-    const QPoint temp = position - offset(myFrameStyleOption);
+    const QPoint temp = position - contentOffset(myFrameStyleOption);
 
     if ((temp.x() < 0) || (temp.y() < 0)) {
         return invalid; // Click position too much leftwards or upwards.
@@ -935,7 +935,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     }
 
     // Draw the color patches
-    const QPoint offset = d_pointer->offset(frameStyleOption);
+    const QPoint myOffset = d_pointer->contentOffset(frameStyleOption);
     const qsizetype columnCount = d_pointer->m_swatchGrid.iCount();
     const int myCornerRadius = d_pointer->cornerRadius();
     qsizetype visualColumn;
@@ -958,10 +958,10 @@ void SwatchBook::paintEvent(QPaintEvent *event)
                     visualColumn = columnCount - 1 - columnIndex;
                 }
                 widgetPainter.drawRoundedRect( //
-                    offset.x() //
+                    myOffset.x() //
                         + (static_cast<int>(visualColumn) //
                            * (patchWidthOuter + d_pointer->horizontalPatchSpacing())),
-                    offset.y() //
+                    myOffset.y() //
                         + row * (patchHeightOuter + d_pointer->verticalPatchSpacing()),
                     patchWidthOuter,
                     patchHeightOuter,
@@ -969,7 +969,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
                     myCornerRadius);
             } else {
                 if (d_pointer->m_isEditable) {
-                    d_pointer->drawMark(offset, //
+                    d_pointer->drawMark(myOffset, //
                                         &widgetPainter, //
                                         addMarkColor, //
                                         SwatchBookPrivate::Mark::Add, //
@@ -999,7 +999,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const double lightness = oklab.first;
     const QColor selectionMarkColor = //
         handleColorFromBackgroundLightness(lightness, LchSpace::Oklch);
-    d_pointer->drawMark(offset, //
+    d_pointer->drawMark(myOffset, //
                         &widgetPainter, //
                         selectionMarkColor, //
                         SwatchBookPrivate::Mark::Selection, //

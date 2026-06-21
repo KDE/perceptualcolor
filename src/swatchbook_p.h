@@ -60,7 +60,7 @@ public:
     void initStyleOption(QStyleOptionFrame *option) const;
     [[nodiscard]] std::pair<qsizetype, qsizetype> logicalColumnRowFromPosition(const QPoint position) const;
     [[nodiscard]] int normalPatchSpacing() const;
-    [[nodiscard]] QPoint offset(const QStyleOptionFrame &styleOptionFrame) const;
+    [[nodiscard]] QPoint contentOffset(const QStyleOptionFrame &styleOptionFrame) const;
     [[nodiscard]] QSize patchSizeInner() const;
     [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();

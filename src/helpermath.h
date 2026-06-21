@@ -223,16 +223,30 @@ void normalizePolar360(T &radius, T &angleDegree)
     }
 }
 
-/** @internal
+/**
+ * @internal
  *
- * @brief Round floating point numbers to a certain number of digits
+ * @brief Rounds a floating-point value to a specified number of digits.
  *
- * @tparam T a floating point type
- * @param value the value that will be rounded
- * @param precision the number of decimal places to which rounding takes place
- * @returns the rounded value
+ * @tparam T Floating-point type
+ * @param value The value to be rounded.
+ * @param precision Number of digits to round to:
+ *   - Positive values → round to that many decimal places.
+ *   - Negative values → round to tens, hundreds, thousands, etc.
  *
- * @note This function is constexpr only starting with C++26.
+ * @return The rounded value
+ *
+ * Examples:
+ * <tt>
+ * double x = 1234.567;
+ * roundToDigits(x, 2);   // Result: 1234.57
+ * roundToDigits(x, 1);   // Result: 1234.6
+ * roundToDigits(x, 0);   // Result: 1235
+ * roundToDigits(x, -1);   // Result: 1230
+ * roundToDigits(x, -2);   // Result: 1200
+ * </tt>
+ *
+ * @note This function is constexpr only starting with C++23.
  */
 template<typename T>
 [[nodiscard]] constexpr T roundToDigits(T value, int precision)
@@ -250,6 +264,7 @@ template<typename T>
         for (int i = 0; i < precision; ++i)
             multiplier *= static_cast<T>(10);
     } else if (precision < 0) {
+        // cppcheck-suppress knownConditionTrueFalse // false positive
         for (int i = 0; i < -precision; ++i)
             multiplier /= static_cast<T>(10);
     }

@@ -36,17 +36,17 @@ public:
          * @brief width of the requested image, measured in device-independent
          * pixels.
          */
-        int width;
+        int width = 0;
         /**
          * @brief height of the requested image, measured in device-independent
          * pixels.
          */
-        int height;
+        int height = 0;
         /**
          * @brief The device pixel ratio of the widget, with floating
          *        point precision
          */
-        qreal devicePixelRatioF;
+        qreal devicePixelRatioF = 1;
         /**
          * @brief The color to be displayed
          */
@@ -55,7 +55,7 @@ public:
          * @brief The line width used to draw the mark that symbolized an
          * invalid color, measured in device-independent pixels.
          */
-        int lineWidth;
+        int lineWidth = 1;
         /**
          * @brief The color used to draw the mark that symbolized an
          * invalid color.
@@ -64,7 +64,7 @@ public:
         /**
          * @brief The layout direction of the widget
          */
-        Qt::LayoutDirection layoutDirection;
+        Qt::LayoutDirection layoutDirection = Qt::LayoutDirectionAuto;
 
         bool operator==(const ImageParameters &other) const;
     };

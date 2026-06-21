@@ -248,12 +248,12 @@ Q_SIGNALS:
     void valuesChangedAsQString(const QString &newValuesQString);
 
 protected:
-    virtual void changeEvent(QEvent *event) override;
-    virtual bool event(QEvent *event) override;
-    virtual void focusInEvent(QFocusEvent *event) override;
+    virtual void changeEvent(QEvent *eventParameter) override;
+    virtual bool event(QEvent *eventParameter) override;
+    virtual void focusInEvent(QFocusEvent *eventParameter) override;
     virtual bool focusNextPrevChild(bool next) override;
-    virtual void focusOutEvent(QFocusEvent *event) override;
-    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void focusOutEvent(QFocusEvent *eventParameter) override;
+    virtual void keyPressEvent(QKeyEvent *eventParameter) override;
     [[nodiscard]] virtual QAbstractSpinBox::StepEnabled stepEnabled() const override;
 
 private:

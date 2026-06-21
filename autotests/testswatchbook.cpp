@@ -345,8 +345,8 @@ private Q_SLOTS:
 
             QStyleOptionFrame temp;
             testWidget->d_pointer->initStyleOption(&temp);
-            QVERIFY(testWidget->d_pointer->offset(temp).x() >= 0);
-            QVERIFY(testWidget->d_pointer->offset(temp).y() >= 0);
+            QVERIFY(testWidget->d_pointer->contentOffset(temp).x() >= 0);
+            QVERIFY(testWidget->d_pointer->contentOffset(temp).y() >= 0);
 
             delete mainWidget;
         }

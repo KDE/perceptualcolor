@@ -55,7 +55,7 @@ public:
     [[nodiscard]] double minimum() const;
     [[nodiscard]] QString prefix() const;
     void setDecimals(int newDecimals);
-    void setFormatString(const QString &formatString);
+    void setFormatString(const QString &newFormatString);
     void setGroupSeparatorShown(bool shown);
     void setMaximum(double newMaximum);
     void setMinimum(double newMinimum);

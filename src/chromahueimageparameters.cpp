@@ -87,7 +87,7 @@ InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSiz
  * If the interlacing starts for example with 8 x 8 pixels, valid values for
  * the firstRow index are: 0, 8, 16, 32 etc.
  */
-// Disable Clazy checks for passing large objects by value. In this function,
+// Disable checks for passing large objects by value. In this function,
 // designed for threaded execution, we avoid passing by reference whenever
 // possible to prevent potential pitfalls, even though copying by value may
 // introduce slight overhead.
@@ -100,6 +100,7 @@ void ChromaHueImageParameters::renderByRow( //
     const qreal shift,
     const qreal scaleFactor,
     const double chromaRange,
+    // cppcheck-suppress passedByValue
     const InterlacingPass currentPass, // clazy:exclude=function-args-by-ref
     int firstRow,
     int lastRow)

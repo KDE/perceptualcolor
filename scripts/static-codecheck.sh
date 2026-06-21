@@ -31,7 +31,8 @@ PUBLIC_HEADERS="
     src/settranslation.h
     src/version.in.hpp
     "
-CODE_WITHOUT_UNIT_TESTS="src/* tests utils examples"
+CODE_LIB_ONLY="src/*"
+CODE_WITHOUT_UNIT_TESTS="$CODE_LIB_ONLY tests utils examples"
 UNIT_TESTS="autotests/*"
 ALL_CODE="$CODE_WITHOUT_UNIT_TESTS $UNIT_TESTS"
 
@@ -110,29 +111,29 @@ grep \
 # https://community.kde.org/Frameworks/Frameworks_Logging_Policy
 # describes the KDE logging policy. Make sure logging uses categories.
 grep \
-    --recursive --exclude=testapp.cpp \
+    --recursive \
     --files-with-matches 'qDebug' \
-    $CODE_WITHOUT_UNIT_TESTS \
+    $CODE_LIB_ONLY \
          | sed 's/^/Use qCDebug() instead of qDebug(): /'
 grep \
-    --recursive --exclude=testapp.cpp \
+    --recursive \
     --files-with-matches 'qInfo' \
-    $CODE_WITHOUT_UNIT_TESTS \
+    $CODE_LIB_ONLY \
          | sed 's/^/Use qCInfo() instead of qInfo(): /'
 grep \
-    --recursive --exclude=testapp.cpp \
+    --recursive \
     --files-with-matches 'qFatal' \
-    $CODE_WITHOUT_UNIT_TESTS \
+    $CODE_LIB_ONLY \
          | sed 's/^/Use qCFatal() instead of qFatal(): /'
 grep \
-    --recursive --exclude=testapp.cpp \
+    --recursive \
     --files-with-matches 'qWarning' \
-    $CODE_WITHOUT_UNIT_TESTS \
+    $CODE_LIB_ONLY \
          | sed 's/^/Use qCWarning() instead of qWarning(): /'
 grep \
-    --recursive --exclude=testapp.cpp \
+    --recursive \
     --files-with-matches 'qCritical' \
-    $CODE_WITHOUT_UNIT_TESTS \
+    $CODE_LIB_ONLY \
          | sed 's/^/Use qCCritical() instead of qCritical(): /'
 
 # Do not use constexpr in public headers as when we change the value

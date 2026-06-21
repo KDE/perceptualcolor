@@ -302,18 +302,18 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
  * @brief Setter for the @ref prefix(), @ref suffix() and @ref formatString()
  * properties.
  *
- * @param formatString A string in the format "prefix%1suffix". It
+ * @param newFormatString A string in the format "prefix%1suffix". It
  * should contain exactly <em>one</em> place marker as described in
  * <tt>QString::arg()</tt> like <tt>\%1</tt> or <tt>\%L2</tt>. This place
  * marker represents the value. Example: “Prefix\%1Suffix”. Prefix and suffix
  * may be empty.
  */
-void MultiSpinBoxSection::setFormatString(const QString &formatString)
+void MultiSpinBoxSection::setFormatString(const QString &newFormatString)
 {
-    d_pointer->m_formatString = formatString;
+    d_pointer->m_formatString = newFormatString;
 
     // QString::arg() support for %L2, %5 etc which translators might expect:
-    const auto parts = formatString //
+    const auto parts = newFormatString //
                            .arg(QStringLiteral("%1")) //
                            .split(QStringLiteral("%1"));
 

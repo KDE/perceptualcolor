@@ -36,7 +36,6 @@ public:
     Setting(const QString &key, Settings *settings, QObject *parent = nullptr);
     virtual ~Setting() override;
 
-    // cppcheck-suppress returnByReference // false positive
     T value() const;
 
     void setValue(const T &newValue);
