@@ -72,13 +72,6 @@ public:
     explicit ColorPatchPrivate(ColorPatch *backLink);
     virtual ~ColorPatchPrivate() noexcept;
 
-    /** @brief Initial cursor position (at the time of the left-click)
-     * where a drag-and-drop action starts.
-     *
-     * @sa @ref ColorPatch::mousePressEvent
-     * @sa @ref ColorPatch::mouseMoveEvent */
-    QPoint dragStartPosition;
-
     /** @brief Internal storage for property @ref ColorPatch::color
      *
      * QColor automatically initializes with an invalid color, just like it
@@ -88,7 +81,7 @@ public:
     /** @brief The QLabel widget that is used to display the color. */
     QLabel *m_label;
     /**
-     * @brief Cache for the last imamge parameters that have been shown
+     * @brief Cache for the last image parameters that have been shown
      * in @ref m_label.
      */
     ImageParameters m_lastImageParameters = ImageParameters();

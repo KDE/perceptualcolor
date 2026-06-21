@@ -18,6 +18,7 @@
 #include <qloggingcategory.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
+#include <qmimedata.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpair.h>
@@ -64,6 +65,8 @@ bool isIn(First &&first, T &&...t)
 QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, int alignment, double peak);
 
 [[nodiscard]] qreal standardWheelStepCount(QWheelEvent *event);
+
+[[nodiscard]] QColor toQColor(const QMimeData *mimeData);
 
 [[nodiscard]] QImage transparencyBackground(qreal devicePixelRatioF);
 

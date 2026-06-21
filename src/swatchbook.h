@@ -37,8 +37,17 @@ class SwatchBookPrivate;
  *
  * @internal
  *
- * @note Using Qt's use Model/View architecture instead of @ref QColorArray2D
- * would propably not be worth the added complexity.
+ * @todo SHOULDHAVE Drag-and-drop support: Provide outgoing drag events for all
+ * non-empty color patches. Provide incoming drop events on all patches (empty
+ * and non-empty) when not in read-only mode. And provide the possibility to
+ * re-arrange the colors by drag-and-drop, either within a special editing mode
+ * or during normal operation (or would this incompatible or confusing
+ * together with our current selection fuctionality?)
+ *
+ *
+ * @todo SHOULDHAVE Test how the context menu key works in this class (and
+ * maybe also test it in other widgets). Does it trigger a mouse event or a
+ * key event?
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT SwatchBook : public AbstractDiagram
 {

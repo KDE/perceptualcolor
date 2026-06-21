@@ -958,6 +958,35 @@ private Q_SLOTS:
         QCOMPARE(result.first().first, 0);
         QCOMPARE(result.last().second, 99); // Should span entire range
     }
+
+    void testToQColor()
+    {
+        const QMimeData myMimeData1;
+        QCOMPARE(toQColor(&myMimeData1), QColor());
+
+        QMimeData myMimeData2;
+        myMimeData2.setColorData(QVariant());
+        QCOMPARE(toQColor(&myMimeData2), QColor());
+
+        QMimeData myMimeData3;
+        myMimeData3.setColorData(QColor());
+        QCOMPARE(toQColor(&myMimeData3), QColor());
+
+        const QColor myColor4 = QColor::fromHsvF(0.5f, 0.6f, 0.7f);
+        QMimeData myMimeData4;
+        myMimeData4.setColorData(myColor4);
+        QCOMPARE(toQColor(&myMimeData4), myColor4);
+
+        QMimeData myMimeData5;
+        myMimeData5.setColorData(QStringLiteral("test"));
+        QCOMPARE(toQColor(&myMimeData5), QColor());
+
+        const QColor myColor6 = QColor::fromHsvF(0.5f, 0.6f, 0.7f);
+        QMimeData myMimeData6;
+        myMimeData4.setColorData(myColor6);
+        myMimeData5.setText(QStringLiteral("test"));
+        QCOMPARE(toQColor(&myMimeData4), myColor6);
+    }
 };
 
 } // namespace PerceptualColor

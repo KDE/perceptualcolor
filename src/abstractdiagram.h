@@ -61,11 +61,14 @@ public:
 protected:
     virtual void actualVisibilityToggledEvent();
     void callUpdate();
+    virtual void execDrag(QPoint startPosition);
     [[nodiscard]] QColor focusIndicatorColor() const;
     [[nodiscard]] int gradientMinimumLength() const;
     [[nodiscard]] int gradientThickness() const;
     virtual void hideEvent(QHideEvent *event) override;
     [[nodiscard]] bool isActuallyVisible() const;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
     [[nodiscard]] int maximumPhysicalSquareSize() const;
     [[nodiscard]] qreal maximumWidgetSquareSize() const;
     [[nodiscard]] QSize physicalPixelSize() const;

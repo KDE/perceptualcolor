@@ -60,7 +60,10 @@ class ChromaHueDiagramPrivate;
  * which is the mouse sensitive area.
  *
  * @todo SHOULDHAVE Support more mouse buttons. For example, “forward” and
- * “backward” could be used to increase or decrease the radius.
+ * “backward” could be used to increase or decrease chroma across various
+ * diagrams like @ref ChromaHueDiagram and @ref WheelColorPicker. The mouse
+ * wheel could change the hue in @ref ChromaHueDiagram and
+ * @ref WheelColorPicker and even @ref SwatchBook.
  *
  * @todo SHOULDHAVE What if black or white are out of gamut on L=0.1 or L=99.9?
  * Where are the handles placed? Visible or invisible? How to react (for mouse

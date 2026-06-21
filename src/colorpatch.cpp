@@ -355,84 +355,71 @@ QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters)
     return pixmap;
 }
 
-/** @brief React on a mouse move event.
- *
- * Reimplemented from base class.
- *
- * @param event The corresponding mouse event */
-void ColorPatch::mousePressEvent(QMouseEvent *event)
+void ColorPatch::execDrag(QPoint)
 {
-    if (event->button() == Qt::LeftButton)
-        d_pointer->dragStartPosition = event->pos();
-    AbstractDiagram::mousePressEvent(event);
-}
-
-/** @brief React on a mouse press event.
- *
- * Reimplemented from base class.
- *
- * @param event The corresponding mouse event */
-void ColorPatch::mouseMoveEvent(QMouseEvent *event)
-{
-    if (event->buttons() & Qt::LeftButton) {
-        // Distance since the left mouse buttons was originally clicked.
-        const auto vector = event->pos() - d_pointer->dragStartPosition;
-        const auto distanceSquare = vector.x() * vector.x() //
-            + vector.y() * vector.y();
-        const auto refSquare = QApplication::startDragDistance() //
-            * QApplication::startDragDistance();
-        if (d_pointer->m_color.isValid() && (distanceSquare >= refSquare)) {
-            QDrag *drag = new QDrag(this); // Mandatory on heap and with parent
-            QMimeData *mimeData = new QMimeData;
-            mimeData->setColorData(d_pointer->m_color);
-            drag->setMimeData(mimeData); // Takes ownership of mime data
-            const auto finalSize = std::max({30, //
-                                             minimumSizeHint().width(), //
-                                             minimumSizeHint().height()});
-            const auto parameters = //
-                d_pointer->getImageParameters(finalSize, finalSize);
-            drag->setPixmap(d_pointer->renderPixmap(parameters));
-            drag->exec(Qt::CopyAction);
-        }
+    if (d_pointer->m_color.isValid()) {
+        QDrag *drag = new QDrag(this); // Mandatory on heap and with parent
+        QMimeData *mimeData = new QMimeData;
+        mimeData->setColorData(d_pointer->m_color);
+        drag->setMimeData(mimeData); // Takes ownership of mime data
+        const auto finalSize = std::max({30, //
+                                         minimumSizeHint().width(), //
+                                         minimumSizeHint().height()});
+        const auto parameters = //
+            d_pointer->getImageParameters(finalSize, finalSize);
+        drag->setPixmap(d_pointer->renderPixmap(parameters));
+        drag->exec(Qt::CopyAction);
+        // Not deleting the objects on the heap. Qt takes ownership and
+        // does the cleanup.
     }
-    // NOTE Intentionally not calling the parent’s class’ implementation to
-    // avoid that on Breeze style, instead of drag-and-drop, sometimes
-    // the window gets moved.
 }
 
-/** @brief Accepts drag events for colors.
+/**
+ * @brief Decides whether a incoming drag operation may enter this widget.
+ *
+ * This event is triggered when the mouse, while holding a drag payload,
+ * enters the widget's area.
+ * The decision directly affects the cursor feedback: if accepted,
+ * the cursor shows that dropping is possible; if ignored, the cursor
+ * indicates that dropping is forbidden.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding event */
+ * @param event The corresponding event
+ */
 void ColorPatch::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasColor()) {
-        const QColor colorToDrop = qvariant_cast<QColor>( //
-            event->mimeData()->colorData());
-        if (colorToDrop.isValid()) {
-            event->acceptProposedAction();
-            return;
-        }
+    if (toQColor(event->mimeData()).isValid()) {
+        event->acceptProposedAction();
+        return;
     }
+
+    event->ignore();
+    return;
 }
 
-/** @brief Accepts drag events for colors.
+/**
+ * @brief Handles the actual drop operation.
+ *
+ * This event is triggered when the user releases the mouse button
+ * inside the widget while dragging data. At this point the widget
+ * should process the dropped payload and perform the intended action.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding event */
+ * @param event The corresponding event
+ */
 void ColorPatch::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasColor()) {
-        const QColor colorToDrop = qvariant_cast<QColor>( //
-            event->mimeData()->colorData());
-        if (colorToDrop.isValid()) {
-            setColor(colorToDrop);
-            event->acceptProposedAction();
-            return;
-        }
+    const QColor dropColor = toQColor(event->mimeData());
+    if (dropColor.isValid()) {
+        setColor(dropColor);
+        event->acceptProposedAction();
+        return;
     }
+
+    event->ignore();
+    return;
 }
 
 /** @brief Paint the widget.

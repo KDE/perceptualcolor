@@ -692,4 +692,34 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
     return result;
 }
 
+/**
+ * @internal
+ *
+ * @brief Convert mime data to QColor
+ *
+ * @param mimeData The mime data
+ *
+ * @returns If the mime data contains color data, a corresponding valid QColor.
+ * An invalid QColor otherwise.
+ *
+ * @internal
+ *
+ * @todo SHOULDHAVE There is no standard mime type for color. But we should
+ * support more than the current formats. Especially Gimp (which uses
+ * application/x-geglcolor) and LibreOffice, maybe
+ * Firefox and CSS.
+ *
+ * @todo SHOULDHAVE Provide support not only for drag-and-drop, but also for
+ * the clipboard, which uses the same mime-encoded data types. For example
+ * support for Ctrl+V to paste from the clipboard.
+ */
+QColor toQColor(const QMimeData *mimeData)
+{
+    if (mimeData->hasColor()) {
+        return qvariant_cast<QColor>(mimeData->colorData());
+    }
+
+    return QColor();
+}
+
 } // namespace PerceptualColor

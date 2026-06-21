@@ -22,6 +22,13 @@ public:
     AbstractDiagramPrivate() = default;
     virtual ~AbstractDiagramPrivate() noexcept;
 
+    /** @brief Initial cursor position (at the time of the left-click)
+     * where a drag-and-drop action starts.
+     *
+     * @sa @ref AbstractDiagram::mousePressEvent
+     * @sa @ref AbstractDiagram::mouseMoveEvent */
+    QPoint m_dragStartPosition;
+
     /** @brief Internal storage for @ref AbstractDiagram::isActuallyVisible. */
     bool m_isActuallyVisible = false;
 

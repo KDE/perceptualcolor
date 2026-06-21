@@ -47,6 +47,11 @@ class ColorPatchPrivate;
  * want to set a bigger minimum size:
  * @snippet testcolorpatch.cpp ColorPatch Bigger minimum size
  *
+ * This widget supports drag-and-drop operations.
+ * Outgoing drag events are always enabled.
+ * Whether incoming drop events are accepted can be controlled
+ * via QWidget::setAcceptDrops(bool).
+ *
  * @note This class is API-compatible with the legacy
  * <a href="https://api.kde.org/legacy/4.12-api/kdelibs-apidocs/kdeui/html/classKColorPatch.html">
  * KColorPatch</a> class that was available in KDElibs4 (and still in KF5
@@ -104,8 +109,7 @@ Q_SIGNALS:
 protected:
     virtual void dragEnterEvent(QDragEnterEvent *event) override;
     virtual void dropEvent(QDropEvent *event) override;
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void execDrag(QPoint startPosition) override;
     virtual void paintEvent(QPaintEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
 

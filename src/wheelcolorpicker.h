@@ -34,6 +34,18 @@ class WheelColorPickerPrivate;
  *
  * @internal
  *
+ * @note It may seem appealing to use the entire inner circle
+ * as the background for the chroma‑lightness diagram, since this
+ * would allow a slightly larger display area. However, this design
+ * is less intuitive: a circular background suggests a polar
+ * coordinate system (as in @ref ChromaHueDiagram), while the chroma‑lightness
+ * diagram is based on a Cartesian system. By keeping the background
+ * rectangular, users immediately recognize the hard limits at the
+ * left, top, and bottom edges (with the right edge potentially
+ * extending toward infinity). The rectangular form makes the
+ * Cartesian nature of the diagram clear and avoids confusion with
+ * polar coordinates.
+ *
  * @todo NICETOHAVE Is the (double) focus indicator actually good design? Are
  * there better solutions?
  */

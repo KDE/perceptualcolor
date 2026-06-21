@@ -400,6 +400,10 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
+ * @todo SHOULDHAVE A help button in the QDialogButtonBox that shows a
+ * QMessageBox that explains "hidden"/non-obvious features like
+ * mouse/key events and shortcuts.
+ *
  * @todo SHOULDHAVE In the CI (as defined by our current configuration), we
  * get muss less warnings than when we run locally with
  * <tt>-DADDITIONAL_WARNINGS=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE

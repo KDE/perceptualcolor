@@ -138,10 +138,6 @@ class ColorDialogPrivate;
  * Oklab (feature parity with CSS Color 5),
  * Cielab (feature parity with CSS Color 5), Okhsl?
  *
- * @todo SHOULDHAVE NICETOHAVE QMimeData::setColorData() is used by
- * QColorDialog? For clipbord or drag-and-drop? Accept it in @ref ColorDialog
- * for compatibility?
- *
  * @todo SHOULDHAVE Unit test if (and how) QColorDialog normalized
  * currentColor to RGB-QColor if the API user had set a HSL-QColor etc, and
  * compare this with this class‘ behavior.
