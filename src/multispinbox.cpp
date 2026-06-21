@@ -1026,17 +1026,33 @@ int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
     return result;
 }
 
-/** @brief The main event handler.
+/**
+ * @brief Main event handler.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter the event to be handled.
+ * @param eventParameter The event to be processed.
  *
- * @returns The base class’s return value.
+ * @return This function returns true if the event was recognized, otherwise
+ * it returns false.
  *
  * @internal
  *
- * @note For future extensions.
+ * @note This is a dummy reimplementation, provided to ensure future
+ * extensibility while preserving binary compatibility, as
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
+ * recommended by the KDE binary compatibility policy</a>.
+ * The policy states that
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
+ * “you can safely reimplement a virtual function defined in one of the base
+ * classes only if it is safe that the programs linked with the prior version
+ * call the implementation in the base class rather than the derived one.”</a>.
+ * Consistent behavior across versions would be difficult to guarantee.
+ * By reimplementing the main event handler now,
+ * we retain the option to extend it later to process new event types
+ * without introducing binary compatibility issues. Since this is the
+ * central event dispatcher, it can eventually handle all event types,
+ * eliminating the need for dummy overrides of each specialized handler.
  */
 bool MultiSpinBox::event(QEvent *eventParameter)
 {

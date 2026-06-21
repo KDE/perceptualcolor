@@ -332,10 +332,11 @@ Q_SIGNALS:
     void optionsChanged(const QColorDialog::ColorDialogOptions newOptions);
 
 protected:
-    virtual void changeEvent(QEvent *event) override;
+    virtual void changeEvent(QEvent *eventParameter) override;
     virtual void done(int result) override;
-    virtual void keyPressEvent(QKeyEvent *event) override;
-    virtual void showEvent(QShowEvent *event) override;
+    virtual bool event(QEvent *eventParameter) override;
+    virtual void keyPressEvent(QKeyEvent *eventParameter) override;
+    virtual void showEvent(QShowEvent *eventParameter) override;
 
 private:
     Q_DISABLE_COPY(ColorDialog)

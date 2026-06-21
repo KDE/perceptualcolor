@@ -154,10 +154,11 @@ void ColorPatchPrivate::updatePixmapIfNecessary()
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding event */
-void ColorPatch::resizeEvent(QResizeEvent *event)
+ * @param eventParameter The corresponding event
+ */
+void ColorPatch::resizeEvent(QResizeEvent *eventParameter)
 {
-    d_pointer->m_label->resize(event->size());
+    d_pointer->m_label->resize(eventParameter->size());
 
     // NOTE It would be more efficient not to always update the pixmap,
     // but only when either the height or the width of the new pixmap to
@@ -385,16 +386,16 @@ void ColorPatch::execDrag(QPoint)
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding event
+ * @param eventParameter The corresponding event
  */
-void ColorPatch::dragEnterEvent(QDragEnterEvent *event)
+void ColorPatch::dragEnterEvent(QDragEnterEvent *eventParameter)
 {
-    if (toQColor(event->mimeData()).isValid()) {
-        event->acceptProposedAction();
+    if (toQColor(eventParameter->mimeData()).isValid()) {
+        eventParameter->acceptProposedAction();
         return;
     }
 
-    event->ignore();
+    eventParameter->ignore();
     return;
 }
 
@@ -407,18 +408,18 @@ void ColorPatch::dragEnterEvent(QDragEnterEvent *event)
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding event
+ * @param eventParameter The corresponding event
  */
-void ColorPatch::dropEvent(QDropEvent *event)
+void ColorPatch::dropEvent(QDropEvent *eventParameter)
 {
-    const QColor dropColor = toQColor(event->mimeData());
+    const QColor dropColor = toQColor(eventParameter->mimeData());
     if (dropColor.isValid()) {
         setColor(dropColor);
-        event->acceptProposedAction();
+        eventParameter->acceptProposedAction();
         return;
     }
 
-    event->ignore();
+    eventParameter->ignore();
     return;
 }
 
@@ -426,10 +427,11 @@ void ColorPatch::dropEvent(QDropEvent *event)
  *
  * Reimplemented from base class.
  *
- * @param event the paint event */
-void ColorPatch::paintEvent(QPaintEvent *event)
+ * @param eventParameter the paint event
+ */
+void ColorPatch::paintEvent(QPaintEvent *eventParameter)
 {
-    AbstractDiagram::paintEvent(event);
+    AbstractDiagram::paintEvent(eventParameter);
 
     // Ensure the image is up to date.
     // - devicePixelRatioF() might have changed if the window was moved — with
@@ -469,6 +471,39 @@ bool ColorPatchPrivate::ImageParameters::operator==(const ImageParameters &other
                                    other.lineColor, //
                                    other.layoutDirection);
     return thisTie == otherTie;
+}
+
+/**
+ * @brief Main event handler.
+ *
+ * Reimplemented from base class.
+ *
+ * @param eventParameter The event to be processed.
+ *
+ * @return This function returns true if the event was recognized, otherwise
+ * it returns false.
+ *
+ * @internal
+ *
+ * @note This is a dummy reimplementation, provided to ensure future
+ * extensibility while preserving binary compatibility, as
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
+ * recommended by the KDE binary compatibility policy</a>.
+ * The policy states that
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
+ * “you can safely reimplement a virtual function defined in one of the base
+ * classes only if it is safe that the programs linked with the prior version
+ * call the implementation in the base class rather than the derived one.”</a>.
+ * Consistent behavior across versions would be difficult to guarantee.
+ * By reimplementing the main event handler now,
+ * we retain the option to extend it later to process new event types
+ * without introducing binary compatibility issues. Since this is the
+ * central event dispatcher, it can eventually handle all event types,
+ * eliminating the need for dummy overrides of each specialized handler.
+ */
+bool ColorPatch::event(QEvent *eventParameter)
+{
+    return AbstractDiagram::event(eventParameter);
 }
 
 } // namespace PerceptualColor

@@ -2348,10 +2348,11 @@ void ColorDialogPrivate::applyLayoutDimensions()
  *
  * Reimplemented from base class.
  *
- * @param event The event. */
-void ColorDialog::changeEvent(QEvent *event)
+ * @param eventParameter The event.
+ */
+void ColorDialog::changeEvent(QEvent *eventParameter)
 {
-    const auto type = event->type();
+    const auto type = eventParameter->type();
 
     if (type == QEvent::LanguageChange) {
         // From QCoreApplication documentation:
@@ -2398,20 +2399,20 @@ void ColorDialog::changeEvent(QEvent *event)
         d_pointer->reloadIcons();
     }
 
-    QDialog::changeEvent(event);
+    QDialog::changeEvent(eventParameter);
 }
 
 /** @brief Handle show events.
  *
  * Reimplemented from base class.
  *
- * @param event The event.
+ * @param eventParameter The event.
  *
  * @internal
  *
  * On the first show event, make @ref ColorDialogPrivate::m_tabWidget use
  * the current tab corresponding to @ref ColorDialogPrivate::m_settings. */
-void ColorDialog::showEvent(QShowEvent *event)
+void ColorDialog::showEvent(QShowEvent *eventParameter)
 {
     if (!d_pointer->everShown) {
         constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
@@ -2454,7 +2455,7 @@ void ColorDialog::showEvent(QShowEvent *event)
 
         d_pointer->everShown = true;
     }
-    QDialog::showEvent(event);
+    QDialog::showEvent(eventParameter);
 }
 
 /** @brief Saves the current tab of @ref m_tabWidget to @ref m_settings. */
@@ -2540,9 +2541,9 @@ QString ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(const QString &inp
  *
  * Reimplemented from base class.
  *
- * @param event The key press event
+ * @param eventParameter The key press event
  */
-void ColorDialog::keyPressEvent(QKeyEvent *event)
+void ColorDialog::keyPressEvent(QKeyEvent *eventParameter)
 {
     // QTabWidget natively supports Ctrl+Tab and Ctrl+Shift+Tab navigation,
     // but only when the keyboard focus is on one of its child widgets.
@@ -2551,10 +2552,10 @@ void ColorDialog::keyPressEvent(QKeyEvent *event)
     // which is reasonable given that the QTabWidget occupies a central
     // position within the dialog.
     std::optional<int> shift;
-    if (event->key() == Qt::Key_Tab && event->modifiers() == Qt::ControlModifier) {
+    if (eventParameter->key() == Qt::Key_Tab && eventParameter->modifiers() == Qt::ControlModifier) {
         shift = 1;
     }
-    if (event->key() == Qt::Key_Backtab && event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
+    if (eventParameter->key() == Qt::Key_Backtab && eventParameter->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
         shift = -1;
     }
     if (shift.has_value()) {
@@ -2562,11 +2563,44 @@ void ColorDialog::keyPressEvent(QKeyEvent *event)
         const auto count = d_pointer->m_tabWidget->count();
         const int newIndex = (oldIndex + shift.value_or(0) + count) % count;
         d_pointer->m_tabWidget->setCurrentIndex(newIndex);
-        event->accept();
+        eventParameter->accept();
         return;
     }
 
-    QDialog::keyPressEvent(event);
+    QDialog::keyPressEvent(eventParameter);
+}
+
+/**
+ * @brief Main event handler.
+ *
+ * Reimplemented from base class.
+ *
+ * @param eventParameter The event to be processed.
+ *
+ * @return This function returns true if the event was recognized, otherwise
+ * it returns false.
+ *
+ * @internal
+ *
+ * @note This is a dummy reimplementation, provided to ensure future
+ * extensibility while preserving binary compatibility, as
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
+ * recommended by the KDE binary compatibility policy</a>.
+ * The policy states that
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
+ * “you can safely reimplement a virtual function defined in one of the base
+ * classes only if it is safe that the programs linked with the prior version
+ * call the implementation in the base class rather than the derived one.”</a>.
+ * Consistent behavior across versions would be difficult to guarantee.
+ * By reimplementing the main event handler now,
+ * we retain the option to extend it later to process new event types
+ * without introducing binary compatibility issues. Since this is the
+ * central event dispatcher, it can eventually handle all event types,
+ * eliminating the need for dummy overrides of each specialized handler.
+ */
+bool ColorDialog::event(QEvent *eventParameter)
+{
+    return QDialog::event(eventParameter);
 }
 
 } // namespace PerceptualColor

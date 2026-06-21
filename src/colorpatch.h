@@ -107,11 +107,12 @@ Q_SIGNALS:
     void colorChanged(const QColor &color);
 
 protected:
-    virtual void dragEnterEvent(QDragEnterEvent *event) override;
-    virtual void dropEvent(QDropEvent *event) override;
+    virtual void dragEnterEvent(QDragEnterEvent *eventParameter) override;
+    virtual void dropEvent(QDropEvent *eventParameter) override;
+    virtual bool event(QEvent *eventParameter) override;
     virtual void execDrag(QPoint startPosition) override;
-    virtual void paintEvent(QPaintEvent *event) override;
-    virtual void resizeEvent(QResizeEvent *event) override;
+    virtual void paintEvent(QPaintEvent *eventParameter) override;
+    virtual void resizeEvent(QResizeEvent *eventParameter) override;
 
 private:
     Q_DISABLE_COPY(ColorPatch)

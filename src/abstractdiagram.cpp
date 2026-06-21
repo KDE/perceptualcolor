@@ -297,14 +297,14 @@ void AbstractDiagram::actualVisibilityToggledEvent()
  *
  * Reimplemented from base class.
  *
- * @param event The show event.
+ * @param eventParameter The show event.
  *
  * @internal
  *
  * @sa @ref AbstractDiagram::isActuallyVisible */
-void AbstractDiagram::showEvent(QShowEvent *event)
+void AbstractDiagram::showEvent(QShowEvent *eventParameter)
 {
-    QWidget::showEvent(event);
+    QWidget::showEvent(eventParameter);
     if (d_pointer->m_isActuallyVisible == false) {
         d_pointer->m_isActuallyVisible = true;
         actualVisibilityToggledEvent();
@@ -315,14 +315,14 @@ void AbstractDiagram::showEvent(QShowEvent *event)
  *
  * Reimplemented from base class.
  *
- * @param event The hide event.
+ * @param eventParameter The hide event.
  *
  * @internal
  *
  * @sa @ref AbstractDiagram::isActuallyVisible */
-void AbstractDiagram::hideEvent(QHideEvent *event)
+void AbstractDiagram::hideEvent(QHideEvent *eventParameter)
 {
-    QWidget::hideEvent(event);
+    QWidget::hideEvent(eventParameter);
     if (d_pointer->m_isActuallyVisible == true) {
         d_pointer->m_isActuallyVisible = false;
         actualVisibilityToggledEvent();
@@ -381,13 +381,13 @@ QColor AbstractDiagram::neutralGray()
  * @note When overriding this function in a subclass, make sure to
  * call the base class implementation (AbstractDiagram::mousePressEvent).
  *
- * @param event The corresponding mouse event
+ * @param eventParameter The corresponding mouse event
  */
-void AbstractDiagram::mousePressEvent(QMouseEvent *event)
+void AbstractDiagram::mousePressEvent(QMouseEvent *eventParameter)
 {
-    if (event->button() == Qt::LeftButton)
-        d_pointer->m_dragStartPosition = event->pos();
-    QWidget::mousePressEvent(event);
+    if (eventParameter->button() == Qt::LeftButton)
+        d_pointer->m_dragStartPosition = eventParameter->pos();
+    QWidget::mousePressEvent(eventParameter);
 }
 
 /**
@@ -398,13 +398,13 @@ void AbstractDiagram::mousePressEvent(QMouseEvent *event)
  * @note When overriding this function in a subclass, make sure to
  * call the base class implementation (AbstractDiagram::mouseMoveEvent).
  *
- * @param event The corresponding mouse event
+ * @param eventParameter The corresponding mouse event
  */
-void AbstractDiagram::mouseMoveEvent(QMouseEvent *event)
+void AbstractDiagram::mouseMoveEvent(QMouseEvent *eventParameter)
 {
-    if (event->buttons() & Qt::LeftButton) {
+    if (eventParameter->buttons() & Qt::LeftButton) {
         // Distance since the left mouse buttons was originally clicked.
-        const auto vector = event->pos() - d_pointer->m_dragStartPosition;
+        const auto vector = eventParameter->pos() - d_pointer->m_dragStartPosition;
         const auto distanceSquare = //
             vector.x() * vector.x() + vector.y() * vector.y();
         const auto refSquare = QApplication::startDragDistance() //
@@ -441,6 +441,39 @@ void AbstractDiagram::mouseMoveEvent(QMouseEvent *event)
 void AbstractDiagram::execDrag(QPoint startPosition)
 {
     Q_UNUSED(startPosition)
+}
+
+/**
+ * @brief Main event handler.
+ *
+ * Reimplemented from base class.
+ *
+ * @param eventParameter The event to be processed.
+ *
+ * @return This function returns true if the event was recognized, otherwise
+ * it returns false.
+ *
+ * @internal
+ *
+ * @note This is a dummy reimplementation, provided to ensure future
+ * extensibility while preserving binary compatibility, as
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
+ * recommended by the KDE binary compatibility policy</a>.
+ * The policy states that
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
+ * “you can safely reimplement a virtual function defined in one of the base
+ * classes only if it is safe that the programs linked with the prior version
+ * call the implementation in the base class rather than the derived one.”</a>.
+ * Consistent behavior across versions would be difficult to guarantee.
+ * By reimplementing the main event handler now,
+ * we retain the option to extend it later to process new event types
+ * without introducing binary compatibility issues. Since this is the
+ * central event dispatcher, it can eventually handle all event types,
+ * eliminating the need for dummy overrides of each specialized handler.
+ */
+bool AbstractDiagram::event(QEvent *eventParameter)
+{
+    return QWidget::event(eventParameter);
 }
 
 } // namespace PerceptualColor

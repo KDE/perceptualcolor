@@ -78,6 +78,8 @@ inline constexpr Vec3ld whitePointD65TwoDegree{0.95047L, 1.00000L, 1.08883L};
 // clang-format off
 
 /**
+ * @internal
+ *
  * @brief Oklab M1 matrix.
  *
  * As in the
@@ -90,6 +92,8 @@ inline constexpr Mat3ld oklabM1 {
     +0.0482003018L, +0.2643662691L, +0.6338517070L};
 
 /**
+ * @internal
+ *
  * @brief Oklab M1 inverse matrix.
  *
  * As in the
@@ -99,6 +103,8 @@ inline constexpr Mat3ld oklabM1 {
 inline constexpr Mat3ld oklabM1inverse = oklabM1.inverse().value();
 
 /**
+ * @internal
+ *
  * @brief Oklab M2 matrix.
  *
  * As in the
@@ -111,6 +117,8 @@ inline constexpr Mat3ld oklabM2 {
     +0.0259040371L, +0.7827717662L, -0.8086757660L};
 
 /**
+ * @internal
+ *
  * @brief Oklab M2 inverse matrix.
  *
  * As in the
@@ -120,6 +128,8 @@ inline constexpr Mat3ld oklabM2 {
 inline constexpr Mat3ld oklabM2inverse = oklabM2.inverse().value();
 
 /**
+ * @internal
+ *
  * @brief xyzD65 to xyzD50 conversion matrix.
  *
  * As in the
@@ -132,6 +142,8 @@ inline constexpr Mat3ld xyzD65ToXyzD50Matrix {
     -0.009252L, +0.015073L, +0.751678L};
 
 /**
+ * @internal
+ *
  * @brief xyzD50 to xyzD65 conversion matrix.
  *
  * As in the
@@ -141,6 +153,8 @@ inline constexpr Mat3ld xyzD65ToXyzD50Matrix {
 inline constexpr Mat3ld xyzD50ToXyzD65Matrix = xyzD65ToXyzD50Matrix.inverse().value();
 
 /**
+ * @internal
+ *
  * @brief Linear sRGB to XYZ D65 matrix.
  *
  * As in <a href="https://en.wikipedia.org/wiki/SRGB#Primaries">
@@ -152,6 +166,8 @@ inline constexpr Mat3ld linearSRgbToXyzD65Matrix {
     0.0193L, 0.1192L, 0.9505L};
 
 /**
+ * @internal
+ *
  * @brief XYZ D65 to Linear sRGB matrix.
  *
  * As in <a href="https://en.wikipedia.org/wiki/SRGB#Primaries">

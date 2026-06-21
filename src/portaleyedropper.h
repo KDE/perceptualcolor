@@ -96,6 +96,9 @@ Q_SIGNALS:
     // double-precision in its return values.
     void newColor(double red, double green, double blue);
 
+protected:
+    virtual bool event(QEvent *eventParameter) override;
+
 private:
     Q_DISABLE_COPY_MOVE(PortalEyedropper)
 

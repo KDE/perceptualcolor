@@ -19,6 +19,8 @@ namespace PerceptualColor
 {
 
 /**
+ * @internal
+ *
  * @brief Alternative to <tt>QColor::toRgb()</tt> with full precision.
  *
  * Unlike <tt>QColor::toRgb()</tt>, which converts a <tt>QColor</tt> to

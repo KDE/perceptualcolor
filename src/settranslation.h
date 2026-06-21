@@ -1,6 +1,12 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
+/**
+ * @file
+ *
+ * This file provides support for translation-related functions.
+ */
+
 #ifndef PERCEPTUALCOLOR_SETTRANSLATION_H
 #define PERCEPTUALCOLOR_SETTRANSLATION_H
 
