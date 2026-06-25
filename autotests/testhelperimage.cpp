@@ -108,6 +108,29 @@ private Q_SLOTS:
 
         QCOMPARE(image.pixelColor(2, 2).alpha(), 0);
     }
+
+    void testDisabledAppearance()
+    {
+        const QPixmap myPixmap(10, 15);
+        const QPixmap myDisabledPixmap = disabledAppearance(myPixmap);
+        QCOMPARE(myDisabledPixmap.size(), QSize(10, 15));
+        QCOMPARE(myDisabledPixmap.devicePixelRatioF(), 1);
+
+        QPixmap myScaledPixmap(10, 15);
+        myScaledPixmap.setDevicePixelRatio(1.5);
+        const QPixmap myDisabledScaledPixmap = disabledAppearance(myScaledPixmap);
+        QCOMPARE(myDisabledScaledPixmap.size(), QSize(10, 15));
+        QCOMPARE(myDisabledScaledPixmap.devicePixelRatioF(), 1.5);
+
+        const QPixmap invalidPixmap;
+        const QPixmap disabledInvalidPixmap = disabledAppearance(invalidPixmap);
+        QVERIFY(disabledInvalidPixmap.isNull());
+        QCOMPARE(disabledInvalidPixmap.devicePixelRatioF(), invalidPixmap.devicePixelRatioF());
+
+        QVERIFY(disabledAppearance(Qt::red).isValid());
+
+        QVERIFY(!disabledAppearance(QColor()).isValid());
+    }
 };
 
 } // namespace PerceptualColor

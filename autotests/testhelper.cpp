@@ -987,6 +987,16 @@ private Q_SLOTS:
         myMimeData5.setText(QStringLiteral("test"));
         QCOMPARE(toQColor(&myMimeData4), myColor6);
     }
+
+    void testIsThemeChange()
+    {
+        QVERIFY(isThemeChange(QEvent::Type::PaletteChange));
+        QVERIFY(isThemeChange(QEvent::Type::ApplicationPaletteChange));
+        QVERIFY(isThemeChange(QEvent::Type::FontChange));
+        QVERIFY(isThemeChange(QEvent::Type::StyleChange));
+
+        QVERIFY(!isThemeChange(QEvent::Type::MouseMove));
+    }
 };
 
 } // namespace PerceptualColor

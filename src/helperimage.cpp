@@ -327,6 +327,10 @@ QPixmap disabledAppearance(const QPixmap &normalPixmap)
  */
 QColor disabledAppearance(const QColor normalColor)
 {
+    if (!normalColor.isValid()) {
+        return normalColor;
+    }
+
     QPixmap colorPixmap(1, 1);
     colorPixmap.fill(normalColor);
     return disabledAppearance(colorPixmap).toImage().pixelColor(0, 0);
