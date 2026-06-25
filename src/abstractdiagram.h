@@ -61,6 +61,7 @@ public:
 protected:
     virtual void actualVisibilityToggledEvent();
     void callUpdate();
+    virtual void changeEvent(QEvent *eventParameter) override;
     virtual bool event(QEvent *eventParameter) override;
     virtual void execDrag(QPoint startPosition);
     [[nodiscard]] QColor focusIndicatorColor() const;

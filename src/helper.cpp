@@ -358,6 +358,11 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  * <tt>QGuiApplication::styleHints()->colorScheme()</tt>. This
  * is what KDE recommends since Qt 6.10. See also on
  * <a href="https://stackoverflow.com/questions/75457687">Stackoverflow</a>.
+ *
+ * @todo SHOWSTOPPER This is broken for
+ * Adwaita/Adwaita-dark/kvantum/kvantum-dark who ignore the system’s color
+ * palette, while this function still returns a value based on the system’s
+ * color palette.
  */
 bool isDarkColorScheme()
 {
@@ -720,6 +725,25 @@ QColor toQColor(const QMimeData *mimeData)
     }
 
     return QColor();
+}
+
+/**
+ * @internal
+ *
+ * @brief Whether a change event is theme related.
+ *
+ * @param eventType The event type to check.
+ *
+ * @returns Whether a change event is theme related
+ * (color palette, widget style, font policy etc).
+ */
+bool isThemeChange(const QEvent::Type eventType)
+{
+    return (eventType == QEvent::PaletteChange) //
+        || (eventType == QEvent::ApplicationPaletteChange) //
+        || (eventType == QEvent::FontChange) //
+        // || (eventType == QEvent::ThemeChange) // value defined but undocumented
+        || (eventType == QEvent::StyleChange);
 }
 
 } // namespace PerceptualColor

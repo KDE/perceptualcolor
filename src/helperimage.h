@@ -23,6 +23,10 @@ class QThreadPool;
 namespace PerceptualColor
 {
 
+QColor disabledAppearance(const QColor normalColor);
+
+QPixmap disabledAppearance(const QPixmap &normalPixmap);
+
 void doAntialias(QImage &image, const QList<QPoint> &antiAliasCoordinates, const std::function<QRgb(const double x, const double y)> &colorFunction);
 
 void fillRect(uchar *const bytesPtr, const qsizetype bytesPerLine, const QRect rectangle, const QRgb color);

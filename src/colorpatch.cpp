@@ -444,7 +444,7 @@ void ColorPatch::paintEvent(QPaintEvent *eventParameter)
     //   and currently we do not track it otherwhere.
     // - The widget might have been resized, though this is also tracked
     //   in the resizeEvent reimplementation.
-    // d_pointer->updatePixmap();
+    d_pointer->updatePixmapIfNecessary();
 }
 
 /**

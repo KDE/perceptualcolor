@@ -18,6 +18,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "helperconstants.h"
+#include "helperimage.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
 #include <qbrush.h>
@@ -936,7 +937,13 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // Paint the buffer to the actual widget
     QPainter widgetPainter(this);
     widgetPainter.setRenderHint(QPainter::Antialiasing, false);
-    widgetPainter.drawImage(QPoint(0, 0), buffer);
+    if (isEnabled()) {
+        widgetPainter.drawImage(QPoint(0, 0), buffer);
+    } else {
+        widgetPainter.drawPixmap( //
+            QPoint(0, 0), //
+            disabledAppearance(QPixmap::fromImage(buffer)));
+    }
 }
 
 /** @brief The border around the round diagram.

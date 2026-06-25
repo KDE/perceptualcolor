@@ -27,7 +27,7 @@ namespace PerceptualColor
  * automatically updated: When calling this function, Qt sends
  * a <tt>QEvent::LanguageChange</tt> event only to top-level widgets,
  * and these will get updated then. You can send the event yourself
- * to non-top-level widgets to update those widgets also.  zmnb
+ * to non-top-level widgets to update those widgets also.
  *
  * If you create objects that use translations <em>before</em> a translation
  * has been set explicitly, than automatically an environment-dependant

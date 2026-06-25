@@ -12,6 +12,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "gradientimageparameters.h"
 #include "helperconstants.h"
+#include "helperimage.h"
 #include <helper.h>
 #include <qevent.h>
 #include <qguiapplication.h>
@@ -668,7 +669,13 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     }
     QPainter widgetPainter(this);
     widgetPainter.setTransform(transform);
-    widgetPainter.drawImage(0, 0, paintBuffer);
+    if (isEnabled()) {
+        widgetPainter.drawImage(QPoint(0, 0), paintBuffer);
+    } else {
+        widgetPainter.drawPixmap( //
+            QPoint(0, 0), //
+            disabledAppearance(QPixmap::fromImage(paintBuffer)));
+    }
 }
 
 } // namespace PerceptualColor

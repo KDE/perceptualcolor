@@ -14,6 +14,7 @@
 #include "genericcolor.h"
 #include "helper.h"
 #include "helperconversion.h"
+#include "helperimage.h"
 #include "helpermath.h"
 #include "initializetranslation.h"
 #include "perceptualcolornamespace.h"
@@ -219,8 +220,6 @@ SwatchBook::SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Ori
                           // values.
                           std::optional<QStringList>());
     d_pointer->retranslateUi();
-
-    d_pointer->updateIsDarkColorSchemeCache();
 
     setSwatchGrid(swatchGrid);
 }
@@ -726,7 +725,8 @@ int SwatchBookPrivate::cornerRadius() const
  * @param widgetPainter Pointer to a painter that will paint on the surface.
  *        The state of the painter will be saved before modifying it, and
  *        restored before this function returns.
- * @param color Color used to draw the mark
+ * @param color Color used to draw the mark (color for the “enabled” state).
+ *        Or an invalid QColor for automatic color.
  * @param markSymbol Which mark to draw.
  * @param row in @ref m_swatchGrid
  * @param column in @ref m_swatchGrid
@@ -773,6 +773,19 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
     default:
         break;
     }
+
+    if (color.isValid()) {
+        if (q_pointer->isEnabled()) {
+            widgetPainter->setBrush(color);
+        } else {
+            widgetPainter->setBrush(disabledAppearance(color));
+        }
+    } else {
+        widgetPainter->setBrush(
+            // QPalette considers enabled/disabled state automatically.
+            q_pointer->palette().color(QPalette::WindowText));
+    }
+
     if (!myIcon.isNull()) { // Draw the icon
         myIcon.paint(widgetPainter, //
                      qRound(patchOffset.x()), //
@@ -780,8 +793,10 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
                      patchWidthOuter, //
                      patchHeightOuter, //
                      Qt::AlignCenter, //
-                     QIcon::Mode::Normal, //
-                     QIcon::State::On);
+                     q_pointer->isEnabled() //
+                         ? QIcon::Mode::Normal //
+                         : QIcon::Mode::Disabled, //
+                     QIcon::State::Off);
     } else if (!myMark.isEmpty()) { // Draw the text
         QPainterPath textPath;
         // Render the mark string in the path
@@ -814,7 +829,6 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
             // Draw
             widgetPainter->setTransform(textTransform);
             widgetPainter->setPen(Qt::NoPen);
-            widgetPainter->setBrush(color);
             widgetPainter->drawPath(textPath);
         }
     } else { // Draw hard-coded fallback image
@@ -836,7 +850,7 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
             patchWidthInner);
         qreal penWidth = effectiveSquareSize * 0.08;
         QPen pen;
-        pen.setColor(color);
+        pen.setColor(widgetPainter->brush().color());
         pen.setCapStyle(Qt::PenCapStyle::RoundCap);
         pen.setWidthF(penWidth);
         widgetPainter->setPen(pen);
@@ -939,9 +953,6 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     const qsizetype columnCount = d_pointer->m_swatchGrid.iCount();
     const int myCornerRadius = d_pointer->cornerRadius();
     qsizetype visualColumn;
-    const QColor addMarkColor = (d_pointer->m_isDarkColorSchemeCache) //
-        ? Qt::white
-        : Qt::black;
     for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
         for (int row = 0; //
              row < d_pointer->m_swatchGrid.jCount(); //
@@ -950,7 +961,11 @@ void SwatchBook::paintEvent(QPaintEvent *event)
             const auto swatchColor = //
                 d_pointer->m_swatchGrid.value(columnIndex, row);
             if (swatchColor.isValid()) {
-                widgetPainter.setBrush(swatchColor);
+                if (isEnabled()) {
+                    widgetPainter.setBrush(swatchColor);
+                } else {
+                    widgetPainter.setBrush(disabledAppearance(swatchColor));
+                }
                 widgetPainter.setPen(Qt::NoPen);
                 if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
                     visualColumn = columnIndex;
@@ -971,7 +986,7 @@ void SwatchBook::paintEvent(QPaintEvent *event)
                 if (d_pointer->m_isEditable) {
                     d_pointer->drawMark(myOffset, //
                                         &widgetPainter, //
-                                        addMarkColor, //
+                                        QColor(), //
                                         SwatchBookPrivate::Mark::Add, //
                                         row, //
                                         columnIndex);
@@ -1149,20 +1164,7 @@ void SwatchBook::changeEvent(QEvent *event)
         d_pointer->retranslateUi();
     }
 
-    if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
-        d_pointer->updateIsDarkColorSchemeCache();
-        update();
-    }
-
-    QWidget::changeEvent(event);
-}
-
-/**
- * @brief Updates @ref m_isDarkColorSchemeCache
- */
-void SwatchBookPrivate::updateIsDarkColorSchemeCache()
-{
-    m_isDarkColorSchemeCache = isDarkColorScheme();
+    AbstractDiagram::changeEvent(event);
 }
 
 /** @brief Size necessary to render the color patches, including a margin.

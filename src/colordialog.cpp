@@ -2395,8 +2395,9 @@ void ColorDialog::changeEvent(QEvent *eventParameter)
         }
     }
 
-    if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
+    if (isThemeChange(type)) {
         d_pointer->reloadIcons();
+        update();
     }
 
     QDialog::changeEvent(eventParameter);

@@ -14,6 +14,7 @@
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "helperconstants.h"
+#include "helperimage.h"
 #include "initializetranslation.h"
 #include "lchvalues.h"
 #include <optional>
@@ -217,12 +218,13 @@ void ChromaLightnessDiagram::changeEvent(QEvent *event)
         d_pointer->retranslateUi();
     }
 
-    if ((type == QEvent::PaletteChange) || (type == QEvent::ApplicationPaletteChange) || (type == QEvent::StyleChange)) {
+    if (isThemeChange(type)) {
         d_pointer->reloadIcons();
         d_pointer->updateLayoutMargins();
+        update();
     }
 
-    QWidget::changeEvent(event);
+    AbstractDiagram::changeEvent(event);
 }
 
 /**
@@ -603,7 +605,13 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     paintBuffer.setDevicePixelRatio(devicePixelRatioF());
     QPainter widgetPainter(this);
     widgetPainter.setRenderHint(QPainter::Antialiasing, true);
-    widgetPainter.drawImage(0, 0, paintBuffer);
+    if (isEnabled()) {
+        widgetPainter.drawImage(QPoint(0, 0), paintBuffer);
+    } else {
+        widgetPainter.drawPixmap( //
+            QPoint(0, 0), //
+            disabledAppearance(QPixmap::fromImage(paintBuffer)));
+    }
 }
 
 /** @brief React on key press events.

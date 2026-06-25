@@ -290,4 +290,46 @@ void fillRect(uchar *const bytesPtr, const qsizetype bytesPerLine, const QRect r
     }
 }
 
+/**
+ * @internal
+ *
+ * @brief Provides the disabled appearance of a pixmap.
+ *
+ * This function takes the pixmap representing a widget in its normal
+ * state and returns a new pixmap that visually corresponds to the
+ * disabled state. The transformation follows the conventions
+ * of the currently active icon theme, widget style and color scheme.
+ * Consequently, the exact disabled appearance may vary when the icon theme,
+ * widget style or color scheme changes.
+ *
+ * @param normalPixmap The pixmap representing the widget in its normal state.
+ *
+ * @return A pixmap that represents the disabled appearance.
+ */
+QPixmap disabledAppearance(const QPixmap &normalPixmap)
+{
+    QPixmap result = QIcon(normalPixmap) //
+                         .pixmap(normalPixmap.size(), QIcon::Disabled);
+    result.setDevicePixelRatio(normalPixmap.devicePixelRatioF());
+    return result;
+}
+
+/**
+ * @internal
+ *
+ * @brief Provides the disabled appearance of a color.
+ *
+ * Overload of @ref disabledAppearance(const QPixmap &) for a simple color.
+ *
+ * @param normalColor The pixmap representing the widget in its normal state.
+ *
+ * @return A color that represents the disabled appearance.
+ */
+QColor disabledAppearance(const QColor normalColor)
+{
+    QPixmap colorPixmap(1, 1);
+    colorPixmap.fill(normalColor);
+    return disabledAppearance(colorPixmap).toImage().pixelColor(0, 0);
+}
+
 } // namespace PerceptualColor

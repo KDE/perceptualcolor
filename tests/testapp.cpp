@@ -473,6 +473,8 @@ int main(int argc, char *argv[])
     button->show();
     */
 
+    m_colorDialog.setEnabled(false);
+
     // Run
     return app.exec();
 }

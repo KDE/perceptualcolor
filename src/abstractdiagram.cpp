@@ -476,4 +476,22 @@ bool AbstractDiagram::event(QEvent *eventParameter)
     return QWidget::event(eventParameter);
 }
 
+/**
+ * @brief Handle state changes.
+ *
+ * Reimplemented from base class.
+ *
+ * @param eventParameter The event.
+ */
+void AbstractDiagram::changeEvent(QEvent *eventParameter)
+{
+    const auto type = eventParameter->type();
+
+    if (isThemeChange(type)) {
+        update();
+    }
+
+    QWidget::changeEvent(eventParameter);
+}
+
 } // namespace PerceptualColor

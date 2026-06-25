@@ -490,6 +490,8 @@ template<typename T>
     return QStringLiteral("%1(%2)").arg(keys).arg(value);
 }
 
+bool isThemeChange(const QEvent::Type eventType);
+
 /**
  * @internal
  *
