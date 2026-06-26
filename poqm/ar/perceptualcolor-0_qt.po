@@ -15,7 +15,7 @@ msgstr ""
 "X-Qt-Contexts: true\n"
 
 #. @info:tooltip/plain In color diagrams, gamuts can take on unusual shapes that may appear visually incorrect. For example, in a chroma‑lightness diagram of the sRGB gamut in Oklch projection at high‑chroma blue hues, the outline resembles a triangle as expected, but also shows a spike extending from the lower‑left corner to the middle of the right edge. This shape is mathematically correct according to the sRGB and Oklch definitions, but users may mistake it for a rendering error. To avoid confusion, an info button is displayed in such cases, showing the following tooltip.
-#: chromalightnessdiagram.cpp:67
+#: chromalightnessdiagram.cpp:68
 msgctxt "PerceptualColor::ChromaLightnessDiagramPrivate|"
 msgid ""
 "The color gamut shows an unusual shape here, which is correct as defined by "
@@ -227,19 +227,19 @@ msgid "Select color"
 msgstr "اختر لوناً"
 
 #. @item Indicate the selected color in the swatch book. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:103
+#: swatchbook.cpp:104
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
 
 #. @item Indicate that you can click on this empty patch to add a new color to it. This symbol should be translated to whatever symbol is most appropriate for “add” in the translation language. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:112
+#: swatchbook.cpp:113
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
 msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
-#: swatchbook.cpp:157
+#: swatchbook.cpp:158
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr "احذف"
