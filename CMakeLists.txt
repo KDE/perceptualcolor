@@ -209,14 +209,14 @@ add_compile_definitions(
     # While normal deprecation warnings are NOT issued for ALL deprecated
     # features, THIS flag actually seems to block actually all deprecated
     # features:
-    QT_DISABLE_DEPRECATED_UP_TO=0x050F00
-    # Do not issue warnings for Qt API that was deprecated from Qt 6.0.
-    QT_WARN_DEPRECATED_UP_TO=0x060000
+    QT_DISABLE_DEPRECATED_UP_TO=0x060900
+    # Do not issue warnings for Qt API that was deprecated starting from:
+    QT_WARN_DEPRECATED_UP_TO=0x060900
     # WARNING: Define QT_ENABLE_STRICT_MODE_UP_TO only after
     # QT_DISABLE_DEPRECATED_UP_TO. Otherwise, Qt would redefine
     # QT_DISABLE_DEPRECATED_UP_TO and we would lose
     # control over its value.
-    QT_ENABLE_STRICT_MODE_UP_TO=0x060A00
+    QT_ENABLE_STRICT_MODE_UP_TO=0x060900
     # This might crash on older Qt versions on Windows,
     # see https://bugreports.qt.io/browse/AUTOSUITE-946.
     # But we do not support older Qt versions anyway:
@@ -537,10 +537,7 @@ find_package(
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-# NOTE Keep in sync
-# - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
-# - CMakeLists.txt: find_package(Qt6
-# - docs.cpp: Qt 6 (minimum version:
+# NOTE See docs.cpp: "Qt 6 (minimum version:" for details.
 find_package(Qt6 6.9
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
     COMPONENTS Core Gui Widgets DBus Test Svg

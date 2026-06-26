@@ -2219,8 +2219,7 @@ private Q_SLOTS:
             nullptr);
 
         // Get the actual result
-        QColor actualHex;
-        actualHex.setNamedColor( //
+        const QColor actualHex = QColor::fromString( //
             m_perceptualDialog->d_pointer->m_rgbLineEdit->text());
 
         // Get the expected result (We assume our own RGB spin box rounds

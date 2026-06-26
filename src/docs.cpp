@@ -13,9 +13,13 @@
  * - Qt 6 (minimum version: 6.9).
  * <!--
  *     NOTE  Keep in sync
+ *     - This documentation of build requirements
  *     - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
  *     - CMakeLists.txt: find_package(Qt6
- *     - docs.cpp: Qt 6 (minimum version:
+ *     - CMakeLists.txt: QT_DISABLE_DEPRECATED_UP_TO
+ *     - CMakeLists.txt: QT_WARN_DEPRECATED_UP_TO
+ *     - CMakeLists.txt: QT_ENABLE_STRICT_MODE_UP_TO
+ *     - autotests/CMakeLists.txt: remove_definitions(
  * -->
  *   Components: Core, Gui, Widgets, DBus, Test, Svg.
  * - CMake

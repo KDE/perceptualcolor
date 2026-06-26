@@ -7,6 +7,19 @@
 
 ################# General setup #################
 include(CTest)
+# NOTE: Our unit tests still depend on deprecated API
+# (QApplication::setActiveWindow, deprecated since Qt 6.0).
+# To allow these tests to compile, we relax the deprecation settings here,
+# while the library code itself is kept free of deprecated Qt API.
+# NOTE See docs.cpp: "Qt 6 (minimum version:" for details.
+remove_definitions(
+    -DQT_DISABLE_DEPRECATED_UP_TO=0x060900
+    -DQT_WARN_DEPRECATED_UP_TO=0x060900
+)
+add_compile_definitions(
+    QT_DISABLE_DEPRECATED_UP_TO=0x050F00
+    QT_WARN_DEPRECATED_UP_TO=0x060000
+)
 
 
 

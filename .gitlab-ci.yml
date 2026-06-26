@@ -68,10 +68,7 @@ codecheck_cppcheck:
 
 
 codecheck_iwyu:
-  # Keep in sync
-  # - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu CI image‘s Qt version
-  # - CMakeLists.txt: find_package(Qt6
-  # - docs.cpp: Qt 6 (minimum version:
+  # NOTE See docs.cpp: "Qt 6 (minimum version:" for details about image version.
   image: ubuntu:25.10
   tags:
     - Linux
@@ -106,10 +103,7 @@ codecheck_iwyu:
 
 
 codecheck_quality:
-  # NOTE Keep in sync
-  # - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
-  # - CMakeLists.txt: find_package(Qt6
-  # - docs.cpp: Qt 6 (minimum version:
+  # NOTE See docs.cpp: "Qt 6 (minimum version:" for details about image version.
   image: ubuntu:25.10
   tags:
     - Linux

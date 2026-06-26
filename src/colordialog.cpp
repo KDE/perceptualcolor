@@ -1634,8 +1634,7 @@ void ColorDialogPrivate::readRgbHexValues()
     if (!temp.startsWith(QStringLiteral(u"#"))) {
         temp = QStringLiteral(u"#") + temp;
     }
-    QColor rgb;
-    rgb.setNamedColor(temp);
+    const QColor rgb = QColor::fromString(temp);
     if (rgb.isValid()) {
         const auto myRgbColor = RgbColor::fromRgbQColor(rgb);
         setCurrentOpaqueColor(myRgbColor, m_rgbLineEdit);
