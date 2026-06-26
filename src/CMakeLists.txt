@@ -78,7 +78,7 @@ qt_add_resources(
 # between scripts/static-codecheck.sh and src/CMakeLists.txt
 set(lib_PUBLICHEADERS
     colordialog.h
-    colorpatch.h
+    # colorpatch.h - TODO: ColorPatch inherits AbstractDiagram, which is internal though
     constpropagatinguniquepointer.h
     importexport.h
     multispinbox.h
@@ -370,4 +370,18 @@ target_link_libraries(
     ${INTERNAL_LIBRARY_NAME}
     PUBLIC
         Qt::Core Qt::Gui Qt::Widgets Qt::DBus Qt::Svg
+)
+
+# temporarily search for copy
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+include(ECMInstalledLibraryCheck)
+
+ecm_add_installed_library_check(${LIBRARY_NAME}
+    PACKAGE_NAME "${LIBRARY_NAME}"
+    PACKAGE_VERSION ${FULL_VERSION}
+    PACKAGE_TARGET_NAMESPACE "PerceptualColor::"
+)
+
+ecm_installed_library_check_include_strings(${LIBRARY_NAME}
+    HEADERS ${lib_PUBLICHEADERS}
 )
