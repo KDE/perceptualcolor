@@ -356,7 +356,16 @@ QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters)
     return pixmap;
 }
 
-void ColorPatch::execDrag(QPoint)
+/**
+ * @brief Initiates an outgoing drag operation.
+ *
+ * Reimplemented from base class.
+ *
+ * @param startPosition The position where the drag gesture began.
+ *
+ * @todo SHOULDHAVE Provide more mime types, like Gimp/GEGL and CSS.
+ */
+void ColorPatch::execDrag(QPoint startPosition)
 {
     if (d_pointer->m_color.isValid()) {
         QDrag *drag = new QDrag(this); // Mandatory on heap and with parent
@@ -373,6 +382,8 @@ void ColorPatch::execDrag(QPoint)
         // Not deleting the objects on the heap. Qt takes ownership and
         // does the cleanup.
     }
+
+    Q_UNUSED(startPosition)
 }
 
 /**

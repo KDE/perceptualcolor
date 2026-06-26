@@ -710,9 +710,8 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
  * @internal
  *
  * @todo SHOULDHAVE There is no standard mime type for color. But we should
- * support more than the current formats. Especially Gimp (which uses
- * application/x-geglcolor) and LibreOffice, maybe
- * Firefox and CSS.
+ * support more than the current formats. Especially text(), html() and
+ * text/css should be read and interpreted as CSS Color.
  *
  * @todo SHOULDHAVE Provide support not only for drag-and-drop, but also for
  * the clipboard, which uses the same mime-encoded data types. For example
@@ -720,8 +719,43 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
  */
 QColor toQColor(const QMimeData *mimeData)
 {
+    // Qt color mime type
     if (mimeData->hasColor()) {
         return qvariant_cast<QColor>(mimeData->colorData());
+    }
+
+    // Gimp color drag-and-drop
+    // NOTE It is not documented whether Gimp/GEGL writes doubles
+    // in host-native byte order or in a fixed byte order. This implementation
+    // assumes host-native layout, which works on x86/x86-64 (little-endian).
+    // On other architectures or when exchanging data across hosts, explicit
+    // endian handling would be required.
+    if (mimeData->hasFormat(QStringLiteral("application/x-geglcolor"))) {
+        const auto raw = //
+            mimeData->data(QStringLiteral("application/x-geglcolor"));
+        const QByteArray geglHeaderU8 = //
+            QByteArrayLiteral("R'G'B'A u8") + '\x00';
+        const QByteArray geglHeaderDouble = //
+            QByteArrayLiteral("R'G'B'A double") + '\x00';
+        if (raw.startsWith(geglHeaderU8)) {
+            const qsizetype pos = geglHeaderU8.size();
+            if (raw.size() == pos + 4) {
+                const auto *vals = reinterpret_cast<const unsigned char *>( //
+                    raw.constData() + pos);
+                return QColor(vals[0], vals[1], vals[2], vals[3]);
+            }
+        } else if (raw.startsWith(geglHeaderDouble)) {
+            const qsizetype pos = geglHeaderDouble.size();
+            constexpr qsizetype fieldSize = sizeof(double);
+            if (raw.size() == pos + 4 * fieldSize) {
+                const double *vals = reinterpret_cast<const double *>( //
+                    raw.constData() + pos);
+                return QColor::fromRgbF(static_cast<float>(vals[0]), //
+                                        static_cast<float>(vals[1]), //
+                                        static_cast<float>(vals[2]), //
+                                        static_cast<float>(vals[3]));
+            }
+        }
     }
 
     return QColor();
