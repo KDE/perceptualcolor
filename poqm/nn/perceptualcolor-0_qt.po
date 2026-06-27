@@ -2,14 +2,14 @@
 #
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2026-06-26 17:49+0200\n"
+"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <l10n-no@nuug.no>\n"
+"Language: nn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
-"PO-Revision-Date: 2026-06-23 18:10+0200\n"
-"Project-Id-Version: \n"
-"Language-Team: Norwegian Nynorsk <l10n-no@nuug.no>\n"
-"Language: nn\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 26.07.70\n"
 "X-Environment: kde\n"
@@ -18,12 +18,14 @@ msgstr ""
 "X-Qt-Contexts: true\n"
 
 #. @info:tooltip/plain In color diagrams, gamuts can take on unusual shapes that may appear visually incorrect. For example, in a chroma‑lightness diagram of the sRGB gamut in Oklch projection at high‑chroma blue hues, the outline resembles a triangle as expected, but also shows a spike extending from the lower‑left corner to the middle of the right edge. This shape is mathematically correct according to the sRGB and Oklch definitions, but users may mistake it for a rendering error. To avoid confusion, an info button is displayed in such cases, showing the following tooltip.
-#: chromalightnessdiagram.cpp:67
+#: chromalightnessdiagram.cpp:68
 msgctxt "PerceptualColor::ChromaLightnessDiagramPrivate|"
 msgid ""
 "The color gamut shows an unusual shape here, which is correct as defined by "
 "the projection."
 msgstr ""
+"Fargeområdet har ein uvanleg form her, men denne er rett slik det er "
+"definert av projeksjonen."
 
 #. @item/plain Percentage value in a spinbox. Range: 0%–100%.
 #: colordialog.cpp:98
@@ -131,6 +133,9 @@ msgid ""
 "for red: 00⁠–⁠FF</p><p>GG: two-digit code for green: 00⁠–⁠FF</p><p>BB: two-digit "
 "code for blue: 00⁠–⁠FF</p>"
 msgstr ""
+"<p>Heksadesimal-fargekode, som brukt i HTML: #RRGGBB</p><p>RR: tosifra kode "
+"for raudt: 00⁠–⁠FF</p><p>GG: tosifra kode for grønt: 00⁠–⁠FF</p><p>BB: "
+"tosifra kode for blått: 00⁠–⁠FF</p>"
 
 #. @info:tooltip Help text for HSL (hue, saturation, lightness). Saturation: 0 means something on the grey axis; 255 means something between the grey axis and the most colorful color. This is different from “chroma” and should therefore get a different translation. Lightness: 0 means always black; 255 means always white. This is different from “brightness” and should therefore get a different translation.
 #: colordialog.cpp:204
@@ -138,12 +143,16 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
 msgstr ""
+"<p>Nyanse: 0°⁠–⁠360°</p><p>HSL-metting: 0 %⁠–⁠100 %</p><p>Lysstyrke: 0 "
+"%⁠–⁠100 %</p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
 #: colordialog.cpp:218
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Whiteness: 0%⁠–⁠100%</p><p>Blackness: 0%⁠–⁠100%</p>"
 msgstr ""
+"<p>Nyanse: 0°⁠–⁠360°</p><p>Kvitleik: 0 %⁠–⁠100 %</p><p>Svartleik: 0 %⁠–⁠100 "
+"%</p>"
 
 #. @info:tooltip Help text for HSV/HSB. HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model. Saturation: 0 means something between black and white; 255 means something between black and the most colorful color. This is different from “chroma” and should therefore get a different translation. Brightness/value: 0 means always black; 255 means something between white and the most colorful color. This is different from “lightness” and should therefore get a different translation.
 #: colordialog.cpp:231
@@ -152,6 +161,8 @@ msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
 "0%⁠–⁠100%</p>"
 msgstr ""
+"<p>Nyanse: 0°⁠–⁠360°</p><p>HSV/HSB-metting: 0 %⁠–⁠100 %</p><p>Lysstyrke/"
+"verdi: 0 %⁠–⁠100 %</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:242
@@ -164,6 +175,7 @@ msgstr "Lysstyrke"
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
 msgstr ""
+"<p>Lysstyrke: 0 %⁠–⁠100 %</p><p>Kroma: 0⁠–⁠%L1</p><p>Nyanse: 0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:256
@@ -172,12 +184,14 @@ msgid ""
 "<p>Lightness: %L1⁠–⁠%L2</p><p>Chroma: %L3⁠–⁠%L4</p><p>Hue: 0°⁠–⁠360°</"
 "p><p>Whitepoint: D65</p>"
 msgstr ""
+"<p>Lysstyrke: %L1⁠–⁠%L2</p><p>Kroma: %L3⁠–⁠%L4</p><p>Nyanse: 0°⁠–⁠360°</"
+"p><p>Kvitpunkt: D65</p>"
 
 #. @label:slider An opacity of 0 means completely transparent. The higher the opacity value increases, the more opaque the colour becomes, until it finally becomes completely opaque at the highest possible opacity value.
 #: colordialog.cpp:269
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Op&acity:"
-msgstr ""
+msgstr "&Tettleik:"
 
 #. @item Name of the sRGB color space.
 #: colordialog.cpp:360
@@ -195,7 +209,7 @@ msgstr "&Vel farge frå skjermen …"
 #: colordialog.cpp:383
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "Click to snap to nearest in-&gamut color"
-msgstr ""
+msgstr "Trykk for å &hoppa til næaste farge innanfor fargeområdet"
 
 #. @item:inlistbox/plain The swatch grid showing the basic colors like yellow, orange, red… Same text as in QColorDialog
 #: colordialog.cpp:395
@@ -222,19 +236,19 @@ msgid "Select color"
 msgstr "Vel farge"
 
 #. @item Indicate the selected color in the swatch book. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:103
+#: swatchbook.cpp:104
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "✓"
 msgstr "✓"
 
 #. @item Indicate that you can click on this empty patch to add a new color to it. This symbol should be translated to whatever symbol is most appropriate for “add” in the translation language. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
-#: swatchbook.cpp:112
+#: swatchbook.cpp:113
 msgctxt "PerceptualColor::SwatchBookPrivate|"
 msgid "+"
 msgstr "+"
 
 #. action:inmenu Appears in the context menu of swatches within the swatch book and provides the option to remove a swatch from the swatch book.
-#: swatchbook.cpp:157
+#: swatchbook.cpp:158
 msgctxt "PerceptualColor::SwatchBook|"
 msgid "Delete"
 msgstr "Fjern"
