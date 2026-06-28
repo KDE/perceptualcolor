@@ -134,8 +134,8 @@ msgid ""
 "code for blue: 00⁠–⁠FF</p>"
 msgstr ""
 "<p>Heksadesimal-fargekode, som brukt i HTML: #RRGGBB</p><p>RR: tosifra kode "
-"for raudt: 00⁠–⁠FF</p><p>GG: tosifra kode for grønt: 00⁠–⁠FF</p><p>BB: "
-"tosifra kode for blått: 00⁠–⁠FF</p>"
+"for raudt: 00⁠–⁠FF</p><p>GG: tosifra kode for grønt: 00⁠–⁠FF</p><p>BB: tosifra "
+"kode for blått: 00⁠–⁠FF</p>"
 
 #. @info:tooltip Help text for HSL (hue, saturation, lightness). Saturation: 0 means something on the grey axis; 255 means something between the grey axis and the most colorful color. This is different from “chroma” and should therefore get a different translation. Lightness: 0 means always black; 255 means always white. This is different from “brightness” and should therefore get a different translation.
 #: colordialog.cpp:204
@@ -143,16 +143,15 @@ msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSL-Saturation: 0%⁠–⁠100%</p><p>Lightness: 0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Nyanse: 0°⁠–⁠360°</p><p>HSL-metting: 0 %⁠–⁠100 %</p><p>Lysstyrke: 0 "
-"%⁠–⁠100 %</p>"
+"<p>Nyanse: 0°⁠–⁠360°</p><p>HSL-metting: 0 %⁠–⁠100 %</p><p>Lysstyrke: 0 %⁠–⁠100 %</"
+"p>"
 
 #. @info:tooltip Help text for HWB (hue, whiteness, blackness). The idea behind is that the hue defines the pure (maximum colorful) color. Than, white color can be added, creating a “tint”. Or black color can be added, creating a “shade”. Or both can be added, creating a “tone“. See https://en.wikipedia.org/wiki/Tint,_shade_and_tone for more information. 0% white + 0% black = pure color. 100% white + 0% black = white. 0% white + 100% black = black. 50% white + 50% black = gray. 50% white + 0% black = tint. 25% white + 25% black = tone. 0% white + 50% black = shade.
 #: colordialog.cpp:218
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Hue: 0°⁠–⁠360°</p><p>Whiteness: 0%⁠–⁠100%</p><p>Blackness: 0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Nyanse: 0°⁠–⁠360°</p><p>Kvitleik: 0 %⁠–⁠100 %</p><p>Svartleik: 0 %⁠–⁠100 "
-"%</p>"
+"<p>Nyanse: 0°⁠–⁠360°</p><p>Kvitleik: 0 %⁠–⁠100 %</p><p>Svartleik: 0 %⁠–⁠100 %</p>"
 
 #. @info:tooltip Help text for HSV/HSB. HSV (hue, saturation, value) and HSB (hue, saturation, brightness) are two different names for the very same color model. Saturation: 0 means something between black and white; 255 means something between black and the most colorful color. This is different from “chroma” and should therefore get a different translation. Brightness/value: 0 means always black; 255 means something between white and the most colorful color. This is different from “lightness” and should therefore get a different translation.
 #: colordialog.cpp:231
@@ -161,8 +160,8 @@ msgid ""
 "<p>Hue: 0°⁠–⁠360°</p><p>HSV/HSB-Saturation: 0%⁠–⁠100%</p><p>Brightness/Value: "
 "0%⁠–⁠100%</p>"
 msgstr ""
-"<p>Nyanse: 0°⁠–⁠360°</p><p>HSV/HSB-metting: 0 %⁠–⁠100 %</p><p>Lysstyrke/"
-"verdi: 0 %⁠–⁠100 %</p>"
+"<p>Nyanse: 0°⁠–⁠360°</p><p>HSV/HSB-metting: 0 %⁠–⁠100 %</p><p>Lysstyrke/verdi: "
+"0 %⁠–⁠100 %</p>"
 
 #. @label:slider Accessible name for lightness slider. This is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:242
@@ -174,8 +173,7 @@ msgstr "Lysstyrke"
 #: colordialog.cpp:247
 msgctxt "PerceptualColor::ColorDialogPrivate|"
 msgid "<p>Lightness: 0%⁠–⁠100%</p><p>Chroma: 0⁠–⁠%L1</p><p>Hue: 0°⁠–⁠360°</p>"
-msgstr ""
-"<p>Lysstyrke: 0 %⁠–⁠100 %</p><p>Kroma: 0⁠–⁠%L1</p><p>Nyanse: 0°⁠–⁠360°</p>"
+msgstr "<p>Lysstyrke: 0 %⁠–⁠100 %</p><p>Kroma: 0⁠–⁠%L1</p><p>Nyanse: 0°⁠–⁠360°</p>"
 
 #. @info:tooltip Help text for Oklch. “lightness” is different from “brightness”/“value” and should therefore get a different translation.
 #: colordialog.cpp:256
