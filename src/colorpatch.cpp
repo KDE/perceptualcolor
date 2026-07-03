@@ -459,32 +459,6 @@ void ColorPatch::paintEvent(QPaintEvent *eventParameter)
 }
 
 /**
- * @brief Equal operator
- *
- * @param other The object to compare with.
- *
- * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
- */
-bool ColorPatchPrivate::ImageParameters::operator==(const ImageParameters &other) const
-{
-    const auto thisTie = std::tie(width, //
-                                  height, //
-                                  devicePixelRatioF, //
-                                  color, //
-                                  lineWidth, //
-                                  lineColor, //
-                                  layoutDirection);
-    const auto otherTie = std::tie(other.width, //
-                                   other.height, //
-                                   other.devicePixelRatioF, //
-                                   other.color, //
-                                   other.lineWidth, //
-                                   other.lineColor, //
-                                   other.layoutDirection);
-    return thisTie == otherTie;
-}
-
-/**
  * @brief Main event handler.
  *
  * Reimplemented from base class.

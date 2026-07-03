@@ -409,12 +409,6 @@
  * defaults to Qt::LayoutDirectionAuto but this value is not even considered
  * in the code. Fix this here and in all other usages of Qt::LayoutDirection.
  *
- * @todo SHOWSTOPPER
- * @ref PerceptualColor::ColorPatchPrivate::ImageParameters::operator==
- * should not be implemented but using the default implementation. Search also
- * for other operator== and operator!= to substitute by a default
- * implementation.
- *
  * @todo SHOULDHAVE A help button in the QDialogButtonBox that shows a
  * QMessageBox that explains "hidden"/non-obvious features like
  * mouse/key events and shortcuts.

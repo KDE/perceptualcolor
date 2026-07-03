@@ -66,7 +66,15 @@ public:
          */
         Qt::LayoutDirection layoutDirection = Qt::LayoutDirectionAuto;
 
-        bool operator==(const ImageParameters &other) const;
+        /**
+         * @brief Equal operator
+         *
+         * @param other The object to compare with.
+         *
+         * @returns <tt>true</tt> if all data members have exactly the same
+         * coordinates. <tt>false</tt> otherwise.
+         */
+        [[nodiscard]] bool operator==(const ImageParameters &other) const = default; // clazy:exclude=function-args-by-value
     };
 
     explicit ColorPatchPrivate(ColorPatch *backLink);
