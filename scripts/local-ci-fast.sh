@@ -27,11 +27,8 @@
 
 
 ################# CMakeLists.txt linter #################
-# “2> /dev/null” throws away stderr, at which cmakelint only outputs
-# the count of errors. However, stdout is preserved, which is the really
-# interesting part, at which cmakelint outputs detailed errors.
 echo cmakelint started.
-cmakelint --spaces=4 `find -name "CMakeLists.txt"`
+cmakelint --spaces=4 `find -name "CMakeLists.txt" -not -path "./build/*"`
 echo cmakelint finished.
 #
 # An alternative linter for CMake is available at
