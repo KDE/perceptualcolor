@@ -78,7 +78,6 @@ qt_add_resources(
 # between scripts/static-codecheck.sh and src/CMakeLists.txt
 set(lib_PUBLICHEADERS
     colordialog.h
-    colorpatch.h
     constpropagatinguniquepointer.h
     importexport.h
     multispinbox.h

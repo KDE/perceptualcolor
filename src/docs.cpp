@@ -943,7 +943,7 @@
  * properties of the Qt class they are derived from</a> only where it
  * makes sense. So you can set the <tt>background-color</tt> of
  * a @ref PerceptualColor::MultiSpinBox. But you should not set
- * it for a @ref PerceptualColor::ColorPatch because the point
+ * it for a color patch because the point
  * of this widget is to always use the given color as background;
  * the same applies for most widgets that showcase colors.
  *

@@ -22,7 +22,6 @@
 # between scripts/static-codecheck.sh and src/CMakeLists.txt
 PUBLIC_HEADERS="
     src/colordialog.h
-    src/colorpatch.h
     src/constpropagatinguniquepointer.h
     src/importexport.h
     src/multispinbox.h

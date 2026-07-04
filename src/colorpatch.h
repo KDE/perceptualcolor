@@ -6,7 +6,7 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
-#include "importexport.h"
+#include "internalimportexport.h"
 #include <qcolor.h>
 #include <qglobal.h>
 #include <qsize.h>
@@ -23,6 +23,8 @@ namespace PerceptualColor
 class ColorPatchPrivate;
 
 /**
+ * @internal
+ *
  * @brief A color display widget.
  *
  * This widget simply displays a color. And it provides drag-and-drop support;
@@ -65,7 +67,7 @@ class ColorPatchPrivate;
  * the pixmap (like in some styles), are possible. So we rely entirely
  * on QLabel for the actual display, and only implement @ref sizeHint() and
  * @ref minimumSizeHint() ourselves. */
-class PERCEPTUALCOLOR_IMPORTEXPORT ColorPatch : public AbstractDiagram
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorPatch : public AbstractDiagram
 {
     Q_OBJECT
 

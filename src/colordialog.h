@@ -77,9 +77,9 @@ class ColorDialogPrivate;
  * size with QWidget::resize() or force a more space-saving layout through
  * the @ref layoutDimensions property.
  *
- * - The @ref ColorPatch that indicates the selected color is placed prominently
+ * - The color patch that indicates the selected color is placed prominently
  * at the top of the widget. That is also useful for touch screens as the
- * @ref ColorPatch will not be hidden by the hand of the user when the user
+ * color patch will not be hidden by the hand of the user when the user
  * is touching the above color selection widgets.
  *
  * - This dialog uses icons. See @ref hidpisupport "High DPI support"
