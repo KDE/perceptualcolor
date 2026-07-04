@@ -28,7 +28,9 @@
 
 ################# CMakeLists.txt linter #################
 echo cmakelint started.
-cmakelint --spaces=4 `find -name "CMakeLists.txt" -not -path "./build/*"`
+cmakelint \
+    --spaces=4 \
+    `find -name "CMakeLists.txt" -not -path "./build/*" -not -path "./buildclangformat/*"`
 echo cmakelint finished.
 #
 # An alternative linter for CMake is available at

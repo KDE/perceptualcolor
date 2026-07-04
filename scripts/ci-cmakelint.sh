@@ -15,7 +15,10 @@ set -euo pipefail
 errorcount=0
 
 echo cmakelint started.
-cmakelint --spaces=4 `find -name "CMakeLists.txt"` > artifact_cmakelint.txt
+cmakelint \
+    --spaces=4 \
+    `find -name "CMakeLists.txt" -not -path "./build/*" -not -path "./buildclangformat/*"` \
+    > artifact_cmakelint.txt
 echo cmakelint finished.
 [ -s artifact_cmakelint.txt ] && ((errorcount++))
 
