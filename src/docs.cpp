@@ -929,6 +929,7 @@
  *
  * - https://community.kde.org/Policies and child pages
  * - https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B
+ * - https://community.kde.org/Policies/Library_Code_Policy
  * - https://community.kde.org/Frameworks/Policies
  * - https://community.kde.org/Frameworks/Frameworks_Localization_Policy
  * - https://community.kde.org/Frameworks/Frameworks_Documentation_Policy
