@@ -404,7 +404,7 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo SHOWSTOOPPER
+ * @todo SHOWSTOPPER
  * @ref PerceptualColor::ColorPatchPrivate::ImageParameters::layoutDirection
  * defaults to Qt::LayoutDirectionAuto but this value is not even considered
  * in the code. Fix this here and in all other usages of Qt::LayoutDirection.
