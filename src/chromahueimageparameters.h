@@ -99,9 +99,19 @@ private:
                             const qreal shift,
                             const qreal scaleFactor,
                             const double chromaRange,
-                            const InterlacingPass currentPass,
                             int firstRow,
                             int lastRow);
+
+    static void renderByRowInterlaced(uchar *const bytesPtr,
+                                      const qsizetype bytesPerLine,
+                                      // cppcheck-suppress passedByValue
+                                      const ChromaHueImageParameters parameters,
+                                      const qreal shift,
+                                      const qreal scaleFactor,
+                                      const double chromaRange,
+                                      const InterlacingPass currentPass,
+                                      int firstRow,
+                                      int lastRow);
 };
 
 } // namespace PerceptualColor

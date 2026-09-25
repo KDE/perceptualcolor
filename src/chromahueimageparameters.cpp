@@ -85,14 +85,13 @@ InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSiz
  *
  * @pre The parameter firstRow must be aligned to the interlacing pass steps.
  * If the interlacing starts for example with 8 x 8 pixels, valid values for
- * the firstRow index are: 0, 8, 16, 32 etc.
+ * the firstRow index are: 0, 8, 16, 24, 32, 40 etc.
  */
 // Disable checks for passing large objects by value. In this function,
 // designed for threaded execution, we avoid passing by reference whenever
 // possible to prevent potential pitfalls, even though copying by value may
 // introduce slight overhead.
-
-void ChromaHueImageParameters::renderByRow( //
+void ChromaHueImageParameters::renderByRowInterlaced( //
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
     // cppcheck-suppress passedByValue
@@ -145,6 +144,67 @@ void ChromaHueImageParameters::renderByRow( //
     }
 }
 
+/**
+ * @brief Render some rows of the image directly to the buffer.
+ *
+ * @param bytesPtr Pointer to the image data.
+ * @param bytesPerLine Bytes per line of the image data (can be obtained by
+ *        QImage)
+ * @param parameters The parameters
+ * @param shift Shift value
+ * @param scaleFactor Scale factor
+ * @param chromaRange Chroma range
+ * @param firstRow Index of the first row to render. Must be a valid index.
+ * @param lastRow Index of the last row to render. Must be a valid index.
+ *
+ * @pre The parameters must be valid within the image. As this function
+ * operates directly on the image data, out-of-bound values will cause
+ * undefined behaviour.
+ *
+ * @pre The parameter firstRow must be aligned to the interlacing pass steps.
+ * If the interlacing starts for example with 8 x 8 pixels, valid values for
+ * the firstRow index are: 0, 8, 16, 24, 32, 40 etc.
+ */
+// Disable checks for passing large objects by value. In this function,
+// designed for threaded execution, we avoid passing by reference whenever
+// possible to prevent potential pitfalls, even though copying by value may
+// introduce slight overhead.
+void ChromaHueImageParameters::renderByRow( //
+    uchar *const bytesPtr,
+    const qsizetype bytesPerLine,
+    // cppcheck-suppress passedByValue
+    const ChromaHueImageParameters parameters, // clazy:exclude=function-args-by-ref
+    const qreal shift,
+    const qreal scaleFactor,
+    const double chromaRange,
+    int firstRow,
+    int lastRow)
+{
+    GenericColor lab;
+    lab.first = parameters.lightness;
+    QRgb tempColor;
+    const auto threshold = //
+        (chromaRange + 2 * scaleFactor) * (chromaRange + 2 * scaleFactor);
+    for (int y = firstRow; y <= lastRow; ++y) {
+        QRgb *line = reinterpret_cast<QRgb *>(bytesPtr + y * bytesPerLine);
+        lab.third = chromaRange //
+            - (y + shift) * scaleFactor;
+        for (int x = 0; x < parameters.imageSizePhysical; ++x) {
+            lab.second = (x + shift) * scaleFactor - chromaRange;
+            if (qPow(lab.second, 2) + qPow(lab.third, 2) <= threshold) {
+                tempColor = //
+                    (parameters.projectionSpace == LchSpace::Oklch) //
+                    ? AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab)
+                    : AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab);
+                if (qAlpha(tempColor) != 0) {
+                    // The pixel is within the gamut!
+                    line[x] = tempColor;
+                }
+            }
+        }
+    }
+}
+
 /** @brief Render an image.
  *
  * The function will render the image with the given parameters,
@@ -157,10 +217,6 @@ void ChromaHueImageParameters::renderByRow( //
  * @param variantParameters A <tt>QVariant</tt> that contains the
  *        image parameters.
  * @param callbackObject Pointer to the object for the callbacks.
- *
- * @todo SHOWSTOPPER Optimize rendering time: Discard (or move into an
- * <tt>if constexpr</tt> the Adam-interlacing and calculate directly the hole
- * image. And allow for abort during anti-aliasing.
  */
 void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {
@@ -225,29 +281,16 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
 
     const qreal shift = pixelOffset - parameters.borderPhysical;
 
-    InterlacingPass currentPass = createInterlacingPassObject( //
-        QSize(parameters.imageSizePhysical, parameters.imageSizePhysical));
-    const auto interlacingMaxRasterSize = currentPass.columnFrequency;
-
     auto &poolReference = getLibraryQThreadPoolInstance();
     const auto threadCount = qMax(1, poolReference.maxThreadCount());
 
-    while (true) {
-        // Get an up-to-date pointer to the raw image data. It is
-        // mandatory to do this again in each loop run, because
-        // delivering the intermediate image will likely create shallow
-        // and later also deep copies, which may affect where the
-        // actual image data is located. By running QImage::bits(), we
-        // make sure that the implicit sharing of QImage is detached.
+    if constexpr (true) {
+        // Code branch without interlacing, but faster overall execution.
         uchar *const bytesPtr = myImage.bits();
         const qsizetype bytesPerLine = myImage.bytesPerLine();
 
-        const auto segments = splitElementsTapered( //
-            parameters.imageSizePhysical, //
-            threadCount, //
-            interlacingMaxRasterSize,
-            0.5 // normalized position of the peak. 0.5 means: in the middle.
-        );
+        const auto segments = splitElements(parameters.imageSizePhysical, //
+                                            threadCount);
         // The narrowing static_cast<int>() is okay because parts.size() is a
         // result of threadCount, which is also int.
         static_assert( //
@@ -262,7 +305,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
                                    shift,
                                    scaleFactor,
                                    chromaRange,
-                                   currentPass,
                                    segment,
                                    &semaphore]() {
                 renderByRow(bytesPtr,
@@ -271,7 +313,6 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
                             shift,
                             scaleFactor,
                             chromaRange,
-                            currentPass,
                             segment.first, // first row
                             segment.second // last row
                 );
@@ -280,9 +321,9 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
             const auto myRunnablePtr = QRunnable::create(myLambda);
             poolReference.start(myRunnablePtr, imageThreadPriority);
         }
-        // Intentionally acquiring segments.size() and not
-        // treadCount, because they might differ and
-        // segments.size() is mandatory for thread execution.
+        // Intentionally acquiring segmentsCount and not
+        // treadCount,  because they might differ and
+        // segmentsCount is mandatory for thread execution.
         semaphore.acquire(segmentsCount); // Wait for all threads to finish.
 
         myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
@@ -290,45 +331,113 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
             myImage, //
             QImage(), //
             variantParameters, //
-            // We return the state “Intermediate” even when the final
-            // interlacing step of the Adam-interlacing has finished.
-            // This is because we will still to some antialiasing in a
-            // final step, which is independent from the Adam-interlacing.
             AsyncImageRenderCallback::InterlacingState::Intermediate);
         myImage.setDevicePixelRatio(1);
 
-        // From Qt Example’s documentation:
-        //
-        //     “If we discover […] that restart has been set
-        //      to true (by render()), we break out […] immediately […].
-        //      Similarly, if we discover that abort has been set
-        //      to true (by the […] destructor), we return from the
-        //      function immediately […].”
-        //
-        // Strategic Abort Handling for Enhanced UI Responsivity:
-        // We intentionally check for restart/abort only *after* the first
-        // interlacing pass. This guarantees that at least one image is
-        // rendered and shown in the widget, so the UI appears responsive
-        // even while the user is interacting (e.g. dragging the hue slider).
-        // If we allowed abort earlier, rapid user input could prevent any
-        // image from ever being displayed. While the resulting image may be
-        // slightly outdated, it maintains the perception of a fluid, reactive
-        // interface.
-        //
-        // After the first pass we may skip the remaining work (such as
-        // anti‑aliasing) while the user is still changing the slider, because
-        // those steps are comparatively expensive and not critical for
-        // immediate feedback. Once the user stops interacting, the remaining
-        // passes (including full anti‑aliasing) will be completed and the
-        // final image delivered.
-        if (callbackObject.shouldAbort()) {
-            return;
-        }
+    } else {
+        // Code branch with interlacing, but slower overall execution.
+        InterlacingPass currentPass = createInterlacingPassObject( //
+            QSize(parameters.imageSizePhysical, parameters.imageSizePhysical));
+        const auto interlacingMaxRasterSize = currentPass.columnFrequency;
 
-        if (currentPass.countdown > 1) {
-            currentPass.switchToNextPass();
-        } else {
-            break;
+        while (true) {
+            // Get an up-to-date pointer to the raw image data. It is
+            // mandatory to do this again in each loop run, because
+            // delivering the intermediate image will likely create shallow
+            // and later also deep copies, which may affect where the
+            // actual image data is located. By running QImage::bits(), we
+            // make sure that the implicit sharing of QImage is detached.
+            uchar *const bytesPtr = myImage.bits();
+            const qsizetype bytesPerLine = myImage.bytesPerLine();
+
+            const auto segments = splitElementsTapered( //
+                parameters.imageSizePhysical, //
+                threadCount, //
+                interlacingMaxRasterSize,
+                0.5 // normalized position of peak. 0.5 means: in the middle.
+            );
+            // The narrowing static_cast<int>() is okay because parts.size() is
+            // a result of threadCount, which is also int.
+            static_assert( //
+                std::is_same_v<std::remove_cv_t<decltype(threadCount)>, int>);
+            const int segmentsCount = static_cast<int>(segments.size());
+            QSemaphore semaphore(0);
+            std::atomic_thread_fence(std::memory_order_seq_cst); // mem. barrier
+            for (const auto &segment : segments) {
+                const auto myLambda = [bytesPtr, //
+                                       bytesPerLine,
+                                       parameters,
+                                       shift,
+                                       scaleFactor,
+                                       chromaRange,
+                                       currentPass,
+                                       segment,
+                                       &semaphore]() {
+                    renderByRowInterlaced(bytesPtr,
+                                          bytesPerLine,
+                                          parameters, //
+                                          shift,
+                                          scaleFactor,
+                                          chromaRange,
+                                          currentPass,
+                                          segment.first, // first row
+                                          segment.second // last row
+                    );
+                    semaphore.release();
+                };
+                const auto myRunnablePtr = QRunnable::create(myLambda);
+                poolReference.start(myRunnablePtr, imageThreadPriority);
+            }
+            // Intentionally acquiring segments.size() and not
+            // treadCount, because they might differ and
+            // segments.size() is mandatory for thread execution.
+            semaphore.acquire(segmentsCount); // Wait for all threads to finish.
+
+            myImage.setDevicePixelRatio(parameters.devicePixelRatioF);
+            callbackObject.deliverInterlacingPass( //
+                myImage, //
+                QImage(), //
+                variantParameters, //
+                // We return the state “Intermediate” even when the final
+                // interlacing step of the Adam-interlacing has finished.
+                // This is because we will still to some antialiasing in a
+                // final step, which is independent from the Adam-interlacing.
+                AsyncImageRenderCallback::InterlacingState::Intermediate);
+            myImage.setDevicePixelRatio(1);
+
+            // From Qt Example’s documentation:
+            //
+            //     “If we discover […] that restart has been set
+            //      to true (by render()), we break out […] immediately […].
+            //      Similarly, if we discover that abort has been set
+            //      to true (by the […] destructor), we return from the
+            //      function immediately […].”
+            //
+            // Strategic Abort Handling for Enhanced UI Responsivity:
+            // We intentionally check for restart/abort only *after* the first
+            // interlacing pass. This guarantees that at least one image is
+            // rendered and shown in the widget, so the UI appears responsive
+            // even while the user is interacting (e.g. dragging the hue slider).
+            // If we allowed abort earlier, rapid user input could prevent any
+            // image from ever being displayed. While the resulting image may be
+            // slightly outdated, it maintains the perception of a fluid, reactive
+            // interface.
+            //
+            // After the first pass we may skip the remaining work (such as
+            // anti‑aliasing) while the user is still changing the slider, because
+            // those steps are comparatively expensive and not critical for
+            // immediate feedback. Once the user stops interacting, the remaining
+            // passes (including full anti‑aliasing) will be completed and the
+            // final image delivered.
+            if (callbackObject.shouldAbort()) {
+                return;
+            }
+
+            if (currentPass.countdown > 1) {
+                currentPass.switchToNextPass();
+            } else {
+                break;
+            }
         }
     }
 
@@ -391,6 +500,7 @@ void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncIm
         QImage(), //
         variantParameters, //
         AsyncImageRenderCallback::InterlacingState::Final);
+    // myImage.setDevicePixelRatio(1); // Not necessarry: Function ends here.
 }
 
 static_assert(std::is_standard_layout_v<ChromaHueImageParameters>);

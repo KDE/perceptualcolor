@@ -179,9 +179,9 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
             const auto myRunnablePtr = QRunnable::create(myLambda);
             poolReference.start(myRunnablePtr, imageThreadPriority);
         }
-        // Intentionally acquiring segments.size() and not
+        // Intentionally acquiring segmentsCount and not
         // treadCount,  because they might differ and
-        // segments.size() is mandatory for thread execution.
+        // segmentsCount is mandatory for thread execution.
         semaphore.acquire(segmentsCount); // Wait for all threads to finish.
     }
 
@@ -206,7 +206,8 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     //
     // Strategic Abort Handling for Enhanced UI Responsivity:
     // We intentionally check for restart/abort only *after* the first
-    // interlacing pass. This guarantees that at least one image is
+    // interlacing pass, which means the calculation of the gamut
+    // image. This guarantees that at least an image is
     // rendered and shown in the widget, so the UI appears responsive
     // even while the user is interacting (e.g. dragging the hue slider).
     // If we allowed abort earlier, rapid user input could prevent any
@@ -214,11 +215,11 @@ void ChromaLightnessImageParameters::render(const QVariant &variantParameters, A
     // slightly outdated, it maintains the perception of a fluid, reactive
     // interface.
     //
-    // After the first pass we may skip the remaining work (such as
+    // We may skip the remaining work (such as
     // anti‑aliasing) while the user is still changing the slider, because
     // those steps are comparatively expensive and not critical for
     // immediate feedback. Once the user stops interacting, the remaining
-    // passes (including full anti‑aliasing) will be completed and the
+    // full anti‑aliasing will be completed and the
     // final image delivered.
     if (callbackObject.shouldAbort()) {
         return;
