@@ -404,11 +404,6 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo SHOWSTOPPER
- * @ref PerceptualColor::ColorPatchPrivate::ImageParameters::layoutDirection
- * defaults to Qt::LayoutDirectionAuto but this value is not even considered
- * in the code. Fix this here and in all other usages of Qt::LayoutDirection.
- *
  * @todo SHOULDHAVE A help button in the QDialogButtonBox that shows a
  * QMessageBox that explains "hidden"/non-obvious features like
  * mouse/key events and shortcuts.
