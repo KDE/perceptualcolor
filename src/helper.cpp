@@ -335,39 +335,54 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
     return result;
 }
 
-/** @internal
+/**
+ * @internal
  *
- * @brief If the current color scheme is dark.
+ * @brief Returns whether the current widget style uses a dark color scheme.
  *
- * @returns <tt>true</tt> if <tt>Qt::ColorScheme::Dark</tt>. <tt>false</tt>
- * otherwise.
+ * This function determines the effective color scheme from the palette
+ * provided by the current widget style. The returned value therefore reflects
+ * the appearance actually used for rendering widgets.
+ * Note that this may differ from the color scheme configured in the operating
+ * system. Some styles, such as Vista, Adwaita, or Kvantum, may ignore the
+ * system color scheme and provide their own palette instead.
  *
- * @note It might be usefull to react on changes affecting the palette by
+ * @returns <tt>true</tt> if the current widget style uses a dark color
+ * scheme; <tt>false</tt> otherwise.
+ *
+ * @note If your code needs to react to color-scheme changes, consider
  * reimplementing <tt>QWidget::changeEvent()</tt> and add <tt>
  * if ((type == QEvent::PaletteChange)
  * || (type == QEvent::ApplicationPaletteChange)
  * || (type == QEvent::StyleChange)) {
  * doSomething();
  * } </tt>
- *
- * @internal
- *
- * @note Since Qt 6.5, there is
- * <a href="https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5">
- * better access to color themes</a>. We can use
- * <tt>QGuiApplication::styleHints()->colorScheme()</tt>. This
- * is what KDE recommends since Qt 6.10. See also on
- * <a href="https://stackoverflow.com/questions/75457687">Stackoverflow</a>.
- *
- * @todo SHOWSTOPPER This is broken for
- * Adwaita/Adwaita-dark/kvantum/kvantum-dark who ignore the system’s color
- * palette, while this function still returns a value based on the system’s
- * color palette.
  */
 bool isDarkColorScheme()
 {
-    const auto scheme = QGuiApplication::styleHints()->colorScheme();
-    return (scheme == Qt::ColorScheme::Dark);
+    // See also:
+    // href="https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5
+    // https://stackoverflow.com/questions/75457687">Stackoverflow
+    //
+    // Since Qt 6.5, QStyleHints::colorScheme() provides access to the
+    // operating system's preferred color scheme:
+    //
+    //     const auto scheme = QGuiApplication::styleHints()->colorScheme();
+    //     return (scheme == Qt::ColorScheme::Dark);
+    //
+    // This is what KDE recommends since Qt 6.10.
+    //
+    // However, colorScheme() reports the color scheme configured in the
+    // operating system rather than the one effectively used by the current
+    // widget style. Some styles, including Vista, Adwaita, and Kvantum,
+    // may ignore the system color scheme and use their own palette.
+    // To determine the visual appearance actually used for rendering,
+    // we derive the color scheme from the style’s default palette.
+
+    const QPalette defaultPalette;
+    const auto textColor = defaultPalette.color(QPalette::WindowText);
+    const auto windowColor = defaultPalette.color(QPalette::Window);
+    return textColor.lightness() > windowColor.lightness();
 }
 
 /**
