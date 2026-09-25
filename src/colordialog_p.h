@@ -354,11 +354,11 @@ public Q_SLOTS:
     void reloadIcons();
     void retranslateUi();
     void saveCurrentTab();
-    void setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget);
-    void setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, QWidget *const ignoreWidget);
+    void setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, const QWidget *ignoreWidget);
+    void setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, const QWidget *ignoreWidget);
     void setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs,
                                const PerceptualColor::RgbColor &rgb,
-                               QWidget *const ignoreWidget);
+                               const QWidget *ignoreWidget);
     void updateColorPatch();
     void updateCielchD50ButBlockSignals();
     void updateEyedropperButtonVisibility();

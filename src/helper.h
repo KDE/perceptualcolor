@@ -187,11 +187,11 @@ public:
      *
      * @param i index (first dimension)
      * @param j index (second dimension)
-     * @param value value to set */
-    void setValue(qsizetype i, qsizetype j, const T &value)
+     * @param newValue value to set */
+    void setValue(qsizetype i, qsizetype j, const T &newValue)
     {
         if (isInRange(i, j)) {
-            m_data[i + m_iCount * j] = value;
+            m_data[i + m_iCount * j] = newValue;
         }
     }
 
@@ -570,6 +570,7 @@ QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
     const auto segments = splitElements<qsizetype>(originalList.size(), //
                                                    numParts);
     for (const auto &segment : segments) {
+        // cppcheck-suppress useStlAlgorithm
         result.append( //
             originalList.mid(segment.first, //
                              segment.second - segment.first + 1));

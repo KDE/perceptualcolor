@@ -129,7 +129,7 @@ WheelColorPickerPrivate::WheelColorPickerPrivate(WheelColorPicker *backLink, con
  * @ref WheelColorPickerPrivate (the last case means that
  * @ref WheelColorPickerPrivate would still have to inherit from
  * <tt>QObject</tt>). But that would probably be more complicate… */
-void WheelColorPickerPrivate::handleFocusChanged(QWidget *old, QWidget *now)
+void WheelColorPickerPrivate::handleFocusChanged(const QWidget *old, const QWidget *now)
 {
     if ((old == m_chromaLightnessDiagram) || (now == m_chromaLightnessDiagram)) {
         m_colorWheel->update();

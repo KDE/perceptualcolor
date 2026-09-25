@@ -1282,7 +1282,7 @@ void ColorDialogPrivate::updateColorPatch()
 }
 
 /** @brief Overloaded function. */
-void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, QWidget *const ignoreWidget)
+void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, const QWidget *ignoreWidget)
 {
     setCurrentOpaqueColor(abs, //
                           RgbColor::fromRgb1(abs.value(ColorModel::SRgb_1)), //
@@ -1290,7 +1290,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 }
 
 /** @brief Overloaded function. */
-void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, QWidget *const ignoreWidget)
+void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, const QWidget *ignoreWidget)
 {
     setCurrentOpaqueColor( //
         AbsoluteColor::allConversions(ColorModel::SRgb_1, rgb.rgb_1),
@@ -1317,7 +1317,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &
  * worry about infinite recursions. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs,
                                                const PerceptualColor::RgbColor &rgb,
-                                               QWidget *const ignoreWidget)
+                                               const QWidget *ignoreWidget)
 {
     const bool isIdentical = //
         (abs == m_currentOpaqueColorAbs) && (rgb == m_currentOpaqueColorRgb);

@@ -56,7 +56,7 @@ public:
     const LchSpace m_projectionSpace;
 
 public Q_SLOTS:
-    void handleFocusChanged(QWidget *old, QWidget *now);
+    void handleFocusChanged(const QWidget *old, const QWidget *now);
 
 private:
     Q_DISABLE_COPY(WheelColorPickerPrivate)
