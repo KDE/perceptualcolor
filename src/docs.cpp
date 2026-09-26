@@ -404,10 +404,6 @@
  *
  * @page generallist General to-do list with ideas or issues
  *
- * @todo SHOULDHAVE A help button in the QDialogButtonBox that shows a
- * QMessageBox that explains "hidden"/non-obvious features like
- * mouse/key events and shortcuts.
- *
  * @todo SHOULDHAVE In the CI (as defined by our current configuration), we
  * get muss less warnings than when we run locally with
  * <tt>-DADDITIONAL_WARNINGS=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE
@@ -505,8 +501,13 @@
  * whitepoint (D65) of sRGB in the sRGB group box. But maybe this is overkill
  * and we should instead do the opposide and remove the whitepoint information
  * from the Oklch tooltip.
+ * And/or: A help button in the QDialogButtonBox that shows a
+ * QMessageBox that explains "hidden"/non-obvious features like
+ * mouse/key events and shortcuts.
  *
  * @todo SHOULDHAVE Circular diagrams should be right-aligned on RTL layouts.
+ * Or, like QDial, centered both horizontially and vertically? Does that help
+ * with our use case?
  *
  * @todo NICETOHAVE Use words as hints for color ranges? Muted/dull colors have
  * a low chroma value. The dark ones (getrübte/gebrochene Farben) are created by
@@ -534,11 +535,6 @@
  * Furthermore, it seems that Plasma’s color picker widget also accepts
  * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
  * Would this make sense also for our library?
- *
- * @todo NICETOHAVE STYLING Should we use
- * <a href="https://doc.qt.io/qt-6/qt.html#CursorShape-enum"><tt>
- * Qt::UpArrowCursor</tt></a> for one-dimensional selections like
- * @ref PerceptualColor::GradientSlider?
  *
  * @todo SHOULDHAVE <a href="https://bugs.kde.org/show_bug.cgi?id=517274">
  * Spectacle has a magnifier glass for cutting screenshots.</a> It would be
