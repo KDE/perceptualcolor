@@ -582,15 +582,6 @@
  * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
  * @ref PerceptualColor::GradientImageParameters.
  *
- * @todo NICETOHAVE STYLING Paint grayed-out
- * handles for all widgets when <tt>setReadOnly(false)</tt>
- * is used! For example 25% lightness instead of black. And 75% lightness
- * instead of white. But: Provide this information
- * in @ref PerceptualColor::AbstractDiagram!
- * And: Gray out the hole diagram, making the diagram itself grayscale and
- * maybe even the gamut itself invisible when <tt>setEnabled(false)</tt>
- * is used.
- *
  * @todo SHOULDHAVE STYLING Switch AbstractDiagram::handleOutlineThickness() and
  * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
  * (PM_DefaultFrameWidth seems to be used yet in ColorPatch.)
