@@ -697,9 +697,6 @@
  * built in debug mode as well. So you can’t just always use the same
  * compiler as you build the application with, if you use the system Qt or
  * a downloaded Qt version.
- *
- * @todo SHOULDHAVE Test RTL functionality and text layout, using the yet
- * available Arabic translation.
  */
 
 /** @page hidpisupport High DPI support

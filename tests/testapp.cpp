@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
     // QLocale::setDefault(QLocale::Ukrainian);
     // QLocale::setDefault(QLocale::Turkish);
     // QLocale::setDefault(QLocale::Chinese);
+    // QLocale::setDefault(QLocale::Arabic);
 
     PerceptualColor::initializeTranslation(QCoreApplication::instance(), //
                                            QLocale().uiLanguages());
