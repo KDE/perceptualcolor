@@ -638,19 +638,6 @@
  * (at)ref makes sure we get an error message; we should have a static
  * codecheck for this.
  *
- * @todo NICETOHAVE KDE provides an interesting
- * recommendation: <tt>int Units::humanMoment = 2000;</tt> <em>Time in
- * milliseconds equivalent to the theoretical human moment, which can be
- * used to determine whether how long to wait until the user should be
- * informed of something, or can be used as the limit for how long something
- * should wait before being automatically initiated. / Some examples: /
- * When the user types text in a search field, wait no longer than this
- * duration after the user completes typing before starting the search /
- * When loading data which would commonly arrive rapidly enough to not
- * require interaction, wait this long before showing a spinner</em> See
- * https://api.kde.org/frameworks/plasma-framework/html/classUnits.html#ab22ad7033b2e3d00a862650e82f5ba5e
- * for details. Use this instead of interlacing big images?
- *
  * @todo SHOULDHAVE
  * Avoid default arguments like <tt>void test(int i = 0)</tt> in
  * public headers, as changes require re-compilation of the client application
