@@ -165,7 +165,10 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
                                                          QColor());
                         // If the deleted swatch was the currently selected
                         // swatch, the selection mark needs an update:
-                        d_pointer->selectSwatchFromCurrentColor();
+                        if ((d_pointer->m_selectedColumn == logicalColumn) //
+                            && (d_pointer->m_selectedRow == logicalRow)) {
+                            d_pointer->maybeSyncSelectionMarkWithCurrentColor();
+                        }
                         Q_EMIT swatchGridChanged(d_pointer->m_swatchGrid);
                     });
             menu->popup(mapToGlobal(event->pos())); // Display asynchronously
@@ -307,7 +310,7 @@ void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 
     d_pointer->m_currentColor = temp;
 
-    d_pointer->selectSwatchFromCurrentColor();
+    d_pointer->maybeSyncSelectionMarkWithCurrentColor();
 
     Q_EMIT currentColorChanged(temp);
 
@@ -345,7 +348,7 @@ void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGr
 
     d_pointer->m_swatchGrid = newOpaqueSwatchGrid;
 
-    d_pointer->selectSwatchFromCurrentColor();
+    d_pointer->maybeSyncSelectionMarkWithCurrentColor();
 
     Q_EMIT swatchGridChanged(newOpaqueSwatchGrid);
 
@@ -393,51 +396,67 @@ void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentCol
     }
 }
 
-/** @brief Selects a swatch from the grid.
+/**
+ * @brief Syncs the active swatch selection with @ref SwatchBook::currentColor.
  *
- * @post If the currently selected swatch corresponds to
- * @ref SwatchBook::currentColor nothing happens. Otherwise, a swatch if
- * selected if there is one that corresponds to @ref SwatchBook::currentColor,
- * or none if there is no corresponding swatch. */
-void SwatchBookPrivate::selectSwatchFromCurrentColor()
+ * If @ref m_autoSyncSelectionMark is <tt>false</tt>, this function deletes
+ * the current swatch selection.
+ *
+ * Otherwise, it ensures a matching swatch is selected:
+ * - If the currently selected swatch already matches
+ *   @ref SwatchBook::currentColor, that selection is preserved (even if
+ *   duplicate matching swatches appear earlier in the grid).
+ * - Otherwise, the grid is searched and the first matching swatch is selected.
+ * - If no matching swatch exists, the selection is cleared.
+ */
+void SwatchBookPrivate::maybeSyncSelectionMarkWithCurrentColor()
 {
-    if (!m_currentColor.isValid()) {
-        // An invalid m_currentColor means no selection should be made.
-        // However, within the swatch grid, an invalid color means an empty
-        // swatch. Therefore, catching invalid colors here to prevent
-        // false matches with empty swatches.
-        m_selectedColumn = -1;
-        m_selectedRow = -1;
-        return;
-    }
-
-    if ((m_selectedColumn >= 0) && (m_selectedRow >= 0)) {
-        if (m_swatchGrid.value(m_selectedColumn, m_selectedRow) == m_currentColor) {
+    if (m_autoSyncSelectionMark) {
+        if (!m_currentColor.isValid()) {
+            // An invalid m_currentColor means no selection should be made.
+            // However, within the swatch grid, an invalid color means an empty
+            // swatch. Therefore, catching invalid colors here to prevent
+            // false matches with empty swatches.
+            m_selectedColumn = -1;
+            m_selectedRow = -1;
             return;
         }
-    }
 
-    bool colorFound = false;
-    const qsizetype myColumnCount = m_swatchGrid.iCount();
-    const qsizetype myRowCount = m_swatchGrid.jCount();
-    int columnIndex = 0;
-    int rowIndex = 0;
-    for (columnIndex = 0; //
-         columnIndex < myColumnCount; //
-         ++columnIndex) {
-        for (rowIndex = 0; rowIndex < myRowCount; ++rowIndex) {
-            if (m_swatchGrid.value(columnIndex, rowIndex) == m_currentColor) {
-                colorFound = true;
+        if ((m_selectedColumn >= 0) && (m_selectedRow >= 0)) {
+            const auto selectedColor = //
+                m_swatchGrid.value(m_selectedColumn, m_selectedRow);
+            if (selectedColor == m_currentColor) {
+                return;
+            }
+        }
+
+        bool colorFound = false;
+        const qsizetype myColumnCount = m_swatchGrid.iCount();
+        const qsizetype myRowCount = m_swatchGrid.jCount();
+        int columnIndex = 0;
+        int rowIndex = 0;
+        for (columnIndex = 0; //
+             columnIndex < myColumnCount; //
+             ++columnIndex) {
+            for (rowIndex = 0; rowIndex < myRowCount; ++rowIndex) {
+                const auto test = m_swatchGrid.value(columnIndex, rowIndex);
+                if (test == m_currentColor) {
+                    colorFound = true;
+                    break;
+                }
+            }
+            if (colorFound) {
                 break;
             }
         }
         if (colorFound) {
-            break;
+            m_selectedColumn = columnIndex;
+            m_selectedRow = rowIndex;
+        } else {
+            m_selectedColumn = -1;
+            m_selectedRow = -1;
         }
-    }
-    if (colorFound) {
-        m_selectedColumn = columnIndex;
-        m_selectedRow = rowIndex;
+
     } else {
         m_selectedColumn = -1;
         m_selectedRow = -1;

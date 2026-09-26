@@ -65,7 +65,7 @@ public:
     [[nodiscard]] QSize patchSizeOuter() const;
     void retranslateUi();
     void selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow);
-    void selectSwatchFromCurrentColor();
+    void maybeSyncSelectionMarkWithCurrentColor();
     [[nodiscard]] int verticalPatchSpacing() const;
     [[nodiscard]] int widePatchSpacing() const;
 
@@ -80,6 +80,40 @@ public:
      *
      * The value is set by @ref retranslateUi(). */
     QString m_addMarkAvailableInCurrentFont;
+
+    /**
+     * @brief Controls whether state changes automatically update and
+     * draw the selection mark in the matching swatch.
+     *
+     * When this property is <tt>true</tt>, automatic selection synchronization
+     * is active:
+     * - Programmatic updates to @ref SwatchBook::currentColor (e.g., calling
+     *   @ref SwatchBook::setCurrentColor) automatically search the grid and
+     *   place the selection mark on the matching swatch.
+     * - Structure changes in the swatch grid (such as deleting or editing
+     *   swatches) automatically re-sync the mark to another matching swatch
+     *   if one exists.
+     *
+     * When set to <tt>false</tt>  (default), automatic synchronization is
+     * disabled. The selection mark will be hidden. The selection mark will
+     * only be updated or drawn again when the user directly interacts
+     * with the widget (e.g., via mouse clicks or keyboard navigation).
+     *
+     * @note This property defaults to <tt>false</tt> because enabling
+     * automatic synchronization requires the widget to evaluate whether two
+     * colors are equal. Defining an exact equivalence threshold for colors is
+     * not trivial. Furthermore, this widget’s swatch grid uses <tt>QColor</tt>
+     * (which supports 16-bit precision per channel), whereas the underlying
+     * rendering engine may operate at a lower color depth (such as 8-bit).
+     * To avoid discrepancies, defaulting to <tt>false</tt> provides
+     * safer, more predictable behavior.
+     *
+     * @todo NICETOHAVE Decide wether it is worth to keep this property and
+     * make it available in the public API or if it is better to abolish it,
+     * supposing always <tt>false</tt>.
+     */
+    bool m_autoSyncSelectionMark = false;
+
     /** @brief Internal storage for property @ref SwatchBook::currentColor
      *
      * QColor automatically initializes with an invalid color, just like it

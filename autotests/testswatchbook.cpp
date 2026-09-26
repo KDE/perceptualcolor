@@ -353,7 +353,7 @@ private Q_SLOTS:
         delete style;
     }
 
-    void testSetCurrentColor()
+    void testSetCurrentColor1()
     {
         QColorArray2D array = QColorArray2D(4, 1);
         array.setValue(0, 0, Qt::red);
@@ -362,6 +362,7 @@ private Q_SLOTS:
         array.setValue(3, 0, QColor()); // invalid color
         SwatchBook testWidget(array, {});
         testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        testWidget.d_pointer->m_autoSyncSelectionMark = true;
 
         testWidget.setCurrentColor(Qt::red);
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, 0);
@@ -374,6 +375,39 @@ private Q_SLOTS:
         testWidget.setCurrentColor(Qt::blue);
         QCOMPARE(testWidget.d_pointer->m_selectedColumn, 2);
         QCOMPARE(testWidget.d_pointer->m_selectedRow, 0);
+
+        testWidget.setCurrentColor(QColor());
+        // Setting an invalid current color means: No color selected.
+        // There might be individual color patches carrying the value of
+        // an invalid color, but here it means that the color patch is empty.
+        // So setting an invalid current color should never select an empty
+        // swatch (if any).
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1); // And not 3.
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1); // And not 0.
+    }
+
+    void testSetCurrentColor2()
+    {
+        QColorArray2D array = QColorArray2D(4, 1);
+        array.setValue(0, 0, Qt::red);
+        array.setValue(1, 0, Qt::green);
+        array.setValue(2, 0, Qt::blue);
+        array.setValue(3, 0, QColor()); // invalid color
+        SwatchBook testWidget(array, {});
+        testWidget.setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        testWidget.d_pointer->m_autoSyncSelectionMark = false;
+
+        testWidget.setCurrentColor(Qt::red);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1); // And not 3.
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1); // And not 0.
+
+        testWidget.setCurrentColor(Qt::green);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1); // And not 3.
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1); // And not 0.
+
+        testWidget.setCurrentColor(Qt::blue);
+        QCOMPARE(testWidget.d_pointer->m_selectedColumn, -1); // And not 3.
+        QCOMPARE(testWidget.d_pointer->m_selectedRow, -1); // And not 0.
 
         testWidget.setCurrentColor(QColor());
         // Setting an invalid current color means: No color selected.
@@ -734,6 +768,7 @@ private Q_SLOTS:
                  testWidget.d_pointer->m_swatchGrid.jCount())
             // Add 1 to exceed the possible number of fields (crash test)
             + 1;
+        testWidget.d_pointer->m_autoSyncSelectionMark = true;
 
         // Starting point is (0, 0) on LTR layout
         testWidget.setCurrentColor(
@@ -844,6 +879,7 @@ private Q_SLOTS:
                  testWidget.d_pointer->m_swatchGrid.jCount())
             // Add 1 to exceed the possible number of fields (crash test)
             + 1;
+        testWidget.d_pointer->m_autoSyncSelectionMark = true;
 
         // Starting point is (0, 0) on LTR layout
         testWidget.setCurrentColor(

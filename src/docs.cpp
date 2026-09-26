@@ -415,18 +415,20 @@
  *
  * @todo SHOWSTOPPER Define the precision of this library. We allow
  * changing the number of decimals in the @ref PerceptualColor::ColorDialog
- * though there is only a private API, not a public one. If so, maybe
- * @ref PerceptualColor::SwatchBook should consider two colors only as
- * equal if @ref PerceptualColor::ColorDialog has exactly the same in
- * @ref PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorAbs and
- * @ref PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorRgb.
- * Or it should depend on the visible value in the sRGB
- * @ref PerceptualColor::MultiSpinBox, considering the number of decimals
- * actually displayed there?
+ * though there is only a private API, not a public one.
  * Document how exact the results of @ref PerceptualColor::ColorDialog are.
  * If only 8 bit per channel, move to QRgb. Otherwise, either stay with
  * QColor, but deliver exact results. Or even move to
  * @ref PerceptualColor::GenericColor.
+ * The latter would allow to provide exact values also in color spaces
+ * different from RGB, such as Oklch, Cielch etc.
+ * Also, @ref PerceptualColor::SwatchBook is difficult to get right. Its
+ * base color grid is based on Oklch, its history and costum colors are
+ * based on whatever the used has used originally to define the color,
+ * which could be Oklch, Cielch, HSL or whatever. Maybe we have to switch
+ * its grid data to @ref PerceptualColor::GenericColor to provide full
+ * precision and avoid rounding errors, which can be big on some extreme
+ * positions of the Oklab color space?
  *
  * @todo SHOULDHAVE Support CSS colors using @ref PerceptualColor::CssColor
  * by allowing copy (right-click on the @ref PerceptualColor::ColorPatch,
