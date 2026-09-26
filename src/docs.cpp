@@ -421,7 +421,11 @@
  * QColor, but deliver exact results. Or even move to
  * @ref PerceptualColor::GenericColor.
  * The latter would allow to provide exact values also in color spaces
- * different from RGB, such as Oklch, Cielch etc.
+ * different from RGB, such as Oklch, Cielch etc. If we do that, probably
+ * @ref PerceptualColor::ColorDialogPrivate::decimals should become part
+ * of the public API and @ref PerceptualColor::ColorDialogPrivate::okdecimals
+ * shall become a function that returns
+ * @ref PerceptualColor::ColorDialogPrivate::decimals + 2.
  * Also, @ref PerceptualColor::SwatchBook is difficult to get right. Its
  * base color grid is based on Oklch, its history and costum colors are
  * based on whatever the used has used originally to define the color,
