@@ -54,5 +54,4 @@ This library:
 
 ## Links
 
-- [Online API documentation](https://api.kde.org/perceptualcolor/html/index.html)
 - [GIT Repository on invent.kde.org](https://invent.kde.org/libraries/perceptualcolor)
