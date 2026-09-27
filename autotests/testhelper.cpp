@@ -178,10 +178,46 @@ private Q_SLOTS:
 
     void testTransparencyBackground()
     {
-        QImage temp = transparencyBackground(1);
-        QVERIFY2(temp.size().width() > 0, "Width of image is bigger than 0.");
-        QVERIFY2(temp.size().height() > 0, "Height of image is bigger than 0.");
+        const QImage temp = transparencyBackground(QSize(5, 6), 1);
+        QCOMPARE(temp.size().width(), 5);
+        QCOMPARE(temp.size().height(), 6);
         QVERIFY2(temp.allGray(), "Image is neutral gray.");
+    }
+
+    void testTransparencyBackgroundZeroSize()
+    {
+        const QImage temp = transparencyBackground(QSize(0, 0), 1);
+        QCOMPARE(temp.size().width(), 0);
+        QCOMPARE(temp.size().height(), 0);
+    }
+
+    void testTransparencyBackgroundWrongScale()
+    {
+        // Make sure transparencyBackground does not crash.
+
+        const QImage temp1 = transparencyBackground(QSize(5, 6), 0.5);
+        QCOMPARE(temp1.size().width(), 5);
+        QCOMPARE(temp1.size().height(), 6);
+
+        const QImage temp2 = transparencyBackground(QSize(5, 6), 0);
+        QCOMPARE(temp2.size().width(), 5);
+        QCOMPARE(temp2.size().height(), 6);
+
+        const QImage temp3 = transparencyBackground(QSize(5, 6), -2);
+        QCOMPARE(temp3.size().width(), 5);
+        QCOMPARE(temp3.size().height(), 6);
+
+        const QImage temp4 = transparencyBackground(QSize(0, 0), 0.5);
+        QCOMPARE(temp4.size().width(), 0);
+        QCOMPARE(temp4.size().height(), 0);
+
+        const QImage temp5 = transparencyBackground(QSize(0, 0), 0);
+        QCOMPARE(temp5.size().width(), 0);
+        QCOMPARE(temp5.size().height(), 0);
+
+        const QImage temp6 = transparencyBackground(QSize(0, 0), -2);
+        QCOMPARE(temp6.size().width(), 0);
+        QCOMPARE(temp6.size().height(), 0);
     }
 
     void testStandardWheelSteps()

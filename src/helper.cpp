@@ -69,69 +69,68 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * on which it is shown. This function provides a suitable background
  * for showcasing a color.
  *
+ * @param physicalImageSize The size of the requested image, measured in
+ * physical pixels.
  * @param devicePixelRatioF The desired device-pixel ratio.
  *
- * @returns An image of a mosaic of neutral gray rectangles of different
+ * @returns An image of neutral gray rectangles of different
  * lightness. You can use this as tiles to paint a background, starting from
  * the top-left corner. This image is made for LTR layouts. If you have an
  * RTL layout, you should horizontally mirror your paint buffer after painting
  * the tiles. The image has its device pixel ratio set to the value that was
- * given in the parameter, but you might want to change it to 1 before drawing
- * as tiles via QPainter.
- *
- * @note The image is considering the given device-pixel ratio to deliver
- * sharp (and correctly scaled) images also for HiDPI devices.
- * The painting does not use floating point drawing, but rounds
- * to full integers. Therefore, the result is always a sharp image.
- * This function takes care that each square has the same pixel size,
- * without scaling errors or anti-aliasing errors.
+ * given in the parameter.
  *
  * @todo SHOULDHAVE The function @ref transparencyBackground
  * should have color management support! Currently, we use the
  * same value for red, green and blue, this might <em>not</em> be perfectly
- * neutral gray depending on the color profile of the monitor… And: We
- * should make sure that transparent colors are not applied by Qt on top
- * of this image. Instead, add a parameter to this function to get the
- * transparent color to paint above, and do color-managed overlay of the
- * transparent color, in Lch space. For each Lab (not Lch!) channel:
- * result = opacity * foreground + (100% - opacity) * background.
- *
- * @todo SHOULDHAVE Calculate the two color values in Oklab instead of RGB
+ * neutral gray depending on the color profile of the monitor…
+ * Calculate the two color values in Oklab instead of RGB
  * because @ref AbstractDiagram::neutralGray() also does.
- *
- * @todo SHOULDHAVE On dual‑screen setups with different DPI scaling factors,
- * the current implementation rounds coordinates to full pixels. This makes the
- * transparency background squares appear slightly inconsistent across
- * displays. When many squares are painted, for example in GradientSlider,
- * the effect becomes more visible when moving the widget between screens.
- * The function should drop pixel alignment and use floating‑point coordinates
- * for all scale factors. A 10×10 pixel square at 125% scaling should become
- * 12.5×12.5 pixels. QImage dimensions must be integers, so fractional sizes
- * cannot be represented directly. The design should therefore be changed to
- * no longer return a QImage. Instead, it should accept a QPainter or
- * a reference to an existing QImage with an LTR/RTL parameter. Painting
- * should then be done with floating‑point precision on the given target
- * to ensure consistent rendering across different DPIs.
- * It might help to set swareSizeInLogicalPixel to a multiple of 8, to make
- * sure that at least common zoom factors like 125% or 137.5% are still crisp.
  */
-QImage transparencyBackground(qreal devicePixelRatioF)
+QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
 {
     // The valid lightness range is [0, 255]. The median is 127/128.
-    // We use two color with equal distance to this median to get a
+    // We use two colors with equal distance to this median to get a
     // neutral gray.
     constexpr int lightnessDistance = 15;
     constexpr int lightnessOne = 127 - lightnessDistance;
     constexpr int lightnessTwo = 128 + lightnessDistance;
-    constexpr int squareSizeInLogicalPixel = 10;
-    const int squareSize = qRound(squareSizeInLogicalPixel * devicePixelRatioF);
+    constexpr int squareSizeLogical = 8; // Must be a multiple of 8 to
+    // ensure integer physical pixel values at common fractional DPI scaling
+    // factors (e.g., 125% = 10px, 137.5% = 11px).
+    const double squareSizePhysical = squareSizeLogical * devicePixelRatioF;
 
-    QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
+    QImage temp(physicalImageSize, QImage::Format_ARGB32_Premultiplied);
     temp.fill(QColor(lightnessOne, lightnessOne, lightnessOne));
+
     QPainter painter(&temp);
-    QColor foregroundColor(lightnessTwo, lightnessTwo, lightnessTwo);
-    painter.fillRect(0, 0, squareSize, squareSize, foregroundColor);
-    painter.fillRect(squareSize, squareSize, squareSize, squareSize, foregroundColor);
+    const QColor foregroundColor(lightnessTwo, lightnessTwo, lightnessTwo);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(foregroundColor);
+
+    const qreal imgWidth = temp.width();
+    const qreal imgHeight = temp.height();
+
+    if (squareSizePhysical <= 0.0) {
+        return temp;
+    }
+    const int numCols = qCeil(imgWidth / squareSizePhysical);
+    const int numRows = qCeil(imgHeight / squareSizePhysical);
+
+    for (int row = 0; row < numRows; ++row) {
+        for (int col = 0; col < numCols; ++col) {
+            // Chequerboard: Only paint every 2nd square.
+            if ((row + col) % 2 != 0) {
+                continue;
+            }
+            const qreal x = col * squareSizePhysical;
+            const qreal y = row * squareSizePhysical;
+            QRectF rect(x, y, squareSizePhysical, squareSizePhysical);
+            painter.drawRect(rect);
+        }
+    }
+
     temp.setDevicePixelRatio(devicePixelRatioF);
     return temp;
 }

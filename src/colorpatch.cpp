@@ -279,21 +279,11 @@ QImage ColorPatchPrivate::renderImage(const ImageParameters &parameters)
     // Draw content of a valid color
     if (parameters.color.alphaF() < 1) {
         // Prepare the image with (semi-)transparent color
-        // Background for colors that are not fully opaque
-        QImage tempBackground = transparencyBackground( //
-            parameters.devicePixelRatioF);
-        tempBackground.setDevicePixelRatio(1); // necessary for correct ratio
+        myImage = transparencyBackground(myImage.size(), //
+                                         parameters.devicePixelRatioF);
+        myImage.setDevicePixelRatio(1); // necessary for correct ratio
         // Paint the color above
-        QPainter(&tempBackground)
-            .fillRect(tempBackground.rect(), //
-                      parameters.color);
-        {
-            // Fill a given rectangle with tiles. (QBrush will ignore
-            // the devicePixelRatioF of the image of the tile.)
-            QPainter painter{&myImage};
-            painter.setRenderHint(QPainter::Antialiasing, false);
-            painter.fillRect(myImage.rect(), QBrush(tempBackground));
-        }
+        QPainter(&myImage).fillRect(myImage.rect(), parameters.color);
         if (parameters.layoutDirection == Qt::RightToLeft) {
             // Horizontally mirrored image for right-to-left layout,
             // so that the “nice” part is the first you see in reading

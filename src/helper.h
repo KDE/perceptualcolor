@@ -68,7 +68,7 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
 
 [[nodiscard]] QColor toQColor(const QMimeData *mimeData);
 
-[[nodiscard]] QImage transparencyBackground(qreal devicePixelRatioF);
+[[nodiscard]] QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF);
 
 /** @internal
  *

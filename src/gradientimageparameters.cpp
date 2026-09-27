@@ -179,26 +179,20 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
         // line).
         return;
     }
-    QPainter painter(&result);
 
     // Transparency background
     if ( //
         (parameters.m_firstColorAlphaCorrected != 1) //
         || (parameters.m_secondColorAlphaCorrected != 1) //
     ) {
-        // Fill the image with tiles. (QBrush will ignore
-        // the devicePixelRatioF of the image of the tile.)
-        auto background = transparencyBackground( //
+        result = transparencyBackground( //
+            result.size(), //
             parameters.m_devicePixelRatioF);
-        background.setDevicePixelRatio(1);
-        painter.fillRect(0, //
-                         0, //
-                         parameters.m_gradientLength, //
-                         parameters.m_gradientThickness, //
-                         QBrush(background));
+        result.setDevicePixelRatio(1);
     }
 
     // Paint the gradient itself.
+    QPainter painter(&result);
     for (int i = 0; i < parameters.m_gradientThickness; ++i) {
         painter.drawImage(0, i, onePixelLine);
     }
