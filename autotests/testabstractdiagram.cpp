@@ -21,44 +21,6 @@
 
 class QWidget;
 
-class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
-{
-    Q_OBJECT
-public:
-    explicit TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
-        : AbstractDiagram(parent)
-    {
-        // This constructor exists only to satisfy Clazy code checker, which
-        // expects constructors taking QWidget* as argument for all classes
-        // that inherit from QWidget.
-    }
-    void testSnippet01()
-    {
-        //! [useTransparencyBackground]
-        // Within a class derived from AbstractDiagram, you can use this code:
-
-        QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
-
-        myImage.setDevicePixelRatio(1); // Correct scaling
-
-        QPainter myPainter(&myImage);
-
-        // Fill the hole image with tiles made of transparencyBackground()
-        myPainter.fillRect(0,
-                           0,
-                           150,
-                           200,
-                           // During painting, QBrush will ignore the
-                           // device pixel ratio of the underlying
-                           // transparencyBackground image!
-                           QBrush(transparencyBackground()));
-
-        // Paint semi-transparent red color above
-        myPainter.fillRect(0, 0, 150, 200, QBrush(QColor(255, 0, 0, 128)));
-        //! [useTransparencyBackground]
-    }
-};
-
 namespace PerceptualColor
 {
 class TestAbstractDiagram : public QObject
@@ -101,21 +63,6 @@ private Q_SLOTS:
         PerceptualColor::AbstractDiagram myDiagram;
         myDiagram.show();
         QVERIFY2(myDiagram.isVisible(), "Test is diagram was shown correctly.");
-    }
-
-    void testSnippet01()
-    {
-        TestAbstractDiagramHelperClass helper;
-        helper.testSnippet01();
-    }
-
-    void testTransparencyBackground()
-    {
-        PerceptualColor::AbstractDiagram myDiagram;
-        QImage temp = myDiagram.transparencyBackground();
-        QVERIFY2(temp.size().width() > 0, "Width of image is bigger than 0.");
-        QVERIFY2(temp.size().height() > 0, "Height of image is bigger than 0.");
-        QVERIFY2(temp.allGray(), "Image is neutral gray.");
     }
 
     void testFocusIndicatorColor()

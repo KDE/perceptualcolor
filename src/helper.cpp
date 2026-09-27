@@ -86,8 +86,6 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * This function takes care that each square has the same pixel size,
  * without scaling errors or anti-aliasing errors.
  *
- * @sa @ref AbstractDiagram::transparencyBackground()
- *
  * @todo SHOULDHAVE The function @ref transparencyBackground
  * should have color management support! Currently, we use the
  * same value for red, green and blue, this might <em>not</em> be perfectly
@@ -116,7 +114,6 @@ qreal standardWheelStepCount(QWheelEvent *event)
  * to ensure consistent rendering across different DPIs.
  * It might help to set swareSizeInLogicalPixel to a multiple of 8, to make
  * sure that at least common zoom factors like 125% or 137.5% are still crisp.
- * Keep track of @ref AbstractDiagram::transparencyBackground().
  */
 QImage transparencyBackground(qreal devicePixelRatioF)
 {

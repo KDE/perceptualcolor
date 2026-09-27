@@ -130,36 +130,6 @@ qreal AbstractDiagram::maximumWidgetSquareSize() const
     return (maximumPhysicalSquareSize() / devicePixelRatioF());
 }
 
-/** @brief Background for semi-transparent colors.
- *
- * When showing a semi-transparent color, there has to be a background
- * on which it is shown. This function provides a suitable background
- * for showcasing a color.
- *
- * Example code (to use within a class that inherits from
- * @ref PerceptualColor::AbstractDiagram):
- * @snippet testabstractdiagram.cpp useTransparencyBackground
- *
- * @returns An image of a mosaic of neutral gray rectangles of different
- * lightness. You can use this as tiles to paint a background. The image has
- * its device pixel ratio set to the current value of this widget, but you
- * might want to change it to 1 before drawing as tiles via QPainter.
- *
- * @note The image is considering QWidget::devicePixelRatioF() to deliver
- * crisp (correctly scaled) images also for high-DPI devices.
- * The painting does not use floating point drawing, but rounds
- * to full integers. Therefore, the result is always a sharp image.
- * This function takes care that each square has the same physical pixel
- * size, without scaling errors or anti-aliasing errors.
- *
- * @internal
- * @sa @ref transparencyBackground(qreal devicePixelRatioF)
- * @endinternal */
-QImage AbstractDiagram::transparencyBackground() const
-{
-    return PerceptualColor::transparencyBackground(devicePixelRatioF());
-}
-
 /** @brief The outline thickness of a handle.
  *
  * @returns The outline thickness of a (either circular or linear) handle.

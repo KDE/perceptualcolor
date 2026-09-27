@@ -80,7 +80,6 @@ protected:
     [[nodiscard]] static QColor neutralGray();
     virtual void showEvent(QShowEvent *eventParameter) override;
     [[nodiscard]] int spaceForFocusIndicator() const;
-    [[nodiscard]] QImage transparencyBackground() const;
 
 private:
     Q_DISABLE_COPY(AbstractDiagram)
