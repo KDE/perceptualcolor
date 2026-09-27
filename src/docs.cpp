@@ -676,6 +676,8 @@
  * built in debug mode as well. So you can’t just always use the same
  * compiler as you build the application with, if you use the system Qt or
  * a downloaded Qt version.
+ *
+ * @todo NICETOHAVE accessibility support
  */
 
 /** @page hidpisupport High DPI support
