@@ -478,11 +478,16 @@
  *
  * @todo NICETOHAVE The re-rendering is a bit slow (not reactive enough)
  * when changing the window size of @ref PerceptualColor::ColorDialog
- * for @ref PerceptualColor::ChromaHueDiagram and to a minor degree
- * also the @ref PerceptualColor::GradientSlider with the lightness at
- * the left, and also @ref PerceptualColor::ChromaLightnessDiagram.
+ * for the @ref PerceptualColor::GradientSlider with the lightness at
+ * the left. And during fast window size changes, it takes a moment to
+ * adapt the size the on the top of the lightness slider the position chnages.
+ * That looks ugly. It would be better if the slider reacts slowly on the
+ * bottom (visually less intrusive). Probably to get this, it would be
+ * necessary to make “top” the “first” color, and “bottom” the “second”,
+ * because currently it is the other way around, which causes this visual
+ * glitch?
  * Would it make sense to use simply image scaling with
- * Qt::SmoothTransformation while waiting for the high-DPI image?
+ * Qt::SmoothTransformation while waiting for the correctly-sized image?
  *
  * @todo NICETOHAVE When the CI tests for warnings, it should not only build
  * and Clang/Clazy, but additionally also on GCC which produces some warnings
