@@ -468,14 +468,6 @@
  * might help here, though its precision depends on the rendering size of the
  * image.
  *
- * @todo SHOULDHAVE The color of the selection marker on the color wheel
- * should change (black or white) depending on the lightness of the most
- * chromatic color at the current hue. This was not necessary previously
- * when we used always 50% lightness for all colors of the wheel. Now that
- * we use instead the most chromatic color of each hue, lightness varies
- * significantly, and changing the marker’s color will make it more
- * legible (though less nice).
- *
  * @todo NICETOHAVE The re-rendering is a bit slow (not reactive enough)
  * when changing the window size of @ref PerceptualColor::ColorDialog
  * for the @ref PerceptualColor::GradientSlider with the lightness at
@@ -541,13 +533,6 @@
  * color codes for drag-and-drop. (Which ones? Maybe the #128945 style?)
  * Would this make sense also for our library?
  *
- * @todo SHOULDHAVE <a href="https://bugs.kde.org/show_bug.cgi?id=517274">
- * Spectacle has a magnifier glass for cutting screenshots.</a> It would be
- * cool to have this also for eyedropper; it could be even better if the
- * magnifier would be round instead of rectangular. But eyedropper is not
- * implemented within this library, but as a KDE portal providing this
- * functionality. New features would have to be implemented there.
- *
  * @todo SHOULDHAVE STYLING Consider deeper integration with QStyle. KStyle
  * (<a href="https://invent.kde.org/frameworks/frameworkintegration/-/tree/master/src/kstyle?ref_type=heads">
  * code</a> / <a href="https://api.kde.org/kstyle.html">documentation</a>) is a
@@ -582,11 +567,6 @@
  * As we provide widgets, this should not be too important. Are there also
  * good arguments for widgets to provide RESET?
  *
- * @todo NICETOHAVE Remove setDevicePixelRatioF from these classes. (It is
- * confusing, and at the same time there is no real need/benefit.)
- * Complete list: @ref PerceptualColor::ChromaHueImageParameters,
- * @ref PerceptualColor::GradientImageParameters.
- *
  * @todo SHOULDHAVE STYLING Switch AbstractDiagram::handleOutlineThickness() and
  * handleRadius() and spaceForFocusIndicator() to use PM_DefaultFrameWidth.
  * (PM_DefaultFrameWidth seems to be used yet in ColorPatch.)
@@ -599,7 +579,13 @@
  * maybe give a more <tt>QStyle</tt> compliant look. But: If using this,
  * ensurePolished() must be called before!
  *
- * @todo SHOULDHAVE Screen picker with magnifier glass in two steps
+ * @todo SHOULDHAVE <a href="https://bugs.kde.org/show_bug.cgi?id=517274">
+ * Spectacle has a magnifier glass for cutting screenshots.</a> It would be
+ * cool to have this also for eyedropper; it could be even better if the
+ * magnifier would be round instead of rectangular. But eyedropper is not
+ * implemented within this library, but as a KDE portal providing this
+ * functionality. New features would have to be implemented there.
+ * Also interesting: Screen picker with magnifier glass in two steps
  * similar to https://colorsnapper.com which has a normal-sized magnifying
  * glass, and also a giant magnifying glass occupying almost the hole screen?
  * How does its UI work? Is there the normal magnifying glass, then a first
@@ -635,12 +621,7 @@
  * public headers, as changes require re-compilation of the client application
  * to take effect, which might lead to a miss-match of behaviour between
  * application and library, if  compile-time and run-time version of the
- * library are not the same. Is the problem  for default constructors
- * like <tt>ClassName() = default</tt> similar?
- *
- * @todo SHOULDHAVE mark all public
- * non-slot functions with Q_INVOKABLE (except property
- * setters and getters)
+ * library are not the same.
  *
  * @todo SHOULDHAVE Property bindings: Can a Q_PROPERTY declaration be changed
  * afterwards without breaking binary compatibility? If not, we have to

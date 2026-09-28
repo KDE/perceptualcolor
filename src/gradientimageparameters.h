@@ -70,6 +70,7 @@ private:
     void updateSecondColor();
 
     // Data members
+
     /** @brief Internal storage of the device pixel ratio as floating point.
      *
      * @sa @ref setDevicePixelRatioF() */
