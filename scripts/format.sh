@@ -33,7 +33,7 @@ set -euo pipefail
 # whenever no BOM is present. Using a BOM makes it working out-of-the-box
 # without relying on Microsoft-only compiler options like “/utf-8”. Details:
 # https://devblogs.microsoft.com/cppblog/new-options-for-managing-character-sets-in-the-microsoft-cc-compiler/#dos-donts-and-the-future
-for file in src/*.h src/*.cpp src/*.hpp autotests/*.cpp tests/* utils/* examples/example.cpp; do
+for file in src/*.h src/*.cpp src/*.hpp autotests/*.h autotests/*.cpp tests/* utils/* examples/example.cpp; do
     if ! grep -q $'\xef\xbb\xbf' "$file"; then
         sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' "$file"
     fi
