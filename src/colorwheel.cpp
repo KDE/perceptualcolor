@@ -30,11 +30,13 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param parent The widget’s parent widget. This parameter will be passed
+ * \a parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor.
- * @param projectionSpace The color space into which the gamut will be
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  */
 ColorWheel::ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
@@ -47,9 +49,9 @@ ColorWheel::ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget 
     // widget, depending on QWidget::focusPolicy(). This is not
     // convenient and intuitive for big, circular-shaped widgets like this one.
     // It would be nicer if the focus would only be accepted by mouse clicks
-    // <em>within the circle itself</em>. Qt does not provide a build-in way to
+    // \e {within the circle itself}. Qt does not provide a build-in way to
     // do this. But a workaround to implement this behavior is possible: Set
-    // QWidget::focusPolicy() to <em>not</em> accept focus by mouse
+    // QWidget::focusPolicy() to \e {not} accept focus by mouse
     // click. Then, reimplement mousePressEvent() and call
     // setFocus(Qt::MouseFocusReason) if the mouse click is within the
     // circle. Therefore, this class simply defaults to
@@ -63,18 +65,20 @@ ColorWheel::ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget 
     }
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 ColorWheel::~ColorWheel() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation.
- * @param projectionSpace The color space into which the gamut will be
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  */
 ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const PerceptualColor::LchSpace projectionSpace)
@@ -86,25 +90,27 @@ ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const PerceptualColor
     m_hue = cielchD50Values.neutralHue;
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 ColorWheelPrivate::~ColorWheelPrivate() noexcept
 {
 }
 
-/** @brief Convert widget pixel positions to wheel coordinate points.
+/*!
+ * \brief Convert widget pixel positions to wheel coordinate points.
  *
- * @param position The position of a pixel of the widget coordinate
+ * \a position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
  * negative.
  *
- * @returns A coordinate point relative to a polar coordinate system
+ * Returns acoordinate point relative to a polar coordinate system
  * who’s center is exactly in the middle of the displayed wheel. Measured
- * in <em>device-independent pixels</em>.
+ * in \e {device-independent pixels}.
  *
- * @sa @ref fromWheelToWidgetCoordinates */
+ * \sa fromWheelToWidgetCoordinates
+ */
 PolarPointF ColorWheelPrivate::fromWidgetPixelPositionToWheelCoordinates(const QPoint position) const
 {
     const qreal radius = q_pointer->maximumWidgetSquareSize() / 2.0;
@@ -112,16 +118,18 @@ PolarPointF ColorWheelPrivate::fromWidgetPixelPositionToWheelCoordinates(const Q
     return PolarPointF(temp);
 }
 
-/** @brief Convert wheel coordinate points to widget coordinate points.
+/*!
+ * \brief Convert wheel coordinate points to widget coordinate points.
  *
- * @param wheelCoordinates A coordinate point relative to a polar coordinate
+ * \a wheelCoordinates A coordinate point relative to a polar coordinate
  * system who’s center is exactly in the middle of the displayed wheel.
- * Measured in <em>device-independent pixels</em>.
+ * Measured in \e {device-independent pixels}.
  *
- * @returns The same coordinate point relative to the coordinate system of
- * this widget. Measured in <em>device-independent pixels</em>.
+ * Returns the same coordinate point relative to the coordinate system of
+ * this widget. Measured in \e {device-independent pixels}.
  *
- * @sa @ref fromWidgetPixelPositionToWheelCoordinates */
+ * \sa fromWidgetPixelPositionToWheelCoordinates
+ */
 QPointF ColorWheelPrivate::fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const
 {
     const qreal radius = q_pointer->maximumWidgetSquareSize() / 2.0;
@@ -131,7 +139,8 @@ QPointF ColorWheelPrivate::fromWheelToWidgetCoordinates(const PolarPointF wheelC
     return result;
 }
 
-/** @brief React on a mouse press event.
+/*!
+ * \brief React on a mouse press event.
  *
  * Reimplemented from base class.
  *
@@ -140,11 +149,12 @@ QPointF ColorWheelPrivate::fromWheelToWidgetCoordinates(const PolarPointF wheelC
  * If the mouse is clicked within the wheel ribbon, than the handle is placed
  * here and further mouse movements are tracked.
  *
- * @param event The corresponding mouse event
+ * \a event The corresponding mouse event
  *
- * @internal
  *
- * @sa @ref ColorWheelPrivate::m_isMouseEventActive */
+ *
+ * \sa ColorWheelPrivate::m_isMouseEventActive
+ */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
     const qreal radius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
@@ -175,7 +185,8 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     return;
 }
 
-/** @brief React on a mouse move event.
+/*!
+ * \brief React on a mouse move event.
  *
  * Reimplemented from base class.
  *
@@ -183,11 +194,12 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
  * event that had been accepted. If previously there had not been a mouse
  * press event, the mouse move event is ignored.
  *
- * @param event The corresponding mouse event
+ * \a event The corresponding mouse event
  *
- * @internal
  *
- * @sa @ref ColorWheelPrivate::m_isMouseEventActive */
+ *
+ * \sa ColorWheelPrivate::m_isMouseEventActive
+ */
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
@@ -199,18 +211,18 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse release event.
+/*!
+ * \brief React on a mouse release event.
  *
  * Reimplemented from base class. Does not differentiate between left,
  * middle and right mouse click.
  *
- * @param event The corresponding mouse event
+ * \a event The corresponding mouse event
  *
- * @internal
  *
- * @sa @ref ColorWheelPrivate::m_isMouseEventActive
  *
- * @sa @ref ColorWheelPrivate::m_isMouseEventActive */
+ * \sa ColorWheelPrivate::m_isMouseEventActive
+ */
 void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
@@ -223,14 +235,16 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse wheel event.
+/*!
+ * \brief React on a mouse wheel event.
  *
  * Reimplemented from base class.
  *
  * Scrolling up raises the hue value, scrolling down lowers the hue value.
  * Of course, the point at 0°/360° it not blocking.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void ColorWheel::wheelEvent(QWheelEvent *event)
 {
     const qreal radius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
@@ -257,15 +271,16 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
     }
 }
 
-/** @brief React on key press events.
+/*!
+ * \brief React on key press events.
  *
  * Reimplemented from base class.
  *
- * Reacts on key press events. When the <em>plus</em> key or the <em>minus</em>
- * key are pressed, it raises or lowers the hue. When <tt>Qt::Key_Insert</tt>
- * or <tt>Qt::Key_Delete</tt> are pressed, it raises or lowers the hue faster.
+ * Reacts on key press events. When the \e {plus} key or the \e {minus}
+ * key are pressed, it raises or lowers the hue. When \c {Qt::Key_Insert}
+ * or \c {Qt::Key_Delete} are pressed, it raises or lowers the hue faster.
  *
- * @param event the corresponding event
+ * \a event the corresponding event
  */
 void ColorWheel::keyPressEvent(QKeyEvent *event)
 {
@@ -298,11 +313,12 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
     }
 }
 
-/** @brief Paint the widget.
+/*!
+ * \brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * @param event the paint event
+ * \a event the paint event
  */
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
@@ -412,11 +428,13 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     }
 }
 
-/** @brief React on a resize event.
+/*!
+ * \brief React on a resize event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event */
+ * \a event The corresponding resize event
+ */
 void ColorWheel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event)
@@ -436,8 +454,11 @@ qreal ColorWheel::hue() const
     return d_pointer->m_hue;
 }
 
-/** @brief Setter for the @ref hue property.
- *  @param newHue the new hue */
+/*!
+ * \brief Setter for the \l hue property.
+ *
+ *  \a newHue the new \l hue
+ */
 void ColorWheel::setHue(const qreal newHue)
 {
     if (d_pointer->m_hue != newHue) {
@@ -447,9 +468,12 @@ void ColorWheel::setHue(const qreal newHue)
     }
 }
 
-/** @brief Setter for the @ref ColorWheel::hue property.
- *  @param newHue the new hue
- *  @post Normalizes newHue, and than sets @ref ColorWheel::hue to the
+/*!
+ * \brief Setter for the \l ColorWheel::hue property.
+ *
+ *  \a newHue the new hue
+ *
+ *   Normalizes newHue, and than sets \l ColorWheel::hue to the
  * normalized value. */
 void ColorWheelPrivate::setHueNormalized(const qreal newHue)
 {
@@ -457,25 +481,29 @@ void ColorWheelPrivate::setHueNormalized(const qreal newHue)
     q_pointer->setHue(temp);
 }
 
-/** @brief Recommended size for the widget.
+/*!
+ * \brief Recommended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended size for the widget.
+ * Returns the recommended size for the widget.
  *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize ColorWheel::sizeHint() const
 {
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
-/** @brief Recommended minimum size for the widget.
+/*!
+ * \brief Recommended minimum size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
+ * Returns the recommended minimum size for the widget.
  *
- * @sa @ref sizeHint() */
+ * \sa sizeHint()
+ */
 QSize ColorWheel::minimumSizeHint() const
 {
     // We interpret the gradientMinimumLength() as the length between two
@@ -490,27 +518,29 @@ QSize ColorWheel::minimumSizeHint() const
     return QSize(size, size);
 }
 
-/** @brief The empty space around the diagrams reserved for the focus
+/*!
+ * \brief The empty space around the diagrams reserved for the focus
  * indicator.
  *
- * This is a simple redirect to @ref AbstractDiagram::spaceForFocusIndicator().
- * It is meant to allow access from friend classes of @ref ColorWheel.
+ * This is a simple redirect to \l AbstractDiagram::spaceForFocusIndicator().
+ * It is meant to allow access from friend classes of \l ColorWheel.
  *
- * Measured in <em>device-independent pixels</em>.
+ * Measured in \e {device-independent pixels}.
  *
- * @returns The empty space around diagrams (distance between widget outline
+ * Returns the empty space around diagrams (distance between widget outline
  * and color wheel outline) reserved for the focus indicator. */
 int ColorWheelPrivate::border() const
 {
     return q_pointer->spaceForFocusIndicator();
 }
 
-/** @brief The inner diameter of the color wheel.
+/*!
+ * \brief The inner diameter of the color wheel.
  *
- * It is meant to allow access from friend classes of @ref ColorWheel.
+ * It is meant to allow access from friend classes of \l ColorWheel.
  *
- * @returns The inner diameter of the color wheel, measured in
- * <em>device-independent pixels</em>. This is the diameter of the empty
+ * Returns the inner diameter of the color wheel, measured in
+ * \e {device-independent pixels}. This is the diameter of the empty
  * circle within the color wheel. */
 qreal ColorWheelPrivate::innerDiameter() const
 {

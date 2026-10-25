@@ -23,10 +23,14 @@ class ChromaLightnessDiagram;
 class ColorWheel;
 class WheelColorPicker;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Private implementation within the \e {Pointer to implementation}
+ * idiom.
+ */
 class WheelColorPickerPrivate : public QObject
 {
     Q_OBJECT
@@ -34,7 +38,9 @@ class WheelColorPickerPrivate : public QObject
 public:
     // Constructors and destructors
     explicit WheelColorPickerPrivate(WheelColorPicker *backLink, const LchSpace projectionSpace);
-    /** @brief Default destructor */
+    /*!
+     *\brief Default destructor
+     */
     virtual ~WheelColorPickerPrivate() noexcept override = default;
 
     // Member methods
@@ -42,16 +48,20 @@ public:
     void resizeChildWidgets();
 
     // Data members
-    /** @brief A pointer to the @ref ChromaLightnessDiagram child widget. */
+    /*!
+     * \brief A pointer to the \l ChromaLightnessDiagram child widget.
+     */
     QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
-    /** @brief A pointer to the @ref ColorWheel child widget. */
+    /*!
+     *\brief A pointer to the ColorWheel child widget.
+     */
     QPointer<ColorWheel> m_colorWheel;
-    /**
-     * @brief Geometry of the current Lch color space.
+    /*!
+     * \brief Geometry of the current Lch color space.
      * */
     const LchValues m_lchValues;
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      */
     const LchSpace m_projectionSpace;
 
@@ -61,7 +71,8 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(WheelColorPickerPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<WheelColorPicker> q_pointer;
 };

@@ -25,33 +25,39 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor
+/*!
+ * \brief Constructor
  */
 ColorWheelImageParameters::ColorWheelImageParameters()
 {
 }
 
-/**
- * @brief Render some rows of the image directly to the buffer.
+/*!
+ * \brief Render some rows of the image directly to the buffer.
  *
- * @param bytesPtr Pointer to the image data.
- * @param bytesPerLine Bytes per line of the image data (can be obtained by
+ * \a bytesPtr Pointer to the image data.
+ *
+ * \a bytesPerLine Bytes per line of the image data (can be obtained by
  *        QImage)
- * @param parameters The parameters
- * @param firstRow Index of the first row to render. Must be a valid index.
- * @param lastRow Index of the last row to render. Must be a valid index.
  *
- * @pre The parameters must be valid within the image. As this function
+ * \a parameters The parameters
+ *
+ * \a firstRow Index of the first row to render. Must be a valid index.
+ *
+ * \a lastRow Index of the last row to render. Must be a valid index.
+ *
+ * \b Precondition: The parameters must be valid
+ * within the image. As this function
  * operates directly on the image data, out-of-bound values will cause
  * undefined behaviour.
  */
-// Disable Clazy checks for passing large objects by value. In this function,
-// designed for threaded execution, we avoid passing by reference whenever
-// possible to prevent potential pitfalls, even though copying by value may
-// introduce slight overhead.
 void ColorWheelImageParameters::renderByRow( //
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
+    // Disable Clazy checks for passing large objects by value. In this function,
+    // designed for threaded execution, we avoid passing by reference whenever
+    // possible to prevent potential pitfalls, even though copying by value may
+    // introduce slight overhead.
     const ColorWheelImageParameters parameters, // clazy:exclude=function-args-by-ref
     const int firstRow,
     const int lastRow)
@@ -72,17 +78,19 @@ void ColorWheelImageParameters::renderByRow( //
     }
 }
 
-/** @brief Render an image.
+/*!
+ * \brief Render an image.
  *
  * The function will render the image with the given parameters,
- * and deliver the result by means of <tt>callbackObject</tt>.
+ * and deliver the result by means of \c {callbackObject}.
  *
  * This function is thread-safe as long as each call of this function
- * uses different <tt>variantParameters</tt> and <tt>callbackObject</tt>.
+ * uses different \c {variantParameters} and \c {callbackObject}.
  *
- * @param variantParameters A <tt>QVariant</tt> that contains the
+ * \a variantParameters A \c {QVariant} that contains the
  *        image parameters.
- * @param callbackObject Pointer to the object for the callbacks.
+ *
+ * \a callbackObject Pointer to the object for the callbacks.
  */
 void ColorWheelImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {

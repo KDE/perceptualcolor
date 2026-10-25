@@ -7,7 +7,8 @@
 
 namespace PerceptualColor
 {
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 AsyncImageRenderCallback::~AsyncImageRenderCallback() noexcept
 {
 }

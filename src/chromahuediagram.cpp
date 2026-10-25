@@ -33,11 +33,13 @@
 
 namespace PerceptualColor
 {
-/** @brief The constructor.
+/*!
+ * \brief The constructor.
  *
- * @param projectionSpace The color space into which the gamut will be
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
- * @param parent The widget’s parent widget. This parameter will be passed
+ *
+ * \a parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 ChromaHueDiagram::ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
@@ -49,9 +51,9 @@ ChromaHueDiagram::ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpa
     // widget, depending on QWidget::focusPolicy(). This is not convenient
     // and intuitive for big, circular-shaped widgets like this one. It
     // would be nicer if the focus would only be accepted by mouse clicks
-    // <em>within the circle itself</em>. Qt does not provide a build-in
+    // \e {within the circle itself}. Qt does not provide a build-in
     // way to do this. But a workaround to implement this behavior is
-    // possible: Set QWidget::focusPolicy() to <em>not</em> accept focus
+    // possible: Set QWidget::focusPolicy() to \e {not} accept focus
     // by mouse click. Then, reimplement mousePressEvent() and call
     // setFocus(Qt::MouseFocusReason) if the mouse click is within the
     // circle. Therefore, this class simply defaults to
@@ -73,16 +75,19 @@ ChromaHueDiagram::ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpa
     setCurrentColorLch(cielchD50Values.neutralGray());
 }
 
-/** @brief Default destructor */
+/*!
+ * \brief Default destructor */
 ChromaHueDiagram::~ChromaHueDiagram() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  *                 is the private implementation.
- * @param projectionSpace The color space into which the gamut will be
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  */
 ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const LchSpace projectionSpace)
@@ -95,29 +100,29 @@ ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, con
     m_wheelImage.projectionSpace = projectionSpace;
 }
 
-/**
- * @brief Default destructor
+/*!
+ * \brief Default destructor
  */
 ChromaHueDiagramPrivate::~ChromaHueDiagramPrivate() noexcept = default;
 
-/** @brief React on a mouse press event.
+/*!
+ * \brief React on a mouse press event.
  *
  * Reimplemented from base class.
  *
- * @internal
- * @post
- * - If the mouse is clicked with the circular diagram (inside or
+ * \a event The corresponding mouse event
+ *
+ *
+ *
+ *   If the mouse is clicked with the circular diagram (inside or
  *   outside of the visible gamut), than this widget gets the focus
- *   and and @ref ChromaHueDiagramPrivate::m_isMouseEventActive is
- *   set to <tt>true</tt> to track mouse movements from now on.
+ *   and and \l ChromaHueDiagramPrivate::m_isMouseEventActive is
+ *   set to \c {true} to track mouse movements from now on.
  *   Reacts on all clicks (left, middle, right). If the mouse was
  *   within the gamut, the diagram’s handle is displaced there. If
  *   the mouse was outside the gamut, the diagram’s handle always stays
  *   within the gamut: The hue value is correctly retained, while the chroma
  *   value is the highest possible chroma within the gamut at this hue.
- * @endinternal
- *
- * @param event The corresponding mouse event
  */
 void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
@@ -164,24 +169,29 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse move event.
+/*!
+ * \brief React on a mouse move event.
  *
  * Reimplemented from base class.
  *
- * @internal
- * @post Reacts only on mouse move events if
- * @ref ChromaHueDiagramPrivate::m_isMouseEventActive is <tt>true</tt>:
- * - If the mouse moves within the gamut, the diagram’s handle is displaced
+ * \a event The corresponding mouse event
+ *
+ *
+ *
+ *  Reacts only on mouse move events if
+ * \l ChromaHueDiagramPrivate::m_isMouseEventActive is \c {true}:
+ *
+ * \list
+ * \li If the mouse moves within the gamut, the diagram’s handle is displaced
  *   there. The mouse cursor is invisible; only the diagram’ handle is
  *   visible.
- * - If the mouse moves outside the gamut, the diagram’s handle always stays
+ * \li If the mouse moves outside the gamut, the diagram’s handle always stays
  *   within the gamut: The hue value is correctly retained, while the chroma
  *   value is the highest possible chroma within the gamut at this hue.
- *   Both, the diagram’s handle <em>and</em> the mouse cursor are
+ *   Both, the diagram’s handle \e {and} the mouse cursor are
  *   visible.
- * @endinternal
- *
- * @param event The corresponding mouse event */
+ * \endlist
+ */
 void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 {
     if (!d_pointer->m_isMouseEventActive) {
@@ -210,24 +220,28 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse release event.
+/*!
+ * \brief React on a mouse release event.
  *
  * Reimplemented from base class. Reacts on all clicks (left, middle, right).
  *
- * @param event The corresponding mouse event
+ * \a event The corresponding mouse event
  *
- * @internal
  *
- * @post If @ref ChromaHueDiagramPrivate::m_isMouseEventActive is
- * <tt>true</tt> then:
- * - If the mouse is within the gamut, the diagram’s handle is displaced
+ *
+ *  If \l ChromaHueDiagramPrivate::m_isMouseEventActive is
+ * \c {true} then:
+ *
+ * \list
+ * \li If the mouse is within the gamut, the diagram’s handle is displaced
  *   there.
- * - If the mouse moves outside the gamut, the diagram’s handle always stays
+ * \li If the mouse moves outside the gamut, the diagram’s handle always stays
  *   within the gamut: The hue value is correctly retained, while the chroma
  *   value is the highest possible chroma within the gamut at this hue.
- * - The mouse cursor is made visible (if he wasn’t yet visible anyway).
- * - @ref ChromaHueDiagramPrivate::m_isMouseEventActive is set
- *   to <tt>false</tt>.
+ * \li The mouse cursor is made visible (if he wasn’t yet visible anyway).
+ * \li \l ChromaHueDiagramPrivate::m_isMouseEventActive is set
+ *   to \c {false}.
+ * \endlist
  */
 void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -249,14 +263,16 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse wheel event.
+/*!
+ * \brief React on a mouse wheel event.
  *
  * Reimplemented from base class.
  *
  * Scrolling up raises the hue value, scrolling down lowers the hue value.
  * Of course, at the point at 0°/360° wrapping applies.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
 {
     // Though QWheelEvent::position() returns a floating point
@@ -296,7 +312,8 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
     }
 }
 
-/** @brief React on key press events.
+/*!
+ * \brief React on key press events.
  *
  * Reimplemented from base class.
  *
@@ -307,19 +324,25 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
  *
  * For chroma changes: Moves the handle as much as possible into the
  * desired direction as long as this is still in the gamut.
- * - Qt::Key_Up increments chroma a small step
- * - Qt::Key_Down decrements chroma a small step
- * - Qt::Key_PageUp increments chroma a big step
- * - Qt::Key_PageDown decrements chroma a big step
+ *
+ * \list
+ *     \li Qt::Key_Up increments chroma a small step
+ *     \li Qt::Key_Down decrements chroma a small step
+ *     \li Qt::Key_PageUp increments chroma a big step
+ *     \li Qt::Key_PageDown decrements chroma a big step
+ * \endlist
  *
  * For hue changes: If necessary, the chroma value is reduced to get an
  * in-gamut color with the new hue.
- * - Qt::Key_Left increments hue a small step
- * - Qt::Key_Right decrements hue a small step
- * - Qt::Key_Home increments hue a big step
- * - Qt::Key_End decrements hue a big step
  *
- * @param event the event
+ * \list
+ *     \li Qt::Key_Left increments hue a small step
+ *     \li Qt::Key_Right decrements hue a small step
+ *     \li Qt::Key_Home increments hue a big step
+ *     \li Qt::Key_End decrements hue a big step
+ * \endlist
+ *
+ * \a event the event
  */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
@@ -385,25 +408,29 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     setCurrentColorLch(newColorReduced);
 }
 
-/** @brief Recommended size for the widget.
+/*!
+ * \brief Recommended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended size for the widget.
+ * Returns the recommended size for the widget.
  *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize ChromaHueDiagram::sizeHint() const
 {
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
-/** @brief Recommended minimum size for the widget
+/*!
+ * \brief Recommended minimum size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
+ * Returns the recommended minimum size for the widget.
  *
- * @sa @ref sizeHint() */
+ * \sa sizeHint()
+ */
 QSize ChromaHueDiagram::minimumSizeHint() const
 {
     const int mySize =
@@ -422,9 +449,11 @@ GenericColor ChromaHueDiagram::currentColorLch() const
     return d_pointer->m_currentColorLch;
 }
 
-/** @brief Setter for the @ref currentColorLch property.
+/*!
+ * \brief Setter for the \l currentColorLch property.
  *
- * @param newCurrentColorLch the new color */
+ * \a newCurrentColorLch the new color
+ */
 void ChromaHueDiagram::setCurrentColorLch(const GenericColor &newCurrentColorLch)
 {
     if (newCurrentColorLch == d_pointer->m_currentColorLch) {
@@ -454,13 +483,14 @@ void ChromaHueDiagram::setCurrentColorLch(const GenericColor &newCurrentColorLch
     Q_EMIT currentColorLchChanged(newCurrentColorLch);
 }
 
-/** @brief The point that is the center of the diagram coordinate system.
+/*!
+ * \brief The point that is the center of the diagram coordinate system.
  *
- * @returns The point that is the center of the diagram coordinate system,
- * measured in <em>device-independent pixels</em> relative to the widget
+ * Returns the point that is the center of the diagram coordinate system,
+ * measured in \e {device-independent pixels} relative to the widget
  * coordinate system.
  *
- * @sa @ref diagramOffset provides a one-dimensional
+ * \note \l diagramOffset provides a one-dimensional
  * representation of this very same fact. */
 QPointF ChromaHueDiagramPrivate::diagramCenter() const
 {
@@ -468,25 +498,28 @@ QPointF ChromaHueDiagramPrivate::diagramCenter() const
     return QPointF(tempOffset, tempOffset);
 }
 
-/** @brief The point that is the center of the diagram coordinate system.
+/*!
+ * \brief The point that is the center of the diagram coordinate system.
  *
- * @returns The offset between the center of the widget coordinate system
+ * Returns the offset between the center of the widget coordinate system
  * and the center of the diagram coordinate system. The value is measured in
- * <em>device-independent pixels</em> relative to the widget’s coordinate
+ * \e {device-independent pixels} relative to the widget’s coordinate
  * system. The value is identical for both, x axis and y axis.
  *
- * @sa @ref diagramCenter provides a two-dimensional
+ * \note \l diagramCenter provides a two-dimensional
  * representation of this very same fact. */
 qreal ChromaHueDiagramPrivate::diagramOffset() const
 {
     return q_pointer->maximumWidgetSquareSize() / 2.0;
 }
 
-/** @brief React on a resize event.
+/*!
+ * \brief React on a resize event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event */
+ * \a event The corresponding resize event
+ */
 void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event)
@@ -506,15 +539,16 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
     //      drawing need be (or should be) done inside this handler.”
 }
 
-/** @brief  Widget coordinate point corresponding to the
- * @ref ChromaHueDiagram::currentColorLch property
+/*!
+ * \brief Widget coordinate point corresponding to
+ *        the \l ChromaHueDiagram::currentColorLch property
  *
- * @returns Widget coordinate point corresponding to the
- * @ref ChromaHueDiagram::currentColorLch property. This is the position
- * of @ref ChromaHueDiagram::currentColorLch in the gamut diagram, but measured
+ * This is the position
+ * of \l ChromaHueDiagram::currentColorLch in the gamut diagram, but measured
  * and expressed as widget coordinate point.
  *
- * @sa @ref ChromaHueMeasurement "Measurement details" */
+ * \sa {ChromaHueMeasurement} {chroma-hue-measurement}
+ */
 QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorLch() const
 {
     const auto maximumChroma = //
@@ -533,16 +567,19 @@ QPointF ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColorLch() const
         diagramOffset() - currentColor.y() * scaleFactor);
 }
 
-/** @brief Converts widget pixel positions to Lab coordinates
+/*!
+ * \brief Converts widget pixel positions to Lab coordinates
  *
- * @param position The position of a pixel of the widget coordinate
+ * \a position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to
  * be within the actual displayed diagram or even the gamut itself. It
  * might even be negative.
  *
- * @returns The Lab coordinates of the currently displayed gamut diagram
+ * Returns the Lab coordinates of the currently displayed gamut diagram
  * for the (center of the) given pixel position.
- * @sa @ref ChromaHueMeasurement "Measurement details" */
+ *
+ * \sa {ChromaHueMeasurement} {chroma-hue-measurement}
+ */
 GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
 {
     const auto maximumChroma = //
@@ -568,27 +605,28 @@ GenericColor ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint 
     return lab;
 }
 
-/** @brief Sets the @ref ChromaHueDiagram::currentColorLch property corresponding
+/*!
+ * \brief Sets the \l ChromaHueDiagram::currentColorLch property corresponding
  * to a given widget pixel position.
  *
- * @param position The position of a pixel of the widget coordinate
+ * \a position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
  * negative.
  *
- * @post If the <em>center</em> of the widget pixel is within the represented
- * gamut, then the @ref ChromaHueDiagram::currentColorLch property is
+ * If the \e {center} of the widget pixel is within the represented
+ * gamut, then the \l ChromaHueDiagram::currentColorLch property is
  * set correspondingly. If the center of the widget pixel is outside
  * the gamut, then the chroma value is reduced (while the hue is
  * maintained) until arriving at the outer shell of the gamut; the
- * @ref ChromaHueDiagram::currentColorLch property is than set to this adapted
+ * \l ChromaHueDiagram::currentColorLch property is than set to this adapted
  * color.
  *
- * @note This function works independently of the actually displayed color
+ * \note This function works independently of the actually displayed color
  * gamut diagram. So if parts of the gamut (the high chroma parts) are cut
  * off in the visible diagram, this does not influence this function.
  *
- * @sa @ref ChromaHueMeasurement "Measurement details"
+ * \sa {ChromaHueMeasurement} {chroma-hue-measurement}
  */
 void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
@@ -600,16 +638,19 @@ void ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint posit
     q_pointer->setCurrentColorLch(myColor);
 }
 
-/** @brief Tests if a widget pixel position is within the mouse sensible circle.
+/*!
+ * \brief Tests if a widget pixel position is within the mouse sensible circle.
  *
  * The mouse sensible circle contains the outer color wheel and everything
  * within it.
- * @param position The position of a pixel of the widget coordinate
+ *
+ * \a position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
  * negative.
- * @returns <tt>true</tt> if the (center of the) pixel at the given position
- * is within the circle, <tt>false</tt> otherwise. */
+ *
+ * Returns \c {true} if the (center of the) pixel at the given position
+ * is within the circle, \c {false} otherwise. */
 bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
 {
     const qreal mouseRadius = PolarPointF(
@@ -630,8 +671,8 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
     return (mouseRadius <= sensibleRadius);
 }
 
-/**
- * @brief Tests if a widget pixel position is within the gamut circle.
+/*!
+ * \brief Tests if a widget pixel position is within the gamut circle.
  *
  * The gamut circle is the circle that is reserved for painting the gamut.
  * Note that this is slightly smaller than the inner gray circle (on which the
@@ -640,12 +681,13 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(con
  * color handle will never be outside the gray circle, not even on
  * maximum-chroma colors.
  *
- * @param position The position of a pixel of the widget coordinate
+ * \a position The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
  * negative.
- * @returns <tt>true</tt> if the (center of the) pixel at the given position
- * is within the circle, <tt>false</tt> otherwise.
+ *
+ * Returns \c {true} if the (center of the) pixel at the given position
+ * is within the circle, \c {false} otherwise.
  */
 bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinGamutCircle(const QPoint position) const
 {
@@ -667,37 +709,32 @@ bool ChromaHueDiagramPrivate::isWidgetPixelPositionWithinGamutCircle(const QPoin
     return (mouseRadius <= diagramCircleRadius);
 }
 
-/** @brief Paint the widget.
+/*!
+ * \brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * @param event the paint event
+ * \a event the paint event
  *
- * @internal
  *
- * @post
- * - Paints the widget. Takes the existing
- *   @ref ChromaHueDiagramPrivate::m_chromaHueImage and
- *   @ref ChromaHueDiagramPrivate::m_wheelImage and paints them on the widget.
+ *
+ * \list
+ *
+ * \li Paints the widget. Takes the
+ *   existing \l ChromaHueDiagramPrivate::m_chromaHueImage
+ *   and \l ChromaHueDiagramPrivate::m_wheelImage and paints them on the widget.
  *   If their cache is up-to-date, this operation is fast, otherwise
  *   considerably slower.
- * - Paints the handles.
- * - If the widget has focus, it also paints the focus indicator. As the
- *   widget is round, we cannot use <tt>QStyle::PE_FrameFocusRect</tt> for
- *   painting this, neither does <tt>QStyle</tt> provide build-in support
+ *
+ * \li Paints the handles.
+ *
+ * \li If the widget has focus, it also paints the focus indicator. As the
+ *   widget is round, we cannot use \c {QStyle::PE_FrameFocusRect} for
+ *   painting this, neither does \c {QStyle} provide build-in support
  *   for round widgets. Therefore, we draw the focus indicator ourself,
- *   which means its form is not controlled by <tt>QStyle</tt>.
+ *   which means its form is not controlled by \c {QStyle}.
  *
- * @todo NICETOHAVE
- * The radial guide line from the diagram center to the handle (which marks the
- * selected gamut point) shows poor anti‑aliasing in certain cases. When the
- * line is nearly horizontal or vertical and its color
- * is black, faint visual artifacts
- * appear under Wayland on a single display scaled to 175%.
- *
- * @todo NICETOHAVE Show the indicator on
- * the color wheel not only while a mouse button
- * is pressed, but also while a keyboard button is pressed.
+ * \endlist
  */
 void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 {
@@ -946,15 +983,16 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     }
 }
 
-/** @brief The border around the round diagram.
+/*!
+ * \brief The border around the round diagram.
  *
  * This is the maximum size of the drawn color gamut. Note that the diagram
  * background itself is larger, to make sure that the color handle will not
  * overlap with the sourrounding color wheel even on maximimum-chroma values.
  *
- * Measured in <em>device-independent pixels</em>.
+ * Measured in \e {device-independent pixels}.
  *
- * @returns The border. This is the space where the surrounding color wheel
+ * Returns the border. This is the space where the surrounding color wheel
  * and the focus indicator are painted. */
 int ChromaHueDiagramPrivate::gamutBorder() const
 {

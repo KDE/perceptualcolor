@@ -18,32 +18,28 @@
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- * @brief Toolbox for color conversions.
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Toolbox for color conversions.
  *
  * This provides color conversion between absolutely defined color spaces.
  *
  * The functions named like fromXToY provide direct conversions between
- * certain color spaces. The input and output data is @ref GenericColor.
+ * certain color spaces. The input and output data is \l GenericColor.
  * These functions have high precision, but are not necesarily optimed
- * for speed. These functions are also registered in @ref convert() which
+ * for speed. These functions are also registered in \l convert() which
  * allows to convert between arbitrary combinations of these color spaces.
  *
  * Furthermore, there are some functions prefixed with “fast”, for instance
- * @ref fastFromOklabToSRgbOrTransparent(). These functions are optimized
+ * \l fastFromOklabToSRgbOrTransparent(). These functions are optimized
  * for speed, but might have a slightly lower precision. They convert
  * between specific data formats and are created when more than one
  * widget uses them and code can be shared.
  *
- * @sa @ref RgbColor
- *
- * @internal
- *
- * @todo SHOULDHAVE Test that all possible combinations actually convert.
- * But HSL etc are not supported here, and on the other side @ref ColorModel is
- * also used in @ref CssColor and HSL is needed there. Split into two different
- * enums?
+ * \sa RgbColor
  */
 class AbsoluteColor
 {
@@ -75,30 +71,40 @@ public:
     [[nodiscard]] static GenericColor reduceChromaToFitIntoGamut(const GenericColor &lch, const LchSpace lchSpace);
 
 private:
-    /**
-     * @internal
-     *
-     * @brief Only for unit tests.
-     */
     friend class TestAbsoluteColor;
 
-    /** @brief Function pointer type for the conversion functions. */
     // NOTE std::function<> has nicer syntax for function pointers, but does
     // not allow constexpr.
+    /*!
+     * \typealias PerceptualColor::AbsoluteColor::ConversionFunction
+     *
+     * \relates PerceptualColor::AbsoluteColor
+     *
+     * \brief Function pointer type for the conversion functions.
+     */
     using ConversionFunction = GenericColor (*)(const GenericColor &);
 
-    /** @brief Gives access to a conversion function. */
+    /*!
+     * \brief Gives access to a conversion function.
+     */
     struct Conversion {
     public:
-        /** @brief The color space from which the function converts. */
+        /*!
+         * \brief The color space from which the function converts.
+         */
         ColorModel from;
-        /** @brief The color space to which the function converts. */
+        /*!
+         * \brief The color space to which the function converts.
+         */
         ColorModel to;
-        /** @brief The function. */
+        /*!
+         * \brief The function.
+         */
         ConversionFunction conversionFunction;
     };
 
-    /** @brief List of all conversion accesses. */
+    /*!
+     * \brief List of all conversion accesses. */
     static constexpr std::array<Conversion, 14> conversionList //
         {{{ColorModel::XyzD50_1, ColorModel::XyzD65_1, fromXyzD50ToXyzD65},
           {ColorModel::XyzD65_1, ColorModel::XyzD50_1, fromXyzD65ToXyzD50},
@@ -124,15 +130,13 @@ private:
     [[nodiscard]] static bool isOklabInSRgbGamut(const GenericColor &oklab);
     [[nodiscard]] static bool isOklchInSRgbGamut(const GenericColor &oklch);
 
-    /**
-     * @internal
-     *
-     * @brief Convert a <tt>float</tt> in the range [0..1] to a <tt>quint8</tt>
+    /*!
+     * \brief Convert a \c {float} in the range [0..1] to a \c {quint8}
      * in the range [0..255].
      *
-     * @param x A floating point value in the range [0..1].
+     * \a x A floating point value in the range [0..1].
      *
-     * @returns The corresponding value in the range in the range [0..255],
+     * Returns the corresponding value in the range in the range [0..255],
      * rounded to full integers. If the input value
      * differes from the valid input range by more than 0.1, than it returns
      * an arbitrary value.
@@ -144,32 +148,30 @@ private:
             x * static_cast<T>(255.f) + static_cast<T>(0.5f));
     }
 
-    /**
-     * @internal
-     *
-     * @brief Convert a channel from linear sRGB to (gamma-encoded)
+    /*!
+     * \brief Convert a channel from linear sRGB to (gamma-encoded)
      * sRGB.
      *
-     * @param x An linear sRGB channel in the range [0..1].
+     * \a x An linear sRGB channel in the range [0..1].
      *
-     * @returns The corresponding gamma-encoded sRGB channel
+     * Returns the corresponding gamma-encoded sRGB channel
      * in the range [0..1] or slightly above or below because
      * of rounding errors.
      *
-     * @note The implementations of @ref channelFromLinearSRgbToSRgb() and
-     *       @ref channelFromSRgbToLinearSRgb() strictly follow their official
+     * \note The implementations of \l channelFromLinearSRgbToSRgb() and
+     *       \l channelFromSRgbToLinearSRgb() strictly follow their official
      *       definitions. As a result of rounding in the official
      *       specifications, they do not form exact inverses.
      *
-     * @internal
      *
-     * @note This function is based on
-     * <a href="https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)">
-     * Wikipedia</a>.
      *
-     * @note Unfortunately, it cannot be <tt>constexpr</tt> because it relies
-     * on <a href="https://en.cppreference.com/w/cpp/numeric/math/pow.html">
-     * <tt>std::pow</tt></a> which only becomes <tt>constexpr</tt> in C++26,
+     * \note This function is based on
+     * \l {https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)}
+     * {Wikipedia}.
+     *
+     * \note Unfortunately, it cannot be \c {constexpr} because it relies on
+     * \l {https://en.cppreference.com/w/cpp/numeric/math/pow.html} {std::pow}
+     * which only becomes \c {constexpr} in C++26,
      * which is beyond our current target C++ standard.
      */
     template<typename T>
@@ -186,32 +188,30 @@ private:
             - static_cast<T>(0.055);
     }
 
-    /**
-     * @internal
-     *
-     * @brief Convert a channel from sRGB to linear
+    /*!
+     * \brief Convert a channel from sRGB to linear
      * sRGB.
      *
-     * @param x An linear sRGB channel in the range [0..1].
+     * \a x An linear sRGB channel in the range [0..1].
      *
-     * @returns The corresponding linear sRGB channel
+     * Returns the corresponding linear sRGB channel
      * in the range [0..1] or slightly above or below because
      * of rounding errors.
      *
-     * @note The implementations of @ref channelFromLinearSRgbToSRgb() and
-     *       @ref channelFromSRgbToLinearSRgb() strictly follow their official
+     * \note The implementations of \l channelFromLinearSRgbToSRgb() and
+     *       \l channelFromSRgbToLinearSRgb() strictly follow their official
      *       definitions. As a result of rounding in the official
      *       specifications, they do not form exact inverses.
      *
-     * @internal
      *
-     * @note This function is based on the
-     * <a href="https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)">
-     * Wikipedia</a>.
      *
-     * @note Unfortunately, it cannot be <tt>constexpr</tt> because it relies
-     * on <a href="https://en.cppreference.com/w/cpp/numeric/math/pow.html">
-     * <tt>std::pow</tt></a> which only becomes <tt>constexpr</tt> in C++26,
+     * \note This function is based on the
+     * \l {https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)}
+     * {Wikipedia}.
+     *
+     * \note Unfortunately, it cannot be \c {constexpr} because it relies on
+     * \l {https://en.cppreference.com/w/cpp/numeric/math/pow.html} {std::pow}
+     * which only becomes \c {constexpr} in C++26,
      * which is beyond our current target C++ standard.
      */
     template<typename T>

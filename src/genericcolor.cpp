@@ -7,9 +7,10 @@
 namespace PerceptualColor
 {
 
-/** @brief Constructor.
+/*!
+ * \brief Constructor.
  *
- * @param list Initial values. Only the first 4 elements are considered.
+ * \a list Initial values. Only the first 4 elements are considered.
  *             Excess elements are ignored. Missing elements are
  *             interpreted as 0. */
 GenericColor::GenericColor(const QList<double> &list)
@@ -19,22 +20,24 @@ GenericColor::GenericColor(const QList<double> &list)
 {
 }
 
-/** @brief The values @ref first, @ref second, @ref third as QList.
+/*!
+ * \brief The values \l first, \l second, \l third as QList.
  *
- * @returns The values @ref first, @ref second, @ref third as QList. */
+ * Returns the values \l first, \l second, \l third as QList. */
 QList<double> GenericColor::toQList3() const
 {
     return QList<double>{first, second, third};
 }
 
-/** @internal
+/*!
+ * \relates PerceptualColor::GenericColor
  *
- * @brief Adds QDebug() support for data type
- * @ref PerceptualColor::GenericColor
+ * \brief Adds QDebug() support for data type \l PerceptualColor::GenericColor
  *
- * @param dbg Existing debug object
- * @param value Value to stream into the debug object
- * @returns Debug object with value streamed in */
+ * \a dbg Existing debug object
+ *
+ * \a value Value to stream into the debug object
+ */
 QDebug operator<<(QDebug dbg, const PerceptualColor::GenericColor &value)
 {
     dbg.nospace() //

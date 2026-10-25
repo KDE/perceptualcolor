@@ -9,40 +9,38 @@
 #include <type_traits>
 class QObject;
 
-/** @internal
- *
- * @file
- *
- * Provides accessibility-related features. */
-
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
  *
- * @brief Factory function template for creating accessible interfaces.
+ *
+ * \fn template<typename T, typename AccessibleT> QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
+ *
+ * \brief Factory function template for creating accessible interfaces.
  *
  * This template provides a factory function compatible with both the
- * signature of <tt>QAccessiblePlugin::create()</tt> and the <tt>typedef
- * QAccessible::InterfaceFactory</tt>. It can be directly passed to
- * <tt>QAccessible::installFactory()</tt>.
+ * signature of \c {QAccessiblePlugin::create()} and the \c {typedef
+ * QAccessible::InterfaceFactory}. It can be directly passed to
+ * \c {QAccessible::installFactory()}.
  *
- * @tparam T The class for which an accessible interface is provided by
+ * \b T The class for which an accessible interface is provided by
  *         the factory. It must have the Q_OBJECT macro.
- * @tparam AccessibleT The QAccessibleInterface implementation corresponding
- *         to <tt>T</tt>. It must have a constructor accepting as
+ *
+ * \b AccessibleT The QAccessibleInterface implementation corresponding
+ *         to \c {T}. It must have a constructor accepting as
  *         parameter a pointer to the target object.
  *
- * @param classname The class name of the object for which an interface is
+ * \a classname The class name of the object for which an interface is
  *        requested.
- * @param object The object for which an interface is requested.
  *
- * @return A pointer to a new instance of <tt>AccessibleT</tt> if the
- *         <tt>classname</tt> matches <tt>T</tt> and the <tt>object</tt>
- *         can be cast to <tt>T</tt>; otherwise, returns <tt>nullptr</tt>.
+ * \a object The object for which an interface is requested.
  *
- * @sa @ref installAccessibleFactory
+ * Returns a pointer to a new instance of \c {AccessibleT} if
+ * the \c {classname} matches \c {T} and the \c {object} can
+ * be cast to \c {T}; otherwise, returns \c {nullptr}.
+ *
+ * \sa installAccessibleFactory
  */
 template<typename T, typename AccessibleT>
 QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
@@ -71,22 +69,25 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
     return nullptr;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Defines and installs an accessible interface factory using
- * <tt>QAccessible::installFactory()</tt>.
  *
- * @tparam T The class for which an accessible interface is provided by
+ * \fn template<typename T, typename AccessibleT> void installAccessibleFactory()
+ *
+ * \brief Defines and installs an accessible interface factory
+ * using \c {QAccessible::installFactory()}.
+ *
+ * \b T The class for which an accessible interface is provided by
  *         the factory. It must have the Q_OBJECT macro.
- * @tparam AccessibleT The QAccessibleInterface implementation corresponding
- *         to <tt>T</tt>. It must have a constructor accepting as
+ *
+ * \b AccessibleT The QAccessibleInterface implementation corresponding
+ *         to \c {T}. It must have a constructor accepting as
  *         parameter a pointer to the target object.
  *
- * @note This function is idempotent and can be safely invoked multiple times
+ * \note This function is idempotent and can be safely invoked multiple times
  * without adverse effects.
  *
- * @sa @ref accessibleFactory
+ * \sa accessibleFactory
  */
 template<typename T, typename AccessibleT>
 void installAccessibleFactory()

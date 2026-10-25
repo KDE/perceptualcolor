@@ -20,19 +20,4 @@ static_assert(PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= 1);
 
 namespace PerceptualColor
 {
-/** @brief Against which version of this library you are <em>running</em>.
- *
- * @returns The library version with major, minor and patch version.
- * Note that there is no pre-release identifier included. For example, if
- * your application is running against version 1.2.3-alpha of this library,
- * this function will return <tt>QVersionNumber(1, 2, 3)</tt>.
- *
- * To use this function, include <tt>version.h</tt>
- *
- * @sa @ref versioninfo */
-QVersionNumber perceptualColorRunTimeVersion()
-{
-    return QVersionNumber(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR, PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR, PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH);
-}
-
 } // namespace PerceptualColor

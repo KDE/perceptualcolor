@@ -28,11 +28,11 @@
 namespace PerceptualColor
 {
 
-/**
- * @brief Constructor.
+/*!
+ * \brief Constructor.
  *
  * Also starts asynchroniously the detection wether Portal
- * support @ref isAvailable.
+ * support \l isAvailable.
  */
 PortalEyedropper::PortalEyedropper()
     : d_pointer(new PortalEyedropperPrivate(this))
@@ -72,17 +72,17 @@ PortalEyedropper::PortalEyedropper()
             });
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 PortalEyedropper::~PortalEyedropper()
 {
 }
 
-/**
- * @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  *                 is the private implementation.
  */
 PortalEyedropperPrivate::PortalEyedropperPrivate(PortalEyedropper *backLink)
@@ -90,17 +90,17 @@ PortalEyedropperPrivate::PortalEyedropperPrivate(PortalEyedropper *backLink)
 {
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 PortalEyedropperPrivate::~PortalEyedropperPrivate() noexcept
 {
 }
 
-/**
- * @brief Access to the @ref PortalEyedropper singleton.
+/*!
+ * \brief Access to the \l PortalEyedropper singleton.
  *
- * @returns A reference to the instance.
+ * Returns a reference to the instance.
  */
 PortalEyedropper &PortalEyedropper::getInstance()
 {
@@ -115,18 +115,19 @@ std::optional<bool> PortalEyedropper::isAvailable() const
     return d_pointer->m_isAvailable;
 }
 
-/**
- * @brief Initiates screen color picking via the Portal service.
+/*!
+ * \brief Initiates screen color picking via the Portal service.
  *
- * @param eyedropperParent Pointer to the parent widget for this call, or
- * <tt>std::nullptr</tt> if no parent is provided. In rare cases where the Portal
- * displays user interface elements (e.g. a message box requesting user permission
- * for eyedropper functionality), then under the X Window System this dialog will be
- * centered relative to the given parent widget. On other window systems, including
+ * \a eyedropperParent Pointer to the parent widget for this call,
+ * or \c {std::nullptr} if no parent is provided. In rare cases where the
+ * Portal displays user interface elements (e.g. a message box requesting
+ * user permission for eyedropper functionality), then under the
+ * X Window System this dialog will be centered relative to the given
+ * parent widget. On other window systems, including
  * Wayland, placement is at the discretion of the Portal service.
  *
- * @post If Portal support for eyedropper functionality is available, the
- * process is started. Results can be obtained via @ref newColor. If not
+ *  If Portal support for eyedropper functionality is available, the
+ * process is started. Results can be obtained via \l newColor. If not
  * supported, no action is taken.
  */
 void PortalEyedropper::startPicking(QWidget *eyedropperParent)
@@ -205,11 +206,12 @@ void PortalEyedropper::startPicking(QWidget *eyedropperParent)
             });
 }
 
-/**
- * @brief Process the response we get from the “Portal” service.
+/*!
+ * \brief Process the response we get from the “Portal” service.
  *
- * @param exitCode The exit code of the answer.
- * @param responseArguments The arguments of teh answer.
+ * \a exitCode The exit code of the answer.
+ *
+ * \a responseArguments The arguments of teh answer.
  */
 void PortalEyedropperPrivate::getPortalResponse(uint exitCode, const QVariantMap &responseArguments)
 {
@@ -235,36 +237,33 @@ void PortalEyedropperPrivate::getPortalResponse(uint exitCode, const QVariantMap
     }
 }
 
-/**
- * @brief Main event handler.
+/*!
+ * \brief Main event handler.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event to be processed.
+ * \a eventParameter The event to be processed.
  *
- * @return This function returns true if the event was recognized, otherwise
+ * This function returns true if the event was recognized, otherwise
  * it returns false.
- *
- * @internal
- *
- * @note This is a dummy reimplementation, provided to ensure future
- * extensibility while preserving binary compatibility, as
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
- * recommended by the KDE binary compatibility policy</a>.
- * The policy states that
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
- * “you can safely reimplement a virtual function defined in one of the base
- * classes only if it is safe that the programs linked with the prior version
- * call the implementation in the base class rather than the derived one.”</a>.
- * Consistent behavior across versions would be difficult to guarantee.
- * By reimplementing the main event handler now,
- * we retain the option to extend it later to process new event types
- * without introducing binary compatibility issues. Since this is the
- * central event dispatcher, it can eventually handle all event types,
- * eliminating the need for dummy overrides of each specialized handler.
  */
 bool PortalEyedropper::event(QEvent *eventParameter)
 {
+    // NOTE This is a dummy reimplementation, provided to ensure future
+    // extensibility while preserving binary compatibility, as
+    // \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...}
+    // {recommended by the KDE binary compatibility policy}.
+    // The policy states that
+    // \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function}
+    // {“you can safely reimplement a virtual function defined in one of the base
+    // classes only if it is safe that the programs linked with the prior version
+    // call the implementation in the base class rather than the derived one.”}.
+    // Consistent behavior across versions would be difficult to guarantee.
+    // By reimplementing the main event handler now,
+    // we retain the option to extend it later to process new event types
+    // without introducing binary compatibility issues. Since this is the
+    // central event dispatcher, it can eventually handle all event types,
+    // eliminating the need for dummy overrides of each specialized handler.
     return QObject::event(eventParameter);
 }
 

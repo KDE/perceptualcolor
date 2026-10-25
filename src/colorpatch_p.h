@@ -21,58 +21,63 @@ namespace PerceptualColor
 
 class ColorPatch;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class ColorPatchPrivate
 {
 public:
-    /**
-     * @brief Parameters for the image.
+    /*!
+     * \inmodule ModulePrivateApi
+     *
+     * \brief Parameters for the image.
      */
     struct ImageParameters {
-        /**
-         * @brief width of the requested image, measured in device-independent
+        /*!
+         * \brief width of the requested image, measured in device-independent
          * pixels.
          */
         int width = 0;
-        /**
-         * @brief height of the requested image, measured in device-independent
+        /*!
+         * \brief height of the requested image, measured in device-independent
          * pixels.
          */
         int height = 0;
-        /**
-         * @brief The device pixel ratio of the widget, with floating
+        /*!
+         * \brief The device pixel ratio of the widget, with floating
          *        point precision
          */
         qreal devicePixelRatioF = 1;
-        /**
-         * @brief The color to be displayed
+        /*!
+         * \brief The color to be displayed
          */
         QColor color;
-        /**
-         * @brief The line width used to draw the mark that symbolized an
+        /*!
+         * \brief The line width used to draw the mark that symbolized an
          * invalid color, measured in device-independent pixels.
          */
         int lineWidth = 1;
-        /**
-         * @brief The color used to draw the mark that symbolized an
+        /*!
+         * \brief The color used to draw the mark that symbolized an
          * invalid color.
          */
         QColor lineColor;
-        /**
-         * @brief The layout direction of the widget
+        /*!
+         * \brief The layout direction of the widget
          */
         Qt::LayoutDirection layoutDirection = Qt::LayoutDirectionAuto;
 
-        /**
-         * @brief Equal operator
+        /*!
+         * \brief Equal operator
          *
-         * @param other The object to compare with.
+         * \a other The object to compare with.
          *
-         * @returns <tt>true</tt> if all data members have exactly the same
-         * coordinates. <tt>false</tt> otherwise.
+         * Returns \c {true} if all data members have exactly the same
+         * coordinates. \c {false} otherwise.
          */
         [[nodiscard]] bool operator==(const ImageParameters &other) const = default; // clazy:exclude=function-args-by-value
     };
@@ -80,17 +85,19 @@ public:
     explicit ColorPatchPrivate(ColorPatch *backLink);
     virtual ~ColorPatchPrivate() noexcept;
 
-    /** @brief Internal storage for property @ref ColorPatch::color
+    /*!
+     * \brief Internal storage for property \l ColorPatch::color
      *
      * QColor automatically initializes with an invalid color, just like it
-     * should be for the property @ref ColorPatch::color, so no need to
+     * should be for the property \l ColorPatch::color, so no need to
      * initialize here explicitly. */
     QColor m_color;
-    /** @brief The QLabel widget that is used to display the color. */
+    /*!
+     * \brief The QLabel widget that is used to display the color. */
     QLabel *m_label;
-    /**
-     * @brief Cache for the last image parameters that have been shown
-     * in @ref m_label.
+    /*!
+     * \brief Cache for the last image parameters that have been shown
+     * in \l m_label.
      */
     ImageParameters m_lastImageParameters = ImageParameters();
 
@@ -102,7 +109,8 @@ public:
 private:
     Q_DISABLE_COPY(ColorPatchPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ColorPatch> q_pointer;
 };

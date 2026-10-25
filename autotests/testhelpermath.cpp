@@ -14,6 +14,23 @@
 #include <qtestdata.h>
 #include <qtmetamacros.h>
 
+static void snippet01()
+{
+    //! [roundToDigitsExample]
+    constexpr double x = 1234.567;
+    const auto v1 = PerceptualColor::roundToDigits(x, 2); // Result: 1234.57
+    const auto v2 = PerceptualColor::roundToDigits(x, 1); // Result: 1234.6
+    const auto v3 = PerceptualColor::roundToDigits(x, 0); // Result: 1235
+    const auto v4 = PerceptualColor::roundToDigits(x, -1); // Result: 1230
+    const auto v5 = PerceptualColor::roundToDigits(x, -2); // Result: 1200
+    //! [roundToDigitsExample]
+    Q_UNUSED(v1)
+    Q_UNUSED(v2)
+    Q_UNUSED(v3)
+    Q_UNUSED(v4)
+    Q_UNUSED(v5)
+}
+
 namespace PerceptualColor
 {
 
@@ -1091,6 +1108,11 @@ private Q_SLOTS:
         QCOMPARE(roundToFloatMultiple(-0.10, 1), 0);
         QCOMPARE(roundToFloatMultiple(-0.20, 1), 0);
         QCOMPARE(roundToFloatMultiple(-3.20, 1), -3);
+    }
+
+    void testSnippet01()
+    {
+        snippet01();
     }
 };
 

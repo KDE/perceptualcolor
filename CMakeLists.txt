@@ -33,12 +33,6 @@ message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
-# Get predefined directories for installation process
-# Don’t worry, this is no lock-in into GNU, it simply provides
-# better default directories on Linux, and also works fine on
-# non-Linux systems.
-include(GNUInstallDirs)
-
 message(CHECK_START "Checking for iwyu (include-what-you-use)")
 find_program(
     iwyu_path
@@ -124,8 +118,8 @@ set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 
 
 ################# C++ standard #################
-# Our choice for the required C++ standard is documented via Doxygen (main
-# page of the documentation).
+# Our choice for the required C++ standard is explained in the code
+# documentation.
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS FALSE) # Try to disable compiler-specific extensions.
@@ -537,7 +531,18 @@ find_package(
     NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH
     ${ECM_MODULE_PATH})
-# NOTE See docs.cpp: "Qt 6 (minimum version:" for details.
+include(KDEInstallDirs) # Dependency of ECMGenerateQDoc, BEFORE GNUInstallDirs
+# Get predefined directories for installation process
+# Don’t worry, this is no lock-in into GNU, it simply provides
+# better default directories on Linux, and also works fine on
+# non-Linux systems.
+include(GNUInstallDirs)
+include(ECMQueryQt) # Dependency of ECMGenerateQDoc
+include(ECMGenerateQDoc)
+# NOTE Keep in sync
+# - .gitlab.ci.yml: codecheck_quality/codecheck_iwyu image‘s Qt version
+# - CMakeLists.txt: find_package(Qt6
+# - docs.cpp: Qt 6 (minimum version:
 find_package(Qt6 6.9
     # WARNING Keep in sync between src/Config.cmake.in and CMakeLists.txt!
     COMPONENTS Core Gui Widgets DBus Test Svg
@@ -625,50 +630,6 @@ list(APPEND CLANG_FORMAT_PATTERNS
 list(APPEND CLANG_FORMAT_PATTERNS
     examples/*.h
     examples/*.cpp)
-
-
-
-
-
-################# Generate API documentation in QCH format #################
-option(
-    BUILD_QCH                                            # Name
-    "Generate API documentation files in the QCH format" # Help text
-    FALSE)
-message(
-    STATUS
-    "BUILD_QCH: ${BUILD_QCH}")
-# For the library name, we follow the KDE policy:
-# https://community.kde.org/Policies/New_KDE_Library_API_Policy#Library_Naming
-set(LIBRARY_NAME "perceptualcolor-${MAJOR_VERSION}") # as in src/CMakeLists.txt
-set(QCH_TARGET "${LIBRARY_NAME}_QCH")
-if(BUILD_QCH)
-    include(FeatureSummary)
-    include(ECMAddQch)
-    ecm_add_qch(
-        "${QCH_TARGET}" # target name
-        NAME "${PROJECT_NAME}"
-        VERSION "${FULL_VERSION}"
-        ORG_DOMAIN "org.kde.perceptualcolor"
-        SOURCE_DIRS "src"
-        MD_MAINPAGE "README.md"
-        IMAGE_DIRS "docs/pics"
-        EXAMPLE_DIRS "src" "autotests" "examples"
-        TAGFILE_INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}/share/docs/tags"
-        QCH_INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}/share/docs/qch"
-        COMPONENT Devel
-        VERBOSE
-    )
-    ecm_install_qch_export(
-        TARGETS "${LIBRARY_NAME}_QCH"
-        FILE "${LIBRARY_NAME}_QCHTargets.cmake"
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}"
-        COMPONENT Devel
-    )
-    message(
-        STATUS
-        "Target “${QCH_TARGET}” creates QCH files (builds only manually).")
-endif()
 
 
 

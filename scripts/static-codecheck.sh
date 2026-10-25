@@ -18,14 +18,18 @@
 
 
 ################# Static code check #################
-# NOTE Keep the following list synchronized
-# between scripts/static-codecheck.sh and src/CMakeLists.txt
+# NOTE Keep the following list synchronized between
+# scripts/static-codecheck.sh
+# src/CMakeLists.txt
+# src/PerceptualColor
 PUBLIC_HEADERS="
     src/colordialog.h
     src/constpropagatinguniquepointer.h
     src/importexport.h
     src/multispinbox.h
     src/multispinboxsection.h
+    src/PerceptualColor
+    src/perceptualcolorruntimeversion.h
     src/portaleyedropper.h
     src/settranslation.h
     src/version.in.hpp
@@ -45,7 +49,7 @@ grep \
     --files-without-match $'\xEF\xBB\xBF' \
     $ALL_CODE \
     | grep \
-        --perl-regexp "\.(license|txt|icc|qrc|qph|ts|cmake\.in|sh)$" \
+        --perl-regexp "\.(license|txt|icc|qdocconf|qrc|qph|ts|cmake\.in|sh)$" \
         --invert-match \
     | sed 's/^/Missing byte-order-mark: /'
 
@@ -54,17 +58,6 @@ grep \
     --files-with-match $'\t' \
     $ALL_CODE \
         | sed 's/^/Contains tab character: /'
-
-
-# All header files in src/ should have an “@internal” in
-# the Doxygen documentation, because when it would be public,
-# the header file would not be in src/
-grep \
-    --recursive --exclude-dir=testbed \
-    $EXCLUDE_PUBLIC_HEADER_FROM_GREP \
-    --files-without-match $'@internal' \
-    src/*.h \
-         | sed 's/^/Missing “@internal” statement in non-public header: /'
 
 # https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#c139-use-final-on-classes-sparingly
 # The C++ core guidelines remommend to use “final” sparingly. The public header
@@ -171,41 +164,6 @@ grep \
     $ALL_CODE \
          | sed 's/^/Prefer “using ALIAS = TYPE;” over “typedef TYPE ALIAS;”: /'
 
-# -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
-#    @snippet instead! That allows that the example code is actually compiled
-#    and that helps detecting errors.
-grep \
-    --recursive --exclude-dir=testbed \
-    --perl-regexp "(@|\\\\)code(?!\{\.unparsed\})" \
-    $ALL_CODE \
-         | sed 's/^/Use snippets instead of “code” or “endcode”. (Exception: @code{.unparsed} is allowed.): /'
-
-# -> Doxygen style: Do not use “@em xyz”. Prefer instead “<em>xyz</em>” which
-#    might be longer, but has a clearer start point and end point, which is
-#    better when non-letter characters are involved. The @ is reserved
-#    for @ref with semantically tested references.
-# -> Same thing for “@c xyz”: Prefer instead “<tt>xyz</tt>”.
-grep \
-    --recursive --exclude-dir=testbed \
-    --fixed-strings "\\em" \
-    $ALL_CODE \
-         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
-grep \
-    --recursive --exclude-dir=testbed \
-    --fixed-strings "@em" \
-    $ALL_CODE \
-         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
-grep \
-    --recursive --exclude-dir=testbed \
-    --fixed-strings "\\c" \
-    $ALL_CODE \
-         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
-grep \
-   --recursive --exclude-dir=testbed  \
-    --perl-regexp "@c(?=([^a-zA-Z]|$))" \
-    $ALL_CODE \
-         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
-
 # -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
 #    which is more type save.
 grep \
@@ -286,13 +244,13 @@ grep \
     $ALL_CODE \
          | sed 's/^/Never use the “volatile” keyword: /'
 
-# When using Doxygen snippets, don’t do this within a namespace. As they are
+# When using code documentation snippets, don’t do this within a namespace. As they are
 # meant for documentation, they should always contain fully-qualified
 # names to make sure that they always work.
 #
 # As it is complicate to know if the snippet is actually within a namespace
 # (namespaces can be opened, but also be closed again), instead we do a
-# simplified check: We simply check if there are Doxygen snippets after the
+# simplified check: We simply check if there are code documentation snippets after the
 # very first usage of the “namespace” keyword.
 #
 # 1) Display all the files that are unit tests (adding “/*” to the UNIT_TESTS

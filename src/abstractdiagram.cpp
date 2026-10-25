@@ -26,8 +26,10 @@ class QShowEvent;
 
 namespace PerceptualColor
 {
-/** @brief The constructor.
- * @param parent The widget’s parent widget. This parameter will be passed
+/*!
+ * \brief The constructor.
+ *
+ * \a parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 AbstractDiagram::AbstractDiagram(QWidget *parent)
     : QWidget(parent)
@@ -35,55 +37,60 @@ AbstractDiagram::AbstractDiagram(QWidget *parent)
 {
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 AbstractDiagram::~AbstractDiagram() noexcept
 {
 }
 
-/**
- * @brief Default destructor
+/*!
+ * \brief Default destructor
  */
 AbstractDiagramPrivate::~AbstractDiagramPrivate() noexcept = default;
 
-/** @brief The color for painting focus indicators
- * @returns The color for painting focus indicators. This color is based on
+/*!
+ * \brief The color for painting focus indicators
+ * Returns the color for painting focus indicators. This color is based on
  * the current widget style at the moment this function is called. The value
  * might therefore be different on the next function call, if the widget style
  * has been switched by the user in the meantime.
- * @note As there is no build-in support in Qt to get this information, we
+ * \note As there is no build-in support in Qt to get this information, we
  * have to do some best guess, which might go wrong on some styles. */
 QColor AbstractDiagram::focusIndicatorColor() const
 {
     return palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
 }
 
-/** @brief The rounded size of the widget measured in
- * <em>physical pixels</em>.
+/*!
+ * \brief The rounded size of the widget measured in
+ * \e {physical pixels}.
  *
- * @returns The rounded size of this widget,
- * measured in <em>physical pixels</em>, based on
- * <tt>QPaintDevice::devicePixelRatioF()</tt>. This is the recommended
- * image size for calling <tt>QPainter::drawImage()</tt> during a paint event.
+ * Returns the rounded size of this widget,
+ * measured in \e {physical pixels}, based on
+ * \c {QPaintDevice::devicePixelRatioF()}. This is the recommended
+ * image size for calling \c {QPainter::drawImage()} during a paint event.
  * Both, width and height are guaranteed to be ≥ 0.
  *
- * Example: You want to prepare a <tt>QImage</tt> of the hole widget to be
- * used in <tt>QWidget::paintEvent()</tt>. To make sure a crisp rendering,
+ * Example: You want to prepare a \c {QImage} of the hole widget to be
+ * used in \c {QWidget::paintEvent()}. To make sure a crisp rendering,
  * you have to
  *
- * - Prepare an image with the size that this function returns.
- * - Set <tt>QImage::setDevicePixelRatio()</tt> of the image to the same
- *   value as <tt>QPaintDevice::devicePixelRatioF()</tt> of the widget.
- * - Actually paint the image on the widget at position <tt>(0, 0)</tt>
- *   <em>without</em> anti-aliasing.
+ * \list
+ *     \li Prepare an image with the size that this function returns.
+ *     \li Set \c {QImage::setDevicePixelRatio()} of the image to the same
+ *         value as \c {QPaintDevice::devicePixelRatioF()} of the widget.
+ *     \li Actually paint the image on the widget at
+ *         position \c {(0, 0)} \e {without} anti-aliasing.
+ * \endlist
  *
- * @note If <tt>QPaintDevice::devicePixelRatioF()</tt> is not an integer,
+ * \note If \c {QPaintDevice::devicePixelRatioF()} is not an integer,
  * the result of this function is rounded down. Qt’s widget geometry code
  * has no documentation about how this is handled. However, Qt seems to
  * round up starting with 0.5, at least on Linux/X11. But there are a few
  * themes (for example the “Kvantum style engine” with the style
  * “MildGradientKvantum”) that seem to round down: This becomes visible, as
  * the corresponding last physical pixels are not automatically redrawn before
- * executing the <tt>paintEvent()</tt> code. To avoid relying on undocumented
+ * executing the \c {paintEvent()} code. To avoid relying on undocumented
  * behaviour and to avoid known problems with some styles, this function
  * is conservative and always rounds down. */
 QSize AbstractDiagram::physicalPixelSize() const
@@ -99,69 +106,81 @@ QSize AbstractDiagram::physicalPixelSize() const
     return QSize(qMax(width, 0), qMax(height, 0));
 }
 
-/** @brief The maximum possible size of a square within the widget, measured
- * in <em>physical pixels</em>.
+/*!
+ * \brief The maximum possible size of a square within the widget, measured
+ * in \e {physical pixels}.
  *
  * This is the shorter value of width and height of the widget.
  *
- * @returns The maximum possible size of a square within the widget, measured
- * in <em>physical pixels</em>. Both, width and height are guaranteed
+ * Returns the maximum possible size of a square within the widget, measured
+ * in \e {physical pixels}. Both, width and height are guaranteed
  * to be ≥ 0.
  *
- * @sa @ref maximumWidgetSquareSize */
+ * \sa maximumWidgetSquareSize
+ */
 int AbstractDiagram::maximumPhysicalSquareSize() const
 {
     return qMin(physicalPixelSize().width(), physicalPixelSize().height());
 }
 
-/** @brief The maximum possible size of a square within the widget, measured
- * in <em>device-independent pixels</em>.
+/*!
+ * \brief The maximum possible size of a square within the widget, measured
+ * in \e {device-independent pixels}.
  *
- * This is the conversion of @ref maximumPhysicalSquareSize to the unit
- * <em>device-independent pixels</em>. It might be <em>smaller</em> than
- * the shortest value of <tt>QWidget::width()</tt> and
- * <tt>QWidget::height()</tt> because @ref maximumPhysicalSquareSize
+ * This is the conversion of \l maximumPhysicalSquareSize to the unit
+ * \e {device-independent pixels}. It might be \e {smaller} than
+ * the shortest value of \c {QWidget::width()} and
+ * \c {QWidget::height()} because \l maximumPhysicalSquareSize
  * might have rounded down.
  *
- * @returns The maximum possible size of a square within the widget, measured
- * in <em>device-independent pixels</em>. */
+ * Returns the maximum possible size of a square within the widget, measured
+ * in \e {device-independent pixels}. */
 qreal AbstractDiagram::maximumWidgetSquareSize() const
 {
     return (maximumPhysicalSquareSize() / devicePixelRatioF());
 }
 
-/** @brief The outline thickness of a handle.
+/*!
+ * \brief The outline thickness of a handle.
  *
- * @returns The outline thickness of a (either circular or linear) handle.
- * Measured in <em>device-independent pixels</em>. */
+ * Returns the outline thickness of a (either circular or linear) handle.
+ * Measured in \e {device-independent pixels}.
+ *
+ * \note The return value is constant. For a given object instance, this
+ * function returns the same value every time it is called. This constant
+ * value may be different for different instances of the object.
+ */
 int AbstractDiagram::handleOutlineThickness() const
 {
-    /** @note The return value is constant. For a given object instance, this
-     * function returns the same value every time it is called. This constant
-     * value may be different for different instances of the object. */
     return 2;
 }
 
-/** @brief The radius of a circular handle.
- * @returns The radius of a circular handle, measured in
- * <em>device-independent pixels</em>. */
+/*!
+ * \brief The radius of a circular handle.
+ *
+ * Returns the radius of a circular handle, measured in
+ * \e {device-independent pixels}.
+ *
+ * \note The return value is constant. For a given object instance, this
+ * function returns the same value every time it is called. This constant
+ * value may be different for different instances of the object.
+ */
 qreal AbstractDiagram::handleRadius() const
 {
-    /** @note The return value is constant. For a given object instance, this
-     * function returns the same value every time it is called. This constant
-     * value may be different for different instances of the object. */
     return handleOutlineThickness() * 2.5;
 }
 
-/** @brief The thickness of a color gradient.
+/*!
+ * \brief The thickness of a color gradient.
  *
  * This is the thickness of a one-dimensional gradient, for example in
  * a slider or a color wheel.
  *
- * @returns The thickness of a slider or a color wheel, measured in
- * <em>device-independent pixels</em>.
+ * Returns the thickness of a slider or a color wheel, measured in
+ * \e {device-independent pixels}.
  *
- * @sa @ref gradientMinimumLength() */
+ * \sa gradientMinimumLength()
+ */
 int AbstractDiagram::gradientThickness() const
 {
     ensurePolished();
@@ -177,16 +196,18 @@ int AbstractDiagram::gradientThickness() const
     return result;
 }
 
-/** @brief The minimum length of a color gradient.
+/*!
+ * \brief The minimum length of a color gradient.
  *
  * This is the minimum length of a one-dimensional gradient, for example in
  * a slider or a color wheel. This is also the minimum width and minimum
  * height of two-dimensional gradients.
  *
- * @returns The length of a gradient, measured in
- * <em>device-independent pixels</em>.
+ * Returns the length of a gradient, measured in
+ * \e {device-independent pixels}.
  *
- * @sa @ref gradientThickness() */
+ * \sa gradientThickness()
+ */
 int AbstractDiagram::gradientMinimumLength() const
 {
     ensurePolished();
@@ -203,11 +224,12 @@ int AbstractDiagram::gradientMinimumLength() const
         gradientThickness());
 }
 
-/** @brief The empty space around diagrams reserved for the focus indicator.
+/*!
+ * \brief The empty space around diagrams reserved for the focus indicator.
  *
- * Measured in <em>device-independent pixels</em>.
+ * Measured in \e {device-independent pixels}.
  *
- * @returns The empty space around diagrams reserved for the focus
+ * Returns the empty space around diagrams reserved for the focus
  * indicator. */
 int AbstractDiagram::spaceForFocusIndicator() const
 {
@@ -217,13 +239,17 @@ int AbstractDiagram::spaceForFocusIndicator() const
     return 3 * handleOutlineThickness();
 }
 
-/** @brief An appropriate color for a handle, depending on the background
+/*!
+ * \brief An appropriate color for a handle, depending on the background
  * lightness.
- * @param lightness The background lightness. Valid range: <tt>[0, 100]</tt>
- * for @ref LchSpace::CielchD50 and <tt>[0, 100]</tt> for @ref LchSpace::Oklch.
- * @param projectionSpace The color space into which the gamut will be
+ *
+ * \a lightness The background lightness. Valid range: \c {[0, 100]}
+ * for \l LchSpace::CielchD50 and \c {[0, 100]} for \l LchSpace::Oklch.
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
- * @returns An appropriate color for a handle. This color will provide
+ *
+ * Returns an appropriate color for a handle. This color will provide
  * contrast to the background. */
 QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness, PerceptualColor::LchSpace projectionSpace)
 {
@@ -236,42 +262,46 @@ QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness, Perc
     return Qt::white;
 }
 
-/** @brief If this widget is actually visible.
+/*!
+ * \brief If this widget is actually visible.
  *
- * Unlike <tt>QWidget::isVisible</tt>, minimized windows are <em>not</em>
+ * Unlike \c {QWidget::isVisible}, minimized windows are \e {not}
  * considered visible by this function.
  *
  * Changes can be observed with
- * @ref AbstractDiagram::actualVisibilityToggledEvent.
+ * \l AbstractDiagram::actualVisibilityToggledEvent.
  *
- * @returns If this widget is actually visible.
+ * Returns if this widget is actually visible.
  *
- * @internal
  *
- * This information is based on the last @ref AbstractDiagram::showEvent
- * or @ref AbstractDiagram::hideEvent that was received. */
+ *
+ * This information is based on the last \l AbstractDiagram::showEvent
+ * or \l AbstractDiagram::hideEvent that was received. */
 bool AbstractDiagram::isActuallyVisible() const
 {
     return d_pointer->m_isActuallyVisible;
 }
 
-/** @brief Event occurring after @ref isActuallyVisible has been toggled.
+/*!
+ * \brief Event occurring after \l isActuallyVisible has been toggled.
  *
- * This function is called if and only if @ref isActuallyVisible has
+ * This function is called if and only if \l isActuallyVisible has
  * actually been toggled. */
 void AbstractDiagram::actualVisibilityToggledEvent()
 {
 }
 
-/** @brief React on a show event.
+/*!
+ * \brief React on a show event.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The show event.
+ * \a eventParameter The show event.
  *
- * @internal
  *
- * @sa @ref AbstractDiagram::isActuallyVisible */
+ *
+ * \sa AbstractDiagram::isActuallyVisible
+ */
 void AbstractDiagram::showEvent(QShowEvent *eventParameter)
 {
     QWidget::showEvent(eventParameter);
@@ -281,15 +311,17 @@ void AbstractDiagram::showEvent(QShowEvent *eventParameter)
     }
 }
 
-/** @brief React on a hide event.
+/*!
+ * \brief React on a hide event.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The hide event.
+ * \a eventParameter The hide event.
  *
- * @internal
  *
- * @sa @ref AbstractDiagram::isActuallyVisible */
+ *
+ * \sa AbstractDiagram::isActuallyVisible
+ */
 void AbstractDiagram::hideEvent(QHideEvent *eventParameter)
 {
     QWidget::hideEvent(eventParameter);
@@ -299,42 +331,44 @@ void AbstractDiagram::hideEvent(QHideEvent *eventParameter)
     }
 }
 
-/** @brief An alternative to QWidget::update(). It’s a workaround
+/*!
+ * \brief An alternative to QWidget::update(). It’s a workaround
  * that avoids trouble with overload resolution.
  *
- * Connecting a signal to the slot <tt>
- * <a href="https://doc.qt.io/qt-6/qwidget.html#update">QWidget::update()</a>
- * </tt> is surprisingly difficult, at least if you want to use the functor
+ * Connecting a signal to the slot
+ * \l {https://doc.qt.io/qt-6/qwidget.html#update} {QWidget::update()}
+ * is surprisingly difficult, at least if you want to use the functor
  * syntax (which provides compile-time checks) for the connection. A simple
  * connection fails to compile because it fails to do a correct  overload
- * resolution, as there is more than one slot called <tt>update</tt>. Now,
- * <tt><a href="https://doc.qt.io/qt-6/qtglobal.html#qOverload">qOverload&lt;&gt;()</a></tt>
+ * resolution, as there is more than one slot called \c {update}. Now,
+ * \l {https://doc.qt.io/qt-6/qoverload.html#qOverload} {qOverload}
  * can be used to choose the correct overload, but in some
  * case, it might generate compiler warnings.
  *
- * Instead of connecting to <tt>
- * <a href="https://doc.qt.io/qt-6/qwidget.html#update">QWidget::update()
- * </a></tt> directly, simply connect to this slot instead. It calls
- * the actual <tt><a href="https://doc.qt.io/qt-6/qwidget.html#update">
- * QWidget::update()</a></tt>, but avoids the annoyance with the overload
- * resolution */
+ * Instead of connecting to
+ * \l {https://doc.qt.io/qt-6/qwidget.html#update} {QWidget::update()}
+ * directly, simply connect to this slot instead. It calls
+ * the actual \l {https://doc.qt.io/qt-6/qwidget.html#update}
+ * {QWidget::update()}, but avoids the annoyance with the overload
+ * resolution.
+ */
 void AbstractDiagram::callUpdate()
 {
     update();
 }
 
-/**
- * @brief A neutral gray color for the diagram background, returned as an
+/*!
+ * \brief A neutral gray color for the diagram background, returned as an
  * sRGB value.
  *
- * @returns A neutral gray color for the diagram background, returned as an
+ * Returns a neutral gray color for the diagram background, returned as an
  * sRGB value.
  *
- * @internal
  *
- * @note This value corresponds to @ref LchValues::neutralGray() from
- * @ref oklchValues, converted to sRGB. Using a consistent neutral gray across
- * all widgets is desirable, regardless of which @ref LchSpace they operate in.
+ *
+ * \note This value corresponds to \l LchValues::neutralGray() from
+ * \l oklchValues, converted to sRGB. Using a consistent neutral gray across
+ * all widgets is desirable, regardless of which \l LchSpace they operate in.
  */
 QColor AbstractDiagram::neutralGray()
 {
@@ -343,15 +377,15 @@ QColor AbstractDiagram::neutralGray()
     return v;
 }
 
-/**
- * @brief React on a mouse move event.
+/*!
+ * \brief React on a mouse move event.
  *
  * Reimplemented from base class.
  *
- * @note When overriding this function in a subclass, make sure to
+ * \note When overriding this function in a subclass, make sure to
  * call the base class implementation (AbstractDiagram::mousePressEvent).
  *
- * @param eventParameter The corresponding mouse event
+ * \a eventParameter The corresponding mouse event
  */
 void AbstractDiagram::mousePressEvent(QMouseEvent *eventParameter)
 {
@@ -360,15 +394,15 @@ void AbstractDiagram::mousePressEvent(QMouseEvent *eventParameter)
     QWidget::mousePressEvent(eventParameter);
 }
 
-/**
- * @brief React on a mouse press event.
+/*!
+ * \brief React on a mouse press event.
  *
  * Reimplemented from base class.
  *
- * @note When overriding this function in a subclass, make sure to
+ * \note When overriding this function in a subclass, make sure to
  * call the base class implementation (AbstractDiagram::mouseMoveEvent).
  *
- * @param eventParameter The corresponding mouse event
+ * \a eventParameter The corresponding mouse event
  */
 void AbstractDiagram::mouseMoveEvent(QMouseEvent *eventParameter)
 {
@@ -393,47 +427,50 @@ void AbstractDiagram::mouseMoveEvent(QMouseEvent *eventParameter)
     // the window gets moved.
 }
 
-/**
- * @brief Initiates an outgoing drag operation.
+/*!
+ * \brief Initiates an outgoing drag operation.
  *
  * This virtual function simplifies support for drag-and-drop.
  * It is called when the user presses the left mouse button and
  * moves the cursor beyond the platform-defined drag threshold.
  *
  * To implement drag support, reimplement this function in a subclass:
- * - Create a QDrag object on the heap, using the widget as parent.
- * - Configure the drag object (e.g. set mime data, pixmap).
- * - Call QDrag::exec() to start the drag. Qt will take ownership
- *   of the QDrag object; do not delete it manually.
  *
- * @param startPosition The position where the drag gesture began.
+ * \list
+ *     \li Create a QDrag object on the heap, using the widget as parent.
+ *     \li Configure the drag object (e.g. set mime data, pixmap).
+ *     \li Call QDrag::exec() to start the drag. Qt will take ownership
+ *         of the QDrag object; do not delete it manually.
+ * \endlist
+ *
+ * \a startPosition The position where the drag gesture began.
  */
 void AbstractDiagram::execDrag(QPoint startPosition)
 {
     Q_UNUSED(startPosition)
 }
 
-/**
- * @brief Main event handler.
+/*!
+ * \brief Main event handler.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event to be processed.
+ * \a eventParameter The event to be processed.
  *
- * @return This function returns true if the event was recognized, otherwise
+ * Returns true if the event was recognized, otherwise
  * it returns false.
  *
- * @internal
  *
- * @note This is a dummy reimplementation, provided to ensure future
+ *
+ * \note This is a dummy reimplementation, provided to ensure future
  * extensibility while preserving binary compatibility, as
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
- * recommended by the KDE binary compatibility policy</a>.
+ * \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...}
+ * {recommended by the KDE binary compatibility policy}.
  * The policy states that
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
- * “you can safely reimplement a virtual function defined in one of the base
+ * \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function}
+ * {“you can safely reimplement a virtual function defined in one of the base
  * classes only if it is safe that the programs linked with the prior version
- * call the implementation in the base class rather than the derived one.”</a>.
+ * call the implementation in the base class rather than the derived one.”}.
  * Consistent behavior across versions would be difficult to guarantee.
  * By reimplementing the main event handler now,
  * we retain the option to extend it later to process new event types
@@ -446,12 +483,12 @@ bool AbstractDiagram::event(QEvent *eventParameter)
     return QWidget::event(eventParameter);
 }
 
-/**
- * @brief Handle state changes.
+/*!
+ * \brief Handle state changes.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event.
+ * \a eventParameter The event.
  */
 void AbstractDiagram::changeEvent(QEvent *eventParameter)
 {

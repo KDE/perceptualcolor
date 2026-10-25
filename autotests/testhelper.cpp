@@ -70,6 +70,35 @@ static void snippet02()
     }
 }
 
+static void doSomething() { };
+
+class MyWidget : QWidget
+{
+    Q_OBJECT
+
+protected:
+    //! [reactChangeEvent]
+    virtual void changeEvent(QEvent *event) override
+    {
+        const auto type = event->type();
+        if ((type == QEvent::PaletteChange) //
+            || (type == QEvent::ApplicationPaletteChange) //
+            || (type == QEvent::StyleChange)) //
+        {
+            doSomething();
+        }
+        QWidget::changeEvent(event);
+    }
+    //! [reactChangeEvent]
+
+public:
+    void callSnippet03()
+    {
+        QEvent event(QEvent::None);
+        changeEvent(&event);
+    };
+};
+
 class EnumTestClass : QObject
 {
     Q_OBJECT
@@ -243,6 +272,12 @@ private Q_SLOTS:
     void testSnippet02()
     {
         snippet02();
+    }
+
+    void testSnippet03()
+    {
+        MyWidget object;
+        object.callSnippet03();
     }
 
     void testIsIn()

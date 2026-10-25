@@ -14,10 +14,12 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
  *
- * @brief Access to color-space related data.
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Access to color-space related data.
  */
 class ColorSpaceInfo
 {
@@ -31,8 +33,8 @@ public:
     [[nodiscard]] static double oklabBlackpointL();
     [[nodiscard]] static double oklabWhitepointL();
 
-    /**
-     * @brief Unusual shapes in @ref ChromaLightnessDiagram
+    /*!
+     * \brief Unusual shapes in \l ChromaLightnessDiagram
      *
      * The image maps chroma on the x-axis and lightness on the y-axis,
      * drawn line by line from low chroma to high chroma at a fixed lightness.
@@ -43,29 +45,33 @@ public:
      * optimization is unsafe.
      *
      * Test renderings at 5000-pixel lightness resolution revealed exceptions:
-     * - In CIELCH: hue 95.4518°–102.575° combined with lightness 93.64%–98.6%.
+     *
+     * \list
+     * \li In CIELCH: hue 95.4518°–102.575° combined with lightness 93.64%–98.6%.
      *   To ensure coverage, we expand this region by ~10%: hue 95°–103°,
      *   lightness 93%–99%.
      *   This lies in the yellow region, where the gamut outline briefly rises
      *   before continuing its decline. The deviation is subtle and will most
      *   probably remain unnoticed by the user.
-     * - In OKLCH: hue 264.052°–264.208° combined with lightness 0.0028–0.4704.
+     * \li In OKLCH: hue 264.052°–264.208° combined with lightness 0.0028–0.4704.
      *   Expanded by ~10%: hue 264.03°–264.23°, lightness 0.00–0.53.
      *   In Oklch projection at high‑chroma blue hues, the outline resembles
      *   a triangle as expected, but also
-     *   <a href=" https://github.com/color-js/color.js/issues/81">
-     *   shows a spike extending from the lower‑left corner to
+     *   \l { https://github.com/color-js/color.js/issues/81}
+     *   {shows a spike extending from the lower‑left corner to
      *   the middle of the right edge. This shape is mathematically correct
-     *   according to the sRGB and Oklch definitions,</a>
+     *   according to the sRGB and Oklch definitions,}
      *   but users may mistake it for a rendering error.
+     * \endlist
      *
      * Within these unsafe ranges, early termination must be disabled to
      * guarantee correctness.
      *
-     * @param projectionSpace The projection color space.
-     * @param hue360 The hue to test. Must be in the range [0..360[.
+     * \a projectionSpace The projection color space.
      *
-     * @returns <tt>true</tt> if there is an unusual shape. <tt>false</tt>
+     * \a hue360 The hue to test. Must be in the range [0..360[.
+     *
+     * Returns \c {true} if there is an unusual shape. \c {false}
      * otherwise.
      */
     static constexpr bool isUnusualShapeAtHue(LchSpace projectionSpace, double hue360) noexcept
@@ -79,17 +85,18 @@ public:
         return false; // default fallback
     }
 
-    /**
-     * @brief Unusual shapes in @ref ChromaLightnessDiagram
+    /*!
+     * \brief Unusual shapes in \l ChromaLightnessDiagram
      *
      * The hole range of lightness values affected somewhere across
-     * @ref isUnusualShapeAtHue.
+     * \l isUnusualShapeAtHue.
      *
-     * @param projectionSpace The projection color space.
-     * @param lightness The lightness. The valid range is according to the
+     * \a projectionSpace The projection color space.
+     *
+     * \a lightness The lightness. The valid range is according to the
      * projection space.
      *
-     * @returns <tt>true</tt> if there is an unusual shape. <tt>false</tt>
+     * Returns \c {true} if there is an unusual shape. \c {false}
      * otherwise.
      */
     static constexpr bool isUnusualShapeAtLightness(LchSpace projectionSpace, double lightness) noexcept
@@ -106,10 +113,6 @@ public:
 private:
     Q_DISABLE_COPY(ColorSpaceInfo)
 
-    /**
-     * @internal
-     * @brief Only for unit tests.
-     */
     friend class TestColorSpaceInfo;
 
     ColorSpaceInfo();
@@ -118,8 +121,8 @@ private:
 
     [[nodiscard]] static QColor maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type);
 
-    /**
-     * @brief All RGB colors located on the chromaticity boundary, ordered by
+    /*!
+     * \brief All RGB colors located on the chromaticity boundary, ordered by
      * CielchD50 hue.
      *
      * The chromaticity boundary consists of the spectral locus and the purple
@@ -135,8 +138,8 @@ private:
      * The hue is normalized to the range [0, 360].
      */
     std::map<double, QColor> m_chromaticityBoundaryByCielchD50Hue360;
-    /**
-     * @brief All RGB colors located on the chromaticity boundary, ordered by
+    /*!
+     * \brief All RGB colors located on the chromaticity boundary, ordered by
      * Oklab hue.
      *
      * The chromaticity boundary consists of the spectral locus and the purple
@@ -153,32 +156,36 @@ private:
      */
     std::map<double, QColor> m_chromaticityBoundaryByOklabHue360;
 
-    /** @brief The darkest in-gamut point on the L* axis.
+    /*!
+     * \brief The darkest in-gamut point on the L* axis.
      *
-     * @sa @ref m_cielabD50WhitepointL()
+     * \sa m_cielabD50WhitepointL()
      */
     qreal m_cielabD50BlackpointL = 0;
-    /** @brief The lightest in-gamut point on the L* axis.
+    /*!
+     * \brief The lightest in-gamut point on the L* axis.
      *
-     * @sa @ref m_cielabD50BlackpointL()
+     * \sa m_cielabD50BlackpointL()
      */
     qreal m_cielabD50WhitepointL = 100;
-    /** @brief The darkest in-gamut point on the L* axis.
+    /*!
+     * \brief The darkest in-gamut point on the L* axis.
      *
-     * @sa @ref m_oklabWhitepointL()
+     * \sa m_oklabWhitepointL()
      */
     qreal m_oklabBlackpointL = 0;
-    /** @brief The lightest in-gamut point on the L* axis.
+    /*!
+     * \brief The lightest in-gamut point on the L* axis.
      *
-     * @sa @ref m_oklabBlackpointL()
+     * \sa m_oklabBlackpointL()
      */
     qreal m_oklabWhitepointL = 1;
-    /**
-     * @brief Internal storage.
+    /*!
+     * \brief Internal storage.
      */
     double m_profileMaximumCielchD50Chroma = cielchD50Values.maximumChroma;
-    /**
-     * @brief Internal storage.
+    /*!
+     * \brief Internal storage.
      */
     double m_profileMaximumOklchChroma = oklchValues.maximumChroma;
 };

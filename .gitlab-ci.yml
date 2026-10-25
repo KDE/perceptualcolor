@@ -116,13 +116,10 @@ codecheck_quality:
     when: always
     paths:
       - artifact_*
-      - build_qch/perceptualcolor.qch
-      - build_qch/perceptualcolor.tags
-      - build_qch/perceptualcolor-0_QCHTargets.cmake
   stage: check2
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip doxygen graphviz wget clazy clang-tidy qt6-documentation-tools texlive-latex-base libqt6sql6-sqlite pipx build-essential
+    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip wget clazy clang-tidy qt6-documentation-tools pipx build-essential
     # Version information about installed software:
     - echo "pip version:" && pip --version
     - echo "pipx version:" && pipx --version
@@ -130,8 +127,6 @@ codecheck_quality:
     - export PATH=$PATH:/root/.local/bin
     - pipx install cmakelint
     - echo "cmakelint version:" && cmakelint --version
-    - echo "doxygen version:" && doxygen --version
-    - echo "graphviz dot version:" && dot -V
     - cmake --find-package -DNAME=ECM -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
     - grep "set(PACKAGE_VERSION " /usr/share/ECM/cmake/ECMConfigVersion.cmake | sed 's/^/ECM /'
     # The following commands make a graphical shell available
@@ -149,7 +144,7 @@ codecheck_quality:
     - export LANG=C.UTF-8
     - export LC_ALL=C.UTF-8
   script:
-    - scripts/ci-test.sh
+    - scripts/ci.sh
 
 
 

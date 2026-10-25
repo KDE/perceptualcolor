@@ -30,14 +30,14 @@ scripts/ci-format.sh
 exitcode=$?
 totalerrors=$((totalerrors + exitcode))
 echo "ci-format.sh finished with exit code $exitcode."
-exitcode_automatic_integration=$exitcode
+exitcode_format=$exitcode
 
-echo "Starting ci-doxygen.sh …"
-scripts/ci-doxygen.sh
+echo "Starting ci-doc.sh …"
+scripts/ci-doc.sh
 exitcode=$?
 totalerrors=$((totalerrors + exitcode))
-echo "ci-doxygen.sh finished with exit code $exitcode."
-exitcode_doxygen=$exitcode
+echo "ci-doc.sh finished with exit code $exitcode."
+exitcode_doc=$exitcode
 
 echo "Starting ci-warnings.sh …"
 scripts/ci-warnings.sh
@@ -62,8 +62,8 @@ echo "END list of artifacts"
 echo "Exit codes:"
 echo "staticcodecheck: $exitcode_staticcodecheck"
 echo "cmakelint: $exitcode_cmakelint"
-echo "automatic_integration: $exitcode_automatic_integration"
-echo "doxygen: $exitcode_doxygen"
+echo "format: $exitcode_format"
+echo "doc: $exitcode_doc"
 echo "warnings: $exitcode_warnings"
 echo
 echo "Terminating ci.sh with exit code $totalerrors."

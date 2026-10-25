@@ -21,11 +21,13 @@
 namespace PerceptualColor
 {
 
-/** @brief List of all available conversions from this color model.
+/*!
+ * \inmodule ModulePrivateApi
  *
- * @param model The color model from which to convert.
+ * \brief List of all available conversions from this color model.
  *
- * @returns List of all available conversions from this color model. */
+ * \a model The color model from which to convert.
+ */
 QList<AbsoluteColor::Conversion> AbsoluteColor::conversionsFrom(const ColorModel model)
 {
     QList<AbsoluteColor::Conversion> result;
@@ -37,19 +39,21 @@ QList<AbsoluteColor::Conversion> AbsoluteColor::conversionsFrom(const ColorModel
     return result;
 }
 
-/** @brief Adds some @ref GenericColor to an existing hash table.
+/*!
+ * \brief Adds some \l GenericColor to an existing hash table.
  *
- * @param values A hash table with color values.
- * @param model The color model from which to perform conversions.
+ * \a values A hash table with color values.
  *
- * @pre <em>values</em> contains the key <em>model</em>.
+ * \a model The color model from which to perform conversions.
  *
- * @post For all available direct conversions from <em>model</em>, it is
+ * \b Precondition: \e {values} contains the key \e {model}.
+ *
+ * For all available direct conversions from \e {model}, it is
  * checked whether a value for the destination color model is already
- * available in <em>values</em>. If not, this value is calculated and added
- * to <em>values</em>, and this function is called recursively again for this
+ * available in \e {values}. If not, this value is calculated and added
+ * to \e {values}, and this function is called recursively again for this
  * destination color model. */
-void AbsoluteColor::addDirectConversionsRecursivly(QHash<ColorModel, GenericColor> *values, ColorModel model)
+void AbsoluteColor::addDirectConversionsRecursivly(QHash<ColorModel, GenericColor> *values, const ColorModel model)
 {
     const auto availableConversions = conversionsFrom(model);
     const auto currentValue = values->value(model);
@@ -61,13 +65,15 @@ void AbsoluteColor::addDirectConversionsRecursivly(QHash<ColorModel, GenericColo
     }
 }
 
-/** @brief Calculate conversions to all color models.
+/*!
+ * \brief Calculate conversions to all color models.
  *
- * @param model The original color model
- * @param value The original color value
+ * \a model The original color model
  *
- * @returns A list containing the original value and containing conversions
- * to all other @ref ColorModel. */
+ * \a value The original color value
+ *
+ * Returns a list containing the original value and containing conversions
+ * to all other \l ColorModel. */
 QHash<ColorModel, GenericColor> AbsoluteColor::allConversions(const ColorModel model, const GenericColor &value)
 {
     QHash<ColorModel, GenericColor> result;
@@ -76,30 +82,31 @@ QHash<ColorModel, GenericColor> AbsoluteColor::allConversions(const ColorModel m
     return result;
 }
 
-/** @internal
+/*!
  *
- * @brief Conversion from <a href="https://bottosson.github.io/posts/oklab/">
- * Oklab color space</a> to
- * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space">
- * CIE 1931 XYZ color space</a>.
  *
- * @param value The value to be converted
+ * \brief Conversion from \l {https://bottosson.github.io/posts/oklab/}
+ * {Oklab color space} to
+ * \l {https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space}
+ * {CIE 1931 XYZ color space}.
  *
- * @note <a href="https://bottosson.github.io/posts/oklab/">
- * Oklab</a> does not specify which
- * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_standard_observer">
- * observer</a> the D65 whitepoint should use. But it states that
- * <em>“Oklab uses a D65 whitepoint, since this is what sRGB and other
- * common color spaces use.”</em>. As
- * <a href="https://en.wikipedia.org/wiki/SRGB">sRGB</a>
- * uses the <em>CIE 1931 2° Standard Observer</em>, this
+ * \a value The value to be converted
+ *
+ * \note \l {https://bottosson.github.io/posts/oklab/}
+ * {Oklab} does not specify which
+ * \l {https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_standard_observer}
+ * {observer} the D65 whitepoint should use. But it states that
+ * \e {“Oklab uses a D65 whitepoint, since this is what sRGB and other
+ * common color spaces use.”}. As
+ * \l {https://en.wikipedia.org/wiki/SRGB} {sRGB}
+ * uses the \e {CIE 1931 2° Standard Observer}, this
  * might be a good choice.
  *
- * @returns the same color in
- * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space">
- * CIE 1931 XYZ color space</a>. The XYZ value has
- * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
- * “a D65 whitepoint and white as Y=1”</a>. */
+ * Returns the same color in
+ * \l {https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space}
+ * {CIE 1931 XYZ color space}. The XYZ value has
+ * \l {https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab}
+ * {“a D65 whitepoint and white as Y=1”}. */
 GenericColor AbsoluteColor::fromOklabToXyzD65(const GenericColor &value)
 {
     // The following algorithm is as described in
@@ -119,33 +126,34 @@ GenericColor AbsoluteColor::fromOklabToXyzD65(const GenericColor &value)
     return GenericColor(static_cast<Mat3d>(oklabM1inverse) * lms);
 }
 
-/** @internal
+/*!
  *
- * @brief Conversion from
- * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space">
- * CIE 1931 XYZ color space</a> to
- * <a href="https://bottosson.github.io/posts/oklab/">
- * Oklab color space</a>.
  *
- * @param value The value to be converted
+ * \brief Conversion from
+ * \l {https://en.wikipedia.org/wiki/CIE_1931_color_space#Definition_of_the_CIE_XYZ_color_space}
+ * {CIE 1931 XYZ color space} to
+ * \l {https://bottosson.github.io/posts/oklab/}
+ * {Oklab color space}.
  *
- * @pre The XYZ value has
- * <a href="https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab">
- * “a D65 whitepoint and white as Y=1”</a>.
+ * \a value The value to be converted
  *
- * @note <a href="https://bottosson.github.io/posts/oklab/">
- * Oklab</a> does not specify which
- * <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_standard_observer">
- * observer</a> the D65 whitepoint should use. But it states that
- * <em>“Oklab uses a D65 whitepoint, since this is what sRGB and other
- * common color spaces use.”</em>. As
- * <a href="https://en.wikipedia.org/wiki/SRGB">sRGB</a>
- * uses the <em>CIE 1931 2° Standard Observer</em>, this
+ * \b Precondition: The XYZ value has
+ * \l {https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab}
+ * {“a D65 whitepoint and white as Y=1”}.
+ *
+ * \note \l {https://bottosson.github.io/posts/oklab/}
+ * {Oklab} does not specify which
+ * \l {https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_standard_observer}
+ * {observer} the D65 whitepoint should use. But it states that
+ * \e {“Oklab uses a D65 whitepoint, since this is what sRGB and other
+ * common color spaces use.”}. As
+ * \l {https://en.wikipedia.org/wiki/SRGB} {sRGB}
+ * uses the \e {CIE 1931 2° Standard Observer}, this
  * might be a good choice.
  *
- * @returns the same color in
- * <a href="https://bottosson.github.io/posts/oklab/">
- * Oklab color space</a>. */
+ * Returns the same color in
+ * \l {https://bottosson.github.io/posts/oklab/}
+ * {Oklab color space}. */
 GenericColor AbsoluteColor::fromXyzD65ToOklab(const GenericColor &value)
 {
     // The following algorithm is as described in
@@ -182,39 +190,45 @@ GenericColor AbsoluteColor::fromXyzD65ToOklab(const GenericColor &value)
     return GenericColor(static_cast<Mat3d>(oklabM2) * lms);
 }
 
-/** @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color */
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
+ */
 GenericColor AbsoluteColor::fromXyzD65ToXyzD50(const GenericColor &value)
 {
     return GenericColor( //
         static_cast<Mat3d>(xyzD65ToXyzD50Matrix) * value.toVec3d());
 }
 
-/** @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color */
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
+ */
 GenericColor AbsoluteColor::fromXyzD50ToXyzD65(const GenericColor &value)
 {
     return GenericColor( //
         static_cast<Mat3d>(xyzD50ToXyzD65Matrix) * value.toVec3d());
 }
 
-/** @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color */
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
+ */
 GenericColor AbsoluteColor::fromXyzD50ToCielabD50(const GenericColor &value)
 {
     // Conversion function as described in
@@ -244,13 +258,15 @@ GenericColor AbsoluteColor::fromXyzD50ToCielabD50(const GenericColor &value)
     return {l, a, b};
 }
 
-/** @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color */
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
+ */
 GenericColor AbsoluteColor::fromCielabD50ToXyzD50(const GenericColor &value)
 {
     // Conversion function as described in
@@ -279,13 +295,14 @@ GenericColor AbsoluteColor::fromCielabD50ToXyzD50(const GenericColor &value)
     return {X, Y, Z};
 }
 
-/** @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
  *
  * This is a generic function converting between polar coordinates
  * (format: ignored, radius, angleDegree, ignored) and Cartesian coordinates
@@ -309,13 +326,14 @@ GenericColor AbsoluteColor::fromCartesianToPolar(const GenericColor &value)
     return result;
 }
 
-/** @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
  *
  * This is a generic function converting between polar coordinates
  * (format: ignored, radius, angleDegree, ignored) and Cartesian coordinates
@@ -330,14 +348,14 @@ GenericColor AbsoluteColor::fromPolarToCartesian(const GenericColor &value)
                         radius * std::sin(angleRadians));
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
  */
 GenericColor AbsoluteColor::fromLinearSRgbToSRgb(const GenericColor &value)
 {
@@ -346,14 +364,14 @@ GenericColor AbsoluteColor::fromLinearSRgbToSRgb(const GenericColor &value)
                         channelFromLinearSRgbToSRgb(value.third));
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
  */
 GenericColor AbsoluteColor::fromSRgbToLinearSRgb(const GenericColor &value)
 {
@@ -362,14 +380,14 @@ GenericColor AbsoluteColor::fromSRgbToLinearSRgb(const GenericColor &value)
                         channelFromSRgbToLinearSRgb(value.third));
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
  */
 GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
 {
@@ -378,14 +396,14 @@ GenericColor AbsoluteColor::fromXyzD65ToLinearSRgb(const GenericColor &value)
     return result;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Color conversion.
  *
- * @param value Color to be converted.
+ * \brief Color conversion.
  *
- * @returns the converted color
+ * \a value Color to be converted.
+ *
+ * Returns the converted color
  */
 GenericColor AbsoluteColor::fromLinearSRgbToXyzD65(const GenericColor &value)
 {
@@ -394,15 +412,18 @@ GenericColor AbsoluteColor::fromLinearSRgbToXyzD65(const GenericColor &value)
     return result;
 }
 
-/** @brief Convert a color from one color model to another.
+/*!
+ * \brief Convert a color from one color model to another.
  *
- * @param from The color model from which the conversion is made.
- * @param value The value being converted.
- * @param to The color model to which the conversion is made.
+ * \a from The color model from which the conversion is made.
  *
- * @returns The value converted into the new color model.
+ * \a value The value being converted.
  *
- * @note This function is <em>not</em> speed-optimized. */
+ * \a to The color model to which the conversion is made.
+ *
+ * Returns the value converted into the new color model.
+ *
+ * \note This function is \e {not} speed-optimized. */
 std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const GenericColor &value, const ColorModel to)
 {
     const auto temp = allConversions(from, value);
@@ -412,36 +433,32 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
     return std::nullopt;
 }
 
-/** @brief Conversion to QRgb.
+/*!
+ * \brief Conversion to QRgb.
  *
- * @param oklab the original color
+ * \a oklab the original color
  *
- * @returns An opaque sRGB color matching the original one if it is within the
+ * Returns an opaque sRGB color matching the original one if it is within the
  * gamut. Otherwise, returns a fully transparent color (alpha and RGB channels
  * set to 0 to ensure compatibility with both, premultiplied and
  * non-premultiplied data).
  *
- * @sa @ref AbsoluteColor::fastFromCielchD50ToSRgbClamped()
+ * \sa AbsoluteColor::fastFromCielchD50ToSRgbClamped()
  *
- * @internal
  *
- * @note This function is optimized for speed. It uses <tt>float</tt> instead
- * of <tt>double</tt>, as double‑precision arithmetic is roughly 50% slower in
+ *
+ * \note This function is optimized for speed. It uses \c {float} instead
+ * of \c {double}, as double‑precision arithmetic is roughly 50% slower in
  * this context. All functions called here are defined within the same
  * translation unit, allowing the compiler to have their code inlined.
  * Benchmarks show that these calls introduce no measurable overhead compared
  * to writing the logic directly in place.
  *
- * @note This function is based on the
- * <a href="https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab">
- * original Oklab code</a>.
- *
- * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
- * calls @ref channelFromLinearSRgbToSRgb() which is not <tt>constexpr</tt>.
+ * \note This function is based on the
+ * \l {https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab}
+ * {original Oklab code}.
  */
-// GenericColor might be an alternative, but it has double precision, while here
-// float precision would be appropriate.
-[[nodiscard]] QRgb AbsoluteColor::fastFromOklabToSRgbOrTransparent(const GenericColor &oklab)
+QRgb AbsoluteColor::fastFromOklabToSRgbOrTransparent(const GenericColor &oklab)
 {
     // Original Lab values as float:
     const float oLabL = static_cast<float>(oklab.first);
@@ -473,13 +490,13 @@ std::optional<GenericColor> AbsoluteColor::convert(const ColorModel from, const 
                  255);
 }
 
-/**
- * @brief Check if a color is within the sRGB gamut.
+/*!
+ * \brief Check if a color is within the sRGB gamut.
  *
- * @param oklab the color
+ * \a oklab the color
  *
- * @returns <tt>true</tt> if the color is in the sRGB gamut.
- * <tt>false</tt> otherwise.
+ * Returns \c {true} if the color is in the sRGB gamut.
+ * \c {false} otherwise.
  */
 bool AbsoluteColor::isOklabInSRgbGamut(const GenericColor &oklab)
 {
@@ -497,27 +514,28 @@ bool AbsoluteColor::isOklabInSRgbGamut(const GenericColor &oklab)
     return !(r < 0. || r > 1. || g < 0. || g > 1. || b < 0. || b > 1.);
 }
 
-/**
- * @brief Check if a color is within the sRGB gamut.
+/*!
+ * \brief Check if a color is within the sRGB gamut.
  *
- * @param oklch the color
+ * \a oklch the color
  *
- * @returns <tt>true</tt> if the color is in the sRGB gamut.
- * <tt>false</tt> otherwise.
+ * Returns \c {true} if the color is in the sRGB gamut.
+ * \c {false} otherwise.
  */
 bool AbsoluteColor::isOklchInSRgbGamut(const GenericColor &oklch)
 {
     return isOklabInSRgbGamut(AbsoluteColor::fromPolarToCartesian(oklch));
 }
 
-/**
- * @brief Check if a color is within the sRGB gamut.
+/*!
+ * \brief Check if a color is within the sRGB gamut.
  *
- * @param lab the color
- * @param lchSpace the color space
+ * \a lab the color
  *
- * @returns <tt>true</tt> if the color is in the sRGB gamut.
- * <tt>false</tt> otherwise.
+ * \a lchSpace the color space
+ *
+ * Returns \c {true} if the color is in the sRGB gamut.
+ * \c {false} otherwise.
  */
 bool AbsoluteColor::isLabInSRgbGamut(const GenericColor &lab, const LchSpace lchSpace)
 {
@@ -527,14 +545,15 @@ bool AbsoluteColor::isLabInSRgbGamut(const GenericColor &lab, const LchSpace lch
     return isOklabInSRgbGamut(lab);
 }
 
-/**
- * @brief Check if a color is within the sRGB gamut.
+/*!
+ * \brief Check if a color is within the sRGB gamut.
  *
- * @param lch the color
- * @param lchSpace the color space
+ * \a lch the color
  *
- * @returns <tt>true</tt> if the color is in the sRGB gamut.
- * <tt>false</tt> otherwise.
+ * \a lchSpace the color space
+ *
+ * Returns \c {true} if the color is in the sRGB gamut.
+ * \c {false} otherwise.
  */
 bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lchSpace)
 {
@@ -544,30 +563,28 @@ bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lch
     return isOklchInSRgbGamut(lch);
 }
 
-/** @brief Conversion to QRgb.
+/*!
+ * \brief Conversion to QRgb.
  *
- * @param oklch the original color
+ * \a oklch the original color
  *
- * @returns An opaque sRGB color matching the original one if it is within the
+ * Returns an opaque sRGB color matching the original one if it is within the
  * gamut. Otherwise, returns a more or less similar color.
  *
- * @sa @ref AbsoluteColor::fastFromCielchD50ToSRgbClamped()
+ * \sa AbsoluteColor::fastFromCielchD50ToSRgbClamped()
  *
- * @internal
  *
- * @note This function is optimized for speed. It uses <tt>float</tt> instead
- * of <tt>double</tt>, as double‑precision arithmetic is roughly 50% slower in
+ *
+ * \note This function is optimized for speed. It uses \c {float} instead
+ * of \c {double}, as double‑precision arithmetic is roughly 50% slower in
  * this context. All functions called here are defined within the same
  * translation unit, allowing the compiler to have their code inlined.
  * Benchmarks show that these calls introduce no measurable overhead compared
  * to writing the logic directly in place.
  *
- * @note This function is based on the
- * <a href="https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab">
- * original Oklab code</a>.
- *
- * @note Unfortunately, it cannot be <tt>constexpr</tt>, because it
- * calls @ref channelFromLinearSRgbToSRgb() which is not <tt>constexpr</tt>.
+ * \note This function is based on the
+ * \l {https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab}
+ * {original Oklab code}.
  */
 [[nodiscard]] QRgb AbsoluteColor::fastFromOklchToSRgbClamped(const GenericColor &oklch)
 {
@@ -597,11 +614,13 @@ bool AbsoluteColor::isLchInSRgbGamut(const GenericColor &lch, const LchSpace lch
         255);
 }
 
-/**
- * @brief Check if a color is within the gamut.
- * @param cielchD50 the color
- * @returns <tt>true</tt> if the color is in the gamut.
- * <tt>false</tt> otherwise.
+/*!
+ * \brief Check if a color is within the gamut.
+ *
+ * \a cielchD50 the color
+ *
+ * Returns \c {true} if the color is in the gamut.
+ * \c {false} otherwise.
  */
 bool AbsoluteColor::isCielchD50InSRgbGamut(const GenericColor &cielchD50)
 {
@@ -609,11 +628,13 @@ bool AbsoluteColor::isCielchD50InSRgbGamut(const GenericColor &cielchD50)
         AbsoluteColor::fromPolarToCartesian(cielchD50));
 }
 
-/**
- * @brief Check if a color is within the gamut.
- * @param cielabD50 the color
- * @returns <tt>true</tt> if the color is in the gamut.
- * <tt>false</tt> otherwise.
+/*!
+ * \brief Check if a color is within the gamut.
+ *
+ * \a cielabD50 the color
+ *
+ * Returns \c {true} if the color is in the gamut.
+ * \c {false} otherwise.
  */
 bool AbsoluteColor::isCielabD50InSRgbGamut(const GenericColor &cielabD50)
 {
@@ -632,18 +653,19 @@ bool AbsoluteColor::isCielabD50InSRgbGamut(const GenericColor &cielabD50)
     return !(r < 0. || r > 1. || g < 0. || g > 1. || b < 0. || b > 1.);
 }
 
-/** @brief Conversion to QRgb.
+/*!
+ * \brief Conversion to QRgb.
  *
- * @pre
- * - Input Lightness: 0 ≤ lightness ≤ 100
+ * \b Precondition: Input Lightness: 0 ≤ lightness ≤ 100
  *
- * @param cielabD50 the original color
+ * \a cielabD50 the original color
  *
- * @returns An opaque color matching the original if it is within the gamut.
+ * Returns an opaque color matching the original if it is within the gamut.
  *          Otherwise, returns a fully transparent color (alpha and RGB
  *          channels set to 0 to ensure ).
  *
- * @sa @ref fastFromCielchD50ToSRgbClamped */
+ * \sa fastFromCielchD50ToSRgbClamped
+ */
 QRgb AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(const GenericColor &cielabD50)
 {
     // Conversion function as described in
@@ -693,18 +715,20 @@ QRgb AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(const GenericColor &cie
                  255);
 }
 
-/** @brief Conversion to QRgb.
+/*!
+ * \brief Conversion to QRgb.
  *
- * @param cielchD50 The original color.
+ * \a cielchD50 The original color.
  *
- * @returns If the original color is in-gamut, the corresponding
+ * Returns: If the original color is in-gamut, the corresponding
  * (opaque) in-range RGB value. If the original color is out-of-gamut,
  * a more or less similar (opaque) in-range RGB value.
  *
- * @note There is no guarantee <em>which</em> specific algorithm is used
+ * \note There is no guarantee \e {which} specific algorithm is used
  * to fit out-of-gamut colors into the gamut.
  *
- * @sa @ref fastFromCielabD50ToSRgbOrTransparent */
+ * \sa fastFromCielabD50ToSRgbOrTransparent
+ */
 QRgb AbsoluteColor::fastFromCielchD50ToSRgbClamped(const GenericColor &cielchD50)
 {
     const float angleRadians = qDegreesToRadians( //
@@ -754,20 +778,22 @@ QRgb AbsoluteColor::fastFromCielchD50ToSRgbClamped(const GenericColor &cielchD50
         255);
 }
 
-/** @brief Reduces the chroma until the color fits into the gamut.
+/*!
+ * \brief Reduces the chroma until the color fits into the gamut.
  *
  * It always preserves the hue. It preservers the lightness whenever
  * possible.
  *
- * @note In some cases with very curvy color spaces, the nearest in-gamut
- * color (with the same lightness and hue) might be at <em>higher</em>
- * chroma. As this function always <em>reduces</em> the chroma,
+ * \note In some cases with very curvy color spaces, the nearest in-gamut
+ * color (with the same lightness and hue) might be at \e {higher}
+ * chroma. As this function always \e {reduces} the chroma,
  * in this case the result is not the nearest in-gamut color.
  *
- * @param lch The color that will be adapted.
- * @param lchSpace The color space
+ * \a lch The color that will be adapted.
  *
- * @returns An sRGB in-gamut color. */
+ * \a lchSpace The color space
+ *
+ * Returns an sRGB in-gamut color. */
 GenericColor AbsoluteColor::reduceChromaToFitIntoGamut(const GenericColor &lch, const LchSpace lchSpace)
 {
     GenericColor referenceColor = lch;

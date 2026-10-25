@@ -41,35 +41,6 @@ echo cmakelint finished.
 
 
 
-################# Doxygen #################
-# Before generating the new Doxygen documentation we
-# make sure old data is deleted. This is important because otherwise,
-# old documentation for classes that do not exist anymore, or old
-# screenshots that are not used anymore, would stay in the directory
-# and occupy space:
-
-rm --recursive --force docs/publicapi
-cp docs/Doxyfile.external docs/Doxyfile.external.temp
-doxygen -u docs/Doxyfile.external.temp > /dev/null 2> /dev/null
-# Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-nice --adjustment 19 doxygen docs/Doxyfile.external.temp 2>&1 \
-    | sed 's/^/Doxygen “public API”: /'
-rm docs/Doxyfile.external.temp
-rm docs/Doxyfile.external.temp.bak
-
-rm --recursive --force docs/publicapiandinternals
-cp docs/Doxyfile.internal docs/Doxyfile.internal.temp
-doxygen -u docs/Doxyfile.internal.temp > /dev/null 2> /dev/null
-# Redirect Doxygen’s stderr (2) to stdout (1) to be able to filter it via pipe
-nice --adjustment 19 doxygen docs/Doxyfile.internal.temp 2>&1 \
-    | sed 's/^/Doxygen “public API and internals”: /'
-rm docs/Doxyfile.internal.temp
-rm docs/Doxyfile.internal.temp.bak
-
-
-
-
-
 ################# Static code check #################
 scripts/static-codecheck.sh
 

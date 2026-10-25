@@ -1,60 +1,74 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-/** @file importexport.h
- *
- * This file provides support for C++ symbol import and export. */
-
 #ifndef PERCEPTUALCOLOR_IMPORTEXPORT_H
 #define PERCEPTUALCOLOR_IMPORTEXPORT_H
 
 #include <qglobal.h>
 
-/** @def PERCEPTUALCOLOR_IMPORTEXPORT
+/*!
+ * \headerfile importexport.h
  *
- * @brief A macro that either exports dynamic library symbols or imports
+ * \inmodule ModulePublicApi
+ */
+
+/*!
+ * \macro PERCEPTUALCOLOR_IMPORTEXPORT
+ *
+ * \relates importexport.h
+ *
+ * \ingroup GroupPublicSymbols
+ *
+ * \brief A macro that either exports dynamic library symbols or imports
  * dynamic library symbols or does nothing.
+ *
+ * To use this macro, include \c {importexport.h}
+ *
  *
  * This approach is proposed in Qt’s documentation (chapter “Creating
  * Shared Libraries”) – see there for more details. In short:
  *
- * @section buildappdynamic Build an application using the dynamic library
+ * \section1 Build an application using the dynamic library
  *
- * When your application is build <em>using</em> the dynamic
+ * When your application is build \e {using} the dynamic
  * library and includes the header files of the library, the
- * macro <em>imports</em> the corresponding symbols of the library
- * for you by expanding to Qt’s <tt>Q_DECL_IMPORT</tt> macro. This
+ * macro \e {imports} the corresponding symbols of the library
+ * for you by expanding to Qt’s \c {Q_DECL_IMPORT} macro. This
  * is the default behaviour of this macro.
  *
- * @section buildlibdynamic Build the dynamic library
+ * \section1 Build the dynamic library
  *
- * When the dynamic library <em>itself</em> is build, the macro
- * <em>exports</em> the corresponding symbol by expanding to Qt’s
- * <tt>Q_DECL_EXPORT</tt> macro. Exported symbols will be visible
+ * When the dynamic library \e {itself} is build, the macro
+ * \e {exports} the corresponding symbol by expanding to Qt’s
+ * \c {Q_DECL_EXPORT} macro. Exported symbols will be visible
  * symbols in the dynamic library. To get this behaviour, it is
- * necessary to define <tt>PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY</tt>
+ * necessary to define \c {PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY}
  * always when this library itself is build.
  *
- * @section buildstatic Build either the static library itself or an application using it
+ * \section1 Build either the static library itself or an application using it
  *
  * When either
  *
- * - building the static library itself
+ * \list
+ *     \li building the static library itself
+ * \endlist
  *
  * or
  *
- * - your application is build <em>using</em> the static
- * library and includes the header files of the library,
+ * \list
+ *     \li your application is build \e {using} the static
+ *         library and includes the header files of the library,
+ * \endlist
  *
- * the macro expands to <em>nothing</em>, because for static libraries
+ * the macro expands to \e {nothing}, because for static libraries
  * no import nor export must happen. To get this behaviour, it is
- * necessary to define <tt>PERCEPTUALCOLOR_STATIC</tt>.
+ * necessary to define \c {PERCEPTUALCOLOR_STATIC}.
  *
- * @section cmakeimportexport CMake code
+ * \section1 CMake code
  *
  * The definition is made within CMake:
  *
- * @code{.unparsed}
+ * \code
  * if(BUILD_SHARED_LIBS)
  *     target_compile_definitions(
  *         my_target_name
@@ -64,22 +78,22 @@
  *         my_target_name
  *         PUBLIC PERCEPTUALCOLOR_STATIC)
  * endif()
- * @endcode
+ * \endcode
  *
- * <tt>PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY</tt> is defined
- * <tt>PRIVATE</tt>, so it only becomes available when building
- * the library <em>itself</em> dynamically, and not when building
- * an application <em>using</em> the dynamic library.
+ * \c {PERCEPTUALCOLOR_BUILD_DYNAMIC_LIBRARY} is defined
+ * \c {PRIVATE}, so it only becomes available when building
+ * the library \e {itself} dynamically, and not when building
+ * an application \e {using} the dynamic library.
  *
- * <tt>PERCEPTUALCOLOR_STATIC</tt> however is defined
- * <tt>PUBLIC</tt>, so it becomes available both, when building
- * the library <em>itself</em> statically, and also when building
- * an application <em>using</em> the static library.
+ * \c {PERCEPTUALCOLOR_STATIC} however is defined
+ * \c {PUBLIC}, so it becomes available both, when building
+ * the library \e {itself} statically, and also when building
+ * an application \e {using} the static library.
  *
- * And you also have to make sure that all symbols that are <em>not</em>
+ * And you also have to make sure that all symbols that are \e {not}
  * explicitly exported will be actually hidden on all platforms:
  *
- * @code{.unparsed}
+ * \code
  * set_target_properties(
  *     my_target_name PROPERTIES
  *     # By default, on Windows all symbols are hidden except those that are
@@ -92,11 +106,11 @@
  *     # compiler-specific attributes.
  *     CXX_VISIBILITY_PRESET "hidden"
  *     VISIBILITY_INLINES_HIDDEN TRUE)
- * @endcode
+ * \endcode
  *
  * For your information: The opposite would look like this:
  *
- * @code{.unparsed}
+ * \code
  * set_target_properties(
  *     my_target_name PROPERTIES
  *     # We want all symbols to be publicly available. On Unix-based systems, this
@@ -111,14 +125,14 @@
  *     # However, please note that this option does not work for global variables.
  *     WINDOWS_EXPORT_ALL_SYMBOLS TRUE
  *     VISIBILITY_INLINES_HIDDEN FALSE)
- * @endcode
+ * \endcode
  *
- * @section importexportlinks Further reading
+ * \section1 Further reading
  *
- * @note CMake also offers support for symbol import and export.
- * It can generate a corresponding header by using the <tt><a
- * href="https://cmake.org/cmake/help/latest/module/GenerateExportHeader.html">
- * generate_export_header()</a></tt> command. However, this is always
+ * \note CMake also offers support for symbol import and export.
+ * It can generate a corresponding header by using the
+ * \l {https://cmake.org/cmake/help/latest/module/GenerateExportHeader.html}
+ * {generate_export_header()} command. However, this is always
  * an additional step and makes the build and install configuration
  * more complex. Furthermore, we produce a second internal library
  * target out of the same source code, which has a different symbol
@@ -126,22 +140,18 @@
  * use the name of the target as part of the macro names it defines, this
  * would get complicated. Having our own macro is easier.
  *
- * @note CMake’s <a
- * href="https://cmake.org/cmake/help/latest/module/GenerateExportHeader.html">
- * <tt>generate_export_header()</tt></a> command also has portable
+ * \note CMake’s
+ * \l {https://cmake.org/cmake/help/latest/module/GenerateExportHeader.html}
+ * {generate_export_header()} command also has portable
  * support for deprecating symbols. However, since C++14 there is
- * <a href="https://en.cppreference.com/w/cpp/language/attributes/deprecated">
- * <tt>[[deprecated(string-literal)]]</tt></a> part of the standard.
+ * \l {https://en.cppreference.com/w/cpp/language/attributes/deprecated}
+ * {[[deprecated(string-literal)]} part of the standard.
  * We can use this as a portable standard
  * instead of CMake’s macros.
  *
- * @sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
- * @sa http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
- * @sa https://labjack.com/news/simple-cpp-symbol-visibility-demo
- *
- * @internal
- *
- * @sa @ref PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT
+ * \sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
+ * \sa http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
+ * \sa https://labjack.com/news/simple-cpp-symbol-visibility-demo
  */
 
 #ifndef PERCEPTUALCOLOR_IMPORTEXPORT

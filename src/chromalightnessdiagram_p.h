@@ -30,10 +30,13 @@ namespace PerceptualColor
 {
 class ChromaLightnessDiagram;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class ChromaLightnessDiagramPrivate : public QObject
 {
     Q_OBJECT
@@ -43,17 +46,17 @@ public:
     virtual ~ChromaLightnessDiagramPrivate() noexcept override;
 
     // Member variables
-    /** @brief The image of the chroma-lightness diagram itself. */
+    /*!
+     * \brief The image of the chroma-lightness diagram itself. */
     AsyncImageProvider<ChromaLightnessImageParameters> m_chromaLightnessImage;
-    /** @brief Properties for @ref m_chromaLightnessImage. */
+    /*!
+     * \brief Properties for \l m_chromaLightnessImage. */
     ChromaLightnessImageParameters m_chromaLightnessImageParameters;
-    /** @brief Internal storage of
-     * the @ref ChromaLightnessDiagram::currentColorLch property */
+    /*!
+     * \brief Internal storage of
+     * the \l ChromaLightnessDiagram::currentColorLch property */
     GenericColor m_currentColorLch;
 
-    /**
-     * @brief The info button for irregular gamut shapes.
-     */
     // NOTE This could be replaced by KWidgetsAddons’
     // https://api.kde.org/kcontextualhelpbutton.html
     // KContextualHelpButton, which is more sophisticated and the
@@ -61,19 +64,22 @@ public:
     // https://api.kde.org/qml-org-kde-kirigami-contextualhelpbutton.html
     // org.kde.kirigami.ContextualHelpButton QML Type. However,
     // this is a Tier-1 library and therefore cannot use them.
+    /*!
+     * \brief The info button for irregular gamut shapes.
+     */
     QPointer<QToolButton> m_infoButton = nullptr;
 
-    /**
-     * @brief Layout for positionning @ref m_infoButton.
+    /*!
+     * \brief Layout for positionning \l m_infoButton.
      */
     QPointer<QGridLayout> m_layout = nullptr;
 
-    /**
-     * @brief Geometry of the current Lch color space.
+    /*!
+     * \brief Geometry of the current Lch color space.
      * */
     const LchValues m_lchValues;
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      */
     const LchSpace m_projectionSpace;
 
@@ -81,14 +87,23 @@ public:
     [[nodiscard]] QSize calculateImageSizePhysical() const;
     [[nodiscard]] int defaultBorderDeviceIndependant() const;
     [[nodiscard]] int defaultBorderPhysical() const;
-    /** @internal
+    // NOTE QDoc unfortunately does not support documentation for function
+    // templates that are members of non-template classes. Therefore, the
+    // following documentation will be ignored by QDoc.
+    /*!
      *
-     * @brief Calculate how far a value is from a given range.
-     * @pre <tt>low</tt> ≤ <tt>high</tt>
-     * @param low the lower limit
-     * @param x the value that will be tested
-     * @param high the higher limit
-     * @returns <tt>0</tt> if the value is within the range. The distance
+     *
+     * \brief Calculate how far a value is from a given range.
+     *
+     * \b Precondition: \c {low} ≤ \c {high}
+     *
+     * \a low the lower limit
+     *
+     * \a x the value that will be tested
+     *
+     * \a high the higher limit
+     *
+     * Returns \c {0} if the value is within the range. The distance
      * to the nearest border of the range otherwise. */
     template<typename T>
     [[nodiscard]] static constexpr T distanceFromRange(const T &low, const T &x, const T &high)
@@ -127,7 +142,8 @@ public:
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaLightnessDiagram> q_pointer;
 };

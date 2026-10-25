@@ -18,40 +18,49 @@ namespace PerceptualColor
 {
 class ColorWheel;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class ColorWheelPrivate
 {
 public:
     ColorWheelPrivate(ColorWheel *backLink, const PerceptualColor::LchSpace projectionSpace);
     virtual ~ColorWheelPrivate() noexcept;
 
-    /** @brief Internal storage of the @ref ColorWheel::hue() property */
+    /*!
+     * \brief Internal storage of the \l ColorWheel::hue() property */
     qreal m_hue;
-    /** @brief Holds if currently a mouse event is active or not.
+    /*!
+     * \brief Holds if currently a mouse event is active or not.
      *
-     * Default value is <tt>false</tt>.
-     * - A mouse event gets typically activated on a
-     *   @ref ColorWheel::mousePressEvent() done within the gamut diagram.
-     *   The value is set to <tt>true</tt>.
-     * - While active, all @ref ColorWheel::mouseMoveEvent() will move the
+     * Default value is \c {false}.
+     *
+     * \list
+     * \li A mouse event gets typically activated on a
+     *   \l ColorWheel::mousePressEvent() done within the gamut diagram.
+     *   The value is set to \c {true}.
+     * \li While active, all \l ColorWheel::mouseMoveEvent() will move the
      *   diagram’s color handle.
-     * - Once a @ref ColorWheel::mouseReleaseEvent() occurs, the value is set
-     *   to <tt>false</tt>. Further mouse movements will not move the handle
+     * \li Once a \l ColorWheel::mouseReleaseEvent() occurs, the value is set
+     *   to \c {false}. Further mouse movements will not move the handle
      *   anymore.
+     * \endlist
      *
      * This is done because Qt’s default mouse tracking reacts on all clicks
-     * within the whole widget. However, <em>this</em> widget is meant as a
+     * within the whole widget. However, \e {this} widget is meant as a
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      */
     const LchSpace m_projectionSpace;
-    /** @brief The image of the wheel itself. */
+    /*!
+     * \brief The image of the wheel itself. */
     ColorWheelImageParameters m_wheelImage;
 
     [[nodiscard]] int border() const;
@@ -63,7 +72,8 @@ public:
 private:
     Q_DISABLE_COPY(ColorWheelPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ColorWheel> q_pointer;
 };

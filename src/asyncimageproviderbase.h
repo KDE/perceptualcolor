@@ -10,16 +10,19 @@
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- * @brief Base class for @ref AsyncImageProvider.
  *
- * @internal
+ * \inmodule ModulePrivateApi
  *
- * @note <a href="https://stackoverflow.com/a/63021891">The <tt>Q_OBJECT</tt>
- * macro and templates cannot be combined.</a> Therefore,
- * @ref AsyncImageProviderBase serves as a base class to provide
- * signals for @ref AsyncImageProvider. */
+ * \brief Base class for \l AsyncImageProvider.
+ *
+ *
+ *
+ * \note \l {https://stackoverflow.com/a/63021891} {The Q_OBJECT
+ * macro and templates cannot be combined.} Therefore,
+ * \l AsyncImageProviderBase serves as a base class to provide
+ * signals for \l AsyncImageProvider. */
 class AsyncImageProviderBase : public QObject
 {
     Q_OBJECT
@@ -29,23 +32,24 @@ public:
     virtual ~AsyncImageProviderBase() noexcept override;
 
 Q_SIGNALS:
-    /** @brief Signals that the background rendering has completed an
+    /*!
+     * \brief Signals that the background rendering has completed an
      * interlacing pass.
      *
-     * New image data is available now at @ref AsyncImageProvider::getCache().
+     * New image data is available now at \l AsyncImageProvider::getCache().
      *
-     * @note Even after changing image parameters with
-     * @ref AsyncImageProvider::setImageParameters() a possibly
+     * \note Even after changing image parameters with
+     * \l AsyncImageProvider::setImageParameters() a possibly
      * running render process might not stop immediately and continue
      * to deliver data, therefore also emitting this signal.
      *
-     * @sa @ref AsyncImageProvider::refreshAsync() */
+     * \sa AsyncImageProvider::refreshAsync()
+     */
     void interlacingPassCompleted();
 
 private:
     Q_DISABLE_COPY(AsyncImageProviderBase)
 
-    /** @internal @brief Only for unit tests. */
     friend class TestAsyncImageProviderBase;
 };
 

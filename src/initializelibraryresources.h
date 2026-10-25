@@ -4,10 +4,6 @@
 #ifndef PERCEPTUALCOLOR_INITIALIZELIBRARYRESOURCES_H
 #define PERCEPTUALCOLOR_INITIALIZELIBRARYRESOURCES_H
 
-/** @internal @file
- *
- * Provides @ref PerceptualColor::initializeLibraryResources() function. */
-
 namespace PerceptualColor
 {
 

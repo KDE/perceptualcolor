@@ -7,15 +7,18 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor
- * @param parent The object’s parent object. This parameter will be passed
+/*!
+ * \brief Constructor
+ *
+ * \a parent The object’s parent object. This parameter will be passed
  * to the base class’s constructor. */
 AsyncImageProviderBase::AsyncImageProviderBase(QObject *parent)
     : QObject(parent)
 {
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 AsyncImageProviderBase::~AsyncImageProviderBase() noexcept
 {
 }

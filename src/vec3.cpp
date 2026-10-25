@@ -13,18 +13,18 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
+ * \relates PerceptualColor::Vec3
  *
- * @brief Stream to QDebug.
+ * \brief Stream to QDebug.
  *
  * Prints the vector in a compact format.
  *
- * @param dbg QDebug stream
- * @param value Vector to print
- * @return QDebug stream
+ * \a dbg QDebug stream
+ *
+ * \a value Vector to print
  */
-QDebug operator<<(QDebug dbg, const Vec3d &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::Vec3d &value)
 {
     QDebugStateSaver saver(dbg);
 
@@ -51,34 +51,34 @@ QDebug operator<<(QDebug dbg, const Vec3d &value)
     return dbg;
 }
 
-/**
- * @internal
+/*!
+ * \relates PerceptualColor::Vec3
  *
- * @brief Stream to QDebug.
+ * \brief Stream to QDebug.
  *
  * Prints the vector in a compact format.
  *
- * @param dbg QDebug stream
- * @param value Vector to print
- * @return QDebug stream
+ * \a dbg QDebug stream
+ *
+ * \a value Vector to print
  */
-QDebug operator<<(QDebug dbg, const Vec3f &value) // clazy:exclude=function-args-by-value
+QDebug operator<<(QDebug dbg, const PerceptualColor::Vec3f &value) // clazy:exclude=function-args-by-value
 {
     return dbg << static_cast<Vec3d>(value);
 }
 
-/**
- * @internal
+/*!
+ * \relates PerceptualColor::Vec3
  *
- * @brief Stream to QDebug.
+ * \brief Stream to QDebug.
  *
  * Prints the vector in a compact format.
  *
- * @param dbg QDebug stream
- * @param value Vector to print
- * @return QDebug stream
+ * \a dbg QDebug stream
+ *
+ * \a value Vector to print
  */
-QDebug operator<<(QDebug dbg, const Vec3ld &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::Vec3ld &value)
 {
     return dbg << static_cast<Vec3d>(value);
 }

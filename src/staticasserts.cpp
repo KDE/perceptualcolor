@@ -1,11 +1,6 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-/** @internal @file staticasserts.cpp
- *
- * This file defines various static asserts for compiling this
- * library. */
-
 #include <qglobal.h>
 
 static_assert(

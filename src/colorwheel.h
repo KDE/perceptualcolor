@@ -22,23 +22,28 @@ namespace PerceptualColor
 {
 class ColorWheelPrivate;
 
-/**
- * @internal
+/*!
  *
- * @brief A color wheel widget.
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief A color wheel widget.
  *
  * This widget allows the user to choose the hue (as defined in the LCH
  * color space).
  *
- * @image html ColorWheel.png "ColorWheel"
+ * \image ColorWheel.png "ColorWheel"
  *
- * See @ref circularwidgets for some pecularities of this widget.
+ * See \l {Circular widgets} for some pecularities of this widget.
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT
 
-    /** @brief The currently selected hue.
+    /*!
+     * \property PerceptualColor::ColorWheel::hue
+     *
+     * \brief The currently selected hue.
      *
      * This is the hue angle, as defined in the LCH color model.
      *
@@ -48,32 +53,35 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorWheel : public AbstractDiagram
      * Valid range: [0°, 360°[. The widget accepts initially also
      * out-of-range values, but once a user interaction has taken
      * place, it will hold a normalized value. So
-     * \li 0 gets 0
-     * \li 359.9 gets 359.9
-     * \li 360 gets 0
-     * \li 361.2 gets 1.2
-     * \li 720 gets 0
-     * \li -1 gets 359
-     * \li -1.3 gets 358.7
      *
-     * @sa READ @ref hue() const
-     * @sa WRITE @ref setHue()
-     * @sa NOTIFY @ref hueChanged()
+     * \list
+     *     \li 0 gets 0
+     *     \li 359.9 gets 359.9
+     *     \li 360 gets 0
+     *     \li 361.2 gets 1.2
+     *     \li 720 gets 0
+     *     \li -1 gets 359
+     *     \li -1.3 gets 358.7
+     * \endlist
      */
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged USER true)
 
 public:
     Q_INVOKABLE explicit ColorWheel(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~ColorWheel() noexcept override;
-    /** @brief Getter for property @ref hue
-     *  @returns the property @ref hue */
+    /*!
+     * \brief Getter for property \l hue
+     */
     [[nodiscard]] qreal hue() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref hue.
-     * @param newHue the new hue */
+    /*!
+     * \brief Notify signal for property \l hue.
+     *
+     * \a newHue the new hue
+     */
     void hueChanged(const qreal newHue);
 
 public Q_SLOTS:
@@ -91,30 +99,19 @@ protected:
 private:
     Q_DISABLE_COPY(ColorWheel)
 
-    /** @internal
-     *
-     * @brief Declare the private implementation as friend class.
-     *
-     * This allows the private class to access the protected members and
-     * functions of instances of <em>this</em> class. */
     friend class ColorWheelPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+    /*!
+     * \brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ColorWheelPrivate> d_pointer;
 
-    /** @internal @brief Only for unit tests. */
     friend class TestColorWheel;
 
-    /** @internal
-     * @brief Internal friend declaration.
-     *
-     * This class is used as child class in @ref WheelColorPicker.
-     * There is a tight collaboration. */
+    // This class is used as child class in WheelColorPicker.
+    // There is a tight collaboration.
     friend class WheelColorPicker;
-    /** @internal
-     * @brief Internal friend declaration.
-     *
-     * This class is used as child class in @ref WheelColorPicker.
-     * There is a tight collaboration. */
+
+    // This class is used as child class in WheelColorPicker.
+    // There is a tight collaboration.
     friend class WheelColorPickerPrivate;
 };
 

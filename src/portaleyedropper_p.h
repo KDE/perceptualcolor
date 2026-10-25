@@ -14,11 +14,11 @@ namespace PerceptualColor
 {
 class PortalEyedropper;
 
-/**
- * @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom.
  */
 class PortalEyedropperPrivate : public QObject
 {
@@ -27,9 +27,9 @@ public:
     explicit PortalEyedropperPrivate(PortalEyedropper *backLink);
     virtual ~PortalEyedropperPrivate() noexcept override;
 
-    /**
-     * @brief Internal storage for property
-     * @ref PortalEyedropper::isAvailable */
+    /*!
+     * \brief Internal storage for property
+     * \l PortalEyedropper::isAvailable */
     std::optional<bool> m_isAvailable = std::nullopt;
 
 public Q_SLOTS:
@@ -38,7 +38,8 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(PortalEyedropperPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<PortalEyedropper> q_pointer;
 };

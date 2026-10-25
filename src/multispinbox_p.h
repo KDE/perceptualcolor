@@ -23,74 +23,84 @@ namespace PerceptualColor
 {
 class MultiSpinBox;
 
-/** @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class MultiSpinBoxPrivate : public QObject
 {
     Q_OBJECT
 
 public:
     explicit MultiSpinBoxPrivate(MultiSpinBox *backLink);
-    /** @brief Default destructor
+    /*!
+     * \brief Default destructor
      */
     virtual ~MultiSpinBoxPrivate() noexcept override = default;
 
-    /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
 
     // constexpr
-    /** @brief Default value of a section */
+    /*!
+     * \brief Default value of a section */
     static constexpr double defaultSectionValue = 0;
 
-    /** @brief Holds the index of the currently selected section.
-     * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
-     * @sa @ref setCurrentIndexWithoutUpdatingText */
+    /*!
+     * \brief Holds the index of the currently selected section.
+     *
+     * \sa setCurrentIndexAndUpdateTextAndSelectValue
+     * \sa setCurrentIndexWithoutUpdatingText
+     */
     qsizetype m_currentIndex = 0;
-    /** @brief Holds the data for the sections.
+    /*!
+     * \brief Holds the data for the sections.
      *
-     * This list is guaranteed to contain at least <em>one</em> section.
+     * This list is guaranteed to contain at least \e {one} section.
      *
-     * @sa @ref MultiSpinBox::format()
-     * @sa @ref MultiSpinBox::setFormat() */
+     * \sa MultiSpinBox::format()
+     * \sa MultiSpinBox::setFormat()
+     */
     QList<MultiSpinBoxSection> m_format;
-    /**
-     * @brief Section values pending to be applied to @ref m_values.
+    /*!
+     * \brief Section values pending to be applied to \l m_values.
      *
      * If QAbstractSpinBox::keyboardTracking is disabled, changes to
-     * @ref m_values caused by keyboard input are deferred. This
+     * \l m_values caused by keyboard input are deferred. This
      * variable helps to keep track.
      */
     QList<double> m_pendingValues = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
-    /**
-     * @brief Internal storage for property @ref MultiSpinBox::sectionCount.
+    /*!
+     * \brief Internal storage for property \l MultiSpinBox::sectionCount.
      */
     qsizetype m_sectionCount = 1;
-    /** @brief The string of everything <em>after</em> the value of the
+    /*!
+     * \brief The string of everything \e {after} the value of the
      * current section.
      *
      * This includes the suffix of the current section and everything
      * (prefixes, values and suffixes) of all sections that come after
      * the current sections. */
     QString m_textAfterCurrentValue;
-    /** @brief The string of everything <em>before</em> the value of the
+    /*!
+     * \brief The string of everything \e {before} the value of the
      * current section.
      *
      * This includes everything (prefixes, values and suffixes) of all
      * sections that come before the current section, and the prefix
      * of the current section. */
     QString m_textBeforeCurrentValue;
-    /** @brief The string of the pending value of the current section. */
+    /*!
+     * \brief The string of the pending value of the current section. */
     QString m_textOfCurrentPendingValue;
-    /**
-     * @brief Basic validator functionality.
+    /*!
+     * \brief Basic validator functionality.
      */
     QPointer<QDoubleValidator> m_validator;
-    /**
-     * @brief Internal storage for property @ref MultiSpinBox::values.
+    /*!
+     * \brief Internal storage for property \l MultiSpinBox::values.
      *
-     * @sa @ref m_pendingValues
+     * \sa m_pendingValues
      */
     QList<double> m_values = QList<double>{MultiSpinBoxPrivate::defaultSectionValue};
 
@@ -113,14 +123,16 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(MultiSpinBoxPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<MultiSpinBox> q_pointer;
 };
 
-/** @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- * @brief Interface for accessible objects. */
+ * \brief Interface for accessible objects. */
 class AccessibleMultiSpinBox : public QAccessibleWidget
 {
 public:

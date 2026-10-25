@@ -12,24 +12,18 @@ class QVariant;
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- * @brief Interface for @ref AsyncImageRenderThread::pointerToRenderFunction
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Interface for \l AsyncImageRenderThread::pointerToRenderFunction
  * to make callbacks. */
 class AsyncImageRenderCallback
 {
 public:
     virtual ~AsyncImageRenderCallback() noexcept;
 
-    /** @brief Describes the interlacing state of an image.
-     *
-     * This enum is <em>not</em> declared to the meta-object system.
-     *
-     * This type is declared as type to Qt’s type system via
-     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use for <em>queued</em> signal-slot connections),
-     * you might consider calling <tt>qRegisterMetaType()</tt> for
-     * this type, once you have a QApplication object. */
     // Q_ENUM can only be used within classes that have the Q_OBJECT macro,
     // which this class template does not have, because we want to avoid
     // conflicts when doing multiple inheritance with this class.
@@ -38,20 +32,38 @@ public:
     // or errors, but the meta type is nevertheless not registered and
     // not available for signals and slots. Therefore, we do not use Q_ENUM
     // here.
+    /*!
+     * \brief Describes the interlacing state of an image.
+     *
+     * This enum is \e {not} declared to the meta-object system.
+     *
+     * This type is declared as type to Qt’s type system via
+     * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+     * example if you want to use for \e {queued} signal-slot connections),
+     * you might consider calling \c {qRegisterMetaType()} for
+     * this type, once you have a QApplication object.
+     *
+     * \value Intermediate
+     * The image represents an intermediate interlacing result.
+     *
+     * \value Final
+     * The image represents the final image in full quality.
+     * No further interlacing passes will happen.
+     */
     enum class InterlacingState {
-        Intermediate, /**< The image represents
-            an intermediate interlacing result. */
-        Final /**< The image represents the final image in full quality.
-            No further interlacing passes will happen. */
+        Intermediate,
+        Final
     };
 
-    /** @brief Deliver the result of an interlacing pass of
-     * the <em>rendering</em> operation.
+    /*!
+     * \brief Deliver the result of an interlacing pass of
+     * the \e {rendering} operation.
      *
      * This function is thread-safe.
      *
-     * @param image The image
-     * @param mask The alpha mask, if provided. Renderers may choose whether
+     * \a image The image
+     *
+     * \a mask The alpha mask, if provided. Renderers may choose whether
      * to supply an alpha mask. Alpha masks are 1-bit images where white
      * represents transparency and black represents opacity, defining the
      * transparency state <i>before</i> any anti-aliasing is applied. This
@@ -62,19 +74,23 @@ public:
      * but in some cases, they may fall below this threshold. The alpha mask,
      * however, provides a clear and definitive indication of each pixel’s
      * validity.
-     * @param parameters The parameters of the image
-     * @param state The interlacing state of the image. A render function
+     *
+     * \a parameters The parameters of the image
+     *
+     * \a state The interlacing state of the image. A render function
      * must first return zero or more images with intermediate state. After
      * that, it must return exactly one image with final state (unless it
      * was aborted). After that, it must not return any more images. */
     virtual void deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state) = 0;
 
-    /** @brief If the render function should abort.
+    /*!
+     * \brief If the render function should abort.
      *
      * This function is thread-safe.
      *
-     * @returns <tt>true</tt> if the render function should abort and
-     * return. <tt>false</tt> otherwise. */
+     * Returns \c {true} if the render function should abort and
+     * return. \c {false} otherwise.
+     */
     [[nodiscard]] virtual bool shouldAbort() const = 0;
 
 protected:

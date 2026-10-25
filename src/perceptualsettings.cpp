@@ -23,17 +23,17 @@
 namespace PerceptualColor
 {
 
-/**
- * @brief Filters a QString to retain only lowercase letters a–z.
+/*!
+ * \brief Filters a QString to retain only lowercase letters a–z.
  *
  * This function scans the input string and constructs a new string containing
  * only characters in the range 'a' to 'z'. Uppercase letters A-Z are
  * converted to lowercase letters. Other characters are removed.
  * If any change is made, a warning is issued.
  *
- * @param input The original string to be filtered.
+ * \a input The original string to be filtered.
  *
- * @return A QString containing only lowercase letters a–z.
+ * Returns a QString containing only lowercase letters a–z.
  */
 QString PerceptualSettings::fixedIdentifierWithHyphenMinus(const QString &input)
 {
@@ -59,19 +59,19 @@ QString PerceptualSettings::fixedIdentifierWithHyphenMinus(const QString &input)
     return result;
 }
 
-/**
- * @brief Private constructor to prevent instantiation.
+/*!
+ * \brief Private constructor to prevent instantiation.
  *
- * @param identifier A unique identifier for the instance. This allows for the
+ * \a identifier A unique identifier for the instance. This allows for the
  * configuration of distinct and independent settings—for example, one set for
  * the “sRGB” color space and another for “Adobe Wide Gamut RGB” color space.
  * It is restricted to the lowercase letters a-z. Keep it short, as the
  * underlying system might have restrictions.
  *
- * @internal
  *
- * Internally, a dedicated @ref Settings object is created for each identifier.
- * This automatically instantiates a corresponding <tt>QSettings</tt> object,
+ *
+ * Internally, a dedicated \l Settings object is created for each identifier.
+ * This automatically instantiates a corresponding \c {QSettings} object,
  * and provides a singleton instance bound to that identifier. In other words:
  * one identifier → one file → one singleton. This design simplifies usage and
  * avoids conflicts. If a single file were shared across multiple singleton
@@ -110,29 +110,31 @@ PerceptualSettings::PerceptualSettings(const QString &identifier)
 {
 }
 
-/** @brief Destructor. */
+/*!
+ * \brief Destructor. */
 PerceptualSettings::~PerceptualSettings()
 {
 }
 
-/**
- * @brief Get a reference to the singleton instance associated
+/*!
+ * \brief Get a reference to the singleton instance associated
  * with a specific identifier.
  *
- * @pre There exists a QCoreApplication object. (Otherwise, this
+ * \b Precondition: There exists a QCoreApplication object. (Otherwise, this
  * function will throw an exception.)
  *
- * @param identifier A unique identifier for the instance. This allows for the
+ * \a identifier A unique identifier for the instance. This allows for the
  * configuration of distinct and independent settings—for example, one set for
  * the “sRGB” color space and another for “Adobe Wide Gamut RGB” color space.
  * It is restricted to the small letters a-z. For each identifier exists an
  * own singleton.
  *
- * @returns A reference to the instance.
+ * Returns a reference to the instance.
  *
  * To use it, assign the return value to a reference (not a normal variable):
  *
- * @snippet testperceptualsettings.cpp PerceptualSettings Instance */
+ * \snippet testperceptualsettings.cpp PerceptualSettings Instance
+ */
 PerceptualSettings &PerceptualSettings::getInstance(const QString &identifier)
 {
     const auto validIdentifier = fixedIdentifierWithHyphenMinus(identifier);

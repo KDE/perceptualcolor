@@ -32,14 +32,11 @@
 namespace PerceptualColor
 {
 
-/**
- * @brief A new interlacing object with an appropriate number of interlacing
+/*!
+ * \brief A new interlacing object with an appropriate number of interlacing
  * steps.
  *
- * @param imageSizePhysical The size of the image, measured in physical pixels.
- *
- * @returns A new interlacing object with an appropriate number of interlacing
- * steps.
+ * \a imageSizePhysical The size of the image, measured in physical pixels.
  */
 InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSize imageSizePhysical)
 {
@@ -64,33 +61,43 @@ InterlacingPass ChromaHueImageParameters::createInterlacingPassObject(const QSiz
     return InterlacingPass(numberOfPasses);
 }
 
-/**
- * @brief Render some rows of the image directly to the buffer.
- *
- * @param bytesPtr Pointer to the image data.
- * @param bytesPerLine Bytes per line of the image data (can be obtained by
- *        QImage)
- * @param parameters The parameters
- * @param shift Shift value
- * @param scaleFactor Scale factor
- * @param chromaRange Chroma range
- * @param currentPass The object providing metrics for the current interlacing
- *        pass
- * @param firstRow Index of the first row to render. Must be a valid index.
- * @param lastRow Index of the last row to render. Must be a valid index.
- *
- * @pre The parameters must be valid within the image. As this function
- * operates directly on the image data, out-of-bound values will cause
- * undefined behaviour.
- *
- * @pre The parameter firstRow must be aligned to the interlacing pass steps.
- * If the interlacing starts for example with 8 x 8 pixels, valid values for
- * the firstRow index are: 0, 8, 16, 24, 32, 40 etc.
- */
 // Disable checks for passing large objects by value. In this function,
 // designed for threaded execution, we avoid passing by reference whenever
 // possible to prevent potential pitfalls, even though copying by value may
 // introduce slight overhead.
+/*!
+ * \brief Render some rows of the image directly to the buffer.
+ *
+ * \a bytesPtr Pointer to the image data.
+ *
+ * \a bytesPerLine Bytes per line of the image data (can be obtained by
+ *        QImage)
+ *
+ * \a parameters The parameters
+ *
+ * \a shift Shift value
+ *
+ * \a scaleFactor Scale factor
+ *
+ * \a chromaRange Chroma range
+ *
+ * \a currentPass The object providing metrics for the current interlacing
+ *        pass
+ *
+ * \a firstRow Index of the first row to render. Must be a valid index.
+ *
+ * \a lastRow Index of the last row to render. Must be a valid index.
+ *
+ * \b Precondition: The parameters must be valid
+ * within the image. As this function
+ * operates directly on the image data, out-of-bound values will cause
+ * undefined behaviour.
+ *
+ * \b Precondition: The parameter firstRow
+ * must be aligned to the interlacing pass steps.
+ * If the interlacing starts for example with 8 x 8 pixels, valid values for
+ * the firstRow index are: 0, 8, 16, 24, 32, 40 etc.
+ */
 void ChromaHueImageParameters::renderByRowInterlaced( //
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
@@ -144,34 +151,44 @@ void ChromaHueImageParameters::renderByRowInterlaced( //
     }
 }
 
-/**
- * @brief Render some rows of the image directly to the buffer.
+/*!
+ * \brief Render some rows of the image directly to the buffer.
  *
- * @param bytesPtr Pointer to the image data.
- * @param bytesPerLine Bytes per line of the image data (can be obtained by
+ * \a bytesPtr Pointer to the image data.
+ *
+ * \a bytesPerLine Bytes per line of the image data (can be obtained by
  *        QImage)
- * @param parameters The parameters
- * @param shift Shift value
- * @param scaleFactor Scale factor
- * @param chromaRange Chroma range
- * @param firstRow Index of the first row to render. Must be a valid index.
- * @param lastRow Index of the last row to render. Must be a valid index.
  *
- * @pre The parameters must be valid within the image. As this function
+ * \a parameters The parameters
+ *
+ * \a shift Shift value
+ *
+ * \a scaleFactor Scale factor
+ *
+ * \a chromaRange Chroma range
+ *
+ * \a firstRow Index of the first row to render. Must be a valid index.
+ *
+ * \a lastRow Index of the last row to render. Must be a valid index.
+ *
+ * \b Precondition: The parameters must be valid
+ * within the image. As this function
  * operates directly on the image data, out-of-bound values will cause
  * undefined behaviour.
  *
- * @pre The parameter firstRow must be aligned to the interlacing pass steps.
+ * \b Precondition: The parameter firstRow
+ * must be aligned to the interlacing pass steps.
  * If the interlacing starts for example with 8 x 8 pixels, valid values for
  * the firstRow index are: 0, 8, 16, 24, 32, 40 etc.
  */
-// Disable checks for passing large objects by value. In this function,
-// designed for threaded execution, we avoid passing by reference whenever
-// possible to prevent potential pitfalls, even though copying by value may
-// introduce slight overhead.
 void ChromaHueImageParameters::renderByRow( //
     uchar *const bytesPtr,
     const qsizetype bytesPerLine,
+    // Disable checks for passing large objects by value. In this function,
+    // designed for threaded execution, we avoid passing by reference whenever
+    // possible to prevent potential pitfalls, even though copying by value may
+    // introduce slight overhead.
+    //
     // cppcheck-suppress passedByValue
     const ChromaHueImageParameters parameters, // clazy:exclude=function-args-by-ref
     const qreal shift,
@@ -205,18 +222,20 @@ void ChromaHueImageParameters::renderByRow( //
     }
 }
 
-/** @brief Render an image.
+/*!
+ * \brief Render an image.
  *
  * The function will render the image with the given parameters,
  * and deliver the result of each interlacing pass and also the final
- * result by means of <tt>callbackObject</tt>.
+ * result by means of \c {callbackObject}.
  *
  * This function is thread-safe as long as each call of this function
- * uses different <tt>variantParameters</tt> and <tt>callbackObject</tt>.
+ * uses different \c {variantParameters} and \c {callbackObject}.
  *
- * @param variantParameters A <tt>QVariant</tt> that contains the
+ * \a variantParameters A \c {QVariant} that contains the
  *        image parameters.
- * @param callbackObject Pointer to the object for the callbacks.
+ *
+ * \a callbackObject Pointer to the object for the callbacks.
  */
 void ChromaHueImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {

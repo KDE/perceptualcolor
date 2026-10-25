@@ -25,12 +25,14 @@ namespace PerceptualColor
 {
 class GradientSliderPrivate;
 
-/**
- * @internal
+/*!
  *
- * @brief A slider who’s groove displays an LCH color gradient.
  *
- * @image html GradientSlider.png "GradientSlider"
+ * \inmodule ModulePrivateApi
+ *
+ * \brief A slider who’s groove displays an LCH color gradient.
+ *
+ * \image GradientSlider.png "GradientSlider"
  *
  * The groove of this slider that displays a gradient between two LCH
  * colors. The gradient is an equal gradient calculated independently
@@ -38,118 +40,103 @@ class GradientSliderPrivate;
  *
  * The hue component is the only one that is circular (0° = 360°): Here,
  * Here, the path via the shorter side is always chosen. Examples:
- * @li If the first hue is 182° and the second hue is 1°, than
+ * \list
+ * \li If the first hue is 182° and the second hue is 1°, than
  *     the hue will increase from 182° up to 359°, than 0° and then 1°.
- * @li If the first hue is 169° and the second hue is 359°, than
+ * \li If the first hue is 169° and the second hue is 359°, than
  *     the hue will decrease from 169° down to 0°, and then 359°.
+ * \endlist
  *
  * This widget considers the alpha channel, using a background
  * of gray squares behind the (semi-)transparent colors.
  *
  * Example:
- * |                      |   L |  C |   h  | alpha |
- * | :------------------- | --: | -: | ---: | ----: |
- * | first color          | 80% |  5 |  15° |   0.7 |
- * |                      | 70% |  7 |   5° |   0.8 |
- * |                      | 60% |  9 | 355° |   0.9 |
- * | second color         | 50% | 11 | 345° |   1.0 |
+ * \table
+ *     \header \li slider position \li L   \li C  \li h    \li alpha
+ *     \row    \li first color     \li 80% \li  5 \li  15° \li   0.7
+ *     \row    \li intermediate    \li 70% \li  7 \li   5° \li   0.8
+ *     \row    \li intermediate    \li 60% \li  9 \li 355° \li   0.9
+ *     \row    \li second color    \li 50% \li 11 \li 345° \li   1.0
+ * \endtable
  *
  * Note that due to this mathematical model, there might be out-of-gamut colors
  * within the slider even if both, the first and the second color are in-gamut
  * colors. Out-of-gamut colors are rendered as nearby in-gamut colors.
  *
- * - In the case of vertical @ref orientation, @ref setFirstColorLchA is the
- *   colour at the bottom of the widget and @ref setSecondColorLchA is the
+ * \list
+ * \li In the case of vertical \l orientation, \l setFirstColorLchA is the
+ *   colour at the bottom of the widget and \l setSecondColorLchA is the
  *   colour at the top of the widget.
- * - In the case of horizontal @ref orientation, @ref setFirstColorLchA is the
- *   colour on the left of the widget and @ref setSecondColorLchA is the colour
+ * \li In the case of horizontal \l orientation, \l setFirstColorLchA is the
+ *   colour on the left of the widget and \l setSecondColorLchA is the colour
  *   on the right of the widget in LTR layout. In RTL layout it is the
  *   other way round.
- *
- * @internal
- *
- * @todo NICETOHAVE STYLING A better handle for the slider.
- * Currently, the handle is just a
- * line. At a handle position at the very beginning or end of the slider,
- * furthermore only half of the line thickness is visible. It might be better
- * to have arrows outside the slider to mark the position. (On the other
- * hand, this would be different to the slider handles of the color
- * wheels…)
- *
- * @todo SHOULDHAVE This class @ref GradientSlider and also the class
- * @ref ColorWheel could be subclasses of QAbstractSlider. This
- * might integrate better with the user’s Qt code. On the other hand,
- * this would mean a lot of work in this library to implement the
- * complete interface of QAbstractSlider, and probably we would
- * also need multiple inheritance because this class also depends
- * on @ref AbstractDiagram which is itself yet a subclass of QWidget.
+ * \endlist
  */
+class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT GradientSlider : public AbstractDiagram
 // The API is roughly orientated on QSlider/QAbstractSlider and on
 // KSelecter/KGradientSelector where applicable. Our API is however
 // less complete, and of course also a little bit different, as
 // both, QAbstractSlider and KGradientSelector are not directly
 // comparable to this class.
-class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT GradientSlider : public AbstractDiagram
 {
     Q_OBJECT
 
-    /** @brief Orientation of the widget.
+    /*!
+     * \property PerceptualColor::GradientSlider::orientation
+     *
+     * \brief Orientation of the widget.
      *
      * By default, the orientation is horizontal. The possible
-     * orientations are <tt>Qt::Horizontal</tt> and <tt>Qt::Vertical</tt>.
+     * orientations are \c {Qt::Horizontal} and \c {Qt::Vertical}.
      *
-     * Also, <tt>Qt::Orientation</tt> is declared in this header as type to
-     * Qt’s type system: <tt>Q_DECLARE_METATYPE(Qt::Orientation)</tt>. This
+     * Also, \c {Qt::Orientation} is declared in this header as type to
+     * Qt’s type system: \c {Q_DECLARE_METATYPE(Qt::Orientation)}. This
      * is done because Qt itself does not declare this type as meta type.
      * Because we use it here in a property including a signal, we have to
      * declare this type. Depending on your use case (for example if you
      * want to use it reliably in Qt’s signals and slots), you might consider
-     * calling <tt>qRegisterMetaType()</tt> for this type, once you have
+     * calling \c {qRegisterMetaType()} for this type, once you have
      * a QApplication object.
-     *
-     * @sa READ @ref orientation() const
-     * @sa WRITE @ref setOrientation()
-     * @sa NOTIFY @ref orientationChanged() */
+     */
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
 
-    /** @brief This property holds the page step.
+    /*!
+     * \property PerceptualColor::GradientSlider::pageStep
+     *
+     * \brief This property holds the page step.
      *
      * The larger of two natural steps this widget provides.
      * Corresponds to the user pressing PageUp or PageDown.
      *
-     * The valid range is <tt>[0, 1]</tt>.
-     *
-     * @sa READ @ref pageStep() const
-     * @sa WRITE @ref setPageStep()
-     * @sa NOTIFY @ref pageStepChanged()
-     * @sa @ref singleStep */
+     * The valid range is \c {[0, 1]}.
+     */
     Q_PROPERTY(qreal pageStep READ pageStep WRITE setPageStep NOTIFY pageStepChanged)
 
-    /** @brief This property holds the single step.
+    /*!
+     * \property PerceptualColor::GradientSlider::singleStep
+     *
+     * \brief This property holds the single step.
      *
      * The smaller of two natural steps this widget provides.
      * Corresponds to the user pressing an arrow key.
      *
-     * The valid range is <tt>[0, 1]</tt>.
-     *
-     * @sa READ @ref singleStep() const
-     * @sa WRITE @ref setSingleStep()
-     * @sa NOTIFY @ref singleStepChanged()
-     * @sa @ref pageStep */
+     * The valid range is \c {[0, 1]}.
+     */
     Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY singleStepChanged)
 
-    /** @brief The slider’s current value.
+    /*!
+     * \property PerceptualColor::GradientSlider::value
+     *
+     * \brief The slider’s current value.
      *
      *
-     * The valid range is <tt>[0, 1]</tt>.
+     * The valid range is \c {[0, 1]}.
      * The slider forces the value to be within the valid range:
-     * <tt>0 <= value <= 1</tt>.
-     * - <tt>0</tt> means: totally firstColorLchA()
-     * - <tt>1</tt> means: totally secondColorLchA()
-     *
-     * @sa READ @ref value() const
-     * @sa WRITE @ref setValue()
-     * @sa NOTIFY @ref valueChanged() */
+     * \c {0 <= value <= 1}.
+     * A value of \c {0} means totally firstColorLchA(), whereas \c {1} means
+     * totally secondColorLchA().
+     */
     Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
@@ -157,32 +144,48 @@ public:
     Q_INVOKABLE explicit GradientSlider(const PerceptualColor::LchSpace projectionSpace, Qt::Orientation orientation, QWidget *parent = nullptr);
     virtual ~GradientSlider() noexcept override;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
-    /** @brief Getter for property @ref orientation
-     *  @returns the property */
+    /*!
+     * \brief Getter for property \l orientation
+     */
     [[nodiscard]] Qt::Orientation orientation() const;
-    /** @brief Getter for property @ref pageStep
-     *  @returns the property */
+    /*!
+     * \brief Getter for property \l pageStep
+     */
     [[nodiscard]] qreal pageStep() const;
-    /** @brief Getter for property @ref singleStep
-     *  @returns the property */
+    /*!
+     * \brief Getter for property \l singleStep
+     */
     [[nodiscard]] qreal singleStep() const;
     [[nodiscard]] virtual QSize sizeHint() const override;
-    /** @brief Getter for property @ref value
-     *  @returns the property */
+    /*!
+     * \brief Getter for property \l value
+     */
     [[nodiscard]] qreal value() const;
 
 Q_SIGNALS:
-    /** @brief Signal for @ref orientation property.
-     * @param newOrientation the new @ref orientation */
+    /*!
+     * \brief Signal for \l orientation property.
+     *
+     * \a newOrientation the new \l orientation
+     */
     void orientationChanged(const Qt::Orientation newOrientation);
-    /** @brief Signal for @ref pageStep property.
-     * @param newPageStep the new @ref pageStep */
+    /*!
+     * \brief Signal for \l pageStep property.
+     *
+     * \a newPageStep the new \l pageStep
+     */
     void pageStepChanged(const qreal newPageStep);
-    /** @brief Signal for @ref singleStep property.
-     * @param newSingleStep the new @ref singleStep */
+    /*!
+     * \brief Signal for \l singleStep property.
+     *
+     * \a newSingleStep the new \l singleStep
+     */
     void singleStepChanged(const qreal newSingleStep);
-    /** @brief Signal for @ref value property.
-     * @param newValue the new @ref value */
+    /*!
+     * \brief Signal for \l value property.
+     *
+     * \a newValue the new value
+     */
     void valueChanged(const qreal newValue);
 
 public Q_SLOTS:
@@ -209,17 +212,12 @@ protected:
 private:
     Q_DISABLE_COPY(GradientSlider)
 
-    /** @internal
-     *
-     * @brief Declare the private implementation as friend class.
-     *
-     * This allows the private class to access the protected members and
-     * functions of instances of <em>this</em> class. */
     friend class GradientSliderPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+
+    /*!
+     * \brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<GradientSliderPrivate> d_pointer;
 
-    /** @internal @brief Only for unit tests. */
     friend class TestGradientSlider;
 };
 

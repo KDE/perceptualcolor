@@ -32,9 +32,10 @@
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- * @brief Number of vertical <em>standard</em> wheel steps done by a
+ *
+ * \brief Number of vertical \e {standard} wheel steps done by a
  *  wheel event
  *
  * As the QWheelEvent documentation explains, there is a common physical
@@ -44,10 +45,11 @@ namespace PerceptualColor
  * resolution.
  *
  * This function converts the values in a QMouseEvent to the
- * <em>standard</em> wheel step count.
+ * \e {standard} wheel step count.
  *
- * @param event the QWheelEvent
- * @returns the count of vertical <em>standard</em> wheel steps done
+ * \a event the QWheelEvent
+ *
+ * Returns the count of vertical \e {standard} wheel steps done
  * within this mouse event. The value is positive for up-steps and
  * negative for down-steps. On a standard mouse wheel, moving the wheel
  * one physical step up will return the value 1. On a non-standard,
@@ -61,31 +63,26 @@ qreal standardWheelStepCount(QWheelEvent *event)
     return event->angleDelta().y() / static_cast<qreal>(8 * 15);
 }
 
-/** @internal
+/*!
  *
- * @brief Background for semi-transparent colors.
+ *
+ * \brief Background for semi-transparent colors.
  *
  * When showing a semi-transparent color, there has to be a background
  * on which it is shown. This function provides a suitable background
  * for showcasing a color.
  *
- * @param physicalImageSize The size of the requested image, measured in
+ * \a physicalImageSize The size of the requested image, measured in
  * physical pixels.
- * @param devicePixelRatioF The desired device-pixel ratio.
  *
- * @returns An image of neutral gray rectangles of different
+ * \a devicePixelRatioF The desired device-pixel ratio.
+ *
+ * Returns an image of neutral gray rectangles of different
  * lightness. You can use this as tiles to paint a background, starting from
  * the top-left corner. This image is made for LTR layouts. If you have an
  * RTL layout, you should horizontally mirror your paint buffer after painting
  * the tiles. The image has its device pixel ratio set to the value that was
  * given in the parameter.
- *
- * @todo SHOULDHAVE The function @ref transparencyBackground
- * should have color management support! Currently, we use the
- * same value for red, green and blue, this might <em>not</em> be perfectly
- * neutral gray depending on the color profile of the monitor…
- * Calculate the two color values in Oklab instead of RGB
- * because @ref AbstractDiagram::neutralGray() also does.
  */
 QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
 {
@@ -140,39 +137,45 @@ QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
     return temp;
 }
 
-/** @internal
+/*!
  *
- * @brief Provides prefix and suffix of a value from a given format string.
+ *
+ * \brief Provides prefix and suffix of a value from a given format string.
  *
  * A typical use case: You want to put a percent value into a spinbox. The
  * simple approach would be:
- * @snippet testhelper.cpp percentTraditional
+ *
+ * \snippet testhelper.cpp percentTraditional
+ *
  * It could be improved like this:
- * @snippet testhelper.cpp percentImproved
+ *
+ * \snippet testhelper.cpp percentImproved
+ *
  * However, in some languages, the position of the prefix and suffix may be
- * reversed compared to English. Example: In English, you write 50\%, but in
- * Turkish, you write \%50. Qt does not offer an out-of-the-box solution for
+ * reversed compared to English. Example: In English, you write 50%, but in
+ * Turkish, you write %50. Qt does not offer an out-of-the-box solution for
  * this. This helper now provides complete internationalization for prefixes
  * and suffixes of spin boxes, allowing to do this easily in a fail-safe way:
- * @snippet testhelper.cpp percentFullyInternationalized
  *
- * @param formatString A translated string in the format "prefix%1suffix". It
- * should contain exactly <em>one</em> place marker as described in
- * <tt>QString::arg()</tt> like <tt>\%1</tt> or <tt>\%L2</tt>. This place
- * marker represents the value. Example: “Prefix\%1Suffix”. Prefix and suffix
+ * \snippet testhelper.cpp percentFullyInternationalized
+ *
+ * \a formatString A translated string in the format "prefix%1suffix". It
+ * should contain exactly \e {one} place marker as described in
+ * \c {QString::arg()} like \c {%1} or \c {%L2}. This place
+ * marker represents the value. Example: “Prefix%1Suffix”. Prefix and suffix
  * may be empty.
  *
- * @returns If the <tt>formatString</tt> parameter has the correct format,
- * the prefix will be returned at <tt>QPair::first</tt> and the suffix will
- * be returned at <tt>QPair::second</tt>. Otherwise, they will be set to an
+ * If the \c {formatString} parameter has the correct format,
+ * the prefix will be returned at \c {QPair::first} and the suffix will
+ * be returned at \c {QPair::second}. Otherwise, both return values will be an
  * empty string.
  *
- * @note The functionality implemented here served as the inspiration for
- * <a href="https://api.kde.org/frameworks/ki18n/html/namespaceKLocalization.html">
- * KLocalization::setupSpinBoxFormatString()</a>. However, there are key
+ * \note The functionality implemented here served as the inspiration for
+ * \l {https://api.kde.org/frameworks/ki18n/html/namespaceKLocalization.html}
+ * {KLocalization::setupSpinBoxFormatString()}. However, there are key
  * differences.
- * <a href="https://api.kde.org/frameworks/ki18n/html/namespaceKLocalization.html">
- * KLocalization::setupSpinBoxFormatString()</a> extends this approach to
+ * \l {https://api.kde.org/frameworks/ki18n/html/namespaceKLocalization.html}
+ * {KLocalization::setupSpinBoxFormatString()} extends this approach to
  * include support for plural handling, specifically for integers (but not
  * floating-point numbers). It uses %v as a placeholder instead of %1.
  * Because %v is not compatible with the translation system, this design allows
@@ -195,19 +198,20 @@ QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
     return QPair<QString, QString>(QString(), QString());
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Icon from theme.
  *
- * @param names List of names, preferred names first. The system’s icon
+ * \brief Icon from theme.
+ *
+ * \a names List of names, preferred names first. The system’s icon
  *        themes are searched for this. These themes are commonly available
  *        on Linux, but typically absent on other platforms.
- * @param fallback A fallback icon from the built-in resources, used if no
+ *
+ * \a fallback A fallback icon from the built-in resources, used if no
  *        native or theme icon is found. Automatically selects light or dark
  *        variant according to the current color scheme.
  *
- * @returns An icon from one of the available sources, or an empty icon if none
+ * Returns an icon from one of the available sources, or an empty icon if none
  * are found.
  */
 QIcon qIconFromTheme(const QStringList &names, const QString &fallback)
@@ -237,29 +241,29 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback)
     return QIcon();
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Icon from theme.
  *
- * @param nativeIcon An icon from the system's native icon
+ * \brief Icon from theme.
+ *
+ * \a nativeIcon An icon from the system's native icon
  *        library. Supports Windows, macOS, iOS, and Android and
- *        was <a href="https://doc.qt.io/qt-6/whatsnew67.html#qt-gui-module">
- *        introduced only in Qt 6.7</a> via
- *        a <a href="https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum">new
- *        enum</a> and by <a href="https://www.qt.io/blog/qt-6.7-released">
- *        mapping XDG icon names to platform-native symbols</a>.
- * @param names List of names, preferred names first. The system’s icon themes
+ *        was \l {https://doc.qt.io/qt-6/whatsnew67.html#qt-gui-module}
+ *        {introduced only in Qt 6.7} via
+ *        a \l {https://doc.qt.io/qt-6/qicon.html#ThemeIcon-enum} {new
+ *        enum} and by \l {https://www.qt.io/blog/qt-6.7-released}
+ *        {mapping XDG icon names to platform-native symbols}.
+ *
+ * \a names List of names, preferred names first. The system’s icon themes
  *        are searched for this. These themes are commonly available on Linux,
  *        but typically absent on other platforms.
- * @param fallback A fallback icon from the built-in resources, used if no
+ *
+ * \a fallback A fallback icon from the built-in resources, used if no
  *        native or theme icon is found. Automatically selects light or dark
  *        variant according to the current color scheme.
  *
- * @returns An icon from one of the available sources, or an empty icon if none
+ * Returns an icon from one of the available sources, or an empty icon if none
  * are found.
- *
- * @note This function is only available when Qt ≥ 6.7.
  */
 QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback)
 {
@@ -270,32 +274,33 @@ QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names
     return qIconFromTheme(names, fallback);
 }
 
-/** @internal
+/*!
  *
- * @brief Converts text with mnemonics to rich text rendering the mnemonics.
+ *
+ * \brief Converts text with mnemonics to rich text rendering the mnemonics.
  *
  * At some places in Qt, mnemonics are used. For example, setting
- * <tt>QPushButton::setText()</tt> to "T&est" will make appear the text
+ * \c {QPushButton::setText()} to "T&est" will make appear the text
  * "Test". If mnemonic support is enabled in the current platform theme,
  * the "e" is underlined.
  *
  * At some other places in Qt, rich text is used. For example, setting
- * <tt>QWidget::setToolTip()</tt> to "T<u>e</u>st" will make appear the text
+ * \c {QWidget::setToolTip()} to "T<u>e</u>st" will make appear the text
  * "Test", but with the "e" underlined.
  *
- * @param mnemonicText A text that might contain mnemonics
+ * \a mnemonicText A text that might contain mnemonics
  *
- * @returns A rich text that will render in rich-text-functions with the same
+ * Returns a rich text that will render in rich-text-functions with the same
  * rendering as if the mnemonic text would have been
  * used in mnemonic-functions: If currently in the platform theme,
  * auto-mnemonics are enabled, the mnemonics are underlined. Otherwise,
  * the mnemonics are not underlined nor is the “&” character visible
  *
- * @note This function mimics Qt’s algorithm form mnemonic rendering quite
+ * \note This function mimics Qt’s algorithm form mnemonic rendering quite
  * well, but there might be subtile differences in corner cases. Like Qt,
  * this function accepts multiple occurrences of "&" in the same string, even
  * before different characters, and underlines all of them, though
- * <tt>QKeySequence::mnemonic()</tt> will return only one of them as
+ * \c {QKeySequence::mnemonic()} will return only one of them as
  * shortcut. */
 QString fromMnemonicToRichText(const QString &mnemonicText)
 {
@@ -336,10 +341,10 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
     return result;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Returns whether the current widget style uses a dark color scheme.
+ *
+ * \brief Returns whether the current widget style uses a dark color scheme.
  *
  * This function determines the effective color scheme from the palette
  * provided by the current widget style. The returned value therefore reflects
@@ -348,22 +353,19 @@ QString fromMnemonicToRichText(const QString &mnemonicText)
  * system. Some styles, such as Vista, Adwaita, or Kvantum, may ignore the
  * system color scheme and provide their own palette instead.
  *
- * @returns <tt>true</tt> if the current widget style uses a dark color
- * scheme; <tt>false</tt> otherwise.
+ * Returns \c {true} if the current widget style uses a dark color
+ * scheme; \c {false} otherwise.
  *
- * @note If your code needs to react to color-scheme changes, consider
- * reimplementing <tt>QWidget::changeEvent()</tt> and add <tt>
- * if ((type == QEvent::PaletteChange)
- * || (type == QEvent::ApplicationPaletteChange)
- * || (type == QEvent::StyleChange)) {
- * doSomething();
- * } </tt>
+ * If your code needs to react to color-scheme changes, consider
+ * reimplementing \c {QWidget::changeEvent()}:
+ *
+ * \snippet testhelper.cpp reactChangeEvent
  */
 bool isDarkColorScheme()
 {
     // See also:
-    // href="https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5
-    // https://stackoverflow.com/questions/75457687">Stackoverflow
+    // https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5
+    // https://stackoverflow.com/questions/75457687
     //
     // Since Qt 6.5, QStyleHints::colorScheme() provides access to the
     // operating system's preferred color scheme:
@@ -386,16 +388,16 @@ bool isDarkColorScheme()
     return textColor.lightness() > windowColor.lightness();
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Swatch grid derived from the basic colors as by WCS (World color
+ *
+ * \brief Swatch grid derived from the basic colors as by WCS (World color
  * survey).
  *
  * The swatch grid contains various tints and shades of the
  * basic colors. The choice of the basic colors is based on the
- * <a href="https://en.wikipedia.org/wiki/Basic_Color_Terms:_Their_Universality_and_Evolution">
- * study by Brent Berlin and Paul Kay</a>, who suggest that the
+ * \l {https://en.wikipedia.org/wiki/Basic_Color_Terms:_Their_Universality_and_Evolution}
+ * {study by Brent Berlin and Paul Kay}, who suggest that the
  * basic color terms in almost all languages on earth follow a universal
  * pattern. They propose that there are eleven basic color terms that appear
  * in this order during the evolution of a language:
@@ -418,77 +420,87 @@ bool isDarkColorScheme()
  * same hue as red or orange but are less saturated. These are simply the
  * less chromatic parts of this hue but are nevertheless perceived by humans as
  * independent colors. For each of these basic colors, there are five variants
- * in the order of <a href="https://en.wikipedia.org/wiki/Tints_and_shades">
- * tint, pure color, and shade</a>. Following the saturated colors and
+ * in the order of \l {https://en.wikipedia.org/wiki/Tints_and_shades}
+ * {tint, pure color, and shade}. Following the saturated colors and
  * eventually the less saturated ones, the gray axis comes in last place.
  *
  * What exact colors are used? What exactly is a typical “red” or a
  * “green”? Doesn’t every human have a slightly different
  * feeling what a “typical” red or a “typical” blue is? We
- * need a <em>focal color</em>, which is, according to
- * <a href="https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095825870">
- * Oxford Reference</a>:
+ * need a \e {focal color}, which is, according to
+ * \l {https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095825870}
+ * {Oxford Reference}:
  *
- * > “A colour that is a prototypical instance of a particular colour name,
- * > such as a shade of red that a majority of viewers consider to be the
- * > best example of a red colour.”
+ * \quotation
+ *     A colour that is a prototypical instance of a particular colour name,
+ *     such as a shade of red that a majority of viewers consider to be the
+ *     best example of a red colour.
+ * \endquotation
  *
- * The <a href="https://www1.icsi.berkeley.edu/wcs/">World Color Survey</a>
+ * The \l {https://www1.icsi.berkeley.edu/wcs/} {World Color Survey}
  * (WCS) is a significant study about focal colors of speakers of different
  * languages across the world. The data from this survey is available online,
  * and while it does not provide direct values for focal colors, various
  * studies have used this data to determine focal colors for some
- * <em>basic color terms</em> and a naming centroid for others.
+ * \e {basic color terms} and a naming centroid for others.
  *
  * The table below shows the WCS grid coordinates for the basic color terms
  * along with the corresponding Cielab values for the focal color (where
  * available) or the naming centroid (where focal color data is unavailable).
  *
- * |Basic color term|WCS grid coordinates|Cielab³ L|Cielab³ a|Cielab³ b|
- * | :--------------| -----------------: | ------: | ------: | ------: |
- * | white¹         |                 A0 |   96.00 |   -0.06 |    0.06 |
- * | black¹         |                 J0 |   15.60 |   -0.02 |    0.02 |
- * | red¹           |                 G1 |   41.22 |   61.40 |   17.92 |
- * | yellow¹        |                 C9 |   81.35 |    7.28 |  109.12 |
- * | green¹         |                F17 |   51.57 |  -63.28 |   28.95 |
- * | blue¹          |                F29 |   51.57 |   -3.41 |  -48.08 |
- * | brown³         |                 G7 |   41.22 |   17.04 |   45.95 |
- * | purple³        |                G34 |   41.22 |   33.08 |  -30.50 |
- * | pink³          |                 E1 |   61.70 |   49.42 |   18.23 |
- * | orange³        |                 E6 |   61.70|    29.38 |   64.40 |
- * | gray           |      not available |         |         |         |
+ * \table
+ *     \header
+ *         \li Basic color term
+ *         \li WCS grid coordinates
+ *         \li Cielab³ L
+ *         \li Cielab³ a
+ *         \li Cielab³ b
+ *     \row \li white¹  \li            A0 \li 96.00 \li   -0.06 \li    0.06
+ *     \row \li black¹  \li            J0 \li 15.60 \li   -0.02 \li    0.02
+ *     \row \li red¹    \li            G1 \li 41.22 \li   61.40 \li   17.92
+ *     \row \li yellow¹ \li            C9 \li 81.35 \li    7.28 \li  109.12
+ *     \row \li green¹  \li           F17 \li 51.57 \li  -63.28 \li   28.95
+ *     \row \li blue¹   \li           F29 \li 51.57 \li   -3.41 \li  -48.08
+ *     \row \li brown³  \li            G7 \li 41.22 \li   17.04 \li   45.95
+ *     \row \li purple³ \li           G34 \li 41.22 \li   33.08 \li  -30.50
+ *     \row \li pink³   \li            E1 \li 61.70 \li   49.42 \li   18.23
+ *     \row \li orange³ \li            E6 \li 61.70 \li   29.38 \li   64.40
+ *     \row \li gray    \li           N/A \li   N/A \li     N/A \li     N/A
+ * \endtable
  *
  * ¹ Focal color as proposed by
- *   <a href="https://www.pnas.org/doi/10.1073/pnas.0503281102">Focal colors
- *   are universal after all</a>.
+ *   \l {https://www.pnas.org/doi/10.1073/pnas.0503281102} {Focal colors
+ *   are universal after all}.
  *
  * ² Raw estimation of the naming centroid based on Fig. 4 of
- *   <a href="https://sites.socsci.uci.edu/~kjameson/ECST/Kay_Cook_WorldColorSurvey.pdf">
- *   this document</a>. (Fig. 5 would be the better choice, as it gives the
+ *   \l {https://sites.socsci.uci.edu/~kjameson/ECST/Kay_Cook_WorldColorSurvey.pdf}
+ *   {this document}. (Fig. 5 would be the better choice, as it gives the
  *   focal color instead of the naming centroid, but unfortunately contains
  *   only red, yellow, green and blue, for which we have yet direct data.)
  *
- * ³ <a href="https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new.txt">
- *   Lookup table providing Lab values for WCS grid coordinates</a> and the
- *   <a href="https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new-README.txt">
- *   corresponding explanation</a>.
+ * ³ \l {https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new.txt}
+ *   {Lookup table providing Lab values for WCS grid coordinates} and the
+ *   \l {https://www1.icsi.berkeley.edu/wcs/data/cnum-maps/cnum-vhcm-lab-new-README.txt}
+ *   {corresponding explanation}.
  *
  * From this data, the colors in our swatch grid have been derived as follows:
- * - The gray axis has been defined manually, ignoring the WCS data. Chroma
+ * \list
+ * \li The gray axis has been defined manually, ignoring the WCS data. Chroma
  *   is 0. The lightness is 100% for white, 0% for black, and 75%, 50%,
  *   and 25% for the intermediate grays.
- * - The other columns for chromatic colors use the WCS data for the swatch in
+ * \li The other columns for chromatic colors use the WCS data for the swatch in
  *   the middle. Tints and shades are calculated by adding or reducing chroma
  *   and lightness within the Oklab color space. If the resulting color falls
  *   outside the gamut, a nearby in-gamut color is chosen instead.
+ * \endlist
  *
- * @returns Swatch grid derived from the basic colors. Provides as a list of
+ * Returns a swatch grid derived from the basic colors. Provides as a list of
  * basic colors (in this order: red, orange, yellow, green, blue, purple, pink,
  * brown, gray axis). Each basic color is a list of 5 swatches (starting with
  * the lightest and finishing with the darkest: 2 tints, the tone itself,
  * 2 shades). The colors are sRGB colors.
  *
- * @note RGB values are rounded to integers in the range [0, 255].
+ * \note RGB values are rounded to integers in the range [0, 255].
  *       When converting these rounded RGB values back to Oklch,
  *       you would naturally expect all tints and shades of the same color
  *       to retain the same hue. However, slight differences may appear
@@ -569,14 +581,14 @@ QColorArray2D wcsBasicColors()
     return wcsSwatches;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Sets the opacity of a color to fully opaque.
  *
- * @param color The input color.
+ * \brief Sets the opacity of a color to fully opaque.
  *
- * @return The same color with its alpha channel set to maximum opacity.
+ * \a color The input color.
+ *
+ * Returns the same color with its alpha channel set to maximum opacity.
  */
 QColor toOpaque(const QColor &color)
 {
@@ -587,14 +599,14 @@ QColor toOpaque(const QColor &color)
     return temp;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Makes all colors in the array fully opaque.
  *
- * @param array The input array of colors.
+ * \brief Makes all colors in the array fully opaque.
  *
- * @return The same array with the alpha channel of each valid color set to
+ * \a array The input array of colors.
+ *
+ * Returns the same array with the alpha channel of each valid color set to
  * full opacity.
  */
 QColorArray2D toOpaque(const QColorArray2D &array)
@@ -609,37 +621,40 @@ QColorArray2D toOpaque(const QColorArray2D &array)
     return result;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Splits a number of elements into segments with a tapered
+ *
+ * \brief Splits a number of elements into segments with a tapered
  * distribution.
  *
- * Divides a total of <tt>elementCount</tt> elements (indexed from 0
- * to elementCount - 1) into <tt>segmentCount</tt> contiguous segments. The
+ * Divides a total of \c {elementCount} elements (indexed from 0
+ * to elementCount - 1) into \c {segmentCount} contiguous segments. The
  * distribution produces larger segments near the beginning and end of the
  * range, and smaller segments near the center, based on a piecewise linear
  * weighting function.
  *
  * Segment sizes are determined proportionally to a linear slope that decreases
- * toward <tt>peak</tt> from both ends. The center point of this tapering
- * effect is defined by <tt>peak</tt>. All segment start indices are aligned to
- * multiples of <tt>alignment</tt>, and all elements are covered without gaps
+ * toward \c {peak} from both ends. The center point of this tapering
+ * effect is defined by \c {peak}. All segment start indices are aligned to
+ * multiples of \c {alignment}, and all elements are covered without gaps
  * or overlap.
  *
  * This method is fast, deterministic, and suitable for scenarios where a
  * non-uniform but predictable distribution is desired.
  *
- * @param elementCount Total number of elements to divide. Must be ≥ 0.
- * @param segmentCount Number of segments to produce. Must be ≥ 1.
- * @param alignment Alignment step for the start index of each segment. Each
+ * \a elementCount Total number of elements to divide. Must be ≥ 0.
+ *
+ * \a segmentCount Number of segments to produce. Must be ≥ 1.
+ *
+ * \a alignment Alignment step for the start index of each segment. Each
  *        segment starts at a multiple of this value. Must be ≥ 1.
- * @param peak Normalized center point of the distribution (0 < peak < 1),
+ *
+ * \a peak Normalized center point of the distribution (0 < peak < 1),
  *        where segment size reaches its minimum. Use 0.5 for a symmetric
  *        tapering. Values closer to 0 or 1 shift the smallest segments
  *        accordingly.
  *
- * @return A list of segment ranges, where each pair represents the
+ * Returns a list of segment ranges, where each pair represents the
  *         [start, end] index (inclusive) of a segment. The ranges are
  *         disjoint, aligned, and collectively span the full element range.
  */
@@ -713,25 +728,15 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
     return result;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Convert mime data to QColor
  *
- * @param mimeData The mime data
+ * \brief Convert mime data to QColor
  *
- * @returns If the mime data contains color data, a corresponding valid QColor.
+ * \a mimeData The mime data
+ *
+ * Returns a corresponding valid QColor if the mime data contains color data.
  * An invalid QColor otherwise.
- *
- * @internal
- *
- * @todo SHOULDHAVE There is no standard mime type for color. But we should
- * support more than the current formats. Especially text(), html() and
- * text/css should be read and interpreted as CSS Color.
- *
- * @todo SHOULDHAVE Provide support not only for drag-and-drop, but also for
- * the clipboard, which uses the same mime-encoded data types. For example
- * support for Ctrl+V to paste from the clipboard.
  */
 QColor toQColor(const QMimeData *mimeData)
 {
@@ -777,15 +782,13 @@ QColor toQColor(const QMimeData *mimeData)
     return QColor();
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Whether a change event is theme related.
  *
- * @param eventType The event type to check.
+ * \brief Returns whether a change event is theme related (color palette,
+ * widget style, font policy etc).
  *
- * @returns Whether a change event is theme related
- * (color palette, widget style, font policy etc).
+ * \a eventType The event type to check.
  */
 bool isThemeChange(const QEvent::Type eventType)
 {

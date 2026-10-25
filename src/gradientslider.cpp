@@ -26,14 +26,16 @@
 
 namespace PerceptualColor
 {
-/**
- * @internal
+/*!
  *
- * @brief Constructs a vertical slider.
  *
- * @param projectionSpace The color space into which the gamut will be
+ * \brief Constructs a vertical slider.
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
- * @param parent parent widget (if any) */
+ *
+ * \a parent parent widget (if any)
+ */
 GradientSlider::GradientSlider(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new GradientSliderPrivate(this, projectionSpace))
@@ -41,14 +43,17 @@ GradientSlider::GradientSlider(const PerceptualColor::LchSpace projectionSpace, 
     d_pointer->initialize(Qt::Orientation::Vertical);
 }
 
-/** @brief Constructs a slider.
+/*!
+ * \brief Constructs a slider.
  *
- * @param projectionSpace The color space into which the gamut will be
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
- * @param orientation The orientation parameter determines whether
+ *
+ * \a orientation The orientation parameter determines whether
  * the slider is horizontal or vertical; the valid values
- * are <tt>Qt::Vertical</tt> and <tt>Qt::Horizontal</tt>.
- * @param parent parent widget (if any) */
+ * are \c {Qt::Vertical} and \c {Qt::Horizontal}.
+ *
+ * \a parent parent widget (if any) */
 GradientSlider::GradientSlider(const PerceptualColor::LchSpace projectionSpace, Qt::Orientation orientation, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new GradientSliderPrivate(this, projectionSpace))
@@ -56,19 +61,20 @@ GradientSlider::GradientSlider(const PerceptualColor::LchSpace projectionSpace, 
     d_pointer->initialize(orientation);
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 GradientSlider::~GradientSlider() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation.
  *
- * @param projectionSpace The color space into which the gamut will be
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  */
 GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink, const LchSpace projectionSpace)
@@ -82,26 +88,26 @@ GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink, const Lch
     m_gradientImageParameters.setProjectionSpace(projectionSpace);
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 GradientSliderPrivate::~GradientSliderPrivate() noexcept
 {
 }
 
-/** @brief Basic initialization.
+/*!
+ * \brief Basic initialization.
  *
  * Code that is shared between the various overloaded constructors
- * of @ref GradientSlider.
+ * of \l GradientSlider.
  *
- * @note This function requires that @ref q_pointer points to a completely
- * initialized object. Therefore, this function may <em>not</em> be called
- * within the constructor of @ref GradientSliderPrivate because in this
- * moment the @ref GradientSlider object is still not fully initialized.
- * However, a call from the <em>function body</em> of a constructor of
- * @ref GradientSlider should be okay.
+ * \note This function may \e {not} be
+ * called within the constructor of \l GradientSliderPrivate because in this
+ * moment the \l GradientSlider object is still not fully initialized.
+ * However, a call from the \e {function body} of a constructor of
+ * \l GradientSlider should be okay.
  *
- * @param orientation determines whether the slider is horizontal or
+ * \a orientation determines whether the slider is horizontal or
  * vertical */
 void GradientSliderPrivate::initialize(Qt::Orientation orientation)
 {
@@ -119,10 +125,12 @@ void GradientSliderPrivate::initialize(Qt::Orientation orientation)
         &GradientSlider::callUpdate);
 }
 
-/** @brief Setter for first color.
+/*!
+ * \brief Setter for first color.
  *
- * @param newFirstColorLch the new first color Lch value
- * @param newFirstColorAlpha the new first color alpha value
+ * \a newFirstColorLch the new first color Lch value
+ *
+ * \a newFirstColorAlpha the new first color alpha value
  */
 void GradientSlider::setFirstColorLchA(const PerceptualColor::GenericColor &newFirstColorLch, const double newFirstColorAlpha)
 {
@@ -140,10 +148,12 @@ void GradientSlider::setFirstColorLchA(const PerceptualColor::GenericColor &newF
     update();
 }
 
-/** @brief Setter for second color.
+/*!
+ * \brief Setter for second color.
  *
- * @param newSecondColorLch the new second color Lch value.
- * @param newSecondColorAlpha the new second color alpha value.
+ * \a newSecondColorLch the new second color Lch value.
+ *
+ * \a newSecondColorAlpha the new second color alpha value.
  */
 void GradientSlider::setSecondColorLchA(const PerceptualColor::GenericColor &newSecondColorLch, const double newSecondColorAlpha)
 {
@@ -162,14 +172,17 @@ void GradientSlider::setSecondColorLchA(const PerceptualColor::GenericColor &new
     update();
 }
 
-/**
- * @brief Unified call for both, @ref setFirstColorLchA
- * and @ref setSecondColorLchA.
+/*!
+ * \brief Unified call for both, \l setFirstColorLchA
+ * and \l setSecondColorLchA.
  *
- * @param newFirstColorLch the new first color Lch value
- * @param newFirstColorAlpha the new first color alpha value
- * @param newSecondColorLch the new second color Lch value
- * @param newSecondColorAlpha the new second color alpha value
+ * \a newFirstColorLch the new first color Lch value
+ *
+ * \a newFirstColorAlpha the new first color alpha value
+ *
+ * \a newSecondColorLch the new second color Lch value
+ *
+ * \a newSecondColorAlpha the new second color alpha value
  */
 void GradientSlider::setColors(const PerceptualColor::GenericColor &newFirstColorLch,
                                const double newFirstColorAlpha,
@@ -181,11 +194,13 @@ void GradientSlider::setColors(const PerceptualColor::GenericColor &newFirstColo
     update();
 }
 
-/** @brief React on a resize event.
+/*!
+ * \brief React on a resize event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event */
+ * \a event The corresponding resize event
+ */
 void GradientSlider::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event)
@@ -199,13 +214,13 @@ void GradientSlider::resizeEvent(QResizeEvent *event)
     // No image computation because the widget might not even be visible.
 }
 
-/** @brief Recommended size for the widget
+/*!
+ * \brief Recommended size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns Recommended size for the widget.
- *
- * @sa @ref sizeHint() */
+ * Returns the recommended size for the widget.
+ */
 QSize GradientSlider::sizeHint() const
 {
     QSize result = minimumSizeHint();
@@ -219,13 +234,13 @@ QSize GradientSlider::sizeHint() const
     return result;
 }
 
-/** @brief Recommended minimum size for the widget.
+/*!
+ * \brief Recommended minimum size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
- *
- * @sa @ref minimumSizeHint() */
+ * Returns the recommended minimum size for the widget.
+ */
 QSize GradientSlider::minimumSizeHint() const
 {
     QSize result;
@@ -246,11 +261,12 @@ qreal GradientSlider::singleStep() const
     return d_pointer->m_singleStep;
 }
 
-/** @brief Setter for @ref singleStep property.
+/*!
+ * \brief Setter for \l singleStep property.
  *
- * @param newSingleStep the new @ref singleStep. Is bound to the valid
+ * \a newSingleStep the new \l singleStep. Is bound to the valid
  * range of the property. */
-void GradientSlider::setSingleStep(qreal newSingleStep)
+void GradientSlider::setSingleStep(const qreal newSingleStep)
 {
     // Do not use negative value
     const qreal boundedSingleStep = qBound<qreal>(0.0, newSingleStep, 1.0);
@@ -267,11 +283,12 @@ qreal GradientSlider::pageStep() const
     return d_pointer->m_pageStep;
 }
 
-/** @brief Setter for @ref pageStep property.
+/*!
+ * \brief Setter for \l pageStep property.
  *
- * @param newPageStep the new @ref pageStep. Is bound to the valid
+ * \a newPageStep the new \l pageStep. Is bound to the valid
  * range of the property. */
-void GradientSlider::setPageStep(qreal newPageStep)
+void GradientSlider::setPageStep(const qreal newPageStep)
 {
     // Do not use negative altkluge
     const qreal boundedNewPageStep = qBound<qreal>(0.0, newPageStep, 1.0);
@@ -288,11 +305,12 @@ qreal GradientSlider::value() const
     return d_pointer->m_value;
 }
 
-/** @brief Setter for @ref value property.
+/*!
+ * \brief Setter for \l value property.
  *
- * @param newValue the new @ref value. Is bound to the valid
+ * \a newValue the new \l value. Is bound to the valid
  * range of the property. */
-void GradientSlider::setValue(qreal newValue)
+void GradientSlider::setValue(const qreal newValue)
 {
     qreal temp = qBound<qreal>(0, newValue, 1);
     if (d_pointer->m_value != temp) {
@@ -302,41 +320,48 @@ void GradientSlider::setValue(qreal newValue)
     }
 }
 
-/** @brief React on a mouse press event.
+/*!
+ * \brief React on a mouse press event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void GradientSlider::mousePressEvent(QMouseEvent *event)
 {
     setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
-/** @brief React on a mouse release event.
+/*!
+ * \brief React on a mouse release event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void GradientSlider::mouseReleaseEvent(QMouseEvent *event)
 {
     setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
-/** @brief React on a mouse move event.
+/*!
+ * \brief React on a mouse move event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event */
 void GradientSlider::mouseMoveEvent(QMouseEvent *event)
 {
     setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
-/** @brief React on a mouse wheel event.
+/*!
+ * \brief React on a mouse wheel event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void GradientSlider::wheelEvent(QWheelEvent *event)
 {
     qreal steps = standardWheelStepCount(event);
@@ -358,23 +383,27 @@ void GradientSlider::wheelEvent(QWheelEvent *event)
     }
 }
 
-/** @brief React on key press events.
+/*!
+ * \brief React on key press events.
  *
  * Reimplemented from base class.
  *
- * The user can change the @ref value of this widget by the following
+ * The user can change the \l value of this widget by the following
  * key strokes:
  *
- * - Qt::Key_Up and Qt::Key_Plus increments a @ref singleStep.
- * - Qt::Key_Down and Qt::Key_Minus decrements a @ref singleStep.
- * - Qt::Key_Left increments and Qt::Key_Right increment or decrement
- *   a @ref singleStep, depending on the layout direction (LTR or RTL).
- * - Qt::Key_PageUp increments a @ref pageStep
- * - Qt::Key_PageDown decrements a @ref pageStep
- * - Qt::Key_Home increments to the maximum @ref value
- * - Qt::Key_End decrements to the minimum @ref value
+ * \list
+ *     \li Qt::Key_Up and Qt::Key_Plus increments a \l singleStep.
+ *     \li Qt::Key_Down and Qt::Key_Minus decrements a \l singleStep.
+ *     \li Qt::Key_Left increments and Qt::Key_Right increment or decrement
+ *         a \l singleStep, depending on the layout direction (LTR or RTL).
+ *     \li Qt::Key_PageUp increments a \l pageStep
+ *     \li Qt::Key_PageDown decrements a \l pageStep
+ *     \li Qt::Key_Home increments to the maximum \l value
+ *     \li Qt::Key_End decrements to the minimum \l value
+ * \endlist
  *
- * @param event the event  */
+ * \a event the event
+ */
 void GradientSlider::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
@@ -434,15 +463,17 @@ Qt::Orientation GradientSlider::orientation() const
     return d_pointer->m_orientation;
 }
 
-/** @brief Forces a new orientation and a corresponding size policy.
+/*!
+ * \brief Forces a new orientation and a corresponding size policy.
  *
- * @param newOrientation The new orientation for the widget.
+ * \a newOrientation The new orientation for the widget.
  *
- * @post The new orientation is stored. The signal
- * @ref GradientSlider::orientationChanged is <em>not</em> emitted.
- * The <tt>sizePolicy</tt> property is updated corresponding to the
- * <em>new</em> orientation; this happens even if the new
- * orientation is identical to the old @ref m_orientation! */
+ *  The new orientation is stored. The signal
+ * \l GradientSlider::orientationChanged is \e {not} emitted.
+ * The \c {sizePolicy} property is updated corresponding to the
+ * \e {new} orientation; this happens even if the new
+ * orientation is identical to the old \l m_orientation!
+ */
 void GradientSliderPrivate::setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation newOrientation)
 {
     if (newOrientation == Qt::Orientation::Vertical) {
@@ -462,10 +493,12 @@ void GradientSliderPrivate::setOrientationWithoutSignalAndForceNewSizePolicy(Qt:
     q_pointer->update();
 }
 
-/** @brief Setter for @ref orientation property.
+/*!
+ * \brief Setter for \l orientation property.
  *
- * @param newOrientation the new @ref orientation. */
-void GradientSlider::setOrientation(Qt::Orientation newOrientation)
+ * \a newOrientation the new \l orientation.
+ */
+void GradientSlider::setOrientation(const Qt::Orientation newOrientation)
 {
     if (newOrientation != d_pointer->m_orientation) {
         d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy( //
@@ -474,17 +507,19 @@ void GradientSlider::setOrientation(Qt::Orientation newOrientation)
     }
 }
 
-/** @brief The rounded length of the widget
- * measured in <em>physical pixels</em>.
+/*!
+ * \brief The rounded length of the widget
+ * measured in \e {physical pixels}.
  *
- * @returns The rounded length of the widget
- * measured in <em>physical pixels</em>.
+ * Returns the rounded length of the widget
+ * measured in \e {physical pixels}.
  *
  * This is a convenience function to access
- * @ref GradientSlider::physicalPixelSize(). The length is the
+ * \l GradientSlider::physicalPixelSize(). The length is the
  * size of the widget in the direction of the gradient.
  *
- * @sa @ref physicalPixelThickness() */
+ * \sa physicalPixelThickness()
+ */
 int GradientSliderPrivate::physicalPixelLength() const
 {
     if (m_orientation == Qt::Orientation::Vertical) {
@@ -494,17 +529,19 @@ int GradientSliderPrivate::physicalPixelLength() const
     }
 }
 
-/** @brief The rounded thickness of the widget
- * measured in <em>physical pixels</em>.
+/*!
+ * \brief The rounded thickness of the widget
+ * measured in \e {physical pixels}.
  *
- * @returns The rounded thickness of the widget
- * measured in <em>physical pixels</em>.
+ * Returns the rounded thickness of the widget
+ * measured in \e {physical pixels}.
  *
  * This is a convenience function to access
- * @ref GradientSlider::physicalPixelSize(). The thickness is the
+ * \l GradientSlider::physicalPixelSize(). The thickness is the
  * size of the widget orthogonal to the direction of the gradient.
  *
- * @sa @ref physicalPixelLength() */
+ * \sa physicalPixelLength()
+ */
 int GradientSliderPrivate::physicalPixelThickness() const
 {
     if (m_orientation == Qt::Orientation::Horizontal) {
@@ -514,13 +551,18 @@ int GradientSliderPrivate::physicalPixelThickness() const
     }
 }
 
-/** @brief Converts widget pixel positions to @ref GradientSlider::value
- * @param pixelPosition The position of a pixel of the widget coordinate
+/*!
+ * \brief Converts widget pixel positions to \l GradientSlider::value
+ *
+ * \a pixelPosition The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to
  * be within the actual displayed widget. It might even be negative.
- * @returns The corresponding @ref GradientSlider::value for the (center of
+ *
+ * Returns the corresponding \l GradientSlider::value for the (center of
  * the) given widget pixel position.
- * @sa @ref measurementdetails */
+ *
+ * \sa {Measurement details}
+ */
 qreal GradientSliderPrivate::fromWidgetPixelPositionToValue(QPoint pixelPosition)
 {
     // Prevent division by 0 in code below
@@ -545,11 +587,13 @@ qreal GradientSliderPrivate::fromWidgetPixelPositionToValue(QPoint pixelPosition
     return qBound<qreal>(0, temp, 1);
 }
 
-/** @brief Paint the widget.
+/*!
+ * \brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * @param event the paint event */
+ * \a event the paint event
+ */
 void GradientSlider::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)

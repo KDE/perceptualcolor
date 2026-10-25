@@ -11,15 +11,18 @@ class QEvent;
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- * @brief An event filter that discards <tt>QEvent::LanguageChange</tt>
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief An event filter that discards \c {QEvent::LanguageChange}
  * events.
  *
  * All other events are kept.
  *
  * To use it, create an instance of this class. Then, call
- * <tt>QObject::installEventFilter()</tt> on the object for which
+ * \c {QObject::installEventFilter()} on the object for which
  * you want to filter the events. */
 class LanguageChangeEventFilter : public QObject
 {
@@ -33,7 +36,6 @@ public:
 private:
     Q_DISABLE_COPY(LanguageChangeEventFilter)
 
-    /** @internal @brief Only for unit tests. */
     friend class TestLanguageChangeEventFilter;
 };
 

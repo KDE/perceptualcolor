@@ -24,22 +24,24 @@ namespace PerceptualColor
 
 class ChromaHueDiagramPrivate;
 
-/**
- * @internal
+/*!
  *
- * @brief A widget for selecting chroma and hue in LCH color space
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief A widget for selecting chroma and hue in LCH color space.
  *
  * This widget displays the plan of chroma and hue
  * (that means a diagram of the radius and the angle of the
  * LCH color space respectively the a axis and the b axis of the
- * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
- * Lab color model</a>) at a given lightness.
+ * \l {https://en.wikipedia.org/wiki/CIELAB_color_space}
+ * {Lab color model}) at a given lightness.
  *
- * @image html ChromaHueDiagram.png "ChromaHueDiagram"
+ * \image ChromaHueDiagram.png "ChromaHueDiagram"
  *
  * The widget allows the user to select a color (chroma and hue) within the
  * specified gamut at a given lightness. It reacts on mouse events and on
- * keyboard events (see @ref keyPressEvent() for details).
+ * keyboard events (see \l keyPressEvent() for details).
  *
  * The form of the selection handle (that always indicates the distance from
  * the center of the diagram) and the circular form of the widget, all this
@@ -47,38 +49,20 @@ class ChromaHueDiagramPrivate;
  * polar coordinate system and to capture easily the current radius
  * and angle.
  *
- * Usage example: @snippet testchromahuediagram.cpp instantiate
+ * Usage example:
  *
- * See @ref circularwidgets for some pecularities of this widget.
+ * \snippet testchromahuediagram.cpp instantiate
  *
- * @internal
- *
- * @todo NICETOHAVE STYLING Use a cross cursor when the mouse cursor hovers
- * above the diagrams, for better usability? The cross cursor indicates
- * to the user that an area can be clicked in. Do it only within the gamut
- * (where the color handle can actually go) or in the hole gray circle,
- * which is the mouse sensitive area.
- *
- * @todo SHOULDHAVE Support more mouse buttons. For example, “forward” and
- * “backward” could be used to increase or decrease chroma across various
- * diagrams like @ref ChromaHueDiagram and @ref WheelColorPicker. The mouse
- * wheel could change the hue in @ref ChromaHueDiagram and
- * @ref WheelColorPicker and even @ref SwatchBook.
- *
- * @todo SHOULDHAVE What if black or white are out of gamut on L=0.1 or L=99.9?
- * Where are the handles placed? Visible or invisible? How to react (for mouse
- * input, keyboard input, but also API functions like setColor()? Should
- * there be always a physical pixel in the middle that is visible (black
- * or white) even when out of gamut?
- * Make sure that @ref ChromaHueDiagram always shows at least at the
- * central physical pixel with an in-gamut color? Solution: Limit the range
- * of the lightness selector?
+ * See \l {Circular widgets} for some pecularities of this widget.
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
-    /** @brief Currently selected color
+    /*!
+     * \property PerceptualColor::ChromaHueDiagram::currentColorLch
+     *
+     * \brief Currently selected color
      *
      * The widget allows the user to change the LCH chroma and the LCH hue
      * values. However, the LCH lightness value cannot be changed by the
@@ -86,17 +70,15 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ChromaHueDiagram : public AbstractDi
      *
      * The programmer can set this property to out-of-gamut values; the
      * user cannot.
-     *
-     * @sa READ @ref currentColorLch() const
-     * @sa WRITE @ref setCurrentColorLch()
-     * @sa NOTIFY @ref currentColorLchChanged() */
+     */
     Q_PROPERTY(GenericColor currentColorLch READ currentColorLch WRITE setCurrentColorLch NOTIFY currentColorLchChanged)
 
 public:
     Q_INVOKABLE explicit ChromaHueDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
-    /** @brief Getter for property @ref currentColorLch
-     *  @returns the property @ref currentColorLch */
+    /*!
+     * \brief Getter for property \l currentColorLch
+     */
     [[nodiscard]] GenericColor currentColorLch() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] virtual QSize sizeHint() const override;
@@ -105,8 +87,11 @@ public Q_SLOTS:
     void setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColorLch.
-     *  @param newCurrentColorLch the new current color */
+    /*!
+     * \brief Notify signal for property \l currentColorLch.
+     *
+     *  \a newCurrentColorLch the new current color
+     */
     void currentColorLchChanged(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 protected:
@@ -121,17 +106,11 @@ protected:
 private:
     Q_DISABLE_COPY(ChromaHueDiagram)
 
-    /** @internal
-     *
-     * @brief Declare the private implementation as friend class.
-     *
-     * This allows the private class to access the protected members and
-     * functions of instances of <em>this</em> class. */
     friend class ChromaHueDiagramPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+    /*!
+     * \brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ChromaHueDiagramPrivate> d_pointer;
 
-    /** @internal @brief Only for unit tests. */
     friend class TestChromaHueDiagram;
 };
 

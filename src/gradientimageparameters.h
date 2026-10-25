@@ -14,11 +14,14 @@ namespace PerceptualColor
 {
 class AsyncImageRenderCallback;
 
-/** @internal
+/*!
  *
- *  @brief Parameters for image of a gradient.
  *
- * For usage with @ref AsyncImageProvider.
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Parameters for image of a gradient.
+ *
+ * For usage with \l AsyncImageProvider.
  *
  * As the hue is a circular property, there exists two ways to go from one hue
  * to another (clockwise or counter-clockwise). This gradient takes always the
@@ -26,29 +29,29 @@ class AsyncImageRenderCallback;
  *
  * The image has properties that can be accessed by the corresponding setters
  * and getters or directly. You should explicitly set all values
- * <em>before</em> calling the first time @ref render().
+ * \e {before} calling the first time \l render().
  *
- * This class supports HiDPI via its @ref setDevicePixelRatioF function.
+ * This class supports HiDPI via its \l setDevicePixelRatioF function.
  */
 struct GradientImageParameters {
 public:
     explicit GradientImageParameters();
 
-    /**
-     * @brief Equal operator
+    /*!
+     * \brief Equal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+     * Returns \c {true} if equal, \c {false} otherwise.
      */
     [[nodiscard]] bool operator==(const GradientImageParameters &other) const = default;
 
-    /**
-     * @brief Unequal operator
+    /*!
+     * \brief Unequal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise.
+     * Returns \c {true} if unequal, \c {false} otherwise.
      */
     [[nodiscard]] bool operator!=(const GradientImageParameters &other) const = default;
 
@@ -62,7 +65,6 @@ public:
     void setSecondColorLchA(const GenericColor &newSecondColorLch, const double newSecondColorAlpha);
 
 private:
-    /** @internal @brief Only for unit tests. */
     friend class TestGradientImageParameters;
 
     // Methods
@@ -71,61 +73,72 @@ private:
 
     // Data members
 
-    /** @brief Internal storage of the device pixel ratio as floating point.
+    /*!
+     * \brief Internal storage of the device pixel ratio as floating point.
      *
-     * @sa @ref setDevicePixelRatioF() */
+     * \sa setDevicePixelRatioF()
+     */
     qreal m_devicePixelRatioF = 1;
 
-    /**
-     * @brief Internal storage of the first color‘s alpha.
+    /*!
+     * \brief Internal storage of the first color‘s alpha.
      *
      * The alpha is bound to [0..1].
      */
     double m_firstColorAlphaCorrected = 0;
 
-    /** @brief Internal storage of the first color.
+    /*!
+     * \brief Internal storage of the first color.
      *
      * The color is normalized and bound to the LCH color space.
-     * @sa @ref completlyNormalizedAndBounded() */
+     * \sa completlyNormalizedAndBounded()
+     */
     GenericColor m_firstColorLchCorrected;
 
-    /** @brief Internal storage for the gradient length, measured in
+    /*!
+     * \brief Internal storage for the gradient length, measured in
      * physical pixels.
      *
-     * @sa @ref setGradientLength() */
+     * \sa setGradientLength()
+     */
     int m_gradientLength = 0;
 
-    /** @brief Internal storage for the gradient thickness, measured in
+    /*!
+     * \brief Internal storage for the gradient thickness, measured in
      * physical pixels.
      *
-     * @sa @ref setGradientThickness() */
+     * \sa setGradientThickness()
+     */
     int m_gradientThickness = 0;
 
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      */
     LchSpace m_projectionSpace = LchSpace::CielchD50;
 
-    /**
-     * @brief Internal storage of the second color‘s alpha.
+    /*!
+     * \brief Internal storage of the second color‘s alpha.
      *
      * The alpha is bound to [0..1].
      */
     double m_secondColorAlphaCorrected = 0;
 
-    /** @brief Internal storage of the second color (corrected and altered
+    /*!
+     * \brief Internal storage of the second color (corrected and altered
      * value).
      *
      * The color is normalized and bound to the LCH color space. In an
      * additional step, it has been altered (by increasing or decreasing the
      * hue component in steps of 360°) to minimize the distance in hue
-     * from this color to @ref m_firstColorLchCorrected. This is necessary to
+     * from this color to \l m_firstColorLchCorrected. This is necessary to
      * easily allow to calculate the intermediate colors of the gradient, so
      * that they take the shortest way through the color space.
-     * @sa @ref setFirstColorLchA()
-     * @sa @ref setSecondColorLchA()
-     * @sa @ref completlyNormalizedAndBounded()
-     * @sa @ref updateSecondColor() */
+     *
+     * \sa setFirstColorLchA()
+     * \sa setSecondColorLchA()
+     * \sa completlyNormalizedAndBounded()
+     * \sa updateSecondColor()
+     */
     GenericColor m_secondColorLchCorrectedAndAltered;
 };
 

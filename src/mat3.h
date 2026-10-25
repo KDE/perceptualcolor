@@ -14,82 +14,95 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
+ * \class PerceptualColor::Mat3
  *
- * @brief Three-by-three matrix class.
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Three-by-three matrix class.
  *
  * Template class representing a 3x3 matrix in row-major order.
  * Provides element access, type conversion, matrix multiplication,
  * vector multiplication, determinant calculation, and inversion.
  *
- * @tparam T Floating-point type (float, double, long double).
+ * \b T Floating-point type (float, double, long double).
  */
 template<typename T>
 struct Mat3 {
     static_assert(std::is_floating_point_v<T>, "T must be floating point");
 
-    /**
-     * @brief Matrix elements in row-major order
+    /*!
+     * \brief Matrix elements in row-major order
      */
     std::array<T, 9> m{}; // in row-major order
 
-    /**
-     * @brief Default constructor.
+    /*!
+     * \brief Default constructor.
      *
      * Initializes all elements to zero.
      */
     constexpr Mat3() = default;
 
-    /**
-     * @brief Construct a matrix from nine elements.
+    /*!
+     * \brief Construct a matrix from nine elements.
      *
-     * @param m00 Element at row 0, column 0
-     * @param m01 Element at row 0, column 1
-     * @param m02 Element at row 0, column 2
-     * @param m10 Element at row 1, column 0
-     * @param m11 Element at row 1, column 1
-     * @param m12 Element at row 1, column 2
-     * @param m20 Element at row 2, column 0
-     * @param m21 Element at row 2, column 1
-     * @param m22 Element at row 2, column 2
+     * \a m00 Element at row 0, column 0
+     *
+     * \a m01 Element at row 0, column 1
+     *
+     * \a m02 Element at row 0, column 2
+     *
+     * \a m10 Element at row 1, column 0
+     *
+     * \a m11 Element at row 1, column 1
+     *
+     * \a m12 Element at row 1, column 2
+     *
+     * \a m20 Element at row 2, column 0
+     *
+     * \a m21 Element at row 2, column 1
+     *
+     * \a m22 Element at row 2, column 2
      */
     constexpr Mat3(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22)
         : m{{m00, m01, m02, m10, m11, m12, m20, m21, m22}}
     {
     }
 
-    /**
-     * @brief Access an element by row and column (mutable).
+    /*!
+     * \brief Access an element by row and column (mutable).
      *
-     * @param r Row index (0..2)
-     * @param c Column index (0..2)
-     * @return Reference to the element
+     * \a r Row index (0..2)
+     *
+     * \a c Column index (0..2)
+     *
+     * Returns a reference to the element
      */
     constexpr T &operator()(size_t r, size_t c)
     {
         return m[r * 3 + c];
     }
 
-    /**
-     * @brief Access an element by row and column (const).
+    /*!
+     * \brief Access an element by row and column (const).
      *
-     * @param r Row index (0..2)
-     * @param c Column index (0..2)
-     * @return Const reference to the element
+     * \a r Row index (0..2)
+     *
+     * \a c Column index (0..2)
+     *
+     * Returns a \c const reference to the element
      */
     constexpr const T &operator()(size_t r, size_t c) const
     {
         return m[r * 3 + c];
     }
 
-    /**
-     * @brief Explicit conversion to another Mat3 type.
+    /*!
+     * \brief Explicit conversion to another Mat3 type.
      *
      * Converts all elements to type U.
      *
-     * @tparam U Target floating-point type
-     * @return Converted matrix
+     * \b U Target floating-point type
      */
     template<typename U>
     constexpr explicit operator Mat3<U>() const
@@ -100,11 +113,10 @@ struct Mat3 {
         return result;
     }
 
-    /**
-     * @brief Matrix multiplication.
+    /*!
+     * \brief Matrix multiplication.
      *
-     * @param rhs Right-hand side matrix
-     * @return Product matrix
+     * \a rhs Right-hand side matrix
      */
     constexpr Mat3 operator*(const Mat3 &rhs) const
     {
@@ -125,11 +137,10 @@ struct Mat3 {
         return result;
     }
 
-    /**
-     * @brief Matrix-vector multiplication.
+    /*!
+     * \brief Matrix-vector multiplication.
      *
-     * @param v Input vector
-     * @return Resulting vector
+     * \a v Input vector
      */
     constexpr Vec3<T> operator*(const Vec3<T> &v) const
     {
@@ -138,10 +149,8 @@ struct Mat3 {
                        m[6] * v(0) + m[7] * v(1) + m[8] * v(2)};
     }
 
-    /**
-     * @brief Compute the determinant of the matrix.
-     *
-     * @return Determinant value
+    /*!
+     * \brief Compute the determinant of the matrix.
      */
     constexpr T determinant() const
     {
@@ -150,14 +159,12 @@ struct Mat3 {
             + m[2] * (m[3] * m[7] - m[4] * m[6]);
     }
 
-    /**
-     * @brief Compute the inverse of the matrix.
+    /*!
+     * \brief Compute the inverse of the matrix.
      *
+     * Returns the inverse matrix if invertible.
      * Returns std::nullopt if the matrix is not invertible
      * (determinant equals zero).
-     *
-     * @return Optional containing the inverse matrix if invertible,
-     *         otherwise std::nullopt
      */
     constexpr std::optional<Mat3> inverse() const
     {
@@ -182,44 +189,47 @@ struct Mat3 {
     }
 };
 
-/**
- * @internal
+/*!
+ * \typealias PerceptualColor::Mat3f
  *
- * @typedef Mat3f
- * @brief Alias for a 3x3 matrix with float elements.
+ * \relates PerceptualColor::Mat3
+ *
+ * \brief Alias for a 3x3 matrix with float elements.
  *
  * This is a specialization of Mat3<T> with T = float.
  * Declared as a Qt metatype for use in QVariant and signals/slots.
  */
 using Mat3f = Mat3<float>;
 
-/**
- * @internal
+/*!
+ * \typealias PerceptualColor::Mat3d
  *
- * @typedef Mat3d
- * @brief Alias for a 3x3 matrix with double elements.
+ * \relates PerceptualColor::Mat3
+ *
+ * \brief Alias for a 3x3 matrix with double elements.
  *
  * This is a specialization of Mat3<T> with T = double.
  * Declared as a Qt metatype for use in QVariant and signals/slots.
  */
 using Mat3d = Mat3<double>;
 
-/**
- * @internal
+/*!
+ * \typealias PerceptualColor::Mat3ld
  *
- * @typedef Mat3ld
- * @brief Alias for a 3x3 matrix with long double elements.
+ * \relates PerceptualColor::Mat3
+ *
+ * \brief Alias for a 3x3 matrix with long double elements.
  *
  * This is a specialization of Mat3<T> with T = long double.
  * Declared as a Qt metatype for use in QVariant and signals/slots.
  */
 using Mat3ld = Mat3<long double>;
 
-QDebug operator<<(QDebug dbg, const Mat3d &value);
+QDebug operator<<(QDebug dbg, const PerceptualColor::Mat3d &value);
 
-QDebug operator<<(QDebug dbg, const Mat3f &value);
+QDebug operator<<(QDebug dbg, const PerceptualColor::Mat3f &value);
 
-QDebug operator<<(QDebug dbg, const Mat3ld &value);
+QDebug operator<<(QDebug dbg, const PerceptualColor::Mat3ld &value);
 
 } // namespace PerceptualColor
 

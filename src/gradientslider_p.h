@@ -20,10 +20,13 @@ namespace PerceptualColor
 {
 class GradientSlider;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class GradientSliderPrivate
 {
 public:
@@ -39,56 +42,63 @@ public:
 
     // Data members
 
-    /**
-     * @brief Internal storage.
+    /*!
+     * \brief Internal storage.
      */
     double m_firstColorAlpha;
 
-    /**
-     * @brief Internal storage.
+    /*!
+     * \brief Internal storage.
      */
     GenericColor m_firstColorLch;
 
-    /** @brief The gradient image (without the handle).
+    /*!
+     * \brief The gradient image (without the handle).
      *
      * Always at the left is the first color, always at the right
      * is the second color. This is independent from the actual
-     * @ref GradientSlider::orientation and the actual LTR or RTL
+     * \l GradientSlider::orientation and the actual LTR or RTL
      * layout. So when painting, it might be necessary to rotate
      * and/or mirror the image. */
     AsyncImageProvider<GradientImageParameters> m_gradientImage;
-    /** @brief Properties for @ref m_gradientImage. */
+    /*!
+     * \brief Properties for \l m_gradientImage. */
     GradientImageParameters m_gradientImageParameters;
-    /** @brief Internal storage for property
-     * @ref GradientSlider::orientation */
+    /*!
+     * \brief Internal storage for property
+     * \l GradientSlider::orientation */
     Qt::Orientation m_orientation;
-    /** @brief Internal storage for property
-     * @ref GradientSlider::pageStep */
+    /*!
+     * \brief Internal storage for property
+     * \l GradientSlider::pageStep */
     qreal m_pageStep = 0.1;
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      */
     const LchSpace m_projectionSpace;
 
-    /**
-     * @brief Internal storage.
+    /*!
+     * \brief Internal storage.
      */
     double m_secondColorAlpha;
-    /**
-     * @brief Internal storage.
+    /*!
+     * \brief Internal storage.
      */
     GenericColor m_secondColorLch;
 
-    /** @brief Internal storage for property
-     * @ref GradientSlider::singleStep */
+    /*!
+     * \brief Internal storage for property
+     * \l GradientSlider::singleStep */
     qreal m_singleStep = 0.01;
-    /** @brief Internal storage for property
-     * @ref GradientSlider::value */
+    /*!
+     * \brief Internal storage for property
+     * \l GradientSlider::value */
     qreal m_value = 0.5;
 
 private:
     Q_DISABLE_COPY(GradientSliderPrivate)
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<GradientSlider> q_pointer;
 };

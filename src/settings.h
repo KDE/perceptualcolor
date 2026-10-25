@@ -14,9 +14,12 @@
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- * @brief Represents the settings file and allows for inter-process
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Represents the settings file and allows for inter-process
  * communication of changes.
  *
  * This object provides persistent, platform-independent settings and writes
@@ -25,24 +28,26 @@ namespace PerceptualColor
  * corresponding NOTIFY signal is emitted for changed properties.
  *
  * Usage: The functionality is based on a tight collaboration between
- * @ref Settings, @ref Setting and @ref SettingBase. To use it, subclass
- * @ref Settings and add public data members of type @ref Setting for each
+ * \l Settings, \l Setting and \l SettingBase. To use it, subclass
+ * \l Settings and add public data members of type \l Setting for each
  * setting you want to use. It might be useful to implement the subclass as
  * a singleton. Example:
  *
  * Header:
- * @include src/perceptualsettings.h
+ *
+ * \quotefile perceptualsettings.h
  *
  * Source:
- * @include src/perceptualsettings.cpp
  *
- * @warning This object is not thread-safe.
+ * \quotefile perceptualsettings.cpp
+ *
+ * \warning This object is not thread-safe.
  * It must only be used in the main (widget) thread!
  *
- * @note For more sophisticated use cases requiring
- * type-safe access to <tt>QSettings</tt>, there are
- * <a href="https://www.vikingsoftware.com/blog/more-type-safety-with-qsettings/">
- * alternative approaches available</a>, but they may be overkill for our
+ * \note For more sophisticated use cases requiring
+ * type-safe access to \c {QSettings}, there are
+ * \l {https://www.vikingsoftware.com/blog/more-type-safety-with-qsettings/}
+ * {alternative approaches available}, but they may be overkill for our
  * limited requirements here. */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT Settings : public QObject
 {
@@ -57,20 +62,29 @@ public:
     Settings &operator=(const Settings &) = delete;
 
 Q_SIGNALS:
-    /** @brief The underlying file has changed.
+
+    /*!
+     * \brief Emitted after the underlying file has changed and synchronized.
      *
-     * Notify that underlying file has changed and that @ref m_qSettings has
-     * been forced to synchronize with the underlying file again.
+     * This signal is emitted when the underlying file has changed on disk,
+     * forcing the internal \c QSettings object to synchronize.
      *
-     * The setting values in @ref m_qSettings might or might not have changed.
-     * This underlying file might have been changed by <em>this</em> process
-     * or by <em>another</em> process. */
+     * The file may have been modified by the same process or by another
+     * process.
+     *
+     * Note that the setting values within the internal \c QSettings object
+     * may or may not have changed as a result.
+     */
     void updatedAfterFileChange();
 
 private:
-    /** @brief The internal QSettings object. */
+    /*!
+     *\brief The internal QSettings object.
+     */
     QSettings m_qSettings;
-    /** @brief A watcher for the file used by @ref m_qSettings.
+
+    /*!
+     * \brief A watcher for the file used by \l m_qSettings.
      *
      * This allows to react immediately to settings changes done by other
      * applications using this library. This is also useful as simple but
@@ -81,11 +95,8 @@ private:
 
     void updateFromFile();
 
-    /** @internal @brief Only for unit tests. */
     friend class TestSettings;
 
-    /** @internal @brief @ref Settings, @ref SettingBase and @ref Setting have
-     * tight collaboration. */
     friend class SettingBase;
 };
 

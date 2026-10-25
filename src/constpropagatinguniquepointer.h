@@ -8,83 +8,90 @@
 
 namespace PerceptualColor
 {
-/**
- * @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
+
+// NOTE This class inherits privately \c {std::shared_ptr} and not
+// \c {std::unique_ptr} because the latter will not compile on
+// the MSVC compiler when used with incomplete types, which is however
+// necessary for usage within pimpl.
+//
+// NOTE There are other implementation available. But it’s not worth to use
+// https://github.com/jbcoe/propagate_const instead of having our own
+// implementation, which is simpler, but just fine for our use case.
+// This class could also be replaced in the future by
+// \l {https://en.cppreference.com/w/cpp/experimental/propagate_const}
+// {std::experimental::propagate_const} if this one ever becomes
+// part of the C++ standard. (Experimental features however are optional
+// for compilers, so not all of them implement them. Furthermore, they can
+// still change. Therefore, we cannot use experimental features here.) But
+// \l {https://en.cppreference.com/w/cpp/experimental/propagate_const}
+// {std::experimental::propagate_const}}seems to be superseded by
+// \l {https://en.cppreference.com/w/cpp/memory/indirect.html}
+// {std::indirect} and
+// \l {https://en.cppreference.com/w/cpp/memory/polymorphic.html}
+// {std::polymorphic} anyway.
+///
+// NOTE No PERCEPTUALCOLOR_IMPORTEXPORT for generic template definitions!
+/*!
+ * \inmodule ModulePublicApi
  *
- * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
- * C++ pointers), within <tt>const</tt> functions you can do non-const
- * operations <em>on objects that a pointer points to</em>.
+ * \class PerceptualColor::ConstPropagatingUniquePointer
  *
- * <em>This</em> pointer type is different: It propagates the constness of
+ * \brief A \c {const} propagating \c {std::unique_ptr}.
+ *
+ * With normal \c {std::unique_ptr} pointers (and also with raw
+ * C++ pointers), within \c {const} functions you can do non-const
+ * operations \e {on objects that a pointer points to}.
+ *
+ * \e {This} pointer type is different: It propagates the constness of
  * the object members and propagates them to the call through the pointer;
  * it will trigger a compiler error if non-const access to object members
  * or methods is done from within const functions. Apart from that, it
- * behaves like <tt>std::unique_ptr</tt>.
+ * behaves like \c {std::unique_ptr}.
  *
  * Think of this template as a simple alternative to
- * <tt>std::experimental::propagate_const&lt; std::unique_ptr&lt;T&gt; &gt;</tt>
+ * \c {std::experimental::propagate_const< std::unique_ptr<T> >}
  *
  * Example code:
- * @snippet testconstpropagatinguniquepointer.cpp example
+ *
+ * \snippet testconstpropagatinguniquepointer.cpp example
  *
  * Currently, move-assignment is not supported. Use
- * <tt>std::unique_prt::reset()</tt> instead. As there is no
+ * \c {std::unique_prt::reset()} instead. As there is no
  * support for deleters anyway, this should be equivalent.
  *
- * @note It also propagates the const-ness of the
- * @ref ConstPropagatingUniquePointer pointer variable itself. Consequently
- * <em>all</em> access to non-const functions is impossible if the pointer
- * variable itself is <tt>const</tt>.
- *
- * @internal
- *
- * @sa @ref ConstPropagatingRawPointer
- *
- * This class inherits privately <tt>std::shared_ptr</tt> and not
- * <tt>std::unique_ptr</tt> because the latter will not compile on
- * the MSVC compiler when used with incomplete types, which is however
- * necessary for usage within @ref pimpl.
- *
- * @note There are other implementation available. But it’s not worth to use
- * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation, which is simpler, but just fine for our use case.
- * This class could also be replaced in the future by <tt>
- * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
- * std::experimental::propagate_const</a></tt> if this one ever becomes
- * part of the C++ standard. (Experimental features however are optional
- * for compilers, so not all of them implement them. Furthermore, they can
- * still change. Therefore, we cannot use experimental features here.) But <tt>
- * <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">
- * std::experimental::propagate_const</a></tt> seems to be superseded by <tt>
- * <a href="https://en.cppreference.com/w/cpp/memory/indirect.html">
- * std::indirect</a></tt> and <tt>
- * <a href="https://en.cppreference.com/w/cpp/memory/polymorphic.html">
- * std::polymorphic</a></tt>  anyway.
+ * \note It also propagates the const-ness of the
+ * \l ConstPropagatingUniquePointer pointer variable itself. Consequently
+ * \e {all} access to non-const functions is impossible if the pointer
+ * variable itself is \c {const}.
  */
-// NOTE No PERCEPTUALCOLOR_IMPORTEXPORT for generic template definitions!
 template<typename T>
 class ConstPropagatingUniquePointer : private std::shared_ptr<T>
 {
 public:
-    /** @brief Default constructor
+    /*!
+     * \brief Default constructor
      *
-     * Creates a pointer that points to <tt>nullptr</tt>. */
+     * Creates a pointer that points to \c {nullptr}.
+     */
     explicit ConstPropagatingUniquePointer()
         : std::shared_ptr<T>(nullptr)
     {
     }
 
-    /** @brief Constructor
+    /*!
+     * \brief Constructor
      *
-     * @param pointerToObject Object to which to point */
+     * \a pointerToObject Object to which to point
+     */
     explicit ConstPropagatingUniquePointer(T *pointerToObject)
         : std::shared_ptr<T>(pointerToObject)
     {
     }
 
-    /** @brief Default destructor
+    /*!
+     * \brief Default destructor
      *
-     * This destructor is not marked as <tt>override</tt> because the
+     * This destructor is not marked as \c {override} because the
      * base class’s destructor is not virtual.*/
     ~ConstPropagatingUniquePointer() noexcept = default;
 
@@ -94,65 +101,69 @@ public:
     ConstPropagatingUniquePointer &operator=(const ConstPropagatingUniquePointer &) = delete; // clazy:exclude=function-args-by-value
     ConstPropagatingUniquePointer &operator=(ConstPropagatingUniquePointer &&) = delete;
 
-    /** @brief Non-const pointer operator
-     *
-     * @returns Non-const pointer operator */
+    /*!
+     * \brief Non-const pointer operator
+     */
     [[nodiscard]] T *operator->()
     {
         // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
         return std::shared_ptr<T>::operator->();
     }
 
-    /** @brief Const pointer operator
-     *
-     * @returns Const pointer */
+    /*!
+     * \brief Const pointer operator
+     */
     [[nodiscard]] const T *operator->() const
     {
         // cppcheck-suppress CastIntegerToAddressAtReturn // false positive
         return std::shared_ptr<T>::operator->();
     }
 
-    /** @brief Non-const dereference operator
-     *
-     * @returns Non-const dereference operator */
+    /*!
+     * \brief Non-const dereference operator
+     */
     [[nodiscard]] T &operator*()
     {
         // cppcheck-suppress returnTempReference // false positive
         return std::shared_ptr<T>::operator*();
     }
 
-    /** @brief Const dereference operator
-     *
-     * @returns Const dereference operator */
+    /*!
+     * \brief Const dereference operator
+     */
     [[nodiscard]] const T &operator*() const
     {
         // cppcheck-suppress returnTempReference // false positive
         return std::shared_ptr<T>::operator*();
     }
 
-    /** @brief Deletes the previously managed object (if any) and starts
+    /*!
+     * \brief Deletes the previously managed object (if any) and starts
      * to manage a new object.
      *
-     * @param newObject The new object that will be managed. Can be
-     * <tt>nullptr</tt> to not manage any object anymore. */
+     * \a newObject The new object that will be managed. Can
+     * be \c {nullptr} to not manage any object anymore.
+     */
     void reset(T *newObject = nullptr)
     {
         std::shared_ptr<T>::reset(newObject);
     }
 
-    /** @brief Swaps the managed objects.
+    /*!
+     * \brief Swaps the managed objects.
      *
-     * @param other Another @ref ConstPropagatingUniquePointer object to
+     * \a other Another \l ConstPropagatingUniquePointer object to
      * swap the managed object with. */
     void swap(ConstPropagatingUniquePointer &other)
     {
         std::shared_ptr<T>::swap(other);
     }
 
-    /** @brief Returns a pointer to the managed object or <tt>nullptr</tt> if
+    /*!
+     * \brief Returns a pointer to the managed object or \c {nullptr} if
      * no object is owned.
      *
-     * @returns A pointer to the managed object or <tt>nullptr</tt> if
+     * Returns a pointer to the managed object or \c {nullptr} if
      * no object is owned. */
     [[nodiscard]] T *get()
     {

@@ -11,12 +11,10 @@
 
 namespace PerceptualColor
 {
-/**
- * @brief Rounds to the nearest positive odd integer.
+/*!
+ * \brief Rounds to the nearest positive odd integer.
  *
- * @param value The value to be rounded.
- *
- * @returns Rounds to the nearest positive odd integer.
+ * \a value The value to be rounded.
  */
 int InterlacingPass::roundToNearestPositiveOdd(const double value)
 {
@@ -25,19 +23,20 @@ int InterlacingPass::roundToNearestPositiveOdd(const double value)
     return qMax(1, rounded); // Smallest existing odd integer is: 1
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
  * Constructs an object for a new interlacing cycle.
  *
- * @param passCount Number of passes within this interlacing cycle.
+ * \a passCount Number of passes within this interlacing cycle.
  * This should be a positive odd number. If it isn’t, it will be
- * rounded to the next valid number. Use <tt>7</tt>
- * for <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>
+ * rounded to the next valid number. Use \c {7}
+ * for \l {https://en.wikipedia.org/wiki/Adam7_algorithm} {Adam7}
  * interlacing, or any other positive odd number for
- * <a href="https://en.wikipedia.org/wiki/Adam7_algorithm">Adam7</a>-like
+ * \l {https://en.wikipedia.org/wiki/Adam7_algorithm} {Adam7}-like
  * interlacing, but with a different number of steps.
  *
- * @sa @ref make() provides compile-time checking for valid <tt>passCount</tt>
+ * \note \l make() provides compile-time checking for valid \c {passCount}
  * numbers.
  */
 InterlacingPass::InterlacingPass(const double passCount)
@@ -54,10 +53,11 @@ InterlacingPass::InterlacingPass(const double passCount)
     lineOffset = 0;
 }
 
-/** @brief Switches to the next pass, reducing @ref countdown by 1 and
+/*!
+ * \brief Switches to the next pass, reducing \l countdown by 1 and
  * changing all other values accordingly.
  *
- * If @ref countdown ≤ 0 than nothing happens. */
+ * If \l countdown ≤ 0 than nothing happens. */
 void InterlacingPass::switchToNextPass()
 {
     if (countdown <= 1) {

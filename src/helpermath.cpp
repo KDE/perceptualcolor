@@ -9,24 +9,30 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
  *
- * @brief Calculates the required number of decimals to achieve the requested
+ *
+ * \brief Calculates the required number of decimals to achieve the requested
  * number of significant figures within the given range.
  *
- * @param rangeMax The maximum value of the range [0, rangeMax].
- * @param significantFigures The requested number of significant figures.
+ * \a rangeMax The maximum value of the range [0, rangeMax].
  *
- * | maxRange | decimalPlaces(maxRange, 2) | decimalPlaces(maxRange, 3) | decimalPlaces(maxRange, 4) |
- * | -------: | -------------------------: | -------------------------: | -------------------------: |
- * |        1 |                          1 |                          2 |                          3 |
- * |        2 |                          1 |                          2 |                          3 |
- * |      100 |                          0 |                          0 |                          1 |
- * |      255 |                          0 |                          0 |                          1 |
- * |      360 |                          0 |                          0 |                          1 |
+ * \a significantFigures The requested number of significant figures.
  *
- * @returns The number of decimal places after the decimal point (in addition
+ * \table
+ *     \header
+ *         \li maxRange
+ *         \li decimalPlaces(maxRange, 2)
+ *         \li decimalPlaces(maxRange, 3)
+ *         \li decimalPlaces(maxRange, 4)
+ *     \row \li   1 \li 1 \li 2 \li 3
+ *     \row \li   2 \li 1 \li 2 \li 3
+ *     \row \li 100 \li 0 \li 0 \li 1
+ *     \row \li 255 \li 0 \li 0 \li 1
+ *     \row \li 360 \li 0 \li 0 \li 1
+ * \endtable
+ *
+ * Returns the number of decimal places after the decimal point (in addition
  * to the whole number part) required to achieve the requested
  * number of significant figures within the given range. */
 int decimalPlaces(const int rangeMax, const int significantFigures)
@@ -38,20 +44,21 @@ int decimalPlaces(const int rangeMax, const int significantFigures)
     return qMax(0, significantFigures - wholeNumberDigits);
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Rounds a given floating point value to the nearest multiple of a
+ *
+ * \brief Rounds a given floating point value to the nearest multiple of a
  * specified integer.
  *
  * This function takes a floating point value and rounds it to the nearest
  * multiple of an integer. If the multiple is zero, the original number is
  * returned (rounded).
  *
- * @param num The integer to be rounded.
- * @param multiple The multiple to which the number will be rounded.
+ * \a num The integer to be rounded.
  *
- * @return The rounded integer.
+ * \a multiple The multiple to which the number will be rounded.
+ *
+ * Returns the rounded integer.
  */
 int roundToNearestMultiple(double num, int multiple)
 {
@@ -61,15 +68,16 @@ int roundToNearestMultiple(double num, int multiple)
     return qRound(num / multiple) * multiple;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Rounds a floating-point number to the nearest multiple of an integer.
  *
- * @param num The number to be rounded
- * @param multiple The multiple to round to
+ * \brief Rounds a floating-point number to the nearest multiple of an integer.
  *
- * @returns int The rounded result, rounding halfway cases away from zero.
+ * \a num The number to be rounded
+ *
+ * \a multiple The multiple to round to
+ *
+ * Returns he rounded result, rounding halfway cases away from zero.
  */
 int roundToIntMultiple(double num, int multiple)
 {
@@ -80,16 +88,17 @@ int roundToIntMultiple(double num, int multiple)
     return static_cast<int>(std::round(num / multiple) * multiple);
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Rounds a floating-point number to the nearest multiple of
+ *
+ * \brief Rounds a floating-point number to the nearest multiple of
  * a floating-point number.
  *
- * @param num The number to be rounded
- * @param multiple The multiple to round to
+ * \a num The number to be rounded
  *
- * @returns int The rounded result, rounding halfway cases away from zero.
+ * \a multiple The multiple to round to
+ *
+ * Returns he rounded result, rounding halfway cases away from zero.
  */
 double roundToFloatMultiple(double num, double multiple)
 {

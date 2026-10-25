@@ -11,18 +11,18 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
+ * \relates PerceptualColor::Mat3
  *
- * @brief Stream to QDebug.
+ * \brief Stream to QDebug.
  *
  * Prints the matrix in a compact format.
  *
- * @param dbg QDebug stream
- * @param value Matrix to print
- * @return QDebug stream
+ * \a dbg QDebug stream
+ *
+ * \a value Matrix to print
  */
-QDebug operator<<(QDebug dbg, const Mat3d &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::Mat3d &value)
 {
     QDebugStateSaver saver(dbg);
 
@@ -52,34 +52,34 @@ QDebug operator<<(QDebug dbg, const Mat3d &value)
     return dbg;
 }
 
-/**
- * @internal
+/*!
+ * \relates PerceptualColor::Mat3
  *
- * @brief Stream to QDebug.
+ * \brief Stream to QDebug.
  *
  * Prints the matrix in a compact format.
  *
- * @param dbg QDebug stream
- * @param value Matrix to print
- * @return QDebug stream
+ * \a dbg QDebug stream
+ *
+ * \a value Matrix to print
  */
-QDebug operator<<(QDebug dbg, const Mat3f &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::Mat3f &value)
 {
     return dbg << static_cast<Mat3d>(value);
 }
 
-/**
- * @internal
+/*!
+ * \relates PerceptualColor::Mat3
  *
- * @brief Stream to QDebug.
+ * \brief Stream to QDebug.
  *
  * Prints the matrix in a compact format.
  *
- * @param dbg QDebug stream
- * @param value Matrix to print
- * @return QDebug stream
+ * \a dbg QDebug stream
+ *
+ * \a value Matrix to print
  */
-QDebug operator<<(QDebug dbg, const Mat3ld &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::Mat3ld &value)
 {
     return dbg << static_cast<Mat3d>(value);
 }

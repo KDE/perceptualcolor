@@ -6,29 +6,25 @@
 
 #include <qloggingcategory.h>
 
-/**
- * @internal
- *
- * @file
- *
- * Provides the logging category.
- */
-
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
  *
- * @brief The <a href="https://doc.qt.io/qt-6/qloggingcategory.html">logging
- * category</a> of this library.
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \fn const QLoggingCategory &logging()
+ *
+ * \brief The \l {https://doc.qt.io/qt-6/qloggingcategory.html} {logging
+ * category} of this library.
  *
  * As required by KDE
- * <a href="# https://community.kde.org/Frameworks/Frameworks_Logging_Policy">
- * Frameworks Logging Policy</a>.
+ * \l {https://community.kde.org/Frameworks/Frameworks_Logging_Policy}
+ * {Frameworks Logging Policy}.
  *
- * @returns The <a href="https://doc.qt.io/qt-6/qloggingcategory.html">logging
- * category</a> of this library.
+ * Returns the \l {https://doc.qt.io/qt-6/qloggingcategory.html} {logging
+ * category} of this library.
  */
 Q_DECLARE_LOGGING_CATEGORY(logging)
 

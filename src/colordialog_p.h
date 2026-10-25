@@ -51,39 +51,41 @@ class PerceptualSettings;
 class SwatchBook;
 class WheelColorPicker;
 
-/** @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ * \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom.
+ */
 class ColorDialogPrivate : public QObject
 {
     Q_OBJECT
 public:
-    /**
-     * @brief Identifier string for the built-in sRGB color space.
+    /*!
+     * \brief Identifier string for the built-in sRGB color space.
      */
     static inline constexpr QStringView builtinsrgbIdentifier{u"builtinsrgb"};
-    /**
-     * @brief Prefix for custom Identifier strings.
+    /*!
+     * \brief Prefix for custom Identifier strings.
      */
     static inline constexpr QStringView customIdentifierPrefix = {u"custom"};
 
     explicit ColorDialogPrivate(ColorDialog *backLink, const QString &identifier);
     virtual ~ColorDialogPrivate() noexcept override;
 
-    /** @brief Horizontal count of swatches for history. */
+    /*! \brief Horizontal count of swatches for history. */
     static constexpr qsizetype historyHSwatchCount = 10;
-    /** @brief  Vertical count of swatches for history. */
+    /*! \brief  Vertical count of swatches for history. */
     static constexpr qsizetype historyVSwatchCount = 4;
-    /** @brief  Total count of swatches for history. */
+    /*! \brief  Total count of swatches for history. */
     static constexpr qsizetype historySwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
 
-    /** @brief Horizontal count of swatches for custom colors. */
+    /*! \brief Horizontal count of swatches for custom colors. */
     static constexpr qsizetype customColorsHSwatchCount = 9;
-    /** @brief  Vertical count of swatches for custom colors. */
+    /*! \brief  Vertical count of swatches for custom colors. */
     static constexpr qsizetype customColorsVSwatchCount = 4;
-    /** @brief  Total count of swatches for custom colors. */
+    /*! \brief  Total count of swatches for custom colors. */
     static constexpr qsizetype customColorsSwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
 
@@ -94,237 +96,249 @@ public:
                                  const QString &title,
                                  QColorDialog::ColorDialogOptions options);
 
-    /** @brief @ref GradientSlider widget for the alpha channel. */
+    /*! \brief GradientSlider widget for the alpha channel. */
     QPointer<GradientSlider> m_alphaGradientSlider;
-    /** @brief Pointer to the QLabel for the alpha value.
+    /*! \brief Pointer to the QLabel for the alpha value.
      *
      * We store this in a pointer to allow toggle the visibility later. */
     QPointer<QLabel> m_alphaLabel;
-    /** @brief Spin box for the alpha channel.
+    /*! \brief Spin box for the alpha channel.
      *
-     * This spin box shows always the value of @ref m_alphaGradientSlider.
+     * This spin box shows always the value of \l m_alphaGradientSlider.
      *
-     * @note It’s value is not set directly, but is updated via signals from
-     * @ref m_alphaGradientSlider. Do not use it directly! */
+     * \note It’s value is not set directly, but is updated via signals from
+     * \l m_alphaGradientSlider. Do not use it directly! */
     QPointer<QDoubleSpinBox> m_alphaSpinBox;
-    /** @brief Pointer to the QButtonBox of this dialog.
+    /*! \brief Pointer to the QButtonBox of this dialog.
      *
      * We store this in a pointer
      * to allow toggle the visibility later. */
     QPointer<QDialogButtonBox> m_buttonBox;
-    /** @brief Pointer to the “Cancel” button of @ref m_buttonBox. */
+    /*! \brief Pointer to the “Cancel” button of m_buttonBox. */
     QPointer<QPushButton> m_buttonCancel;
-    /** @brief Pointer to the “Ok” button of @ref m_buttonBox. */
+    /*! \brief Pointer to the “Ok” button of m_buttonBox. */
     QPointer<QPushButton> m_buttonOK;
-    /** @brief Pointer to the @ref ChromaHueDiagram. */
+    /*! \brief Pointer to the ChromaHueDiagram. */
     QPointer<ChromaHueDiagram> m_chromaHueDiagram;
-    /** @brief Pointer to the @ref MultiSpinBox for CIELCH. */
+    /*! \brief Pointer to the MultiSpinBox for CIELCH. */
     QPointer<MultiSpinBox> m_cielchD50SpinBox;
-    /** @brief Pointer to the gamut action for @ref m_cielchD50SpinBox. */
+    /*! \brief Pointer to the gamut action for m_cielchD50SpinBox. */
     QPointer<QAction> m_cielchD50SpinBoxGamutAction;
-    /** @brief Pointer to the label for @ref m_cielchD50SpinBox. */
+    /*! \brief Pointer to the label for m_cielchD50SpinBox. */
     QPointer<QLabel> m_cielchD50SpinBoxLabel;
-    /** @brief Pointer to the @ref ColorPatch widget. */
+    /*! \brief Pointer to the ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
-    /** @brief Current color without alpha information
+    /*! \brief Current color without alpha information
      *
      * Holds the color in absolutely defined color models.
      *
-     * @note This value is considered in-gamut (even thought @ref RgbColor
+     * \note This value is considered in-gamut (even thought \l RgbColor
      * might tell different because of rounding errors).
      *
-     * @sa @ref ColorDialog::currentColor()
-     * @sa @ref m_currentOpaqueColorRgb */
+     * \sa ColorDialog::currentColor()
+     * \sa m_currentOpaqueColorRgb
+     */
     QHash<ColorModel, GenericColor> m_currentOpaqueColorAbs;
-    /** @brief Current color without alpha information
+    /*! \brief Current color without alpha information
      *
      * Holds the color in the RGB color model and derived color models.
      *
-     * @note This value is in-gamut by definition.
+     * \note This value is in-gamut by definition.
      *
-     * @sa @ref ColorDialog::currentColor()
-     * @sa @ref m_currentOpaqueColorAbs */
+     * \sa ColorDialog::currentColor()
+     * \sa m_currentOpaqueColorAbs
+     */
     RgbColor m_currentOpaqueColorRgb;
-    /** @brief If @ref q_pointer has ever been shown. */
+    /*! \brief If q_pointer has ever been shown. */
     bool everShown = false;
-    /** @brief Pointer to the @ref MultiSpinBox for HSL. */
+    /*! \brief Pointer to the MultiSpinBox for HSL. */
     QPointer<MultiSpinBox> m_hslSpinBox;
-    /** @brief Pointer to the label for @ref m_hslSpinBox. */
+    /*! \brief Pointer to the label for m_hslSpinBox. */
     QPointer<QLabel> m_hslSpinBoxLabel;
-    /** @brief Pointer to the @ref MultiSpinBox for HSV. */
+    /*! \brief Pointer to the MultiSpinBox for HSV. */
     QPointer<MultiSpinBox> m_hsvSpinBox;
-    /** @brief Pointer to the label for @ref m_hsvSpinBox. */
+    /*! \brief Pointer to the label for m_hsvSpinBox. */
     QPointer<QLabel> m_hsvSpinBoxLabel;
-    /** @brief Pointer to the @ref MultiSpinBox for HWB. */
+    /*! \brief Pointer to the MultiSpinBox for HWB. */
     QPointer<MultiSpinBox> m_hwbSpinBox;
-    /** @brief Pointer to the label for @ref m_hwbSpinBox. */
+    /*! \brief Pointer to the label for m_hwbSpinBox. */
     QPointer<QLabel> m_hwbSpinBoxLabel;
-    /** @brief Shortcut to show the tab with @ref m_hueFirstWrapperWidget. */
+    /*! \brief Shortcut to show the tab with m_hueFirstWrapperWidget. */
     QPointer<QShortcut> m_hueFirstTabShortcut;
-    /** @brief Pointer to the QWidget wrapper that contains
-     * @ref m_wheelColorPicker. */
+    /*! \brief Pointer to the QWidget wrapper that contains
+     * \l m_wheelColorPicker. */
     QPointer<QWidget> m_hueFirstWrapperWidget;
-    /** @brief Holds whether currently a color change is ongoing, or not.
+    /*! \brief Holds whether currently a color change is ongoing, or not.
      *
      * Used to avoid infinite recursions when updating the different widgets
      * within this dialog.
-     * @sa @ref setCurrentOpaqueColor() */
+     * \sa setCurrentOpaqueColor()
+     */
     bool m_isColorChangeInProgress = false;
-    /** @brief An event filter used for some child widgets. */
+    /*! \brief An event filter used for some child widgets. */
     LanguageChangeEventFilter m_languageChangeEventFilter;
-    /** @brief Internal storage for property
-     * @ref ColorDialog::layoutDimensions */
+    /*! \brief Internal storage for property
+     * \l ColorDialog::layoutDimensions */
     PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
         //! [layoutDimensionsDefaultValue]
         ColorDialog::DialogLayoutDimensions::Collapsed
         //! [layoutDimensionsDefaultValue]
         ;
-    /** @brief The <em>effective</em> layout dimensions.
+    /*! \brief The \e {effective} layout dimensions.
      *
-     * The property @ref ColorDialog::layoutDimensions has a value
-     * @ref ColorDialog::DialogLayoutDimensions::ScreenSizeDependent.
-     * <em>This</em> variable holds whatever <em>effectively</em>
+     * The property \l ColorDialog::layoutDimensions has a value
+     * \l ColorDialog::DialogLayoutDimensions::ScreenSizeDependent.
+     * \e {This} variable holds whatever \e {effectively}
      * is applied. So it can only have the values
-     * @ref ColorDialog::DialogLayoutDimensions::Collapsed or
-     * @ref ColorDialog::DialogLayoutDimensions::Expanded. */
+     * \l ColorDialog::DialogLayoutDimensions::Collapsed or
+     * \l ColorDialog::DialogLayoutDimensions::Expanded. */
     PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensionsEffective = m_layoutDimensions;
-    /** @brief Shortcut to show the tab with @ref m_lightnessFirstWrapperWidget. */
+    /*! \brief Shortcut to show the tab with m_lightnessFirstWrapperWidget. */
     QPointer<QShortcut> m_lightnessFirstTabShortcut;
-    /** @brief Pointer to the QWidget wrapper that contains
-     * @ref m_lchLightnessSelector and @ref m_chromaHueDiagram. */
+    /*! \brief Pointer to the QWidget wrapper that contains
+     * \l m_lchLightnessSelector and \l m_chromaHueDiagram. */
     QPointer<QWidget> m_lightnessFirstWrapperWidget;
-    /** @brief Pointer to the @ref GradientSlider for LCH lightness. */
+    /*! \brief Pointer to the GradientSlider for LCH lightness. */
     QPointer<GradientSlider> m_lchLightnessSelector;
-    /**
-     * @brief @ref LchValues for @ref m_projectionSpace.
+    /*!
+     * \brief \l LchValues for \l m_projectionSpace.
      */
     LchValues m_lchValues;
-    /** @brief Holds the receiver slot (if any) to be disconnected
+    /*! \brief Holds the receiver slot (if any) to be disconnected
      *  automatically after closing the dialog.
      *
      * Its value is only meaningful if
-     * @ref m_receiverToBeDisconnected is not null.
-     * @sa @ref m_receiverToBeDisconnected
-     * @sa @ref ColorDialog::open() */
+     * \l m_receiverToBeDisconnected is not null.
+     * \sa m_receiverToBeDisconnected
+     * \sa ColorDialog::open()
+     */
     QByteArray m_memberToBeDisconnected;
-    /** @brief String that is used as separator between two sections
-     * within a @ref MultiSpinBox.
+    /*! \brief String that is used as separator between two sections
+     * within a \l MultiSpinBox.
      *
      * This string is introduced between two sections
-     * within a @ref MultiSpinBox. */
+     * within a \l MultiSpinBox. */
     static inline constexpr QStringView m_multispinboxSectionSeparator{u" "};
-    /** @brief Shortcut to show the tab with @ref m_numericalWidget. */
+    /*! \brief Shortcut to show the tab with m_numericalWidget. */
     QPointer<QShortcut> m_numericalTabShortcut;
-    /** @brief Pointer to the widget that holds the numeric color
+    /*! \brief Pointer to the widget that holds the numeric color
      *         representation. */
     QPointer<QWidget> m_numericalWidget;
-    /** @brief Pointer to the @ref MultiSpinBox for Oklch. */
+    /*! \brief Pointer to the MultiSpinBox for Oklch. */
     QPointer<MultiSpinBox> m_oklchSpinBox;
-    /** @brief Pointer to the gamut action for @ref m_oklchSpinBox. */
+    /*! \brief Pointer to the gamut action for m_oklchSpinBox. */
     QPointer<QAction> m_oklchSpinBoxGamutAction;
-    /** @brief Pointer to the label for @ref m_oklchSpinBox. */
+    /*! \brief Pointer to the label for m_oklchSpinBox. */
     QPointer<QLabel> m_oklchSpinBoxLabel;
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      */
     const LchSpace m_projectionSpace = LchSpace::CielchD50;
-    /**
-     * @brief The corresponding @ref ColorModel value
-     * for @ref m_projectionSpace.
+    /*!
+     * \brief The corresponding \l ColorModel value
+     * for \l m_projectionSpace.
      */
     const ColorModel m_projectionSpaceModel = //
         (m_projectionSpace == LchSpace::CielchD50) //
         ? ColorModel::CielchD50 //
         : ColorModel::OklchD65;
-    /** @brief Pointer to the basic colors widget. */
+    /*! \brief Pointer to the basic colors widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookBasicColors;
-    /** @brief Pointer to the basic colors widget. */
+    /*! \brief Pointer to the basic colors widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookCustomColors;
-    /** @brief Pointer to the history widget. */
+    /*! \brief Pointer to the history widget. */
     QPointer<PerceptualColor::SwatchBook> m_swatchBookHistory;
-    /** @brief The selector widget to choose which swatch book to show.
+    /*! \brief The selector widget to choose which swatch book to show.
      *
-     * @sa @ref m_swatchBookStack */
+     * \sa m_swatchBookStack
+     */
     QPointer<QComboBox> m_swatchBookSelector;
-    /** @brief Stack containing the various @ref SwatchBook widgets.
+    /*! \brief Stack containing the various SwatchBook widgets.
      *
-     * @sa @ref m_swatchBookSelector */
+     * \sa m_swatchBookSelector
+     */
     QPointer<QStackedLayout> m_swatchBookStack;
-    /** @brief Shortcut to show the tab with @ref m_swatchBookWrapperWidget. */
+    /*! \brief Shortcut to show the tab with m_swatchBookWrapperWidget. */
     QPointer<QShortcut> m_swatchBookTabShortcut;
-    /** @brief Pointer to the QWidget wrapper that contains
+    /*! \brief Pointer to the QWidget wrapper that contains
      * the swatch books. */
     QPointer<QWidget> m_swatchBookWrapperWidget;
-    /** @brief Holds the receiver object (if any) to be disconnected
+    /*! \brief Holds the receiver object (if any) to be disconnected
      *  automatically after closing the dialog.
      *
-     * @sa @ref m_memberToBeDisconnected
-     * @sa @ref ColorDialog::open() */
+     * \sa m_memberToBeDisconnected
+     * \sa ColorDialog::open()
+     */
     QPointer<QObject> m_receiverToBeDisconnected;
-    /** @brief Internal storage for property @ref ColorDialog::options */
+    /*! \brief Internal storage for property ColorDialog::options */
     QColorDialog::ColorDialogOptions m_options;
-    /** @brief Group box that contains all RGB widgets and all widget for
+    /*! \brief Group box that contains all RGB widgets and all widget for
      * color spaces that are defined with RGB as base (HSV, Hex…). */
     QPointer<QGroupBox> m_rgbGroupBox;
-    /** @brief Pointer to the QLineEdit that represents the hexadecimal
+    /*! \brief Pointer to the QLineEdit that represents the hexadecimal
      *  RGB value. */
     QPointer<QLineEdit> m_rgbLineEdit;
-    /** @brief Pointer to the label for @ref m_rgbLineEdit. */
+    /*! \brief Pointer to the label for m_rgbLineEdit. */
     QPointer<QLabel> m_rgbLineEditLabel;
-    /** @brief Pointer to the @ref MultiSpinBox for RGB. */
+    /*! \brief Pointer to the MultiSpinBox for RGB. */
     QPointer<MultiSpinBox> m_rgbSpinBox;
-    /** @brief Pointer to the label for @ref m_rgbSpinBox. */
+    /*! \brief Pointer to the label for m_rgbSpinBox. */
     QPointer<QLabel> m_rgbSpinBoxLabel;
-    /** @brief Internal storage for @ref ColorDialog::selectedColor(). */
+    /*! \brief Internal storage for ColorDialog::selectedColor(). */
     QColor m_selectedColor;
-    /** @brief Layout that holds the graphical and numeric selectors. */
+    /*! \brief Layout that holds the graphical and numeric selectors. */
     QPointer<QHBoxLayout> m_selectorLayout;
-    /**
-     * @brief Access to the @ref Settings singleton for the given color space.
+    /*!
+     * \brief Access to the \l Settings singleton for the given color space.
      */
     PerceptualSettings *m_settings;
-    /** @brief Button that allows to pick with the mouse a color somewhere
+    /*! \brief Button that allows to pick with the mouse a color somewhere
      * from the screen. */
     QPointer<QToolButton> m_eyedropperButton;
-    /** @brief A row with two columns within a table in Qt’s rich text
+    /*! \brief A row with two columns within a table in Qt’s rich text
      * formatting.
      *
      * To use it, call QString::arg() twice: Once with the content of the
      * first column and once with the content of the second column. */
     static inline constexpr QStringView tableRow{u"<tr><td>%1</td><td>%2</td></tr>"};
-    /** @brief Table assigning to each tab a value for the @ref Settings.
+    /*! \brief Table assigning to each tab a value for the Settings.
      *
-     * This helps to convert from QString values stored in @ref Settings
+     * This helps to convert from QString values stored in \l Settings
      * to the actual tab widgets and vice versa. */
     QHash<QPointer<QWidget> *, QString> m_tabTable;
-    /** @brief Pointer to the tab widget. */
+    /*! \brief Pointer to the tab widget. */
     QPointer<QTabWidget> m_tabWidget;
-    /**
-     * @brief Basic color, represented as sRGB values.
+    /*!
+     * \brief Basic color, represented as sRGB values.
      */
     QColorArray2D m_wcsBasicColors;
-    /** @brief A default color within @ref m_wcsBasicColors.
+    /*! \brief A default color within m_wcsBasicColors.
      *
      * Choosing the blue tone (no tint, no shade). Arguments in favor:
      *
-     * - Blue seems to be harmonious and integrate well in many designs.
-     * - The blue color is quite chromatic, giving a vivid impression.
-     * - Blue does not “screem” like red.
-     * - Blue is exactly at the middle of the swatch book.
-     * - The tone (no tint, no shade)  is exactly at the middle of the
-     *   swatch book. */
+     * \list
+     *     \li Blue seems to be harmonious and integrate well in many designs.
+     *     \li The blue color is quite chromatic, giving a vivid impression.
+     *     \li Blue does not “screem” like red.
+     *     \li Blue is exactly at the middle of the swatch book.
+     *     \li The tone (no tint, no shade)  is exactly at the middle of the
+     *         swatch book.
+     * \endlist
+     */
     QColor m_wcsBasicDefaultColor;
-    /** @brief Pointer to the @ref WheelColorPicker widget. */
+    /*! \brief Pointer to the WheelColorPicker widget. */
     QPointer<WheelColorPicker> m_wheelColorPicker;
 
-    /** @brief Number of decimals to for most values.
+    /*! \brief Number of decimals to for most values.
      *
-     * @sa @ref okdecimals */
+     * \sa okdecimals
+     */
     static constexpr quint8 decimals = 0;
-    /** @brief Number of decimals to use for the Oklab/Oklch values
+    /*! \brief Number of decimals to use for the Oklab/Oklch values
      * L, C, a, b (but not for h!).
      *
-     * @sa @ref decimals */
+     * \sa decimals
+     */
     static constexpr quint8 okdecimals = decimals + 2;
 
     void applyLayoutDimensions();
@@ -368,7 +382,7 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(ColorDialogPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*! \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ColorDialog> q_pointer;
 };

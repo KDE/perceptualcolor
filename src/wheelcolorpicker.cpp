@@ -31,15 +31,17 @@ class QWidget;
 
 namespace PerceptualColor
 {
-/**
- * @internal
+/*!
  *
- * @brief Constructor
  *
- * @param projectionSpace The color space into which the gamut will be
+ * \brief Constructor
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
- * @param parent The widget’s parent widget. This parameter will be passed
- * to the base class’s constructor. */
+ *
+ * \a parent The widget’s parent widget. This parameter will be passed
+ * to the base class’s constructor.
+ */
 WheelColorPicker::WheelColorPicker(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new WheelColorPickerPrivate(this, projectionSpace))
@@ -95,16 +97,20 @@ WheelColorPicker::WheelColorPicker(const PerceptualColor::LchSpace projectionSpa
     setCurrentColorLch(reducedVersatileColor);
 }
 
-/** @brief Default destructor */
+/*!
+ *\brief Default destructor
+ */
 WheelColorPicker::~WheelColorPicker() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation.
- * @param projectionSpace The color space into which the gamut will be
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  */
 WheelColorPickerPrivate::WheelColorPickerPrivate(WheelColorPicker *backLink, const LchSpace projectionSpace)
@@ -114,21 +120,27 @@ WheelColorPickerPrivate::WheelColorPickerPrivate(WheelColorPicker *backLink, con
 {
 }
 
-/** Repaint @ref m_colorWheel when focus changes
- * on @ref m_chromaLightnessDiagram
+/*!
+ * \brief Repaint \l m_colorWheel when focus changes
+ * on \l m_chromaLightnessDiagram
  *
- * @ref m_chromaLightnessDiagram is the focus proxy of @ref m_colorWheel.
+ * \a old The widget that had the focus before the focus change.
+ *
+ * \a now The widget that has the focus now, after the focus change.
+ *
+ * \l m_chromaLightnessDiagram is the focus proxy of \l m_colorWheel.
  * Both show a focus indicator when keyboard focus is active. But
- * apparently @ref m_colorWheel does not always repaint when focus
- * changes. Therefore, this slot can be connected to the <tt>qApp</tt>’s
- * <tt>focusChanged()</tt> signal to make sure that the repaint works.
+ * apparently \l m_colorWheel does not always repaint when focus
+ * changes. Therefore, this slot can be connected to the \c {qApp}’s
+ * \c {focusChanged()} signal to make sure that the repaint works.
  *
- * @note It might be an alternative to write an event filter
- * for @ref m_chromaLightnessDiagram to do the same work. The event
- * filter could be either @ref WheelColorPicker or
- * @ref WheelColorPickerPrivate (the last case means that
- * @ref WheelColorPickerPrivate would still have to inherit from
- * <tt>QObject</tt>). But that would probably be more complicate… */
+ * \note It might be an alternative to write an event filter
+ * for \l m_chromaLightnessDiagram to do the same work. The event
+ * filter could be either \l WheelColorPicker or
+ * \l WheelColorPickerPrivate (the last case means that
+ * \l WheelColorPickerPrivate would still have to inherit from
+ * \c {QObject}). But that would probably be more complicate…
+ */
 void WheelColorPickerPrivate::handleFocusChanged(const QWidget *old, const QWidget *now)
 {
     if ((old == m_chromaLightnessDiagram) || (now == m_chromaLightnessDiagram)) {
@@ -136,24 +148,28 @@ void WheelColorPickerPrivate::handleFocusChanged(const QWidget *old, const QWidg
     }
 }
 
-/** @brief React on a resize event.
+/*!
+ * \brief React on a resize event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event */
+ * \a event The corresponding resize event
+ */
 void WheelColorPicker::resizeEvent(QResizeEvent *event)
 {
     AbstractDiagram::resizeEvent(event);
     d_pointer->resizeChildWidgets();
 }
 
-/** @brief Handle state changes.
+/*!
+ * \brief Handle state changes.
  *
- * Implements reaction on <tt>QEvent::LanguageChange</tt>.
+ * Implements reaction on \c {QEvent::LanguageChange}.
  *
  * Reimplemented from base class.
  *
- * @param event The event. */
+ * \a event The event.
+ */
 void WheelColorPicker::changeEvent(QEvent *event)
 {
     const auto type = event->type();
@@ -170,32 +186,72 @@ void WheelColorPicker::changeEvent(QEvent *event)
     AbstractDiagram::changeEvent(event);
 }
 
-/** @brief Calculate the optimal size for the inner diagram.
+/*!
+ * \brief Calculate the optimal size for the inner diagram.
  *
- * @returns The maximum possible size of the diagram within the
+ * Returns the maximum possible size of the diagram within the
  * inner part of the color wheel. With floating point precision.
- * Measured in <em>device-independent pixels</em>. */
+ * Measured in \e {device-independent pixels}.
+ *
+ *  The outer dimensions of the widget form a rectangle inscribed within a
+ * circumscribed circle, which corresponds to the inner border of the
+ * color wheel.
+ *
+ * The widget size is composed of the size of the diagram itself and
+ * the size of the borders. The border size is fixed; only the diagram
+ * size can vary.
+ *
+ * \section1 Mathematical Model
+ *
+ * The following variables are used for the calculation:
+ *
+ *  \table
+ *      \header
+ *          \li variable
+ *          \li comment
+ *          \li value
+ *      \row
+ *          \li r
+ *          \li relation b ÷ a
+ *          \li maximum lightness ÷ maximum chroma
+ *      \row
+ *          \li h
+ *          \li horizontal shift
+ *          \li left + right diagram border
+ *      \row
+ *          \li v
+ *          \li vertical shift
+ *          \li top + bottom diagram border
+ *      \row
+ *          \li d
+ *          \li diameter of circumscribed circle
+ *          \li inner diameter of the color wheel
+ *      \row
+ *          \li b
+ *          \li diagram height
+ *          \li a × r
+ *      \row
+ *          \li widgetWidth
+ *          \li widget width
+ *          \li a + h
+ *      \row
+ *          \li widgetHeight
+ *          \li widget height
+ *          \li b + v
+ *      \row
+ *          \li a
+ *          \li diagram width
+ *          \li ?
+ *  \endtable
+ *
+ * We can calculate \c a because a right-angled triangle with \c a and \c b
+ * as its legs (catheti) has the diameter of the circumscribed circle as its
+ * hypotenuse:
+ *
+ * \image innersize.svg "Formula"
+ */
 QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
 {
-    /** The outer dimensions of the widget are a rectangle within a
-     * circumscribed circled, which is the inner border of the color wheel.
-     *
-     * The widget size is composed by the size of the diagram itself and
-     * the size of the borders. The border size is fixed; only the diagram
-     * size can vary.
-     *
-     * Known variables:
-     * | variable     | comment                          | value                              |
-     * | :----------- | :------------------------------- | :--------------------------------- |
-     * | r            | relation b ÷ a                   | maximum lightness ÷ maximum chroma |
-     * | h            | horizontal shift                 | left + right diagram border        |
-     * | v            | vertical shift                   | top + bottom diagram border        |
-     * | d            | diameter of circumscribed circle | inner diameter of the color wheel  |
-     * | b            | diagram height                   | a × r                              |
-     * | widgetWidth  | widget width                     | a + h                              |
-     * | widgetHeight | widget height                    | b + v                              |
-     * | a            | diagram width                    | ?                                  |
-     */
     const auto maximumChroma = //
         (m_projectionSpace == LchSpace::CielchD50) //
         ? ColorSpaceInfo::maxCielchD50Chroma() //
@@ -218,87 +274,6 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
         2 * m_chromaLightnessDiagram->d_pointer->defaultBorderDeviceIndependant();
     const qreal d = m_colorWheel->d_pointer->innerDiameter();
 
-    /** We can calculate <em>a</em> because right-angled triangle
-     * with <em>a</em> and with <em>b</em> as legs/catheti will have
-     * has hypotenuse the diameter of the circumscribed circle:
-     *
-     * <em>[The following formula requires a working Internet connection
-     * to be displayed.]</em>
-     *
-     * @f[
-        \begin{align}
-            widgetWidth²
-            + widgetHeight²
-            = & d²
-        \\
-            (a+h)²
-            + (b+v)²
-            = & d²
-        \\
-            (a+h)²
-            + (ra+v)²
-            = & d²
-        \\
-            a²
-            + 2ah
-            + h²
-            + r²a²
-            + 2rav
-            + v²
-            = & d²
-        \\
-            a²
-            + r²a²
-            + 2ah
-            + 2rav
-            + h²
-            + v²
-            = & d²
-        \\
-            (1+r²)a²
-            + 2a(h+rv)
-            + (h²+v²)
-            = & d²
-        \\
-            a²
-            + 2a\frac{h+rv}{1+r²}
-            + \frac{h²+v²}{1+r²}
-            = & \frac{d²}{1+r²}
-        \\
-            a²
-            + 2a\frac{h+rv}{1+r²}
-            + \left(\frac{h+rv}{1+r²}\right)^{2}
-            - \left(\frac{h+rv}{1+r²}\right)^{2}
-            + \frac{h²+v²}{1+r²}
-            = &  \frac{d²}{1+r²}
-        \\
-            \left(a+\frac{h+rv}{1+r²}\right)^{2}
-            - \left(\frac{h+rv}{1+r²}\right)^{2}
-            + \frac{h²+v²}{1+r²}
-            = & \frac{d²}{1+r²}
-        \\
-            \left(a+\frac{h+rv}{1+r²}\right)^{2}
-            = & \frac{d²}{1+r²}
-            + \left(\frac{h+rv}{1+r²}\right)^{2}
-            - \frac{h²+v²}{1+r²}
-        \\
-            a
-            + \frac{h+rv}{1+r²}
-            = & \sqrt{
-                \frac{d²}{1+r²}
-                + \left(\frac{h+rv}{1+r²}\right)^{2}
-                -\frac{h²+v²}{1+r²}
-            }
-        \\
-            a
-            = & \sqrt{
-                \frac{d²}{1+r²}
-                + \left(\frac{h+rv}{1+r²}\right)^{2}
-                - \frac{h²+v²}{1+r²}
-            }
-            - \frac{h+rv}{1+r²}
-        \end{align}
-     * @f] */
     const qreal x = (1 + qPow(r, 2)); // x = 1 + r²
     const qreal a =
         // The square root:
@@ -318,14 +293,15 @@ QSizeF WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
     );
 }
 
-/** @brief Update the geometry of the child widgets.
+/*!
+ * \brief Update the geometry of the child widgets.
  *
- * This widget does <em>not</em> use layout management for its child widgets.
+ * This widget does \e {not} use layout management for its child widgets.
  * Therefore, this function should be called on all resize events of this
  * widget.
  *
- * @post The geometry (size and the position) of the child widgets are
- * adapted according to the current size of <em>this</em> widget itself. */
+ *  The geometry (size and the position) of the child widgets are
+ * adapted according to the current size of \e {this} widget itself. */
 void WheelColorPickerPrivate::resizeChildWidgets()
 {
     // Set new geometry of color wheel. Only the size changes, while the
@@ -371,9 +347,11 @@ GenericColor WheelColorPicker::currentColorLch() const
     return d_pointer->m_chromaLightnessDiagram->currentColorLch();
 }
 
-/** @brief Setter for the @ref currentColorLch() property.
+/*!
+ * \brief Setter for the \l currentColorLch() property.
  *
- * @param newCurrentColorLch the new color */
+ * \a newCurrentColorLch the new color
+ */
 void WheelColorPicker::setCurrentColorLch(const GenericColor &newCurrentColorLch)
 {
     // The following line will also emit the signal of this class:
@@ -385,13 +363,13 @@ void WheelColorPicker::setCurrentColorLch(const GenericColor &newCurrentColorLch
     d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColorLch().third);
 }
 
-/** @brief Recommended size for the widget
+/*!
+ * \brief Recommended size for the widget
  *
  * Reimplemented from base class.
- *wh
- * @returns Recommended size for the widget.
  *
- * @sa @ref sizeHint() */
+ * \sa sizeHint()
+ */
 QSize WheelColorPicker::minimumSizeHint() const
 {
     const QSizeF minimumDiagramSize =
@@ -422,13 +400,13 @@ QSize WheelColorPicker::minimumSizeHint() const
         .expandedTo(d_pointer->m_colorWheel->minimumSizeHint());
 }
 
-/** @brief Recommended minimum size for the widget.
+/*!
+ * \brief Recommended minimum size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
- *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize WheelColorPicker::sizeHint() const
 {
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;

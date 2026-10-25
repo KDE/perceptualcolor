@@ -1,16 +1,13 @@
 # SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-# Configuration file for automatic Doxygen runs with KApiDox.
-# Documentation: https://api.kde.org/frameworks/kapidox/html/index.html
-# KApiDox uses by default its own global settings for Doxygen. We override
-# some of them in docs/Doxyfile.local.
-# Result: https://api.kde.org/perceptualcolor/html/
+# Configuration file for generating automatically documentation with KApiDox.
 
 description: GUI components for choosing colors, with focus on an intuitive and perceptually uniform presentation.
 fancyname: Perceptual Color
-#group: frameworks
-#subgroup: tier 1
+#group: Frameworks
+tier: 1
+#subgroup: Tier 1
 type: functional
 platforms:
     - name: Linux

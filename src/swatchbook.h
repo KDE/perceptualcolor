@@ -24,36 +24,28 @@ namespace PerceptualColor
 
 class SwatchBookPrivate;
 
-/** @internal
+/*!
  *
- * @brief Shows colors patches.
  *
- * @image html SwatchBook.png "SwatchBook"
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Shows colors patches.
+ *
+ * \image SwatchBook.png "SwatchBook"
  *
  * The user can select a color either by mouse click or by using the keyboard.
  *
  * The marker used to mark the currently selected color depends
- * on the current translation; see @ref setTranslation for details.
- *
- * @internal
- *
- * @todo SHOULDHAVE Drag-and-drop support: Provide outgoing drag events for all
- * non-empty color patches. Provide incoming drop events on all patches (empty
- * and non-empty) when not in read-only mode. And provide the possibility to
- * re-arrange the colors by drag-and-drop, either within a special editing mode
- * or during normal operation (or would this incompatible or confusing
- * together with our current selection fuctionality?)
- *
- *
- * @todo SHOULDHAVE Test how the context menu key works in this class (and
- * maybe also test it in other widgets). Does it trigger a mouse event or a
- * key event?
+ * on the current translation; see \l setTranslation for details.
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT SwatchBook : public AbstractDiagram
 {
     Q_OBJECT
 
-    /** @brief The current color.
+    /*!
+     * \property PerceptualColor::SwatchBook::currentColor
+     *
+     * \brief The current color.
      *
      * This property can contain any color, including colors
      * that are not in the swatch book.
@@ -61,56 +53,60 @@ class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT SwatchBook : public AbstractDiagram
      * If you set this property exactly to an RGB color that is in the
      * swatch book, this particular color patch will show a selection mark.
      * Otherwise, no selection mark will be visible.
-     *
-     * @sa @ref currentColor() const
-     * @sa @ref setCurrentColor()
-     * @sa @ref currentColorChanged() */
+     */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
-    /**
-     * @brief Indicates whether the user can add or remove colors in the swatch
+    /*!
+     * \property PerceptualColor::SwatchBook::editable
+     *
+     * \brief Indicates whether the user can add or remove colors in the swatch
      * book.
      *
-     * When editable, the user can, for example, assign the @ref currentColor
+     * When \l editable, the user can, for example, assign the \l currentColor
      * to empty color patches by a left mouse click or remove colors from
      * existing patches by a right mouse click.
      *
-     * @image html SwatchBookEditable.png "Editable SwatchBook"
+     * \image SwatchBookEditable.png "Editable \l SwatchBook"
      *
-     * When not editable, the user can still select different colors, but
+     * When not \l editable, the user can still select different colors, but
      * modifications to the color patches are disabled.
-     *
-     * @sa @ref isEditable() const
-     * @sa @ref setEditable()
-     * @sa @ref editableChanged()
      */
     Q_PROPERTY(bool editable READ isEditable WRITE setEditable NOTIFY editableChanged)
 
-    /** @brief The swatchGrid that is displayed in the swatch book.
+    /*!
+     * \property PerceptualColor::SwatchBook::swatchGrid
+     *
+     * \brief The \l swatchGrid that is displayed in the swatch book.
      *
      * The colors are in the current color engine’s working gamut. The first
-     * dimension (@ref Array2D::iCount()) is interpreted as horizontal axis
+     * dimension \l Array2D::iCount() is interpreted as horizontal axis
      * from left to right on LTR layouts, and the other way around on RTL
-     * layouts. The second dimension of the array (@ref Array2D::jCount())
+     * layouts. The second dimension \l Array2D::jCount() of the array
      * is interpreted as vertical axis, from top to bottom.
-     *
-     * @sa @ref swatchGrid() const
-     * @sa @ref setSwatchGrid()
-     * @sa @ref swatchGridChanged() */
+     */
     Q_PROPERTY(QColorArray2D swatchGrid READ swatchGrid WRITE setSwatchGrid NOTIFY swatchGridChanged)
 
 public:
     Q_INVOKABLE explicit SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing, QWidget *parent = nullptr);
     virtual ~SwatchBook() noexcept override;
-    /** @brief Getter for property @ref currentColor
-     *  @returns the property @ref currentColor */
+    /*!
+     * \brief Getter for property \l currentColor
+     *
+     * Returns the property value.
+     */
     [[nodiscard]] QColor currentColor() const;
-    /** @brief Getter for property @ref editable
-     *  @returns the property @ref editable */
+    /*!
+     * \brief Getter for property \l editable
+     *
+     * Returns the property value.
+     */
     [[nodiscard]] bool isEditable() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
-    /** @brief Getter for property @ref swatchGrid
-     *  @returns the property @ref swatchGrid */
+    /*!
+     * \brief Getter for property \l swatchGrid
+     *
+     * Returns the property value.
+     */
     [[nodiscard]] QColorArray2D swatchGrid() const;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
@@ -120,17 +116,23 @@ public Q_SLOTS:
     void setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGrid);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColor.
+    /*!
+     * \brief Notify signal for property \l currentColor.
      *
-     * @param newCurrentColor the new @ref currentColor */
+     * \a newCurrentColor the new \l currentColor
+     */
     void currentColorChanged(const QColor &newCurrentColor);
-    /** @brief Notify signal for property @ref editable.
+    /*!
+     * \brief Notify signal for property \l editable.
      *
-     * @param newEditable the new @ref editable */
+     * \a newEditable the new \l editable
+     */
     void editableChanged(const bool newEditable);
-    /** @brief Notify signal for property @ref swatchGrid.
+    /*!
+     * \brief Notify signal for property \l swatchGrid.
      *
-     * @param newSwatchGrid the new @ref swatchGrid */
+     * \a newSwatchGrid the new \l swatchGrid
+     */
     void swatchGridChanged(const PerceptualColor::QColorArray2D &newSwatchGrid);
 
 protected:
@@ -142,16 +144,12 @@ protected:
 private:
     Q_DISABLE_COPY(SwatchBook)
 
-    /** @internal
-     * @brief Declare the private implementation as friend class.
-     *
-     * This allows the private class to access the protected members and
-     * functions of instances of <em>this</em> class. */
     friend class SwatchBookPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+    /*!
+     * \brief Pointer to implementation (pimpl)
+     */
     ConstPropagatingUniquePointer<SwatchBookPrivate> d_pointer;
 
-    /** @internal @brief Only for unit tests. */
     friend class TestSwatchBook;
 };
 

@@ -14,28 +14,28 @@ namespace PerceptualColor
 {
 class MultiSpinBoxSectionPrivate;
 
-/** @brief Configuration of a single section
- * within a @ref MultiSpinBox.
+// NOTE The design of this configuration class is similar to Qt’s
+// QNetworkConfiguration: an fully copyable object that can be
+// passed to other classes, which then interpret its settings.
+// Internally, the class uses the pimpl idiom to hide implementation
+// details and allow for future binary-compatible extensions.
+/*!
+ * \inmodule ModulePublicApi
+ *
+ * \brief Configuration of a single section
+ * within a \l MultiSpinBox.
  *
  * This class encapsulates the configuration settings for an individual
- * section of a @ref MultiSpinBox widget.
+ * section of a \l MultiSpinBox widget.
  *
  * This data type can be passed to QDebug thanks to
- * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
+ * \l {operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)}
  *
  * This type is declared as type to Qt’s type system via
- * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use for <em>queued</em> signal-slot connections),
- * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+ * example if you want to use for \e {queued} signal-slot connections),
+ * you might consider calling \c {qRegisterMetaType()} for
  * this type, once you have a QApplication object.
- *
- * @internal
- *
- * The design of this configuration class is similar to Qt’s
- * QNetworkConfiguration: an fully copyable object that can be
- * passed to other classes, which then interpret its settings.
- * Internally, the class uses the @ref pimpl idiom to hide implementation
- * details and allow for future binary-compatible extensions.
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBoxSection
 {
@@ -66,26 +66,17 @@ public:
     [[nodiscard]] QString suffix() const;
 
 private:
-    /** @internal
-     *
-     * @brief Declare the private implementation as friend class.
-     *
-     * This allows the private class to access the protected members and
-     * functions of instances of <em>this</em> class. */
     friend class MultiSpinBoxSectionPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+    /*!
+     * \brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<MultiSpinBoxSectionPrivate> d_pointer;
 
-    /** @internal @brief Only for unit tests. */
     friend class TestMultiSpinBoxSection;
 
-    /** @internal
-     * @brief Internal friend declaration.
-     *
-     * @note This class is used as configuration for @ref MultiSpinBox. Thought
-     * currently there is no need for this <tt>friend</tt> declaration,
-     * it is done nevertheless. (If it would become necessary later,
-     * adding it would break the binary API, which we want to avoid.) */
+    // This class is used as configuration for  MultiSpinBox. Thought
+    // currently there is no need for this friend declaration,
+    // it is done nevertheless. (If it would become necessary later,
+    // adding it would break the binary API, which we want to avoid.)
     friend class MultiSpinBox;
 };
 

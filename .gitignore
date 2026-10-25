@@ -7,10 +7,12 @@
 /.kdev4/
 /build/*
 /buildclangformat/*
+/builddoc/*
 /buildexamples/*
 /Doxyfile
-/docs/publicapi/
-/docs/publicapiandinternals/
+/docs/perceptualcolor/
+/docs/perceptualcolor.qch
+/docs/perceptualcolor-0_Release_includes.txt
 /artifact_*
 /.screenshotfont.ttf
 /.vs/

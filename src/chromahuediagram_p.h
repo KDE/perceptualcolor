@@ -21,17 +21,23 @@ namespace PerceptualColor
 {
 class ChromaHueDiagram;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom
  *
- * @anchor ChromaHueMeasurement <b>Measurement details:</b> The general
- * @ref measurementdetails "notes about measurement" apply also to this widget.
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom.
+ *
+ * \target ChromaHueMeasurement
+ *
+ * \b {Measurement details:} The
+ * general \l {measurementdetails.html} {notes about measurement} apply
+ * also to this widget.
  * Furthermore, in this widget, when painting a pixel of the gamut, the color
  * of the pixel will be the color of the coordinate point at the center of the
- * pixel. So the pixel at position <tt>QPoint(x, y)</tt> gets the color that
- * corresponds to the coordinate point <tt>QPoint(x+0.5, y+0.5)</tt>.
+ * pixel. So the pixel at position \c {QPoint(x, y)} gets the color that
+ * corresponds to the coordinate point \c {QPoint(x+0.5, y+0.5)}.
  * Also, mouse events work with pixel position; so when reacting on mouse
  * events than it’s the center of the given mouse event pixel position that is
  * considered when processing the mouse event. */
@@ -39,55 +45,60 @@ class ChromaHueDiagramPrivate
 {
 public:
     ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const LchSpace projectionSpace);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
+
     virtual ~ChromaHueDiagramPrivate() noexcept;
 
     // Member variables
-    /** @brief The image of the chroma-hue diagram itself. */
+    /*!
+     * \brief The image of the chroma-hue diagram itself. */
     AsyncImageProvider<ChromaHueImageParameters> m_chromaHueImage;
 
-    /** @brief Properties for @ref m_chromaHueImage. */
+    /*!
+     * \brief Properties for \l m_chromaHueImage. */
     ChromaHueImageParameters m_chromaHueImageParameters;
 
-    /** @brief Internal storage of the @ref ChromaHueDiagram::currentColorLch()
+    /*!
+     * \brief Internal storage of the \l ChromaHueDiagram::currentColorLch()
      * property */
     GenericColor m_currentColorLch;
 
-    /** @brief Holds if currently a mouse event is active or not.
+    /*!
+     * \brief Holds if currently a mouse event is active or not.
      *
-     * Default value is <tt>false</tt>.
-     * - A mouse event gets typically activated on
-     *   a @ref ChromaHueDiagram::mousePressEvent()
-     *   done within the gamut diagram. The value is set to <tt>true</tt>.
-     * - While active, all @ref ChromaHueDiagram::mouseMoveEvent() will
+     * Default value is \c {false}.
+     *
+     * \list
+     * \li A mouse event gets typically activated on
+     *   a \l ChromaHueDiagram::mousePressEvent()
+     *   done within the gamut diagram. The value is set to \c {true}.
+     * \li While active, all \l ChromaHueDiagram::mouseMoveEvent() will
      *   move the diagram’s color handle.
-     * - Once a @ref ChromaHueDiagram::mouseReleaseEvent() occurs, the value
-     *   is set to <tt>false</tt>. Further mouse movements will not move the
+     * \li Once a \l ChromaHueDiagram::mouseReleaseEvent() occurs, the value
+     *   is set to \c {false}. Further mouse movements will not move the
      *   handle anymore.
+     * \endlist
      *
      * This is done because Qt’s default mouse tracking reacts on all clicks
-     * within the whole widget. However, <em>this</em> widget is meant as a
+     * within the whole widget. However, \e {this} widget is meant as a
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
 
-    /**
-     * @brief The details corresponding to @ref m_projectionSpace.
+    /*!
+     * \brief The details corresponding to \l m_projectionSpace.
      */
     const LchValues m_lchValues;
 
-    /**
-     * @brief The color space into which the gamut will be projected.
+    /*!
+     * \brief The color space into which the gamut will be projected.
      *
      * Get more details about the chosen projection space
-     * through @ref m_lchValues.
+     * through \l m_lchValues.
      */
     const LchSpace m_projectionSpace;
 
-    /** @brief The image of the color wheel. */
+    /*!
+     * \brief The image of the color wheel. */
     ColorWheelImageParameters m_wheelImage;
 
     // Member functions
@@ -103,7 +114,8 @@ public:
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaHueDiagram> q_pointer;
 };

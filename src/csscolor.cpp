@@ -25,16 +25,17 @@
 namespace PerceptualColor
 {
 
-/** @brief Parses a hexadecimal color notations.
+/*!
+ * \brief Parses a hexadecimal color notations.
  *
  * Implements the
- * <a href="https://www.w3.org/TR/css-color-4/#typedef-hex-color">hexadecimal
- * notations as defined in CSS Color 4</a>.
+ * \l {https://www.w3.org/TR/css-color-4/#typedef-hex-color} {hexadecimal
+ * notations as defined in CSS Color 4}.
  *
- * @param hexColor The hexadecimal color to parse, without any leading or
+ * \a hexColor The hexadecimal color to parse, without any leading or
  * trailing whitespace.
  *
- * @returns The sRGB value if the syntax is valid. An
+ * Returns the sRGB value if the syntax is valid. An
  * empty value otherwise. */
 std::optional<QRgb> CssColor::parseHexColor(const QString &hexColor)
 {
@@ -74,11 +75,12 @@ std::optional<QRgb> CssColor::parseHexColor(const QString &hexColor)
     return std::nullopt;
 }
 
-/** @brief Validate arguments.
+/*!
+ * \brief Validate arguments.
  *
- * @param arguments The list of arguments to be validated.
+ * \a arguments The list of arguments to be validated.
  *
- * @returns For each argument, it is checked if it is valid, meaning it does
+ * For each argument, it is checked if it is valid, meaning it does
  * not contain any whitespace in the middle, comma, or slash. If all arguments
  * are valid, they are returned with leading and trailing whitespace removed.
  * Otherwise, an empty value is returned. */
@@ -98,21 +100,24 @@ std::optional<QStringList> CssColor::validateArguments(const QStringList &argume
     return result;
 }
 
-/** @brief Parses arguments of a CSS Color 4 function.
+/*!
+ * \brief Parses arguments of a CSS Color 4 function.
  *
  * Accepts both, standard (white-space separated) and legacy (comma-separated)
  * syntax. It accepts an arbitrary number of normal arguments, and in standard
  * syntax also up to one alpha argument.
  *
- * @param arguments The function arguments to parse.
- * @param mode The syntaxes that are considered as valid.
- * @param count The exact number of expected arguments. Finally accepted
+ * \a arguments The function arguments to parse.
+ *
+ * \a mode The syntaxes that are considered as valid.
+ *
+ * \a count The exact number of expected arguments. Finally accepted
  * are arguments of this exact number, of of this exact number minus one.
  * (It is supposed that the last argument is the alpha arguments, which is
  * optional.) A missing argument is added automatically with the
- * value <tt>"none"</tt>.
+ * value \c {"none"}.
  *
- * @returns A string list containing all arguments, or an empty value if the
+ * Returns a string list containing all arguments, or an empty value if the
  * syntax was invalid. Note that the individual arguments have leading and/or
  * trailing white space removed and are guaranteed to not contain any comma
  * or slash. */
@@ -165,17 +170,20 @@ std::optional<QStringList> CssColor::parseAllFunctionArguments(const QString &ar
     return validateArguments(result);
 }
 
-/** @brief Parses a single argument.
+/*!
+ * \brief Parses a single argument.
  *
- * Accepts absolute numbers, percent values and <tt>"none"</tt>.
+ * Accepts absolute numbers, percent values and \c {"none"}.
  *
  * Leading and trailing whitespace is ignored.
  *
- * @param argument The argument to parse.
- * @param full The absolute value that corresponds to 100%.
- * @param none The absolute value that correspond to <tt>"none"</tt>.
+ * \a argument The argument to parse.
  *
- * @returns The absolute number if the syntax is valid. An empty value
+ * \a full The absolute value that corresponds to 100%.
+ *
+ * \a none The absolute value that correspond to \c {"none"}.
+ *
+ * Returns the absolute number if the syntax is valid. An empty value
  * otherwise. */
 std::optional<double> CssColor::parseArgumentPercentNumberNone(const QString &argument, const double full, const double none)
 {
@@ -202,17 +210,18 @@ std::optional<double> CssColor::parseArgumentPercentNumberNone(const QString &ar
     return result;
 }
 
-/** @brief Parses a single argument.
+/*!
+ * \brief Parses a single argument.
  *
- * Accepts percent values and <tt>"none"</tt>.
+ * Accepts percent values and \c {"none"}.
  *
  * Leading and trailing whitespace is ignored.
  *
- * @param argument The argument to parse.
+ * \a argument The argument to parse.
  *
- * @returns For invalid syntax, an empty value is returned. For valid syntax,
- * <tt>100%</tt> corresponds to <tt>1</tt>, while <tt>0%</tt> and <tt>none</tt>
- * correspond to <tt>0</tt>. */
+ * Returns, for invalid syntax, an empty value is returned. For valid syntax,
+ * \c {100%} corresponds to \c {1}, while \c {0%} and \c {none}
+ * correspond to \c {0}. */
 std::optional<double> CssColor::parseArgumentPercentNoneTo1(const QString &argument)
 {
     bool okay = true;
@@ -237,15 +246,16 @@ std::optional<double> CssColor::parseArgumentPercentNoneTo1(const QString &argum
     return std::nullopt;
 }
 
-/** @brief Parses a single argument.
+/*!
+ * \brief Parses a single argument.
  *
- * Accepts percent values and <tt>"none"</tt>.
+ * Accepts percent values and \c {"none"}.
  *
  * Leading and trailing whitespace is ignored.
  *
- * @param argument The argument to parse.
+ * \a argument The argument to parse.
  *
- * @returns For invalid syntax, an empty value is returned. For valid syntax,
+ * Returns, for invalid syntax, an empty value is returned. For valid syntax,
  * a hue in the range [0, 360[ is returned, with 360 corresponding to the
  * full circle. */
 std::optional<double> CssColor::parseArgumentHueNoneTo360(const QString &argument)
@@ -286,14 +296,15 @@ std::optional<double> CssColor::parseArgumentHueNoneTo360(const QString &argumen
     return std::nullopt;
 }
 
-/** @brief Parse
- * <a href="https://www.w3.org/TR/css-color-4/#typedef-absolute-color-function">
- * Absolute Color Functions</a> as defined in CSS Color 4.
+/*!
+ * \brief Parse
+ * \l {https://www.w3.org/TR/css-color-4/#typedef-absolute-color-function}
+ * {Absolute Color Functions} as defined in CSS Color 4.
  *
- * @param colorFunction The string to parse.
+ * \a colorFunction The string to parse.
  *
- * @returns If the CSS fragment is valid, the corresponding color.
- * @ref ColorModel::Invalid otherwise. */
+ * Returns, if the CSS fragment is valid, the corresponding color.
+ * \l ColorModel::Invalid otherwise. */
 CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colorFunction)
 {
     static const QRegularExpression regex( //
@@ -479,23 +490,24 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
     return result;
 }
 
-/** @brief Parse a CSS color value.
+/*!
+ * \brief Parse a CSS color value.
  *
- * @param string The CSS fragment to parse
+ * \a string The CSS fragment to parse
  *
- * @returns If the CSS fragment is valid, the corresponding color.
- * @ref ColorModel::Invalid otherwise.
+ * Returns, if the CSS fragment is valid, the corresponding color.
+ * \l ColorModel::Invalid otherwise.
  *
- * This parser accepts all valid <a href="https://www.w3.org/TR/css-color-4/">
- * CSS Colors 4</a>, except those who’s value is context-dependant like for
- * <tt><a href="https://www.w3.org/TR/css-color-4/#valdef-color-currentcolor">
- * currentcolor</a></tt>.
+ * This parser accepts all valid \l {https://www.w3.org/TR/css-color-4/}
+ * {CSS Colors 4}, except those who’s value is context-dependant like for
+ * \l {https://www.w3.org/TR/css-color-4/#valdef-color-currentcolor}
+ * {currentcolor}.
  *
- * @note A trailing “;” is ignored for your convenance. Other supplementary
+ * \note A trailing “;” is ignored for your convenance. Other supplementary
  * characters will be considered as syntax error. For simplicity of
  * implementation, some very limited invalid CSS colors are considered as
  * valid when the can be no confusion about the meaning. For example,
- * <tt>rgba()</tt> does not allow to mix absolute
+ * \c {rgba()} does not allow to mix absolute
  * numbers and percent number: All values must be either a percentage or
  * an absolute number. However this parser accepts also mixed
  * values. */
@@ -526,19 +538,20 @@ CssColor::CssColorValue CssColor::parse(const QString &string)
     return parseAbsoluteColorFunction(myString);
 }
 
-/** @internal
+/*!
  *
- * @brief Converts a named color to sRGB (if any)
+ *
+ * \brief Converts a named color to sRGB (if any)
  *
  * Implements the
- * <a href="https://www.w3.org/TR/css-color-4/#typedef-named-color">
- * Named colors</a> and the
- * <a href="https://www.w3.org/TR/css-color-4/#transparent-color">
- * transparent keyword</a> as defined in CSS Color 4.
+ * \l {https://www.w3.org/TR/css-color-4/#typedef-named-color}
+ * {Named colors} and the
+ * \l {https://www.w3.org/TR/css-color-4/#transparent-color}
+ * {transparent keyword} as defined in CSS Color 4.
  *
- * @param namedColor The named color to search for.
+ * \a namedColor The named color to search for.
  *
- * @returns The sRGB value if its a CSS named color (case-insensitive). An
+ * Returns the sRGB value if its a CSS named color (case-insensitive). An
  * empty value otherwise. */
 std::optional<QRgb> CssColor::parseNamedColor(const QString &namedColor)
 {
@@ -705,15 +718,18 @@ std::optional<QRgb> CssColor::parseNamedColor(const QString &namedColor)
     return std::nullopt;
 }
 
-/** @brief Provides CSS code for existing color values.
+/*!
+ * \brief Provides CSS code for existing color values.
  *
  * This function is meant for exporting colors to CSS code.
  *
- * @param input A hash table with color values.
- * @param opacity1 The opacity of the color in the range [0, 1].
- * @param significantFigures The requested number of significant figures.
+ * \a input A hash table with color values.
  *
- * @returns A list of CSS color codes, ordered by importance: oklch, oklab,
+ * \a opacity1 The opacity of the color in the range [0, 1].
+ *
+ * \a significantFigures The requested number of significant figures.
+ *
+ * Returns a list of CSS color codes, ordered by importance: oklch, oklab,
  * lch, lab, xyz-d50, xyz-d65. oklch is considered most important, followed
  * by its less intuitive companion oklab, followed by the less perceptually
  * uniform lch and lab. Finally comes the technically important, but

@@ -11,39 +11,50 @@
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ * \brief Private implementation within the \e {Pointer to
+ * implementation} idiom.
+ */
 class MultiSpinBoxSectionPrivate
 {
 public:
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::decimals() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::decimals() property */
     int m_decimals = 2;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::formatString() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::formatString() property */
     QString m_formatString;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::isGroupSeparatorShown() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::isGroupSeparatorShown() property */
     bool m_isGroupSeparatorShown = false;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::isWrapping() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::isWrapping() property */
     bool m_isWrapping = false;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::maximum() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::maximum() property */
     double m_maximum = 99.99;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::minimum() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::minimum() property */
     double m_minimum = 0;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::prefix() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::prefix() property */
     QString m_prefix;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::singleStep() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::singleStep() property */
     double m_singleStep = 1;
-    /** @brief Internal storage of the
-     * @ref MultiSpinBoxSection::suffix() property */
+    /*!
+     * \brief Internal storage of the
+     * \l MultiSpinBoxSection::suffix() property */
     QString m_suffix;
 };
 

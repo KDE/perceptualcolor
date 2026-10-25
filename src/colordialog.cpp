@@ -79,18 +79,19 @@ class QShowEvent;
 namespace PerceptualColor
 {
 
-/** @brief Retranslate the UI with all user-visible strings.
+/*!
+ * \brief Retranslate the UI with all user-visible strings.
  *
  * This function updates all user-visible strings by using
- * <tt>Qt::tr()</tt> to get up-to-date translations.
+ * \c {Qt::tr()} to get up-to-date translations.
  *
  * This function is meant to be called at the end of the constructor and
- * additionally after each <tt>QEvent::LanguageChange</tt> event.
+ * additionally after each \c {QEvent::LanguageChange} event.
  *
- * @note This is the same concept as
- * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
- * Qt Designer, which also provides a function of the same name in
- * uic-generated code</a>.
+ * \note This is the same concept as
+ * \l {https://doc.qt.io/qt-5/designer-using-a-ui-file.html} {Qt Designer,
+ * which also provides a function of the same name in
+ * uic-generated code}.
  */
 void ColorDialogPrivate::retranslateUi()
 {
@@ -420,10 +421,8 @@ void ColorDialogPrivate::retranslateUi()
     // the call is not necessary, as mentioned earlier.
 }
 
-/**
- * @brief Gamut icon for a given color scheme.
- *
- * @returns Gamut icon for a given color scheme.
+/*!
+ * \brief Gamut icon for a given color scheme.
  */
 QIcon ColorDialogPrivate::getGamutIcon()
 {
@@ -437,7 +436,8 @@ QIcon ColorDialogPrivate::getGamutIcon()
                           QStringLiteral("eye-exclamation"));
 }
 
-/** @brief Reloads all icons, adapting to the current color schema and
+/*!
+ * \brief Reloads all icons, adapting to the current color schema and
  * widget style. */
 void ColorDialogPrivate::reloadIcons()
 {
@@ -519,7 +519,8 @@ void ColorDialogPrivate::reloadIcons()
     m_tabWidget->setIconSize(QSize(iconSize, iconSize));
 }
 
-/** @brief Basic initialization.
+/*!
+ * \brief Basic initialization.
  *
  * Code that is shared between the various overloaded constructors.
  */
@@ -989,7 +990,7 @@ void ColorDialogPrivate::initialize()
     // important as the users are used to the default
     // platform dialog, which often do not allow resizing. Therefore,
     // by default, QDialog::isSizeGripEnabled() should be true.
-    // NOTE: Some widget styles like Oxygen or Breeze leave the size grip
+    // NOTE Some widget styles like Oxygen or Breeze leave the size grip
     // widget invisible; nevertheless it reacts on mouse events. Other
     // widget styles indeed show the size grip widget, like Fusion or
     // QtCurve.
@@ -1074,10 +1075,12 @@ void ColorDialogPrivate::initialize()
             &ColorDialogPrivate::reloadIcons);
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- *  @param parent pointer to the parent widget, if any
- *  @post The @ref currentColor property is set to a default value. */
+ *  \a parent pointer to the parent widget, if any
+ *
+ *  The \l currentColor property is set to a default value. */
 ColorDialog::ColorDialog(QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier.toString()))
@@ -1086,16 +1089,20 @@ ColorDialog::ColorDialog(QWidget *parent)
     setCurrentColor(d_pointer->defaultColor());
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- *  @param initial the initially chosen color of the dialog
- *  @param parent pointer to the parent widget, if any
- *  @post The object is constructed and @ref setCurrentColor() is called
- *  with <em>initial</em>. See @ref setCurrentColor() for the modifications
+ *  \a initial the initially chosen color of the dialog
+ *
+ *  \a parent pointer to the parent widget, if any
+ *
+ *  The object is constructed and \l setCurrentColor() is called
+ *  with \e {initial}. See \l setCurrentColor() for the modifications
  *  that will be applied before setting the current color. Especially, as
  *  this dialog is constructed by default without alpha support, the
- *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
- *  used. */
+ *  alpha channel of \e {initial} is ignored and a fully opaque color is
+ *  used.
+ */
 ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this, ColorDialogPrivate::builtinsrgbIdentifier.toString()))
@@ -1109,16 +1116,19 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     setCurrentColor(initial);
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- *  @param identifier Optional identifier used to save the settings for
- *                   this @ref ColorDialog. For each identifier, the
- *                   @ref ColorDialog saves its own, independent set of
+ *  \a identifier Optional identifier used to save the settings for
+ *                   this \l ColorDialog. For each identifier, the
+ *                   \l ColorDialog saves its own, independent set of
  *                   settings. Must contain only the lowercase letters a-z.
- *  @param parent pointer to the parent widget, if any
- *  @post The @ref currentColor property is set to a default value.
  *
- * @note This constructor es useful in unit tests to not interfer with
+ *  \a parent pointer to the parent widget, if any
+ *
+ *  The \l currentColor property is set to a default value.
+ *
+ * \note This constructor es useful in unit tests to not interfer with
  * existing setting files on the system.
  */
 ColorDialog::ColorDialog(const QString &identifier, QWidget *parent)
@@ -1129,10 +1139,12 @@ ColorDialog::ColorDialog(const QString &identifier, QWidget *parent)
     setCurrentColor(d_pointer->defaultColor());
 }
 
-/** @brief Returns the default value for @ref ColorDialog::currentColor.
+/*!
+ * \brief Returns the default value for \l ColorDialog::currentColor.
  *
- * @returns  the default value for @ref ColorDialog::currentColor. Comes from
- * the history (if any), or otherwise from @ref m_wcsBasicDefaultColor. */
+ * Comes from
+ * the history (if any), or otherwise from \l m_wcsBasicDefaultColor.
+ */
 QColor ColorDialogPrivate::defaultColor() const
 {
     const auto lastColor = m_settings->lastColor.value();
@@ -1142,22 +1154,26 @@ QColor ColorDialogPrivate::defaultColor() const
     return m_wcsBasicDefaultColor;
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- *  @param identifier Optional identifier used to save the settings for
- *                   this @ref ColorDialog. For each identifier, the
- *                   @ref ColorDialog saves its own, independent set of
+ *  \a identifier Optional identifier used to save the settings for
+ *                   this \l ColorDialog. For each identifier, the
+ *                   \l ColorDialog saves its own, independent set of
  *                   settings. Must contain only the lowercase letters a-z.
- *  @param initial the initially chosen color of the dialog
- *  @param parent pointer to the parent widget, if any
- *  @post The object is constructed and @ref setCurrentColor() is called
- *  with <em>initial</em>. See @ref setCurrentColor() for the modifications
+ *
+ *  \a initial the initially chosen color of the dialog
+ *
+ *  \a parent pointer to the parent widget, if any
+ *
+ *  The object is constructed and \l setCurrentColor() is called
+ *  with \e {initial}. See \l setCurrentColor() for the modifications
  *  that will be applied before setting the current color. Especially, as
  *  this dialog is constructed by default without alpha support, the
- *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
+ *  alpha channel of \e {initial} is ignored and a fully opaque color is
  *  used.
  *
- * @note This constructor es useful in unit tests to not interfer with
+ * \note This constructor es useful in unit tests to not interfer with
  * existing setting files on the system.
  */
 ColorDialog::ColorDialog(const QString &identifier, const QColor &initial, QWidget *parent)
@@ -1173,20 +1189,22 @@ ColorDialog::ColorDialog(const QString &identifier, const QColor &initial, QWidg
     setCurrentColor(initial);
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 ColorDialog::~ColorDialog() noexcept
 {
     // All the layouts and widgets used here are automatically child widgets
     // of this dialog widget. Therefor they are deleted automatically.
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation.
  *
- * @param identifier Identifier for @ref PerceptualSettings. Must comply
- * with the conditions documented in @ref PerceptualSettings.
+ * \a identifier Identifier for \l PerceptualSettings. Must comply
+ * with the conditions documented in \l PerceptualSettings.
  */
 ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink, const QString &identifier)
     : m_settings(&PerceptualSettings::getInstance(identifier))
@@ -1195,8 +1213,8 @@ ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink, const QString &ide
     m_lchValues = makeLchValues(m_projectionSpace);
 }
 
-/**
- * @brief Default destructor
+/*!
+ * \brief Default destructor
  */
 ColorDialogPrivate::~ColorDialogPrivate() noexcept = default;
 
@@ -1211,19 +1229,24 @@ QColor ColorDialog::currentColor() const
     return temp;
 }
 
-/** @brief Setter for @ref currentColor property.
+/*!
+ * \brief Setter for \l currentColor property.
  *
- * @param color the new color
- * @post The property @ref currentColor is adapted as follows:
- * - If <em>color</em> is not valid, <tt>Qt::black</tt> is used instead.
- * - If <em>color</em>’s <tt>QColor::Spec</tt> is <em>not</em>
- *   <tt>QColor::Spec::Rgb</tt> then it will be converted silently
- *   to <tt>QColor::Spec::Rgb</tt>
- * - The RGB part of @ref currentColor will be the RGB part of <tt>color</tt>.
- * - The alpha channel of @ref currentColor will be the alpha channel
- *   of <tt>color</tt> if at the moment of the function call
- *   the <tt>QColorDialog::ColorDialogOption::ShowAlphaChannel</tt> option is
- *   set. It will be fully opaque otherwise. */
+ * \a color the new color
+ *
+ * The property \l currentColor is adapted as follows:
+ * \list
+ * \li If \e {color} is not valid, \c {Qt::black} is used instead.
+ * \li If \e {color}’s \c {QColor::Spec} is \e {not}
+ *   \c {QColor::Spec::Rgb} then it will be converted silently
+ *   to \c {QColor::Spec::Rgb}
+ * \li The RGB part of \l currentColor will be the RGB part of \c {color}.
+ * \li The alpha channel of \l currentColor will be the alpha channel
+ *   of \c {color} if at the moment of the function call
+ *   the \c {QColorDialog::ColorDialogOption::ShowAlphaChannel} option is
+ *   set. It will be fully opaque otherwise.
+ * \endlist
+ */
 void ColorDialog::setCurrentColor(const QColor &color)
 {
     QColor temp;
@@ -1246,16 +1269,19 @@ void ColorDialog::setCurrentColor(const QColor &color)
     d_pointer->setCurrentOpaqueColor(myRgbColor, nullptr);
 }
 
-/** @brief Opens the dialog and connects its @ref colorSelected() signal to
+/*!
+ * \brief Opens the dialog and connects its colorSelected() signal to
  * the slot specified by receiver and member.
  *
  * The signal will be disconnected from the slot when the dialog is closed.
  *
  * Example:
- * @snippet testcolordialog.cpp ColorDialog Open
  *
- * @param receiver the object that will receive the @ref colorSelected() signal
- * @param member the slot that will receive the @ref colorSelected() signal
+ * \snippet testcolordialog.cpp ColorDialog Open
+ *
+ * \a receiver the object that will receive the colorSelected() signal
+ *
+ * \a member the slot that will receive the colorSelected() signal
  */
 void ColorDialog::open(QObject *receiver, const char *member)
 {
@@ -1268,11 +1294,12 @@ void ColorDialog::open(QObject *receiver, const char *member)
     QDialog::open();
 }
 
-/** @brief Updates the color patch widget
+/*!
+ * \brief Updates the color patch widget
  *
- * @post The color patch widget will show the color
- * of @ref m_currentOpaqueColorRgb and the alpha
- * value of @ref m_alphaGradientSlider. */
+ * The color patch widget will show the color
+ * of \l m_currentOpaqueColorRgb and the alpha
+ * value of \l m_alphaGradientSlider. */
 void ColorDialogPrivate::updateColorPatch()
 {
     QColor tempRgbQColor = m_currentOpaqueColorRgb.rgbQColor;
@@ -1281,7 +1308,14 @@ void ColorDialogPrivate::updateColorPatch()
     m_colorPatch->setColor(tempRgbQColor);
 }
 
-/** @brief Overloaded function. */
+/*!
+ * \brief Overloaded function.
+ *
+ * \a abs The new color in absolute color models
+ *
+ * \a ignoreWidget A widget that should not be
+ * updated. Or \c {nullptr} to update all widgets.
+ */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, const QWidget *ignoreWidget)
 {
     setCurrentOpaqueColor(abs, //
@@ -1289,7 +1323,14 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
                           ignoreWidget);
 }
 
-/** @brief Overloaded function. */
+/*!
+ * \brief Overloaded function.
+ *
+ * \a rgb The new color in RGB and RGB-derived models (profile-dependant)
+ *
+ * \a ignoreWidget A widget that should not be
+ * updated. Or \c {nullptr} to update all widgets.
+ */
 void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &rgb, const QWidget *ignoreWidget)
 {
     setCurrentOpaqueColor( //
@@ -1298,21 +1339,23 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::RgbColor &
         ignoreWidget);
 }
 
-/** @brief Updates @ref m_currentOpaqueColorAbs, @ref m_currentOpaqueColorRgb
+/*!
+ * \brief Updates \l m_currentOpaqueColorAbs, \l m_currentOpaqueColorRgb
  * and affected widgets.
  *
- * @param abs The new color in absolute color models
- * @param rgb The new color in RGB and RGB-derived models (profile-dependant)
+ * \a abs The new color in absolute color models
  *
- * @param ignoreWidget A widget that should <em>not</em> be updated. Or
- * <tt>nullptr</tt> to update <em>all</em> widgets.
+ * \a rgb The new color in RGB and RGB-derived models (profile-dependant)
  *
- * @post If this function is called recursively, nothing happens. Else
- * the color is moved into the gamut, then @ref m_currentOpaqueColorAbs and
- * @ref m_currentOpaqueColorRgb are updated, and the corresponding widgets
+ * \a ignoreWidget A widget that should not be
+ * updated. Or \c {nullptr} to update all widgets.
+ *
+ * If this function is called recursively, nothing happens. Else
+ * the color is moved into the gamut, then \l m_currentOpaqueColorAbs and
+ * \l m_currentOpaqueColorRgb are updated, and the corresponding widgets
  * are updated (except the widget specified to be ignored – if any).
  *
- * @note Recursive functions calls are ignored. This is useful, because you
+ * \note Recursive functions calls are ignored. This is useful, because you
  * can connect signals from various widgets to this slot without having to
  * worry about infinite recursions. */
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs,
@@ -1441,7 +1484,8 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
     m_isColorChangeInProgress = false;
 }
 
-/** @brief Reads the value from the lightness selector in the dialog and
+/*!
+ * \brief Reads the value from the lightness selector in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readLightnessValue()
 {
@@ -1472,7 +1516,8 @@ void ColorDialogPrivate::readLightnessValue()
     }
 }
 
-/** @brief Reads the HSL numbers in the dialog and
+/*!
+ * \brief Reads the HSL numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readHslNumericValues()
 {
@@ -1485,7 +1530,8 @@ void ColorDialogPrivate::readHslNumericValues()
     setCurrentOpaqueColor(temp, m_hslSpinBox);
 }
 
-/** @brief Reads the HWB numbers in the dialog and
+/*!
+ * \brief Reads the HWB numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readHwbNumericValues()
 {
@@ -1498,7 +1544,8 @@ void ColorDialogPrivate::readHwbNumericValues()
     setCurrentOpaqueColor(temp, m_hwbSpinBox);
 }
 
-/** @brief Reads the HSV numbers in the dialog and
+/*!
+ * \brief Reads the HSV numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readHsvNumericValues()
 {
@@ -1511,7 +1558,8 @@ void ColorDialogPrivate::readHsvNumericValues()
     setCurrentOpaqueColor(temp, m_hsvSpinBox);
 }
 
-/** @brief Reads the decimal RGB numbers in the dialog and
+/*!
+ * \brief Reads the decimal RGB numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readRgbNumericValues()
 {
@@ -1524,7 +1572,8 @@ void ColorDialogPrivate::readRgbNumericValues()
     setCurrentOpaqueColor(temp, m_rgbSpinBox);
 }
 
-/** @brief Reads the color of the color patch, and
+/*!
+ * \brief Reads the color of the color patch, and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readColorPatchValue()
 {
@@ -1541,7 +1590,8 @@ void ColorDialogPrivate::readColorPatchValue()
     setCurrentOpaqueColor(myRgbColor, m_colorPatch);
 }
 
-/** @brief Reads the color of the basic colors widget, and (if any)
+/*!
+ * \brief Reads the color of the basic colors widget, and (if any)
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readSwatchBookBasicColorsValue()
 {
@@ -1558,7 +1608,8 @@ void ColorDialogPrivate::readSwatchBookBasicColorsValue()
     setCurrentOpaqueColor(myRgbColor, m_swatchBookBasicColors);
 }
 
-/** @brief Reads the color of the history widget, and (if any)
+/*!
+ * \brief Reads the color of the history widget, and (if any)
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readSwatchBookHistoryValue()
 {
@@ -1575,8 +1626,8 @@ void ColorDialogPrivate::readSwatchBookHistoryValue()
     setCurrentOpaqueColor(myRgbColor, m_swatchBookHistory);
 }
 
-/**
- * @brief Reads the color of the custom colors widget, and (if any)
+/*!
+ * \brief Reads the color of the custom colors widget, and (if any)
  * updates the dialog accordingly.
  */
 void ColorDialogPrivate::readSwatchBookCustomColorsValue()
@@ -1594,7 +1645,8 @@ void ColorDialogPrivate::readSwatchBookCustomColorsValue()
     setCurrentOpaqueColor(myRgbColor, m_swatchBookCustomColors);
 }
 
-/** @brief Reads the color of the @ref WheelColorPicker in the dialog and
+/*!
+ * \brief Reads the color of the \l WheelColorPicker in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readWheelColorPickerValues()
 {
@@ -1608,7 +1660,8 @@ void ColorDialogPrivate::readWheelColorPickerValues()
         m_wheelColorPicker);
 }
 
-/** @brief Reads the color of the @ref ChromaHueDiagram in the dialog and
+/*!
+ * \brief Reads the color of the \l ChromaHueDiagram in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readChromaHueDiagramValue()
 {
@@ -1622,7 +1675,8 @@ void ColorDialogPrivate::readChromaHueDiagramValue()
         m_chromaHueDiagram);
 }
 
-/** @brief Reads the hexadecimal RGB numbers in the dialog and
+/*!
+ * \brief Reads the hexadecimal RGB numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialogPrivate::readRgbHexValues()
 {
@@ -1641,10 +1695,11 @@ void ColorDialogPrivate::readRgbHexValues()
     }
 }
 
-/** @brief Updates the RGB Hex widget to @ref m_currentOpaqueColorRgb.
+/*!
+ * \brief Updates the RGB Hex widget to \l m_currentOpaqueColorRgb.
  *
- * @post The @ref m_rgbLineEdit gets the value of @ref m_currentOpaqueColorRgb.
- * During this operation, all signals of @ref m_rgbLineEdit are blocked. */
+ * The \l m_rgbLineEdit gets the value of \l m_currentOpaqueColorRgb.
+ * During this operation, all signals of \l m_rgbLineEdit are blocked. */
 void ColorDialogPrivate::updateRgbHexButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_rgbLineEdit);
@@ -1652,11 +1707,12 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
     m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgbHex6);
 }
 
-/** @brief Updates the LCH spin box to @ref m_currentOpaqueColorAbs.
+/*!
+ * \brief Updates the LCH spin box to \l m_currentOpaqueColorAbs.
  *
- * @post The @ref m_cielchD50SpinBox gets the value of
- * @ref m_currentOpaqueColorAbs. During this operation, all signals of
- * @ref m_cielchD50SpinBox are blocked. */
+ * The \l m_cielchD50SpinBox gets the value of
+ * \l m_currentOpaqueColorAbs. During this operation, all signals of
+ * \l m_cielchD50SpinBox are blocked. */
 void ColorDialogPrivate::updateCielchD50ButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_cielchD50SpinBox);
@@ -1666,11 +1722,12 @@ void ColorDialogPrivate::updateCielchD50ButBlockSignals()
     m_cielchD50SpinBoxGamutAction->setEnabled(false);
 }
 
-/** @brief Updates the Oklch spin box to @ref m_currentOpaqueColorAbs.
+/*!
+ * \brief Updates the Oklch spin box to \l m_currentOpaqueColorAbs.
  *
- * @post The @ref m_oklchSpinBox gets the value
- * of @ref m_currentOpaqueColorAbs. During this operation,
- * all signals of @ref m_oklchSpinBox are blocked. */
+ * The \l m_oklchSpinBox gets the value
+ * of \l m_currentOpaqueColorAbs. During this operation,
+ * all signals of \l m_oklchSpinBox are blocked. */
 void ColorDialogPrivate::updateOklchButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_oklchSpinBox);
@@ -1680,7 +1737,8 @@ void ColorDialogPrivate::updateOklchButBlockSignals()
     m_oklchSpinBoxGamutAction->setEnabled(false);
 }
 
-/** @brief If no @ref m_isColorChangeInProgress, reads the LCH numbers
+/*!
+ * \brief If no \l m_isColorChangeInProgress, reads the LCH numbers
  * in the dialog and updates the dialog accordingly. */
 void ColorDialogPrivate::readLchNumericValues()
 {
@@ -1704,7 +1762,8 @@ void ColorDialogPrivate::readLchNumericValues()
         m_cielchD50SpinBox);
 }
 
-/** @brief If no @ref m_isColorChangeInProgress, reads the Oklch numbers
+/*!
+ * \brief If no \l m_isColorChangeInProgress, reads the Oklch numbers
  * in the dialog and updates the dialog accordingly. */
 void ColorDialogPrivate::readOklchNumericValues()
 {
@@ -1734,10 +1793,11 @@ void ColorDialogPrivate::readOklchNumericValues()
                           m_oklchSpinBox);
 }
 
-/** @brief Try to initialize the screen color picker feature.
+/*!
+ * \brief Try to initialize the screen color picker feature.
  *
- * @post If supported, @ref m_eyedropperButton
- * is created. Otherwise, it stays <tt>nullptr</tt>.
+ * If supported, \l m_eyedropperButton
+ * is created. Otherwise, it stays \c {nullptr}.
  */
 void ColorDialogPrivate::initializePortalEyedropper()
 {
@@ -1766,11 +1826,11 @@ void ColorDialogPrivate::initializePortalEyedropper()
     updateEyedropperButtonVisibility();
 }
 
-/**
- * @brief Updates the visibility of @ref m_eyedropperButton.
+/*!
+ * \brief Updates the visibility of \l m_eyedropperButton.
  *
- * Considers @ref PortalEyedropper::isAvailable() and
- * the <tt>NoEyeDropperButton</tt> flag from @ref m_options.
+ * Considers \l PortalEyedropper::isAvailable() and
+ * the \c {NoEyeDropperButton} flag from \l m_options.
  */
 void ColorDialogPrivate::updateEyedropperButtonVisibility()
 {
@@ -1782,8 +1842,10 @@ void ColorDialogPrivate::updateEyedropperButtonVisibility()
     m_eyedropperButton->setVisible(newVisibility.value_or(false));
 }
 
-/** @brief Initialize the numeric input widgets of this dialog.
- * @returns A pointer to a new widget that has the other, numeric input
+/*!
+ * \brief Initialize the numeric input widgets of this dialog.
+ *
+ * Returns a pointer to a new widget that has the other, numeric input
  * widgets as child widgets. */
 QWidget *ColorDialogPrivate::initializeNumericPage()
 {
@@ -1987,11 +2049,15 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
     return d_pointer->m_options;
 }
 
-/** @brief Setter for @ref options.
+/*!
+ * \brief Setter for \l options.
  *
- * Sets a value for just one single option within @ref options.
- * @param option the option to set
- * @param on the new value of the option */
+ * Sets a value for just one single option within \l options.
+ *
+ * \a option the option to set
+ *
+ * \a on the new value of the option
+ */
 void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
 {
     QColorDialog::ColorDialogOptions temp = d_pointer->m_options;
@@ -1999,9 +2065,12 @@ void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
     setOptions(temp);
 }
 
-/** @brief Setter for @ref options
- * @param newOptions the new options
- * @post <em>All</em> options of the widget have the same state
+/*!
+ * \brief Setter for \l options
+ *
+ * \a newOptions the new \l options
+ *
+ * All \l options of the widget have the same state
  * (enabled/disabled) as in the given parameter. */
 void ColorDialog::setOptions(QColorDialog::ColorDialogOptions newOptions)
 {
@@ -2034,51 +2103,35 @@ void ColorDialog::setOptions(QColorDialog::ColorDialogOptions newOptions)
     Q_EMIT optionsChanged(d_pointer->m_options);
 }
 
-/** @brief Getter for @ref options
+/*!
+ * \brief Getter for \l options
  *
- * Gets the value of just one single option within @ref options.
+ * Gets the value of just one single option within \l options.
  *
- * @param option the requested option
- * @returns the value of the requested option
+ * \a option the requested option
+ *
+ * Returns the value of the requested option.
  */
 bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
 {
     return d_pointer->m_options.testFlag(option);
 }
 
-/** @brief Pops up a modal color dialog, lets the user choose a color, and
+/*!
+ * \brief Pops up a modal color dialog, lets the user choose a color, and
  *  returns that color.
  *
- * @param gamutIdentifier The identifier used to save the settings for
- *                   this @ref ColorDialog. For each identifier, the
- *                   @ref ColorDialog saves its own, independent set of
- *                   settings. Must contain only the lowercase letters a-z.
- * @param initial    initial value for @ref currentColor()
- * @param parent     parent widget of the dialog (or nullptr for no parent)
- * @param title      window title (or an empty string for the default window
- *                   title)
- * @param options    @ref ColorDialog::options() for customizing the look and
- *                   feel of the dialog
- * @returns          @ref ColorDialog::selectedColor(): The color the user has
- *                   selected; or an invalid color if the user has canceled the
- *                   dialog.
- */
-QColor
-ColorDialog::getColor(const QString &gamutIdentifier, const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
-{
-    return ColorDialogPrivate::getColorCommon(gamutIdentifier, initial, parent, title, options);
-}
-
-/** @brief Pops up a modal color dialog, lets the user choose a color, and
- *  returns that color.
+ * \a initial        initial value for \l currentColor()
  *
- * @param initial    initial value for @ref currentColor()
- * @param parent     parent widget of the dialog (or nullptr for no parent)
- * @param title      window title (or an empty string for the default window
+ * \a parent         parent widget of the dialog (or nullptr for no parent)
+ *
+ * \a title          window title (or an empty string for the default window
  *                   title)
- * @param options    @ref ColorDialog::options() for customizing the look and
+ *
+ * \a options        \l ColorDialog::options() for customizing the look and
  *                   feel of the dialog
- * @returns          @ref ColorDialog::selectedColor(): The color the user has
+ *
+ * Returns \l ColorDialog::selectedColor(): The color the user has
  *                   selected; or an invalid color if the user has canceled the
  *                   dialog.
  */
@@ -2087,27 +2140,29 @@ QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QStri
     return ColorDialogPrivate::getColorCommon(std::nullopt, initial, parent, title, options);
 }
 
-/** @brief Internal helper function for @ref ColorDialog::getColor()
+/*!
+ * \brief Internal helper function for \l ColorDialog::getColor()
  *
- * This function is used by the public API to centralize the logic for
- * displaying the color dialog between the various
- * overloaded @ref ColorDialog::getColor() functions.
- *
- * If one of the <tt>std::optional</tt> parameters does not have a value,
+ * If one of the \c {std::optional} parameters does not have a value,
  * all of them are ignored and instead, the constructor is used that does
  * not specify them.
  *
- * @param gamutIdentifier Optional identifier used to save the settings for
- *                   this @ref ColorDialog. For each identifier, the
- *                   @ref ColorDialog saves its own, independent set of
+ * \a gamutIdentifier Optional identifier used to save the settings for
+ *                   this \l ColorDialog. For each identifier, the
+ *                   \l ColorDialog saves its own, independent set of
  *                   settings. Must contain only the lowercase letters a-z.
- * @param initial    initial value for @ref ColorDialog::currentColor()
- * @param parent     parent widget of the dialog (or nullptr for no parent)
- * @param title      window title (or an empty string for the default window
+ *
+ * \a initial    initial value for \l ColorDialog::currentColor()
+ *
+ * \a parent     parent widget of the dialog (or nullptr for no parent)
+ *
+ * \a title      window title (or an empty string for the default window
  *                   title)
- * @param options    @ref ColorDialog::options() for customizing the look and
+ *
+ * \a options    \l ColorDialog::options() for customizing the look and
  *                   feel of the dialog
- * @returns          @ref ColorDialog::selectedColor(): The color the user has
+ *
+ * Returns \l ColorDialog::selectedColor(): The color the user has
  *                   selected; or an invalid color if the user has canceled the
  *                   dialog.
  */
@@ -2138,19 +2193,21 @@ QColor ColorDialogPrivate::getColorCommon(std::optional<const QString> gamutIden
     return tempDialog->selectedColor();
 }
 
-/** @brief The color that was actually selected by the user.
+/*!
+ * \brief The color that was actually selected by the user.
  *
- * At difference to the @ref currentColor property, this function provides
+ * At difference to the \l currentColor property, this function provides
  * the color that was actually selected by the user by clicking the OK button
  * or pressing the return key or another equivalent action.
  *
- * This function most useful to get the actually selected color <em>after</em>
+ * This function is most useful to get the actually selected color after
  * that the dialog has been closed.
  *
  * When a dialog that had been closed or hidden is shown again,
  * this function returns to an invalid QColor().
  *
- * @returns Just after showing the dialog, the value is an invalid QColor. If
+ * Return value: Just after showing the dialog,
+ * the value is an invalid QColor. If
  * the user selects a color by clicking the OK button or another equivalent
  * action, the value is the selected color. If the user cancels the dialog
  * (Cancel button, or by pressing the Escape key), the value remains an
@@ -2160,14 +2217,16 @@ QColor ColorDialog::selectedColor() const
     return d_pointer->m_selectedColor;
 }
 
-/** @brief Setter for property <em>visible</em>
+/*!
+ * \brief Setter for property \c QWidget::visible
  *
  * Reimplemented from base class.
  *
  * When a dialog, that wasn't formerly visible, gets visible,
- * it’s @ref selectedColor value is cleared.
+ * it’s \l selectedColor value is cleared.
  *
- * @param visible holds whether or not the dialog should be visible */
+ * \a visible holds whether or not the dialog should be visible
+ */
 void ColorDialog::setVisible(bool visible)
 {
     if (visible && (!isVisible())) {
@@ -2185,10 +2244,13 @@ void ColorDialog::setVisible(bool visible)
     d_pointer->m_buttonOK->setDefault(true);
 }
 
-/** @brief Various updates when closing the dialog.
+/*!
+ * \brief Various updates when closing the dialog.
  *
  * Reimplemented from base class.
- * @param result The result with which the dialog has been closed */
+ *
+ * \a result The result with which the dialog has been closed
+ */
 void ColorDialog::done(int result)
 {
     if (result == QDialog::DialogCode::Accepted) {
@@ -2243,8 +2305,11 @@ ColorDialog::DialogLayoutDimensions ColorDialog::layoutDimensions() const
     return d_pointer->m_layoutDimensions;
 }
 
-/** @brief Setter for property @ref layoutDimensions
- * @param newLayoutDimensions the new layout dimensions */
+/*!
+ * \brief Setter for property \l layoutDimensions
+ *
+ * \a newLayoutDimensions the new layout dimensions
+ */
 void ColorDialog::setLayoutDimensions(const ColorDialog::DialogLayoutDimensions newLayoutDimensions)
 {
     if (newLayoutDimensions == d_pointer->m_layoutDimensions) {
@@ -2255,9 +2320,11 @@ void ColorDialog::setLayoutDimensions(const ColorDialog::DialogLayoutDimensions 
     Q_EMIT layoutDimensionsChanged(d_pointer->m_layoutDimensions);
 }
 
-/** @brief Arranges the layout conforming to @ref ColorDialog::layoutDimensions
+/*!
+ * \brief Arranges the layout conforming to \l ColorDialog::layoutDimensions
  *
- * If @ref ColorDialog::layoutDimensions is DialogLayoutDimensions::automatic
+ * If \l ColorDialog::layoutDimensions
+ * is \l ColorDialog::DialogLayoutDimensions::ScreenSizeDependent
  * than it is first evaluated again if for the current display the collapsed
  * or the expanded layout is used. */
 void ColorDialogPrivate::applyLayoutDimensions()
@@ -2277,7 +2344,7 @@ void ColorDialogPrivate::applyLayoutDimensions()
         m_layoutDimensionsEffective = expanded;
         break;
     case screenSizeDependent:
-        // Note: The following code works correctly on scaled
+        // NOTE The following code works correctly on scaled
         // devices (high-DPI…).
 
         // We should not use more than 70% of the screen for a dialog.
@@ -2341,13 +2408,14 @@ void ColorDialogPrivate::applyLayoutDimensions()
     }
 }
 
-/** @brief Handle state changes.
+/*!
+ * \brief Handle state changes.
  *
- * Implements reaction on <tt>QEvent::LanguageChange</tt>.
+ * Implements reaction on \c {QEvent::LanguageChange}.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event.
+ * \a eventParameter The event.
  */
 void ColorDialog::changeEvent(QEvent *eventParameter)
 {
@@ -2402,16 +2470,15 @@ void ColorDialog::changeEvent(QEvent *eventParameter)
     QDialog::changeEvent(eventParameter);
 }
 
-/** @brief Handle show events.
+/*!
+ * \brief Handle show events.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event.
+ * \a eventParameter The event.
  *
- * @internal
- *
- * On the first show event, make @ref ColorDialogPrivate::m_tabWidget use
- * the current tab corresponding to @ref ColorDialogPrivate::m_settings. */
+ * On the first show event, make \l ColorDialogPrivate::m_tabWidget use
+ * the current tab corresponding to \l ColorDialogPrivate::m_settings. */
 void ColorDialog::showEvent(QShowEvent *eventParameter)
 {
     if (!d_pointer->everShown) {
@@ -2458,7 +2525,8 @@ void ColorDialog::showEvent(QShowEvent *eventParameter)
     QDialog::showEvent(eventParameter);
 }
 
-/** @brief Saves the current tab of @ref m_tabWidget to @ref m_settings. */
+/*!
+ * \brief Saves the current tab of \l m_tabWidget to \l m_settings. */
 void ColorDialogPrivate::saveCurrentTab()
 {
     const auto currentIndex = m_tabWidget->currentIndex();
@@ -2482,8 +2550,9 @@ void ColorDialogPrivate::saveCurrentTab()
     }
 }
 
-/** @brief Loads @ref PerceptualSettings::history into
- * @ref m_swatchBookHistory. */
+/*!
+ * \brief Loads \l PerceptualSettings::history into
+ * \l m_swatchBookHistory. */
 void ColorDialogPrivate::loadHistoryFromSettingsToSwatchBook()
 {
     const QColorArray2D historyArray(historyHSwatchCount, //
@@ -2492,8 +2561,9 @@ void ColorDialogPrivate::loadHistoryFromSettingsToSwatchBook()
     m_swatchBookHistory->setSwatchGrid(historyArray);
 }
 
-/** @brief Loads @ref PerceptualSettings::customColors into
- * @ref m_swatchBookCustomColors. */
+/*!
+ * \brief Loads \l PerceptualSettings::customColors into
+ * \l m_swatchBookCustomColors. */
 void ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook()
 {
     const QColorArray2D customColorsArray(customColorsHSwatchCount, //
@@ -2502,17 +2572,17 @@ void ColorDialogPrivate::loadCustomColorsFromSettingsToSwatchBook()
     m_swatchBookCustomColors->setSwatchGrid(toOpaque(customColorsArray));
 }
 
-/**
- * @brief Filters a QString to retain only lowercase letters a–z.
+/*!
+ * \brief Filters a QString to retain only lowercase letters a–z.
  *
  * This function scans the input string and constructs a new string containing
  * only characters in the range 'a' to 'z'. Uppercase letters A-Z are
  * converted to lowercase letters. Other characters are removed.
  * If any change is made, a warning is issued.
  *
- * @param input The original string to be filtered.
+ * \a input The original string to be filtered.
  *
- * @return A QString containing only lowercase letters a–z.
+ * Returns a QString containing only lowercase letters a–z.
  */
 QString ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(const QString &input)
 {
@@ -2536,12 +2606,12 @@ QString ColorDialogPrivate::fixedIdentifierWithoutHyphenMinus(const QString &inp
     return result;
 }
 
-/**
- * @brief This function handles keyboard input.
+/*!
+ * \brief This function handles keyboard input.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The key press event
+ * \a eventParameter The key press event
  */
 void ColorDialog::keyPressEvent(QKeyEvent *eventParameter)
 {
@@ -2570,27 +2640,25 @@ void ColorDialog::keyPressEvent(QKeyEvent *eventParameter)
     QDialog::keyPressEvent(eventParameter);
 }
 
-/**
- * @brief Main event handler.
+/*!
+ * \brief Main event handler.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event to be processed.
+ * \a eventParameter The event to be processed.
  *
- * @return This function returns true if the event was recognized, otherwise
+ * Returns true if the event was recognized, otherwise
  * it returns false.
  *
- * @internal
- *
- * @note This is a dummy reimplementation, provided to ensure future
+ * \note This is a dummy reimplementation, provided to ensure future
  * extensibility while preserving binary compatibility, as
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
- * recommended by the KDE binary compatibility policy</a>.
+ * \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...}
+ * {recommended by the KDE binary compatibility policy}.
  * The policy states that
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
- * “you can safely reimplement a virtual function defined in one of the base
+ * \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function}
+ * {“you can safely reimplement a virtual function defined in one of the base
  * classes only if it is safe that the programs linked with the prior version
- * call the implementation in the base class rather than the derived one.”</a>.
+ * call the implementation in the base class rather than the derived one.”}.
  * Consistent behavior across versions would be difficult to guarantee.
  * By reimplementing the main event handler now,
  * we retain the option to extend it later to process new event types

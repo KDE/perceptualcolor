@@ -16,7 +16,8 @@
 namespace PerceptualColor
 {
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
  * The object is initialized with default values. */
 MultiSpinBoxSection::MultiSpinBoxSection() noexcept
@@ -24,14 +25,17 @@ MultiSpinBoxSection::MultiSpinBoxSection() noexcept
 {
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 MultiSpinBoxSection::~MultiSpinBoxSection() noexcept
 {
 }
 
-/** @brief Copy constructor
+/*!
+ * \brief Copy constructor
  *
- * @param other the object to be copied */
+ * \a other the object to be copied
+ */
 MultiSpinBoxSection::MultiSpinBoxSection(const MultiSpinBoxSection &other) noexcept
 {
     d_pointer.reset(
@@ -39,11 +43,13 @@ MultiSpinBoxSection::MultiSpinBoxSection(const MultiSpinBoxSection &other) noexc
         new MultiSpinBoxSectionPrivate(*other.d_pointer));
 }
 
-/** @brief Copy assignment operator
+/*!
+ * \brief Copy assignment operator
  *
- * @returns By convention, always returns <tt>*this</tt>.
+ * By convention, always returns \c {*this}.
  *
- * @param other the object to be copied */
+ * \a other the object to be copied
+ */
 MultiSpinBoxSection &MultiSpinBoxSection::operator=(const MultiSpinBoxSection &other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
@@ -55,19 +61,23 @@ MultiSpinBoxSection &MultiSpinBoxSection::operator=(const MultiSpinBoxSection &o
     return *this; // By convention, always return *this.
 }
 
-/** @brief Move constructor
+/*!
+ * \brief Move constructor
  *
- * @param other the object to move */
+ * \a other the object to move
+ */
 MultiSpinBoxSection::MultiSpinBoxSection(MultiSpinBoxSection &&other) noexcept
 {
     d_pointer.swap(other.d_pointer);
 }
 
-/** @brief Move assignment operator
+/*!
+ * \brief Move assignment operator
  *
- * @returns By convention, always returns <tt>*this</tt>.
+ * By convention, always returns \c {*this}.
  *
- * @param other the object to move-assign */
+ * \a other the object to move-assign
+ */
 MultiSpinBoxSection &MultiSpinBoxSection::operator=(MultiSpinBoxSection &&other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
@@ -77,72 +87,81 @@ MultiSpinBoxSection &MultiSpinBoxSection::operator=(MultiSpinBoxSection &&other)
     return *this; // By convention, always return *this.
 }
 
-/** @brief The number of digits after the decimal point.
+/*!
+ * \brief The number of digits after the decimal point.
  *
- * This value can also be <tt>0</tt> to get integer-like behavior.
+ * This value can also be \c {0} to get integer-like behavior.
  *
- * @returns The property value.
- *
- * @sa @ref setDecimals */
+ * \sa setDecimals
+ */
 int MultiSpinBoxSection::decimals() const
 {
     return d_pointer->m_decimals;
 }
 
-/** @brief Setter for @ref decimals property.
+/*!
+ * \brief Setter for \l decimals property.
  *
- * @param newDecimals The new decimals values. */
+ * \a newDecimals The new \l decimals values.
+ */
 void MultiSpinBoxSection::setDecimals(int newDecimals)
 {
     d_pointer->m_decimals = qBound(0, newDecimals, 323);
 }
 
-/** @brief Holds whether or not @ref MultiSpinBox::values wrap
- * around when they reaches @ref minimum or @ref maximum.
+/*!
+ * \brief This property holds whether or not \l MultiSpinBox::values wrap
+ * around when they reaches \l minimum or \l maximum.
  *
- * The default is <tt>false</tt>.
+ * Return the property value.
  *
- * If <tt>false</tt>, @ref MultiSpinBox::values shall be bound
- * between @ref minimum and  @ref maximum. If <tt>true</tt>,
- * @ref MultiSpinBox::values shall be treated as a circular.
+ * The default is \c {false}.
+ *
+ * If \c {false}, \l MultiSpinBox::values shall be bound
+ * between \l minimum and  \l maximum. If \c {true},
+ * \l MultiSpinBox::values shall be treated as a circular.
  *
  * Example: You have a section that displays a value measured in
- * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.
+ * degree. \l minimum is \c {0}. \l maximum is \c {360}.
  * The following corrections would be applied to input:
- * | Input | isWrapping == false | isWrapping == true |
- * | ----: | ------------------: | -----------------: |
- * |    -5 |                   0 |                355 |
- * |     0 |                   0 |                  0 |
- * |     5 |                   5 |                  5 |
- * |   355 |                 355 |                355 |
- * |   360 |                 360 |                  0 |
- * |   365 |                 360 |                  5 |
- * |   715 |                 360 |                355 |
- * |   720 |                 360 |                  0 |
- * |   725 |                 360 |                  5 |
  *
- * @returns The property value.
+ * \table
+ *     \header \li Input \li \l isWrapping == false \li \l isWrapping == true
+ *     \row    \li -5    \li 0                      \li 355
+ *     \row    \li 0     \li 0                      \li 0
+ *     \row    \li 5     \li 5                      \li 5
+ *     \row    \li 355   \li 355                    \li 355
+ *     \row    \li 360   \li 360                    \li 0
+ *     \row    \li 365   \li 360                    \li 5
+ *     \row    \li 715   \li 360                    \li 355
+ *     \row    \li 720   \li 360                    \li 0
+ *     \row    \li 725   \li 360                    \li 5
+ * \endtable
  *
- * @sa @ref setWrapping */
+ * \sa setWrapping
+ */
 bool MultiSpinBoxSection::isWrapping() const
 {
     return d_pointer->m_isWrapping;
 }
 
-/** @brief Setter for @ref isWrapping property.
+/*!
+ * \brief Setter for \l isWrapping property.
  *
- * @param newIsWrapping The new isWrapping value. */
+ * \a newIsWrapping The new \l isWrapping value.
+ */
 void MultiSpinBoxSection::setWrapping(bool newIsWrapping)
 {
     d_pointer->m_isWrapping = newIsWrapping;
 }
 
-/**
- * @brief Convenience function to set the @ref minimum and @ref maximum values
+/*!
+ * \brief Convenience function to set the \l minimum and maximum values
  * with a single function call.
  *
- * @param newMinimum The new minimum value.
- * @param newMaximum The new maximum value.
+ * \a newMinimum The new minimum value.
+ *
+ * \a newMaximum The new maximum value.
  */
 void MultiSpinBoxSection::setRange(double newMinimum, double newMaximum)
 {
@@ -153,22 +172,23 @@ void MultiSpinBoxSection::setRange(double newMinimum, double newMaximum)
         : newMaximum;
 }
 
-/** @brief The maximum possible value of the section.
+/*!
+ * \brief The \l maximum possible value of the section.
  *
- * @returns The property value.
- *
- * @sa @ref setMaximum
- * @sa @ref setRange
+ * \sa setMaximum
+ * \sa setRange
  */
 double MultiSpinBoxSection::maximum() const
 {
     return roundToDigits(d_pointer->m_maximum, d_pointer->m_decimals);
 }
 
-/** @brief Setter for @ref maximum property.
+/*!
+ * \brief Setter for \l maximum property.
  *
- * @param newMaximum The new maximum value.
- * @sa @ref setRange
+ * \a newMaximum The new maximum value.
+ *
+ * \sa setRange
  */
 void MultiSpinBoxSection::setMaximum(double newMaximum)
 {
@@ -178,23 +198,23 @@ void MultiSpinBoxSection::setMaximum(double newMaximum)
     }
 }
 
-/** @brief The minimum possible value of the section.
+/*!
+ * \brief The minimum possible value of the section.
  *
- * @returns The property value.
- *
- * @sa @ref setMinimum
- * @sa @ref setRange
+ * \sa setMinimum
+ * \sa setRange
  */
 double MultiSpinBoxSection::minimum() const
 {
     return roundToDigits(d_pointer->m_minimum, d_pointer->m_decimals);
 }
 
-/** @brief Setter for @ref minimum property.
+/*!
+ * \brief Setter for \l minimum property.
  *
- * @param newMinimum The new minimum value.
+ * \a newMinimum The new minimum value.
  *
- * @sa @ref setRange
+ * \sa setRange
  */
 void MultiSpinBoxSection::setMinimum(double newMinimum)
 {
@@ -204,83 +224,87 @@ void MultiSpinBoxSection::setMinimum(double newMinimum)
     }
 }
 
-/**
- * @brief This property holds whether the group separator (thousands separator)
+/*!
+ * \brief This property holds whether the group separator (thousands separator)
  * is enabled.
+ *
+ * Returns the property value.
  *
  * By default this property is false.
  *
- * @returns The property value.
- *
- * @sa @ref setGroupSeparatorShown
+ * \sa setGroupSeparatorShown
  */
 bool MultiSpinBoxSection::isGroupSeparatorShown() const
 {
     return d_pointer->m_isGroupSeparatorShown;
 }
 
-/**
- * @brief Setter for @ref isGroupSeparatorShown property.
+/*!
+ * \brief Setter for \l isGroupSeparatorShown property.
  *
- * @param shown The new value.
+ * \a shown The new value.
  */
 void MultiSpinBoxSection::setGroupSeparatorShown(bool shown)
 {
     d_pointer->m_isGroupSeparatorShown = shown;
 }
 
-/** @brief A prefix to be displayed before the value.
+/*!
+ * \brief A prefix to be displayed before the value.
  *
- * @returns The property value.
- *
- * @sa @ref setFormatString
+ * \sa setFormatString
  */
 QString MultiSpinBoxSection::prefix() const
 {
     return d_pointer->m_prefix;
 }
 
-/** @brief A smaller of two natural steps.
+/*!
+ * \brief A smaller of two natural steps.
  *
  * Valid range: >= 0
  *
  * When the user uses the arrows to change the spin box’s value
  * the value will be incremented/decremented by the amount of the
- * @ref singleStep.
+ * \l singleStep.
  *
- * @returns The property value.
- *
- * @sa @ref setSingleStep */
+ * \sa setSingleStep
+ */
 double MultiSpinBoxSection::singleStep() const
 {
     return d_pointer->m_singleStep;
 }
 
-/** @brief Setter for @ref singleStep property.
+/*!
+ * \brief Setter for \l singleStep property.
  *
- * @param newSingleStep The new single step value. */
+ * \a newSingleStep The new single step value.
+ */
 void MultiSpinBoxSection::setSingleStep(double newSingleStep)
 {
     d_pointer->m_singleStep = qMax<double>(0, newSingleStep);
 }
 
-/** @brief The suffix to be displayed behind the value.
+/*!
+ * \brief The suffix to be displayed behind the value.
  *
- * @returns The property value.
- *
- * @sa @ref setFormatString
+ * \sa setFormatString
  */
 QString MultiSpinBoxSection::suffix() const
 {
     return d_pointer->m_suffix;
 }
 
-/** @brief Adds QDebug() support for data type
- * @ref PerceptualColor::MultiSpinBoxSection
+/*!
+ * \relates PerceptualColor::MultiSpinBoxSection
  *
- * @param dbg Existing debug object
- * @param value Value to stream into the debug object
- * @returns Debug object with value streamed in */
+ * \brief Adds QDebug() support for data type
+ * \l PerceptualColor::MultiSpinBoxSection
+ *
+ * \a dbg Existing debug object
+ *
+ * \a value Value to stream into the debug object
+ */
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
 {
     dbg.nospace() << "\nMultiSpinBoxSection(" // Opening line
@@ -298,13 +322,13 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBoxSection &value)
     return dbg.maybeSpace();
 }
 
-/**
- * @brief Setter for the @ref prefix(), @ref suffix() and @ref formatString()
+/*!
+ * \brief Setter for the prefix(), suffix() and formatString()
  * properties.
  *
- * @param newFormatString A string in the format "prefix%1suffix". It
- * should contain exactly <em>one</em> place marker as described in
- * <tt>QString::arg()</tt> like <tt>\%1</tt> or <tt>\%L2</tt>. This place
+ * \a newFormatString A string in the format "prefix%1suffix". It
+ * should contain exactly \e {one} place marker as described in
+ * \c {QString::arg()} like \c {\%1} or \c {\%L2}. This place
  * marker represents the value. Example: “Prefix\%1Suffix”. Prefix and suffix
  * may be empty.
  */
@@ -326,14 +350,12 @@ void MultiSpinBoxSection::setFormatString(const QString &newFormatString)
     }
 }
 
-/**
- * @brief A string in the format "PREFIX%vSUFFIX".
+/*!
+ * \brief A string in the format "PREFIX%vSUFFIX".
  *
- * @returns The property value.
- *
- * @sa @ref setFormatString()
- * @sa @ref prefix()
- * @sa @ref suffix()
+ * \sa setFormatString()
+ * \sa prefix()
+ * \sa suffix()
  */
 QString MultiSpinBoxSection::formatString() const
 {

@@ -37,18 +37,20 @@ class QAction;
 
 namespace PerceptualColor
 {
-/** @brief If the text cursor is touching at the current section’s value.
+/*!
+ * \brief If the text cursor is touching at the current section’s value.
  *
  * Everything from the cursor position exactly before the value itself up
  * to the cursor position exactly after the value itself. Prefixes and
  * suffixes are not considered as part of the value. Example: “ab12cd”
  * (prefix “ab”, value 12, suffix “cd”). The cursor positions 2, 3 and 4 are
- * considered <em>touching</em> the current value.
+ * considered \e {touching} the current value.
  *
- * @returns <tt>true</tt> if the text cursor is touching at the current
- * section’s value.. <tt>false</tt> otherwise.
+ * Returns \c {true} if the text cursor is touching at the current
+ * section’s value.. \c {false} otherwise.
  *
- * @sa @ref cursorSection */
+ * \sa cursorSection
+ */
 bool MultiSpinBoxPrivate::isCursorTouchingCurrentSectionValue() const
 {
     const auto cursorPosition = q_pointer->lineEdit()->cursorPosition();
@@ -60,30 +62,29 @@ bool MultiSpinBoxPrivate::isCursorTouchingCurrentSectionValue() const
     return (highEnough && lowEnough);
 }
 
-/** @brief The recommended minimum size for the widget
+/*!
+ * \brief The recommended minimum size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns the recommended minimum size for the widget
- *
- * @internal
- *
- * @sa @ref sizeHint()
- *
- * @note The minimum size of the widget is the same as @ref sizeHint(). This
- * behaviour is different from <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt>
- * that have a minimum size hint that allows for displaying only prefix and
- * value, but not the suffix. However, such a behavior does not seem
- * appropriate for a @ref MultiSpinBox because it could be confusing, given
- * that its content is more complex. */
+ * \sa sizeHint()
+ */
 QSize MultiSpinBox::minimumSizeHint() const
 {
+    // NOTE The minimum size of the widget is the same as \l sizeHint(). This
+    // behaviour is different from \c {QSpinBox} and \c {QDoubleSpinBox}
+    // that have a minimum size hint that allows for displaying only prefix and
+    // value, but not the suffix. However, such a behavior does not seem
+    // appropriate for a \l MultiSpinBox because it could be confusing, given
+    // that its content is more complex.
     return sizeHint();
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param parent the parent widget, if any */
+ * \a parent the parent widget, if any
+ */
 MultiSpinBox::MultiSpinBox(QWidget *parent)
     : QAbstractSpinBox(parent)
     , d_pointer(new MultiSpinBoxPrivate(this))
@@ -121,35 +122,36 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
     installAccessibleFactory<MultiSpinBox, AccessibleMultiSpinBox>();
 }
 
-/** @brief Default destructor */
+/*!
+ * \brief Default destructor
+ */
 MultiSpinBox::~MultiSpinBox() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation. */
 MultiSpinBoxPrivate::MultiSpinBoxPrivate(MultiSpinBox *backLink)
     : q_pointer(backLink)
 {
 }
 
-/** @brief The recommended size for the widget
+/*!
+ * \brief The recommended size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns the size hint
- *
- * @internal
- *
- * @note Some widget styles like CDE and Motif calculate badly (too small)
- * the  size for QAbstractSpinBox and its child classes, and therefore also
- * for this widget.
- *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize MultiSpinBox::sizeHint() const
 {
+    // NOTE Some widget styles like CDE and Motif calculate badly (too small)
+    // the  size for QAbstractSpinBox and its child classes, and therefore also
+    // for this widget.
+
     // This function intentionally does not cache the text string.
     // Which variant is the longest text string, that depends on the current
     // font policy. This might have changed since the last call. Therefore,
@@ -241,13 +243,15 @@ QSize MultiSpinBox::sizeHint() const
     return result;
 }
 
-/** @brief Handle state changes
+/*!
+ * \brief Handle state changes
  *
- * Implements reaction on <tt>QEvent::LanguageChange</tt>.
+ * Implements reaction on \c {QEvent::LanguageChange}.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event to process */
+ * \a eventParameter The event to process
+ */
 void MultiSpinBox::changeEvent(QEvent *eventParameter)
 {
     // QEvent::StyleChange or QEvent::FontChange are not handled here
@@ -273,17 +277,21 @@ void MultiSpinBox::changeEvent(QEvent *eventParameter)
     QAbstractSpinBox::changeEvent(eventParameter);
 }
 
-/**
- * @brief Formats a floating-point value into a localized string.
+/*!
+ * \brief Formats a floating-point value into a localized string.
  *
- * @param value The floating-point number to be formatted.
- * @param decimals The number of digits to appear after the decimal point.
- * @param showGroupSeparator Determines whether group separators (e. g.,
+ * \a value The floating-point number to be formatted.
+ *
+ * \a decimals The number of digits to appear after the decimal point.
+ *
+ * \a showGroupSeparator Determines whether group separators (e. g.,
  *        thousands separators) should be included in the output.
  *        QLocale::numberOptions().testFlag(QLocale::OmitGroupSeparator) is
  *        ignored.
- * @param locale The locale used for the formatting.
- * @return A localized string representation of the input value.
+ *
+ * \a locale The locale used for the formatting.
+ *
+ * Returns a localized string representation of the input value.
  */
 QString MultiSpinBoxPrivate::textFromValue(const double value, const int decimals, const bool showGroupSeparator, const QLocale &locale)
 {
@@ -294,27 +302,27 @@ QString MultiSpinBoxPrivate::textFromValue(const double value, const int decimal
     return adaptedLocale.toString(value, 'f', decimals);
 }
 
-/** @brief Adds to the widget a button associated with the given action.
+/*!
+ * \brief Adds to the widget a button associated with the given action.
  *
  * The icon of the action will be displayed as button. If the action has
  * no icon, just an empty space will be displayed.
  *
- * @image html MultiSpinBoxWithButton.png "MultiSpinBox with action button"
+ * \image MultiSpinBoxWithButton.png "MultiSpinBox with action button"
  *
  * It is possible to add more than one action.
  *
- * @param action This action that will be executed when clicking the button.
+ * \a action This action that will be executed when clicking the button.
  * (The ownership of the action object remains unchanged.)
- * @param position The position of the button within the widget (left
+ *
+ * \a position The position of the button within the widget (left
  * or right)
  *
- * The action can be removed with <tt>QWidget::remove()</tt>.
- *
- * @internal
+ * The action can be removed with \c {QWidget::remove()}.
  *
  * This is the counterpart to
- * <tt>void QLineEdit::addAction(QAction *action, QLineEdit::ActionPosition
- * position)</tt>.
+ * \c {void QLineEdit::addAction(QAction *action, QLineEdit::ActionPosition
+ * position)}.
  */
 void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition position)
 {
@@ -325,15 +333,15 @@ void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition po
     updateGeometry();
 }
 
-/**
- * @brief Get formatted pending value for a given section.
+/*!
+ * \brief Get formatted pending value for a given section.
  *
- * @param index The index of the section
+ * \a index The index of the section
  *
- * @returns The pending value of the given section, formatted (without prefix
+ * Returns the pending value of the given section, formatted (without prefix
  * or suffix), as text.
  *
- * @sa @ref m_pendingValues
+ * \sa m_pendingValues
  */
 QString MultiSpinBoxPrivate::formattedPendingValue(qsizetype index) const
 {
@@ -344,13 +352,14 @@ QString MultiSpinBoxPrivate::formattedPendingValue(qsizetype index) const
         q_pointer->locale());
 }
 
-/** @brief Updates prefix, value and suffix text
+/*!
+ * \brief Updates prefix, value and suffix text
  *
- * @pre <tt>0 <= @ref m_currentIndex < @ref MultiSpinBox::sectionCount()</tt>
+ * \b Precondition: \c {0 <= \l m_currentIndex < \l MultiSpinBox::sectionCount()}
  *
- * @post Updates @ref m_textBeforeCurrentValue,
- * @ref m_textOfCurrentPendingValue, @ref m_textAfterCurrentValue to the
- * correct values based on @ref m_currentIndex and @ref m_pendingValues.
+ *  Updates \l m_textBeforeCurrentValue,
+ * \l m_textOfCurrentPendingValue, \l m_textAfterCurrentValue to the
+ * correct values based on \l m_currentIndex and \l m_pendingValues.
  */
 void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
 {
@@ -385,16 +394,18 @@ void MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     updateValidator();
 }
 
-/** @brief Sets the current section index.
+/*!
+ * \brief Sets the current section index.
  *
  * Updates the text in the QLineEdit of this widget. If the widget has focus,
  * it also selects the value of the new current section.
  *
- * @param newIndex The index of the new current section. Must be a valid
+ * \a newIndex The index of the new current section. Must be a valid
  * index. The update will be done even if this argument is identical to
- * the @ref m_currentIndex.
+ * the \l m_currentIndex.
  *
- * @sa @ref setCurrentIndexWithoutUpdatingText */
+ * \sa setCurrentIndexWithoutUpdatingText
+ */
 void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype newIndex)
 {
     QSignalBlocker myBlocker(q_pointer->lineEdit());
@@ -419,14 +430,16 @@ void MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(qsizetype n
     q_pointer->update();
 }
 
-/** @brief Sets the current section index without updating
- * the <tt>QLineEdit</tt>.
+/*!
+ * \brief Sets the current section index without updating
+ * the \c {QLineEdit}.
  *
- * Does not change neither the text nor the cursor in the <tt>QLineEdit</tt>.
+ * Does not change neither the text nor the cursor in the \c {QLineEdit}.
  *
- * @param newIndex The index of the new current section. Must be a valid index.
+ * \a newIndex The index of the new current section. Must be a valid index.
  *
- * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue */
+ * \sa setCurrentIndexAndUpdateTextAndSelectValue
+ */
 void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
 {
     if (!isInRange<qsizetype>(0, newIndex, q_pointer->sectionCount() - 1)) {
@@ -448,12 +461,14 @@ void MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(qsizetype newIndex)
     q_pointer->update();
 }
 
-/** @brief Virtual function that determines whether stepping up and down is
+/*!
+ * \brief Virtual function that determines whether stepping up and down is
  * legal at any given time.
  *
  * Reimplemented from base class.
  *
- * @returns whether stepping up and down is legal */
+ * Returns whether stepping up and down is legal
+ */
 QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 {
     if (isReadOnly()) {
@@ -485,22 +500,21 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
     return result;
 }
 
-/** @brief Sets the configuration for the sections.
+/*!
+ * \brief Sets the configuration for the sections.
  *
  * The first section will be selected as current section.
  *
- * @param newFormat Defines the new sections. The new section
+ * \a newFormat Defines the new sections. The new section
  * count in this widget is the section count given in this list. Each section
- * should have valid values: <tt>@ref MultiSpinBoxSection.minimum ≤
- * @ref MultiSpinBoxSection.maximum</tt>. If the @ref values are
+ * should have valid values: \l MultiSpinBoxSection::minimum ≤
+ * \l MultiSpinBoxSection::maximum}. If the \l values are
  * not valid within the new section configurations, they will be fixed.
  *
- * @sa @ref format()
- *
- * @internal
+ * \sa format()
  *
  * This is the counterpart to
- * <tt>void QDateTimeEdit::setDisplayFormat(const QString &format)</tt>.
+ * \c {void QDateTimeEdit::setDisplayFormat(const QString &format)}.
  */
 void MultiSpinBox::setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat)
 {
@@ -541,16 +555,13 @@ void MultiSpinBox::setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &
     }
 }
 
-/** @brief Returns the configuration of all sections.
+/*!
+ * \brief Returns the configuration of all sections.
  *
- * @returns the configuration of all sections.
- *
- * @sa @ref setFormat()
- *
- * @internal
+ * \sa setFormat()
  *
  * This is the counterpart to
- * <tt>QString QDateTimeEdit::displayFormat() const</tt>.
+ * \c {QString QDateTimeEdit::displayFormat() const}.
  */
 QList<PerceptualColor::MultiSpinBoxSection> MultiSpinBox::format() const
 {
@@ -564,18 +575,19 @@ QList<double> MultiSpinBox::values() const
     return d_pointer->m_values;
 }
 
-/** @brief Sets @ref m_pendingValues without updating other things.
+/*!
+ * \brief Sets \l m_pendingValues without updating other things.
  *
- * Other data of this widget, including the <tt>QLineEdit</tt> text,
+ * Other data of this widget, including the \c {QLineEdit} text,
  * stays unmodified.
  *
- * @param newValues The new section values. This list must have
- * exactly as many items as @ref MultiSpinBox::format.
+ * \a newValues The new section values. This list must have
+ * exactly as many items as \l MultiSpinBox::format.
  * If the new values are not within the boundaries defined in
- * the @ref MultiSpinBox::format,
+ * the \l MultiSpinBox::format,
  * they will be adapted before being applied.
  *
- * @post @ref m_pendingValues gets updated.
+ *  \l m_pendingValues gets updated.
  * No signals are emitted.
  */
 void MultiSpinBoxPrivate::setPendingValuesWithoutFurtherUpdating(const QList<double> &newValues)
@@ -640,16 +652,16 @@ void MultiSpinBoxPrivate::setPendingValuesWithoutFurtherUpdating(const QList<dou
     m_pendingValues = fixedNewValues;
 }
 
-/**
- * @brief Applies pending section values.
+/*!
+ * \brief Applies pending section values.
  *
- * Transfers @ref m_pendingValues into
- * @ref m_values, updating the @ref MultiSpinBox::values
+ * Transfers \l m_pendingValues into
+ * \l m_values, updating the \l MultiSpinBox::values
  * property.
  *
  * If the value has changed, both corresponding signals are emitted:
- * @ref MultiSpinBox::valuesChanged() and
- * @ref MultiSpinBox::valuesChangedAsQString().
+ * \l MultiSpinBox::valuesChanged() and
+ * \l MultiSpinBox::valuesChangedAsQString().
  */
 void MultiSpinBoxPrivate::applyPendingValuesAndEmitSignals()
 {
@@ -661,21 +673,20 @@ void MultiSpinBoxPrivate::applyPendingValuesAndEmitSignals()
     }
 }
 
-/** @brief Setter for @ref values property.
+/*!
+ * \brief Setter for \l values property.
  *
- * @param newValues The new section values. This list must have
- * exactly as many items as @ref format.
+ * \a newValues The new section values. This list must have
+ * exactly as many items as format.
  *
  * The values will be bound between
- * @ref MultiSpinBoxSection::minimum and
- * @ref MultiSpinBoxSection::maximum. Their precision will be
+ * \l MultiSpinBoxSection::minimum and
+ * \l MultiSpinBoxSection::maximum. Their precision will be
  * reduced to as many decimal places as given by
- * @ref MultiSpinBoxSection::decimals.
- *
- * @internal
+ * \l MultiSpinBoxSection::decimals.
  *
  * This is the counterpart to
- * <tt>void QDoubleSpinBox::setValue(double val)</tt>.
+ * \c {void QDoubleSpinBox::setValue(double val)}.
  */
 void MultiSpinBox::setValues(const QList<double> &newValues)
 {
@@ -701,24 +712,25 @@ void MultiSpinBox::setValues(const QList<double> &newValues)
     update();
 }
 
-/** @brief Focus handling for <em>Tab</em> respectively <em>Shift+Tab</em>.
+/*!
+ * \brief Focus handling for \e {Tab} respectively \e {Shift+Tab}.
  *
  * Reimplemented from base class.
  *
- * @note If it’s about moving the focus <em>within</em> this widget, the focus
- * move is actually done. If it’s about moving the focus to <em>another</em>
- * widget, the focus move is <em>not</em> actually done.
+ * \note If it’s about moving the focus \e {within} this widget, the focus
+ * move is actually done. If it’s about moving the focus to \e {another}
+ * widget, the focus move is \e {not} actually done.
  * The documentation of the base class is not very detailed. This
  * reimplementation does not exactly behave as the documentation of the
  * base class suggests. Especially, it handles directly the focus move
- * <em>within</em> the widget itself. This was, however, the only working
+ * \e {within} the widget itself. This was, however, the only working
  * solution we found.
  *
- * @param next <tt>true</tt> stands for focus handling for <em>Tab</em>.
- * <tt>false</tt> stands for focus handling for <em>Shift+Tab</em>.
+ * \a next \c {true} stands for focus handling for \e {Tab}.
+ * \c {false} stands for focus handling for \e {Shift+Tab}.
  *
- * @returns <tt>true</tt> if the focus has actually been moved within
- * this widget or if a move to another widget is possible. <tt>false</tt>
+ * Returns \c {true} if the focus has actually been moved within
+ * this widget or if a move to another widget is possible. \c {false}
  * otherwise. */
 bool MultiSpinBox::focusNextPrevChild(bool next)
 {
@@ -761,14 +773,16 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
     return QWidget::focusNextPrevChild(next);
 }
 
-/** @brief Handles a <tt>QEvent::FocusOut</tt>.
+/*!
+ * \brief Handles a \c {QEvent::FocusOut}.
  *
  * Reimplemented from base class.
  *
  * Updates the widget (except for windows that do not
- * specify a <tt>focusPolicy()</tt>).
+ * specify a \c {focusPolicy()}).
  *
- * @param eventParameter the <tt>QEvent::FocusOut</tt> to be handled. */
+ * \a eventParameter the \c {QEvent::FocusOut} to be handled.
+ */
 void MultiSpinBox::focusOutEvent(QFocusEvent *eventParameter)
 {
     // When the context menu (right mouse click) pops up, this should not
@@ -786,14 +800,16 @@ void MultiSpinBox::focusOutEvent(QFocusEvent *eventParameter)
     QAbstractSpinBox::focusOutEvent(eventParameter);
 }
 
-/** @brief Handles a <tt>QEvent::FocusIn</tt>.
+/*!
+ * \brief Handles a \c {QEvent::FocusIn}.
  *
  * Reimplemented from base class.
  *
  * Updates the widget (except for windows that do not
- * specify a <tt>focusPolicy()</tt>).
+ * specify a \c {focusPolicy()}).
  *
- * @param eventParameter the <tt>QEvent::FocusIn</tt> to be handled. */
+ * \a eventParameter the \c {QEvent::FocusIn} to be handled.
+ */
 void MultiSpinBox::focusInEvent(QFocusEvent *eventParameter)
 {
     QAbstractSpinBox::focusInEvent(eventParameter);
@@ -824,12 +840,12 @@ void MultiSpinBox::focusInEvent(QFocusEvent *eventParameter)
     }
 }
 
-/**
- * @brief This function handles keyboard input.
+/*!
+ * \brief This function handles keyboard input.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The key press event
+ * \a eventParameter The key press event
  */
 void MultiSpinBox::keyPressEvent(QKeyEvent *eventParameter)
 {
@@ -872,19 +888,23 @@ void MultiSpinBox::keyPressEvent(QKeyEvent *eventParameter)
     QAbstractSpinBox::keyPressEvent(eventParameter);
 }
 
-/** @brief Increase or decrease the current section’s value.
+/*!
+ * \brief Increase or decrease the current section’s value.
  *
  * Reimplemented from base class.
  *
  * As of the base class’s documentation:
  *
- * > Virtual function that is called whenever the user triggers a step.
- * > For example, pressing <tt>Qt::Key_Down</tt> will trigger a call
- * > to <tt>stepBy(-1)</tt>, whereas pressing <tt>Qt::Key_PageUp</tt> will
- * > trigger a call to <tt>stepBy(10)</tt>.
+ * \quotation
+ *     Virtual function that is called whenever the user triggers a step.
+ *     For example, pressing \c {Qt::Key_Down} will trigger a call
+ *     to \c {stepBy(-1)}, whereas pressing \c {Qt::Key_PageUp} will
+ *     trigger a call to \c {stepBy(10)}.
+ * \endquotation
  *
- * @param steps Number of steps to be taken. The step size is
- * the @ref MultiSpinBoxSection::singleStep of the current section. */
+ * \a steps Number of steps to be taken. The step size is
+ * the \l MultiSpinBoxSection::singleStep of the current section.
+ */
 void MultiSpinBox::stepBy(int steps)
 {
     const auto currentIndex = d_pointer->m_currentIndex;
@@ -904,18 +924,19 @@ void MultiSpinBox::stepBy(int steps)
     update(); // Make sure the buttons for step-up and step-down are updated.
 }
 
-/** @brief Updates the value of the current section.
+/*!
+ * \brief Updates the value of the current section.
  *
  * This slot is meant to be connected to the
- * <tt>&QLineEdit::textChanged()</tt> signal of
- * the <tt>MultiSpinBox::lineEdit()</tt> child widget.
- * ,
- * @param lineEditText The text of the <tt>lineEdit()</tt>. The value
+ * \c {&QLineEdit::textChanged()} signal of
+ * the \c {MultiSpinBox::lineEdit()} child widget.
+ *
+ * \a lineEditText The text of the \c {lineEdit()}. The value
  * will be updated according to this parameter. Only changes in
- * the <em>current</em> section’s value are expected, no changes in
+ * the \e {current} section’s value are expected, no changes in
  * other sections. If this parameter cannot be interpreted, the function
  * returns without further action. If it can be interpreted, but is out of
- * range, it behaves according to <tt>QAbstractSpinBox::correctionMode</tt>.
+ * range, it behaves according to \c {QAbstractSpinBox::correctionMode}.
  */
 void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText)
 {
@@ -995,18 +1016,18 @@ void MultiSpinBoxPrivate::updateCurrentValueFromText(const QString &lineEditText
     // this function is meant to receive signals of the very same lineEdit().
 }
 
-/**
- * @brief Returns the section index corresponding to a specified text cursor
+/*!
+ * \brief Returns the section index corresponding to a specified text cursor
  * position.
  *
- * @param cursorPosition The position of the text cursor, as defined
- * by <tt>QLineEdit</tt>, for which the section index should be determined.
+ * \a cursorPosition The position of the text cursor, as defined
+ * by \c {QLineEdit}, for which the section index should be determined.
  *
- * @returns The index of the section at the given cursor position, based
- * on @ref MultiSpinBox::format. If the cursor is exactly between two sections,
+ * Returns the index of the section at the given cursor position, based
+ * on \l MultiSpinBox::format. If the cursor is exactly between two sections,
  * the index of the preceding section is returned.
  *
- * @sa @ref isCursorTouchingCurrentSectionValue
+ * \sa isCursorTouchingCurrentSectionValue
  */
 int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
 {
@@ -1026,47 +1047,47 @@ int MultiSpinBoxPrivate::cursorSection(const int cursorPosition) const
     return result;
 }
 
-/**
- * @brief Main event handler.
+/*!
+ * \brief Main event handler.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event to be processed.
+ * \a eventParameter The event to be processed.
  *
- * @return This function returns true if the event was recognized, otherwise
+ * Returns true if the event was recognized, otherwise
  * it returns false.
- *
- * @internal
- *
- * @note This is a dummy reimplementation, provided to ensure future
- * extensibility while preserving binary compatibility, as
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
- * recommended by the KDE binary compatibility policy</a>.
- * The policy states that
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
- * “you can safely reimplement a virtual function defined in one of the base
- * classes only if it is safe that the programs linked with the prior version
- * call the implementation in the base class rather than the derived one.”</a>.
- * Consistent behavior across versions would be difficult to guarantee.
- * By reimplementing the main event handler now,
- * we retain the option to extend it later to process new event types
- * without introducing binary compatibility issues. Since this is the
- * central event dispatcher, it can eventually handle all event types,
- * eliminating the need for dummy overrides of each specialized handler.
  */
 bool MultiSpinBox::event(QEvent *eventParameter)
 {
+    // NOTE This is a dummy reimplementation, provided to ensure future
+    // extensibility while preserving binary compatibility, as
+    // \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...}
+    // {recommended by the KDE binary compatibility policy}.
+    // The policy states that
+    // \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function}
+    // {“you can safely reimplement a virtual function defined in one of the base
+    // classes only if it is safe that the programs linked with the prior version
+    // call the implementation in the base class rather than the derived one.”}.
+    // Consistent behavior across versions would be difficult to guarantee.
+    // By reimplementing the main event handler now,
+    // we retain the option to extend it later to process new event types
+    // without introducing binary compatibility issues. Since this is the
+    // central event dispatcher, it can eventually handle all event types,
+    // eliminating the need for dummy overrides of each specialized handler.
     return QAbstractSpinBox::event(eventParameter);
 }
 
-/** @brief Updates the widget according to the new cursor position.
+/*!
+ * \brief Updates the widget according to the new cursor position.
  *
  * This slot is meant to be connected to the
- * <tt>QLineEdit::cursorPositionChanged()</tt> signal of
- * the <tt>MultiSpinBox::lineEdit()</tt> child widget.
+ * \c {QLineEdit::cursorPositionChanged()} signal of
+ * the \c {MultiSpinBox::lineEdit()} child widget.
  *
- * @param oldPos the old cursor position (previous position)
- * @param newPos the new cursor position (current position) */
+ * \a oldPos the old cursor position (previous position)
+ *
+ * \a newPos the new cursor position (current position)
+ */
 void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const int newPos)
 {
     Q_UNUSED(oldPos)
@@ -1120,21 +1141,24 @@ void MultiSpinBoxPrivate::reactOnCursorPositionChange(const int oldPos, const in
     q_pointer->update();
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param w The widget to which the newly created object will correspond. */
+ * \a w The widget to which the newly created object will correspond.
+ */
 AccessibleMultiSpinBox::AccessibleMultiSpinBox(MultiSpinBox *w)
     : QAccessibleWidget(w, QAccessible::Role::SpinBox)
 {
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 AccessibleMultiSpinBox::~AccessibleMultiSpinBox()
 {
 }
 
-/**
- * @brief Clears the value of the current section.
+/*!
+ * \brief Clears the value of the current section.
  *
  * The other sections and also the prefix and suffix of the current
  * section stay visible.
@@ -1152,8 +1176,8 @@ void MultiSpinBox::clear()
     update(); // Make sure the buttons for step-up and step-down are updated.
 }
 
-/**
- * @brief Updates @ref m_validator according the the current state.
+/*!
+ * \brief Updates \l m_validator according the the current state.
  */
 void MultiSpinBoxPrivate::updateValidator()
 {
@@ -1185,68 +1209,66 @@ void MultiSpinBoxPrivate::updateValidator()
         m_format.at(m_currentIndex).decimals());
 }
 
-/**
- * @brief Intentionally empty override.
+/*!
+ * \brief Intentionally empty override.
  *
- * @param input The complete user-visible string from the line edit, passed by
+ * \a input The complete user-visible string from the line edit, passed by
  *              reference for potential in-place modification.
  *
- * @internal
- *
- * <tt>QAbstractSpinBox::fixup()</tt> is designed to correct the full input
- * text. Subclasses like <tt>QDateTimeEdit</tt> apply fixup to all sections
- * simultaneously using internal Qt APIs. However, <tt>QAbstractSpinBox</tt>
- * itself currently does not invoke fixup in non-Qt subclasses.
- *
- * For @ref MultiSpinBox, this mechanism is unsuitable: its parsing logic
- * interprets segmented input using arbitrary separators—including empty
- * prefixes and suffixes—which makes whole-string correction ambiguous. Parsing
- * is handled internally via @ref MultiSpinBoxPrivate and cannot replicate the
- * behavior of QDateTimeEdit, which applies fixup uniformly across all
- * sections. As such, providing a non-empty implementation here could lead to
- * behavior that diverges surprisingly from QDateTimeEdit. An empty override
- * is therefore preferred.
- *
- * This override also prevents any inherited behavior from QAbstractSpinBox,
- * ensuring that future changes to its internal logic do not inadvertently
- * affect @ref MultiSpinBox.
- *
- * @sa @ref validate()
+ * \sa validate()
  */
 void MultiSpinBox::fixup(QString &input) const
 {
+    // QAbstractSpinBox::fixup() is designed to correct the full input
+    // text. Subclasses like QDateTimeEdit apply fixup to all sections
+    // simultaneously using internal Qt APIs. However, QAbstractSpinBox
+    // itself currently does not invoke \l fixup in non-Qt subclasses.
+    //
+    // For MultiSpinBox, this mechanism is unsuitable: its parsing logic
+    // interprets segmented input using arbitrary separators—including empty
+    // prefixes and suffixes—which makes whole-string correction ambiguous.
+    // Parsing is handled internally via \l MultiSpinBoxPrivate and cannot
+    // replicate the behavior of QDateTimeEdit, which applies fixup uniformly
+    // across all sections. As such, providing a non-empty implementation here
+    // could lead to behavior that diverges surprisingly from QDateTimeEdit.
+    // An empty override is therefore preferred.
+    //
+    // This override also prevents any inherited behavior from
+    // QAbstractSpinBox, ensuring that future changes to its internal logic do
+    // not inadvertently affect MultiSpinBox.
+
     Q_UNUSED(input);
 }
 
-/**
- * @brief Validates the user input for the currently active section.
+/*!
+ * \brief Validates the user input for the currently active section.
  *
  * Reimplemented from base class.
  *
- * @param input The input to validate (may be modified/fixed during processing)
- * @param pos The current text cursor position (may be modified/fixed during
+ * \a input The input to \l validate (may be modified/fixed during processing)
+ *
+ * \a pos The current text cursor position (may be modified/fixed during
  *        processing)
- * @returns A validation state indicating whether the input is acceptable
+ *
+ * Returns a validation state indicating whether the input is acceptable
  *          with regard to the current section.
  *
- * @note This validator allows changes only to the <em>current</em>
- * section. It is <em>not</em> possible to change various values at the
+ * \note This validator allows changes only to the \e {current}
+ * section. It is \e {not} possible to change various values at the
  * same time, for example by marking all the current text and use
  * Ctrl-V to past a complete new value from the clipboard. This would
  * be impossible to parse reliably, because the prefixes and suffixes
  * of each section might contain (localized) digits that would be
  * difficult to differentiate from the actual value.
  *
- * @sa @ref fixup()
- *
- * @internal
- *
- * If the section configuration or the current section index change,
- * @ref MultiSpinBoxPrivate::updateValidator() must be called in order to
- * have this function work correctly.
+ * \sa fixup()
  */
 QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
 {
+    // NOTE If the section configuration or the current section index change,
+    // MultiSpinBoxPrivate::updateValidator() must be called in order to
+    // have this function work correctly.
+
     QString myInput = input;
     int myPos = pos;
 
@@ -1315,15 +1337,15 @@ QValidator::State MultiSpinBox::validate(QString &input, int &pos) const
     return result;
 }
 
-/**
- * @brief Event handler for action events.
+/*!
+ * \brief Event handler for action events.
  *
  * Reimplemented from base class.
  *
- * Makes sure that actions added by @ref addActionButton are handled as
+ * Makes sure that actions added by \l addActionButton are handled as
  * expected.
  *
- * @param eventParameter The action event
+ * \a eventParameter The action event
  */
 void MultiSpinBox::actionEvent(QActionEvent *eventParameter)
 {

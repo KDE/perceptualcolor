@@ -10,74 +10,80 @@
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- * @brief A point in a
- * <a href="https://en.wikipedia.org/wiki/Polar_coordinate_system">polar
- * coordinate system</a>
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief A point in a
+ * \l {https://en.wikipedia.org/wiki/Polar_coordinate_system} {polar
+ * coordinate system}.
  *
  * Polar coordinates are important for color
  * handling because many color models use the
- * <a href="https://en.wikipedia.org/wiki/Cylindrical_coordinate_system">
- * cylindrical coordinate system</a> which extends the two-dimensional
+ * \l {https://en.wikipedia.org/wiki/Cylindrical_coordinate_system}
+ * {cylindrical coordinate system} which extends the two-dimensional
  * polar coordinate system to three dimensions by adding a (linear)
- * <em>z</em> coordinate.
+ * \e {z} coordinate.
  *
  * Polar coordinate systems represent points by a radial coordinate
- * (<em>radius</em>, also called <em>r</em> or <em>ρ</em>) and an angular
- * coordinate (<em>angle</em>, also called <em>azimuth</em>, <em>φ</em>,
- * <em>θ</em> or <em>t</em>).
+ * (\e {radius}, also called \e {r} or \e {ρ}) and an angular
+ * coordinate (\e {angle}, also called \e {azimuth}, \e {φ},
+ * \e {θ} or \e {t}).
  *
  * Polar coordinates allow multiple representations for a single point:
- * - An angle of 0° is the same as 360° is the same as 720° is the same
- *   as −360°.
- * - A radius of 1 and an angle of 0° is the same as a radius of −1 and an
- *   angle of 180°.
- * - If the radius is 0, the angle is meaningless: A radius of 0 and an angle
- *   of 57° is the same as a radius of 0 and an angle of 233°.
  *
- * @invariant The polar coordinates are normalized. See @ref normalizePolar360
- * for details.
+ * \list
+ *     \li An angle of 0° is the same as 360° is the same as 720° is the same
+ *         as −360°.
+ *     \li A radius of 1 and an angle of 0° is the same as a radius of −1 and
+ *         an angle of 180°.
+ *     \li If the radius is 0, the angle is meaningless: A radius of 0 and an
+ *         angle of 57° is the same as a radius of 0 and an angle of 233°.
+ * \endlist
  *
- * To provide a clear API, there is no <em>equal</em> operator. Use
- * @ref isSamePoint() instead..
+ * The polar coordinates in this class are always normalized. See
+ * \l normalizePolar360 for details.
+ *
+ * To provide a clear API, there is no \e {equal} operator. Use
+ * \l isSamePoint() instead..
  *
  * This type is declared as type to Qt’s type system via
- * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use for <em>queued</em> signal-slot connections),
- * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+ * example if you want to use for \e {queued} signal-slot connections),
+ * you might consider calling \c {qRegisterMetaType()} for
  * this type, once you have a QApplication object.
  *
  * This data type can be passed to QDebug thanks to
- * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
+ * \l {operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)}
  */
 class PolarPointF
 {
 public:
-    /** @brief Constructor
+    /*!
+     * \brief Constructor
      *
-     * Constructs an object with @ref radius() = 0 and @ref angleDegree() = 0 */
+     * Constructs an object with radius() = 0 and angleDegree() = 0 */
     explicit PolarPointF() = default;
 
-    /** @brief Default copy constructor
+    /*!
+     * \brief Default copy constructor
      *
-     * @param other the object to copy */
+     * \a other the object to copy
+     */
     PolarPointF(const PolarPointF &other) = default;
 
-    /** @brief Default move constructor
+    /*!
+     * \brief Default move constructor
      *
-     * @param other the object to move */
+     * \a other the object to move
+     */
     PolarPointF(PolarPointF &&other) noexcept = default;
 
     explicit PolarPointF(const double newRadius, const double newAngleDegree);
 
     explicit PolarPointF(const QPointF cartesianCoordiantes);
 
-    /** @brief Default assignment operator
-     *
-     * @returns The default implementation’s return value.
-     *
-     * @param other the object to assign */
     // Clazy, our static code checker, complains about the next line of code
     // as follows:
     //     “Pass small and trivially-copyable type by value”
@@ -87,13 +93,18 @@ public:
     //      operator must be an lvalue reference type”
     // Therefore, we exclude the following line from this specific clazy check,
     // by adding a magic comment after it.
+    /*!
+     * \brief Default assignment operator
+     *
+     * \a other the object to assign
+     */
     PolarPointF &operator=(const PolarPointF &other) = default; // clazy:exclude=function-args-by-value
 
-    /** @brief Default move assignment operator
+    /*!
+     * \brief Default move assignment operator
      *
-     * @param other the object to move-assign
-     *
-     * @returns The default implementation’s return value. */
+     * \a other the object to move-assign
+     */
     PolarPointF &operator=(PolarPointF &&other) noexcept = default;
 
     [[nodiscard]] double angleDegree() const;
@@ -105,10 +116,12 @@ public:
     QPointF toCartesian() const;
 
 private:
-    /** @brief Holds the @ref angleDegree() value. */
+    /*!
+     * \brief Holds the \l angleDegree() value. */
     double m_angleDegree{0};
 
-    /** @brief Holds the @ref radius() value. */
+    /*!
+     * \brief Holds the radius() value. */
     double m_radius{0};
 };
 

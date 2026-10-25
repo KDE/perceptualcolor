@@ -7,20 +7,12 @@
 
 #include <qglobal.h>
 
-/** @internal @file
- *
- * Provides the @ref PerceptualColor::initializeLibraryResources() function. */
-
-/** @internal
- *
- * @brief Helper function
- * for @ref PerceptualColor::initializeLibraryResources().
- *
- * <tt>Q_INIT_RESOURCE</tt> may not be used within a namespace.
- * Therefore exists this function which is not part of any namespace. To avoid
- * pollution of the global namespace, it is declared <tt>static</tt> which
- * gives here internal linkage, so it is not visible outside of this
- * compilation unit. */
+// Helper function for PerceptualColor::initializeLibraryResources().
+//
+// Q_INIT_RESOURCE cannot be used within a namespace. As a workaround,
+// this function resides in the global namespace. To prevent namespace
+// pollution and external linkage, it is declared static exclusively
+// within this translation unit without any corresponding header declaration.
 static void helperInitializeLibraryResources()
 {
     // Resource initialization is necessary on some systems for static
@@ -36,15 +28,17 @@ static void helperInitializeLibraryResources()
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- * @brief Initializes the resources of the <tt>Qt resource system</tt> that
+ *
+ * \brief Initializes the resources of the \c {Qt resource system} that
  * come with this library.
  *
  * It is safe to call this function multiple times: If the resources are
  * yet initialized, nothing happens.
  *
- * @post The resources are initialized. */
+ *  The resources are initialized.
+ */
 void initializeLibraryResources()
 {
     helperInitializeLibraryResources();

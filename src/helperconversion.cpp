@@ -18,19 +18,20 @@
 namespace PerceptualColor
 {
 
-/**
- * @internal
+/*!
  *
- * @brief Alternative to <tt>QColor::toRgb()</tt> with full precision.
  *
- * Unlike <tt>QColor::toRgb()</tt>, which converts a <tt>QColor</tt> to
- * <tt>QColor::Spec::Rgb</tt> and rounds each channel to 8‑bit integers in the
+ * \brief Alternative to \c {QColor::toRgb()} with full precision.
+ *
+ * Unlike \c {QColor::toRgb()}, which converts a \c {QColor} to
+ * \c {QColor::Spec::Rgb} and rounds each channel to 8‑bit integers in the
  * range [0..255], this function calculates with full precision.
- * Colors with <tt>QColor::Spec::ExtendedRgb</tt> are clipped to
- * <tt>QColor::Spec::Rgb</tt>.
+ * Colors with \c {QColor::Spec::ExtendedRgb} are clipped to
+ * \c {QColor::Spec::Rgb}.
  *
- * @param color The color to convert.
- * @return A QColor in  <tt>QColor::Spec::Rgb</tt> space.
+ * \a color The color to convert.
+ *
+ * Returns a QColor in  \c {QColor::Spec::Rgb} space.
  */
 QColor toRgbExact(const QColor &color)
 {

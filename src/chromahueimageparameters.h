@@ -16,11 +16,14 @@ namespace PerceptualColor
 {
 class AsyncImageRenderCallback;
 
-/** @internal
+/*!
  *
- * @brief Parameters for an image of a chroma hue plane.
  *
- * For usage with @ref AsyncImageProvider.
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Parameters for an image of a chroma hue plane.
+ *
+ * For usage with \l AsyncImageProvider.
  *
  * This is a cut through the gamut body. The cut is orthogonal to
  * the L axis, so it shows the a‑b diagram (speaking in terms of
@@ -28,16 +31,16 @@ class AsyncImageRenderCallback;
  * of LCH color model). The center of the coordinate system is in
  * the center of the image (floating point precision).
  *
- * Each pixel has the color that corresponds to the coordinate point <em>at
- * the middle</em> of the pixel for in-gamut coordinate points, and
+ * Each pixel has the color that corresponds to the coordinate point \e {at
+ * the middle} of the pixel for in-gamut coordinate points, and
  * a solid background color for out-of-gamut coordinate points.
  *
- * The <tt>QImage</tt> that is provided by this class has the
- * size <tt>QSize(@ref ChromaHueImageParameters::imageSizePhysical,
- * @ref ChromaHueImageParameters::imageSizePhysical)</tt>. There is an
- * imaginary circle in the center of the <tt>QImage</tt> with a distance
- * of @ref ChromaHueImageParameters::borderPhysical to the border of
- * the <tt>QImage</tt>. All pixels within this imaginary circle, plus an
+ * The \c {QImage} that is provided by this class has the
+ * size \c {QSize( \l ChromaHueImageParameters::imageSizePhysical,
+ * \l ChromaHueImageParameters::imageSizePhysical)}. There is an
+ * imaginary circle in the center of the \c {QImage} with a distance
+ * of \l ChromaHueImageParameters::borderPhysical to the border of
+ * the \c {QImage}. All pixels within this imaginary circle, plus an
  * overlap for safety, are calculated correctly. All other pixels
  * have arbitrary values. Therefore, when you paint this
  * image somewhere, you have to clip the painting to the imaginary circle.
@@ -45,45 +48,49 @@ class AsyncImageRenderCallback;
  * of whether you render the circle with or without antialiasing.
  *
  * This type is declared as type to Qt’s type system via
- * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use for <em>queued</em> signal-slot connections),
- * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+ * example if you want to use for \e {queued} signal-slot connections),
+ * you might consider calling \c {qRegisterMetaType()} for
  * this type, once you have a QApplication object.
  */
 struct ChromaHueImageParameters {
 public:
-    /** @brief The border size, measured in physical pixels. */
+    /*!
+     * \brief The border size, measured in physical pixels. */
     qreal borderPhysical = 0;
-    /** @brief The device pixel ratio as floating point. */
+    /*!
+     * \brief The device pixel ratio as floating point. */
     qreal devicePixelRatioF = 1;
-    /** @brief Image size, measured in physical pixels. */
+    /*!
+     * \brief Image size, measured in physical pixels. */
     int imageSizePhysical = 0;
-    /** @brief Lightness.
+    /*!
+     * \brief Lightness.
      *
      * This is the lightness (L) value in the LCH color model.
      *
-     * Range: <tt>[0, 100]</tt> */
+     * Range: \c {[0, 100]} */
     qreal lightness = 50;
-    /**
-     * @brief The color space into which the working space is projected.
+    /*!
+     * \brief The color space into which the working space is projected.
      */
     LchSpace projectionSpace = LchSpace::CielchD50;
 
-    /**
-     * @brief Equal operator
+    /*!
+     * \brief Equal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+     * Returns \c {true} if equal, \c {false} otherwise.
      */
     [[nodiscard]] bool operator==(const ChromaHueImageParameters &other) const = default;
 
-    /**
-     * @brief Unequal operator
+    /*!
+     * \brief Unequal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise.
+     * Returns \c {true} if unequal, \c {false} otherwise.
      */
     [[nodiscard]] bool operator!=(const ChromaHueImageParameters &other) const = default;
 

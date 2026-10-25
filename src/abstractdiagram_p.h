@@ -11,25 +11,32 @@
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class AbstractDiagramPrivate
 {
 public:
-    /** @brief Constructor */
+    /*!
+     * \brief Constructor */
     AbstractDiagramPrivate() = default;
     virtual ~AbstractDiagramPrivate() noexcept;
 
-    /** @brief Initial cursor position (at the time of the left-click)
+    /*!
+     * \brief Initial cursor position (at the time of the left-click)
      * where a drag-and-drop action starts.
      *
-     * @sa @ref AbstractDiagram::mousePressEvent
-     * @sa @ref AbstractDiagram::mouseMoveEvent */
+     * \sa AbstractDiagram::mousePressEvent
+     * \sa AbstractDiagram::mouseMoveEvent
+     */
     QPoint m_dragStartPosition;
 
-    /** @brief Internal storage for @ref AbstractDiagram::isActuallyVisible. */
+    /*!
+     * \brief Internal storage for \l AbstractDiagram::isActuallyVisible. */
     bool m_isActuallyVisible = false;
 
 private:

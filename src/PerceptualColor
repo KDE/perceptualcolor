@@ -1,0 +1,31 @@
+﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+// SPDX-License-Identifier: BSD-2-Clause OR MIT
+
+#ifndef PERCEPTUALCOLOR_H
+
+#define PERCEPTUALCOLOR_H
+
+// Module header for QDoc, containing all public API headers.
+
+// This comment exists only to bypass a static codecheck that delivres
+// a false positive: PERCEPTUALCOLOR_IMPORTEXPORT
+
+/*
+# NOTE Keep the following list synchronized between
+# scripts/static-codecheck.sh
+# src/CMakeLists.txt
+# src/PerceptualColor
+*/
+
+#include "colordialog.h"
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
+#include "multispinbox.h"
+#include "multispinboxsection.h"
+#include "PerceptualColor"
+#include "perceptualcolorruntimeversion.h"
+#include "portaleyedropper.h"
+#include "settranslation.h"
+#include "version.h"
+
+#endif // PERCEPTUALCOLOR_H

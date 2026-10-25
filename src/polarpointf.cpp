@@ -14,14 +14,17 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
  * Normalizes the given polar coordinates and constructs an object with
- * the <em>normalized</em> polar coordinates. See the general class
+ * the \e {normalized} polar coordinates. See the general class
  * description for details about the normalization.
  *
- * @param newRadius the @ref radius() value
- * @param newAngleDegree the @ref angleDegree() value */
+ * \a newRadius the \l radius() value
+ *
+ * \a newAngleDegree the \l angleDegree() value
+ */
 PolarPointF::PolarPointF(const double newRadius, const double newAngleDegree)
     : m_angleDegree(newAngleDegree)
     , m_radius(newRadius)
@@ -29,14 +32,16 @@ PolarPointF::PolarPointF(const double newRadius, const double newAngleDegree)
     normalizePolar360(m_radius, m_angleDegree);
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
  * Constructs an object converting from the given Cartesian coordinates.
  *
- * If the Cartesian coordinates are (0, 0) than the @ref angleDegree (which is
- * meaningless for a @ref radius of 0) is set to 0°.
+ * If the Cartesian coordinates are (0, 0) than the \l angleDegree (which is
+ * meaningless for a radius of 0) is set to 0°.
  *
- * @param cartesianCoordiantes the Cartesian coordinates */
+ * \a cartesianCoordiantes the Cartesian coordinates
+ */
 PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 {
     m_radius = sqrt( //
@@ -60,15 +65,16 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
     }
 }
 
-/** @brief Compares with another @ref PolarPointF
+/*!
+ * \brief Compares with another \l PolarPointF
  *
- * @param other the polar coordinates to compare with
+ * \a other the polar coordinates to compare with
  *
- * @returns <tt>true</tt> if both, <tt>this</tt> and <tt>other</tt>,
- * are the same point in the coordinate space. <tt>false</tt> otherwise.
- * Therefore <tt>[@ref radius() 0, @ref angleDegree() 50]</tt> is considered
- * to be the same point as <tt>[@ref radius() 0, @ref angleDegree() 80]</tt>
-   because the @ref angleDegree() is meaningless if the @ref radius() is 0.*/
+ * Returns \c {true} if both, \c {this} and \c {other},
+ * are the same point in the coordinate space. \c {false} otherwise.
+ * Therefore \c {[ radius() 0, angleDegree() 50]} is considered
+ * to be the same point as \c {[ radius() 0, angleDegree() 80]}
+   because the angleDegree() is meaningless if the radius() is 0.*/
 bool PolarPointF::isSamePoint(const PolarPointF other) const
 {
     return (
@@ -79,40 +85,47 @@ bool PolarPointF::isSamePoint(const PolarPointF other) const
         ((m_angleDegree == other.m_angleDegree) || (m_radius == 0)));
 }
 
-/** @brief Normalized radius
+/*!
+ * \brief Normalized radius
  *
- * @returns the normalized radius value, guaranteed to be ≥ 0. */
+ * Returns the normalized radius value, guaranteed to be ≥ 0.
+ */
 double PolarPointF::radius() const
 {
     return m_radius;
 }
 
-/** @brief Normalized angle
+/*!
+ * \brief Normalized angle
  *
- * @returns the normalized angle value (coordinates in degree), guaranteed to
+ * Returns the normalized angle value (coordinates in degree), guaranteed to
  * be 0° ≤ value < 360° */
 double PolarPointF::angleDegree() const
 {
     return m_angleDegree;
 }
 
-/** @brief Convert to Cartesian coordinates
+/*!
+ * \brief Convert to Cartesian coordinates
  *
- * @returns the corresponding Cartesian coordinates */
+ * Returns the corresponding Cartesian coordinates
+ */
 QPointF PolarPointF::toCartesian() const
 {
     return QPointF(m_radius * std::cos(qDegreesToRadians(m_angleDegree)), //
                    m_radius * std::sin(qDegreesToRadians(m_angleDegree)));
 }
 
-/** @internal
+/*!
+ * \relates PerceptualColor::PolarPointF
  *
- * @brief Adds QDebug() support for data type
- * @ref PerceptualColor::PolarPointF
+ * \brief Adds QDebug() support for data type
+ * \l PerceptualColor::PolarPointF
  *
- * @param dbg Existing debug object
- * @param value Value to stream into the debug object
- * @returns Debug object with value streamed in */
+ * \a dbg Existing debug object
+ *
+ * \a value Value to stream into the debug object
+ */
 QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
 {
     dbg.nospace() //

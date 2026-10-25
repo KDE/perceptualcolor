@@ -20,63 +20,66 @@ namespace PerceptualColor
 
 class WheelColorPickerPrivate;
 
-/**
- * @internal
+/*!
  *
- * @brief Complete wheel-based color picker widget
  *
- * It is composed of a @ref ColorWheel and, in the middle of the wheel,
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Complete wheel-based color picker widget.
+ *
+ * It is composed of a \l ColorWheel and, in the middle of the wheel,
  * a chroma-lightness diagram.
  *
- * @image html WheelColorPicker.png "WheelColorPicker"
+ * \image WheelColorPicker.png "WheelColorPicker"
  *
- * See @ref circularwidgets for some pecularities of this widget.
+ * See \l {Circular widgets} for some pecularities of this widget.
  *
- * @internal
  *
- * @note It may seem appealing to use the entire inner circle
+ *
+ * \note It may seem appealing to use the entire inner circle
  * as the background for the chroma‑lightness diagram, since this
  * would allow a slightly larger display area. However, this design
  * is less intuitive: a circular background suggests a polar
- * coordinate system (as in @ref ChromaHueDiagram), while the chroma‑lightness
+ * coordinate system (as in \l ChromaHueDiagram), while the chroma‑lightness
  * diagram is based on a Cartesian system. By keeping the background
  * rectangular, users immediately recognize the hard limits at the
  * left, top, and bottom edges (with the right edge potentially
  * extending toward infinity). The rectangular form makes the
  * Cartesian nature of the diagram clear and avoids confusion with
  * polar coordinates.
- *
- * @todo NICETOHAVE Is the (double) focus indicator actually good design? Are
- * there better solutions?
  */
 class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT WheelColorPicker : public AbstractDiagram
 {
     Q_OBJECT
 
-    /** @brief Currently selected color
-     *
-     * @sa READ @ref currentColorLch() const
-     * @sa WRITE @ref setCurrentColorLch()
-     * @sa NOTIFY @ref currentColorLchChanged() */
     // The Q_PROPERTY macro must be on a single line for correct compilation.
     // clang-format is disabled here to prevent automatic line breaks.
     // clang-format off
+    /*!
+     * \property PerceptualColor::WheelColorPicker::currentColorLch
+     *
+     * \brief Currently selected color
+     */
     Q_PROPERTY(PerceptualColor::GenericColor currentColorLch READ currentColorLch WRITE setCurrentColorLch NOTIFY currentColorLchChanged USER true)
     // clang-format on
 
 public:
     Q_INVOKABLE explicit WheelColorPicker(const PerceptualColor::LchSpace projectionSpace, QWidget *parent = nullptr);
     virtual ~WheelColorPicker() noexcept override;
-    /** @brief Getter for property @ref currentColorLch
-     *  @returns the property @ref currentColorLch */
+    /*!
+     * \brief Getter for property \l currentColorLch
+     */
     [[nodiscard]] PerceptualColor::GenericColor currentColorLch() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     void setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch);
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref currentColorLch.
-     *  @param newCurrentColorLch the new current color */
+    /*!
+     * \brief Notify signal for property \l currentColorLch.
+     *
+     *  \a newCurrentColorLch the new current color
+     */
     void currentColorLchChanged(const PerceptualColor::GenericColor &newCurrentColorLch);
 
 protected:
@@ -86,17 +89,12 @@ protected:
 private:
     Q_DISABLE_COPY(WheelColorPicker)
 
-    /** @internal
-     *
-     * @brief Declare the private implementation as friend class.
-     *
-     * This allows the private class to access the protected members and
-     * functions of instances of <em>this</em> class. */
     friend class WheelColorPickerPrivate;
-    /** @brief Pointer to implementation (pimpl) */
+    /*!
+     *\brief Pointer to implementation (pimpl)
+     */
     ConstPropagatingUniquePointer<WheelColorPickerPrivate> d_pointer;
 
-    /** @internal @brief Only for unit tests. */
     friend class TestWheelColorPicker;
 };
 

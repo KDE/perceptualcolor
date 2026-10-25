@@ -18,22 +18,31 @@ class QObject;
 
 namespace PerceptualColor
 {
-/** @internal
+/*!
  *
- * @brief Provides threaded rendering for @ref AsyncImageProvider. */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Provides threaded rendering for \l AsyncImageProvider. */
 class AsyncImageRenderThread : public QThread, public AsyncImageRenderCallback
 {
     Q_OBJECT
 
 public:
-    /** @brief Function pointer to a render function.
+    /*!
+     * \typealias PerceptualColor::AsyncImageRenderThread::pointerToRenderFunction
      *
-     * The function pointed to by this pointer has <tt>void</tt> as its
+     * \relates PerceptualColor::AsyncImageRenderThread
+     *
+     * \brief Function pointer to a render function.
+     *
+     * The function pointed to by this pointer has \c {void} as its
      * return value. It has the following parameters:
      *
-     * @param variantParameters A <tt>QVariant</tt> that contains the
+     * \a variantParameters A \c {QVariant} that contains the
      *        image parameters.
-     * @param callbackObject An object that provides the necessary
+     *
+     * \a callbackObject An object that provides the necessary
      *        callbacks.
      *
      * The function pointed to by this pointer is supposed to
@@ -44,19 +53,18 @@ public:
      *
      * The function pointed to by this pointer must be thread-safe.
      *
-     * @internal
-     *
      * The render function is meant to be used
-     * by @ref AsyncImageRenderThread.
+     * by \l AsyncImageRenderThread.
      *
-     * @note It might be possible to use <tt>
-     * <a href="https://en.cppreference.com/w/cpp/utility/any">std::any</a>
-     * </tt> instead of <tt><a href="https://doc.qt.io/qt-6/qvariant.html">
-     * QVariant</a></tt>. This might eliminate the need to register
+     * \note It might be possible to use
+     * \l {https://en.cppreference.com/w/cpp/utility/any} {std::any}
+     * instead of \l {https://doc.qt.io/qt-6/qvariant.html} {QVariant}.
+     * This might eliminate the need to register
      * types to the Qt meta-type system. On the other hand, it
      * probably will not integrate as well with other parts of Qt
-     * (signals, slots…). So currently we are doing well by using <tt>
-     * <a href="https://doc.qt.io/qt-6/qvariant.html"> QVariant</a></tt>. */
+     * (signals, slots…). So currently we are doing well by using
+     * \l {https://doc.qt.io/qt-6/qvariant.html} {QVariant}.
+     */
     using pointerToRenderFunction = std::function<void(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)>;
 
     explicit AsyncImageRenderThread(const pointerToRenderFunction &renderFunction, QObject *parent = nullptr);
@@ -71,19 +79,21 @@ public:
     void waitForIdle();
 
 Q_SIGNALS:
-    /** @brief Result of an interlacing pass of the <em>rendering</em>
+    /*!
+     * \brief Result of an interlacing pass of the \e {rendering}
      * operation.
      *
-     * <em>Rendering</em> operations can be started
-     * by @ref startRenderingAsync().
+     * \e {Rendering} operations can be started
+     * by \l startRenderingAsync().
      *
-     * @note <em>Rendering</em> operations might be stopped before emitting
-     * this signal by calling again @ref startRenderingAsync(); therefore it
-     * is <em>not</em> guaranteed that each call of @ref startRenderingAsync()
+     * \note \e {Rendering} operations might be stopped before emitting
+     * this signal by calling again \l startRenderingAsync(); therefore it
+     * is \e {not} guaranteed that each call of \l startRenderingAsync()
      * will finally emit this signal.
      *
-     * @param image The image
-     * @param mask The alpha mask, if provided. Renderers may choose whether
+     * \a image The image
+     *
+     * \a mask The alpha mask, if provided. Renderers may choose whether
      * to supply an alpha mask. Alpha masks are 1-bit images where white
      * represents transparency and black represents opacity, defining the
      * transparency state <i>before</i> any anti-aliasing is applied. This
@@ -94,15 +104,17 @@ Q_SIGNALS:
      * but in some cases, they may fall below this threshold. The alpha mask,
      * however, provides a clear and definitive indication of each pixel’s
      * validity.
-     * @param parameters The parameters of the image
-     * @param state The interlacing state of the image. A render function
+     *
+     * \a parameters The parameters of the image
+     *
+     * \a state The interlacing state of the image. A render function
      * must first return zero or more images with intermediate state. After
      * that, it must return exactly one image with final state (unless it
      * was aborted). After that, it must not return any more images.
      *
-     * @warning This signal can be emitted by a thread other than the
+     * \warning This signal can be emitted by a thread other than the
      * thread in which this object itself lives. Therefore, use only
-     * <tt>Qt::AutoConnection</tt> or <tt>Qt::QueuedConnection</tt>
+     * \c {Qt::AutoConnection} or \c {Qt::QueuedConnection}
      * when connecting to this signal. */
     void interlacingPassCompleted(const QImage &image,
                                   const QImage &mask,
@@ -115,72 +127,80 @@ protected:
 private:
     Q_DISABLE_COPY(AsyncImageRenderThread)
 
-    /** @internal @brief Only for unit tests. */
     friend class TestAsyncImageRenderThread;
 
-    /** @brief Provide parameters for the next re(start) of @ref run().
+    /*!
+     * \brief Provide parameters for the next re(start) of run().
      *
-     * @ref run() is supposed to read these parameters on each round,
+     * run() is supposed to read these parameters on each round,
      * and to render a corresponding image.
      *
-     * @note This data member has read and write access protected
-     * by @ref m_loopMutex. */
+     * \note This data member has read and write access protected
+     * by \l m_loopMutex. */
     QVariant m_imageParameters;
-    /** @brief Request @ref run() to abort.
+    /*!
+     * \brief Request run() to abort.
      *
-     * @ref run() is supposed to control regularly if this value
-     * is <tt>true</tt>. If so, it should return as fast as possible.
+     * run() is supposed to control regularly if this value
+     * is \c {true}. If so, it should return as fast as possible.
      * This variable is used by the destructor to make sure that the
      * associated thread is stopped before destroying this object.
      *
-     * @warning This is used with @ref m_loopCondition. See there for details.
+     * \warning This is used with \l m_loopCondition. See there for details.
      *
-     * @note This data member has write access protected
-     * by @ref m_loopMutex. */
+     * \note This data member has write access protected
+     * by \l m_loopMutex. */
     std::atomic_bool m_loopAbort = false;
-    /** @brief Wait condition used between the rendering rounds.
+    /*!
+     * \brief Wait condition used between the rendering rounds.
      *
-     * @warning @ref m_loopAbort and @ref m_loopRestart are used to control the
-     * waiting. Changing them requires locking @ref m_loopMutex (otherwise,
+     * \warning \l m_loopAbort and \l m_loopRestart are used to control the
+     * waiting. Changing them requires locking \l m_loopMutex (otherwise,
      * this condition could become out-of-synchronization). Reading them
      * during the rendering to stop more immediately should be okay, as
      * both variables are atomic.
      *
-     * @note See
-     * <a href="https://www.heise.de/developer/artikel/C-Core-Guidelines-Sei-dir-der-Fallen-von-Bedingungsvariablen-bewusst-4063822.html">
-     * this in-depth explication</a> or also
-     * <a href="https://www.grimm-jaud.de/index.php/blog/bedingungsvariablen">
-     * this other in-depth explication</a>, both of Rainer Grimm, for
+     * \note See
+     * \l {https://www.heise.de/developer/artikel/C-Core-Guidelines-Sei-dir-der-Fallen-von-Bedingungsvariablen-bewusst-4063822.html}
+     * {this in-depth explication} or also
+     * \l {https://www.grimm-jaud.de/index.php/blog/bedingungsvariablen}
+     * {this other in-depth explication}, both of Rainer Grimm, for
      * more details about this synchronization pattern. */
     QWaitCondition m_loopCondition;
-    /** @brief Mutex protection for @ref m_loopAbort and @ref m_loopRestart
-     * and @ref m_imageParameters.
+    /*!
+     * \brief Mutex protection for \l m_loopAbort and \l m_loopRestart
+     * and \l m_imageParameters.
      *
-     * @warning This is used with @ref m_loopCondition. See there for details. */
+     * \warning This is used with \l m_loopCondition. See there for details. */
     QMutex m_loopMutex;
-    /** @brief Request @ref run() to restart its outer loop.
+    /*!
+     * \brief Request run() to restart its outer loop.
      *
-     * @ref run() is supposed to control regularly if this value is
-     * <tt>true</tt>. If so, it should restart its outer loop as fast as
-     * possible. This variable is set by @ref startRenderingAsync() to
-     * <tt>true</tt> to make sure that the outer loop restarts, and it is set
-     * by @ref run() to <tt>false</tt> once the restart of the outer loop
+     * run() is supposed to control regularly if this value is
+     * \c {true}. If so, it should restart its outer loop as fast as
+     * possible. This variable is set by \l startRenderingAsync() to
+     * \c {true} to make sure that the outer loop restarts, and it is set
+     * by run() to \c {false} once the restart of the outer loop
      * has happened.
      *
-     * @warning This is used with @ref m_loopCondition. See there for details.
+     * \warning This is used with \l m_loopCondition. See there for details.
      *
-     * @note This data member has write access protected
-     * by @ref m_loopMutex. */
+     * \note This data member has write access protected
+     * by \l m_loopMutex. */
     std::atomic_bool m_loopRestart = false;
-    /** @brief Function pointer to the function that does the
+    /*!
+     * \brief Function pointer to the function that does the
      * actual rendering. */
     const pointerToRenderFunction m_renderFunction;
-    /** @brief Wait condition to wait until this thread goes to sleep. */
+    /*!
+     * \brief Wait condition to wait until this thread goes to sleep. */
     QWaitCondition m_syncCondition;
-    /** @brief Is <tt>true</tt> if the render thread is either sleeping
+    /*!
+     * \brief Is \c {true} if the render thread is either sleeping
      * or not yet started at all. */
     std::atomic_bool m_syncIsIdle = true;
-    /** @brief Mutex protection for @ref m_syncCondition */
+    /*!
+     * \brief Mutex protection for \l m_syncCondition */
     QMutex m_syncMutex;
 };
 

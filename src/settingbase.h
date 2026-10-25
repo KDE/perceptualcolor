@@ -16,16 +16,19 @@ namespace PerceptualColor
 
 class Settings;
 
-/** @internal
+/*!
  *
- * @brief Base class for @ref Setting.
  *
- * @internal
+ * \inmodule ModulePrivateApi
  *
- * @note <a href="https://stackoverflow.com/a/63021891">The <tt>Q_OBJECT</tt>
- * macro and templates cannot be combined.</a> Therefore,
- * @ref SettingBase serves as a base class to provide
- * signals for @ref Setting. */
+ * \brief Base class for \l Setting.
+ *
+ *
+ *
+ * \note \l {https://stackoverflow.com/a/63021891} {The Q_OBJECT
+ * macro and templates cannot be combined.} Therefore,
+ * \l SettingBase serves as a base class to provide
+ * signals for \l Setting. */
 class SettingBase : public QObject
 {
     Q_OBJECT
@@ -34,22 +37,24 @@ public:
     virtual ~SettingBase() override;
 
 Q_SIGNALS:
-    /** @brief Notify signal for the value. */
+    /*!
+     * \brief Notify signal for the value. */
     void valueChanged();
 
 protected:
     SettingBase(const QString &key, Settings *settings, QObject *parent = nullptr);
 
-    /** @brief <tt>QSettings</tt> key for the value. */
+    /*!
+     * \brief \c {QSettings} key for the value. */
     const QString m_key;
 
-    /** @brief Corresponding @ref Settings object. */
+    /*!
+     * \brief Corresponding \l Settings object. */
     QPointer<Settings> m_settings;
 
     QSettings *underlyingQSettings();
 
 private:
-    /** @internal @brief Only for unit tests. */
     friend class TestSettingBase;
 };
 

@@ -13,34 +13,37 @@
 namespace PerceptualColor
 {
 
-/** @brief Constructor.
+/*!
+ * \brief Constructor.
  *
- * @pre There exists a QCoreApplication object. (Otherwise, this
+ * \b Precondition: There exists a QCoreApplication object. (Otherwise, this
  * function will throw an exception.)
  *
- * @param scope Passed to the underlying <tt>QSettings</tt> object’s
+ * \a scope Passed to the underlying \c {QSettings} object’s
  *        constructor.
- * @param organization Passed to the underlying <tt>QSettings</tt> object’s
+ *
+ * \a organization Passed to the underlying \c {QSettings} object’s
  *        constructor.
- * @param application Passed to the underlying <tt>QSettings</tt> object’s
+ *
+ * \a application Passed to the underlying \c {QSettings} object’s
  *        constructor. Keep this string short and without special characters,
  *        as it might be used as file name for the configuration file, and
  *        the underlying file system might have restrictions.
  */
 Settings::Settings(QSettings::Scope scope, const QString &organization, const QString &application)
-    // There are important reasons to use <tt>QSettings::IniFormat</tt>.
+    // There are important reasons to use \c {QSettings::IniFormat}.
     //
-    // - It makes <tt>QSettings</tt> behave identical on all platforms.
-    //   Though <tt>QSettings</tt> is an abstraction, it has still a lot
+    // - It makes \c {QSettings} behave identical on all platforms.
+    //   Though \c {QSettings} is an abstraction, it has still a lot
     //   of platform-dependant behaviour, like the fact the numbers are
     //   saved as numbers but read back as QString when using
-    //   <tt>QSettings::IniFormat</tt> or when using the native format
+    //   \c {QSettings::IniFormat} or when using the native format
     //   and the native platform uses Ini (like Linux); other platforms
-    //   preserve the type information. By using <tt>QSettings::IniFormat</tt>
+    //   preserve the type information. By using \c {QSettings::IniFormat}
     //   the behaviour becomes at least predictable and is identical also
     //   cross-platform.
     //
-    // - <tt>QSettings::IniFormat</tt> is a file-based approach (while the
+    // - \c {QSettings::IniFormat} is a file-based approach (while the
     //   native approach for example on Windows is the Windows Registry
     //   instead of a file). Using a file is necessary to be able to monitor
     //   changes that other processes might make.
@@ -67,16 +70,18 @@ Settings::Settings(QSettings::Scope scope, const QString &organization, const QS
     updateFromFile();
 }
 
-/** @brief Destructor. */
+/*!
+ * \brief Destructor. */
 Settings::~Settings()
 {
 }
 
-/** @brief Updates all @ref Setting values to the corresponding values from
- * the underlying file of @ref m_qSettings.
+/*!
+ * \brief Updates all \l Setting values to the corresponding values from
+ * the underlying file of \l m_qSettings.
  *
- * This is done by emitting the @ref updatedAfterFileChange() signal, to which
- * the @ref Setting objects are supposed to connect. */
+ * This is done by emitting the \l updatedAfterFileChange() signal, to which
+ * the \l Setting objects are supposed to connect. */
 void Settings::updateFromFile()
 {
     // From Qt documentation:

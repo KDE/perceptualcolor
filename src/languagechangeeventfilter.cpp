@@ -10,29 +10,34 @@
 namespace PerceptualColor
 {
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param parent The parent of the widget, if any */
+ * \a parent The parent of the widget, if any
+ */
 LanguageChangeEventFilter::LanguageChangeEventFilter(QObject *parent)
     : QObject(parent)
 {
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 LanguageChangeEventFilter::~LanguageChangeEventFilter()
 {
 }
 
-/** @brief Filters events if this object has been installed as an event filter
+/*!
+ * \brief Filters events if this object has been installed as an event filter
  * for the watched object.
  *
  * Reimplemented from base class.
  *
- * @param obj Pointer to the object for which we are filtering events
- * @param event The event that we are filtering
+ * \a obj Pointer to the object for which we are filtering events
  *
- * @returns <tt>true</tt> (which means “discard”) for
- * <tt>QEvent::LanguageChange</tt> events. <tt>false</tt> otherwise. */
+ * \a event The event that we are filtering
+ *
+ * Returns \c {true} (which means “discard”) for
+ * \c {QEvent::LanguageChange} events. \c {false} otherwise. */
 bool LanguageChangeEventFilter::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj)

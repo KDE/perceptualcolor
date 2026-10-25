@@ -14,6 +14,7 @@
 #include "multispinbox.h"
 #include "multispinboxsection.h"
 #include "perceptualcolornamespace.h"
+#include "perceptualcolorruntimeversion.h"
 #include "settranslation.h"
 #include "swatchbook.h"
 #include "vec3.h"
@@ -61,8 +62,8 @@ using namespace PerceptualColor;
 // Force a font for a widget and all direct or indirect children widgets.
 //
 // The given font is set on the widget and all its direct or indirect
-// children which are subclasses of <tt>QWidget</tt>. If the widget is
-// a <tt>nullptr</tt>, nothing happens.
+// children which are subclasses of \c {QWidget}. If the widget is
+// a \c {nullptr}, nothing happens.
 //
 // Use case: QApplication::setFont() occasionally does not work on all
 // child widgets, so a special enforcement is needed.

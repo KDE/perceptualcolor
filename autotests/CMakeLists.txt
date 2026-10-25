@@ -174,6 +174,7 @@ if(BUILD_TESTING)
         testmat3
         testmultispinbox
         testmultispinboxsection
+        testperceptualcolorruntimeversion
         testperceptualsettings
         testpolarpointf
         testportaleyedropper

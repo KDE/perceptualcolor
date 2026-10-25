@@ -10,11 +10,6 @@
 
 class QCoreApplication;
 
-/** @internal @file
- *
- * Provides the @ref PerceptualColor::initializeTranslation() function.
- */
-
 namespace PerceptualColor
 {
 

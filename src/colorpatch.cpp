@@ -46,8 +46,11 @@ class QWidget;
 
 namespace PerceptualColor
 {
-/** @brief Constructor
- * @param parent The parent of the widget, if any */
+/*!
+ * \brief Constructor
+ *
+ * \a parent The parent of the widget, if any
+ */
 ColorPatch::ColorPatch(QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ColorPatchPrivate(this))
@@ -57,14 +60,16 @@ ColorPatch::ColorPatch(QWidget *parent)
     d_pointer->updatePixmapIfNecessary();
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 ColorPatch::~ColorPatch() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation. */
 ColorPatchPrivate::ColorPatchPrivate(ColorPatch *backLink)
     : m_label(new QLabel(backLink))
@@ -79,32 +84,36 @@ ColorPatchPrivate::ColorPatchPrivate(ColorPatch *backLink)
     m_label->setAlignment(myAlignment);
 }
 
-/**
- * @brief Destructor
+/*!
+ * \brief Destructor
  */
 ColorPatchPrivate::~ColorPatchPrivate() noexcept
 {
 }
 
-/** @brief Provide the size hint.
+/*!
+ * \brief Provide the size hint.
  *
  * Reimplemented from base class.
  *
- * @returns the size hint
+ * Returns the size hint
  *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize ColorPatch::sizeHint() const
 {
     return minimumSizeHint();
 }
 
-/** @brief Provide the minimum size hint.
+/*!
+ * \brief Provide the minimum size hint.
  *
  * Reimplemented from base class.
  *
- * @returns the minimum size hint
+ * Returns the minimum size hint
  *
- * @sa @ref sizeHint() */
+ * \sa sizeHint()
+ */
 QSize ColorPatch::minimumSizeHint() const
 {
     // Use a size similar to a QToolButton with an icon (and without text)
@@ -124,8 +133,8 @@ QSize ColorPatch::minimumSizeHint() const
         this);
 }
 
-/**
- * @brief Updates the pixmap in @ref m_label if necessary.
+/*!
+ * \brief Updates the pixmap in \l m_label if necessary.
  */
 void ColorPatchPrivate::updatePixmapIfNecessary()
 {
@@ -150,11 +159,12 @@ void ColorPatchPrivate::updatePixmapIfNecessary()
     m_label->update();
 }
 
-/** @brief Handle resize events.
+/*!
+ * \brief Handle resize events.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The corresponding event
+ * \a eventParameter The corresponding event
  */
 void ColorPatch::resizeEvent(QResizeEvent *eventParameter)
 {
@@ -180,8 +190,11 @@ QColor ColorPatch::color() const
     return d_pointer->m_color;
 }
 
-/** @brief Setter for the @ref color property.
- * @param newColor the new color */
+/*!
+ * \brief Setter for the color property.
+ *
+ * \a newColor the new color
+ */
 void ColorPatch::setColor(const QColor &newColor)
 {
     if (newColor != d_pointer->m_color) {
@@ -191,20 +204,21 @@ void ColorPatch::setColor(const QColor &newColor)
     }
 }
 
-/** @brief Renders the image to be displayed.
+/*!
+ * \brief Renders the image to be displayed.
  *
- * @param parameters The image parameters
+ * \a parameters The image parameters
  *
- * @returns An image containing the color of @ref m_color. If the color is
+ * Returns an image containing the color of \l m_color. If the color is
  * transparent or semi-transparent, background with small gray squares is
- * visible. If @ref ColorPatch has RTL layout, the image is mirrored.
+ * visible. If \l ColorPatch has RTL layout, the image is mirrored.
  * If the color is invalid, a special mark is shown.
  *
  * The size of
  * the image is equal or (if rounding has to be done because of fractional
  * scale factors) slightly bigger than necessary to paint the whole
- * @ref ColorPatch surface at the given device-pixel-ratio. As @ref m_label
- * does <em>not</em> scale the image by default, it will be displayed with
+ * \l ColorPatch surface at the given device-pixel-ratio. As \l m_label
+ * does \e {not} scale the image by default, it will be displayed with
  * the correct aspect ratio, while guaranteeing to be big enough whatever
  * QLabel’s frame size is with the currently used QStyle. */
 QImage ColorPatchPrivate::renderImage(const ImageParameters &parameters)
@@ -300,14 +314,14 @@ QImage ColorPatchPrivate::renderImage(const ImageParameters &parameters)
     return myImage;
 }
 
-/**
- * @brief Get image parameters for the current widget state.
+/*!
+ * \brief Get image parameters for the current widget state.
  *
- * @param width of the requested image, measured in logical pixels.
+ * \a width of the requested image, measured in logical pixels.
  *
- * @param height of the requested image, measured in logical pixels.
+ * \a height of the requested image, measured in logical pixels.
  *
- * @returns The image parameters, based on the current widget state (color
+ * Returns the image parameters, based on the current widget state (color
  * theme, device pixel ratio etc.).
  */
 ColorPatchPrivate::ImageParameters ColorPatchPrivate::getImageParameters(const int width, const int height) const
@@ -333,11 +347,12 @@ ColorPatchPrivate::ImageParameters ColorPatchPrivate::getImageParameters(const i
     return parameters;
 }
 
-/** @brief Renders the image to be displayed.
+/*!
+ * \brief Renders the image to be displayed.
  *
- * @param parameters The image parameters
+ * \a parameters The image parameters
  *
- * @returns Same as @ref renderImage but as QPixmap. */
+ * Returns the same as \l renderImage but as QPixmap. */
 QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters)
 {
     const QImage image = renderImage(parameters);
@@ -346,14 +361,12 @@ QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters)
     return pixmap;
 }
 
-/**
- * @brief Initiates an outgoing drag operation.
+/*!
+ * \brief Initiates an outgoing drag operation.
  *
  * Reimplemented from base class.
  *
- * @param startPosition The position where the drag gesture began.
- *
- * @todo SHOULDHAVE Provide more mime types, like Gimp/GEGL and CSS.
+ * \a startPosition The position where the drag gesture began.
  */
 void ColorPatch::execDrag(QPoint startPosition)
 {
@@ -376,8 +389,8 @@ void ColorPatch::execDrag(QPoint startPosition)
     Q_UNUSED(startPosition)
 }
 
-/**
- * @brief Decides whether a incoming drag operation may enter this widget.
+/*!
+ * \brief Decides whether a incoming drag operation may enter this widget.
  *
  * This event is triggered when the mouse, while holding a drag payload,
  * enters the widget's area.
@@ -387,7 +400,7 @@ void ColorPatch::execDrag(QPoint startPosition)
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The corresponding event
+ * \a eventParameter The corresponding event
  */
 void ColorPatch::dragEnterEvent(QDragEnterEvent *eventParameter)
 {
@@ -400,8 +413,8 @@ void ColorPatch::dragEnterEvent(QDragEnterEvent *eventParameter)
     return;
 }
 
-/**
- * @brief Handles the actual drop operation.
+/*!
+ * \brief Handles the actual drop operation.
  *
  * This event is triggered when the user releases the mouse button
  * inside the widget while dragging data. At this point the widget
@@ -409,7 +422,7 @@ void ColorPatch::dragEnterEvent(QDragEnterEvent *eventParameter)
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The corresponding event
+ * \a eventParameter The corresponding event
  */
 void ColorPatch::dropEvent(QDropEvent *eventParameter)
 {
@@ -424,11 +437,12 @@ void ColorPatch::dropEvent(QDropEvent *eventParameter)
     return;
 }
 
-/** @brief Paint the widget.
+/*!
+ * \brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter the paint event
+ * \a eventParameter the paint event
  */
 void ColorPatch::paintEvent(QPaintEvent *eventParameter)
 {
@@ -448,27 +462,27 @@ void ColorPatch::paintEvent(QPaintEvent *eventParameter)
     d_pointer->updatePixmapIfNecessary();
 }
 
-/**
- * @brief Main event handler.
+/*!
+ * \brief Main event handler.
  *
  * Reimplemented from base class.
  *
- * @param eventParameter The event to be processed.
+ * \a eventParameter The event to be processed.
  *
- * @return This function returns true if the event was recognized, otherwise
+ * Returns true if the event was recognized, otherwise
  * it returns false.
  *
- * @internal
  *
- * @note This is a dummy reimplementation, provided to ensure future
+ *
+ * \note This is a dummy reimplementation, provided to ensure future
  * extensibility while preserving binary compatibility, as
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...">
- * recommended by the KDE binary compatibility policy</a>.
+ * \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#You_should...}
+ * {recommended by the KDE binary compatibility policy}.
  * The policy states that
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function">
- * “you can safely reimplement a virtual function defined in one of the base
+ * \l {https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Adding_a_reimplemented_virtual_function}
+ * {“you can safely reimplement a virtual function defined in one of the base
  * classes only if it is safe that the programs linked with the prior version
- * call the implementation in the base class rather than the derived one.”</a>.
+ * call the implementation in the base class rather than the derived one.”}.
  * Consistent behavior across versions would be difficult to guarantee.
  * By reimplementing the main event handler now,
  * we retain the option to extend it later to process new event types

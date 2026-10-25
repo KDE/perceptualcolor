@@ -12,11 +12,14 @@
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- *  @brief Parameters for generating a color wheel image.
  *
- * Intended for use with @ref AsyncImageProvider.
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Parameters for generating a color wheel image.
+ *
+ * Intended for use with \l AsyncImageProvider.
  *
  * The image is always square, with its center representing the origin
  * of a polar coordinate system. Each pixel corresponds to a specific
@@ -26,16 +29,16 @@ namespace PerceptualColor
  *
  * To render an actual wheel, define a clipping path with QPainter and
  * draw the image within this path. Instead of using this class directly,
- * prefer @ref ColorWheelImageProvider, which offers
- * @ref ColorWheelImageProvider::drawColorWheel(). This helper takes care of
+ * prefer \l ColorWheelImageProvider, which offers
+ * \l ColorWheelImageProvider::drawColorWheel(). This helper takes care of
  * image alignment, devicePixelRatioF handling, and scaling when needed.
  * It also uses a single image cache across the library to avoid redundant
  * re‑rendering for multiple widgets.
  *
  * This type is declared as type to Qt’s type system via
- * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use for <em>queued</em> signal-slot connections),
- * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+ * example if you want to use for \e {queued} signal-slot connections),
+ * you might consider calling \c {qRegisterMetaType()} for
  * this type, once you have a QApplication object.
  */
 class ColorWheelImageParameters
@@ -45,36 +48,35 @@ public:
 
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
 
-    /**
-     * @brief Equal operator
+    /*!
+     * \brief Equal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise.
+     * Returns \c {true} if equal, \c {false} otherwise.
      */
     [[nodiscard]] bool operator==(const ColorWheelImageParameters &other) const = default; // clazy:exclude=function-args-by-value
 
-    /**
-     * @brief Unequal operator
+    /*!
+     * \brief Unequal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise.
+     * Returns \c {true} if unequal, \c {false} otherwise.
      */
     [[nodiscard]] bool operator!=(const ColorWheelImageParameters &other) const = default; // clazy:exclude=function-args-by-value
 
-    /**
-     * @brief The image size (actual width and height measured in pixel).
+    /*!
+     * \brief The image size (actual width and height measured in pixel).
      */
     int imageSizePhysical = 0;
 
-    /**
-     * @brief The color space into which the working space is projected.
+    /*!
+     * \brief The color space into which the working space is projected.
      */
     PerceptualColor::LchSpace projectionSpace = PerceptualColor::LchSpace::CielchD50;
 
 private:
-    /** @internal @brief Only for unit tests. */
     friend class TestColorWheelImageParameters;
 
     static void

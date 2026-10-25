@@ -31,12 +31,6 @@ class QApplication;
 class QWheelEvent;
 class QWidget;
 
-/** @internal
- *
- * @file
- *
- * Provides helper functionality. */
-
 namespace PerceptualColor
 {
 
@@ -44,17 +38,20 @@ QString fromMnemonicToRichText(const QString &mnemonicText);
 
 bool isDarkColorScheme();
 
-/** @internal
+/*!
  *
- * @brief Convenience function template that tests if a value is in a list.
  *
- * @param first The value
- * @param t The list
+ * \brief Convenience function template that tests if a value is in a list.
+ *
+ * \a first The value
+ *
+ * \a t The list
  *
  * Usage:
- * @snippet testhelper.cpp isInUsage
  *
- * @returns <tt>true</tt> if “value” is in “list”. <tt>false</tt> otherwise. */
+ * \snippet testhelper.cpp isInUsage
+ *
+ * Returns \c {true} if “value” is in “list”. \c {false} otherwise. */
 template<typename First, typename... T>
 bool isIn(First &&first, T &&...t)
 {
@@ -70,14 +67,19 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
 
 [[nodiscard]] QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF);
 
-/** @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- * @brief Two-dimensional array */
+ * \class PerceptualColor::Array2D
+ *
+ * \brief Two-dimensional array.
+ */
 template<typename T>
 class Array2D
 {
 public:
-    /** @brief Constructor.
+    /*!
+     * \brief Constructor.
      *
      * Constructs an array with the size 0 × 0. */
     Array2D()
@@ -86,10 +88,12 @@ public:
     {
     }
 
-    /** @brief Constructor.
+    /*!
+     * \brief Constructor.
      *
-     * @param iCount size (first dimension)
-     * @param jCount size (second dimension)
+     * \a iCount size (first dimension)
+     *
+     * \a jCount size (second dimension)
      *
      * The elements are initialized with default-constructed values. */
     Array2D(qsizetype iCount, qsizetype jCount)
@@ -109,11 +113,14 @@ public:
         }
     }
 
-    /** @brief Constructor.
+    /*!
+     * \brief Constructor.
      *
-     * @param iCount size (first dimension)
-     * @param jCount size (second dimension)
-     * @param init Initial values. Excess elements are ignored. Missing
+     * \a iCount size (first dimension)
+     *
+     * \a jCount size (second dimension)
+     *
+     * \a init Initial values. Excess elements are ignored. Missing
      *        elements are initialized with default-constructed values. */
     Array2D(qsizetype iCount, qsizetype jCount, QList<T> init)
         : m_iCount(iCount)
@@ -137,42 +144,57 @@ public:
     }
 
     // Define also these functions recommended by “rule of five”:
-    /** @brief Default copy assignment operator
-     * @param other the object to copy
-     * @returns The default implementation’s return value. */
+    /*!
+     * \brief Default copy assignment operator
+     *
+     * \a other the object to copy
+     *
+     * Returns the default implementation’s return value.
+     */
     Array2D &operator=(const Array2D &other) = default; // clazy:exclude=function-args-by-value
-    /** @brief Default move assignment operator
+    /*!
+     * \brief Default move assignment operator
      *
-     * @param other the object to move-assign
+     * \a other the object to move-assign
      *
-     * @returns The default implementation’s return value. */
+     * Returns the default implementation’s return value.
+     */
     Array2D &operator=(Array2D &&other) = default;
-    /** @brief Default copy constructor
-     * @param other the object to copy */
+    /*!
+     * \brief Default copy constructor
+     *
+     * \a other the object to copy
+     */
     Array2D(const Array2D &other) = default;
-    /** @brief Default move constructor
-     * @param other the object to move */
+    /*!
+     * \brief Default move constructor
+     *
+     * \a other the object to move
+     */
     Array2D(Array2D &&other) = default;
 
-    /** @brief Equal operator
+    /*!
+     * \brief Equal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
+     * Returns \c {true} if equal, \c {false} otherwise. */
     [[nodiscard]] bool operator==(const Array2D &other) const = default;
 
-    /** @brief Unequal operator
+    /*!
+     * \brief Unequal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
+     * Returns \c {true} if unequal, \c {false} otherwise. */
     [[nodiscard]] bool operator!=(const Array2D &other) const = default;
 
-    /** @brief If a given indices combination is in range.
+    /*!
+     * \brief Returns if a given index combination is in range.
      *
-     * @param i index (first dimension)
-     * @param j index (second dimension)
-     * @returns If the indices combination is in range.
+     * \a i index (first dimension)
+     *
+     * \a j index (second dimension)
      */
     bool isInRange(qsizetype i, qsizetype j) const
     {
@@ -183,11 +205,15 @@ public:
         return (iOkay && jOkay);
     }
 
-    /** @brief Set value at a given index.
+    /*!
+     * \brief Set value at a given index.
      *
-     * @param i index (first dimension)
-     * @param j index (second dimension)
-     * @param newValue value to set */
+     * \a i index (first dimension)
+     *
+     * \a j index (second dimension)
+     *
+     * \a newValue value to set
+     */
     void setValue(qsizetype i, qsizetype j, const T &newValue)
     {
         if (isInRange(i, j)) {
@@ -195,21 +221,24 @@ public:
         }
     }
 
-    /**
-     * @brief Converts the array to a QList.
-     *
-     * @return Converts the array to a QList. */
+    /*!
+     * \brief Converts the array to a QList.
+     */
     QList<T> toQList() const
     {
         return m_data;
     }
 
-    /** @brief Get value at a given index.
+    /*!
+     * \brief Get value at a given index.
      *
-     * @param i index (first dimension)
-     * @param j index (second dimension)
-     * @returns If the indices are valid, the value at the given indeces.
-     * A default-constructed value otherwise. */
+     * \a i index (first dimension)
+     *
+     * \a j index (second dimension)
+     *
+     * If the indices are valid, it returns the value at the given indeces.
+     * Otherwise, it returns a default-constructed value.
+     */
     T value(qsizetype i, qsizetype j) const
     {
         if (isInRange(i, j)) {
@@ -218,40 +247,45 @@ public:
         return T(); // Default value if indices are out of bounds
     }
 
-    /** @brief Size of the first dimension.
-     *
-     * @returns Size of the first dimension. */
+    /*!
+     * \brief Size of the first dimension.
+     */
     qsizetype iCount() const
     {
         return m_iCount;
     }
 
-    /** @brief Size of the second dimension.
-     *
-     * @returns Size of the second dimension. */
+    /*!
+     * \brief Size of the second dimension.
+     */
     qsizetype jCount() const
     {
         return m_jCount;
     }
 
 private:
-    /** @brief Internal storage of the elements. */
+    /*!
+     * \brief Internal storage of the elements. */
     QList<T> m_data;
-    /** @brief Internal storage of @ref iCount(). */
+    /*!
+     * \brief Internal storage of \l iCount(). */
     qsizetype m_iCount;
-    /** @brief Internal storage of @ref jCount(). */
+    /*!
+     * \brief Internal storage of \l jCount(). */
     qsizetype m_jCount;
 };
 
-/**
- * @internal
+/*!
+ * \typealias PerceptualColor::QColorArray2D
  *
- * @brief Swatches organized in a grid.
+ * \relates PerceptualColor::Array2D
+ *
+ * \brief Swatches organized in a grid.
  *
  * This type is declared as type to Qt’s type system via
- * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use for <em>queued</em> signal-slot connections),
- * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+ * example if you want to use for \e {queued} signal-slot connections),
+ * you might consider calling \c {qRegisterMetaType()} for
  * this type, once you have a QApplication object. */
 using QColorArray2D = Array2D<QColor>;
 
@@ -259,9 +293,13 @@ QColor toOpaque(const QColor &color);
 
 QColorArray2D toOpaque(const QColorArray2D &array);
 
-/** @internal
+/*!
  *
- * @brief Force processing of events in a delayed fashion.
+ *
+ * \fn template<typename T = void> void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long msecWaitBetweenEventLoopPasses = 50, int
+ * numberEventLoopPasses = 3)
+ *
+ * \brief Force processing of events in a delayed fashion.
  *
  * When there is no running event loop (like in unit tests or in tools
  * like the screenshot generator), some parts of the asynchronous API
@@ -270,15 +308,17 @@ QColorArray2D toOpaque(const QColorArray2D &array);
  * in-between, so that maybe existing parallel threads have also
  * a chance to terminate their work.
  *
- * @param msecWaitInitially Delay before starting event processing.
- * @param msecWaitBetweenEventLoopPasses Delay before each pass through
+ * \a msecWaitInitially Delay before starting event processing.
+ *
+ * \a msecWaitBetweenEventLoopPasses Delay before each pass through
  *        through the pending events.
- * @param numberEventLoopPasses Number of passes through the pending events.
  *
- * @internal
+ * \a numberEventLoopPasses Number of passes through the pending events.
  *
- * @note This is declared as template to prevent that this code is compiled
- * into the library itself, which does <em>not</em> actually use it itself,
+ *
+ *
+ * \note This is declared as template to prevent that this code is compiled
+ * into the library itself, which does \e {not} actually use it itself,
  * but includes this header file. */
 template<typename T = void>
 void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long msecWaitBetweenEventLoopPasses = 50, int numberEventLoopPasses = 3)
@@ -300,17 +340,19 @@ void delayedEventProcessing(unsigned long msecWaitInitially = 50, unsigned long 
     }
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Determines whether the current session is running under the
+ *
+ * \fn template<typename T = void> [[nodiscard]] bool onWayland()
+ *
+ * \brief Determines whether the current session is running under the
  * Wayland Window System.
  *
- * @pre A valid QApplication instance must be available to perform detection.
+ * \b Precondition: A valid QApplication instance must be available
+ * to perform detection.
  *
- * @returns
- * - <tt>true</tt> if Wayland is detected as the active window system.
- * - <tt>false</tt> if another window system is detected.
+ * Returns \c {true} if Wayland is detected as the active window system.
+ * Returns \c {false} if another window system is detected.
  */
 template<typename T = void>
 [[nodiscard]] bool onWayland()
@@ -324,17 +366,19 @@ template<typename T = void>
     return platform.contains(QStringLiteral("wayland"), Qt::CaseInsensitive);
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Determines whether the current session is running under the
+ *
+ * \fn template<typename T = void> [[nodiscard]] bool onX()
+ *
+ * \brief Determines whether the current session is running under the
  * X Window System.
  *
- * @pre A valid QApplication instance must be available to perform detection.
+ * \b Precondition: A valid QApplication instance must be available
+ * to perform detection.
  *
- * @returns
- * - <tt>true</tt> if X is detected as the active window system.
- * - <tt>false</tt> if another window system is detected.
+ * Returns \c {true} if X is detected as the active window system.
+ * Returns \c {false} if another window system is detected.
  */
 template<typename T = void>
 [[nodiscard]] bool onX()
@@ -356,19 +400,21 @@ template<typename T = void>
 
 [[nodiscard]] QPair<QString, QString> getPrefixSuffix(const QString &formatString);
 
-/**
- * @internal
+/*!
  *
- * @brief The full-qualified C++ identifier as QString.
+ *
+ * \fn template<typename T> [[nodiscard]] QString enumerationToFullString()
+ *
+ * \brief The full-qualified C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
- * @tparam T The enumeration.
+ * \b T The enumeration.
  *
- * @pre The enumeration type is declared with
+ * \b Precondition: The enumeration type is declared with
  * Q_ENUM or Q_ENUM_NS.
  *
- * @returns The full-qualified C++ identifier as QString. */
+ * Returns the full-qualified C++ identifier as QString. */
 template<typename T>
 [[nodiscard]] QString enumerationToFullString()
 {
@@ -382,21 +428,23 @@ template<typename T>
     return QStringLiteral("%1::%2").arg(scope, name);
 }
 
-/**
- * @internal
+/*!
  *
- * @brief The full-qualified C++ identifier as QString.
+ *
+ * \fn template<typename T> [[nodiscard]] QString enumeratorToFullString(const T &enumerator)
+ *
+ * \brief The full-qualified C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
- * @tparam T The enumeration type. Can usually be omitted.
+ * \b T The enumeration type. Can usually be omitted.
  *
- * @param enumerator An enumerator.
+ * \a enumerator An enumerator.
  *
- * @pre The enumeration type of the enumerator is declared with
+ * \b Precondition: The enumeration type of the enumerator is declared with
  * Q_ENUM or Q_ENUM_NS.
  *
- * @returns The full-qualified C++ identifier as QString, followed by the
+ * Returns the full-qualified C++ identifier as QString, followed by the
  * underlying integer value in parenthesis. If the enumerator does not
  * exist (for example because you have done a static_cast of an invalid
  * integer to  the enum class), an empty String is returned instead. If
@@ -404,7 +452,8 @@ template<typename T>
  * that share the same integer with the current enumerator), all synonym
  * enumerators are returned.
  *
- * @sa @ref enumeratorToString() */
+ * \sa enumeratorToString()
+ */
 template<typename T>
 [[nodiscard]] QString enumeratorToFullString(const T &enumerator)
 {
@@ -437,21 +486,23 @@ template<typename T>
     return QStringLiteral("%1::%2::%3(%4)").arg(scope, name, keys).arg(value);
 }
 
-/**
- * @internal
+/*!
  *
- * @brief The C++ identifier as QString.
+ *
+ * \fn template<typename T> [[nodiscard]] QString enumeratorToString(const T &enumerator)
+ *
+ * \brief The C++ identifier as QString.
  *
  * This can be useful for debugging purposes.
  *
- * @tparam T The enumeration type. Can usually be omitted.
+ * \b T The enumeration type. Can usually be omitted.
  *
- * @param enumerator An enumerator.
+ * \a enumerator An enumerator.
  *
- * @pre The enumeration type of the enumerator is declared with
+ * \b Precondition: The enumeration type of the enumerator is declared with
  * Q_ENUM or Q_ENUM_NS.
  *
- * @returns The C++ identifier as QString, followed by the
+ * Returns the C++ identifier as QString, followed by the
  * underlying integer value in parenthesis. If the enumerator does not
  * exist (for example because you have done a static_cast of an invalid
  * integer to  the enum class), an empty String is returned instead. If
@@ -459,7 +510,8 @@ template<typename T>
  * that share the same integer with the current enumerator), all synonym
  * enumerators are returned.
  *
- * @sa @ref enumeratorToFullString() */
+ * \sa enumeratorToFullString()
+ */
 template<typename T>
 [[nodiscard]] QString enumeratorToString(const T &enumerator)
 {
@@ -492,21 +544,26 @@ template<typename T>
 
 bool isThemeChange(const QEvent::Type eventType);
 
-/**
- * @internal
+/*!
  *
- * @brief Splits a given number of elements into equal segments.
  *
- * This function divides <tt>elementCount</tt> elements (indices from
- * <tt>[0..(elementCount - 1)]</tt>) into <tt>segmentCount</tt> segments,
+ * \fn template<typename T> QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
+ *
+ * \brief Splits a given number of elements into equal segments.
+ *
+ * This function divides \c {elementCount} elements (indices from
+ * \c {[0..(elementCount - 1)]}) into \c {segmentCount} segments,
  * ensuring that each segment has a start and end index. If
- * <tt>segmentCount</tt> is greater than <tt>elementCount</tt>, fewer segments
+ * \c {segmentCount} is greater than \c {elementCount}, fewer segments
  * will be created.
  *
- * @tparam T Numeric type of the elements (e.g., int, long, size_t).
- * @param elementCount Total number of elements. Should be ≥ 1.
- * @param segmentCount Number of segments to split into. Should be ≥ 1.
- * @return A list of pairs representing the start and end indices of each
+ * \b T Numeric type of the elements (e.g., int, long, size_t).
+ *
+ * \a elementCount Total number of elements. Should be ≥ 1.
+ *
+ * \a segmentCount Number of segments to split into. Should be ≥ 1.
+ *
+ * Returns a list of pairs representing the start and end indices of each
  * segment.
  */
 template<typename T>
@@ -544,19 +601,24 @@ QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
     return result;
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Splits a <tt>QList&lt;T&gt;</tt> into a specified number of parts.
  *
- * This function divides the elements of a <tt>QList&lt;T&gt;</tt> as evenly as
- * possible into a given number of sublists. If <tt>numParts</tt> is greater
- * than <tt>originalList.size()</tt>, fewer parts will be created.
+ * \fn template<typename T> QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
  *
- * @tparam T The type of elements in the list.
- * @param originalList The original <tt>QList&lt;T&gt;</tt> to be split.
- * @param numParts The desired number of parts. Should be ≥ 1.
- * @return <tt>QList&lt;QList&lt;T&gt;&gt;</tt> A list of sublists containing
+ * \brief Splits a \c {QList} into a specified number of parts.
+ *
+ * This function divides the elements of a \c {QList} as evenly as
+ * possible into a given number of sublists. If \c {numParts} is greater
+ * than \c {originalList.size()}, fewer parts will be created.
+ *
+ * \b T The type of elements in the list.
+ *
+ * \a originalList The original \c {QList} to be split.
+ *
+ * \a numParts The desired number of parts. Should be ≥ 1.
+ *
+ * Returns a list of sublists containing
  * the divided data.
  */
 template<typename T>

@@ -16,10 +16,8 @@
 namespace PerceptualColor
 {
 
-/**
- * @brief Meyer’s singleton: Provides the instance of this class as reference.
- *
- * @returns Meyer’s singleton: Provides the instance of this class as reference.
+/*!
+ * \brief Meyer’s singleton: Provides the instance of this class as reference.
  */
 const ColorSpaceInfo &ColorSpaceInfo::instance()
 {
@@ -27,35 +25,35 @@ const ColorSpaceInfo &ColorSpaceInfo::instance()
     return s;
 }
 
-/**
- * @brief Destructor.
+/*!
+ * \brief Destructor.
  */
 ColorSpaceInfo::~ColorSpaceInfo() noexcept
 {
 }
 
-/**
- * @brief The maximum possible chroma value in the sRGB gamut.
+/*!
+ * \brief The maximum possible chroma value in the sRGB gamut.
  *
- * @return The maximum possible chroma value in the sRGB gamut.
+ * Returns the maximum possible chroma value in the sRGB gamut.
  */
 double ColorSpaceInfo::maxCielchD50Chroma()
 {
     return instance().m_profileMaximumCielchD50Chroma;
 }
 
-/**
- * @brief The maximum possible chroma value in the sRGB gamut.
+/*!
+ * \brief The maximum possible chroma value in the sRGB gamut.
  *
- * @return The maximum possible chroma value in the sRGB gamut.
+ * Returns the maximum possible chroma value in the sRGB gamut.
  */
 double ColorSpaceInfo::maxOklchChroma()
 {
     return instance().m_profileMaximumOklchChroma;
 }
 
-/**
- * @brief Initialization for various data items related to the chromatic
+/*!
+ * \brief Initialization for various data items related to the chromatic
  * boundary.
  */
 ColorSpaceInfo::ColorSpaceInfo()
@@ -175,12 +173,12 @@ ColorSpaceInfo::ColorSpaceInfo()
         oklchValues.maximumChroma);
 }
 
-/**
- * @brief Returns the most chromatic color for the given hue.
+/*!
+ * \brief Returns the most chromatic color for the given hue.
  *
- * @param hue360 hue in the range [0, 360]
+ * \a hue360 hue in the range [0, 360]
  *
- * @returns the most chromatic color for the given hue in the sRGB gamut.
+ * Returns the most chromatic color for the given hue in the sRGB gamut.
  */
 QColor ColorSpaceInfo::maxChromaColorByOklabHue360(double hue360)
 {
@@ -189,12 +187,12 @@ QColor ColorSpaceInfo::maxChromaColorByOklabHue360(double hue360)
         LchSpace::Oklch);
 }
 
-/**
- * @brief Returns the most chromatic color for the given hue.
+/*!
+ * \brief Returns the most chromatic color for the given hue.
  *
- * @param hue360 hue in the range [0, 360]
+ * \a hue360 hue in the range [0, 360]
  *
- * @returns the most chromatic color for the given hue in the sRGB gamut.
+ * Returns the most chromatic color for the given hue in the sRGB gamut.
  */
 QColor ColorSpaceInfo::maxChromaColorByCielchD50Hue360(double hue360)
 {
@@ -203,13 +201,14 @@ QColor ColorSpaceInfo::maxChromaColorByCielchD50Hue360(double hue360)
         LchSpace::CielchD50);
 }
 
-/**
- * @brief Returns the most chromatic color for the given hue.
+/*!
+ * \brief Returns the most chromatic color for the given hue.
  *
- * @param hue360 Oklab hue in the range [0, 360]
- * @param type The type of Lch color space.
+ * \a hue360 Oklab hue in the range [0, 360]
  *
- * @returns the most chromatic color for the given hue in the sRGB gamut.
+ * \a type The type of Lch color space.
+ *
+ * Returns the most chromatic color for the given hue in the sRGB gamut.
  */
 QColor ColorSpaceInfo::maxChromaColorByHue360(double hue360, PerceptualColor::LchSpace type)
 {
@@ -254,48 +253,40 @@ QColor ColorSpaceInfo::maxChromaColorByHue360(double hue360, PerceptualColor::Lc
     }
 }
 
-/**
- * @brief The darkest in-gamut point on the L* axis.
+/*!
+ * \brief The darkest in-gamut point on the L* axis.
  *
- * @returns The darkest in-gamut point on the L* axis.
- *
- * @sa @ref m_cielabD50WhitepointL()
+ * Returns the darkest in-gamut point on the L* axis.
  */
 double ColorSpaceInfo::cielabD50BlackpointL()
 {
     return instance().m_cielabD50BlackpointL;
 }
 
-/**
- * @brief The lightest in-gamut point on the L* axis.
+/*!
+ * \brief The lightest in-gamut point on the L* axis.
  *
- * @returns The lightest in-gamut point on the L* axis.
- *
- * @sa @ref m_cielabD50BlackpointL()
+ * Returns the lightest in-gamut point on the L* axis.
  */
 double ColorSpaceInfo::cielabD50WhitepointL()
 {
     return instance().m_cielabD50WhitepointL;
 }
 
-/**
- * @brief The darkest in-gamut point on the L* axis.
+/*!
+ * \brief The darkest in-gamut point on the L* axis.
  *
- * @returns The darkest in-gamut point on the L* axis.
- *
- * @sa @ref m_oklabWhitepointL()
+ * Returns the darkest in-gamut point on the L* axis.
  */
 double ColorSpaceInfo::oklabBlackpointL()
 {
     return instance().m_oklabBlackpointL;
 }
 
-/**
- * @brief The lightest in-gamut point on the L* axis.
+/*!
+ * \brief The lightest in-gamut point on the L* axis.
  *
- * @returns The lightest in-gamut point on the L* axis.
- *
- * @sa @ref m_oklabBlackpointL()
+ * Returns the lightest in-gamut point on the L* axis.
  */
 double ColorSpaceInfo::oklabWhitepointL()
 {

@@ -14,10 +14,12 @@ class QObject;
 
 namespace PerceptualColor
 {
-/** @brief The constructor.
+/*!
+ * \brief The constructor.
  *
- * @param renderFunction Pointer to the render function that will be used.
- * @param parent The widget’s parent widget. This parameter will be passed
+ * \a renderFunction Pointer to the render function that will be used.
+ *
+ * \a parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 AsyncImageRenderThread::AsyncImageRenderThread(const pointerToRenderFunction &renderFunction, QObject *parent)
     : QThread(parent)
@@ -26,7 +28,8 @@ AsyncImageRenderThread::AsyncImageRenderThread(const pointerToRenderFunction &re
     qRegisterMetaType<PerceptualColor::AsyncImageRenderCallback::InterlacingState>();
 }
 
-/** @brief The destructor.
+/*!
+ * \brief The destructor.
  *
  * This destructor might takes a little while because he has to
  * stop the associated thread before destroying it: Possibly running
@@ -48,19 +51,20 @@ AsyncImageRenderThread::~AsyncImageRenderThread()
     m_syncCondition.wakeAll();
 }
 
-/** @brief Asynchronously start rendering.
+/*!
+ * \brief Asynchronously start rendering.
  *
  * As this function is asynchronous, it will return very fast.
  *
- * @param parameters The parameters of the requested rendering.
+ * \a parameters The parameters of the requested rendering.
  *
- * @post If the <tt>parameters</tt> are different from those at the last
+ *  If the \c {parameters} are different from those at the last
  * call, a new rendering of the new parameters will be started. (If there
  * is currently a rendering of other parameters in progress, this rendering
- * will be requested to stop as soon as possible.) If the <tt>parameters</tt>
+ * will be requested to stop as soon as possible.) If the \c {parameters}
  * are identical to those at the last call, nothing happens.
  *
- * The rendering will emit the signal @ref interlacingPassCompleted(). */
+ * The rendering will emit the signal \l interlacingPassCompleted(). */
 void AsyncImageRenderThread::startRenderingAsync(const QVariant &parameters)
 {
     QMutexLocker<QMutex> loopLocker(&m_loopMutex);
@@ -88,12 +92,13 @@ void AsyncImageRenderThread::startRenderingAsync(const QVariant &parameters)
     }
 }
 
-/** @brief The code that will run within the thread.
+/*!
+ * \brief The code that will run within the thread.
  *
  * Reimplemented from base class.
  *
- * This is a wrapper that provides the thread-control (loops and so on).
- * The actual rendering is done by calling @ref m_renderFunction. */
+ * This function is just a wrapper that provides the thread-control (loops
+ * and so on). The actual rendering is done by the render function. */
 void AsyncImageRenderThread::run()
 {
     Q_FOREVER {
@@ -159,13 +164,15 @@ void AsyncImageRenderThread::run()
     }
 }
 
-/** @brief Deliver the result of an interlacing pass of
- * the <em>rendering</em> operation.
+/*!
+ * \brief Deliver the result of an interlacing pass of
+ * the \e {rendering} operation.
  *
  * This function is thread-safe.
  *
- * @param image The image
- * @param mask The alpha mask, if provided. Renderers may choose
+ * \a image The image
+ *
+ * \a mask The alpha mask, if provided. Renderers may choose
  * whether to supply an alpha mask. Alpha masks are 1-bit images where white
  * represents transparency and black represents opacity, defining the
  * transparency state <i>before</i> any anti-aliasing is applied. This
@@ -176,8 +183,10 @@ void AsyncImageRenderThread::run()
  * but in some cases, they may fall below this threshold. The alpha mask,
  * however, provides a clear and definitive indication of each pixel’s
  * validity.
- * @param parameters The parameters of the image
- * @param state The interlacing state of the image. A render function
+ *
+ * \a parameters The parameters of the image
+ *
+ * \a state The interlacing state of the image. A render function
  * must first return zero or more images with intermediate state. After
  * that, it must return exactly one image with final state (unless it
  * was aborted). After that, it must not return any more images. */
@@ -192,23 +201,22 @@ void AsyncImageRenderThread::deliverInterlacingPass(const QImage &image,
     Q_EMIT interlacingPassCompleted(image, mask, parameters, state);
 }
 
-/** @brief If the render function should abort.
+/*!
+ * \brief If the render function should abort.
  *
  * This function is thread-safe.
  *
- * @returns <tt>true</tt> if the render function should abort (and
- * return). <tt>false</tt> otherwise.
- *
- * @internal
- *
- * @sa @ref m_renderFunction */
+ * Returns \c {true} if the render function should abort (and
+ * return). \c {false} otherwise.
+ */
 bool AsyncImageRenderThread::shouldAbort() const
 {
     // m_abortRun and m_restart are atomic, so this call is thread-safe.
     return (m_loopAbort || m_loopRestart);
 }
 
-/** @brief Wait until the render thread is idle. */
+/*!
+ * \brief Wait until the render thread is idle. */
 void AsyncImageRenderThread::waitForIdle()
 {
     m_syncMutex.lock();

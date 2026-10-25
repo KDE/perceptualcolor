@@ -9,12 +9,6 @@
 #include <qglobal.h>
 #include <type_traits>
 
-/** @internal
- *
- * @file
- *
- * Mathematical helper functions. */
-
 namespace PerceptualColor
 {
 
@@ -22,35 +16,39 @@ int decimalPlaces(const int rangeMax, const int significantFigures);
 
 int roundToNearestMultiple(double num, int multiple);
 
-/** @internal
+/*!
  *
- * @brief Template function to test if a value is within a certain range
- * @param low the lower limit
- * @param x the value that will be tested
- * @param high the higher limit
- * @returns @snippet this Helper isInRange */
+ *
+ * \brief Template function to test if a value is within a certain range
+ *
+ * \a low the lower limit
+ *
+ * \a x the value that will be tested
+ *
+ * \a high the higher limit
+ *
+ * Returns:
+ *
+ * \snippet helpermath.h Helper isInRange
+ */
 template<typename T>
 [[nodiscard]] constexpr bool isInRange(const T &low, const T &x, const T &high)
 {
     return (
-        // The Doxygen comments contain @private because apparently
-        // the tag @internal is not enough to hide it in the API documentation.
-        // The snippet marker [] is hidden within HTML comments to avoid
-        // that is shows up literally in the private documentation, and this
-        // independent from the HIDE_IN_BODY_DOCS parameter in Doxyfile.
-        //! @private @internal <!-- [Helper isInRange] -->
+        //! [Helper isInRange]
         (low <= x) && (x <= high)
-        //! @private @internal <!-- [Helper isInRange] -->
+        //! [Helper isInRange]
     );
 }
 
-/** @internal
+/*!
  *
- * @brief Test if an integer is odd.
  *
- * @param number The number to test. Must be an integer type
+ * \brief Test if an integer is odd.
  *
- * @returns <tt>true</tt> if the number is odd, <tt>false</tt> otherwise. */
+ * \a number The number to test. Must be an integer type
+ *
+ * Returns \c {true} if the number is odd, \c {false} otherwise. */
 template<typename T>
 [[nodiscard]] constexpr bool isOdd(const T &number)
 {
@@ -60,29 +58,35 @@ template<typename T>
     return static_cast<bool>(number % two);
 }
 
-/** @internal
+/*!
  *
- * @brief Test if two floating point values are nearly equal.
+ *
+ * \brief Test if two floating point values are nearly equal.
  *
  * Comparison is done in a relative way, where the
  * exactness is stronger the smaller the numbers are.
- * <a href="https://embeddeduse.com/2019/08/26/qt-compare-two-floats/">
- * This is the reasonable behaviour for floating point comparisons.</a>
- * Unlike <tt>qFuzzyCompare</tt> and <tt>qFuzzyIsNull</tt> this function
+ * \l {https://embeddeduse.com/2019/08/26/qt-compare-two-floats/}
+ * {This is the reasonable behaviour for floating point comparisons.}
+ * Unlike \c {qFuzzyCompare} and \c {qFuzzyIsNull} this function
  * works for both cases: numbers near to 0 and numbers far from 0.
  *
- * @tparam T Must be a floating point type.
- * @param a one of the values to compare
- * @param b one of the values to compare
- * @param epsilon indicator for desired precision assuming that the values
+ * \b T Must be a floating point type.
+ *
+ * \a a one of the values to compare
+ *
+ * \a b one of the values to compare
+ *
+ * \a epsilon indicator for desired precision assuming that the values
  *        to compare are close to 1. Values lower the the compiler-epsilon
  *        from type T will be replaced by the compiler-epsilon from type T.
  *        If epsilon is infinity or near to the maximum value of type T,
  *        the result of this function might be wrong.
- * @returns <tt>true</tt> if the values are nearly equal. <tt>false</tt>
+ *
+ * Returns \c {true} if the values are nearly equal. \c {false}
  * otherwise.
  *
- * @sa @ref isNearlyEqual(A a, B b) provides a default epsilon. */
+ * \note \l isNearlyEqual(A a, B b) provides a default epsilon.
+ */
 template<typename T>
 [[nodiscard]] constexpr bool isNearlyEqual(T a, T b, T epsilon)
 {
@@ -106,19 +110,20 @@ template<typename T>
     return qAbs(a - b) < std::max(actualEpsilon, actualEpsilon * norm);
 }
 
-/** @internal
+/*!
  *
- * @brief Test if two floating point values are nearly equal, using
+ *
+ * \brief Test if two floating point values are nearly equal, using
  * a default epsilon.
  *
- * Calls @ref isNearlyEqual(T a, T b, T epsilon) with a default epsilon
- * who’s value depends on the type with <em>less</em> precision among A and B.
+ * Calls \l isNearlyEqual(T a, T b, T epsilon) with a default epsilon
+ * who’s value depends on the type with \e {less} precision among A and B.
  *
- * @tparam A Must be a floating point type.
- * @tparam B Must be a floating point type.
- * @param a one of the values to compare
- * @param b one of the values to compare
- * @returns <tt>true</tt> if the values are nearly equal. <tt>false</tt>
+ * \a a one of the values to compare. Must be a floating point type.
+ *
+ * \a b one of the values to compare. Must be a floating point type.
+ *
+ * Returns \c {true} if the values are nearly equal. \c {false}
  * otherwise. */
 template<typename A, typename B>
 [[nodiscard]] constexpr bool isNearlyEqual(A a, B b)
@@ -168,22 +173,26 @@ template<typename A, typename B>
     }
 }
 
-/** @internal
+/*!
+ * \inmodule ModulePrivateApi
  *
- * @brief Normalizes an angle.
+ * \brief Normalizes an angle.
  *
- * |      Value      | Normalized Value |
- * | :-------------: | :--------------: |
- * | <tt>  0°  </tt> | <tt>  0°  </tt>  |
- * | <tt>359.9°</tt> | <tt>359.9°</tt>  |
- * | <tt>360°  </tt> | <tt>  0°  </tt>  |
- * | <tt>361.2°</tt> | <tt>  1.2°</tt>  |
- * | <tt>720°  </tt> | <tt>  0°  </tt>  |
- * | <tt> −1°  </tt> | <tt>359°  </tt>  |
- * | <tt> −1.3°</tt> | <tt>358.7°</tt>  |
+ * \table
+ *     \header \li Value       \li Normalized Value
+ *     \row    \li \c {  0°  } \li \c {  0°  }
+ *     \row    \li \c {359.9°} \li \c {359.9°}
+ *     \row    \li \c {360°  } \li \c {  0°  }
+ *     \row    \li \c {361.2°} \li \c {  1.2°}
+ *     \row    \li \c {720°  } \li \c {  0°  }
+ *     \row    \li \c { −1°  } \li \c {359°  }
+ *     \row    \li \c { −1.3°} \li \c {358.7°}
+ * \endtable
  *
- * @param value an angle (coordinates in degree)
- * @returns the value, normalized to the range 0° ≤ value < 360° */
+ * \a value an angle (coordinates in degree)
+ *
+ * Returns the value, normalized to the range 0° ≤ value < 360°
+ */
 template<typename T>
 T normalizedAngle360(T value)
 {
@@ -199,19 +208,22 @@ T normalizedAngle360(T value)
     return temp;
 }
 
-/** @internal
+/*!
  *
- * @brief Normalizes polar coordinates.
  *
- * @param radius Reference to the radius. It will get normalized to value ≥ 0.
+ * \brief Normalizes polar coordinates.
+ *
+ * \a radius Reference to the radius. It will get normalized to value ≥ 0.
  *        If it was < 0 (but not if it was 0 with a negative sign) its  sign
  *        is changed and angleDegree is turned by 180°.
- * @param angleDegree Reference to the angle (measured in degree). It will get
- *        normalized to 0° ≤ value < 360° (see @ref normalizedAngle360() for
+ *
+ * \a angleDegree Reference to the angle (measured in degree). It will get
+ *        normalized to 0° ≤ value < 360° (see \l normalizedAngle360() for
  *        details)
  *
- * @note When the radius is 0, one could set by convention the (meaningless)
- * angle also 0. However, note that this function does <em>not</em> do that! */
+ * \note When the radius is 0, one could set by convention the (meaningless)
+ * angle also 0. However, note that this function does \e {not} do that!
+ */
 template<typename T>
 void normalizePolar360(T &radius, T &angleDegree)
 {
@@ -223,30 +235,26 @@ void normalizePolar360(T &radius, T &angleDegree)
     }
 }
 
-/**
- * @internal
+/*!
  *
- * @brief Rounds a floating-point value to a specified number of digits.
  *
- * @tparam T Floating-point type
- * @param value The value to be rounded.
- * @param precision Number of digits to round to:
- *   - Positive values → round to that many decimal places.
- *   - Negative values → round to tens, hundreds, thousands, etc.
+ * \brief Rounds a floating-point value to a specified number of digits.
  *
- * @return The rounded value
+ * \b T Floating-point type
+ *
+ * \a value The value to be rounded.
+ *
+ * \a precision Number of digits to round to: For positive values, it rounds
+ *    to that many decimal places. For negative values, it rounds to tens,
+ *    hundreds, thousands, etc.
+ *
+ * Returns the rounded value
  *
  * Examples:
- * <tt>
- * double x = 1234.567;
- * roundToDigits(x, 2);   // Result: 1234.57
- * roundToDigits(x, 1);   // Result: 1234.6
- * roundToDigits(x, 0);   // Result: 1235
- * roundToDigits(x, -1);   // Result: 1230
- * roundToDigits(x, -2);   // Result: 1200
- * </tt>
  *
- * @note This function is constexpr only starting with C++23.
+ * \snippet testhelpermath.cpp roundToDigitsExample
+ *
+ * \note This function is constexpr only starting with C++23.
  */
 template<typename T>
 [[nodiscard]] constexpr T roundToDigits(T value, int precision)

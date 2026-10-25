@@ -13,24 +13,29 @@
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- * @brief Numeric representation of an opaque color with up to four components.
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief Numeric representation of an opaque color with up to four components.
  *
  * This type is declared as type to Qt’s type system via
- * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use for <em>queued</em> signal-slot connections),
- * you might consider calling <tt>qRegisterMetaType()</tt> for
+ * \c {Q_DECLARE_METATYPE}. Depending on your use case (for
+ * example if you want to use for \e {queued} signal-slot connections),
+ * you might consider calling \c {qRegisterMetaType()} for
  * this type, once you have a QApplication object.
  */
 struct GenericColor {
 public:
-    /** @brief Default constructor. */
+    /*!
+     * \brief Default constructor. */
     constexpr GenericColor() noexcept = default;
 
-    /** @brief Constructor.
+    /*!
+     * \brief Constructor.
      *
-     * @param init Initial value.
+     * \a init Initial value.
      */
     explicit constexpr GenericColor(const Vec3d &init) noexcept
         : first(init.v[0])
@@ -39,11 +44,14 @@ public:
     {
     }
 
-    /** @brief Constructor.
+    /*!
+     * \brief Constructor.
      *
-     * @param v1 Initial value for @ref first
-     * @param v2 Initial value for @ref second
-     * @param v3 Initial value for @ref third
+     * \a v1 Initial value for \l first
+     *
+     * \a v2 Initial value for \l second
+     *
+     * \a v3 Initial value for \l third
      */
     constexpr GenericColor(const double v1, const double v2, const double v3) noexcept
         : first(v1)
@@ -54,37 +62,42 @@ public:
 
     explicit GenericColor(const QList<double> &list);
 
-    /** @brief Equal operator
+    /*!
+     * \brief Equal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise. */
+     * Returns \c {true} if equal, \c {false} otherwise. */
     [[nodiscard]] constexpr bool operator==(const GenericColor &other) const noexcept = default;
 
-    /** @brief Unequal operator
+    /*!
+     * \brief Unequal operator
      *
-     * @param other The object to compare with.
+     * \a other The object to compare with.
      *
-     * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise. */
+     * Returns \c {true} if unequal, \c {false} otherwise. */
     [[nodiscard]] constexpr bool operator!=(const GenericColor &other) const noexcept = default;
 
     [[nodiscard]] QList<double> toQList3() const;
 
-    /**
-     * @brief The values @ref first, @ref second, @ref third as @ref Vec3d.
+    /*!
+     * \brief The values \l first, \l second, \l third as \l Vec3d.
      *
-     * @returns The values @ref first, @ref second, @ref third as @ref Vec3d.
+     * Returns the values \l first, \l second, \l third as \l Vec3d.
      */
     [[nodiscard]] constexpr Vec3d toVec3d() const
     {
         return Vec3d{first, second, third};
     }
 
-    /** @brief First value. */
+    /*!
+     * \brief First value. */
     double first = 0;
-    /** @brief Second value. */
+    /*!
+     * \brief Second value. */
     double second = 0;
-    /** @brief Third value. */
+    /*!
+     * \brief Third value. */
     double third = 0;
 };
 

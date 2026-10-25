@@ -24,6 +24,7 @@ configure_file(
 set(library_SRC
     absolutecolor.cpp
     abstractdiagram.cpp
+    asyncimageprovider.cpp
     asyncimageproviderbase.cpp
     asyncimagerendercallback.cpp
     asyncimagerenderthread.cpp
@@ -36,28 +37,38 @@ set(library_SRC
     colorspaceinfo.cpp
     colorwheel.cpp
     colorwheelimageparameters.cpp
+    colorwheelimageprovider.cpp
+    constpropagatingrawpointer.cpp
+    constpropagatinguniquepointer.cpp
     docs.cpp
     genericcolor.cpp
     gradientimageparameters.cpp
     gradientslider.cpp
     helper.cpp
+    helperaccessibility.cpp
+    helperconstants.cpp
     helperconversion.cpp
     helperimage.cpp
     helpermath.cpp
+    importexport.cpp
     initializelibraryresources.cpp
     initializetranslation.cpp
     interlacingpass.cpp
+    internalimportexport.cpp
     iwyu.cpp
     languagechangeeventfilter.cpp
+    lchvalues.cpp
     logging.cpp
     mat3.cpp
     multispinbox.cpp
     multispinboxsection.cpp
     perceptualcolornamespace.cpp
+    perceptualcolorruntimeversion.cpp
     perceptualsettings.cpp
     polarpointf.cpp
     portaleyedropper.cpp
     rgbcolor.cpp
+    setting.cpp
     settingbase.cpp
     settings.cpp
     settranslation.cpp
@@ -74,14 +85,18 @@ qt_add_resources(
     # .qrc file, but the list of files can be passed in the very same
     # qt_add_resources() command.
 )
-# NOTE Keep the following list synchronized
-# between scripts/static-codecheck.sh and src/CMakeLists.txt
+# NOTE Keep the following list synchronized between
+# scripts/static-codecheck.sh
+# src/CMakeLists.txt
+# src/PerceptualColor
 set(lib_PUBLICHEADERS
     colordialog.h
     constpropagatinguniquepointer.h
     importexport.h
     multispinbox.h
     multispinboxsection.h
+    PerceptualColor
+    perceptualcolorruntimeversion.h
     portaleyedropper.h
     settranslation.h
     ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
@@ -269,6 +284,7 @@ install(
     "${CMAKE_CURRENT_BINARY_DIR}/generated/${LIBRARY_NAME}ConfigVersion.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARY_NAME}
 )
+ecm_generate_qdoc(${LIBRARY_NAME} perceptualcolor.qdocconf)
 
 
 

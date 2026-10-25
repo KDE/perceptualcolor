@@ -3,23 +3,18 @@ SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 SPDX-License-Identifier: BSD-2-Clause OR MIT
 -->
 
-<!--
-NOTE This file serves at the same time as description
-on Github and as main page for Doxygen documentation. See
-https://community.kde.org/Frameworks/Frameworks_Documentation_Policy#README.md
-for recommended document style.
--->
+<!-- NOTE Keep in sync between src/docs.cpp and README.md -->
 
 # PerceptualColor
 
-This library provides Qt GUI components for choosing sRGB colors, with a
-focus on an intuitive and perceptually uniform presentation.
+This library provides Qt GUI components for choosing sRGB colors, 
+with a focus on an intuitive and perceptually uniform presentation.
 
 ## Introduction
 
-The GUI widgets in PerceptualColor are based on the LCH color model, which
-is known to reflect human perception better than RGB or its variants like
-HSV.  This leads to a highly intuitive user interface that is more
+The GUI widgets in this library are based on the LCH color model, 
+which is known to reflect human perception better than RGB or its variants 
+like HSV.  This leads to a highly intuitive user interface that is more
 user-friendly and easier to navigate. Moreover, the widgets can be used
 effectively without any prerequisite knowledge of the LCH color model
 by the users.
@@ -45,7 +40,8 @@ This library:
 - Provides support for Qt style sheets where it makes sense.
 - Has support for both pointer devices (mouse, touchpad, etc.) *and*
   keyboard navigation in the widgets.
-- Has a permissive license.
+- Has a permissive license and follows
+  the [“Reuse” specification](https://reuse.software/).
 - Can be built as either a static or a shared/dynamic library.
 - Is developed with unit tests.
 - Links only to Qt, so it is a Tier 1 library.

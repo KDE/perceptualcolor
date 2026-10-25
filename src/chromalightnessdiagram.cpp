@@ -42,18 +42,19 @@
 namespace PerceptualColor
 {
 
-/** @brief Retranslate the UI with all user-visible strings.
+/*!
+ * \brief Retranslate the UI with all user-visible strings.
  *
  * This function updates all user-visible strings by using
- * <tt>Qt::tr()</tt> to get up-to-date translations.
+ * \c {Qt::tr()} to get up-to-date translations.
  *
  * This function is meant to be called at the end of the constructor and
- * additionally after each <tt>QEvent::LanguageChange</tt> event.
+ * additionally after each \c {QEvent::LanguageChange} event.
  *
- * @note This is the same concept as
- * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
- * Qt Designer, which also provides a function of the same name in
- * uic-generated code</a>. */
+ * \note This is the same concept as
+ * \l {https://doc.qt.io/qt-5/designer-using-a-ui-file.html} {Qt Designer,
+ * which also provides a function of the same name in
+ * uic-generated code}. */
 void ChromaLightnessDiagramPrivate::retranslateUi()
 {
     /*: @info:tooltip/plain In color diagrams, gamuts can take on unusual
@@ -72,12 +73,14 @@ void ChromaLightnessDiagramPrivate::retranslateUi()
     m_infoButton->setToolTip(infoText);
 }
 
-/** @brief The constructor.
+/*!
+ * \brief The constructor.
  *
- * @param projectionSpace The color space into which the gamut will be
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  *
- * @param parent Passed to the QWidget base class constructor */
+ * \a parent Passed to the QWidget base class constructor
+ */
 ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace projectionSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ChromaLightnessDiagramPrivate(this, projectionSpace))
@@ -137,16 +140,19 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const PerceptualColor::LchSpace p
     d_pointer->updateInfoButtonVisibility();
 }
 
-/** @brief Default destructor */
+/*!
+ * \brief Default destructor */
 ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation.
- * @param projectionSpace The color space into which the gamut will be
+ *
+ * \a projectionSpace The color space into which the gamut will be
  * projected.
  */
 ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const LchSpace projectionSpace)
@@ -157,8 +163,8 @@ ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiag
 {
 }
 
-/**
- * @brief Updates the margins of @ref m_layout
+/*!
+ * \brief Updates the margins of \l m_layout
  */
 void ChromaLightnessDiagramPrivate::updateLayoutMargins()
 {
@@ -173,8 +179,8 @@ void ChromaLightnessDiagramPrivate::updateLayoutMargins()
     );
 }
 
-/**
- * @brief Reloads all icons, adapting to the current color schema and
+/*!
+ * \brief Reloads all icons, adapting to the current color schema and
  * widget style.
  */
 void ChromaLightnessDiagramPrivate::reloadIcons()
@@ -192,17 +198,17 @@ void ChromaLightnessDiagramPrivate::reloadIcons()
     }
 }
 
-/**
- * @brief Default destructor
+/*!
+ * \brief Default destructor
  */
 ChromaLightnessDiagramPrivate::~ChromaLightnessDiagramPrivate() noexcept = default;
 
-/**
- * @brief Handle state changes.
+/*!
+ * \brief Handle state changes.
  *
  * Reimplemented from base class.
  *
- * @param event The event.
+ * \a event The event.
  */
 void ChromaLightnessDiagram::changeEvent(QEvent *event)
 {
@@ -227,17 +233,17 @@ void ChromaLightnessDiagram::changeEvent(QEvent *event)
     AbstractDiagram::changeEvent(event);
 }
 
-/**
- * @brief Updates @ref ChromaLightnessDiagram::currentColorLch
+/*!
+ * \brief Updates \l ChromaLightnessDiagram::currentColorLch
  * corresponding to the given widget pixel position.
  *
- * @param widgetPixelPosition The position of a pixel within the widget’s
+ * \a widgetPixelPosition The position of a pixel within the widget’s
  * coordinate system. This does not necessarily need to intersect with the
  * actually displayed diagram or the gamut. It might even be negative or
  * outside the widget.
  *
- * @post If the pixel position is within the gamut, then the corresponding
- * @ref ChromaLightnessDiagram::currentColorLch is set. If the pixel
+ *  If the pixel position is within the gamut, then the corresponding
+ * \l ChromaLightnessDiagram::currentColorLch is set. If the pixel
  * position is outside the gamut, than a nearby in-gamut color is set (hue is
  * preserved, chroma and lightness are adjusted). Exception: If the
  * widget is so small that no diagram is displayed, nothing will happen. */
@@ -249,13 +255,13 @@ void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const
         nearestInGamutLchByAdjustingChromaLightness(color.second, color.first));
 }
 
-/**
- * @brief The border between the widget outer top, right and bottom
+/*!
+ * \brief The border between the widget outer top, right and bottom
  * border and the diagram itself.
  *
- * @returns The border between the widget outer top, right and bottom
- * border and the diagram itself, measured in <em>device-independent
- * pixels</em>.
+ * Returns the border between the widget outer top, right and bottom
+ * border and the diagram itself, measured in \e {device-independent
+ * pixels}.
  *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
@@ -263,9 +269,9 @@ void ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const
  * selected.
  *
  * This is the value for the top, right and bottom border. For the left
- * border, see @ref leftBorderDeviceIndependent() instead.
+ * border, see \l leftBorderDeviceIndependent() instead.
  *
- *  @sa @ref defaultBorderPhysical()
+ *  \sa defaultBorderPhysical()
  */
 int ChromaLightnessDiagramPrivate::defaultBorderDeviceIndependant() const
 {
@@ -273,12 +279,12 @@ int ChromaLightnessDiagramPrivate::defaultBorderDeviceIndependant() const
         q_pointer->handleRadius() + q_pointer->handleOutlineThickness() / 2.0);
 }
 
-/**
- * @brief The border between the widget outer top, right and bottom
+/*!
+ * \brief The border between the widget outer top, right and bottom
  * border and the diagram itself.
  *
- * @returns The border between the widget outer top, right and bottom
- * border and the diagram itself, measured in <em>physical pixels</em>.
+ * Returns the border between the widget outer top, right and bottom
+ * border and the diagram itself, measured in \e {physical pixels}.
  *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
@@ -286,9 +292,9 @@ int ChromaLightnessDiagramPrivate::defaultBorderDeviceIndependant() const
  * selected.
  *
  * This is the value for the top, right and bottom border. For the left
- * border, see @ref leftBorderPhysical() instead.
+ * border, see \l leftBorderPhysical() instead.
  *
- *  @sa @ref defaultBorderDeviceIndependant()
+ *  \sa defaultBorderDeviceIndependant()
  */
 int ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
 {
@@ -296,13 +302,13 @@ int ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
         defaultBorderDeviceIndependant() * q_pointer->devicePixelRatioF());
 }
 
-/**
- * @brief The left border between the widget outer left border and the
+/*!
+ * \brief The left border between the widget outer left border and the
  * diagram itself.
  *
- * @returns The left border between the widget outer left border and the
- * diagram itself, measured in <em>device-independent
- * pixels</em>.
+ * Returns the left border between the widget outer left border and the
+ * diagram itself, measured in \e {device-independent
+ * pixels}.
  *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
@@ -310,9 +316,9 @@ int ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
  * selected. Also, there is space left for the focus indicator.
  *
  * This is the value for the left border. For the other three borders,
- * see @ref defaultBorderDeviceIndependant() instead.
+ * see \l defaultBorderDeviceIndependant() instead.
  *
- * @sa @ref leftBorderPhysical
+ * \sa leftBorderPhysical
  */
 int ChromaLightnessDiagramPrivate::leftBorderDeviceIndependent() const
 {
@@ -326,12 +332,12 @@ int ChromaLightnessDiagramPrivate::leftBorderDeviceIndependent() const
     return qMax(candidateOne, candidateTwo);
 }
 
-/**
- * @brief The left border between the widget outer left border and the
+/*!
+ * \brief The left border between the widget outer left border and the
  * diagram itself.
  *
- * @returns The left border between the widget outer left border and the
- * diagram itself, measured in <em>physical pixels</em>.
+ * Returns the left border between the widget outer left border and the
+ * diagram itself, measured in \e {physical pixels}.
  *
  * The diagram is not painted on the whole extend of the widget.
  * A border is left to allow that the selection handle can be painted
@@ -339,9 +345,9 @@ int ChromaLightnessDiagramPrivate::leftBorderDeviceIndependent() const
  * selected. Also, there is space left for the focus indicator.
  *
  * This is the value for the left border. For the other three borders,
- * see @ref defaultBorderPhysical() instead.
+ * see \l defaultBorderPhysical() instead.
  *
- * @sa @ref leftBorderDeviceIndependent
+ * \sa leftBorderDeviceIndependent
  */
 int ChromaLightnessDiagramPrivate::leftBorderPhysical() const
 {
@@ -349,11 +355,12 @@ int ChromaLightnessDiagramPrivate::leftBorderPhysical() const
         leftBorderDeviceIndependent() * q_pointer->devicePixelRatioF());
 }
 
-/** @brief Calculate a size for @ref m_chromaLightnessImage that corresponds
+/*!
+ * \brief Calculate a size for \l m_chromaLightnessImage that corresponds
  * to the current widget size.
  *
- * @returns The size for @ref m_chromaLightnessImage that corresponds
- * to the current widget size. Measured in <em>physical pixels</em>. */
+ * Returns the size for \l m_chromaLightnessImage that corresponds
+ * to the current widget size. Measured in \e {physical pixels}. */
 QSize ChromaLightnessDiagramPrivate::calculateImageSizePhysical() const
 {
     const QSize borderSizePhysical(
@@ -364,20 +371,22 @@ QSize ChromaLightnessDiagramPrivate::calculateImageSizePhysical() const
     return q_pointer->physicalPixelSize() - borderSizePhysical;
 }
 
-/** @brief Converts widget pixel positions to color.
+/*!
+ * \brief Converts widget pixel positions to color.
  *
- * @param widgetPixelPosition The position of a pixel of the widget
+ * \a widgetPixelPosition The position of a pixel of the widget
  * coordinate system. The given value  does not necessarily need to
  * be within the actual displayed widget. It might even be negative.
  *
- * @returns The corresponding color for the (center of the) given
+ * Returns the corresponding color for the (center of the) given
  * widget pixel position. (The value is not normalized. It might have
  * a negative C value if the position is on the left of the diagram,
  * or an L value smaller than 0 or bigger than 100…) Exception: If
  * the widget is too small to show a diagram, a default color is
  * returned.
  *
- * @sa @ref measurementdetails */
+ * \sa {Measurement details}
+ */
 GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToLch(const QPoint widgetPixelPosition) const
 {
     const QPointF offset(leftBorderPhysical(), defaultBorderPhysical());
@@ -402,17 +411,18 @@ GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToLch(const Q
     return color;
 }
 
-/** @brief React on a mouse press event.
+/*!
+ * \brief React on a mouse press event.
  *
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
  *
- * If the mouse moves inside the <em>displayed</em> gamut, the handle
- * is displaced there. If the mouse moves outside the <em>displayed</em>
+ * If the mouse moves inside the \e {displayed} gamut, the handle
+ * is displaced there. If the mouse moves outside the \e {displayed}
  * gamut, the handle is displaced to a nearby in-gamut color.
  *
- * @param event The corresponding mouse event
+ * \a event The corresponding mouse event
  */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
@@ -424,15 +434,17 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse move event.
+/*!
+ * \brief React on a mouse move event.
  *
  * Reimplemented from base class.
  *
- * If the mouse moves inside the <em>displayed</em> gamut, the handle
- * is displaced there. If the mouse moves outside the <em>displayed</em>
+ * If the mouse moves inside the \e {displayed} gamut, the handle
+ * is displaced there. If the mouse moves outside the \e {displayed}
  * gamut, the handle is displaced to a nearby in-gamut color.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 {
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
@@ -443,27 +455,31 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-/** @brief React on a mouse release event.
+/*!
+ * \brief React on a mouse release event.
  *
  * Reimplemented from base class. Does not differentiate between left,
  * middle and right mouse click.
  *
- * If the mouse moves inside the <em>displayed</em> gamut, the handle
- * is displaced there. If the mouse moves outside the <em>displayed</em>
+ * If the mouse moves inside the \e {displayed} gamut, the handle
+ * is displaced there. If the mouse moves outside the \e {displayed}
  * gamut, the handle is displaced to a nearby in-gamut color.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     unsetCursor();
 }
 
-/** @brief Paint the widget.
+/*!
+ * \brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * @param event the paint event */
+ * \a event the paint event
+ */
 void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
@@ -614,19 +630,20 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     }
 }
 
-/** @brief React on key press events.
+/*!
+ * \brief React on key press events.
  *
  * Reimplemented from base class.
  *
  *  When the arrow keys are pressed, it moves the
  * handle a small step into the desired direction.
- * When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
- * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
+ * When \c {Qt::Key_PageUp}, \c {Qt::Key_PageDown},
+ * \c {Qt::Key_Home} or \c {Qt::Key_End} are pressed, it moves the
  * handle a big step into the desired direction.
  *
  * Other key events are forwarded to the base class.
  *
- * @param event the event
+ * \a event the event
  */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
@@ -686,16 +703,17 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     setCurrentColorLch(temp);
 }
 
-/** @brief Tests if a given widget pixel position is within
- * the <em>displayed</em> gamut.
+/*!
+ * \brief Tests if a given widget pixel position is within
+ * the \e {displayed} gamut.
  *
- * @param widgetPixelPosition The position of a pixel of the widget coordinate
+ * \a widgetPixelPosition The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to be within the
  * actual displayed diagram or even the gamut itself. It might even be
  * negative.
  *
- * @returns <tt>true</tt> if the widget pixel position is within the
- * <em>currently displayed gamut</em>. Otherwise <tt>false</tt>.
+ * Returns \c {true} if the widget pixel position is within the
+ * \e {currently displayed gamut}. Otherwise \c {false}.
  */
 bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const
 {
@@ -719,9 +737,10 @@ bool ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint wi
     return AbsoluteColor::isLchInSRgbGamut(color, m_projectionSpace);
 }
 
-/** @brief Setter for the @ref currentColorLch() property.
+/*!
+ * \brief Setter for the \l currentColorLch() property.
  *
- * @param newCurrentColorLch the new @ref currentColorLch
+ * \a newCurrentColorLch the new \l currentColorLch
  */
 void ChromaLightnessDiagram::setCurrentColorLch(const PerceptualColor::GenericColor &newCurrentColorLch)
 {
@@ -743,8 +762,8 @@ void ChromaLightnessDiagram::setCurrentColorLch(const PerceptualColor::GenericCo
     Q_EMIT currentColorLchChanged(newCurrentColorLch);
 }
 
-/**
- * @brief Shows or hides @ref m_infoButton.
+/*!
+ * \brief Shows or hides \l m_infoButton.
  *
  * The info button is shown only when the gamut shape is very strange.
  */
@@ -761,11 +780,13 @@ void ChromaLightnessDiagramPrivate::updateInfoButtonVisibility()
     }
 }
 
-/** @brief React on a resize event.
+/*!
+ * \brief React on a resize event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding event */
+ * \a event The corresponding event
+ */
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event)
@@ -776,11 +797,11 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
     //      need be (or should be) done inside this handler.”
 }
 
-/**
- * @brief Updates the image dimensions.
+/*!
+ * \brief Updates the image dimensions.
  *
- * Updates the image dimensions in @ref m_chromaLightnessImageParameters and
- * @ref m_chromaLightnessImage, but does not trigger a new rendering.
+ * Updates the image dimensions in \l m_chromaLightnessImageParameters and
+ * \l m_chromaLightnessImage, but does not trigger a new rendering.
  */
 void ChromaLightnessDiagramPrivate::updateImageDimensions()
 {
@@ -790,25 +811,29 @@ void ChromaLightnessDiagramPrivate::updateImageDimensions()
         m_chromaLightnessImageParameters);
 }
 
-/** @brief Recommended size for the widget.
+/*!
+ * \brief Recommended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended size for the widget.
+ * Returns the recommended size for the widget.
  *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize ChromaLightnessDiagram::sizeHint() const
 {
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
-/** @brief Recommended minimum size for the widget
+/*!
+ * \brief Recommended minimum size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
+ * Returns the recommended minimum size for the widget.
  *
- * @sa @ref sizeHint() */
+ * \sa sizeHint()
+ */
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const double profileMaxChroma = //
@@ -841,23 +866,27 @@ GenericColor PerceptualColor::ChromaLightnessDiagram::currentColorLch() const
     return d_pointer->m_currentColorLch;
 }
 
-/** @brief An abstract Nearest-neighbor-search algorithm.
+/*!
+ * \brief An abstract Nearest-neighbor-search algorithm.
  *
  * There are many different solutions for
- * <a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search">
- * Nearest-neighbor-searches</a>. This one is not naive, but still quite easy
- * to implement. It is based on <a href="https://stackoverflow.com/a/307523">
- * this Stackoverflow answer</a>.
+ * \l {https://en.wikipedia.org/wiki/Nearest_neighbor_search}
+ * {Nearest-neighbor-searches}. This one is not naive, but still quite easy
+ * to implement. It is based on \l {https://stackoverflow.com/a/307523} {this
+ * Stackoverflow answer}.
  *
- * @param point The point to which the nearest neighbor is searched.
- * @param boundingBox The rectangle within which the algorithm searches
+ * \a point The point to which the nearest neighbor is searched.
+ *
+ * \a boundingBox The rectangle within which the algorithm searches
  *        for a nearest neighbor. All points outside this rectangle are
  *        ignored.
- * @param doesPointExist A callback function that must return <tt>true</tt>
- *        for points that are considered to exist, and <tt>false</tt> for
+ *
+ * \a doesPointExist A callback function that must return \c {true}
+ *        for points that are considered to exist, and \c {false} for
  *        points that are considered to no exist. This callback function will
  *        never be called with points outside the search rectangle.
- * @returns The nearest neighbor, if any. An empty value otherwise. If there
+ *
+ * Returns the nearest neighbor, if any. An empty value otherwise. If there
  *          are multiple non-transparent pixels at the same distance, it is
  *          indeterminate which one is returned.  Note that the point itself is
  *          considered to be itself its nearest neighbor if it is within the
@@ -993,28 +1022,22 @@ ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint point, const Q
     return nearestPointTillNow;
 }
 
-/** @brief Search the nearest in-gamut neighbor pixel.
+/*!
+ * \brief Search the nearest in-gamut neighbor pixel.
  *
- * @param originalPixelPosition The pixel for which you search the nearest
+ * \a originalPixelPosition The pixel for which you search the nearest
  * neighbor, expressed in the coordinate system of the image. This pixel may
  * be inside or outside the image.
- * @returns The nearest non-transparent pixel of @ref m_chromaLightnessImage,
+ *
+ * Returns the nearest non-transparent pixel of \l m_chromaLightnessImage,
  *          if any. An empty value otherwise. If there are multiple
  *          non-transparent pixels at the same distance, it is
  *          indeterminate which one is returned. Note that the point itself
  *          is considered to be itself its nearest neighbor if it is within
  *          the image and non-transparent.
  *
- * @note This function waits until a full-quality @ref m_chromaLightnessImage
+ * \note This function waits until a full-quality \l m_chromaLightnessImage
  * is available, which might take some time.
- *
- * @todo NICETOHAVE A possible optimization
- * might be to search initially, after a new
- * image is available, entire columns, starting from the right, until we hit
- * the first column that has a non-transparent pixel. This information can be
- * used to reduce the search rectangle significantly.
- * Or we could use the gamut boundary, mayby still available from the boundary
- * anti-aliasing.
  */
 std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition(const QPoint originalPixelPosition)
 {
@@ -1030,20 +1053,21 @@ std::optional<QPoint> ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition
         isOpaqueFunction);
 }
 
-/** @brief Find the nearest in-gamut pixel.
+/*!
+ * \brief Find the nearest in-gamut pixel.
  *
- * The hue is assumed to be the current hue at @ref m_currentColorLch.
+ * The hue is assumed to be the current hue at \l m_currentColorLch.
  * Chroma and lightness are sacrificed, but the hue is preserved. This function
- * works at the precision of the current @ref m_chromaLightnessImage.
+ * works at the precision of the current \l m_chromaLightnessImage.
  *
- * @param chroma Chroma of the original color.
+ * \a chroma Chroma of the original color.
  *
- * @param lightness Lightness of the original color.
+ * \a lightness Lightness of the original color.
  *
- * @note This function waits until a full-quality @ref m_chromaLightnessImage
+ * \note This function waits until a full-quality \l m_chromaLightnessImage
  * is available, which might take some time.
  *
- * @returns The nearest in-gamut pixel with the same hue as the original
+ * Returns the nearest in-gamut pixel with the same hue as the original
  * color. */
 PerceptualColor::GenericColor ChromaLightnessDiagramPrivate::nearestInGamutLchByAdjustingChromaLightness(const double chroma, const double lightness)
 {

@@ -49,18 +49,19 @@
 namespace PerceptualColor
 {
 
-/** @brief Retranslate the UI with all user-visible strings.
+/*!
+ * \brief Retranslate the UI with all user-visible strings.
  *
  * This function updates all user-visible strings by using
- * <tt>Qt::tr()</tt> to get up-to-date translations.
+ * \c {Qt::tr()} to get up-to-date translations.
  *
  * This function is meant to be called at the end of the constructor and
- * additionally after each <tt>QEvent::LanguageChange</tt> event.
+ * additionally after each \c {QEvent::LanguageChange} event.
  *
- * @note This is the same concept as
- * <a href="https://doc.qt.io/qt-5/designer-using-a-ui-file.html">
- * Qt Designer, which also provides a function of the same name in
- * uic-generated code</a>. */
+ * \note This is the same concept as
+ * \l {https://doc.qt.io/qt-5/designer-using-a-ui-file.html}
+ * {Qt Designer, which also provides a function of the same name in
+ * uic-generated code}. */
 void SwatchBookPrivate::retranslateUi()
 {
     const QFontMetricsF myFontMetrics(q_pointer->font());
@@ -116,11 +117,13 @@ void SwatchBookPrivate::retranslateUi()
     q_pointer->update();
 }
 
-/** @brief React on a mouse press event.
+/*!
+ * \brief React on a mouse press event.
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding mouse event */
+ * \a event The corresponding mouse event
+ */
 void SwatchBook::mousePressEvent(QMouseEvent *event)
 {
     // NOTE We will not actively ignore the event, even if we didn’t actually
@@ -193,15 +196,19 @@ void SwatchBook::mousePressEvent(QMouseEvent *event)
     }
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param swatchGrid Initial value for property @ref swatchGrid
- * @param wideSpacing Set of axis where the spacing should be wider than
+ * \a swatchGrid Initial value for property \l swatchGrid
+ *
+ * \a wideSpacing Set of axis where the spacing should be wider than
  *        normal. This is useful to give some visual structure: When your
  *        swatches are organized logically in columns, set
- *        <tt>Qt::Orientation::Horizontal</tt> here. To use normal spacing
- *        everywhere, simply set this parameter to <tt>{}</tt>.
- * @param parent The parent of the widget, if any */
+ *        \c {Qt::Orientation::Horizontal} here. To use normal spacing
+ *        everywhere, simply set this parameter to \c {{}}.
+ *
+ * \a parent The parent of the widget, if any
+ */
 SwatchBook::SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Orientations wideSpacing, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new SwatchBookPrivate(this, wideSpacing))
@@ -227,47 +234,55 @@ SwatchBook::SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Ori
     setSwatchGrid(swatchGrid);
 }
 
-/** @brief Destructor */
+/*!
+ * \brief Destructor */
 SwatchBook::~SwatchBook() noexcept
 {
 }
 
-/** @brief Constructor
+/*!
+ * \brief Constructor
  *
- * @param backLink Pointer to the object from which <em>this</em> object
+ * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation.
- * @param wideSpacing Set of axis using @ref widePatchSpacing instead
- *        of @ref normalPatchSpacing. */
+ *
+ * \a wideSpacing Set of axis using \l widePatchSpacing instead
+ * of \l normalPatchSpacing.
+ */
 SwatchBookPrivate::SwatchBookPrivate(SwatchBook *backLink, Qt::Orientations wideSpacing)
     : m_wideSpacing(wideSpacing)
     , q_pointer(backLink)
 {
 }
 
-/**
- * @brief Default destructor
+/*!
+ * \brief Default destructor
  */
 SwatchBookPrivate::~SwatchBookPrivate() noexcept = default;
 
-/** @brief Recommended size for the widget.
+/*!
+ * \brief Recommended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended size for the widget.
+ * Returns the recommended size for the widget.
  *
- * @sa @ref minimumSizeHint() */
+ * \sa minimumSizeHint()
+ */
 QSize SwatchBook::sizeHint() const
 {
     return minimumSizeHint();
 }
 
-/** @brief Recommended minimum size for the widget.
+/*!
+ * \brief Recommended minimum size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
+ * Returns the recommended minimum size for the widget.
  *
- * @sa @ref sizeHint() */
+ * \sa sizeHint()
+ */
 QSize SwatchBook::minimumSizeHint() const
 {
     ensurePolished();
@@ -296,9 +311,11 @@ QColor SwatchBook::currentColor() const
     return d_pointer->m_currentColor;
 }
 
-/** @brief Setter for the @ref currentColor property.
+/*!
+ * \brief Setter for the \l currentColor property.
  *
- * @param newCurrentColor the new color */
+ * \a newCurrentColor the new color
+ */
 void SwatchBook::setCurrentColor(const QColor &newCurrentColor)
 {
     // Convert to RGB:
@@ -324,11 +341,13 @@ QColorArray2D SwatchBook::swatchGrid() const
     return d_pointer->m_swatchGrid;
 }
 
-/** @brief Setter for the @ref swatchGrid property.
+/*!
+ * \brief Setter for the \l swatchGrid property.
  *
- * @pre The colors are fully opaque (alpha = 100%).
+ * \b Precondition: The colors are fully opaque (alpha = 100%).
  *
- * @param newSwatchGrid the new value */
+ * \a newSwatchGrid the new value
+ */
 void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGrid)
 {
     QColorArray2D newOpaqueSwatchGrid = newSwatchGrid;
@@ -360,27 +379,28 @@ void SwatchBook::setSwatchGrid(const PerceptualColor::QColorArray2D &newSwatchGr
     update();
 }
 
-/** @brief Selects a swatch from the book.
+/*!
+ * \brief Selects a swatch from the book.
  *
- * @pre Both parameters must be valid indexes within @ref m_swatchGrid.
+ * \b Precondition: Both parameters must be valid indexes within \l m_swatchGrid.
  *      Providing invalid indexes may result in a crash.
  *
- * @param newCurrentColumn Index of the column, corresponding to the first
- *        index in @ref m_swatchGrid.
+ * \a newCurrentColumn Index of the column, corresponding to the first
+ *        index in \l m_swatchGrid.
  *
- * @param newCurrentRow Index of the row, corresponding to the second
- *        index in @ref m_swatchGrid.
+ * \a newCurrentRow Index of the row, corresponding to the second
+ *        index in \l m_swatchGrid.
  *
- * @note The coordinates are <em>logical</em>, not physically visible
+ * \note The coordinates are \e {logical}, not physically visible
  *       coordinates. In left-to-right (LTR) layouts, the logical
  *       coordinate (0, 0) represents the top-left swatch. In right-to-left
  *       (RTL) layouts, the logical coordinate (0, 0) corresponds to the
  *       top-right swatch, though the physical screen representation is
  *       mirrored.
  *
- * @post If the specified swatch is empty, no action is taken. Otherwise, the
+ *  If the specified swatch is empty, no action is taken. Otherwise, the
  *       swatch is selected, the selection mark becomes visible, and
- *       @ref SwatchBook::currentColor is updated to reflect the selected color.
+ *       \l SwatchBook::currentColor is updated to reflect the selected color.
  */
 void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentColumn, qsizetype newCurrentRow)
 {
@@ -396,18 +416,23 @@ void SwatchBookPrivate::selectSwatchByLogicalCoordinates(qsizetype newCurrentCol
     }
 }
 
-/**
- * @brief Syncs the active swatch selection with @ref SwatchBook::currentColor.
+/*!
+ * \brief Syncs the active swatch selection with \l SwatchBook::currentColor.
  *
- * If @ref m_autoSyncSelectionMark is <tt>false</tt>, this function deletes
+ * If \l m_autoSyncSelectionMark is \c {false}, this function deletes
  * the current swatch selection.
  *
  * Otherwise, it ensures a matching swatch is selected:
- * - If the currently selected swatch already matches
- *   @ref SwatchBook::currentColor, that selection is preserved (even if
- *   duplicate matching swatches appear earlier in the grid).
- * - Otherwise, the grid is searched and the first matching swatch is selected.
- * - If no matching swatch exists, the selection is cleared.
+ *
+ * \list
+ *     \li If the currently selected swatch already
+ *         matches \l SwatchBook::currentColor, that selection is
+ *         preserved (even if duplicate matching swatches appear
+ *         earlier in the grid).
+ *     \li Otherwise, the grid is searched and the first matching swatch
+ *         is selected.
+ *     \li If no matching swatch exists, the selection is cleared.
+ * \endlist
  */
 void SwatchBookPrivate::maybeSyncSelectionMarkWithCurrentColor()
 {
@@ -463,13 +488,15 @@ void SwatchBookPrivate::maybeSyncSelectionMarkWithCurrentColor()
     }
 }
 
-/** @brief Horizontal spacing between color patches.
+/*!
+ * \brief Horizontal spacing between color patches.
  *
- * @returns Horizontal spacing between color patches, measured in
+ * Measured in
  * device-independent pixel. The value depends on the
- * current <tt>QStyle</tt>.
+ * current \c {QStyle}.
  *
- * @sa @ref verticalPatchSpacing */
+ * \sa verticalPatchSpacing
+ */
 int SwatchBookPrivate::horizontalPatchSpacing() const
 {
     if (m_wideSpacing.testFlag(Qt::Orientation::Horizontal)) {
@@ -478,13 +505,15 @@ int SwatchBookPrivate::horizontalPatchSpacing() const
     return normalPatchSpacing();
 }
 
-/** @brief Value for a wide spacing between swatches.
+/*!
+ * \brief Value for a wide spacing between swatches.
  *
- * @returns Wide spacing between color patches, measured in
+ * Measured in
  * device-independent pixel. The value depends on the
- * current <tt>QStyle</tt>.
+ * current \c {QStyle}.
  *
- * @sa @ref normalPatchSpacing */
+ * \sa normalPatchSpacing
+ */
 int SwatchBookPrivate::widePatchSpacing() const
 {
     // NOTE The value is derived from the current QStyle’s values for some
@@ -520,11 +549,12 @@ int SwatchBookPrivate::widePatchSpacing() const
     return qMax(temp, 5);
 }
 
-/** @brief Vertical spacing between color patches.
+/*!
+ * \brief Vertical spacing between color patches.
  *
- * @returns Vertical spacing between color patches, measured in
+ * Measured in
  * device-independent pixel. The value is typically smaller than
- * @ref horizontalPatchSpacing(), to symbolize that the binding
+ * \l horizontalPatchSpacing(), to symbolize that the binding
  * between patches is vertically stronger than horizontally. */
 int SwatchBookPrivate::verticalPatchSpacing() const
 {
@@ -534,11 +564,12 @@ int SwatchBookPrivate::verticalPatchSpacing() const
     return normalPatchSpacing();
 }
 
-/** @brief Normal spacing between color swatches.
+/*!
+ * \brief Normal spacing between color swatches.
  *
- * @returns Normal spacing between color patches, measured in
+ * Measured in
  * device-independent pixel. The value is typically smaller than
- * @ref widePatchSpacing(), to symbolize that the binding
+ * \l widePatchSpacing(), to symbolize that the binding
  * between patches is stronger. */
 int SwatchBookPrivate::normalPatchSpacing() const
 {
@@ -547,15 +578,17 @@ int SwatchBookPrivate::normalPatchSpacing() const
     );
 }
 
-/** @brief Initializes a <tt>QStyleOptionFrame</tt> object for this widget
+/*!
+ * \brief Initializes a \c {QStyleOptionFrame} object for this widget
  * in its current state.
  *
  * This function is provided analogous to many Qt widgets that also
  * provide a function of that name with this purpose.
  *
- * @param option The object that will be initialized
+ * \a option The object that will be initialized
  *
- * @note The value in QStyleOptionFrame::rect is not initialized. */
+ * \note The value in QStyleOptionFrame::rect is not initialized.
+ */
 void SwatchBookPrivate::initStyleOption(QStyleOptionFrame *option) const
 {
     if (option == nullptr) {
@@ -574,12 +607,13 @@ void SwatchBookPrivate::initStyleOption(QStyleOptionFrame *option) const
     option->features = QStyleOptionFrame::None;
 }
 
-/** @brief Offset between top-left of the widget and top-left of the content.
+/*!
+ * \brief Offset between top-left of the widget and top-left of the content.
  *
- * @param styleOptionFrame The options that will be passed to <tt>QStyle</tt>
+ * \a styleOptionFrame The options that will be passed to \c {QStyle}
  * to calculate correctly the offset.
  *
- * @returns The pixel position of the top-left pixel of the content area
+ * Returns the pixel position of the top-left pixel of the content area
  * which can be used for the color patches. */
 QPoint SwatchBookPrivate::contentOffset(const QStyleOptionFrame &styleOptionFrame) const
 {
@@ -611,18 +645,18 @@ QPoint SwatchBookPrivate::contentOffset(const QStyleOptionFrame &styleOptionFram
     return (frameOffset + innerMarginOffset).toPoint();
 }
 
-/**
- * @brief Calculates the logical column and row based on a position relative to
+/*!
+ * \brief Calculates the logical column and row based on a position relative to
  * the widget.
  *
  * The logical column and row may differ from the visual column and row
  * in environments with right-to-left text direction, where color patches are
  * mirrored.
  *
- * @param position The position in logical pixels relative to the widget.
+ * \a position The position in logical pixels relative to the widget.
  *
- * @returns The logical column and row corresponding to the given position,
- * or <tt>(-1, -1)</tt> if the position does not correspond to any color patch.
+ * Returns the logical column and row corresponding to the given position,
+ * or \c {(-1, -1)} if the position does not correspond to any color patch.
  * Empty color patches are treated as active color patches.
  */
 std::pair<qsizetype, qsizetype> SwatchBookPrivate::logicalColumnRowFromPosition(const QPoint position) const
@@ -677,14 +711,16 @@ std::pair<qsizetype, qsizetype> SwatchBookPrivate::logicalColumnRowFromPosition(
     return std::pair<qsizetype, qsizetype>(columnIndex, rowIndex);
 }
 
-/** @brief The size of the color patches.
+/*!
+ * \brief The size of the color patches.
  *
  * This is the bounding box around the outer limit.
  *
- * @returns The size of the color patches, measured in device-independent
+ * Returns the size of the color patches, measured in device-independent
  * pixel.
  *
- * @sa @ref patchSizeInner */
+ * \sa patchSizeInner
+ */
 QSize SwatchBookPrivate::patchSizeOuter() const
 {
     q_pointer->ensurePolished();
@@ -704,11 +740,12 @@ QSize SwatchBookPrivate::patchSizeOuter() const
     return myStyledOuterSize.expandedTo(myInnerSize + QSize(extra, extra));
 }
 
-/** @brief Size of the inner space of a color patch.
+/*!
+ * \brief Size of the inner space of a color patch.
  *
- * This is typically smaller than @ref patchSizeOuter().
+ * This is typically smaller than \l patchSizeOuter().
  *
- * @returns Size of the inner space of a color patch, measured in
+ * Masured in
  * device-independent pixel. */
 QSize SwatchBookPrivate::patchSizeInner() const
 {
@@ -722,11 +759,11 @@ QSize SwatchBookPrivate::patchSizeInner() const
     return QSize(size, size);
 }
 
-/** @brief Corner radius for drawing rounded color patch rectangles
+/*!
+ * \brief Corner radius for drawing rounded color patch rectangles
  *
  * Tries to guess a radius that matches well with the current QStyle.
  *
- * @returns Corner radius for drawing rounded color patch rectangles.
  * Guarantied to be ≥ 0. */
 int SwatchBookPrivate::cornerRadius() const
 {
@@ -735,20 +772,25 @@ int SwatchBookPrivate::cornerRadius() const
     return qMax(defaultFrameWidth, 0);
 }
 
-/**
- * @brief Draws some mark somewhere on a paint surface.
+/*!
+ * \brief Draws some mark somewhere on a paint surface.
  *
- * Meant for @ref SwatchBook::paintEvent()
+ * Meant for \l SwatchBook::paintEvent()
  *
- * @param offset Offset from the origin of the coordinate system
- * @param widgetPainter Pointer to a painter that will paint on the surface.
+ * \a offset Offset from the origin of the coordinate system
+ *
+ * \a widgetPainter Pointer to a painter that will paint on the surface.
  *        The state of the painter will be saved before modifying it, and
  *        restored before this function returns.
- * @param color Color used to draw the mark (color for the “enabled” state).
+ *
+ * \a color Color used to draw the mark (color for the “enabled” state).
  *        Or an invalid QColor for automatic color.
- * @param markSymbol Which mark to draw.
- * @param row in @ref m_swatchGrid
- * @param column in @ref m_swatchGrid
+ *
+ * \a markSymbol Which mark to draw.
+ *
+ * \a row in \l m_swatchGrid
+ *
+ * \a column in \l m_swatchGrid
  */
 void SwatchBookPrivate::drawMark(const QPoint offset,
                                  QPainter *widgetPainter,
@@ -912,15 +954,16 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
     widgetPainter->restore(); // restore from initial save() function.
 }
 
-/** @brief Paint the widget.
+/*!
+ * \brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * @param event the paint event
+ * \a event the paint event
  *
- * @internal
  *
- * @note Color patches
+ *
+ * \note Color patches
  * are aligned to device pixels only at integral scale factors
  * (e.g., 100%, 200%, 300%). At fractional scale factors, pixel alignment is
  * intentionally avoided. Aligning patches at fractional scales leads to
@@ -928,7 +971,7 @@ void SwatchBookPrivate::drawMark(const QPoint offset,
  * to 18, and spacing of 4.5 may round to 5. This introduces a 0.5 device pixel
  * discrepancy per patch and per space. With 10 patches and 9 spaces, this
  * accumulates to 19 × 0.5 = 9.5 device pixels of error. Such inconsistencies
- * cause functions like sizeHint(), which report sizes in device-independent
+ * cause functions like \l sizeHint(), which report sizes in device-independent
  * pixels, to vary across scale factors. This is problematic in multi-screen
  * Wayland setups where scale factors can differ between screens and change
  * dynamically as windows move. To ensure consistent sizing across all scale
@@ -1041,19 +1084,20 @@ void SwatchBook::paintEvent(QPaintEvent *event)
                         d_pointer->m_selectedColumn);
 }
 
-/** @brief React on key press events.
+/*!
+ * \brief React on key press events.
  *
  * Reimplemented from base class.
  *
  * When the arrow keys are pressed, it moves the selection mark
  * into the desired direction.
- * When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
- * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
+ * When \c {Qt::Key_PageUp}, \c {Qt::Key_PageDown},
+ * \c {Qt::Key_Home} or \c {Qt::Key_End} are pressed, it moves the
  * handle a big step into the desired direction.
  *
  * Other key events are forwarded to the base class.
  *
- * @param event the event
+ * \a event the event
  */
 void SwatchBook::keyPressEvent(QKeyEvent *event)
 {
@@ -1162,13 +1206,15 @@ void SwatchBook::keyPressEvent(QKeyEvent *event)
                                                 newLogicalRow);
 }
 
-/** @brief Handle state changes.
+/*!
+ * \brief Handle state changes.
  *
- * Implements reaction on <tt>QEvent::LanguageChange</tt>.
+ * Implements reaction on \c {QEvent::LanguageChange}.
  *
  * Reimplemented from base class.
  *
- * @param event The event. */
+ * \a event The event.
+ */
 void SwatchBook::changeEvent(QEvent *event)
 {
     const auto type = event->type();
@@ -1186,9 +1232,9 @@ void SwatchBook::changeEvent(QEvent *event)
     AbstractDiagram::changeEvent(event);
 }
 
-/** @brief Size necessary to render the color patches, including a margin.
+/*!
+ * \brief Size necessary to render the color patches, including a margin.
  *
- * @returns Size necessary to render the color patches, including a margin.
  * Measured in device-independent pixels. */
 QSize SwatchBookPrivate::colorPatchesSizeWithMargin() const
 {
@@ -1214,9 +1260,11 @@ bool SwatchBook::isEditable() const
     return d_pointer->m_isEditable;
 }
 
-/** @brief Setter for the @ref editable property.
+/*!
+ * \brief Setter for the \l editable property.
  *
- * @param newEditable the new value */
+ * \a newEditable the new value
+ */
 void SwatchBook::setEditable(const bool newEditable)
 {
     d_pointer->m_isEditable = newEditable;

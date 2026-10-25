@@ -26,23 +26,31 @@ namespace PerceptualColor
 
 class SwatchBook;
 
-/** @internal
+/*!
  *
- *  @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *
+ * \inmodule ModulePrivateApi
+ *
+ *  \brief Private implementation within the \e {Pointer to
+ *  implementation} idiom. */
 class SwatchBookPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    /**
-     * @brief Marks (symbols) for use in @ref SwatchBook.
+    /*!
+     * \brief Marks (symbols) for use in \l SwatchBook.
+     *
+     * \value Selection
+     * A mark that indicates the a given patch is the selected one.
+     *
+     * \value Add
+     * A mark that indicated that by clicking on the given empty
+     * patch, a new color is added to this patch.
      */
     enum class Mark {
-        Selection, /**< A mark that indicates the a given patch is the selected
-            one. */
-        Add /**< A mark that indicated that by clicking on the given empty
-            patch, a new color is added to this patch. */
+        Selection,
+        Add
     };
 
     explicit SwatchBookPrivate(SwatchBook *backLink, Qt::Orientations wideSpacing);
@@ -69,7 +77,8 @@ public:
     [[nodiscard]] int verticalPatchSpacing() const;
     [[nodiscard]] int widePatchSpacing() const;
 
-    /** @brief The add mark to use, or an empty string if no
+    /*!
+     * \brief The add mark to use, or an empty string if no
      * add mark is available.
      *
      * The add mark is drawn above an empty patch.
@@ -78,84 +87,88 @@ public:
      * characters are available in the default font of this widget). An
      * empty string otherwise.
      *
-     * The value is set by @ref retranslateUi(). */
+     * The value is set by \l retranslateUi(). */
     QString m_addMarkAvailableInCurrentFont;
 
-    /**
-     * @brief Controls whether state changes automatically update and
+    /*!
+     * \brief Controls whether state changes automatically update and
      * draw the selection mark in the matching swatch.
      *
-     * When this property is <tt>true</tt>, automatic selection synchronization
+     * When this property is \c {true}, automatic selection synchronization
      * is active:
-     * - Programmatic updates to @ref SwatchBook::currentColor (e.g., calling
-     *   @ref SwatchBook::setCurrentColor) automatically search the grid and
-     *   place the selection mark on the matching swatch.
-     * - Structure changes in the swatch grid (such as deleting or editing
-     *   swatches) automatically re-sync the mark to another matching swatch
-     *   if one exists.
      *
-     * When set to <tt>false</tt>  (default), automatic synchronization is
+     * \list
+     *     \li Programmatic updates to \l SwatchBook::currentColor (e.g.,
+     *         calling \l SwatchBook::setCurrentColor) automatically search the
+     *         grid and place the selection mark on the matching swatch.
+     *     \li Structure changes in the swatch grid (such as deleting or
+     *         editing swatches) automatically re-sync the mark to another
+     *         matching swatch if one exists.
+     * \endlist
+     *
+     * When set to \c {false}  (default), automatic synchronization is
      * disabled. The selection mark will be hidden. The selection mark will
      * only be updated or drawn again when the user directly interacts
      * with the widget (e.g., via mouse clicks or keyboard navigation).
      *
-     * @note This property defaults to <tt>false</tt> because enabling
+     * \note This property defaults to \c {false} because enabling
      * automatic synchronization requires the widget to evaluate whether two
      * colors are equal. Defining an exact equivalence threshold for colors is
-     * not trivial. Furthermore, this widget’s swatch grid uses <tt>QColor</tt>
+     * not trivial. Furthermore, this widget’s swatch grid uses \c {QColor}
      * (which supports 16-bit precision per channel), whereas the underlying
      * rendering engine may operate at a lower color depth (such as 8-bit).
-     * To avoid discrepancies, defaulting to <tt>false</tt> provides
+     * To avoid discrepancies, defaulting to \c {false} provides
      * safer, more predictable behavior.
-     *
-     * @todo NICETOHAVE Decide wether it is worth to keep this property and
-     * make it available in the public API or if it is better to abolish it,
-     * supposing always <tt>false</tt>.
      */
     bool m_autoSyncSelectionMark = false;
 
-    /** @brief Internal storage for property @ref SwatchBook::currentColor
+    /*!
+     * \brief Internal storage for property \l SwatchBook::currentColor
      *
      * QColor automatically initializes with an invalid color, just like it
-     * should be for the property @ref SwatchBook::currentColor, so no
+     * should be for the property \l SwatchBook::currentColor, so no
      * need to initialize here explicitly. */
     QColor m_currentColor;
 
-    /** @brief Internal storage for property @ref SwatchBook::editable */
+    /*!
+     *\brief Internal storage for property SwatchBook::editable */
     bool m_isEditable = false;
-    /** @brief Selected column.
+    /*!
+     * \brief Selected column.
      *
      * If one of the swatches in the book is selected, this is
      * the index of the column.
-     * Otherwise, its <tt>-1</tt>.
+     * Otherwise, its \c {-1}.
      *
-     * @note The coordinates are <em>logical</em>, not physically visible
+     * \note The coordinates are \e {logical}, not physically visible
      *       coordinates. In left-to-right (LTR) layouts, the logical
      *       coordinate (0, 0) represents the top-left swatch. In right-to-left
      *       (RTL) layouts, the logical coordinate (0, 0) corresponds to the
      *       top-right swatch, though the physical screen representation is
      *       mirrored.
      *
-     * @sa @ref m_selectedRow
+     * \sa m_selectedRow
      */
     qsizetype m_selectedColumn = -1;
-    /** @brief Selected row.
+    /*!
+     * \brief Selected row.
      *
      * If one of the swatches in the book is selected, this is
      * the index of the row.
-     * Otherwise, its <tt>-1</tt>.
+     * Otherwise, its \c {-1}.
      *
-     * @note The coordinates are <em>logical</em>, not physically visible
+     * \note The coordinates are \e {logical}, not physically visible
      *       coordinates. In left-to-right (LTR) layouts, the logical
      *       coordinate (0, 0) represents the top-left swatch. In right-to-left
      *       (RTL) layouts, the logical coordinate (0, 0) corresponds to the
      *       top-right swatch, though the physical screen representation is
      *       mirrored.
      *
-     * @sa @ref m_selectedColumn
+     * \sa m_selectedColumn
      */
     qsizetype m_selectedRow = -1;
-    /** @brief The selection mark to use, or an empty string if no
+    /*!
+     * \brief The selection mark to use, or an empty string if no
      * selection mark is available.
      *
      * The selection mark is drawn above the patch that is currently selected.
@@ -164,17 +177,22 @@ public:
      * characters are available in the default font of this widget). An
      * empty string otherwise.
      *
-     * The value is set by @ref retranslateUi(). */
+     * The value is set by \l retranslateUi(). */
     QString m_selectionMarkAvailableInCurrentFont;
-    /** @brief Internal storage for property @ref SwatchBook::swatchGrid */
+    /*!
+     *\brief Internal storage for property SwatchBook::swatchGrid
+     */
     QColorArray2D m_swatchGrid;
-    /** @brief List of axis where @ref widePatchSpacing should be used. */
+    /*!
+     * \brief List of axis where \l widePatchSpacing should be used.
+     */
     const Qt::Orientations m_wideSpacing;
 
 private:
     Q_DISABLE_COPY(SwatchBookPrivate)
 
-    /** @brief Pointer to the object from which <em>this</em> object
+    /*!
+     * \brief Pointer to the object from which \e {this} object
      *  is the private implementation. */
     ConstPropagatingRawPointer<SwatchBook> q_pointer;
 };

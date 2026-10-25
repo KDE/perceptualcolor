@@ -17,11 +17,13 @@ RgbColor::RgbColor()
 {
 }
 
-/** @brief Set all member variables.
+/*!
+ * \brief Set all member variables.
  *
- * @param color The new color as <tt>QColor</tt> object. Might be of any
- * <tt>QColor::Spec</tt>.
- * @param hue When empty, the hue is calculated automatically. Otherwise,
+ * \a color The new color as \c {QColor} object. Might be of any
+ * \c {QColor::Spec}.
+ *
+ * \a hue When empty, the hue is calculated automatically. Otherwise,
  * this value is used instead. Valid range: [0, 360[
  */
 void RgbColor::fillAll(QColor color, std::optional<double> hue)
@@ -102,13 +104,16 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
                        hwbBlacknessPercentage);
 }
 
-/** @brief Static convenience function that returns a @ref RgbColor
+/*!
+ * \brief Static convenience function that returns a \l RgbColor
  * constructed from the given color.
  *
- * @param color Original color. Valid range: [0, 255]
- * @param hue If not empty, this value is used instead of the actually
+ * \a color Original color. Valid range: [0, 255]
+ *
+ * \a hue If not empty, this value is used instead of the actually
  *            calculated hue value. Valid range: [0, 360[
- * @returns A @ref RgbColor object representing this color. */
+ *
+ * Returns a \l RgbColor object representing this color. */
 RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> hue)
 {
     RgbColor result;
@@ -124,14 +129,16 @@ RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> h
     return result;
 }
 
-/**
- * @brief Static convenience function that returns a @ref RgbColor
+/*!
+ * \brief Static convenience function that returns a \l RgbColor
  * constructed from the given color.
  *
- * @param color Original color. Valid range: [0, 1]
- * @param hue If not empty, this value is used instead of the actually
+ * \a color Original color. Valid range: [0, 1]
+ *
+ * \a hue If not empty, this value is used instead of the actually
  *            calculated hue value. Valid range: [0, 360[
- * @returns A @ref RgbColor object representing this color.
+ *
+ * Returns a \l RgbColor object representing this color.
  */
 RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue)
 {
@@ -148,12 +155,14 @@ RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref RgbColor
+/*!
+ * \brief Static convenience function that returns a \l RgbColor
  * constructed from the given color.
  *
- * @param color Original color. The opacity (alpha channel) is ignored.
+ * \a color Original color. The opacity (alpha channel) is ignored.
  *
- * @returns A @ref RgbColor object representing this color. */
+ * Returns a \l RgbColor object representing this color.
+ */
 RgbColor RgbColor::fromRgbQColor(const QColor &color)
 {
     RgbColor result;
@@ -164,11 +173,14 @@ RgbColor RgbColor::fromRgbQColor(const QColor &color)
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref RgbColor
+/*!
+ * \brief Static convenience function that returns a \l RgbColor
  * constructed from the given color.
  *
- * @param color Original color.
- * @returns A @ref RgbColor object representing this color. */
+ * \a color Original color.
+ *
+ * Returns a \l RgbColor object representing this color.
+ */
 RgbColor RgbColor::fromHsl(const GenericColor &color)
 {
     RgbColor result;
@@ -196,11 +208,14 @@ RgbColor RgbColor::fromHsl(const GenericColor &color)
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref RgbColor
+/*!
+ * \brief Static convenience function that returns a \l RgbColor
  * constructed from the given color.
  *
- * @param color Original color.
- * @returns A @ref RgbColor object representing this color. */
+ * \a color Original color.
+ *
+ * Returns a \l RgbColor object representing this color.
+ */
 RgbColor RgbColor::fromHsv(const GenericColor &color)
 {
     RgbColor result;
@@ -227,11 +242,14 @@ RgbColor RgbColor::fromHsv(const GenericColor &color)
     return result;
 }
 
-/** @brief Static convenience function that returns a @ref RgbColor
+/*!
+ * \brief Static convenience function that returns a \l RgbColor
  * constructed from the given color.
  *
- * @param color Original color.
- * @returns A @ref RgbColor object representing this color. */
+ * \a color Original color.
+ *
+ * Returns a \l RgbColor object representing this color.
+ */
 RgbColor RgbColor::fromHwb(const GenericColor &color)
 {
     RgbColor result;
@@ -268,14 +286,16 @@ RgbColor RgbColor::fromHwb(const GenericColor &color)
     return result;
 }
 
-/** @internal
+/*!
+ * \relates PerceptualColor::RgbColor
  *
- * @brief Adds QDebug() support for data type
- * @ref PerceptualColor::RgbColor
+ * \brief Adds QDebug() support for data type
+ * \l PerceptualColor::RgbColor
  *
- * @param dbg Existing debug object
- * @param value Value to stream into the debug object
- * @returns Debug object with value streamed in */
+ * \a dbg Existing debug object
+ *
+ * \a value Value to stream into the debug object
+ */
 QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
 {
     dbg.nospace() //

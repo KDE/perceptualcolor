@@ -9,33 +9,34 @@
 namespace PerceptualColor
 {
 
-/**
- * @brief Blackhole function to prevent compiler optimizations.
+/*
+ * \brief Blackhole function to prevent compiler optimizations.
  *
  * This utility function acts as a “black hole” for computed values:
  * it consumes the given value so that the compiler cannot eliminate
  * the computation as dead code.
  *
- * @tparam T Type of the value to consume. The type must have a
+ * \b T Type of the value to consume. The type must have a
  * default-constructor and a copy-constructor.
- * @param value The value to sink into the black hole.
  *
- * @internal
+ * \a value The value to sink into the black hole.
  *
- * A more typical solution might be: <br/>
+ * A more typical solution might be:
  *
- * <tt>static std::atomic<T> sink;<br/>
- * sink.store(value, std::memory_order_relaxed);</tt>
+ * \code
+ * static std::atomic<T> sink;
+ * sink.store(value, std::memory_order_relaxed);
+ * \endcode
  *
  * The value is stored into a static
- * <tt>std::atomic</tt> using relaxed memory ordering.
+ * \c {std::atomic} using relaxed memory ordering.
  * memory_order_relaxed is used to minimize overhead. It guarantees
  * that the store operation is performed atomically, but does not
  * impose any synchronization or ordering constraints. This is
  * sufficient for preventing unwanted compiler optimizations.
- * Unlike <tt>volatile</tt>, <tt>std::atomic</tt> is standard-conform and
- * safe. <tt>volatile</tt> only prevents certain optimizations, but does not
- * provide atomicity or memory barriers. <tt>std::atomic</tt> ensures the
+ * Unlike \c {volatile}, \c {std::atomic} is standard-conform and
+ * safe. \c {volatile} only prevents certain optimizations, but does not
+ * provide atomicity or memory barriers. \c {std::atomic} ensures the
  * store is performed and visible, even if used in threads and the value is
  * never read back.
  * However, this gave problems with libatomic, which must be linked on some

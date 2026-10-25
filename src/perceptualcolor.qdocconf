@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+# SPDX-License-Identifier: BSD-2-Clause OR MIT
+
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = PerceptualColor
+productname = PerceptualColor
+description = This library provides Qt GUI components for choosing sRGB colors, with a focus on an intuitive and perceptually uniform presentation.
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+imagedirs += ../docs/pics
+imagedirs += ../docs/formulas
+
+exampledirs += .
+exampledirs += ../autotests
+exampledirs += ..
+
+outputformats = HTML
+
+navigation.homepage = "index.html"
+
+depends += \
+    qtcore \
+    qtgui \
+    qtwidgets \
+    qtdbus \
+    qttest \
+    qtsvg
+
+qhp.projects = PerceptualColor
+
+qhp.PerceptualColor.namespace     = org.kde.perceptualcolor.$QT_VERSION_TAG
+qhp.PerceptualColor.virtualFolder = perceptualcolor
+qhp.PerceptualColor.indexTitle    = PerceptualColor
+qhp.PerceptualColor.indexRoot     =
+qhp.PerceptualColor.file          = perceptualcolor.qhp
+
+tagfile = perceptualcolor.tags
+
+# With "includeprivate = true", QDoc will also document private class members.
+# If not set, it ignores them by default. This option is only available
+# since Qt 6.11.
+includeprivate = true

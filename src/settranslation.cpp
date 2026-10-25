@@ -18,36 +18,44 @@
 namespace PerceptualColor
 {
 
-/** @brief Set the translation for the whole library.
+/*!
+ * \relates settranslation.h
+ *
+ * \ingroup GroupPublicSymbols
+ *
+ * \brief Set the translation for the whole library.
  *
  * After calling this function, all objects of this library that are created
  * from now on are translated according to translation that was set.
  *
- * Objects that were yet existing when calling are <em>not always</em>
+ * Objects that were yet existing when calling are \e {not always}
  * automatically updated: When calling this function, Qt sends
- * a <tt>QEvent::LanguageChange</tt> event only to top-level widgets,
+ * a \c {QEvent::LanguageChange} event only to top-level widgets,
  * and these will get updated then. You can send the event yourself
  * to non-top-level widgets to update those widgets also.
  *
- * If you create objects that use translations <em>before</em> a translation
+ * If you create objects that use translations \e {before} a translation
  * has been set explicitly, than automatically an environment-dependant
  * translation is loaded.
  *
  * You might call this function again after a change of
- * <tt>QLocale()</tt> to change the translation. Also, call this
- * function again after destroying the <tt>QCoreApplication</tt>
+ * \c {QLocale()} to change the translation. Also, call this
+ * function again after destroying the \c {QCoreApplication}
  * object and creating a new one.
  *
  * It is safe to call this function multiple times.
  *
- * @pre There exists exactly <em>one</em> instance of <tt>QCoreApplication</tt>
+ * \b Precondition: There exists exactly \e {one} instance
+ * of \c {QCoreApplication}
  * to which the parameter points. This function is called from the same thread
- * in which the <tt>QCoreApplication</tt> instance lives.
+ * in which the \c {QCoreApplication} instance lives.
  *
- * @param instance A pointer to the <tt>QCoreApplication</tt> instance for
+ * \a instance A pointer to the \c {QCoreApplication} instance for
  * which the initialization will be done.
- * @param newUiLanguages List of translations, ordered by priority,
- * most important ones first, like in <tt>QLocale::uiLanguages()</tt>. */
+ *
+ * \a newUiLanguages List of translations, ordered by priority,
+ * most important ones first, like in \c {QLocale::uiLanguages()}.
+ */
 void setTranslation(QCoreApplication *instance, const QStringList &newUiLanguages)
 {
     // Check of pre-conditions

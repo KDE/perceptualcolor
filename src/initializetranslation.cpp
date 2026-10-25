@@ -20,101 +20,101 @@
 #include <qthread.h>
 #include <qtranslator.h>
 
-/** @internal @file
- *
- * Provides the @ref PerceptualColor::initializeTranslation() function. */
-
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- * @brief Set the translation for the whole library.
+ *
+ * \brief Set the translation for the whole library.
  *
  * After calling this function, all objects of this library that are created
  * from now on are translated according to translation that was set.
  *
- * Objects that were yet existing when calling are <em>not always</em>
+ * Objects that were yet existing when calling are \e {not always}
  * automatically updated: When calling this function, Qt sends
- * a <tt>QEvent::LanguageChange</tt> event only to top-level widgets,
+ * a \c {QEvent::LanguageChange} event only to top-level widgets,
  * and these will get updated then. You can send the event yourself
  * to non-top-level widgets to update those widgets also.
  *
- * If you create objects that use translations <em>before</em> a translation
+ * If you create objects that use translations \e {before} a translation
  * has been set explicitly, than automatically an environment-dependant
  * translation is loaded.
  *
  * It is safe to call this function multiple times.
  *
- * @pre There exists exactly <em>one</em> instance of <tt>QCoreApplication</tt>
+ * \b Precondition: There exists exactly \e {one} instance
+ * of \c {QCoreApplication}
  * to which the parameter points. This function is called from the same thread
- * in which the <tt>QCoreApplication</tt> instance lives.
+ * in which the \c {QCoreApplication} instance lives.
  *
- * @param instance A pointer to the <tt>QCoreApplication</tt> instance for
+ * \a instance A pointer to the \c {QCoreApplication} instance for
  *        which the initialization will be done.
  *
- * @param newUiLanguages List of translations, ordered by priority, most
- *        important ones first, like in <tt>QLocale::uiLanguages()</tt>. If
- *        <tt>std::optional::has_value()</tt> than the translation is
+ * \a newUiLanguages List of translations, ordered by priority, most
+ *        important ones first, like in \c {QLocale::uiLanguages()}. If
+ *        \c {std::optional::has_value()} than the translation is
  *        initialized for this value, and previously loaded translations are
- *        removed. If <tt>std::optional::has_value()</tt> is <tt>false</tt>,
+ *        removed. If \c {std::optional::has_value()} is \c {false},
  *        than it depends: If no translation has been initialized so far, than
  *        the translation is initialized to an environment-dependent default
  *        value; otherwise there last initialization is simply repeated.
  *
- * @post The translation is initialized, even if a previous initialization
+ *  The translation is initialized, even if a previous initialization
  * had been destroyed by deleting the previous QCoreApplication object.
  *
- * @internal
+ *
  *
  * We definitely
- * need to call the @ref PerceptualColor::initializeTranslation()
+ * need to call this
  * function, but having to call it manually might be
  * cumbersome. It would be more comfortable if the initialization
  * would happen automatically. Apparently, if we want to support both, SHARED
- * <a href="https://www.volkerkrause.eu/2018/10/13/kf5-static-builds.html">
- * and STATIC libraries, we have a couple of options.</a>
+ * \l {https://www.volkerkrause.eu/2018/10/13/kf5-static-builds.html}
+ * {and STATIC libraries, we have a couple of options.}
+ * We could
  *
- * - either <a href="https://phabricator.kde.org/D13816">request the library
- *   user to call manually</a> @ref PerceptualColor::initializeTranslation()
+ * \list
+ * \li either \l {https://phabricator.kde.org/D13816} {request the library
+ *   user to call manually} this function
  *   on both, STATIC and SHARED libraries. This gives us uniform behavior
  *   between STATIC and SHARED builds and makes bug-tracking easier.
- * - or use <tt>
- *   <a href="http://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION">
- *   Q_COREAPP_STARTUP_FUNCTION</a></tt> to call
- *   @ref PerceptualColor::initializeTranslation() on SHARED
+ * \li or use
+ *   \l {http://doc.qt.io/qt-5/qcoreapplication.html#Q_COREAPP_STARTUP_FUNCTION}
+ *   {Q_COREAPP_STARTUP_FUNCTION} to call this function on SHARED
  *   libraries automatically when QCoreApplication starts (works
  *   only for SHARED libraries, and not for STATIC libraries, and
- *   and <a href="https://stackoverflow.com/questions/43333151"> there
- *   seems to be no workaround</a>) and request the library user to
- *   call @ref PerceptualColor::initializeTranslation() manually
+ *   and \l {https://stackoverflow.com/questions/43333151} { there
+ *   seems to be no workaround}) and request the library user to
+ *   call this function manually
  *   only on STATIC libraries.
- * - or make @ref PerceptualColor::initializeTranslation() private and
- *   use the solution that <a href="https://stackoverflow.com/a/1420261">
- *   instantiates a special class as global variable in every translation
- *   unit</a>, and this class makes sure that the initialization
+ * \li or make this function private and
+ *   use the solution that \l {https://stackoverflow.com/a/1420261}
+ *   {instantiates a special class as global variable in every translation
+ *   unit}, and this class makes sure that the initialization
  *   happens also for static libraries. But wouldn’t this mean that
- *   @ref PerceptualColor::initializeTranslation() is called at program
+ *   this function is called at program
  *   startup, while still no QApplication object is available, and
- *   therefore our @ref PerceptualColor::initializeTranslation()
+ *   therefore our
  *   function will crash? And anyway, when the QApplication object is
  *   destroyed and re-created, this pattern will not help. (Might
  *   https://doc.qt.io/qt-5/qglobalstatic.html#Q_GLOBAL_STATIC help?) See
  *   also https://isocpp.org/wiki/faq/ctors#static-init-order for useful
  *   information about static initialization.
- * - or make @ref PerceptualColor::initializeTranslation() private and call it
- *   <a href="https://github.com/KDE/kitinerary/commit/72326ed">
- *   in our library code whenever our code is about to do
- *   something that requires previous initialization</a>. To not call it
+ * \li or make this function private and call it
+ *   \l {https://github.com/KDE/kitinerary/commit/72326ed}
+ *   {in our library code whenever our code is about to do
+ *   something that requires previous initialization}. To not call it
  *   too often or call it within functions that are executed often, it
- *   might be better to call it in the constructor of <em>all</em> our classes
+ *   might be better to call it in the constructor of \e {all} our classes
  *   that need previous initialization. This approach would be more comfortable
  *   for the library user. The disadvantage is that we have to pay attention
- *   to never use <tt>tr()</tt> without calling the initialization first, and
+ *   to never use \c {tr()} without calling the initialization first, and
  *   forgetting about this might introduce subtile and difficult-to-discover
  *   bugs.
+ * \endlist
  *
- * We opt for calling @ref PerceptualColor::initializeTranslation()
+ * We opt for calling this function
  * in our library code whenever our code is about to do
  * something that requires previous initialization.
  * Requiering the API user to do this manually would not be comfortable for the

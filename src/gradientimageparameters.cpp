@@ -18,22 +18,23 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor */
+/*!
+ * \brief Constructor */
 GradientImageParameters::GradientImageParameters()
 {
     setFirstColorLchA(GenericColor{0, 0, 0}, 1);
     setSecondColorLchA(GenericColor{1000, 0, 0}, 1);
 }
 
-/**
- * @brief Normalizes the value and bounds it to the current LCH color space.
+/*!
+ * \brief Normalizes the value and bounds it to the current LCH color space.
  *
- * @param color the color that should be treated.
+ * \a color the color that should be treated.
  *
- * @returns A normalized and bounded version. If the chroma was negative,
+ * Returns a normalized and bounded version. If the chroma was negative,
  * it gets positive (which implies turning the hue by 180°). The hue is
- * normalized to the range <tt>[0°, 360°[</tt>. Lightness is bounded to the
- * range <tt>[0, 100]</tt>. Alpha is bounded to the range <tt>[0, 1]</tt>. */
+ * normalized to the range \c {[0°, 360°[}. Lightness is bounded to the
+ * range \c {[0, 100]}. Alpha is bounded to the range \c {[0, 1]}. */
 GenericColor GradientImageParameters::completlyNormalizedAndBounded(const GenericColor &color) const
 {
     GenericColor result;
@@ -59,13 +60,12 @@ GenericColor GradientImageParameters::completlyNormalizedAndBounded(const Generi
     return result;
 }
 
-/** @brief Setter for the first color property.
+/*!
+ * \brief Setter for the first color property.
  *
- * @param newFirstColorLch The new first color Lch value
- * @param newFirstColorAlpha The new first color alpha value.
+ * \a newFirstColorLch The new first color Lch value
  *
- * @sa @ref m_firstColorLchCorrected
- * @sa @ref m_firstColorAlphaCorrected
+ * \a newFirstColorAlpha The new first color alpha value.
  */
 void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColorLch, const double newFirstColorAlpha)
 {
@@ -81,14 +81,12 @@ void GradientImageParameters::setFirstColorLchA(const GenericColor &newFirstColo
     updateSecondColor();
 }
 
-/**
- * @brief Setter for the second color.
+/*!
+ * \brief Setter for the second color.
  *
- * @param newSecondColorLch The new second color Lch value.
- * @param newSecondColorAlpha The new second color alpha value.
+ * \a newSecondColorLch The new second color Lch value.
  *
- * @sa @ref m_secondColorLchCorrectedAndAltered
- * @sa @ref m_secondColorAlphaCorrected
+ * \a newSecondColorAlpha The new second color alpha value.
  */
 void GradientImageParameters::setSecondColorLchA(const GenericColor &newSecondColorLch, const double newSecondColorAlpha)
 {
@@ -105,12 +103,12 @@ void GradientImageParameters::setSecondColorLchA(const GenericColor &newSecondCo
     updateSecondColor();
 }
 
-/**
- * @brief Updates @ref m_secondColorLchCorrectedAndAltered
+/*!
+ * \brief Updates \l m_secondColorLchCorrectedAndAltered
  *
  * This update takes into account the current values of
- * @ref m_firstColorLchCorrected and
- * @ref m_secondColorLchCorrectedAndAltered.
+ * \l m_firstColorLchCorrected and
+ * \l m_secondColorLchCorrectedAndAltered.
  */
 void GradientImageParameters::updateSecondColor()
 {
@@ -125,17 +123,19 @@ void GradientImageParameters::updateSecondColor()
     }
 }
 
-/** @brief Render an image.
+/*!
+ * \brief Render an image.
  *
  * The function will render the image with the given parameters,
- * and deliver the result by means of <tt>callbackObject</tt>.
+ * and deliver the result by means of \c {callbackObject}.
  *
  * This function is thread-safe as long as each call of this function
- * uses different <tt>variantParameters</tt> and <tt>callbackObject</tt>.
+ * uses different \c {variantParameters} and \c {callbackObject}.
  *
- * @param variantParameters A <tt>QVariant</tt> that contains the
+ * \a variantParameters A \c {QVariant} that contains the
  *        image parameters.
- * @param callbackObject Pointer to the object for the callbacks.
+ *
+ * \a callbackObject Pointer to the object for the callbacks.
  */
 void GradientImageParameters::render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject)
 {
@@ -206,12 +206,15 @@ void GradientImageParameters::render(const QVariant &variantParameters, AsyncIma
         AsyncImageRenderCallback::InterlacingState::Final);
 }
 
-/** @brief The color that the gradient has at a given position of the gradient.
- * @param value The position. Valid range: <tt>[0.0, 1.0]</tt>. <tt>0.0</tt>
- * means the first color, <tt>1.0</tt> means the second color, and everything
+/*!
+ * \brief The color that the gradient has at a given position of the gradient.
+ *
+ * \a value The position. Valid range: \c {[0.0, 1.0]}. \c {0.0}
+ * means the first color, \c {1.0} means the second color, and everything
  * in between means a color in between.
- * @returns If the position is valid: The color at the given position and
- * its corresponding alpha value. If the position is out-of-range: An
+ *
+ * If the position is valid, it returns the color at the given position and its
+ * corresponding alpha value. If the position is out-of-range, it returns an
  * arbitrary value. */
 GenericColor GradientImageParameters::colorFromValue(qreal value) const
 {
@@ -225,53 +228,59 @@ GenericColor GradientImageParameters::colorFromValue(qreal value) const
     return color;
 }
 
-/** @brief Setter for the device pixel ratio (floating point).
+/*!
+ * \brief Setter for the device pixel ratio (floating point).
  *
  * This value is set as device pixel ratio (floating point) in the
- * <tt>QImage</tt> that this class holds. It does <em>not</em> change
- * the <em>pixel</em> size of the image or the pixel size of wheel
+ * \c {QImage} that this class holds. It does \e {not} change
+ * the \e {pixel} size of the image or the pixel size of wheel
  * thickness or border.
  *
  * This is for HiDPI support. You can set this to
- * <tt>QWidget::devicePixelRatioF()</tt> to get HiDPI images in the correct
+ * \c {QWidget::devicePixelRatioF()} to get HiDPI images in the correct
  * resolution for your widgets. Within a method of a class derived
- * from <tt>QWidget</tt>, you could write:
+ * from \c {QWidget}, you could write:
  *
- * @snippet testgradientimageparameters.cpp GradientImage HiDPI usage
+ * \snippet testgradientimageparameters.cpp GradientImage HiDPI usage
  *
- * The default value is <tt>1</tt> which means no special scaling.
+ * The default value is \c {1} which means no special scaling.
  *
- * @param newDevicePixelRatioF the new device pixel ratio as a
- * floating point data type. (Values smaller than <tt>1.0</tt> will be
- * considered as <tt>1.0</tt>.) */
+ * \a newDevicePixelRatioF the new device pixel ratio as a
+ * floating point data type. (Values smaller than \c {1.0} will be
+ * considered as \c {1.0}.)
+ */
 void GradientImageParameters::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
 {
     m_devicePixelRatioF = qMax<qreal>(1, newDevicePixelRatioF);
 }
 
-/** @brief Setter for the gradient length property.
+/*!
+ * \brief Setter for the gradient length property.
  *
- * @param newGradientLength The new gradient length, measured
- * in <em>physical pixels</em>. */
+ * \a newGradientLength The new gradient length, measured
+ * in \e {physical pixels}.
+ */
 void GradientImageParameters::setGradientLength(const int newGradientLength)
 {
     m_gradientLength = qMax(0, newGradientLength);
 }
 
-/**
- * @brief Setter for the projection space property.
+/*!
+ * \brief Setter for the projection space property.
  *
- * @param newProjectionSpace The new projection space
+ * \a newProjectionSpace The new projection space
  */
 void GradientImageParameters::setProjectionSpace(const LchSpace newProjectionSpace)
 {
     m_projectionSpace = newProjectionSpace;
 }
 
-/** @brief Setter for the gradient thickness property.
+/*!
+ * \brief Setter for the gradient thickness property.
  *
- * @param newGradientThickness The new gradient thickness, measured
- * in <em>physical pixels</em>. */
+ * \a newGradientThickness The new gradient thickness, measured
+ * in \e {physical pixels}.
+ */
 void GradientImageParameters::setGradientThickness(const int newGradientThickness)
 {
     m_gradientThickness = qMax(0, newGradientThickness);

@@ -19,77 +19,113 @@ class QObject;
 namespace PerceptualColor
 {
 
-/** @internal
+/*!
  *
- * @brief A single setting within @ref Settings.
  *
- * @tparam T Type of the setting value. The type must qualify for registration
- *           as <tt>QMetaType</tt> and also provide a stream operator.
- *           @ref PerceptualSettings::ColorList and many build-in types
+ * \class PerceptualColor::Setting
+ *
+ * \inmodule ModulePrivateApi
+ *
+ * \brief A single setting within \l Settings.
+ *
+ * \b T Type of the setting value. The type must qualify for registration
+ *           as \c {QMetaType} and also provide a stream operator.
+ *           \l PerceptualSettings::ColorList and many build-in types
  *           qualify. However, enum types only qualify if both, they are
- *           declared with <tt>Q_ENUM</tt> <em>and</em> their underlying type
- *           is <tt>int</tt>. */
+ *           declared with \c {Q_ENUM} \e {and} their underlying type
+ *           is \c {int}. */
 template<typename T>
 class Setting : public SettingBase
 {
 public:
+    /*!
+     * \brief Constructor.
+     *
+     * \a key \c {QSettings} key for the value.
+     *
+     * For maximum portability, choose your \key carefully:
+     *
+     * \list
+     * \li No upper case should ever be used.
+     *   (Some systems, like the INI that we are using, are case-insensitive.
+     *   And even if we always use INI, having both capital and small letters
+     *   is error-prone because typos are not checked by the compiler.)
+     * \li Only the letters a-z should be used.
+     *   (Also, some characters like the slash and backslash are not allowed on
+     *   many platforms.)
+     * \li Key strings must follow the format “groupname/keyname”. Each keyname
+     *   should belong to a group, separated by a slash. You can
+     *   use nested groups like “groupname/subgroupname/keyname”. Use the
+     *   name of the class associated with the setting as the group name. This
+     *   convention improves readability of the settings file: Omitting a group
+     *   causes the system to assign the key to a default “General” group,
+     *   which can be unexpected and confusing. Using class names as group
+     *   names clarifies the origin and purpose of each setting.
+     * \li In C++, use “const” variables to define key strings, instead of
+     *   manually typing the key strings.
+     *   (This avoids typing errors.)
+     * \endlist
+     *
+     * \a settings Corresponding \l Settings object. This object must
+     *        stay available during the live-time of this object.
+     *
+     * \a parent The parent object (if any).
+     *
+     * \warning You must not create more than one instance with the same
+     * combination between key and \l Settings object. This would result
+     * in undefined behaviour. (Probably some values would be out-of-sync.) */
     Setting(const QString &key, Settings *settings, QObject *parent = nullptr);
+
+    /*!
+     * \brief Destructor.
+     */
     virtual ~Setting() override;
 
+    /*!
+     * \brief Getter.
+     *
+     *  Returns the value.
+     */
     T value() const;
 
+    /*!
+     * \brief Setter.
+     *
+     * \a newValue The new value.
+     */
     void setValue(const T &newValue);
 
 private:
     // Prevent copy and assignment operations to force that only references
     // to the instance are possible.
     Setting(const Setting &) = delete;
+
     Setting &operator=(const Setting &) = delete;
 
-    /** @brief If the type is an enum type or not. */
+    /*!
+     * \brief If the type is an enum type or not. */
     static constexpr bool m_isEnum = std::is_enum_v<T>;
 
-    /** @brief Meta data for enum types. */
+    /*!
+     * \brief Meta data for enum types. */
     QMetaEnum m_qMetaEnum;
 
-    /** @brief Internal storage for the value. */
+    /*!
+     * \brief Internal storage for the value. */
     T m_value = T();
 
+    /*!
+     * \brief Updates the value to the corresponding value
+     * from \l underlyingQSettings().
+     *
+     * Only reads from \l underlyingQSettings() and does never write back
+     * to \l underlyingQSettings().
+     */
     void updateFromQSettings();
 
-    /** @internal @brief Only for unit tests. */
     friend class TestSetting;
 };
 
-/** @brief Constructor.
- *
- * @param key <tt>QSettings</tt> key for the value.
- * For maximum portability:
- * - No upper case should ever be used.
- *   (Some systems, like the INI that we are using, are case-insensitive.
- *   And even if we always use INI, having both capital and small letters
- *   is error-prone because typos are not checked by the compiler.)
- * - Only the letters a-z should be used.
- *   (Also, some characters like the slash and backslash are not allowed on
- *   many platforms.)
- * - Key strings must follow the format “groupname/keyname”. Each keyname
- *   should belong to a group, separated by a slash. You can
- *   use nested groups like “groupname/subgroupname/keyname”. Use the
- *   name of the class associated with the setting as the group name. This
- *   convention improves readability of the settings file: Omitting a group
- *   causes the system to assign the key to a default “General” group,
- *   which can be unexpected and confusing. Using class names as group
- *   names clarifies the origin and purpose of each setting.
- * - In C++, use “const” variables to define key strings, instead of
- *   manually typing the key strings.
- *   (This avoids typing errors.)
- * @param settings Corresponding @ref Settings object. This object must
- *        stay available during the live-time of this object.
- * @param parent The parent object (if any).
- *
- * @warning You must not create more than one instance with the same
- * combination between key and @ref Settings object. This would result
- * in undefined behaviour. (Probably some values would be out-of-sync.) */
 template<typename T>
 Setting<T>::Setting(const QString &key, Settings *settings, QObject *parent)
     : SettingBase(key, settings, parent)
@@ -124,17 +160,11 @@ Setting<T>::Setting(const QString &key, Settings *settings, QObject *parent)
     );
 }
 
-/** @brief Destructor. */
 template<typename T>
 Setting<T>::~Setting()
 {
 }
 
-/** @brief Updates the value to the corresponding value
- * from @ref underlyingQSettings().
- *
- * Only reads from @ref underlyingQSettings() and does never write back
- * to @ref underlyingQSettings(). */
 template<typename T>
 void Setting<T>::updateFromQSettings()
 {
@@ -169,17 +199,12 @@ void Setting<T>::updateFromQSettings()
     }
 }
 
-/** @brief Getter.
- *  @returns the value. */
 template<typename T>
 T Setting<T>::value() const
 {
     return m_value;
 }
 
-/** @brief Setter.
- *
- * @param newValue The new value. */
 template<typename T>
 void Setting<T>::setValue(const T &newValue)
 {
