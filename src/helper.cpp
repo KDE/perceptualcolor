@@ -101,6 +101,10 @@ QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
     const double squareSizePhysical = squareSizeLogical * devicePixelRatioF;
 
     QImage temp(physicalImageSize, QImage::Format_ARGB32_Premultiplied);
+    if (physicalImageSize.isEmpty()) {
+        temp.setDevicePixelRatio(devicePixelRatioF);
+        return temp;
+    }
     temp.fill(QColor(lightnessOne, lightnessOne, lightnessOne));
 
     QPainter painter(&temp);
@@ -113,6 +117,7 @@ QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
     const qreal imgHeight = temp.height();
 
     if (squareSizePhysical <= 0.0) {
+        temp.setDevicePixelRatio(devicePixelRatioF);
         return temp;
     }
     const int numCols = qCeil(imgWidth / squareSizePhysical);
