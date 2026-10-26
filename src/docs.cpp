@@ -925,13 +925,6 @@
  * Mayadd add back the link to the online documentation in README.md and its
  * counterpart in src/docs.cpp.
  *
- * SHOULDHAVE In codecheck_quality.sh, run ci-docs.sh in the background at
- * startup to overlap its execution with other tasks. Currently,
- * codecheck_quality.sh runs all tasks sequentially, and ci-docs.sh is
- * single-threaded and slow. Parallelizing the remaining fast/already-parallel
- * tasks offers minimal gains. However, the downside is that parallelizing
- * codecheck_quality.sh also adds script complexity.
- *
  * SHOULDHAVE QDoc autogenerates documentation of the necessary
  * \c {#include <MyHeader>} statement to use an item. However, either these
  * statements are wrong (for classes) or missing (macros, free functions,

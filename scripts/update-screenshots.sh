@@ -35,8 +35,8 @@ echo "Build generatescreenshots."
 # environment variables that are set by the given script.
 . scripts/export-environment.sh
 echo Number of available CPU threads: $PARALLEL_PROCESSES
-mkdir --parents build
-cd build
+mkdir --parents buildgeneratescreenshots
+cd buildgeneratescreenshots
 cmake ..
 cmake --build . --target generatescreenshots --parallel $PARALLEL_PROCESSES
 cd ..
@@ -94,7 +94,7 @@ mkdir --parents docs/pics
 rm --recursive --force docs/pics/*
 cd docs/pics
 echo "Run generatescreenshots."
-../../build/utils/generatescreenshots ../../.screenshotfont.ttf
+../../buildgeneratescreenshots/utils/generatescreenshots ../../.screenshotfont.ttf
 echo "Run generatescreenshots finished."
 echo "Run license generator."
 for FILE in *; do cp ../../examples/example.cpp.license "$FILE.license"; done

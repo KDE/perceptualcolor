@@ -16,7 +16,7 @@ errorcount=0
 
 # Run generatescreenshots. This makes sure that code documentation
 # builds correctly also after a re-run of generatescreenshots.
-rm --recursive --force build
+rm --recursive --force buildgeneratescreenshots
 scripts/update-screenshots.sh
 
 # The “.” command will execute the given script within the context of
@@ -26,30 +26,30 @@ scripts/update-screenshots.sh
 echo Number of available CPU threads: $PARALLEL_PROCESSES
 
 echo "Run code documentation."
-rm --recursive --force build
-mkdir --parents build
+rm --recursive --force builddoc
+mkdir --parents builddoc
 cmake \
-    -B build \
+    -B builddoc \
     -S .
 export KDE_DOCS="/usr/share/qt6/doc"
 rm --force artifact_doc.txt
 cmake \
-    --build build \
+    --build builddoc \
     --target prepare_docs \
     --parallel "$PARALLEL_PROCESSES" \
     2> artifact_doc.txt
 cmake \
-    --build build \
+    --build builddoc \
     --target generate_docs \
     --parallel "$PARALLEL_PROCESSES" \
     2> >(grep -vE 'Cannot locate index file for dependency|connecting-overloaded-slots|Failed to find qhp.*subprojects\.classes\.indexTitle' > artifact_doc.txt)
 cmake \
-    --build build \
+    --build builddoc \
     --target generate_qch \
     --parallel "$PARALLEL_PROCESSES" \
     2>> artifact_doc.txt
-cp -r build/.doc artifact_docbuild
-rm --recursive --force build
+cp -r builddoc/.doc artifact_docbuild
+rm --recursive --force builddoc
 [ -s artifact_doc.txt ] && ((errorcount++))
 echo "Run code documentation finished."
 
