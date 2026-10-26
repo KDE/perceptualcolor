@@ -936,6 +936,9 @@
  * \c {#include <MyHeader>} statement to use an item. However, either these
  * statements are wrong (for classes) or missing (macros, free functions,
  * types, typealiases, enums…). We should fix that.
+ * Or we could use \c {https://api.kde.org/ecm/module/ECMGenerateHeaders.html}
+ * {ECMGenerateHeaders} to generate automatically the CamelCase headers that
+ * QDoc invents anway for C++ classes.
  */
 
 /*!
