@@ -119,7 +119,7 @@ codecheck_quality:
   stage: check2
   before_script:
     - apt-get update --assume-yes
-    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip wget clazy clang-tidy qt6-documentation-tools pipx build-essential kde-style-breeze kf6-breeze-icon-theme
+    - apt-get install --assume-yes --no-install-recommends ca-certificates cmake make clang clang-format pkgconf extra-cmake-modules qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-l10n-tools libegl-dev qt6-tools-dev qt6-tools-dev-tools git python3-pip wget clazy clang-tidy qt6-documentation-tools pipx build-essential kde-style-breeze kf6-breeze-icon-theme qt6-svg-plugins
     # Version information about installed software:
     - echo "pip version:" && pip --version
     - echo "pipx version:" && pipx --version
