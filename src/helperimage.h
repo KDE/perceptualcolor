@@ -17,9 +17,9 @@ class QThreadPool;
 namespace PerceptualColor
 {
 
-QColor disabledAppearance(const QColor normalColor);
+[[nodiscard]] QColor disabledAppearance(const QColor normalColor);
 
-QPixmap disabledAppearance(const QPixmap &normalPixmap);
+[[nodiscard]] QPixmap disabledAppearance(const QPixmap &normalPixmap);
 
 void doAntialias(QImage &image, const QList<QPoint> &antiAliasCoordinates, const std::function<QRgb(const double x, const double y)> &colorFunction);
 
@@ -32,7 +32,7 @@ void fillRect(uchar *const bytesPtr, const qsizetype bytesPerLine, const QRect r
 
 [[nodiscard]] QList<QPoint> findBoundary(const QImage &image);
 
-QThreadPool &getLibraryQThreadPoolInstance();
+[[nodiscard]] QThreadPool &getLibraryQThreadPoolInstance();
 
 /*!
  *

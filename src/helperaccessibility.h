@@ -43,7 +43,7 @@ namespace PerceptualColor
  * \sa installAccessibleFactory
  */
 template<typename T, typename AccessibleT>
-QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
+[[nodiscard]] QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
 {
     static_assert(std::is_base_of<QObject, T>::value, //
                   "T must be a subclass of QObject");

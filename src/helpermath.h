@@ -12,9 +12,9 @@
 namespace PerceptualColor
 {
 
-int decimalPlaces(const int rangeMax, const int significantFigures);
+[[nodiscard]] int decimalPlaces(const int rangeMax, const int significantFigures);
 
-int roundToNearestMultiple(double num, int multiple);
+[[nodiscard]] int roundToNearestMultiple(double num, int multiple);
 
 /*!
  *
@@ -194,7 +194,7 @@ template<typename A, typename B>
  * Returns the value, normalized to the range 0° ≤ value < 360°
  */
 template<typename T>
-T normalizedAngle360(T value)
+[[nodiscard]] T normalizedAngle360(T value)
 {
     static_assert( //
         std::is_floating_point<T>::value, //
@@ -283,9 +283,9 @@ template<typename T>
     return std::round(value * multiplier) / multiplier;
 }
 
-double roundToFloatMultiple(double num, double multiple);
+[[nodiscard]] double roundToFloatMultiple(double num, double multiple);
 
-int roundToIntMultiple(double num, int multiple);
+[[nodiscard]] int roundToIntMultiple(double num, int multiple);
 
 } // namespace PerceptualColor
 

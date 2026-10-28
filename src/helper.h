@@ -34,9 +34,9 @@ class QWidget;
 namespace PerceptualColor
 {
 
-QString fromMnemonicToRichText(const QString &mnemonicText);
+[[nodiscard]] QString fromMnemonicToRichText(const QString &mnemonicText);
 
-bool isDarkColorScheme();
+[[nodiscard]] bool isDarkColorScheme();
 
 /*!
  *
@@ -196,7 +196,7 @@ public:
      *
      * \a j index (second dimension)
      */
-    bool isInRange(qsizetype i, qsizetype j) const
+    [[nodiscard]] bool isInRange(qsizetype i, qsizetype j) const
     {
         const bool iOkay = //
             PerceptualColor::isInRange<qsizetype>(0, i, m_iCount - 1);
@@ -224,7 +224,7 @@ public:
     /*!
      * \brief Converts the array to a QList.
      */
-    QList<T> toQList() const
+    [[nodiscard]] QList<T> toQList() const
     {
         return m_data;
     }
@@ -239,7 +239,7 @@ public:
      * If the indices are valid, it returns the value at the given indeces.
      * Otherwise, it returns a default-constructed value.
      */
-    T value(qsizetype i, qsizetype j) const
+    [[nodiscard]] T value(qsizetype i, qsizetype j) const
     {
         if (isInRange(i, j)) {
             return m_data.at(i + m_iCount * j);
@@ -250,7 +250,7 @@ public:
     /*!
      * \brief Size of the first dimension.
      */
-    qsizetype iCount() const
+    [[nodiscard]] qsizetype iCount() const
     {
         return m_iCount;
     }
@@ -258,7 +258,7 @@ public:
     /*!
      * \brief Size of the second dimension.
      */
-    qsizetype jCount() const
+    [[nodiscard]] qsizetype jCount() const
     {
         return m_jCount;
     }
@@ -289,9 +289,9 @@ private:
  * this type, once you have a QApplication object. */
 using QColorArray2D = Array2D<QColor>;
 
-QColor toOpaque(const QColor &color);
+[[nodiscard]] QColor toOpaque(const QColor &color);
 
-QColorArray2D toOpaque(const QColorArray2D &array);
+[[nodiscard]] QColorArray2D toOpaque(const QColorArray2D &array);
 
 /*!
  *
@@ -542,7 +542,7 @@ template<typename T>
     return QStringLiteral("%1(%2)").arg(keys).arg(value);
 }
 
-bool isThemeChange(const QEvent::Type eventType);
+[[nodiscard]] bool isThemeChange(const QEvent::Type eventType);
 
 /*!
  *
@@ -567,7 +567,7 @@ bool isThemeChange(const QEvent::Type eventType);
  * segment.
  */
 template<typename T>
-QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
+[[nodiscard]] QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
 {
     static_assert(std::is_integral_v<T>, //
                   "Template splitElements() only works with integer types.");
@@ -622,7 +622,7 @@ QList<QPair<T, T>> splitElements(T elementCount, T segmentCount)
  * the divided data.
  */
 template<typename T>
-QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
+[[nodiscard]] QList<QList<T>> splitList(const QList<T> &originalList, qsizetype numParts)
 {
     if (originalList.isEmpty()) {
         return {};

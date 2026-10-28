@@ -39,7 +39,7 @@ template<typename T>
     return static_cast<quint8>(bounded);
 }
 
-QColor toRgbExact(const QColor &color);
+[[nodiscard]] QColor toRgbExact(const QColor &color);
 
 /*!
  *
