@@ -121,12 +121,6 @@ static void screenshotDelayed(QWidget *widget, const QString &comment = QString(
     widget->setParent(oldParent);
 }
 
-// A message handler that does not print any messages.
-static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
-{
-    // dummy message handler that does not print messages
-}
-
 // This function tries to set as many settings as possible to hard-coded
 // values: The widget style, the translation, the icon set and many more.
 // This makes it more likely to get the same screenshots on different
@@ -171,33 +165,14 @@ static void initWidgetAppearance(QApplication *app)
     }
     QApplication::setPalette(tempPalette);
 
-    // By default, the icons of the system are made available by
-    // QPlatformTheme. However, we want to make screenshots that
-    // are independent of the currently selected icon theme on
-    // the computer that produces the screenshots. Therefore, we
-    // choose an invalid search path for icon themes to avoid
-    // that missing icons are found in other themes that are
-    // available on the current computer:
-    QIcon::setThemeSearchPaths(QStringList(QStringLiteral("invalid")));
-    // Now, we change the standard icon theme to an invalid value.
-    // As the search path has also been set to an invalid, missing
-    // icons cannot be replaced by fallback icons.
-    QIcon::setThemeName(QStringLiteral("invalid"));
-    qInstallMessageHandler(voidMessageHandler); // Suppress warnings
-    {
-        // Trigger a call to the new, invalid icon theme. This call
-        // will produce a message on the console:
-        //     “Icon theme "invalid" not found.”
-        // Here, we trigger it intentionally while having the message
-        // suppressed. The message appears only at the first call
-        // to the invalid icon theme, but not on subsequent calls.
-        // Therefore, we will not get more messages for this in the
-        // rest of this program.
-        QWidget widget;
-        widget.repaint();
-        QCoreApplication::processEvents();
-    }
-    qInstallMessageHandler(nullptr); // Do not suppress warnings anymore
+    // Intentionally avoiding QIcon::setThemeName() here. Doing so requires
+    // hardcoding either "breeze" or "breeze-dark". While widget styles can
+    // adapt automatically to light/dark system settings, icon themes must be
+    // requested explicitly. Since we cannot reliably determine the active
+    // widget theme's brightness at this exact point during initialization,
+    // setting an explicit icon theme risks picking the wrong variant
+    // (e.g., dark icons on a dark background). By omitting this call,
+    // we let the system fall back to its default icon theme.
 
     // Other initializations
     app->setApplicationName(QStringLiteral("Perceptual color picker"));
