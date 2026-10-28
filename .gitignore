@@ -9,6 +9,7 @@
 /buildclangformat/*
 /builddoc/*
 /buildexamples/*
+/buildgeneratescreenshots/*
 /Doxyfile
 /docs/perceptualcolor/
 /docs/perceptualcolor.qch
