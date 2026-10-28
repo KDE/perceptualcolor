@@ -478,7 +478,8 @@ static void makeScreenshots()
             QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_End, Qt::NoModifier);
             QApplication::sendEvent(&m_multiSpinBoxWithButton, &keyPress);
         }
-        screenshotDelayed(&m_multiSpinBoxWithButton, QStringLiteral("WithButton"));
+        screenshotDelayed(&m_multiSpinBoxWithButton, //
+                          QStringLiteral("WithButton"));
     }
 
     {
@@ -526,7 +527,7 @@ int main(int argc, char *argv[])
         // screen size of the computer running this program is not
         // known in advance, we try to minimize the effects be choosing
         // the smallest possible scale factor, which is 1. (Values
-        // smaller than 1 are working, but hey break the layout.)
+        // smaller than 1 are working, but they break the layout.)
         constexpr qreal screenshotScaleFactor = 1;
 
         // Create a temporary QApplication object within this block scope.
@@ -547,7 +548,8 @@ int main(int argc, char *argv[])
             // with integer scale factors when communicating with applications.
             // Therefore, we cannot work around the current scaling factor
             // of the screen on which the screenshots are generated. If the
-            // screen is at 125%, the screenshots will be biggen than if the screen is at 100%.
+            // screen is at 125%, the screenshots will be bigger than if the
+            // screen is at 100%.
 
             // We apply only our own screenshot scale factor.
             qtScaleFactor *= screenshotScaleFactor;
