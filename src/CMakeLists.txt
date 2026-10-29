@@ -80,8 +80,8 @@ set(library_SRC
 )
 qt_add_resources(
     library_SRC # existing source list
-    resources.qrc # File with list of Qt resource to be added
-    # NOTE Starting with Qt6, it will no longer be necessary to have a
+    perceptualcolorgeneralresources.qrc # File with list of Qt resource
+    # NOTE Starting with Qt6, it is no longer be necessary to have a
     # .qrc file, but the list of files can be passed in the very same
     # qt_add_resources() command.
 )
@@ -120,7 +120,8 @@ file(
 )
 # Generate a .qrc file (list of .qm files to include) and the targets
 # that will produce the individual .qm files.
-set(qrc_file "${CMAKE_CURRENT_BINARY_DIR}/resourcelist.qrc")
+set(qrc_file
+    "${CMAKE_CURRENT_BINARY_DIR}/perceptualcolortranslationresources.qrc")
 file(
     WRITE
     # Filename:

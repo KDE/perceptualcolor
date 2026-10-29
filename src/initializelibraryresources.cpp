@@ -22,7 +22,8 @@ static void helperInitializeLibraryResources()
     // the .qrc suffix) just as in the corresponding CMakeLists.txt.
     // This macro relies on qRegisterResourceData() which checks if
     // the resource is yet loaded: If so, it is not loaded again.
-    Q_INIT_RESOURCE(resourcelist);
+    Q_INIT_RESOURCE(perceptualcolortranslationresources);
+    Q_INIT_RESOURCE(perceptualcolorgeneralresources);
 }
 
 namespace PerceptualColor

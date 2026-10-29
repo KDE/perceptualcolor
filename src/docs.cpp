@@ -1106,6 +1106,8 @@
  *         {Qt resource system} generates functions prefixed
  *         with \c {qInitResources_} and \c {qCleanupResources_} that
  *         are not within the previously mentioned namespace.)
+ *     \li The .qrc files names of the resource system are prefixed
+ *         with \c {perceptualcolor}.
  *     \li Resources within
  *         the \l {https://doc.qt.io/qt-5/resources.html} {Qt resource system}
  *         are within the folder \c {:/PerceptualColor/}.

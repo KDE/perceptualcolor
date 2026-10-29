@@ -167,6 +167,7 @@ if(BUILD_TESTING)
         testhelperimage
         testhelpermath
         testimportexport
+        testinitializelibraryresources
         testinitializetranslation
         testinterlacingpass
         testlanguagechangeeventfilter
