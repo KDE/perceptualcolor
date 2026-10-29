@@ -38,6 +38,8 @@ namespace PerceptualColor
 
 [[nodiscard]] bool isDarkColorScheme();
 
+[[nodiscard]] bool isQSvgIconEnginePluginAvailable();
+
 /*!
  *
  *

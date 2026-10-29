@@ -5,6 +5,7 @@
 // this forces the header to be self-contained.
 #include "helper.h"
 
+#include "blackhole.h"
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qevent.h>
@@ -1067,6 +1068,15 @@ private Q_SLOTS:
         QVERIFY(isThemeChange(QEvent::Type::StyleChange));
 
         QVERIFY(!isThemeChange(QEvent::Type::MouseMove));
+    }
+
+    void testIsQSvgIconEnginePluginAvailable()
+    {
+        // The actual result of the function is environment-dependent, but
+        // we test at least that is does not crash (which could happes if
+        // the test resource were missing).
+        const auto result = isQSvgIconEnginePluginAvailable();
+        blackhole(result);
     }
 };
 

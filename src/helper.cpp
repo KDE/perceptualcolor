@@ -216,6 +216,12 @@ QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF)
  */
 QIcon qIconFromTheme(const QStringList &names, const QString &fallback)
 {
+    if (!isQSvgIconEnginePluginAvailable()) {
+        qCWarning(logging) //
+            << "PerceptualColor: QSvgIconEnginePlugin is a mandatory " //
+               "runtime dependency, but it is not available.";
+    }
+
     // Try to find icon in system themes
     for (auto const &name : std::as_const(names)) {
         const QIcon myIcon = QIcon::fromTheme(name);
@@ -267,6 +273,12 @@ QIcon qIconFromTheme(const QStringList &names, const QString &fallback)
  */
 QIcon qIconFromTheme(const QIcon::ThemeIcon nativeIcon, const QStringList &names, const QString &fallback)
 {
+    if (!isQSvgIconEnginePluginAvailable()) {
+        qCWarning(logging) //
+            << "PerceptualColor: QSvgIconEnginePlugin is a mandatory " //
+               "runtime dependency, but it is not available.";
+    }
+
     const QIcon myIcon = QIcon::fromTheme(nativeIcon);
     if (!myIcon.isNull()) {
         return myIcon;
@@ -797,6 +809,31 @@ bool isThemeChange(const QEvent::Type eventType)
         || (eventType == QEvent::FontChange) //
         // || (eventType == QEvent::ThemeChange) // value defined but undocumented
         || (eventType == QEvent::StyleChange);
+}
+
+/*!
+ * \brief Returns whether the QSvgIconEnginePlugin is currently available.
+ */
+bool isQSvgIconEnginePluginAvailable()
+{
+    initializeLibraryResources();
+    static const QString svgFile = //
+        QStringLiteral(":/PerceptualColor/icons/lighttheme/color-swatch.svg");
+    // Assert that the test file is actually available.
+    if (!QFile::exists(svgFile)) {
+        qCFatal(logging) //
+            << "isQSvgIconEnginePluginAvailable(): test resource is missing.";
+    }
+
+    // Using QPixmap requires a QGuiApplication.
+    const auto guiApplication = //
+        qobject_cast<QGuiApplication *>(QCoreApplication::instance());
+    if (guiApplication == nullptr) {
+        return false;
+    }
+
+    const QIcon icon(svgFile);
+    return !icon.pixmap(16, 16).isNull();
 }
 
 } // namespace PerceptualColor
