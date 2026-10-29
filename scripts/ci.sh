@@ -11,9 +11,10 @@
 # to avoid conflicts.
 totalerrors=0
 
-# Start the slowest task (ci-doc.sh) immediately in the background
+# Start the slowest task (ci-doc.sh) immediately in the background.
+# QDoc is basically a single-thread task.
 echo "Starting ci-doc.sh in background …"
-scripts/ci-doc.sh > ci-doc.log 2>&1 &
+ionice -c 2 -n 0 scripts/ci-doc.sh > ci-doc.log 2>&1 &
 DOCS_PID=$!
 
 # Run the remaining tasks sequentially
@@ -39,8 +40,11 @@ totalerrors=$((totalerrors + exitcode))
 echo "ci-format.sh finished with exit code $exitcode."
 exitcode_format=$exitcode
 
+# Run this CPU-intensive task with a higher “nice” value (lower priority),
+# so they don't starve the background ci-doc.sh process of CPU cycles, which
+# is yet slow enough, because it is basically a single-thread task.
 echo "Starting ci-warnings.sh …"
-scripts/ci-warnings.sh
+nice -n 10 scripts/ci-warnings.sh
 exitcode=$?
 totalerrors=$((totalerrors + exitcode))
 echo "ci-warnings.sh finished with exit code $exitcode."
