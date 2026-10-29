@@ -89,12 +89,12 @@ public:
     static constexpr qsizetype customColorsSwatchCount = //
         historyHSwatchCount * historyVSwatchCount;
 
-    static QString fixedIdentifierWithoutHyphenMinus(const QString &input);
-    static QColor getColorCommon(std::optional<const QString> gamutIdentifier,
-                                 const QColor &initial,
-                                 QWidget *parent,
-                                 const QString &title,
-                                 QColorDialog::ColorDialogOptions options);
+    [[nodiscard]] static QString fixedIdentifierWithoutHyphenMinus(const QString &input);
+    [[nodiscard]] static QColor getColorCommon(std::optional<const QString> gamutIdentifier,
+                                               const QColor &initial,
+                                               QWidget *parent,
+                                               const QString &title,
+                                               QColorDialog::ColorDialogOptions options);
 
     /*! \brief GradientSlider widget for the alpha channel. */
     QPointer<GradientSlider> m_alphaGradientSlider;
@@ -343,7 +343,7 @@ public:
 
     void applyLayoutDimensions();
     [[nodiscard]] QColor defaultColor() const;
-    static QIcon getGamutIcon();
+    [[nodiscard]] static QIcon getGamutIcon();
     void initialize();
     [[nodiscard]] QWidget *initializeNumericPage();
     void initializePortalEyedropper();

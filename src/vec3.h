@@ -61,7 +61,7 @@ struct Vec3 {
      *
      * Returns a reference to the element
      */
-    constexpr T &operator()(size_t i)
+    [[nodiscard]] constexpr T &operator()(size_t i)
     {
         return v[i];
     }
@@ -73,7 +73,7 @@ struct Vec3 {
      *
      * Returns a c\ const reference to the element
      */
-    constexpr const T &operator()(size_t i) const
+    [[nodiscard]] constexpr const T &operator()(size_t i) const
     {
         return v[i];
     }
@@ -86,7 +86,7 @@ struct Vec3 {
      * \b U Target floating-point type
      */
     template<typename U>
-    constexpr explicit operator Vec3<U>() const
+    [[nodiscard]] constexpr explicit operator Vec3<U>() const
     {
         return Vec3<U>{static_cast<U>(v[0]), //
                        static_cast<U>(v[1]), //

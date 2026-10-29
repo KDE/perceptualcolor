@@ -97,7 +97,7 @@ public:
     static void render(const QVariant &variantParameters, AsyncImageRenderCallback &callbackObject);
 
 private:
-    static InterlacingPass createInterlacingPassObject(const QSize imageSizePhysical);
+    [[nodiscard]] static InterlacingPass createInterlacingPassObject(const QSize imageSizePhysical);
 
     static void renderByRow(uchar *const bytesPtr,
                             const qsizetype bytesPerLine,

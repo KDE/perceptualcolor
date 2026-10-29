@@ -18,7 +18,7 @@ namespace PerceptualColor
 class Mockup : public AsyncImageRenderCallback
 {
 public:
-    virtual bool shouldAbort() const override;
+    [[nodiscard]] virtual bool shouldAbort() const override;
     virtual void deliverInterlacingPass(const QImage &image, const QImage &mask, const QVariant &parameters, const InterlacingState state) override;
 };
 

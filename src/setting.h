@@ -86,7 +86,7 @@ public:
      *
      *  Returns the value.
      */
-    T value() const;
+    [[nodiscard]] T value() const;
 
     /*!
      * \brief Setter.

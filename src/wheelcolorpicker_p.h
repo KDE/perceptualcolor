@@ -45,6 +45,7 @@ public:
 
     // Member methods
     [[nodiscard]] QSizeF optimalChromaLightnessDiagramSize() const;
+
     void resizeChildWidgets();
 
     // Data members

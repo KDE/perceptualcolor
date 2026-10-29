@@ -230,7 +230,7 @@ public:
 public Q_SLOTS:
     void setCurrentColor(const QColor &color);
     void setLayoutDimensions(const PerceptualColor::ColorDialog::DialogLayoutDimensions newLayoutDimensions);
-    Q_INVOKABLE void setOption(QColorDialog::ColorDialogOption option, bool on = true);
+    void setOption(QColorDialog::ColorDialogOption option, bool on = true);
     void setOptions(QColorDialog::ColorDialogOptions newOptions);
 
 Q_SIGNALS:

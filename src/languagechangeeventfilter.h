@@ -31,7 +31,7 @@ class LanguageChangeEventFilter : public QObject
 public:
     explicit LanguageChangeEventFilter(QObject *parent = nullptr);
     virtual ~LanguageChangeEventFilter() override;
-    [[nodiscard]] virtual bool eventFilter(QObject *watched, QEvent *event) override;
+    virtual bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     Q_DISABLE_COPY(LanguageChangeEventFilter)

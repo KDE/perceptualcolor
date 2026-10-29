@@ -187,7 +187,7 @@ private:
      * Initializes the provider with default parameters on first use,
      * including the projection space and the initial image size.
      */
-    static AsyncImageProvider<ColorWheelImageParameters> &getImageSingleton()
+    [[nodiscard]] static AsyncImageProvider<ColorWheelImageParameters> &getImageSingleton()
     {
         static AsyncImageProvider<ColorWheelImageParameters> instance;
         static bool initialized = false;

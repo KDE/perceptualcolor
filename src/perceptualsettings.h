@@ -46,7 +46,7 @@ public:
     PerceptualSettings(const PerceptualSettings &) = delete;
     PerceptualSettings &operator=(const PerceptualSettings &) = delete;
 
-    [[nodiscard]] static PerceptualSettings &getInstance(const QString &identifier);
+    static PerceptualSettings &getInstance(const QString &identifier);
 
     /*!
      * \brief Custom colors of \l ColorDialog. */
@@ -121,7 +121,7 @@ private:
 
     friend class TestPerceptualSettings;
 
-    static QString fixedIdentifierWithHyphenMinus(const QString &input);
+    [[nodiscard]] static QString fixedIdentifierWithHyphenMinus(const QString &input);
 };
 
 } // namespace PerceptualColor

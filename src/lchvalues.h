@@ -95,7 +95,7 @@ public:
      * distant from black and white, and also quite distant from any
      * saturated color.
      */
-    constexpr GenericColor neutralGray() const noexcept
+    [[nodiscard]] constexpr GenericColor neutralGray() const noexcept
     {
         return GenericColor(static_cast<double>(neutralLightness), //
                             neutralChroma,

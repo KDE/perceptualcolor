@@ -161,7 +161,7 @@ public:
     Q_INVOKABLE void setFormat(const QList<PerceptualColor::MultiSpinBoxSection> &newFormat);
     [[nodiscard]] virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
-    virtual QValidator::State validate(QString &input, int &pos) const override;
+    [[nodiscard]] virtual QValidator::State validate(QString &input, int &pos) const override;
     /*!
      * \brief Getter for property \l values
      *

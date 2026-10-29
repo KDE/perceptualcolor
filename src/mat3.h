@@ -78,7 +78,7 @@ struct Mat3 {
      *
      * Returns a reference to the element
      */
-    constexpr T &operator()(size_t r, size_t c)
+    [[nodiscard]] constexpr T &operator()(size_t r, size_t c)
     {
         return m[r * 3 + c];
     }
@@ -92,7 +92,7 @@ struct Mat3 {
      *
      * Returns a \c const reference to the element
      */
-    constexpr const T &operator()(size_t r, size_t c) const
+    [[nodiscard]] constexpr const T &operator()(size_t r, size_t c) const
     {
         return m[r * 3 + c];
     }
@@ -105,7 +105,7 @@ struct Mat3 {
      * \b U Target floating-point type
      */
     template<typename U>
-    constexpr explicit operator Mat3<U>() const
+    [[nodiscard]] constexpr explicit operator Mat3<U>() const
     {
         Mat3<U> result;
         for (size_t i = 0; i < 9; ++i)
@@ -118,7 +118,7 @@ struct Mat3 {
      *
      * \a rhs Right-hand side matrix
      */
-    constexpr Mat3 operator*(const Mat3 &rhs) const
+    [[nodiscard]] constexpr Mat3 operator*(const Mat3 &rhs) const
     {
         Mat3 result{};
 
@@ -142,7 +142,7 @@ struct Mat3 {
      *
      * \a v Input vector
      */
-    constexpr Vec3<T> operator*(const Vec3<T> &v) const
+    [[nodiscard]] constexpr Vec3<T> operator*(const Vec3<T> &v) const
     {
         return Vec3<T>{m[0] * v(0) + m[1] * v(1) + m[2] * v(2), //
                        m[3] * v(0) + m[4] * v(1) + m[5] * v(2), //
@@ -152,7 +152,7 @@ struct Mat3 {
     /*!
      * \brief Compute the determinant of the matrix.
      */
-    constexpr T determinant() const
+    [[nodiscard]] constexpr T determinant() const
     {
         return m[0] * (m[4] * m[8] - m[5] * m[7]) //
             - m[1] * (m[3] * m[8] - m[5] * m[6]) //
@@ -166,7 +166,7 @@ struct Mat3 {
      * Returns std::nullopt if the matrix is not invertible
      * (determinant equals zero).
      */
-    constexpr std::optional<Mat3> inverse() const
+    [[nodiscard]] constexpr std::optional<Mat3> inverse() const
     {
         T d = determinant();
 
