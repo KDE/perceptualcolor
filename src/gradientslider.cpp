@@ -329,6 +329,7 @@ void GradientSlider::setValue(const qreal newValue)
  */
 void GradientSlider::mousePressEvent(QMouseEvent *event)
 {
+    event->accept();
     setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
@@ -341,6 +342,7 @@ void GradientSlider::mousePressEvent(QMouseEvent *event)
  */
 void GradientSlider::mouseReleaseEvent(QMouseEvent *event)
 {
+    event->accept();
     setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
@@ -352,6 +354,7 @@ void GradientSlider::mouseReleaseEvent(QMouseEvent *event)
  * \a event The corresponding mouse event */
 void GradientSlider::mouseMoveEvent(QMouseEvent *event)
 {
+    event->accept();
     setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 

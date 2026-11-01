@@ -126,6 +126,8 @@ void SwatchBookPrivate::retranslateUi()
  */
 void SwatchBook::mousePressEvent(QMouseEvent *event)
 {
+    event->accept();
+
     // NOTE We will not actively ignore the event, even if we didn’t actually
     // react on it. Therefore, Breeze and other styles cannot move
     // the window when clicking in the middle between two patches.

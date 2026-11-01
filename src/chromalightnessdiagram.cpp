@@ -426,6 +426,7 @@ GenericColor ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToLch(const Q
  */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
+    event->accept();
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
         setCursor(Qt::BlankCursor);
@@ -447,6 +448,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 {
+    event->accept();
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
         setCursor(Qt::BlankCursor);
@@ -469,6 +471,7 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
  */
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
+    event->accept();
     d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     unsetCursor();
 }

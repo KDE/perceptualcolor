@@ -174,6 +174,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     setFocus(Qt::MouseFocusReason);
 
     if (myPolarPoint.radius() > radius - gradientThickness()) {
+        event->accept();
         d_pointer->m_isMouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
@@ -203,6 +204,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
+        event->accept();
         setHue(d_pointer->fromWidgetPixelPositionToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE’s Breeze
@@ -226,6 +228,7 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
+        event->accept();
         d_pointer->m_isMouseEventActive = false;
         setHue(d_pointer->fromWidgetPixelPositionToWheelCoordinates(event->pos()).angleDegree());
     } else {

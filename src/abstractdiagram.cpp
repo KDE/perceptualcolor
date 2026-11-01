@@ -422,9 +422,7 @@ void AbstractDiagram::mouseMoveEvent(QMouseEvent *eventParameter)
             execDrag(d_pointer->m_dragStartPosition);
         }
     }
-    // NOTE Intentionally not calling the parent’s class’ implementation to
-    // avoid that on Breeze style, instead of drag-and-drop, sometimes
-    // the window gets moved.
+    QWidget::mouseMoveEvent(eventParameter);
 }
 
 /*!
