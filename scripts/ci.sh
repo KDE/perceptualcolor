@@ -11,20 +11,13 @@
 # to avoid conflicts.
 totalerrors=0
 
-# Start the slowest task (ci-doc.sh) immediately in the background.
-# QDoc is basically a single-thread task.
-echo "Starting ci-doc.sh in background …"
-ionice -c 2 -n 0 scripts/ci-doc.sh > ci-doc.log 2>&1 &
-DOCS_PID=$!
-
-# Run the remaining tasks sequentially
-
-echo "Starting ci-staticcodecheck.sh …"
-scripts/ci-staticcodecheck.sh
-exitcode=$?
-totalerrors=$((totalerrors + exitcode))
-echo "ci-staticcodecheck.sh finished with exit code $exitcode."
-exitcode_staticcodecheck=$exitcode
+# Run these checks sequentially before starting parallel/background work:
+# - ci-cmakelint.sh must run first so it does not scan CMake files inside build
+#   directories created by later tasks and emit false-positive warnings.
+# - ci-format.sh may modify source files, which must never happen concurrently
+#   with other checks or builds.
+# - ci-staticcodecheck.sh runs here too: it is already very fast, so
+#   parallelizing it would yield negligible speedup for unnecessary risk.
 
 echo "Starting ci-cmakelint.sh …"
 scripts/ci-cmakelint.sh
@@ -39,6 +32,21 @@ exitcode=$?
 totalerrors=$((totalerrors + exitcode))
 echo "ci-format.sh finished with exit code $exitcode."
 exitcode_format=$exitcode
+
+echo "Starting ci-staticcodecheck.sh …"
+scripts/ci-staticcodecheck.sh
+exitcode=$?
+totalerrors=$((totalerrors + exitcode))
+echo "ci-staticcodecheck.sh finished with exit code $exitcode."
+exitcode_staticcodecheck=$exitcode
+
+# Start the slowest task (ci-doc.sh) in the background.
+# QDoc is basically a single-thread task.
+echo "Starting ci-doc.sh in background …"
+ionice -c 2 -n 0 scripts/ci-doc.sh > ci-doc.log 2>&1 &
+DOCS_PID=$!
+
+# Run the remaining tasks sequentially
 
 # Run this CPU-intensive task with a higher “nice” value (lower priority),
 # so they don't starve the background ci-doc.sh process of CPU cycles, which
