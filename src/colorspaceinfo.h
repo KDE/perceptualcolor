@@ -9,7 +9,8 @@
 #include "perceptualcolornamespace.h"
 #include <map>
 #include <qcolor.h>
-#include <qglobal.h>
+#include <qtclasshelpermacros.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

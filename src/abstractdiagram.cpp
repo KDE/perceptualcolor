@@ -10,19 +10,17 @@
 #include "absolutecolor.h"
 #include "helper.h"
 #include "lchvalues.h"
-#include <qapplication.h>
+#include "perceptualcolornamespace.h"
 #include <qcolor.h>
-#include <qevent.h>
-#include <qglobal.h>
-#include <qimage.h>
+#include <qcoreevent.h>
+#include <qminmax.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
 #include <qpalette.h>
 #include <qsize.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qwidget.h>
-class QHideEvent;
-class QShowEvent;
 
 namespace PerceptualColor
 {
@@ -375,77 +373,6 @@ QColor AbstractDiagram::neutralGray()
     static const QColor v = AbsoluteColor::fastFromOklabToSRgbOrTransparent( //
         AbsoluteColor::fromPolarToCartesian(oklchValues.neutralGray()));
     return v;
-}
-
-/*!
- * \brief React on a mouse move event.
- *
- * Reimplemented from base class.
- *
- * \note When overriding this function in a subclass, make sure to
- * call the base class implementation (AbstractDiagram::mousePressEvent).
- *
- * \a eventParameter The corresponding mouse event
- */
-void AbstractDiagram::mousePressEvent(QMouseEvent *eventParameter)
-{
-    if (eventParameter->button() == Qt::LeftButton)
-        d_pointer->m_dragStartPosition = eventParameter->pos();
-    QWidget::mousePressEvent(eventParameter);
-}
-
-/*!
- * \brief React on a mouse press event.
- *
- * Reimplemented from base class.
- *
- * \note When overriding this function in a subclass, make sure to
- * call the base class implementation (AbstractDiagram::mouseMoveEvent).
- *
- * \a eventParameter The corresponding mouse event
- */
-void AbstractDiagram::mouseMoveEvent(QMouseEvent *eventParameter)
-{
-    if (eventParameter->buttons() & Qt::LeftButton) {
-        // Distance since the left mouse buttons was originally clicked.
-        const auto vector = eventParameter->pos() - d_pointer->m_dragStartPosition;
-        const auto distanceSquare = //
-            vector.x() * vector.x() + vector.y() * vector.y();
-        const auto refSquare = QApplication::startDragDistance() //
-            * QApplication::startDragDistance();
-        if (distanceSquare >= refSquare) {
-            // NOTE Calling execDrag() here does not trigger a new drag
-            // operation on every minor mouse movement. Once QDrag::exec()
-            // has been invoked, Qt suspends further mouse move events until
-            // the drag-and-drop sequence has finished. Only after the drag
-            // completes will normal mouse events resume.
-            execDrag(d_pointer->m_dragStartPosition);
-        }
-    }
-    QWidget::mouseMoveEvent(eventParameter);
-}
-
-/*!
- * \brief Initiates an outgoing drag operation.
- *
- * This virtual function simplifies support for drag-and-drop.
- * It is called when the user presses the left mouse button and
- * moves the cursor beyond the platform-defined drag threshold.
- *
- * To implement drag support, reimplement this function in a subclass:
- *
- * \list
- *     \li Create a QDrag object on the heap, using the widget as parent.
- *     \li Configure the drag object (e.g. set mime data, pixmap).
- *     \li Call QDrag::exec() to start the drag. Qt will take ownership
- *         of the QDrag object; do not delete it manually.
- * \endlist
- *
- * \a startPosition The position where the drag gesture began.
- */
-void AbstractDiagram::execDrag(QPoint startPosition)
-{
-    Q_UNUSED(startPosition)
 }
 
 /*!

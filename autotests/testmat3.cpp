@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "mat3.h"
 
-#include "blackhole.h"
+#include "sink.h"
 #include "vec3.h"
 #include <array>
 #include <optional>
@@ -343,7 +343,7 @@ private Q_SLOTS:
             for (long int i = 0; i < 100000000; ++i) {
                 result = myMatrix * result;
             }
-            blackhole(result);
+            sink(result);
         };
     }
 };

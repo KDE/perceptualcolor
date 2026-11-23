@@ -59,24 +59,7 @@ namespace PerceptualColor
 Q_NAMESPACE
 
 /*!
- *
- *
  * \brief Identifiers for color models.
- *
- * \note Maybe
- * \l {https://doc-snapshots.qt.io/qt6-dev/qcolorspace.html#ColorModel-enum}
- * {enum QColorSpace::NamedColorSpace} might also be useful in
- * the future.
- *
- * \value SRgb_1
- * The absolute sRGB color space, which by
- * definition always and exclusively uses a D65 illuminant.
- * R: [0, 1]. G: [0, 1]. B: [0, 1].
- *
- * \value LinearSRgb_1
- * The absolute Linear sRGB color space, which by
- * definition al ways and exclusively uses a D65 illuminant.
- * R: [0, 1]. G: [0, 1]. B: [0, 1].
  *
  * \value CielabD50
  * The absolute Cielab color space using a D50
@@ -88,22 +71,10 @@ Q_NAMESPACE
  * illuminant.
  * Lightness: [0, 100]. Chroma: unbound. Hue: [0, 360[.
  *
- * \value Hsl_360_1_1
- * Any color space using the HSL color model, which
- * is a transformation of the RGB color model. Color values only have a
- * well-defined absolute meaning when associated with a corresponding
- * RGB color profile.
- * Hue: [0, 360[. Saturation: [0, 1]. Lightness: [0, 1].
- *
- * \value Hwb_360_1_1
- * Any color space using the HSL color model, which
- * is a transformation of the HWB color model. Color values only have a
- * well-defined absolute meaning when associated with a corresponding
- * RGB color profile.
- * Hue: [0, 360[. Whiteness: [0, 1]. Blackness: [0, 1].
- *
- * \value Invalid
- * Represents invalid data.
+ * \value LinearSRgb_1
+ * The absolute Linear sRGB color space, which by
+ * definition al ways and exclusively uses a D65 illuminant.
+ * R: [0, 1]. G: [0, 1]. B: [0, 1].
  *
  * \value OklabD65
  * The absolute Oklab color space, which by
@@ -115,10 +86,9 @@ Q_NAMESPACE
  * definition always and exclusively uses a D65 illuminant.
  * Lightness: [0, 1]. Chroma: unbound. Hue: [0, 360[.
  *
- * \value Rgb_1
- * Any color space using the RGB color model. Color
- * values only have a well-defined absolute meaning when associated with a
- * corresponding RGB color profile.
+ * \value SRgb_1
+ * The absolute sRGB color space, which by
+ * definition always and exclusively uses a D65 illuminant.
  * R: [0, 1]. G: [0, 1]. B: [0, 1].
  *
  * \value XyzD50_1
@@ -132,16 +102,12 @@ Q_NAMESPACE
  * X: unbound. Y: [0, 1]. Diffuse white has a luminance (Y) of 1.0.  Z: unbound.
  */
 enum class ColorModel {
-    SRgb_1,
-    LinearSRgb_1,
     CielabD50,
     CielchD50,
-    Hsl_360_1_1,
-    Hwb_360_1_1,
-    Invalid,
+    LinearSRgb_1,
     OklabD65,
     OklchD65,
-    Rgb_1,
+    SRgb_1,
     XyzD50_1,
     XyzD65_1
 };

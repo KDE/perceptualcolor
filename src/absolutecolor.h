@@ -7,12 +7,12 @@
 #include "genericcolor.h"
 #include "perceptualcolornamespace.h"
 #include <array>
-#include <math.h>
+#include <cmath>
 #include <optional>
-#include <qglobal.h>
 #include <qhash.h>
 #include <qlist.h>
 #include <qrgb.h>
+#include <qtypes.h>
 #include <type_traits>
 
 namespace PerceptualColor

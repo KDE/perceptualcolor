@@ -15,6 +15,7 @@
 #include "colorwheel.h" // IWYU pragma: keep
 #include "constpropagatinguniquepointer.h" // IWYU pragma: keep
 #include "csscolor.h" // IWYU pragma: keep
+#include "customcolorpatch.h" // IWYU pragma: keep
 #include "genericcolor.h" // IWYU pragma: keep
 #include "helper.h" // IWYU pragma: keep
 #include "helperconstants.h" // IWYU pragma: keep

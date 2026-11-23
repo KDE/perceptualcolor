@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "helper.h"
 
-#include "blackhole.h"
+#include "sink.h"
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qevent.h>
@@ -16,6 +16,7 @@
 #include <qlocale.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qpainter.h>
 #include <qpair.h>
 #include <qpoint.h>
 #include <qsize.h>
@@ -1031,35 +1032,6 @@ private Q_SLOTS:
         QCOMPARE(result.last().second, 99); // Should span entire range
     }
 
-    void testToQColor()
-    {
-        const QMimeData myMimeData1;
-        QCOMPARE(toQColor(&myMimeData1), QColor());
-
-        QMimeData myMimeData2;
-        myMimeData2.setColorData(QVariant());
-        QCOMPARE(toQColor(&myMimeData2), QColor());
-
-        QMimeData myMimeData3;
-        myMimeData3.setColorData(QColor());
-        QCOMPARE(toQColor(&myMimeData3), QColor());
-
-        const QColor myColor4 = QColor::fromHsvF(0.5f, 0.6f, 0.7f);
-        QMimeData myMimeData4;
-        myMimeData4.setColorData(myColor4);
-        QCOMPARE(toQColor(&myMimeData4), myColor4);
-
-        QMimeData myMimeData5;
-        myMimeData5.setColorData(QStringLiteral("test"));
-        QCOMPARE(toQColor(&myMimeData5), QColor());
-
-        const QColor myColor6 = QColor::fromHsvF(0.5f, 0.6f, 0.7f);
-        QMimeData myMimeData6;
-        myMimeData4.setColorData(myColor6);
-        myMimeData5.setText(QStringLiteral("test"));
-        QCOMPARE(toQColor(&myMimeData4), myColor6);
-    }
-
     void testIsThemeChange()
     {
         QVERIFY(isThemeChange(QEvent::Type::PaletteChange));
@@ -1076,7 +1048,39 @@ private Q_SLOTS:
         // we test at least that is does not crash (which could happes if
         // the test resource were missing).
         const auto result = isQSvgIconEnginePluginAvailable();
-        blackhole(result);
+        sink(result);
+    }
+
+    void testInitQLineEditStyleOptions()
+    {
+        QWidget widget;
+
+        // Test that function call does not crash with regular object:
+        QStyleOptionFrame temp;
+        initQLineEditStyleOption(&temp, &widget);
+
+        // Test that function does not crash with nullptr:
+        initQLineEditStyleOption(&temp, nullptr);
+        initQLineEditStyleOption(nullptr, &widget);
+        initQLineEditStyleOption(nullptr, nullptr);
+    }
+
+    void testDdrawQLineEditPanel()
+    {
+        // test that null arguments do not crash
+        QWidget widget;
+        widget.resize(120, 40);
+
+        QPixmap canvas(widget.size());
+        canvas.fill(Qt::transparent);
+        QPainter painter(&canvas);
+
+        QStyleOptionFrame opt;
+        initQLineEditStyleOption(&opt, &widget);
+
+        drawQLineEditPanel(nullptr, &painter, opt);
+        drawQLineEditPanel(&widget, nullptr, opt);
+        drawQLineEditPanel(nullptr, nullptr, opt);
     }
 };
 

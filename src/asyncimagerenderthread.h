@@ -7,8 +7,8 @@
 #include "asyncimagerendercallback.h"
 #include <atomic>
 #include <functional>
-#include <qglobal.h>
 #include <qmutex.h>
+#include <qtclasshelpermacros.h>
 #include <qthread.h>
 #include <qtmetamacros.h>
 #include <qvariant.h>

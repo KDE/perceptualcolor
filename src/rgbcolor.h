@@ -56,12 +56,12 @@ namespace PerceptualColor
 class RgbColor
 {
 public:
-    [[nodiscard]] static RgbColor fromHsl(const GenericColor &color);
-    [[nodiscard]] static RgbColor fromHsv(const GenericColor &color);
-    [[nodiscard]] static RgbColor fromHwb(const GenericColor &color);
-    [[nodiscard]] static RgbColor fromRgb1(const GenericColor &color, std::optional<double> hue = std::optional<double>());
-    [[nodiscard]] static RgbColor fromRgb255(const GenericColor &color, std::optional<double> hue = std::optional<double>());
-    [[nodiscard]] static RgbColor fromRgbQColor(const QColor &color);
+    [[nodiscard]] static RgbColor fromHsl_360_100_100(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromHsv_360_100_100(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromHwb_360_100_100(const GenericColor &color);
+    [[nodiscard]] static RgbColor fromRgb_1(const GenericColor &color, std::optional<double> hue = std::optional<double>());
+    [[nodiscard]] static RgbColor fromRgb_255(const GenericColor &color, std::optional<double> hue = std::optional<double>());
+    [[nodiscard]] static RgbColor fromRgb_QColor(const QColor &color);
 
     /*!
      * \brief Constructor for an uninitialized object.
@@ -108,17 +108,17 @@ public:
      * \brief HSL representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
-    GenericColor hsl;
+    GenericColor hsl_360_100_100;
     /*!
      * \brief HSV representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
-    GenericColor hsv;
+    GenericColor hsv_360_100_100;
     /*!
      * \brief HWB representation.
      *
      * Range: [0, 360], [0, 100], [0, 100] */
-    GenericColor hwb;
+    GenericColor hwb_360_100_100;
     /*!
      * \brief RGB representation.
      *
@@ -136,12 +136,12 @@ public:
      *
      * Range: [\#000000, \#FFFFFF]
      */
-    QString rgbHex6;
+    QString rgb_hex6;
     /*!
      * \brief QColor representation.
      *
      * \c {QColor::spec()} is \c {QColor::Rgb}. */
-    QColor rgbQColor;
+    QColor rgb_QColor;
 
 private:
     void fillAll(QColor color, std::optional<double> hue);

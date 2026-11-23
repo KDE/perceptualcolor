@@ -13,13 +13,14 @@
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "lchvalues.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
 #include <qpoint.h>
+#include <qtclasshelpermacros.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {
 class ChromaHueDiagram;
+enum class LchSpace;
 
 /*!
  *

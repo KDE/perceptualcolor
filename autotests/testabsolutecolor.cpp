@@ -5,10 +5,10 @@
 // this forces the header to be self-contained.
 #include "absolutecolor.h"
 
-#include "blackhole.h"
 #include "genericcolor.h"
 #include "helpermath.h"
 #include "perceptualcolornamespace.h"
+#include "sink.h"
 #include "vec3.h"
 #include <algorithm>
 #include <cmath>
@@ -599,7 +599,7 @@ private Q_SLOTS:
         lab.third = 0.1;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+                sink(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
             }
         }
     }
@@ -612,7 +612,7 @@ private Q_SLOTS:
         lab.third = 5.1;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                blackhole(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
+                sink(AbsoluteColor::fastFromOklabToSRgbOrTransparent(lab));
             }
         }
     }
@@ -625,7 +625,7 @@ private Q_SLOTS:
         lab.third = 10;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                blackhole(AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab));
+                sink(AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab));
             }
         }
     }
@@ -638,7 +638,7 @@ private Q_SLOTS:
         lab.third = 510;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                blackhole(AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab));
+                sink(AbsoluteColor::fastFromCielabD50ToSRgbOrTransparent(lab));
             }
         }
     }
@@ -651,7 +651,7 @@ private Q_SLOTS:
         lch.third = 10;
         QBENCHMARK {
             for (int i = 0; i < 1000000; ++i) {
-                blackhole(AbsoluteColor::fastFromCielchD50ToSRgbClamped(lch));
+                sink(AbsoluteColor::fastFromCielchD50ToSRgbClamped(lch));
             }
         }
     }
@@ -799,6 +799,54 @@ private Q_SLOTS:
         QVERIFY(isNearlyEqual(actual2.second, expected2.second, epsilon));
         QVERIFY(isNearlyEqual(actual2.third, expected2.third, epsilon));
     }
+
+    void testIsDataCreated()
+    {
+        const auto temp = AbsoluteColor::allConversions( //
+            ColorModel::SRgb_1, //
+            GenericColor(0x55 / 255., 0xAA / 255., 0xDD / 255.));
+        QVERIFY(temp.count() >= 8);
+    }
+
+#ifndef MSVC_DLL
+    void testAllCombinations_data()
+    {
+        const QMetaEnum myMeta = QMetaEnum::fromType<ColorModel>();
+        QMap<QString, int> enumeratorMap;
+        QSet<int> enumeratorValueSet;
+        for (int i = 0; i < myMeta.keyCount(); ++i) {
+            enumeratorMap.insert(QString::fromUtf8(myMeta.key(i)), //
+                                 myMeta.value(i));
+            enumeratorValueSet.insert(myMeta.value(i));
+        }
+
+        qRegisterMetaType<GenericColor>();
+        QTest::addColumn<int>("enumeratorValue");
+        QTest::addColumn<QSet<int>>("enumeratorValueSet");
+
+        for (const auto [key, value] : std::as_const(enumeratorMap).asKeyValueRange()) {
+            const QString caption = //
+                QStringLiteral("%1 [%2]").arg(key).arg(value);
+            QTest::newRow(caption.toUtf8().constData()) //
+                << value //
+                << enumeratorValueSet;
+        }
+    }
+
+    void testAllCombinations()
+    {
+        QFETCH(int, enumeratorValue);
+        QFETCH(QSet<int>, enumeratorValueSet);
+
+        const auto conversions = AbsoluteColor::allConversions( //
+            static_cast<ColorModel>(enumeratorValue), //
+            GenericColor(0.1, 0.1, 0.1));
+
+        for (const auto &i : enumeratorValueSet) {
+            QVERIFY(conversions.contains(static_cast<ColorModel>(i)));
+        }
+    }
+#endif
 };
 
 } // namespace PerceptualColor

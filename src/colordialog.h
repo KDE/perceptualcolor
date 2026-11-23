@@ -6,17 +6,16 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
+#include <qbytearray.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
 #include <qdialog.h>
-#include <qglobal.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
 #include <qstring.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
-class QEvent;
 class QObject;
-class QShowEvent;
 class QWidget;
 
 namespace PerceptualColor

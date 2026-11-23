@@ -9,11 +9,12 @@
 
 #include "constpropagatingrawpointer.h"
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qimage.h>
 #include <qnamespace.h>
 #include <qpixmap.h>
-#include <qpoint.h>
+#include <qstyleoption.h>
+#include <qtclasshelpermacros.h>
+#include <qtypes.h>
 class QLabel;
 
 namespace PerceptualColor
@@ -92,19 +93,24 @@ public:
      * should be for the property \l ColorPatch::color, so no need to
      * initialize here explicitly. */
     QColor m_color;
+
     /*!
-     * \brief The QLabel widget that is used to display the color. */
-    QLabel *m_label;
-    /*!
-     * \brief Cache for the last image parameters that have been shown
-     * in \l m_label.
+     * \brief Cache for the last image parameters that have been used to
+     * update \l m_pixmap.
      */
     ImageParameters m_lastImageParameters = ImageParameters();
 
+    /*!
+     * \brief The pixmap that is used to display the color.
+     */
+    QPixmap m_pixmap;
+
+    [[nodiscard]] QMargins contentMargins() const;
     [[nodiscard]] ColorPatchPrivate::ImageParameters getImageParameters(const int width, const int height) const;
+    [[nodiscard]] QSize referenceSize() const;
     [[nodiscard]] static QImage renderImage(const ImageParameters &parameters);
-    [[nodiscard]] QPixmap renderPixmap(const ImageParameters &parameters);
-    void updatePixmapIfNecessary();
+    [[nodiscard]] QPixmap renderPixmap(const ImageParameters &parameters) const;
+    void updatePixmapIfNecessary(const QSize size);
 
 private:
     Q_DISABLE_COPY(ColorPatchPrivate)

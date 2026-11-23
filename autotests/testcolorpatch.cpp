@@ -163,8 +163,11 @@ private Q_SLOTS:
     void testColorChanged()
     {
         // Initialization
-        PerceptualColor::ColorPatch thePatch;
-        connect(&thePatch, &PerceptualColor::ColorPatch::colorChanged, this, &TestColorPatch::helperReceiveSignals);
+        ColorPatch thePatch;
+        connect(&thePatch, //
+                &PerceptualColor::ColorPatch::colorChanged, //
+                this, //
+                &TestColorPatch::helperReceiveSignals);
 
         m_color = Qt::red;
         thePatch.setColor(QColor()); // invalid like initial value
@@ -236,6 +239,38 @@ private Q_SLOTS:
         myWidget.repaint();
         myWidget.resize(QSize(14, 14));
         myWidget.repaint();
+    }
+
+    void testDragColorPixmap()
+    {
+        ColorPatch myWidget;
+        myWidget.setColor(Qt::red);
+        const auto myPixmap = myWidget.dragDropPixmap();
+
+        QVERIFY(!myPixmap.size().isEmpty());
+
+        QImage image = myPixmap.toImage();
+        const int centerX = image.width() / 2;
+        const int centerY = image.height() / 2;
+        const QColor centerColor = image.pixelColor(centerX, centerY);
+        QCOMPARE(centerColor, Qt::red);
+    }
+
+    void testReferenceSize()
+    {
+        ColorPatch myWidget;
+
+        QVERIFY(!myWidget.d_pointer->referenceSize().isEmpty());
+    }
+
+    void testContentMargins()
+    {
+        ColorPatch myWidget;
+
+        QVERIFY(myWidget.d_pointer->contentMargins().left() > 0);
+        QVERIFY(myWidget.d_pointer->contentMargins().top() > 0);
+        QVERIFY(myWidget.d_pointer->contentMargins().right() > 0);
+        QVERIFY(myWidget.d_pointer->contentMargins().bottom() > 0);
     }
 
     void testSnippet01()

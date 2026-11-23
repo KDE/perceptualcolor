@@ -46,7 +46,7 @@ namespace PerceptualColor
  * \l normalizePolar360 for details.
  *
  * To provide a clear API, there is no \e {equal} operator. Use
- * \l isSamePoint() instead..
+ * \l isSamePoint() instead.
  *
  * This type is declared as type to Qt’s type system via
  * \c {Q_DECLARE_METATYPE}. Depending on your use case (for

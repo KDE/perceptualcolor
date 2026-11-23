@@ -8,7 +8,6 @@
 #include "colordialog.h"
 
 #include "constpropagatingrawpointer.h"
-#include "genericcolor.h"
 #include "helper.h"
 #include "languagechangeeventfilter.h"
 #include "lchvalues.h"
@@ -18,14 +17,16 @@
 #include <qbytearray.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
-#include <qglobal.h>
 #include <qhash.h>
 #include <qicon.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>
-#include <qstringliteral.h>
+#include <qstringview.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
+#include <type_traits>
 class QAction;
 class QComboBox;
 class QDialogButtonBox;
@@ -44,7 +45,8 @@ class QWidget;
 namespace PerceptualColor
 {
 class ChromaHueDiagram;
-class ColorPatch;
+class CustomColorPatch;
+struct GenericColor;
 class GradientSlider;
 class MultiSpinBox;
 class PerceptualSettings;
@@ -60,6 +62,7 @@ class WheelColorPicker;
 class ColorDialogPrivate : public QObject
 {
     Q_OBJECT
+
 public:
     /*!
      * \brief Identifier string for the built-in sRGB color space.
@@ -90,6 +93,7 @@ public:
         historyHSwatchCount * historyVSwatchCount;
 
     [[nodiscard]] static QString fixedIdentifierWithoutHyphenMinus(const QString &input);
+
     [[nodiscard]] static QColor getColorCommon(std::optional<const QString> gamutIdentifier,
                                                const QColor &initial,
                                                QWidget *parent,
@@ -126,8 +130,8 @@ public:
     QPointer<QAction> m_cielchD50SpinBoxGamutAction;
     /*! \brief Pointer to the label for m_cielchD50SpinBox. */
     QPointer<QLabel> m_cielchD50SpinBoxLabel;
-    /*! \brief Pointer to the ColorPatch widget. */
-    QPointer<ColorPatch> m_colorPatch;
+    /*! \brief Pointer to the \c CustomColorPatch widget. */
+    QPointer<CustomColorPatch> m_colorPatch;
     /*! \brief Current color without alpha information
      *
      * Holds the color in absolutely defined color models.
@@ -149,8 +153,59 @@ public:
      * \sa m_currentOpaqueColorAbs
      */
     RgbColor m_currentOpaqueColorRgb;
+    /*!
+     * \brief Controls how many additional fractional digits are displayed
+     * beyond the property's default precision.
+     *
+     * Valid range: [0..9]
+     *
+     * This affects only how the values are presented visually to the user.
+     * It does not alter the interal precision of the calculations.
+     *
+     * The default precision depends on the value range:
+     *
+     * \list
+     * \li Range \c [0..360]: 0 decimal places
+     * \li Range \c [0..255]: 0 decimal places
+     * \li Range \c [0..100]: 0 decimal places
+     * \li Range \c [0..2]: 2 decimal places
+     * \li Range \c [0..1]: 2 decimal places
+     * \endlist
+     *
+     * The number of finally displayed decimal places is:
+     *
+     * \code
+     * defaultPrecision + extraPrecision
+     * \endcode
+     *
+     * Examples:
+     *
+     * \b extraPrecision = 0
+     * \list
+     * \li \c {[0..255]} → 234
+     * \li \c {[0..100]} → 94
+     * \li \c {[0..1]} → 0.65
+     * \endlist
+     *
+     * \b extraPrecision = 1
+     * \list
+     * \li \c {[0..255]} → 234.3
+     * \li \c {[0..100]} → 94.3
+     * \li \c {[0..1]} → 0.654
+     * \endlist
+     *
+     * \b extraPrecision = 2
+     * \list
+     * \li \c {[0..255]} → 234.32
+     * \li \c {[0..100]} → 94.32
+     * \li \c {[0..1]} → 0.6543
+     * \endlist
+     *
+     * A value of 0 selects the default display precision for the range.
+     */
+    int m_extraPrecision = 0;
     /*! \brief If q_pointer has ever been shown. */
-    bool everShown = false;
+    bool m_everShown = false;
     /*! \brief Pointer to the MultiSpinBox for HSL. */
     QPointer<MultiSpinBox> m_hslSpinBox;
     /*! \brief Pointer to the label for m_hslSpinBox. */
@@ -329,18 +384,6 @@ public:
     /*! \brief Pointer to the WheelColorPicker widget. */
     QPointer<WheelColorPicker> m_wheelColorPicker;
 
-    /*! \brief Number of decimals to for most values.
-     *
-     * \sa okdecimals
-     */
-    static constexpr quint8 decimals = 0;
-    /*! \brief Number of decimals to use for the Oklab/Oklch values
-     * L, C, a, b (but not for h!).
-     *
-     * \sa decimals
-     */
-    static constexpr quint8 okdecimals = decimals + 2;
-
     void applyLayoutDimensions();
     [[nodiscard]] QColor defaultColor() const;
     [[nodiscard]] static QIcon getGamutIcon();
@@ -349,6 +392,7 @@ public:
     void initializePortalEyedropper();
     void loadCustomColorsFromSettingsToSwatchBook();
     void loadHistoryFromSettingsToSwatchBook();
+    [[nodiscard]] int smallRangeDecimals() const;
 
 public Q_SLOTS:
     void readChromaHueDiagramValue();

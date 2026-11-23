@@ -10,7 +10,7 @@ namespace PerceptualColor
 /*!
  * \brief Constructor.
  *
- * \a list Initial values. Only the first 4 elements are considered.
+ * \a list Initial values. Only the first 3 elements are considered.
  *             Excess elements are ignored. Missing elements are
  *             interpreted as 0. */
 GenericColor::GenericColor(const QList<double> &list)

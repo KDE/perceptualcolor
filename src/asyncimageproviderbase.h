@@ -4,8 +4,8 @@
 #ifndef PERCEPTUALCOLOR_ASYNCIMAGEPROVIDERBASE_H
 #define PERCEPTUALCOLOR_ASYNCIMAGEPROVIDERBASE_H
 
-#include <qglobal.h>
 #include <qobject.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
 
 namespace PerceptualColor

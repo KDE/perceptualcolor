@@ -20,16 +20,13 @@
 #include "helper.h"
 #include <algorithm>
 #include <qapplication.h>
-#include <qbrush.h>
-#include <qdrag.h>
 #include <qevent.h>
 #include <qfont.h>
 #include <qframe.h>
-#include <qglobal.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qmath.h>
-#include <qmimedata.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qpalette.h>
@@ -37,11 +34,10 @@
 #include <qpixmap.h>
 #include <qpoint.h>
 #include <qrect.h>
+#include <qsize.h>
 #include <qsizepolicy.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
-#include <qvariant.h>
-#include <tuple>
 class QWidget;
 
 namespace PerceptualColor
@@ -55,9 +51,13 @@ ColorPatch::ColorPatch(QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ColorPatchPrivate(this))
 {
-    setAcceptDrops(true);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    d_pointer->updatePixmapIfNecessary();
+
+    // Trigger paint events whenever the mouse enters or leaves the widget.
+    // This is important on some QStyle who might paint widgets different then.
+    // For example, Breeze and Oxygen draw a focus indicator on mouse hover
+    // even when the widget still not got the focus.
+    setAttribute(Qt::WA_Hover);
 }
 
 /*!
@@ -72,16 +72,8 @@ ColorPatch::~ColorPatch() noexcept
  * \a backLink Pointer to the object from which \e {this} object
  * is the private implementation. */
 ColorPatchPrivate::ColorPatchPrivate(ColorPatch *backLink)
-    : m_label(new QLabel(backLink))
-    , q_pointer(backLink)
+    : q_pointer(backLink)
 {
-    m_label->setFrameShape(QFrame::StyledPanel);
-    m_label->setFrameShadow(QFrame::Sunken);
-    m_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    m_label->setGeometry(0, 0, backLink->width(), backLink->height());
-    // The following alignment is mirrored by Qt on right-to-left layouts:
-    constexpr Qt::Alignment myAlignment{Qt::AlignLeading, Qt::AlignTop};
-    m_label->setAlignment(myAlignment);
 }
 
 /*!
@@ -106,6 +98,28 @@ QSize ColorPatch::sizeHint() const
 }
 
 /*!
+ * \brief Returns the minimum size for color rendering.
+ */
+QSize ColorPatchPrivate::referenceSize() const
+{
+    // Use a size similar to a QToolButton with an icon (and without text)
+    q_pointer->ensurePolished();
+    QStyleOptionToolButton option;
+    option.initFrom(q_pointer.toPointerToConstObject());
+    option.font = q_pointer->font();
+    const int iconSize = q_pointer->style()->pixelMetric( //
+        QStyle::PM_ButtonIconSize,
+        nullptr,
+        q_pointer.toPointerToConstObject());
+    option.iconSize = QSize(iconSize, iconSize);
+    return q_pointer->style()->sizeFromContents( //
+        QStyle::CT_ToolButton,
+        &option,
+        option.iconSize,
+        q_pointer.toPointerToConstObject());
+}
+
+/*!
  * \brief Provide the minimum size hint.
  *
  * Reimplemented from base class.
@@ -116,71 +130,27 @@ QSize ColorPatch::sizeHint() const
  */
 QSize ColorPatch::minimumSizeHint() const
 {
-    // Use a size similar to a QToolButton with an icon (and without text)
-    ensurePolished();
-    QStyleOptionToolButton option;
-    option.initFrom(this);
-    option.font = font();
-    const int iconSize = style()->pixelMetric( //
-        QStyle::PM_ButtonIconSize,
-        nullptr,
-        this);
-    option.iconSize = QSize(iconSize, iconSize);
-    return style()->sizeFromContents( //
-        QStyle::CT_ToolButton,
-        &option,
-        option.iconSize,
-        this);
+    const auto margins = d_pointer->contentMargins();
+    const QSize marginSize = QSize(margins.left() + margins.right(), //
+                                   margins.top() + margins.bottom());
+    return d_pointer->referenceSize() + marginSize;
 }
 
 /*!
- * \brief Updates the pixmap in \l m_label if necessary.
+ * \brief Updates \l m_pixmap if necessary.
+ *
+ * \a size The new size of the pixmap.
  */
-void ColorPatchPrivate::updatePixmapIfNecessary()
+void ColorPatchPrivate::updatePixmapIfNecessary(const QSize size)
 {
-    const QRect qLabelContentsRect = m_label->contentsRect();
-    const ImageParameters parameters = getImageParameters( //
-        qLabelContentsRect.width(), //
-        qLabelContentsRect.height());
+    const ImageParameters parameters = getImageParameters(size.width(), //
+                                                          size.height());
     if (parameters == m_lastImageParameters) {
         return;
     }
 
     m_lastImageParameters = parameters;
-    // NOTE Kvantum was mistakenly scaling the pixmap (even though
-    // QLabel::hasScaledContents() == false) for versions ≤ 1.0.2. This bug
-    // has been fixed: https://github.com/tsujan/Kvantum/issues/804.
-    m_label->setPixmap(renderPixmap(parameters));
-    // There were rendering artefacts under certain QStyle (Breeze, Plastik,
-    // Windows): When selecting in the color dialog a new color with the
-    // screen color picker using “Portal” under 125% scaling, the left and
-    // the top border of the QLabel show a thin line of the previous color.
-    // We can work around this by simply updating the whole widget:
-    m_label->update();
-}
-
-/*!
- * \brief Handle resize events.
- *
- * Reimplemented from base class.
- *
- * \a eventParameter The corresponding event
- */
-void ColorPatch::resizeEvent(QResizeEvent *eventParameter)
-{
-    d_pointer->m_label->resize(eventParameter->size());
-
-    // NOTE It would be more efficient not to always update the pixmap,
-    // but only when either the height or the width of the new pixmap to
-    // be calculated are larger than those of the current pixmap available
-    // under d_pointer->updatePixmap(). After all, a pixmap that is too
-    // large does not disturb the drawing, while one that is too small does.
-    // Unfortunately, however, resizing QLabel (at least with high-DPI and
-    // RTL layout at the same time) causes the correct alignment (here
-    // Qt::AlignLeading and Qt::AlignTop) to be lost and the image to be
-    // shifted. This error can be worked around by actually each time a new
-    // pixmap is assigned, which is not identical to the old one:
-    d_pointer->updatePixmapIfNecessary();
+    m_pixmap = renderPixmap(parameters);
 }
 
 // No documentation here (documentation of properties
@@ -199,7 +169,7 @@ void ColorPatch::setColor(const QColor &newColor)
 {
     if (newColor != d_pointer->m_color) {
         d_pointer->m_color = newColor;
-        d_pointer->updatePixmapIfNecessary();
+        update();
         Q_EMIT colorChanged(newColor);
     }
 }
@@ -217,10 +187,7 @@ void ColorPatch::setColor(const QColor &newColor)
  * The size of
  * the image is equal or (if rounding has to be done because of fractional
  * scale factors) slightly bigger than necessary to paint the whole
- * \l ColorPatch surface at the given device-pixel-ratio. As \l m_label
- * does \e {not} scale the image by default, it will be displayed with
- * the correct aspect ratio, while guaranteeing to be big enough whatever
- * QLabel’s frame size is with the currently used QStyle. */
+ * \l ColorPatch surface at the given device-pixel-ratio. */
 QImage ColorPatchPrivate::renderImage(const ImageParameters &parameters)
 {
     // Initialization
@@ -353,88 +320,12 @@ ColorPatchPrivate::ImageParameters ColorPatchPrivate::getImageParameters(const i
  * \a parameters The image parameters
  *
  * Returns the same as \l renderImage but as QPixmap. */
-QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters)
+QPixmap ColorPatchPrivate::renderPixmap(const ImageParameters &parameters) const
 {
     const QImage image = renderImage(parameters);
     QPixmap pixmap = QPixmap::fromImage(image);
     pixmap.setDevicePixelRatio(q_pointer->devicePixelRatioF());
     return pixmap;
-}
-
-/*!
- * \brief Initiates an outgoing drag operation.
- *
- * Reimplemented from base class.
- *
- * \a startPosition The position where the drag gesture began.
- */
-void ColorPatch::execDrag(QPoint startPosition)
-{
-    if (d_pointer->m_color.isValid()) {
-        QDrag *drag = new QDrag(this); // Mandatory on heap and with parent
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setColorData(d_pointer->m_color);
-        drag->setMimeData(mimeData); // Takes ownership of mime data
-        const auto finalSize = std::max({30, //
-                                         minimumSizeHint().width(), //
-                                         minimumSizeHint().height()});
-        const auto parameters = //
-            d_pointer->getImageParameters(finalSize, finalSize);
-        drag->setPixmap(d_pointer->renderPixmap(parameters));
-        drag->exec(Qt::CopyAction);
-        // Not deleting the objects on the heap. Qt takes ownership and
-        // does the cleanup.
-    }
-
-    Q_UNUSED(startPosition)
-}
-
-/*!
- * \brief Decides whether a incoming drag operation may enter this widget.
- *
- * This event is triggered when the mouse, while holding a drag payload,
- * enters the widget's area.
- * The decision directly affects the cursor feedback: if accepted,
- * the cursor shows that dropping is possible; if ignored, the cursor
- * indicates that dropping is forbidden.
- *
- * Reimplemented from base class.
- *
- * \a eventParameter The corresponding event
- */
-void ColorPatch::dragEnterEvent(QDragEnterEvent *eventParameter)
-{
-    if (toQColor(eventParameter->mimeData()).isValid()) {
-        eventParameter->acceptProposedAction();
-        return;
-    }
-
-    eventParameter->ignore();
-    return;
-}
-
-/*!
- * \brief Handles the actual drop operation.
- *
- * This event is triggered when the user releases the mouse button
- * inside the widget while dragging data. At this point the widget
- * should process the dropped payload and perform the intended action.
- *
- * Reimplemented from base class.
- *
- * \a eventParameter The corresponding event
- */
-void ColorPatch::dropEvent(QDropEvent *eventParameter)
-{
-    const QColor dropColor = toQColor(eventParameter->mimeData());
-    if (dropColor.isValid()) {
-        setColor(dropColor);
-        eventParameter->acceptProposedAction();
-        return;
-    }
-
-    eventParameter->ignore();
-    return;
 }
 
 /*!
@@ -448,6 +339,20 @@ void ColorPatch::paintEvent(QPaintEvent *eventParameter)
 {
     AbstractDiagram::paintEvent(eventParameter);
 
+    // Initialization
+    QPainter widgetPainter(this);
+    widgetPainter.setRenderHint(QPainter::Antialiasing);
+
+    QStyleOptionFrame frameStyleOption;
+    initQLineEditStyleOption(&frameStyleOption, this);
+
+    drawQLineEditPanel(this, &widgetPainter, frameStyleOption);
+
+    QRect contentRectangle;
+
+    contentRectangle = frameStyleOption.rect.marginsRemoved( //
+        d_pointer->contentMargins());
+
     // Ensure the image is up to date.
     // - devicePixelRatioF() might have changed if the window was moved — with
     //   more than half of its surface — to a screen with a different scale
@@ -459,7 +364,87 @@ void ColorPatch::paintEvent(QPaintEvent *eventParameter)
     //   and currently we do not track it otherwhere.
     // - The widget might have been resized, though this is also tracked
     //   in the resizeEvent reimplementation.
-    d_pointer->updatePixmapIfNecessary();
+    d_pointer->updatePixmapIfNecessary(contentRectangle.size());
+
+    if (!d_pointer->m_pixmap.isNull()) {
+        widgetPainter.drawPixmap(contentRectangle.topLeft(), //
+                                 d_pointer->m_pixmap);
+    }
+}
+
+/*!
+ * \brief Returns the margins between the widgets rectangle and the actual
+ * color content.
+ *
+ * These margins are the necessary space the frame and focus indicator.
+ */
+QMargins ColorPatchPrivate::contentMargins() const
+{
+    const ColorPatch *const widget = q_pointer.toPointerToConstObject();
+    QStyleOptionFrame frameStyleOption;
+    initQLineEditStyleOption(&frameStyleOption, //
+                             q_pointer.toPointerToConstObject());
+
+    const QRect styleContentRectangle = q_pointer->style()->subElementRect( //
+        QStyle::SE_LineEditContents,
+        &frameStyleOption,
+        widget);
+    const int hSubContentMargin = //
+        (frameStyleOption.rect.width() - styleContentRectangle.width()) / 2;
+    const int vSubContentMargin = //
+        (frameStyleOption.rect.height() - styleContentRectangle.height()) / 2;
+
+    const int frameLineWidth = frameStyleOption.lineWidth;
+
+    const auto refContentSize =
+        // Big enough to be beyond any reasonable minimum widget size
+        QSize(1000, 1000);
+    const auto sizeFromRefContentSize = //
+        q_pointer->style()->sizeFromContents( //
+            QStyle::CT_LineEdit, //
+            &frameStyleOption,
+            refContentSize,
+            widget);
+    const int hRefContentMargin = //
+        (sizeFromRefContentSize.width() - refContentSize.width()) / 2;
+    const int vRefContentMargin = //
+        (sizeFromRefContentSize.height() - refContentSize.height()) / 2;
+
+    const int focusFrameHMargin = q_pointer->style()->pixelMetric( //
+        QStyle::PM_FocusFrameHMargin,
+        &frameStyleOption,
+        widget);
+    const int focusFrameVMargin = q_pointer->style()->pixelMetric( //
+        QStyle::PM_FocusFrameVMargin,
+        &frameStyleOption,
+        widget);
+
+    const int minDistance = std::max({5, frameLineWidth});
+
+    const int hMin = std::max( //
+        {minDistance, hRefContentMargin, hSubContentMargin, focusFrameHMargin});
+    const int vMin = std::max( //
+        {minDistance, vRefContentMargin, vSubContentMargin, focusFrameVMargin});
+
+    return QMargins(hMin, // left
+                    vMin, // top
+                    hMin, // right
+                    vMin // bottom
+    );
+}
+
+/*!
+ * \brief Returns a pixmap suitable for representing the current \c color
+ * in drag-and-drop operations.
+ *
+ * Suitable for QDrag::setPixmap().
+ */
+QPixmap ColorPatch::dragDropPixmap() const
+{
+    const auto size = d_pointer->referenceSize();
+    const auto finalSize = std::max({30, size.width(), size.height()});
+    const auto parameters = d_pointer->getImageParameters(finalSize, finalSize);
+    return d_pointer->renderPixmap(parameters);
 }
 
 /*!

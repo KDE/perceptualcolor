@@ -295,19 +295,6 @@ private Q_SLOTS:
         testWidget.d_pointer->retranslateUi();
     }
 
-    void testInitStyleOptions()
-    {
-        SwatchBook testWidget(wcsBasicColors(), //
-                              {});
-
-        // Test that function call does not crash with regular object:
-        QStyleOptionFrame temp;
-        testWidget.d_pointer->initStyleOption(&temp);
-
-        // Test that function does not crash with nullptr:
-        testWidget.d_pointer->initStyleOption(nullptr);
-    }
-
     void testOffset_data()
     {
         provideStyleNamesAsData();
@@ -344,7 +331,7 @@ private Q_SLOTS:
             mainWidget->show();
 
             QStyleOptionFrame temp;
-            testWidget->d_pointer->initStyleOption(&temp);
+            initQLineEditStyleOption(&temp, testWidget);
             QVERIFY(testWidget->d_pointer->contentOffset(temp).x() >= 0);
             QVERIFY(testWidget->d_pointer->contentOffset(temp).y() >= 0);
 
@@ -988,7 +975,7 @@ private Q_SLOTS:
                                   {});
             testWidget.setStyle(style);
             QStyleOptionFrame temp;
-            testWidget.d_pointer->initStyleOption(&temp);
+            initQLineEditStyleOption(&temp, &testWidget);
             QVERIFY(testWidget.d_pointer->cornerRadius() >= 0);
         }
         delete style;

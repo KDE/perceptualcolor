@@ -222,7 +222,9 @@ SwatchBook::SwatchBook(const PerceptualColor::QColorArray2D &swatchGrid, Qt::Ori
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     // Trigger paint events whenever the mouse enters or leaves the widget.
-    // (Important on some QStyle who might paint widgets different then.)
+    // This is important on some QStyle who might paint widgets different then.
+    // For example, Breeze and Oxygen draw a focus indicator on mouse hover
+    // even when the widget still not got the focus.
     setAttribute(Qt::WA_Hover);
 
     initializeTranslation(QCoreApplication::instance(),
@@ -289,7 +291,7 @@ QSize SwatchBook::minimumSizeHint() const
 {
     ensurePolished();
     QStyleOptionFrame myOption;
-    d_pointer->initStyleOption(&myOption);
+    initQLineEditStyleOption(&myOption, this);
     const auto contentSize = d_pointer->colorPatchesSizeWithMargin();
     const auto styleSize = style()->sizeFromContents(QStyle::CT_LineEdit, //
                                                      &myOption,
@@ -581,35 +583,6 @@ int SwatchBookPrivate::normalPatchSpacing() const
 }
 
 /*!
- * \brief Initializes a \c {QStyleOptionFrame} object for this widget
- * in its current state.
- *
- * This function is provided analogous to many Qt widgets that also
- * provide a function of that name with this purpose.
- *
- * \a option The object that will be initialized
- *
- * \note The value in QStyleOptionFrame::rect is not initialized.
- */
-void SwatchBookPrivate::initStyleOption(QStyleOptionFrame *option) const
-{
-    if (option == nullptr) {
-        return;
-    }
-    option->initFrom(q_pointer.toPointerToConstObject());
-    option->lineWidth = q_pointer->style()->pixelMetric( //
-        QStyle::PM_DefaultFrameWidth,
-        option,
-        q_pointer.toPointerToConstObject());
-    option->midLineWidth = 0;
-    option->state |= QStyle::State_Sunken;
-    // The following option is not set because this widget
-    // currently has no read-only mode:
-    // option->state |= QStyle::State_ReadOnly;
-    option->features = QStyleOptionFrame::None;
-}
-
-/*!
  * \brief Offset between top-left of the widget and top-left of the content.
  *
  * \a styleOptionFrame The options that will be passed to \c {QStyle}
@@ -669,7 +642,8 @@ std::pair<qsizetype, qsizetype> SwatchBookPrivate::logicalColumnRowFromPosition(
     const int myPatchWidth = myColorPatchSize.width();
     const int myPatchHeight = myColorPatchSize.height();
     QStyleOptionFrame myFrameStyleOption;
-    initStyleOption(&myFrameStyleOption);
+    initQLineEditStyleOption(&myFrameStyleOption, //
+                             q_pointer.toPointerToConstObject());
     const QPoint temp = position - contentOffset(myFrameStyleOption);
 
     if ((temp.x() < 0) || (temp.y() < 0)) {
@@ -987,30 +961,11 @@ void SwatchBook::paintEvent(QPaintEvent *event)
     QPainter widgetPainter(this);
     widgetPainter.setRenderHint(QPainter::Antialiasing);
     QStyleOptionFrame frameStyleOption;
-    d_pointer->initStyleOption(&frameStyleOption);
+    initQLineEditStyleOption(&frameStyleOption, this);
     const int patchWidthOuter = d_pointer->patchSizeOuter().width();
     const int patchHeightOuter = d_pointer->patchSizeOuter().height();
 
-    // Draw the background
-    {
-        // We draw the frame slightly shrunk on windowsvista style. Otherwise,
-        // when the windowsvista style is used on 125% scale factor and with
-        // a multi-monitor setup, the frame would sometimes not render on some
-        // of the borders on some of the screens.
-        const bool vistaStyle = QString::compare( //
-                                    QApplication::style()->objectName(),
-                                    QStringLiteral("windowsvista"),
-                                    Qt::CaseInsensitive)
-            == 0;
-        const int shrink = vistaStyle ? 1 : 0;
-        const QMargins margins(shrink, shrink, shrink, shrink);
-        auto shrunkFrameStyleOption = frameStyleOption;
-        shrunkFrameStyleOption.rect = frameStyleOption.rect - margins;
-        style()->drawPrimitive(QStyle::PE_FrameLineEdit, //
-                               &shrunkFrameStyleOption,
-                               &widgetPainter,
-                               this);
-    }
+    drawQLineEditPanel(this, &widgetPainter, frameStyleOption);
 
     // Draw the color patches
     const QPoint myOffset = d_pointer->contentOffset(frameStyleOption);

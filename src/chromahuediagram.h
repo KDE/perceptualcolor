@@ -11,18 +11,15 @@
 #include "perceptualcolornamespace.h"
 #include <qglobal.h>
 #include <qsize.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
-class QKeyEvent;
-class QMouseEvent;
-class QPaintEvent;
-class QResizeEvent;
-class QWheelEvent;
 class QWidget;
 
 namespace PerceptualColor
 {
 
 class ChromaHueDiagramPrivate;
+enum class LchSpace;
 
 /*!
  *

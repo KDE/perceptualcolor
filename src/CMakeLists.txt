@@ -38,8 +38,11 @@ set(library_SRC
     colorwheel.cpp
     colorwheelimageparameters.cpp
     colorwheelimageprovider.cpp
+    completecolor.cpp
     constpropagatingrawpointer.cpp
     constpropagatinguniquepointer.cpp
+    customcolorpatch.cpp
+    csscolor.cpp
     docs.cpp
     genericcolor.cpp
     gradientimageparameters.cpp
@@ -91,6 +94,7 @@ qt_add_resources(
 # src/PerceptualColor
 set(lib_PUBLICHEADERS
     colordialog.h
+    colorpatch.h
     constpropagatinguniquepointer.h
     importexport.h
     multispinbox.h
@@ -314,8 +318,7 @@ target_sources(
         ${library_SRC}
         ${lib_PUBLICHEADERS}
         # Add code that is currently not used, but that should be kept working
-        # for possible use in the future.
-        csscolor.cpp
+        # for possible use in the future:
         )
 target_compile_definitions(
     ${INTERNAL_LIBRARY_NAME}

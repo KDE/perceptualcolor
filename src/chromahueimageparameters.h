@@ -6,8 +6,9 @@
 
 #include "interlacingpass.h"
 #include "perceptualcolornamespace.h"
-#include <qglobal.h>
+#include <qbytearray.h>
 #include <qmetatype.h>
+#include <qtypes.h>
 #include <qvariant.h>
 
 class QSize;

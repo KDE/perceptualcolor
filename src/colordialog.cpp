@@ -9,9 +9,9 @@
 
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
-#include "colorpatch.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
+#include "customcolorpatch.h"
 #include "gradientslider.h"
 #include "helper.h"
 #include "helperconstants.h"
@@ -36,6 +36,7 @@
 #include <qboxlayout.h>
 #include <qbytearray.h>
 #include <qchar.h>
+#include <qclipboard.h>
 #include <qcombobox.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -53,6 +54,7 @@
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qloggingcategory.h>
+#include <qmenu.h>
 #include <qobject.h>
 #include <qobjectdefs.h>
 #include <qpointer.h>
@@ -258,10 +260,10 @@ void ColorDialogPrivate::retranslateUi()
                                     "<p>Chroma: %L3⁠–⁠%L4</p>"
                                     "<p>Hue: 0°⁠–⁠360°</p>"
                                     "<p>Whitepoint: D65</p>")
-                                     .arg(0., 0, 'f', okdecimals)
-                                     .arg(1., 0, 'f', okdecimals)
-                                     .arg(0., 0, 'f', okdecimals)
-                                     .arg(maxOklchChroma, 0, 'f', okdecimals));
+                                     .arg(0., 0, 'f', smallRangeDecimals())
+                                     .arg(1., 0, 'f', smallRangeDecimals())
+                                     .arg(0., 0, 'f', smallRangeDecimals())
+                                     .arg(maxOklchChroma, 0, 'f', smallRangeDecimals()));
 
     /*: @label:slider An opacity of 0 means completely
     transparent. The higher the opacity value increases, the
@@ -717,9 +719,9 @@ void ColorDialogPrivate::initialize()
             &ColorDialogPrivate::saveCurrentTab);
 
     // Create the ColorPatch
-    m_colorPatch = new ColorPatch();
+    m_colorPatch = new CustomColorPatch();
+    m_colorPatch->setExtraPrecision(m_extraPrecision);
     m_colorPatch->setMinimumSize(m_colorPatch->minimumSizeHint() * 1.5);
-
     QHBoxLayout *headerLayout = new QHBoxLayout();
     headerLayout->addWidget(m_colorPatch, 1);
     if (m_eyedropperButton) {
@@ -766,7 +768,7 @@ void ColorDialogPrivate::initialize()
     m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
     m_alphaSpinBox->setRange(0, 100);
     // The suffix is set in retranslateUi.
-    m_alphaSpinBox->setDecimals(decimals);
+    m_alphaSpinBox->setDecimals(m_extraPrecision);
     m_alphaSpinBox->setSingleStep(singleStepAlpha * 100);
     // m_alphaSpinBox is of type QDoubleSpinBox which does not allow to
     // configure the pageStep.
@@ -800,9 +802,12 @@ void ColorDialogPrivate::initialize()
     // receives Qt::LanguageChange events and reacts on it by updating
     // the user-visible string of all standard buttons. We do not want
     // to use custom buttons because of the advantages of standard
-    // buttons that are described above. On the other hand, we do not
-    // want Qt to change our string because we use our own translation
-    // here.
+    // buttons that are described above. Therefore, we use the standard
+    // buttons, but with a custom translation to make sure the translation
+    // is always synchronized with the other UI elements (see above).
+    // So we do not want want Qt to change our custom translation
+    // on these standard buttons, therefore we install an event filter
+    // that will simply discard all language change events.
     m_buttonBox->installEventFilter(&m_languageChangeEventFilter);
     m_buttonOK->installEventFilter(&m_languageChangeEventFilter);
     m_buttonCancel->installEventFilter(&m_languageChangeEventFilter);
@@ -970,7 +975,10 @@ void ColorDialogPrivate::initialize()
                 m_alphaGradientSlider->setValue(newValue / 100.);
             });
 
-    // Initialize the options
+    // Initialize the options.
+    // QFlags defaults to no flags set. Passing a non-empty flag ensures
+    // the value differs from the default m_options, forcing setOptions()
+    // to execute the update instead of returning early due to no-op equality.
     q_pointer->setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
 
     // We are setting the translated default window title here instead
@@ -1222,7 +1230,7 @@ ColorDialogPrivate::~ColorDialogPrivate() noexcept = default;
 // and its getters are in the header)
 QColor ColorDialog::currentColor() const
 {
-    QColor temp = d_pointer->m_currentOpaqueColorRgb.rgbQColor;
+    QColor temp = d_pointer->m_currentOpaqueColorRgb.rgb_QColor;
     temp.setAlphaF( //
         static_cast<float>( //
             d_pointer->m_alphaGradientSlider->value()));
@@ -1265,7 +1273,7 @@ void ColorDialog::setCurrentColor(const QColor &color)
     }
     // No need to update m_alphaSpinBox as this is done
     // automatically by signals emitted by m_alphaGradientSlider.
-    const RgbColor myRgbColor = RgbColor::fromRgbQColor(temp);
+    const RgbColor myRgbColor = RgbColor::fromRgb_QColor(temp);
     d_pointer->setCurrentOpaqueColor(myRgbColor, nullptr);
 }
 
@@ -1302,10 +1310,11 @@ void ColorDialog::open(QObject *receiver, const char *member)
  * value of \l m_alphaGradientSlider. */
 void ColorDialogPrivate::updateColorPatch()
 {
-    QColor tempRgbQColor = m_currentOpaqueColorRgb.rgbQColor;
-    tempRgbQColor.setAlphaF( //
-        static_cast<float>(m_alphaGradientSlider->value()));
-    m_colorPatch->setColor(tempRgbQColor);
+    CompleteColor temp;
+    temp.opaqueColorAbs = m_currentOpaqueColorAbs;
+    temp.opaqueColorSRgb = m_currentOpaqueColorRgb;
+    temp.alpha = m_alphaGradientSlider->value();
+    m_colorPatch->setColorData(temp);
 }
 
 /*!
@@ -1319,7 +1328,7 @@ void ColorDialogPrivate::updateColorPatch()
 void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::ColorModel, PerceptualColor::GenericColor> &abs, const QWidget *ignoreWidget)
 {
     setCurrentOpaqueColor(abs, //
-                          RgbColor::fromRgb1(abs.value(ColorModel::SRgb_1)), //
+                          RgbColor::fromRgb_1(abs.value(ColorModel::SRgb_1)), //
                           ignoreWidget);
 }
 
@@ -1384,17 +1393,17 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
     // Update basic colors swatch book
     if (m_swatchBookBasicColors != ignoreWidget) {
         m_swatchBookBasicColors->setCurrentColor( //
-            m_currentOpaqueColorRgb.rgbQColor);
+            m_currentOpaqueColorRgb.rgb_QColor);
     }
 
     // Update history swatch book
     if (m_swatchBookHistory != ignoreWidget) {
-        m_swatchBookHistory->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
+        m_swatchBookHistory->setCurrentColor(m_currentOpaqueColorRgb.rgb_QColor);
     }
 
     // Update custom colors swatch book
     if (m_swatchBookCustomColors != ignoreWidget) {
-        m_swatchBookCustomColors->setCurrentColor(m_currentOpaqueColorRgb.rgbQColor);
+        m_swatchBookCustomColors->setCurrentColor(m_currentOpaqueColorRgb.rgb_QColor);
     }
 
     // Update RGB widget
@@ -1406,19 +1415,19 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
     // Update HSL widget
     if (m_hslSpinBox != ignoreWidget) {
         m_hslSpinBox->setValues( //
-            m_currentOpaqueColorRgb.hsl.toQList3());
+            m_currentOpaqueColorRgb.hsl_360_100_100.toQList3());
     }
 
     // Update HWB widget
     if (m_hwbSpinBox != ignoreWidget) {
         m_hwbSpinBox->setValues( //
-            m_currentOpaqueColorRgb.hwb.toQList3());
+            m_currentOpaqueColorRgb.hwb_360_100_100.toQList3());
     }
 
     // Update HSV widget
     if (m_hsvSpinBox != ignoreWidget) {
         m_hsvSpinBox->setValues( //
-            m_currentOpaqueColorRgb.hsv.toQList3());
+            m_currentOpaqueColorRgb.hsv_360_100_100.toQList3());
     }
 
     // Update CIELCH-D50 widget
@@ -1435,7 +1444,7 @@ void ColorDialogPrivate::setCurrentOpaqueColor(const QHash<PerceptualColor::Colo
 
     // Update RGB hex widget
     if (m_rgbLineEdit != ignoreWidget) {
-        m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgbHex6);
+        m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgb_hex6);
     }
 
     const GenericColor projectionSpaceLch = //
@@ -1525,7 +1534,7 @@ void ColorDialogPrivate::readHslNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromHsl( //
+    const auto temp = RgbColor::fromHsl_360_100_100( //
         GenericColor(m_hslSpinBox->values()));
     setCurrentOpaqueColor(temp, m_hslSpinBox);
 }
@@ -1539,7 +1548,7 @@ void ColorDialogPrivate::readHwbNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromHwb( //
+    const auto temp = RgbColor::fromHwb_360_100_100( //
         GenericColor(m_hwbSpinBox->values()));
     setCurrentOpaqueColor(temp, m_hwbSpinBox);
 }
@@ -1553,7 +1562,7 @@ void ColorDialogPrivate::readHsvNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromHsv( //
+    const auto temp = RgbColor::fromHsv_360_100_100( //
         GenericColor(m_hsvSpinBox->values()));
     setCurrentOpaqueColor(temp, m_hsvSpinBox);
 }
@@ -1567,7 +1576,7 @@ void ColorDialogPrivate::readRgbNumericValues()
         // Nothing to do!
         return;
     }
-    const auto temp = RgbColor::fromRgb255( //
+    const auto temp = RgbColor::fromRgb_255( //
         GenericColor(m_rgbSpinBox->values()));
     setCurrentOpaqueColor(temp, m_rgbSpinBox);
 }
@@ -1581,13 +1590,29 @@ void ColorDialogPrivate::readColorPatchValue()
         // Nothing to do!
         return;
     }
-    const QColor temp = toOpaque(m_colorPatch->color());
-    if (!temp.isValid()) {
+    const CompleteColor temp = m_colorPatch->colorData();
+    if (!temp.isValid) {
         // No color is currently selected!
         return;
     }
-    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
-    setCurrentOpaqueColor(myRgbColor, m_colorPatch);
+
+    // First, make sure that the opaque color is correct.
+    setCurrentOpaqueColor(temp.opaqueColorAbs, //
+                          temp.opaqueColorSRgb, //
+                          m_colorPatch);
+
+    // Second, set the correct alpha value (which triggers again an
+    // udate to the color patch, and updateColorPatch() uses the
+    // current opaque color),
+    const bool showAlphaChannel = q_pointer->testOption( //
+        QColorDialog::ColorDialogOption::ShowAlphaChannel);
+    if (showAlphaChannel) {
+        m_alphaGradientSlider->setValue(temp.alpha);
+    } else {
+        m_alphaGradientSlider->setValue(1);
+    }
+    // No need to update m_alphaSpinBox as this is done
+    // automatically by signals emitted by m_alphaGradientSlider.
 }
 
 /*!
@@ -1604,7 +1629,7 @@ void ColorDialogPrivate::readSwatchBookBasicColorsValue()
         // No color is currently selected!
         return;
     }
-    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
+    const auto myRgbColor = RgbColor::fromRgb_QColor(temp);
     setCurrentOpaqueColor(myRgbColor, m_swatchBookBasicColors);
 }
 
@@ -1622,7 +1647,7 @@ void ColorDialogPrivate::readSwatchBookHistoryValue()
         // No color is currently selected!
         return;
     }
-    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
+    const auto myRgbColor = RgbColor::fromRgb_QColor(temp);
     setCurrentOpaqueColor(myRgbColor, m_swatchBookHistory);
 }
 
@@ -1641,7 +1666,7 @@ void ColorDialogPrivate::readSwatchBookCustomColorsValue()
         // No color is currently selected!
         return;
     }
-    const auto myRgbColor = RgbColor::fromRgbQColor(temp);
+    const auto myRgbColor = RgbColor::fromRgb_QColor(temp);
     setCurrentOpaqueColor(myRgbColor, m_swatchBookCustomColors);
 }
 
@@ -1690,7 +1715,7 @@ void ColorDialogPrivate::readRgbHexValues()
     }
     const QColor rgb = QColor::fromString(temp);
     if (rgb.isValid()) {
-        const auto myRgbColor = RgbColor::fromRgbQColor(rgb);
+        const auto myRgbColor = RgbColor::fromRgb_QColor(rgb);
         setCurrentOpaqueColor(myRgbColor, m_rgbLineEdit);
     }
 }
@@ -1704,7 +1729,7 @@ void ColorDialogPrivate::updateRgbHexButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_rgbLineEdit);
 
-    m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgbHex6);
+    m_rgbLineEdit->setText(m_currentOpaqueColorRgb.rgb_hex6);
 }
 
 /*!
@@ -1817,7 +1842,7 @@ void ColorDialogPrivate::initializePortalEyedropper()
                     {qBound<double>(0, red * 255, 255), //
                      qBound<double>(0, green * 255, 255),
                      qBound<double>(0, blue * 255, 255)};
-                setCurrentOpaqueColor(RgbColor::fromRgb255(rgb255), nullptr);
+                setCurrentOpaqueColor(RgbColor::fromRgb_255(rgb255), nullptr);
             });
     connect(&screenPicker, //
             &PortalEyedropper::isAvailableChanged, //
@@ -1854,7 +1879,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_rgbSpinBox = new MultiSpinBox();
         QList<MultiSpinBoxSection> rgbSections;
         MultiSpinBoxSection mySection;
-        mySection.setDecimals(decimals);
+        mySection.setDecimals(m_extraPrecision);
         mySection.setRange(0, 255);
         // R
         mySection.setFormatString(QStringLiteral("%1"));
@@ -1887,7 +1912,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_hslSpinBox = new MultiSpinBox();
         QList<MultiSpinBoxSection> hslSections;
         MultiSpinBoxSection mySection;
-        mySection.setDecimals(decimals);
+        mySection.setDecimals(m_extraPrecision);
         // H
         mySection.setRange(0, 360);
         mySection.setWrapping(true);
@@ -1909,7 +1934,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_hwbSpinBox = new MultiSpinBox();
         QList<MultiSpinBoxSection> hwbSections;
         MultiSpinBoxSection mySection;
-        mySection.setDecimals(decimals);
+        mySection.setDecimals(m_extraPrecision);
         // H
         mySection.setRange(0, 360);
         mySection.setWrapping(true);
@@ -1931,7 +1956,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         m_hsvSpinBox = new MultiSpinBox();
         QList<MultiSpinBoxSection> hsvSections;
         MultiSpinBoxSection mySection;
-        mySection.setDecimals(decimals);
+        mySection.setDecimals(m_extraPrecision);
         // H
         mySection.setRange(0, 360);
         mySection.setWrapping(true);
@@ -1975,7 +2000,7 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         QList<MultiSpinBoxSection> cielchD50Sections;
         m_cielchD50SpinBox = new MultiSpinBox;
         MultiSpinBoxSection mySection;
-        mySection.setDecimals(decimals);
+        mySection.setDecimals(m_extraPrecision);
         // L
         mySection.setRange(0, 100);
         mySection.setSingleStep(cielchD50Values.singleStepLabc);
@@ -2004,19 +2029,19 @@ QWidget *ColorDialogPrivate::initializeNumericPage()
         mySection.setRange(0, 1);
         mySection.setSingleStep(oklchValues.singleStepLabc);
         mySection.setWrapping(false);
-        mySection.setDecimals(okdecimals);
+        mySection.setDecimals(smallRangeDecimals());
         oklchSections.append(mySection);
         // C
         mySection.setRange(0, oklchValues.maximumChroma);
         mySection.setSingleStep(oklchValues.singleStepLabc);
         mySection.setWrapping(false);
-        mySection.setDecimals(okdecimals);
+        mySection.setDecimals(smallRangeDecimals());
         oklchSections.append(mySection);
         // H
         mySection.setRange(0, 360);
         mySection.setSingleStep(1);
         mySection.setWrapping(true);
-        mySection.setDecimals(decimals);
+        mySection.setDecimals(m_extraPrecision);
         oklchSections.append(mySection);
         // Not setting the suffix here. This will be done in retranslateUi()…
         m_oklchSpinBox->setFormat(oklchSections);
@@ -2092,6 +2117,7 @@ void ColorDialog::setOptions(QColorDialog::ColorDialogOptions newOptions)
     d_pointer->m_alphaLabel->setVisible(alphaVisibility);
     d_pointer->m_alphaGradientSlider->setVisible(alphaVisibility);
     d_pointer->m_alphaSpinBox->setVisible(alphaVisibility);
+    d_pointer->m_colorPatch->setTransparencyAllowed(alphaVisibility);
 
     // Apply the new options (buttons)
     d_pointer->m_buttonBox->setVisible(!d_pointer->m_options.testFlag( //
@@ -2481,7 +2507,7 @@ void ColorDialog::changeEvent(QEvent *eventParameter)
  * the current tab corresponding to \l ColorDialogPrivate::m_settings. */
 void ColorDialog::showEvent(QShowEvent *eventParameter)
 {
-    if (!d_pointer->everShown) {
+    if (!d_pointer->m_everShown) {
         constexpr auto expValue = ColorDialog::DialogLayoutDimensions::Expanded;
         const bool exp = d_pointer->m_layoutDimensionsEffective == expValue;
         const auto tabString = exp //
@@ -2520,7 +2546,7 @@ void ColorDialog::showEvent(QShowEvent *eventParameter)
             break;
         }
 
-        d_pointer->everShown = true;
+        d_pointer->m_everShown = true;
     }
     QDialog::showEvent(eventParameter);
 }
@@ -2669,6 +2695,24 @@ void ColorDialog::keyPressEvent(QKeyEvent *eventParameter)
 bool ColorDialog::event(QEvent *eventParameter)
 {
     return QDialog::event(eventParameter);
+}
+
+/*!
+ * \brief Returns the number of decimal places used for
+ * values in the ranges \c [0..1] and \c [0..2].
+ *
+ * Applies for example to Oklab/Oklch
+ * components \c L, \c C, \c a and \c b.
+ * The hue component (\c h) is excluded because it has the range \c [0..1] and
+ * uses the regular precision returned by \l m_extraPrecision.
+ *
+ * The returned value includes \l m_extraPrecision.
+ *
+ * \sa m_extraPrecision
+ */
+int ColorDialogPrivate::smallRangeDecimals() const
+{
+    return m_extraPrecision + 2;
 }
 
 } // namespace PerceptualColor

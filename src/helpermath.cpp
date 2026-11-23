@@ -12,41 +12,6 @@ namespace PerceptualColor
 /*!
  *
  *
- * \brief Calculates the required number of decimals to achieve the requested
- * number of significant figures within the given range.
- *
- * \a rangeMax The maximum value of the range [0, rangeMax].
- *
- * \a significantFigures The requested number of significant figures.
- *
- * \table
- *     \header
- *         \li maxRange
- *         \li decimalPlaces(maxRange, 2)
- *         \li decimalPlaces(maxRange, 3)
- *         \li decimalPlaces(maxRange, 4)
- *     \row \li   1 \li 1 \li 2 \li 3
- *     \row \li   2 \li 1 \li 2 \li 3
- *     \row \li 100 \li 0 \li 0 \li 1
- *     \row \li 255 \li 0 \li 0 \li 1
- *     \row \li 360 \li 0 \li 0 \li 1
- * \endtable
- *
- * Returns the number of decimal places after the decimal point (in addition
- * to the whole number part) required to achieve the requested
- * number of significant figures within the given range. */
-int decimalPlaces(const int rangeMax, const int significantFigures)
-{
-    const auto myLog10Value = std::log10(qAbs(rangeMax));
-    const int wholeNumberDigits = (rangeMax == 0) //
-        ? 1 // special case
-        : qFloor(myLog10Value) + 1;
-    return qMax(0, significantFigures - wholeNumberDigits);
-}
-
-/*!
- *
- *
  * \brief Rounds a given floating point value to the nearest multiple of a
  * specified integer.
  *

@@ -4,8 +4,9 @@
 #ifndef PERCEPTUALCOLOR_ASYNCIMAGERENDERCALLBACK_H
 #define PERCEPTUALCOLOR_ASYNCIMAGERENDERCALLBACK_H
 
-#include <qglobal.h>
+#include <qbytearray.h>
 #include <qmetatype.h>
+#include <qtclasshelpermacros.h>
 
 class QImage;
 class QVariant;

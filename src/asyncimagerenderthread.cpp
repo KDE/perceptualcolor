@@ -7,8 +7,9 @@
 
 #include "helperimage.h"
 
-#include <qglobal.h>
+#include <qforeach.h>
 #include <qmetatype.h>
+#include <qtypeinfo.h>
 
 class QObject;
 

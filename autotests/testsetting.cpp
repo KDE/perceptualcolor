@@ -45,10 +45,10 @@ public:
     Q_ENUM(MyEnum);
 
 private:
-    static inline constexpr QStringView organization = {u"kde.org"};
+    static inline constexpr QStringView organization{u"kde.org"};
     // Avoid side-effects on the actual configuration file of the actual
     // library: Use a value different application name:
-    static inline constexpr QStringView application = {u"libperceptualcolortestsettings"};
+    static inline constexpr QStringView application{u"libperceptualcolortestsettings"};
 
 private Q_SLOTS:
     void initTestCase()

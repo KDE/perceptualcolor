@@ -5,6 +5,7 @@
 #include "helper.h"
 
 #include "absolutecolor.h"
+#include "csscolor.h"
 #include "genericcolor.h"
 #include "initializelibraryresources.h"
 #include "perceptualcolornamespace.h"
@@ -743,60 +744,6 @@ QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, 
 /*!
  *
  *
- * \brief Convert mime data to QColor
- *
- * \a mimeData The mime data
- *
- * Returns a corresponding valid QColor if the mime data contains color data.
- * An invalid QColor otherwise.
- */
-QColor toQColor(const QMimeData *mimeData)
-{
-    // Qt color mime type
-    if (mimeData->hasColor()) {
-        return qvariant_cast<QColor>(mimeData->colorData());
-    }
-
-    // Gimp color drag-and-drop
-    // NOTE It is not documented whether Gimp/GEGL writes doubles
-    // in host-native byte order or in a fixed byte order. This implementation
-    // assumes host-native layout, which works on x86/x86-64 (little-endian).
-    // On other architectures or when exchanging data across hosts, explicit
-    // endian handling would be required.
-    if (mimeData->hasFormat(QStringLiteral("application/x-geglcolor"))) {
-        const auto raw = //
-            mimeData->data(QStringLiteral("application/x-geglcolor"));
-        const QByteArray geglHeaderU8 = //
-            QByteArrayLiteral("R'G'B'A u8") + '\x00';
-        const QByteArray geglHeaderDouble = //
-            QByteArrayLiteral("R'G'B'A double") + '\x00';
-        if (raw.startsWith(geglHeaderU8)) {
-            const qsizetype pos = geglHeaderU8.size();
-            if (raw.size() == pos + 4) {
-                const auto *vals = reinterpret_cast<const unsigned char *>( //
-                    raw.constData() + pos);
-                return QColor(vals[0], vals[1], vals[2], vals[3]);
-            }
-        } else if (raw.startsWith(geglHeaderDouble)) {
-            const qsizetype pos = geglHeaderDouble.size();
-            constexpr qsizetype fieldSize = sizeof(double);
-            if (raw.size() == pos + 4 * fieldSize) {
-                const double *vals = reinterpret_cast<const double *>( //
-                    raw.constData() + pos);
-                return QColor::fromRgbF(static_cast<float>(vals[0]), //
-                                        static_cast<float>(vals[1]), //
-                                        static_cast<float>(vals[2]), //
-                                        static_cast<float>(vals[3]));
-            }
-        }
-    }
-
-    return QColor();
-}
-
-/*!
- *
- *
  * \brief Returns whether a change event is theme related (color palette,
  * widget style, font policy etc).
  *
@@ -834,6 +781,92 @@ bool isQSvgIconEnginePluginAvailable()
 
     const QIcon icon(svgFile);
     return !icon.pixmap(16, 16).isNull();
+}
+
+/*!
+ * \brief Initializes style options in a QLineEdit-like fashion.
+ *
+ * \a option The option to initialize.
+ *
+ * \a widget The widget for which the options should be initialized.
+ *
+ * \sa drawQLineEditPanel
+ */
+void initQLineEditStyleOption(QStyleOptionFrame *option, const QWidget *widget)
+{
+    if (option == nullptr) {
+        return;
+    }
+    if (widget == nullptr) {
+        return;
+    }
+    option->initFrom(widget);
+
+    option->rect = widget->contentsRect();
+    option->lineWidth = widget->style()->pixelMetric( //
+        QStyle::PM_DefaultFrameWidth,
+        option,
+        widget);
+    option->midLineWidth = 0;
+    option->state |= QStyle::State_Sunken;
+    // The following option is not set because current read-only mode is
+    // currently not supported:
+    // option->state |= QStyle::State_ReadOnly;
+    option->features = QStyleOptionFrame::None;
+}
+
+/*!
+ * \brief Draws a panel in a QLineEdit-like fashion.
+ *
+ * \a widget The widget to draw the panel on.
+ *
+ * \a widgetPainter A widget painter for this widget.
+ *
+ * \a option The style option used for painting.
+ *
+ * \sa initQLineEditStyleOption
+ */
+void drawQLineEditPanel(QWidget *widget, QPainter *widgetPainter, const QStyleOptionFrame &option)
+{
+    if (widgetPainter == nullptr) {
+        return;
+    }
+    if (widget == nullptr) {
+        return;
+    }
+    // We draw the frame slightly shrunk on windowsvista style. Otherwise,
+    // when the windowsvista style is used on 125% scale factor and with
+    // a multi-monitor setup, the frame would sometimes not render on some
+    // of the borders on some of the screens.
+    const bool vistaStyle = QString::compare( //
+                                widget->style()->objectName(),
+                                QStringLiteral("windowsvista"),
+                                Qt::CaseInsensitive)
+        == 0;
+    const int shrink = vistaStyle ? 1 : 0;
+    const QMargins margins(shrink, shrink, shrink, shrink);
+    auto shrunkFrameStyleOption = option;
+    shrunkFrameStyleOption.rect = option.rect - margins;
+    // The Kvantum QStyle requires PE_PanelLineEdit to draw the correctly
+    // the focus indicator, while Breeze QStyle requires PE_FrameLineEdit
+    // to do so. Oxygen, Fusion, Windows and Adwaita work with both.
+    // QStyle::PE_PanelLineEdit seems semantically correct, so defaulting
+    // to this value, while retaining an exception for Breeze style.
+    const bool breezeStyle = QString::compare( //
+                                 widget->style()->objectName(),
+                                 QStringLiteral("breeze"),
+                                 Qt::CaseInsensitive)
+        == 0;
+    const QStyle::PrimitiveElement element = //
+        (breezeStyle) //
+        ? QStyle::PE_FrameLineEdit //
+        : QStyle::PE_PanelLineEdit;
+    widgetPainter->save();
+    widget->style()->drawPrimitive(element, //
+                                   &shrunkFrameStyleOption,
+                                   widgetPainter,
+                                   widget);
+    widgetPainter->restore();
 }
 
 } // namespace PerceptualColor

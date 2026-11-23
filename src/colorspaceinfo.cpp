@@ -11,6 +11,9 @@
 #include <algorithm>
 #include <qcolor.h>
 #include <qlist.h>
+#include <qminmax.h>
+#include <qnumeric.h>
+#include <qswap.h>
 #include <utility>
 
 namespace PerceptualColor

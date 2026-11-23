@@ -4,8 +4,11 @@
 #ifndef PERCEPTUALCOLOR_HELPER_H
 #define PERCEPTUALCOLOR_HELPER_H
 
+#include "completecolor.h"
 #include "helpermath.h"
 #include "logging.h"
+#include "perceptualcolornamespace.h"
+#include "rgbcolor.h"
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -24,6 +27,7 @@
 #include <qpair.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qstyleoption.h>
 #include <qthread.h>
 #include <type_traits>
 
@@ -64,8 +68,6 @@ bool isIn(First &&first, T &&...t)
 QList<QPair<int, int>> splitElementsTapered(int elementCount, int segmentCount, int alignment, double peak);
 
 [[nodiscard]] qreal standardWheelStepCount(QWheelEvent *event);
-
-[[nodiscard]] QColor toQColor(const QMimeData *mimeData);
 
 [[nodiscard]] QImage transparencyBackground(QSize physicalImageSize, qreal devicePixelRatioF);
 
@@ -641,6 +643,10 @@ template<typename T>
     }
     return result;
 }
+
+void initQLineEditStyleOption(QStyleOptionFrame *option, const QWidget *widget);
+
+void drawQLineEditPanel(QWidget *widget, QPainter *widgetPainter, const QStyleOptionFrame &option);
 
 } // namespace PerceptualColor
 

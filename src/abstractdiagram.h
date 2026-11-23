@@ -6,20 +6,17 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "internalimportexport.h"
-#include "perceptualcolornamespace.h"
-#include <qcolor.h>
-#include <qglobal.h>
 #include <qimage.h>
 #include <qsize.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 #include <qwidget.h>
-
-class QHideEvent;
-class QShowEvent;
 
 namespace PerceptualColor
 {
 class AbstractDiagramPrivate;
+enum class LchSpace;
 
 /*!
  *
@@ -65,14 +62,11 @@ protected:
     void callUpdate();
     virtual void changeEvent(QEvent *eventParameter) override;
     virtual bool event(QEvent *eventParameter) override;
-    virtual void execDrag(QPoint startPosition);
     [[nodiscard]] QColor focusIndicatorColor() const;
     [[nodiscard]] int gradientMinimumLength() const;
     [[nodiscard]] int gradientThickness() const;
     virtual void hideEvent(QHideEvent *eventParameter) override;
     [[nodiscard]] bool isActuallyVisible() const;
-    virtual void mouseMoveEvent(QMouseEvent *eventParameter) override;
-    virtual void mousePressEvent(QMouseEvent *eventParameter) override;
     [[nodiscard]] int maximumPhysicalSquareSize() const;
     [[nodiscard]] qreal maximumWidgetSquareSize() const;
     [[nodiscard]] QSize physicalPixelSize() const;

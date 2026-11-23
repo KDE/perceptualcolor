@@ -578,15 +578,6 @@ private Q_SLOTS:
         QTest::newRow("360 << 4 << 1") << 360 << 4 << 1;
     }
 
-    void testDecimalPlaces()
-    {
-        QFETCH(int, maxRange);
-        QFETCH(int, significantFigures);
-        QFETCH(int, expected);
-
-        QCOMPARE(decimalPlaces(maxRange, significantFigures), expected);
-    }
-
     void testNormalizePolar360()
     {
         double radius;

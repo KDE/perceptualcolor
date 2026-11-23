@@ -7,7 +7,7 @@
 // Include the header of the public class of this private implementation.
 // #include "abstractdiagram.h"
 
-#include <qglobal.h>
+#include <qtclasshelpermacros.h>
 
 namespace PerceptualColor
 {
@@ -25,15 +25,6 @@ public:
      * \brief Constructor */
     AbstractDiagramPrivate() = default;
     virtual ~AbstractDiagramPrivate() noexcept;
-
-    /*!
-     * \brief Initial cursor position (at the time of the left-click)
-     * where a drag-and-drop action starts.
-     *
-     * \sa AbstractDiagram::mousePressEvent
-     * \sa AbstractDiagram::mouseMoveEvent
-     */
-    QPoint m_dragStartPosition;
 
     /*!
      * \brief Internal storage for \l AbstractDiagram::isActuallyVisible. */

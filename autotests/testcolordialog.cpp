@@ -9,8 +9,8 @@
 
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
-#include "colorpatch.h"
 #include "constpropagatinguniquepointer.h"
+#include "customcolorpatch.h"
 #include "genericcolor.h"
 #include "gradientslider.h"
 #include "initializetranslation.h"
@@ -1891,7 +1891,7 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog( //
             new ColorDialog(id.toString()));
         myDialog->d_pointer->m_currentOpaqueColorRgb = //
-            RgbColor::fromRgbQColor(QColor(1, 2, 3));
+            RgbColor::fromRgb_QColor(QColor(1, 2, 3));
         myDialog->d_pointer->updateColorPatch();
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().red(), 1);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().green(), 2);
@@ -2771,6 +2771,62 @@ private Q_SLOTS:
 
         // Do not suppress warnings anymore
         qInstallMessageHandler(nullptr);
+    }
+
+    void testColorPatchIntegrationWithAlphaEnabled()
+    {
+        ColorDialog myDialog;
+        myDialog.setOption(QColorDialog::ShowAlphaChannel, true);
+        const auto myColorPatch = myDialog.d_pointer->m_colorPatch;
+        constexpr QColor greenSlightlyTransparent = QColor(0x11, 0xEE, 0x22, 0xBB);
+        constexpr QColor greenOpaque = QColor(0x11, 0xEE, 0x22, 0xFF);
+        myDialog.setCurrentColor(greenSlightlyTransparent);
+        QCOMPARE(myColorPatch->color(), //
+                 greenSlightlyTransparent);
+        QCOMPARE(myColorPatch->colorData().opaqueColorSRgb.rgb_QColor, //
+                 greenOpaque);
+
+        constexpr QColor redSemitransparent = QColor(0xDD, 0x33, 0x44, 0x77);
+        constexpr QColor redOpaque = QColor(0xDD, 0x33, 0x44, 0xFF);
+        myColorPatch->setColor(redSemitransparent);
+        QCOMPARE(myColorPatch->color(), //
+                 redSemitransparent);
+        QCOMPARE(myColorPatch->colorData().opaqueColorSRgb.rgb_QColor, //
+                 redOpaque);
+        QCOMPARE(myDialog.currentColor(), //
+                 redSemitransparent);
+    }
+
+    void testColorPatchIntegrationWithAlphaDisabled()
+    {
+        ColorDialog myDialog;
+        myDialog.setOption(QColorDialog::ShowAlphaChannel, false);
+        const auto myColorPatch = myDialog.d_pointer->m_colorPatch;
+        constexpr QColor greenSlightlyTransparent = QColor(0x11, 0xEE, 0x22, 0xBB);
+        constexpr QColor greenOpaque = QColor(0x11, 0xEE, 0x22, 0xFF);
+        myDialog.setCurrentColor(greenSlightlyTransparent);
+        QCOMPARE(myColorPatch->color(), //
+                 greenOpaque);
+        QCOMPARE(myColorPatch->colorData().opaqueColorSRgb.rgb_QColor, //
+                 greenOpaque);
+
+        constexpr QColor redSemitransparent = QColor(0xDD, 0x33, 0x44, 0x77);
+        constexpr QColor redOpaque = QColor(0xDD, 0x33, 0x44, 0xFF);
+        myColorPatch->setColor(redSemitransparent);
+        QCOMPARE(myColorPatch->color(), //
+                 redOpaque);
+        QCOMPARE(myColorPatch->colorData().opaqueColorSRgb.rgb_QColor, //
+                 redOpaque);
+        QCOMPARE(myDialog.currentColor(), //
+                 redOpaque);
+    }
+
+    void testDecimalDefaultValues()
+    {
+        ColorDialog dialog;
+
+        QCOMPARE(dialog.d_pointer->m_extraPrecision, 0);
+        QCOMPARE(dialog.d_pointer->smallRangeDecimals(), 2);
     }
 
 private:

@@ -88,31 +88,31 @@ private Q_SLOTS:
     void testDefaultConstructor()
     {
         RgbColor myColor;
-        QCOMPARE(myColor.rgbQColor.isValid(), false);
+        QCOMPARE(myColor.rgb_QColor.isValid(), false);
     }
 
     void testCopyConstructorUninitialized()
     {
         RgbColor myColor1;
         RgbColor myColor2(myColor1);
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testCopyConstructor()
     {
-        RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
+        RgbColor myColor1 = RgbColor::fromRgb_255(GenericColor{1, 2, 3});
         RgbColor myColor2(myColor1);
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testCopyAssignmentUninitialized()
@@ -120,26 +120,26 @@ private Q_SLOTS:
         RgbColor myColor1;
         RgbColor myColor2;
         myColor2 = myColor1;
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testCopyAssignment()
     {
-        RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{4, 5, 6});
-        RgbColor myColor2 = RgbColor::fromRgb255(GenericColor{7, 8, 9});
+        RgbColor myColor1 = RgbColor::fromRgb_255(GenericColor{4, 5, 6});
+        RgbColor myColor2 = RgbColor::fromRgb_255(GenericColor{7, 8, 9});
         Q_UNUSED(myColor2);
         myColor2 = myColor1;
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testMoveConstructorUninitialized()
@@ -147,25 +147,25 @@ private Q_SLOTS:
         RgbColor myReference;
         RgbColor myColor1 = myReference;
         RgbColor myColor2(std::move(myColor1));
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testMoveConstructor()
     {
-        RgbColor myReference = RgbColor::fromRgbQColor(Qt::yellow);
+        RgbColor myReference = RgbColor::fromRgb_QColor(Qt::yellow);
         RgbColor myColor1 = myReference;
         RgbColor myColor2(std::move(myColor1));
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testMoveAssignmentUninitialized()
@@ -174,45 +174,67 @@ private Q_SLOTS:
         RgbColor myColor1 = myReference;
         RgbColor myColor2;
         myColor2 = std::move(myColor1);
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
     void testMoveAssignment()
     {
-        RgbColor myReference = RgbColor::fromRgbQColor(Qt::red);
+        RgbColor myReference = RgbColor::fromRgb_QColor(Qt::red);
         RgbColor myColor1 = myReference;
         RgbColor myColor2;
         myColor2 = std::move(myColor1);
-        QCOMPARE(myColor2.hsl, myColor1.hsl);
-        QCOMPARE(myColor2.hsv, myColor1.hsv);
-        QCOMPARE(myColor2.hwb, myColor1.hwb);
+        QCOMPARE(myColor2.hsl_360_100_100, myColor1.hsl_360_100_100);
+        QCOMPARE(myColor2.hsv_360_100_100, myColor1.hsv_360_100_100);
+        QCOMPARE(myColor2.hwb_360_100_100, myColor1.hwb_360_100_100);
         QCOMPARE(myColor2.rgb_255, myColor1.rgb_255);
-        QCOMPARE(myColor2.rgbHex6, myColor1.rgbHex6);
-        QCOMPARE(myColor2.rgbQColor, myColor1.rgbQColor);
+        QCOMPARE(myColor2.rgb_hex6, myColor1.rgb_hex6);
+        QCOMPARE(myColor2.rgb_QColor, myColor1.rgb_QColor);
     }
 
-    void testFromRgb()
+    void testfromRgb_1()
     {
-        RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{113, 53, 23});
-        QCOMPARE(myColor1.rgbQColor, QColor::fromRgb(113, 53, 23));
-        QVERIFY(isAlmostEqual(myColor1.rgb_1.first, 113. / 255, 0.1));
-        QVERIFY(isAlmostEqual(myColor1.rgb_1.second, 53. / 255, 0.1));
-        QVERIFY(isAlmostEqual(myColor1.rgb_1.third, 23. / 255, 0.1));
+        constexpr auto testValue = GenericColor{0.2, 0.3, 0.4};
+        RgbColor myColor1 = RgbColor::fromRgb_1(testValue);
+        QCOMPARE(myColor1.rgb_1, testValue);
     }
 
-    void testFromRgbQColor()
+    void testfromRgb_255()
     {
-        RgbColor myColor1 = RgbColor::fromRgbQColor(Qt::yellow);
-        QCOMPARE(myColor1.rgbQColor, Qt::yellow);
+        RgbColor myColor1 = RgbColor::fromRgb_255(GenericColor{113, 53, 23});
+        QCOMPARE(myColor1.rgb_QColor, QColor::fromRgb(113, 53, 23));
+        QCOMPARE(myColor1.rgb_1.first, 113. / 255);
+        QCOMPARE(myColor1.rgb_1.second, 53. / 255);
+        QCOMPARE(myColor1.rgb_1.third, 23. / 255);
+    }
+
+    void testfromRgb_QColor()
+    {
+        RgbColor myColor1 = RgbColor::fromRgb_QColor(Qt::yellow);
+        QCOMPARE(myColor1.rgb_QColor, Qt::yellow);
         QCOMPARE(myColor1.rgb_1,
                  GenericColor(QColor(Qt::yellow).redF(), //
                               QColor(Qt::yellow).greenF(), //
                               QColor(Qt::yellow).blueF()));
+    }
+
+    void testfromRgb_QColorTransparency()
+    {
+        constexpr QColor colorWithTransparency = //
+            QColor(0xff, 0xff, 0xff, 0x77);
+        constexpr QColor colorWithoutTransparency = //
+            QColor(0xff, 0xff, 0xff, 0xff);
+        RgbColor myColor1 = RgbColor::fromRgb_QColor(colorWithTransparency);
+        // Transparency should be removed:
+        QCOMPARE(myColor1.rgb_QColor, colorWithoutTransparency);
+        QCOMPARE(myColor1.rgb_1,
+                 GenericColor(colorWithTransparency.redF(), //
+                              colorWithTransparency.greenF(), //
+                              colorWithTransparency.blueF()));
     }
 
     void testRgbHue()
@@ -220,13 +242,13 @@ private Q_SLOTS:
         // The hue of the RGB-based HSV, HSL and HBW is identical.
         RgbColor value;
 
-        value = RgbColor::fromHsl(GenericColor{150, 40, 30});
-        QCOMPARE(value.hsl.first, 150);
-        QCOMPARE(value.hsv.first, 150);
+        value = RgbColor::fromHsl_360_100_100(GenericColor{150, 40, 30});
+        QCOMPARE(value.hsl_360_100_100.first, 150);
+        QCOMPARE(value.hsv_360_100_100.first, 150);
 
-        value = RgbColor::fromHsv(GenericColor{150, 40, 30});
-        QCOMPARE(value.hsl.first, 150);
-        QCOMPARE(value.hsv.first, 150);
+        value = RgbColor::fromHsv_360_100_100(GenericColor{150, 40, 30});
+        QCOMPARE(value.hsl_360_100_100.first, 150);
+        QCOMPARE(value.hsv_360_100_100.first, 150);
     }
 
     void testRgbHueOnGrayAxis()
@@ -235,34 +257,34 @@ private Q_SLOTS:
         // even when the value is on the gray axis.
         RgbColor value;
 
-        value = RgbColor::fromHsl(GenericColor{150, 0, 50});
-        QCOMPARE(value.hsl.first, 150);
-        QCOMPARE(value.hsv.first, 150);
-        QCOMPARE(value.hwb.first, 150);
+        value = RgbColor::fromHsl_360_100_100(GenericColor{150, 0, 50});
+        QCOMPARE(value.hsl_360_100_100.first, 150);
+        QCOMPARE(value.hsv_360_100_100.first, 150);
+        QCOMPARE(value.hwb_360_100_100.first, 150);
 
-        value = RgbColor::fromHsv(GenericColor{150, 0, 50});
-        QCOMPARE(value.hsl.first, 150);
-        QCOMPARE(value.hsv.first, 150);
-        QCOMPARE(value.hwb.first, 150);
+        value = RgbColor::fromHsv_360_100_100(GenericColor{150, 0, 50});
+        QCOMPARE(value.hsl_360_100_100.first, 150);
+        QCOMPARE(value.hsv_360_100_100.first, 150);
+        QCOMPARE(value.hwb_360_100_100.first, 150);
 
-        value = RgbColor::fromHwb(GenericColor{150, 50, 50});
+        value = RgbColor::fromHwb_360_100_100(GenericColor{150, 50, 50});
         // Sum of w and b is 100.
-        QCOMPARE(value.hsl.first, 150);
-        QCOMPARE(value.hsv.first, 150);
-        QCOMPARE(value.hwb.first, 150);
+        QCOMPARE(value.hsl_360_100_100.first, 150);
+        QCOMPARE(value.hsv_360_100_100.first, 150);
+        QCOMPARE(value.hwb_360_100_100.first, 150);
 
-        value = RgbColor::fromHwb(GenericColor{150, 70, 70});
+        value = RgbColor::fromHwb_360_100_100(GenericColor{150, 70, 70});
         // Sum of w and b is more than 100.
-        QCOMPARE(value.hsl.first, 150);
-        QCOMPARE(value.hsv.first, 150);
-        QCOMPARE(value.hwb.first, 150);
+        QCOMPARE(value.hsl_360_100_100.first, 150);
+        QCOMPARE(value.hsv_360_100_100.first, 150);
+        QCOMPARE(value.hwb_360_100_100.first, 150);
 
-        value = RgbColor::fromRgb255(GenericColor{120, 120, 120});
+        value = RgbColor::fromRgb_255(GenericColor{120, 120, 120});
         // An RGB value on the gray axis does not provide any information
         // about the hue. We can reasonably expect a standard value: 0°.
-        QCOMPARE(value.hsl.first, 0);
-        QCOMPARE(value.hsv.first, 0);
-        QCOMPARE(value.hwb.first, 0);
+        QCOMPARE(value.hsl_360_100_100.first, 0);
+        QCOMPARE(value.hsv_360_100_100.first, 0);
+        QCOMPARE(value.hwb_360_100_100.first, 0);
     }
 
     void testHueFromRgbToLchSaturationContinuityWhite()
@@ -274,19 +296,17 @@ private Q_SLOTS:
 
     void testFromHsl()
     {
-        const RgbColor value = RgbColor::fromHsl(GenericColor{100, 60, 30});
+        const RgbColor value = RgbColor::fromHsl_360_100_100(GenericColor{100, 60, 30});
 
-        QVERIFY(isAlmostEqual<double>(value.hsl.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 60));
-        QVERIFY(isAlmostEqual<double>(value.hsl.third, 30));
+        QCOMPARE(value.hsl_360_100_100, (GenericColor{100, 60, 30}));
 
-        QVERIFY(isAlmostEqual<double>(value.hsv.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 75));
-        QVERIFY(isAlmostEqual<double>(value.hsv.third, 48));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 75));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.third, 48));
 
-        QVERIFY(isAlmostEqual<double>(value.hwb.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hwb.second, 12));
-        QVERIFY(isAlmostEqual<double>(value.hwb.third, 52));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.second, 12));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.third, 52));
 
         QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 61));
         QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 122));
@@ -299,19 +319,17 @@ private Q_SLOTS:
 
     void testFromHsv()
     {
-        const RgbColor value = RgbColor::fromHsv(GenericColor{100, 60, 30});
+        const RgbColor value = RgbColor::fromHsv_360_100_100(GenericColor{100, 60, 30});
 
-        QVERIFY(isAlmostEqual<double>(value.hsl.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 43));
-        QVERIFY(isAlmostEqual<double>(value.hsl.third, 21));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 43));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.third, 21));
 
-        QVERIFY(isAlmostEqual<double>(value.hsv.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 60));
-        QVERIFY(isAlmostEqual<double>(value.hsv.third, 30));
+        QCOMPARE(value.hsv_360_100_100, (GenericColor{100, 60, 30}));
 
-        QVERIFY(isAlmostEqual<double>(value.hwb.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hwb.second, 12));
-        QVERIFY(isAlmostEqual<double>(value.hwb.third, 70));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.second, 12));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.third, 70));
 
         QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 45));
         QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 76));
@@ -334,17 +352,17 @@ private Q_SLOTS:
 
         RgbColor value;
 
-        value = RgbColor::fromHsv(GenericColor{150, 100, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 100));
+        value = RgbColor::fromHsv_360_100_100(GenericColor{150, 100, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 100));
 
-        value = RgbColor::fromHsv(GenericColor{150, 60, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 60));
+        value = RgbColor::fromHsv_360_100_100(GenericColor{150, 60, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 60));
 
-        value = RgbColor::fromHsv(GenericColor{150, 30, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 30));
+        value = RgbColor::fromHsv_360_100_100(GenericColor{150, 30, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 30));
 
-        value = RgbColor::fromHsv(GenericColor{150, 0, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 0));
+        value = RgbColor::fromHsv_360_100_100(GenericColor{150, 0, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 0));
     }
 
     void testSaturationSynchronizationForBlackFromHsl()
@@ -359,17 +377,17 @@ private Q_SLOTS:
 
         RgbColor value;
 
-        value = RgbColor::fromHsl(GenericColor{150, 100, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 100));
+        value = RgbColor::fromHsl_360_100_100(GenericColor{150, 100, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 100));
 
-        value = RgbColor::fromHsl(GenericColor{150, 60, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 60));
+        value = RgbColor::fromHsl_360_100_100(GenericColor{150, 60, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 60));
 
-        value = RgbColor::fromHsl(GenericColor{150, 30, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 30));
+        value = RgbColor::fromHsl_360_100_100(GenericColor{150, 30, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 30));
 
-        value = RgbColor::fromHsl(GenericColor{150, 0, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 0));
+        value = RgbColor::fromHsl_360_100_100(GenericColor{150, 0, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 0));
     }
 
     void testSaturationSynchronizationForBlackFromOther()
@@ -391,13 +409,13 @@ private Q_SLOTS:
 
         constexpr int saturationOfBlackColor = 0;
 
-        value = RgbColor::fromRgb255(GenericColor{0, 0, 0});
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, saturationOfBlackColor));
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, saturationOfBlackColor));
+        value = RgbColor::fromRgb_255(GenericColor{0, 0, 0});
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, saturationOfBlackColor));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, saturationOfBlackColor));
 
-        value = RgbColor::fromHwb(GenericColor{320, 0, 100});
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, saturationOfBlackColor));
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, saturationOfBlackColor));
+        value = RgbColor::fromHwb_360_100_100(GenericColor{320, 0, 100});
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, saturationOfBlackColor));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, saturationOfBlackColor));
     }
 
     void testHslSaturationForWhite()
@@ -416,45 +434,43 @@ private Q_SLOTS:
 
         constexpr int saturationOfWhiteColor = 0;
 
-        value = RgbColor::fromHsl(GenericColor{320, 50, 100});
+        value = RgbColor::fromHsl_360_100_100(GenericColor{320, 50, 100});
         // Expect a non-standard value because original values
         // should never be changed.
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 50));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 50));
 
         // All other original color formats should give the standard
         // HSL-saturation for white:
 
-        value = RgbColor::fromRgb255(GenericColor{255, 255, 255});
+        value = RgbColor::fromRgb_255(GenericColor{255, 255, 255});
         // Expect a non-standard value because original values
         // should never be changed.
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, saturationOfWhiteColor));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, saturationOfWhiteColor));
 
-        value = RgbColor::fromHsv(GenericColor{320, 0, 100});
+        value = RgbColor::fromHsv_360_100_100(GenericColor{320, 0, 100});
         // Expect a non-standard value because original values
         // should never be changed.
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, saturationOfWhiteColor));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, saturationOfWhiteColor));
 
-        value = RgbColor::fromHwb(GenericColor{320, 100, 0});
+        value = RgbColor::fromHwb_360_100_100(GenericColor{320, 100, 0});
         // Expect a non-standard value because original values
         // should never be changed.
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, saturationOfWhiteColor));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, saturationOfWhiteColor));
     }
 
     void testFromHwb()
     {
-        const RgbColor value = RgbColor::fromHwb(GenericColor{100, 60, 30});
+        const RgbColor value = RgbColor::fromHwb_360_100_100(GenericColor{100, 60, 30});
 
-        QVERIFY(isAlmostEqual<double>(value.hsl.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 14));
-        QVERIFY(isAlmostEqual<double>(value.hsl.third, 65)); //
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 14));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.third, 65)); //
 
-        QVERIFY(isAlmostEqual<double>(value.hsv.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 15));
-        QVERIFY(isAlmostEqual<double>(value.hsv.third, 70)); //
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 15));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.third, 70)); //
 
-        QVERIFY(isAlmostEqual<double>(value.hwb.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hwb.second, 60));
-        QVERIFY(isAlmostEqual<double>(value.hwb.third, 30)); //
+        QCOMPARE(value.hwb_360_100_100, (GenericColor{100, 60, 30}));
 
         QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 162));
         QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 179));
@@ -463,20 +479,20 @@ private Q_SLOTS:
 
     void testFromHwbDenormalized()
     {
-        const RgbColor value = RgbColor::fromHwb(GenericColor{100, 70, 70});
+        const RgbColor value = RgbColor::fromHwb_360_100_100(GenericColor{100, 70, 70});
         // The sum of w and b is greater than 100. This is denormalized.
 
-        QVERIFY(isAlmostEqual<double>(value.hsl.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsl.second, 0));
-        QVERIFY(isAlmostEqual<double>(value.hsl.third, 50)); //
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.second, 0));
+        QVERIFY(isAlmostEqual<double>(value.hsl_360_100_100.third, 50)); //
 
-        QVERIFY(isAlmostEqual<double>(value.hsv.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hsv.second, 0));
-        QVERIFY(isAlmostEqual<double>(value.hsv.third, 50)); //
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.second, 0));
+        QVERIFY(isAlmostEqual<double>(value.hsv_360_100_100.third, 50)); //
 
-        QVERIFY(isAlmostEqual<double>(value.hwb.first, 100));
-        QVERIFY(isAlmostEqual<double>(value.hwb.second, 70));
-        QVERIFY(isAlmostEqual<double>(value.hwb.third, 70)); //
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.first, 100));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.second, 70));
+        QVERIFY(isAlmostEqual<double>(value.hwb_360_100_100.third, 70)); //
 
         QVERIFY(isAlmostEqual<double>(value.rgb_255.first, 128));
         QVERIFY(isAlmostEqual<double>(value.rgb_255.second, 128));
@@ -485,8 +501,8 @@ private Q_SLOTS:
 
     void testEquality()
     {
-        RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
-        RgbColor myColor2 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
+        RgbColor myColor1 = RgbColor::fromRgb_255(GenericColor{1, 2, 3});
+        RgbColor myColor2 = RgbColor::fromRgb_255(GenericColor{1, 2, 3});
         QVERIFY(myColor1 == myColor2);
         myColor2.rgb_255.first += 1;
         QVERIFY(!(myColor1 == myColor2));
@@ -494,25 +510,25 @@ private Q_SLOTS:
 
     void testHex6()
     {
-        RgbColor myColor1 = RgbColor::fromRgb255(GenericColor{1, 2, 3});
-        QCOMPARE(myColor1.rgbHex6, QStringLiteral("#010203"));
-        RgbColor myColor2 = RgbColor::fromRgb255(GenericColor{0, 0, 0});
-        QCOMPARE(myColor2.rgbHex6, QStringLiteral("#000000"));
-        RgbColor myColor3 = RgbColor::fromRgb255(GenericColor{254, 254, 254});
-        QCOMPARE(myColor3.rgbHex6, QStringLiteral("#FEFEFE"));
-        RgbColor myColor4 = RgbColor::fromRgb255(GenericColor{255, 255, 255});
-        QCOMPARE(myColor4.rgbHex6, QStringLiteral("#FFFFFF"));
+        RgbColor myColor1 = RgbColor::fromRgb_255(GenericColor{1, 2, 3});
+        QCOMPARE(myColor1.rgb_hex6, QStringLiteral("#010203"));
+        RgbColor myColor2 = RgbColor::fromRgb_255(GenericColor{0, 0, 0});
+        QCOMPARE(myColor2.rgb_hex6, QStringLiteral("#000000"));
+        RgbColor myColor3 = RgbColor::fromRgb_255(GenericColor{254, 254, 254});
+        QCOMPARE(myColor3.rgb_hex6, QStringLiteral("#FEFEFE"));
+        RgbColor myColor4 = RgbColor::fromRgb_255(GenericColor{255, 255, 255});
+        QCOMPARE(myColor4.rgb_hex6, QStringLiteral("#FFFFFF"));
 
         // Test out-of-gamut values
-        RgbColor myColor5 = RgbColor::fromRgb255(GenericColor{270, 270, 270});
-        QCOMPARE(myColor5.rgbHex6, QStringLiteral("#FFFFFF"));
-        RgbColor myColor6 = RgbColor::fromRgb255(GenericColor{-1, -1, -1});
-        QCOMPARE(myColor6.rgbHex6, QStringLiteral("#000000"));
-        RgbColor myColor7 = RgbColor::fromRgbQColor(QColor::fromRgbF(2, 2, 2));
-        QCOMPARE(myColor7.rgbHex6, QStringLiteral("#FFFFFF"));
-        RgbColor myColor8 = RgbColor::fromRgbQColor( //
+        RgbColor myColor5 = RgbColor::fromRgb_255(GenericColor{270, 270, 270});
+        QCOMPARE(myColor5.rgb_hex6, QStringLiteral("#FFFFFF"));
+        RgbColor myColor6 = RgbColor::fromRgb_255(GenericColor{-1, -1, -1});
+        QCOMPARE(myColor6.rgb_hex6, QStringLiteral("#000000"));
+        RgbColor myColor7 = RgbColor::fromRgb_QColor(QColor::fromRgbF(2, 2, 2));
+        QCOMPARE(myColor7.rgb_hex6, QStringLiteral("#FFFFFF"));
+        RgbColor myColor8 = RgbColor::fromRgb_QColor( //
             QColor::fromRgbF(-1, -1, -1));
-        QCOMPARE(myColor8.rgbHex6, QStringLiteral("#000000"));
+        QCOMPARE(myColor8.rgb_hex6, QStringLiteral("#000000"));
     }
 };
 

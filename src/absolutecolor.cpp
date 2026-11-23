@@ -15,8 +15,12 @@
 #include <cmath>
 #include <numbers>
 #include <optional>
-#include <qglobal.h>
 #include <qmath.h>
+#include <qminmax.h>
+#include <qswap.h>
+#include <qtypeinfo.h>
+#include <string.h>
+#include <utility>
 
 namespace PerceptualColor
 {

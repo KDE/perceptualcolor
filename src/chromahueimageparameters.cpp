@@ -15,19 +15,23 @@
 #include "interlacingpass.h"
 #include <atomic>
 #include <cmath>
+#include <functional>
 #include <qimage.h>
 #include <qlist.h>
 #include <qmath.h>
+#include <qminmax.h>
 #include <qnamespace.h>
-#include <qpoint.h>
 #include <qrect.h>
 #include <qrgb.h>
 #include <qrunnable.h>
 #include <qsemaphore.h>
 #include <qsize.h>
+#include <qswap.h>
 #include <qthreadpool.h>
+#include <qtypeinfo.h>
 #include <type_traits>
 #include <utility>
+class QPoint;
 
 namespace PerceptualColor
 {

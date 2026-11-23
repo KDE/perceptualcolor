@@ -18,6 +18,7 @@
 */
 
 #include "colordialog.h"
+#include "colorpatch.h"
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
 #include "multispinbox.h"

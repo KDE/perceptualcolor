@@ -1,9 +1,13 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "csscolor.h"
+// Second, the private implementation.
+#include "csscolor_p.h" // IWYU pragma: associated
 
+#include "absolutecolor.h"
 #include "helpermath.h"
 #include "perceptualcolornamespace.h"
 #include <array>
@@ -36,8 +40,12 @@ namespace PerceptualColor
  * trailing whitespace.
  *
  * Returns the sRGB value if the syntax is valid. An
- * empty value otherwise. */
-std::optional<QRgb> CssColor::parseHexColor(const QString &hexColor)
+ * empty value otherwise.
+ *
+ * \note Unlike Qt (#AARRGGBB), CSS hex color notation places the alpha channel
+ * at the end (#RRGGBBAA).
+ */
+std::optional<QRgb> CssColorPrivate::parseHexColor(const QString &hexColor)
 {
     if (hexColor.length() > 9) { // Maximum 8 digits + “#” allowed
         return std::nullopt;
@@ -84,7 +92,7 @@ std::optional<QRgb> CssColor::parseHexColor(const QString &hexColor)
  * not contain any whitespace in the middle, comma, or slash. If all arguments
  * are valid, they are returned with leading and trailing whitespace removed.
  * Otherwise, an empty value is returned. */
-std::optional<QStringList> CssColor::validateArguments(const QStringList &arguments)
+std::optional<QStringList> CssColorPrivate::validateArguments(const QStringList &arguments)
 {
     QStringList result;
     for (const QString &argument : std::as_const(arguments)) {
@@ -121,7 +129,7 @@ std::optional<QStringList> CssColor::validateArguments(const QStringList &argume
  * syntax was invalid. Note that the individual arguments have leading and/or
  * trailing white space removed and are guaranteed to not contain any comma
  * or slash. */
-std::optional<QStringList> CssColor::parseAllFunctionArguments(const QString &arguments, const FunctionSyntax mode, const int count)
+std::optional<QStringList> CssColorPrivate::parseAllFunctionArguments(const QString &arguments, const CssColorPrivate::FunctionSyntax mode, const int count)
 {
     if (arguments.count(QStringLiteral(",")) > 0) {
         // Legacy syntax detected
@@ -185,7 +193,7 @@ std::optional<QStringList> CssColor::parseAllFunctionArguments(const QString &ar
  *
  * Returns the absolute number if the syntax is valid. An empty value
  * otherwise. */
-std::optional<double> CssColor::parseArgumentPercentNumberNone(const QString &argument, const double full, const double none)
+std::optional<double> CssColorPrivate::parseArgumentPercentNumberNone(const QString &argument, const double full, const double none)
 {
     bool okay = true;
     QString cleanArgument = argument.simplified();
@@ -222,7 +230,7 @@ std::optional<double> CssColor::parseArgumentPercentNumberNone(const QString &ar
  * Returns, for invalid syntax, an empty value is returned. For valid syntax,
  * \c {100%} corresponds to \c {1}, while \c {0%} and \c {none}
  * correspond to \c {0}. */
-std::optional<double> CssColor::parseArgumentPercentNoneTo1(const QString &argument)
+std::optional<double> CssColorPrivate::parseArgumentPercentNoneTo1(const QString &argument)
 {
     bool okay = true;
     QString cleanArgument = argument.simplified();
@@ -258,7 +266,7 @@ std::optional<double> CssColor::parseArgumentPercentNoneTo1(const QString &argum
  * Returns, for invalid syntax, an empty value is returned. For valid syntax,
  * a hue in the range [0, 360[ is returned, with 360 corresponding to the
  * full circle. */
-std::optional<double> CssColor::parseArgumentHueNoneTo360(const QString &argument)
+std::optional<double> CssColorPrivate::parseArgumentHueNoneTo360(const QString &argument)
 {
     bool okay = true;
     QString cleanArgument = argument.simplified();
@@ -304,8 +312,8 @@ std::optional<double> CssColor::parseArgumentHueNoneTo360(const QString &argumen
  * \a colorFunction The string to parse.
  *
  * Returns, if the CSS fragment is valid, the corresponding color.
- * \l ColorModel::Invalid otherwise. */
-CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colorFunction)
+ * \l CssColorModel::Invalid otherwise. */
+CssColorPrivate::CssColorValue CssColorPrivate::parseAbsoluteColorFunction(const QString &colorFunction)
 {
     static const QRegularExpression regex( //
         QStringLiteral("^(\\w+)\\s*\\((.*)\\)$"));
@@ -356,7 +364,7 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
 
     QList<double> list1;
     list1.reserve(3);
-    ColorModel model = ColorModel::Invalid;
+    CssColorModel model = CssColorModel::Invalid;
     CssPredefinedRgbColorSpace rgbColorSpace = //
         CssPredefinedRgbColorSpace::Invalid;
 
@@ -374,7 +382,7 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
     if (ident == QStringLiteral("rgb") //
         || ident == QStringLiteral("rgba") //
         || hash.contains(ident)) {
-        model = ColorModel::Rgb_1;
+        model = CssColorModel::Rgb_1;
         rgbColorSpace = hash.value( //
             ident, //
             CssPredefinedRgbColorSpace::Srgb);
@@ -394,8 +402,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
         || ident == QStringLiteral("xyz-d65") //
         || ident == QStringLiteral("xyz")) {
         model = (ident == QStringLiteral("xyz-d50")) //
-            ? ColorModel::XyzD50_1
-            : ColorModel::XyzD65_1;
+            ? CssColorModel::XyzD50_1
+            : CssColorModel::XyzD65_1;
         rgbColorSpace = CssPredefinedRgbColorSpace::Invalid;
         for (int i = 0; i < 3; ++i) {
             const auto absValue = //
@@ -410,8 +418,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
         || ident == QStringLiteral("hsla") //
         || ident == QStringLiteral("hwb")) {
         model = (ident == QStringLiteral("hwb")) //
-            ? ColorModel::Hwb_360_1_1
-            : ColorModel::Hsl_360_1_1;
+            ? CssColorModel::Hwb_360_1_1
+            : CssColorModel::Hsl_360_1_1;
         rgbColorSpace = CssPredefinedRgbColorSpace::Srgb;
         const auto maybeHue = parseArgumentHueNoneTo360(arguments.value(0));
         if (maybeHue.has_value()) {
@@ -429,8 +437,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
     if (ident == QStringLiteral("oklab") //
         || ident == QStringLiteral("lab")) {
         model = (ident == QStringLiteral("oklab")) //
-            ? ColorModel::OklabD65
-            : ColorModel::CielabD50;
+            ? CssColorModel::OklabD65
+            : CssColorModel::CielabD50;
         rgbColorSpace = CssPredefinedRgbColorSpace::Invalid;
         std::array<double, 3> full = (ident == QStringLiteral("oklab")) //
             ? std::array<double, 3>{{1, 0.4, 0.4}}
@@ -449,8 +457,8 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
     if (ident == QStringLiteral("oklch") //
         || ident == QStringLiteral("lch")) {
         model = (ident == QStringLiteral("oklch")) //
-            ? ColorModel::OklchD65
-            : ColorModel::CielchD50;
+            ? CssColorModel::OklchD65
+            : CssColorModel::CielchD50;
         rgbColorSpace = CssPredefinedRgbColorSpace::Invalid;
         std::array<double, 2> full = (ident == QStringLiteral("oklch")) //
             ? std::array<double, 2>{{1, 0.4}}
@@ -496,7 +504,121 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
  * \a string The CSS fragment to parse
  *
  * Returns, if the CSS fragment is valid, the corresponding color.
- * \l ColorModel::Invalid otherwise.
+ * An invalid color otherwise.
+ */
+CompleteColor CssColor::parseToCompleteColor(const QString &string)
+{
+    const auto color = CssColorPrivate::parseToStructuredValue(string);
+
+    switch (color.model) {
+    case CssColorPrivate::CssColorModel::CielabD50: {
+        const auto m_genericColor = GenericColor(color.color.first, //
+                                                 color.color.second, //
+                                                 color.color.third);
+        const auto m_absColor = //
+            AbsoluteColor::allConversions(ColorModel::CielabD50, //
+                                          m_genericColor);
+        return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+    }
+    case CssColorPrivate::CssColorModel::CielchD50: {
+        const auto m_genericColor = GenericColor(color.color.first, //
+                                                 color.color.second, //
+                                                 color.color.third);
+        const auto m_absColor = //
+            AbsoluteColor::allConversions(ColorModel::CielchD50, //
+                                          m_genericColor);
+        return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+    }
+    case CssColorPrivate::CssColorModel::Hsl_360_1_1: {
+        if (color.rgbColorSpace == CssColorPrivate::CssPredefinedRgbColorSpace::Srgb) {
+            const auto m_genericColor = GenericColor( //
+                color.color.first, //
+                color.color.second * 100., //
+                color.color.third * 100.);
+            const auto m_sRgbColor = //
+                RgbColor::fromHsl_360_100_100(m_genericColor);
+            return CompleteColor::fromSRgbColor(m_sRgbColor, color.alpha1);
+        }
+        break;
+    }
+    case CssColorPrivate::CssColorModel::Hwb_360_1_1: {
+        if (color.rgbColorSpace == CssColorPrivate::CssPredefinedRgbColorSpace::Srgb) {
+            const auto m_genericColor = GenericColor( //
+                color.color.first, //
+                color.color.second * 100., //
+                color.color.third * 100.);
+            const auto m_sRgbColor = //
+                RgbColor::fromHwb_360_100_100(m_genericColor);
+            return CompleteColor::fromSRgbColor(m_sRgbColor, color.alpha1);
+        }
+        break;
+    }
+    case CssColorPrivate::CssColorModel::Invalid: {
+        return CompleteColor();
+    }
+    case CssColorPrivate::CssColorModel::OklabD65: {
+        const auto m_genericColor = GenericColor(color.color.first, //
+                                                 color.color.second, //
+                                                 color.color.third);
+        const auto m_absColor = //
+            AbsoluteColor::allConversions(ColorModel::OklabD65, m_genericColor);
+        return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+    }
+    case CssColorPrivate::CssColorModel::OklchD65: {
+        const auto m_genericColor = GenericColor(color.color.first, //
+                                                 color.color.second, //
+                                                 color.color.third);
+        const auto m_absColor = //
+            AbsoluteColor::allConversions(ColorModel::OklchD65, m_genericColor);
+        return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+    }
+    case CssColorPrivate::CssColorModel::Rgb_1: {
+        if (color.rgbColorSpace == CssColorPrivate::CssPredefinedRgbColorSpace::Srgb) {
+            const auto m_genericColor = GenericColor(color.color.first, //
+                                                     color.color.second, //
+                                                     color.color.third);
+            const auto m_sRgbColor = RgbColor::fromRgb_1(m_genericColor);
+            return CompleteColor::fromSRgbColor(m_sRgbColor, color.alpha1);
+        }
+        if (color.rgbColorSpace == CssColorPrivate::CssPredefinedRgbColorSpace::SrgbLinear) {
+            const auto m_genericColor = GenericColor(color.color.first, //
+                                                     color.color.second, //
+                                                     color.color.third);
+            const auto m_absColor = //
+                AbsoluteColor::allConversions(ColorModel::LinearSRgb_1, //
+                                              m_genericColor);
+            return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+        }
+        break;
+    }
+    case CssColorPrivate::CssColorModel::XyzD50_1: {
+        const auto m_genericColor = GenericColor(color.color.first, //
+                                                 color.color.second, //
+                                                 color.color.third);
+        const auto m_absColor = //
+            AbsoluteColor::allConversions(ColorModel::XyzD50_1, m_genericColor);
+        return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+    }
+    case CssColorPrivate::CssColorModel::XyzD65_1: {
+        const auto m_genericColor = GenericColor(color.color.first, //
+                                                 color.color.second, //
+                                                 color.color.third);
+        const auto m_absColor = //
+            AbsoluteColor::allConversions(ColorModel::XyzD65_1, m_genericColor);
+        return CompleteColor::fromAbsColor(m_absColor, color.alpha1);
+    }
+    }
+
+    return CompleteColor();
+}
+
+/*!
+ * \brief Parse a CSS color value.
+ *
+ * \a string The CSS fragment to parse
+ *
+ * Returns, if the CSS fragment is valid, the corresponding color.
+ * \l CssColorModel::Invalid otherwise.
  *
  * This parser accepts all valid \l {https://www.w3.org/TR/css-color-4/}
  * {CSS Colors 4}, except those who’s value is context-dependant like for
@@ -511,7 +633,7 @@ CssColor::CssColorValue CssColor::parseAbsoluteColorFunction(const QString &colo
  * numbers and percent number: All values must be either a percentage or
  * an absolute number. However this parser accepts also mixed
  * values. */
-CssColor::CssColorValue CssColor::parse(const QString &string)
+CssColorPrivate::CssColorValue CssColorPrivate::parseToStructuredValue(const QString &string)
 {
     auto myString = string.simplified();
     if (myString.endsWith(QStringLiteral(";"))) {
@@ -526,7 +648,7 @@ CssColor::CssColorValue CssColor::parse(const QString &string)
     if (srgb.has_value()) {
         const auto srgbValue = srgb.value();
         CssColorValue result;
-        result.model = ColorModel::Rgb_1;
+        result.model = CssColorModel::Rgb_1;
         result.rgbColorSpace = CssPredefinedRgbColorSpace::Srgb;
         result.color = GenericColor{qRed(srgbValue) / 255., //
                                     qGreen(srgbValue) / 255., //
@@ -539,8 +661,6 @@ CssColor::CssColorValue CssColor::parse(const QString &string)
 }
 
 /*!
- *
- *
  * \brief Converts a named color to sRGB (if any)
  *
  * Implements the
@@ -553,7 +673,7 @@ CssColor::CssColorValue CssColor::parse(const QString &string)
  *
  * Returns the sRGB value if its a CSS named color (case-insensitive). An
  * empty value otherwise. */
-std::optional<QRgb> CssColor::parseNamedColor(const QString &namedColor)
+std::optional<QRgb> CssColorPrivate::parseNamedColor(const QString &namedColor)
 {
     using NamedColor = std::pair<QString, QRgb>;
     // clang-format off
@@ -723,11 +843,10 @@ std::optional<QRgb> CssColor::parseNamedColor(const QString &namedColor)
  *
  * This function is meant for exporting colors to CSS code.
  *
- * \a input A hash table with color values.
+ * \a color The original color.
  *
- * \a opacity1 The opacity of the color in the range [0, 1].
- *
- * \a significantFigures The requested number of significant figures.
+ * \a extraPrecision Controls how many additional fractional digits are
+ * displayed beyond the default precision.
  *
  * Returns a list of CSS color codes, ordered by importance: oklch, oklab,
  * lch, lab, xyz-d50, xyz-d65. oklch is considered most important, followed
@@ -744,75 +863,198 @@ std::optional<QRgb> CssColor::parseNamedColor(const QString &namedColor)
  * or fully transparent. Fully opaque colors do not need to specify the
  * alpha value in CSS explicitly, because CSS defaults to “fully opaque” if
  * no alpha value is given. */
-QStringList CssColor::generateCss(const QHash<ColorModel, GenericColor> &input, const double opacity1, const int significantFigures)
+QStringList CssColor::generateCss(const CompleteColor &color, const int extraPrecision)
 {
     QStringList result;
 
-    const auto decimals1 = decimalPlaces(2, significantFigures);
-    const auto decimals2 = decimalPlaces(2, significantFigures);
-    const auto decimals100 = decimalPlaces(100, significantFigures);
-    const auto decimals255 = decimalPlaces(255, significantFigures);
-    const auto decimals360 = decimalPlaces(360, significantFigures);
+    const auto standardDecimals = extraPrecision;
+    const auto narrowRangeDecimals = 2 + extraPrecision;
 
-    const QString opacity1String = (opacity1 < 1) //
-        ? QStringLiteral(" / %1%").arg(opacity1 * 100, 0, 'f', decimals100)
+    const bool isNotOpaque = (color.alpha < 1);
+    const QString opacity1String = isNotOpaque //
+        ? QStringLiteral(" / %1%").arg(color.alpha * 100, 0, 'f', standardDecimals)
         : QString();
+
+    const auto input = color.opaqueColorAbs;
 
     if (input.contains(ColorModel::OklchD65)) {
         const auto temp = input.value(ColorModel::OklchD65);
         result.append(QStringLiteral("oklch(%1 %2 %3%4)") //
-                          .arg(temp.first, 0, 'f', decimals1) //
-                          .arg(temp.second, 0, 'f', decimals2) //
-                          .arg(temp.third, 0, 'f', decimals360) //
+                          .arg(temp.first, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.second, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.third, 0, 'f', standardDecimals) //
                           .arg(opacity1String));
     }
 
     if (input.contains(ColorModel::OklabD65)) {
         const auto temp = input.value(ColorModel::OklabD65);
         result.append(QStringLiteral("oklab(%1 %2 %3%4)") //
-                          .arg(temp.first, 0, 'f', decimals1) //
-                          .arg(temp.second, 0, 'f', decimals2) //
-                          .arg(temp.third, 0, 'f', decimals2) //
+                          .arg(temp.first, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.second, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.third, 0, 'f', narrowRangeDecimals) //
                           .arg(opacity1String));
     }
 
     if (input.contains(ColorModel::CielchD50)) {
         const auto temp = input.value(ColorModel::CielchD50);
         result.append(QStringLiteral("lch(%1 %2 %3%4)") //
-                          .arg(temp.first, 0, 'f', decimals100) //
-                          .arg(temp.second, 0, 'f', decimals255) //
-                          .arg(temp.third, 0, 'f', decimals360) //
+                          .arg(temp.first, 0, 'f', standardDecimals) //
+                          .arg(temp.second, 0, 'f', standardDecimals) //
+                          .arg(temp.third, 0, 'f', standardDecimals) //
                           .arg(opacity1String));
     }
 
     if (input.contains(ColorModel::CielabD50)) {
         const auto temp = input.value(ColorModel::CielabD50);
         result.append(QStringLiteral("lab(%1 %2 %3%4)") //
-                          .arg(temp.first, 0, 'f', decimals100) //
-                          .arg(temp.second, 0, 'f', decimals255) //
-                          .arg(temp.third, 0, 'f', decimals255) //
+                          .arg(temp.first, 0, 'f', standardDecimals) //
+                          .arg(temp.second, 0, 'f', standardDecimals) //
+                          .arg(temp.third, 0, 'f', standardDecimals) //
                           .arg(opacity1String));
     }
 
     if (input.contains(ColorModel::XyzD50_1)) {
         const auto temp = input.value(ColorModel::XyzD50_1);
-        result.append(QStringLiteral("color (xyz-d50 %1 %2 %3%4)") //
-                          .arg(temp.first, 0, 'f', decimals1) //
-                          .arg(temp.second, 0, 'f', decimals1) //
-                          .arg(temp.third, 0, 'f', decimals1) //
+        result.append(QStringLiteral("color(xyz-d50 %1 %2 %3%4)") //
+                          .arg(temp.first, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.second, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.third, 0, 'f', narrowRangeDecimals) //
                           .arg(opacity1String));
     }
 
     if (input.contains(ColorModel::XyzD65_1)) {
         const auto temp = input.value(ColorModel::XyzD65_1);
-        result.append(QStringLiteral("color (xyz-d65 %1 %2 %3%4)") //
-                          .arg(temp.first, 0, 'f', decimals1) //
-                          .arg(temp.second, 0, 'f', decimals1) //
-                          .arg(temp.third, 0, 'f', decimals1) //
+        result.append(QStringLiteral("color(xyz-d65 %1 %2 %3%4)") //
+                          .arg(temp.first, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.second, 0, 'f', narrowRangeDecimals) //
+                          .arg(temp.third, 0, 'f', narrowRangeDecimals) //
+                          .arg(opacity1String));
+    }
+
+    {
+        const auto temp = color.opaqueColorSRgb.rgb_255;
+        result.append(QStringLiteral("rgb(%1 %2 %3%4)") //
+                          .arg(temp.first, 0, 'f', standardDecimals) //
+                          .arg(temp.second, 0, 'f', standardDecimals) //
+                          .arg(temp.third, 0, 'f', standardDecimals) //
+                          .arg(opacity1String));
+    }
+
+    {
+        const auto temp = color.opaqueColorSRgb.rgb_1;
+        result.append(QStringLiteral("rgb(%1% %2% %3%%4)") //
+                          .arg(temp.first * 100, 0, 'f', standardDecimals) //
+                          .arg(temp.second * 100, 0, 'f', standardDecimals) //
+                          .arg(temp.third * 100, 0, 'f', standardDecimals) //
+                          .arg(opacity1String));
+    }
+
+    {
+        QString temp;
+        // = color.opaqueColorRgb.rgbQColor.name(QColor::HexRgb);
+        if (isNotOpaque) {
+            temp = CssColor::cssRgbHex(color.opaqueColorSRgb.rgb_255.first,
+                                       color.opaqueColorSRgb.rgb_255.second,
+                                       color.opaqueColorSRgb.rgb_255.third,
+                                       color.alpha * 255);
+        } else {
+            temp = CssColor::cssRgbHex(color.opaqueColorSRgb.rgb_255.first, //
+                                       color.opaqueColorSRgb.rgb_255.second, //
+                                       color.opaqueColorSRgb.rgb_255.third);
+        }
+        result.append(temp);
+    }
+
+    {
+        const auto temp = color.opaqueColorSRgb.hsl_360_100_100;
+        result.append(QStringLiteral("hsl(%1 %2% %3%%4)") //
+                          .arg(temp.first, 0, 'f', standardDecimals) //
+                          .arg(temp.second, 0, 'f', standardDecimals) //
+                          .arg(temp.third, 0, 'f', standardDecimals) //
+                          .arg(opacity1String));
+    }
+
+    {
+        const auto temp = color.opaqueColorSRgb.hwb_360_100_100;
+        result.append(QStringLiteral("hwb(%1 %2% %3%%4)") //
+                          .arg(temp.first, 0, 'f', standardDecimals) //
+                          .arg(temp.second, 0, 'f', standardDecimals) //
+                          .arg(temp.third, 0, 'f', standardDecimals) //
                           .arg(opacity1String));
     }
 
     return result;
+}
+
+/*!
+ * \brief Returns a hexadecimal RGB representation as used in CSS.
+ *
+ * Different from QColor::name(), this function rounds correctly.
+ *
+ * \a red255 Range: [0..255]
+ *
+ * \a green255 Range: [0..255]
+ *
+ * \a blue255 Range: [0..255]
+ */
+QString CssColor::cssRgbHex(const double red255, const double green255, const double blue255)
+{
+    // We cannot rely on the convenient QColor.name() because this function
+    // seems to use floor() instead of round(), which does not make sense for
+    // us, and it would be inconsistent with other code in our
+    // library. Therefore, we have to round explicitly.
+    // This format string provides intentionally a non-localized format,
+    // using QString::arg() which does not localize if the corresponding
+    // placeholder (%1, %2 …) is not followed by an "L", which it isn’t
+    // in this code.
+    return QStringLiteral(u"#%1%2%3")
+        .arg(qBound(0, qRound(red255), 255), // The number itself
+             2, // The minimal field width (2 digits)
+             16, // The base of the number representation (16, hexadecimal)
+             QChar::fromLatin1('0') // The fill character (leading zero)
+             )
+        .arg(qBound(0, qRound(green255), 255), // The number itself
+             2, // The minimal field width (2 digits)
+             16, // The base of the number representation (16, hexadecimal)
+             QChar::fromLatin1('0') // The fill character (leading zero)
+             )
+        .arg(qBound(0, qRound(blue255), 255), // The number itself
+             2, // The minimal field width (2 digits)
+             16, // The base of the number representation (16, hexadecimal)
+             QChar::fromLatin1('0') // The fill character (leading zero)
+             )
+        .toUpper(); // Convert to upper case
+}
+
+/*!
+ * \brief Returns a hexadecimal RGB representation as used in CSS.
+ *
+ * Different from QColor::name(), this function rounds correctly.
+ *
+ * Also different from QColor::name(), the alpha channel is the last value,
+ * as used in CSS.
+ *
+ * \a red255 Range: [0..255]
+ *
+ * \a green255 Range: [0..255]
+ *
+ * \a blue255 Range: [0..255]
+ *
+ * \a alpha255 Range: [0..255]
+ *
+ * \note Unlike Qt (#AARRGGBB), CSS hex color notation places the alpha channel
+ * at the end (#RRGGBBAA).
+ */
+QString CssColor::cssRgbHex(const double red255, const double green255, const double blue255, const double alpha255)
+{
+    const auto alphaHex = QStringLiteral(u"%1")
+                              .arg(qBound(0, qRound(alpha255), 255), // The number itself
+                                   2, // The minimal field width (2 digits)
+                                   16, // The base of the number representation (16, hexadecimal)
+                                   QChar::fromLatin1('0') // The fill character (leading zero)
+                                   )
+                              .toUpper();
+    return cssRgbHex(red255, green255, blue255) + alphaHex;
 }
 
 } // namespace PerceptualColor

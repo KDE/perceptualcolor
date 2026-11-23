@@ -154,8 +154,10 @@ if(BUILD_TESTING)
         testcolorwheel
         testcolorwheelimageparameters
         testcolorwheelimageprovider
+        testcompletecolor
         testconstpropagatingrawpointer
         testconstpropagatinguniquepointer
+        testcustomcolorpatch
         testcsscolor
         testgenericcolor
         testgradientimageparameters
@@ -175,6 +177,7 @@ if(BUILD_TESTING)
         testmat3
         testmultispinbox
         testmultispinboxsection
+        testperceptualcolor
         testperceptualcolorruntimeversion
         testperceptualsettings
         testpolarpointf

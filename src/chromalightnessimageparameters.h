@@ -6,9 +6,10 @@
 
 #include "internalimportexport.h"
 #include "perceptualcolornamespace.h"
-#include <qglobal.h>
+#include <qbytearray.h>
 #include <qmetatype.h>
 #include <qsize.h>
+#include <qtypes.h>
 #include <qvariant.h>
 
 namespace PerceptualColor

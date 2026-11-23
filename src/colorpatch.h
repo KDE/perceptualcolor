@@ -6,15 +6,10 @@
 
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
-#include "internalimportexport.h"
+#include "importexport.h"
 #include <qcolor.h>
-#include <qglobal.h>
-#include <qsize.h>
-class QDragEnterEvent;
-class QDropEvent;
-class QMouseEvent;
-class QPaintEvent;
-class QResizeEvent;
+#include <qpixmap.h>
+#include <qtclasshelpermacros.h>
 class QWidget;
 #include <qtmetamacros.h>
 
@@ -23,9 +18,7 @@ namespace PerceptualColor
 class ColorPatchPrivate;
 
 /*!
- *
- *
- * \inmodule ModulePrivateApi
+ * \inmodule ModulePublicApi
  *
  * \brief A color display widget.
  *
@@ -52,27 +45,13 @@ class ColorPatchPrivate;
  * want to set a bigger minimum size:
  *
  * \snippet testcolorpatch.cpp ColorPatch Bigger minimum size
- *
- * This widget supports drag-and-drop operations.
- * Outgoing drag events are always enabled.
- * Whether incoming drop events are accepted can be controlled
- * via QWidget::setAcceptDrops(bool).
- *
- * \note This class is API-compatible with the legacy
- * \l {https://api.kde.org/legacy/4.12-api/kdelibs-apidocs/kdeui/html/classKColorPatch.html}
- * {KColorPatch} class that was available in KDElibs4 (and still in KF5
- * through KDELibs4Support).
- *
- *
- *
- * \note This class intentionally does not reimplement the paint event,
- * but uses a child QLabel to display the color. QLabel integrates by
- * default nicely with QStyle: Even round frames that are cutting slightly
- * the pixmap (like in some styles), are possible. So we rely entirely
- * on QLabel for the actual display, and only implement \l sizeHint() and
- * minimumSizeHint() ourselves. */
-class PERCEPTUALCOLOR_INTERNAL_IMPORTEXPORT ColorPatch : public AbstractDiagram
+ */
+class PERCEPTUALCOLOR_IMPORTEXPORT ColorPatch : public AbstractDiagram
 {
+    // NOTE This class is API-compatible with the legacy
+    // https://api.kde.org/legacy/4.12-api/kdelibs-apidocs/kdeui/html/classKColorPatch.html
+    // KColorPatch class that was available in KDElibs4 (and still in KF5
+    // through KDELibs4Support).
     Q_OBJECT
 
     /*!
@@ -102,12 +81,12 @@ public:
     /*!
      * \brief Getter for property color
      */
-    [[nodiscard]] QColor color() const;
+    [[nodiscard]] virtual QColor color() const;
     [[nodiscard]] virtual QSize minimumSizeHint() const override;
     [[nodiscard]] virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setColor(const QColor &newColor);
+    virtual void setColor(const QColor &newColor);
 
 Q_SIGNALS:
     /*!
@@ -118,17 +97,15 @@ Q_SIGNALS:
     void colorChanged(const QColor &color);
 
 protected:
-    virtual void dragEnterEvent(QDragEnterEvent *eventParameter) override;
-    virtual void dropEvent(QDropEvent *eventParameter) override;
+    virtual QPixmap dragDropPixmap() const;
     virtual bool event(QEvent *eventParameter) override;
-    virtual void execDrag(QPoint startPosition) override;
     virtual void paintEvent(QPaintEvent *eventParameter) override;
-    virtual void resizeEvent(QResizeEvent *eventParameter) override;
 
 private:
     Q_DISABLE_COPY(ColorPatch)
 
     friend class ColorPatchPrivate;
+
     /*!
      * \brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ColorPatchPrivate> d_pointer;

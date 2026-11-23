@@ -12,8 +12,6 @@
 namespace PerceptualColor
 {
 
-[[nodiscard]] int decimalPlaces(const int rangeMax, const int significantFigures);
-
 [[nodiscard]] int roundToNearestMultiple(double num, int multiple);
 
 /*!

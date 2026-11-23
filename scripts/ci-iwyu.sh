@@ -52,6 +52,8 @@ cmake --build . --parallel $PARALLEL_PROCESSES 2>>../artifact_iwyu.txt
 sed -i '/^The full include-list for \//,/^---$/ { /^---$/!d }' ../artifact_iwyu.txt
 # Remove comments for correct files.
 sed -i '/(.*has correct #includes\/fwd-decls)/d' ../artifact_iwyu.txt
+# Remove warnings about wrong mapping in some header files of external libs
+sed -i '/no private include name for @headername mapping/d' ../artifact_iwyu.txt
 # Remove noisy text.
 sed -i '/^Warning: include-what-you-use reported diagnostics:$/d' ../artifact_iwyu.txt
 # Keep “should add/remove these lines” only if the next line is not empty.

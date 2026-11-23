@@ -65,7 +65,6 @@ public:
                   const qsizetype row,
                   const qsizetype column) const;
     [[nodiscard]] int horizontalPatchSpacing() const;
-    void initStyleOption(QStyleOptionFrame *option) const;
     [[nodiscard]] std::pair<qsizetype, qsizetype> logicalColumnRowFromPosition(const QPoint position) const;
     [[nodiscard]] int normalPatchSpacing() const;
     [[nodiscard]] QPoint contentOffset(const QStyleOptionFrame &styleOptionFrame) const;

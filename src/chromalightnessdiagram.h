@@ -8,19 +8,14 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "internalimportexport.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
-#include <qsize.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
-class QKeyEvent;
-class QMouseEvent;
-class QPaintEvent;
-class QResizeEvent;
 class QWidget;
 
 namespace PerceptualColor
 {
 class ChromaLightnessDiagramPrivate;
+enum class LchSpace;
 
 /*!
  *

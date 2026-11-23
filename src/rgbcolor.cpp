@@ -4,6 +4,7 @@
 // Own header
 #include "rgbcolor.h"
 
+#include "csscolor.h"
 #include "helperconversion.h"
 #include <qchar.h>
 #include <qglobal.h>
@@ -38,70 +39,44 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
         qBound<double>(0., static_cast<double>(color.greenF() * 255), 255.), //
         qBound<double>(0., static_cast<double>(color.blueF() * 255), 255.));
 
-    // rgbHex6
-    // We cannot rely on the convenient QColor.name() because this function
-    // seems to use floor() instead of round(), which does not make sense for
-    // us, and it would be inconsistent with other code in our
-    // library. Therefore, we have to round explicitly.
-    // This format string provides intentionally a non-localized format,
-    // using QString::arg() which does not localize if the corresponding
-    // placeholder (%1, %2 …) is not followed by an "L", which it isn’t
-    // in this code.
-    rgbHex6 = //
-        QStringLiteral(u"#%1%2%3")
-            .arg(qBound(0, qRound(rgb_255.first), 255), // The number itself
-                 2, // The minimal field width (2 digits)
-                 16, // The base of the number representation (16, hexadecimal)
-                 QChar::fromLatin1('0') // The fill character (leading zero)
-                 )
-            .arg(qBound(0, qRound(rgb_255.second), 255), // The number itself
-                 2, // The minimal field width (2 digits)
-                 16, // The base of the number representation (16, hexadecimal)
-                 QChar::fromLatin1('0') // The fill character (leading zero)
-                 )
-            .arg(qBound(0, qRound(rgb_255.third), 255), // The number itself
-                 2, // The minimal field width (2 digits)
-                 16, // The base of the number representation (16, hexadecimal)
-                 QChar::fromLatin1('0') // The fill character (leading zero)
-                 )
-            .toUpper(); // Convert to upper case
+    rgb_hex6 = CssColor::cssRgbHex(rgb_255.first, rgb_255.second, rgb_255.third);
 
     // rgbQColor
-    rgbQColor = color.toRgb();
-    if (rgbQColor.alphaF() != 1) {
-        rgbQColor.setAlphaF(1);
+    rgb_QColor = color.toRgb();
+    if (rgb_QColor.alphaF() != 1) {
+        rgb_QColor.setAlphaF(1);
     }
 
     // The hue is identical for HSL, HSV and HWB.
     const double hueDegree = hue.value_or( //
-        qBound(0., rgbQColor.hueF() * 360, 360.));
+        qBound(0., rgb_QColor.hueF() * 360, 360.));
 
     // HSL
     const double hslSaturationPercentage = //
         qBound(0., static_cast<double>(color.hslSaturationF()) * 100, 100.);
     const double hslLightnessPercentage = //
         qBound(0., static_cast<double>(color.lightnessF()) * 100, 100.);
-    hsl = GenericColor(hueDegree, //
-                       hslSaturationPercentage, //
-                       hslLightnessPercentage);
+    hsl_360_100_100 = GenericColor(hueDegree, //
+                                   hslSaturationPercentage, //
+                                   hslLightnessPercentage);
 
     // HSV
     const double hsvSaturationPercentage = //
         qBound(0.0, static_cast<double>(color.hsvSaturationF()) * 100, 100.0);
     const double hsvValuePercentage = //
         qBound<double>(0.0, static_cast<double>(color.valueF()) * 100, 100.0);
-    hsv = GenericColor(hueDegree, //
-                       hsvSaturationPercentage, //
-                       hsvValuePercentage);
+    hsv_360_100_100 = GenericColor(hueDegree, //
+                                   hsvSaturationPercentage, //
+                                   hsvValuePercentage);
 
     // HWB
     const double hwbWhitenessPercentage = //
         qBound(0.0, (1 - color.hsvSaturationF()) * color.valueF() * 100, 100.0);
     const double hwbBlacknessPercentage = //
         qBound(0.0, (1 - color.valueF()) * 100, 100.0);
-    hwb = GenericColor(hueDegree, //
-                       hwbWhitenessPercentage, //
-                       hwbBlacknessPercentage);
+    hwb_360_100_100 = GenericColor(hueDegree, //
+                                   hwbWhitenessPercentage, //
+                                   hwbBlacknessPercentage);
 }
 
 /*!
@@ -114,7 +89,7 @@ void RgbColor::fillAll(QColor color, std::optional<double> hue)
  *            calculated hue value. Valid range: [0, 360[
  *
  * Returns a \l RgbColor object representing this color. */
-RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> hue)
+RgbColor RgbColor::fromRgb_255(const GenericColor &color, std::optional<double> hue)
 {
     RgbColor result;
     const float red = static_cast<float>(color.first / 255);
@@ -124,6 +99,9 @@ RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> h
                                                  qBound<float>(0, green, 1), //
                                                  qBound<float>(0, blue, 1));
     result.fillAll(newRgbQColor, hue);
+    result.rgb_1 = GenericColor(color.first / 255., //
+                                color.second / 255., //
+                                color.third / 255.);
     result.rgb_255 = color;
 
     return result;
@@ -140,7 +118,7 @@ RgbColor RgbColor::fromRgb255(const GenericColor &color, std::optional<double> h
  *
  * Returns a \l RgbColor object representing this color.
  */
-RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue)
+RgbColor RgbColor::fromRgb_1(const GenericColor &color, std::optional<double> hue)
 {
     RgbColor result;
     const float red = static_cast<float>(color.first);
@@ -151,6 +129,7 @@ RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue
                                                  qBound<float>(0, blue, 1));
     result.fillAll(newRgbQColor, hue);
     result.rgb_255 = GenericColor(color.first * 255, color.second * 255, color.third * 255);
+    result.rgb_1 = color;
 
     return result;
 }
@@ -163,7 +142,7 @@ RgbColor RgbColor::fromRgb1(const GenericColor &color, std::optional<double> hue
  *
  * Returns a \l RgbColor object representing this color.
  */
-RgbColor RgbColor::fromRgbQColor(const QColor &color)
+RgbColor RgbColor::fromRgb_QColor(const QColor &color)
 {
     RgbColor result;
     QColor newRgbQColor = toRgbExact(color);
@@ -178,10 +157,11 @@ RgbColor RgbColor::fromRgbQColor(const QColor &color)
  * constructed from the given color.
  *
  * \a color Original color.
+ * Valid ranges: Hue: [0, 360]. Saturation: [0, 100]. Value: [0, 100].
  *
  * Returns a \l RgbColor object representing this color.
  */
-RgbColor RgbColor::fromHsl(const GenericColor &color)
+RgbColor RgbColor::fromHsl_360_100_100(const GenericColor &color)
 {
     RgbColor result;
 
@@ -197,12 +177,12 @@ RgbColor RgbColor::fromHsl(const GenericColor &color)
         QColor::fromHslF(hslHue, hslSaturation, hslLightness).toRgb();
     result.fillAll(newRgbQColor, color.first);
     // Override again with the original value:
-    result.hsl = color;
-    if (result.hsl.third == 0) {
+    result.hsl_360_100_100 = color;
+    if (result.hsl_360_100_100.third == 0) {
         // Color is black. So neither changing HSV-saturation or changing
         // HSL-saturation will change the color itself. To give a better
         // user experience, we synchronize both values.
-        result.hsv.second = result.hsl.second;
+        result.hsv_360_100_100.second = result.hsl_360_100_100.second;
     }
 
     return result;
@@ -213,10 +193,11 @@ RgbColor RgbColor::fromHsl(const GenericColor &color)
  * constructed from the given color.
  *
  * \a color Original color.
+ * Valid ranges: Hue: [0, 360]. Saturation: [0, 100]. Value: [0, 100].
  *
  * Returns a \l RgbColor object representing this color.
  */
-RgbColor RgbColor::fromHsv(const GenericColor &color)
+RgbColor RgbColor::fromHsv_360_100_100(const GenericColor &color)
 {
     RgbColor result;
     constexpr float zero = 0;
@@ -231,12 +212,12 @@ RgbColor RgbColor::fromHsv(const GenericColor &color)
         QColor::fromHsvF(hsvHue, hsvSaturation, hsvValue);
     result.fillAll(newRgbQColor, color.first);
     // Override again with the original value:
-    result.hsv = color;
-    if (result.hsv.third == 0) {
+    result.hsv_360_100_100 = color;
+    if (result.hsv_360_100_100.third == 0) {
         // Color is black. So neither changing HSV-saturation or changing
         // HSL-saturation will change the color itself. To give a better
         // user experience, we synchronize both values.
-        result.hsl.second = result.hsv.second;
+        result.hsl_360_100_100.second = result.hsv_360_100_100.second;
     }
 
     return result;
@@ -247,10 +228,11 @@ RgbColor RgbColor::fromHsv(const GenericColor &color)
  * constructed from the given color.
  *
  * \a color Original color.
+ * Valid ranges: Hue: [0, 360]. Whiteness: [0, 100]. Blackness: [0, 100].
  *
  * Returns a \l RgbColor object representing this color.
  */
-RgbColor RgbColor::fromHwb(const GenericColor &color)
+RgbColor RgbColor::fromHwb_360_100_100(const GenericColor &color)
 {
     RgbColor result;
     GenericColor normalizedHwb = color;
@@ -280,8 +262,8 @@ RgbColor RgbColor::fromHwb(const GenericColor &color)
             static_cast<float>(newHsv.third / 100));
     result.fillAll(newRgbQColor, normalizedHwb.first);
     // Override again with the original value:
-    result.hsv = newHsv;
-    result.hwb = color; // Intentionally not normalized, but original value.
+    result.hsv_360_100_100 = newHsv;
+    result.hwb_360_100_100 = color; // Intentionally not normalized, but original value.
 
     return result;
 }
@@ -300,12 +282,12 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::RgbColor &value)
 {
     dbg.nospace() //
         << "RgbColor(\n"
-        << " - hsl: " << value.hsl << "\n"
-        << " - hsv: " << value.hsv << "\n"
-        << " - hwb: " << value.hwb << "\n"
+        << " - hsl: " << value.hsl_360_100_100 << "\n"
+        << " - hsv: " << value.hsv_360_100_100 << "\n"
+        << " - hwb: " << value.hwb_360_100_100 << "\n"
         << " - rgb255: " << value.rgb_255 << "\n"
-        << " - rgbHex6: " << value.rgbHex6 << "\n"
-        << " - rgbQColor: " << value.rgbQColor << "\n"
+        << " - rgbHex6: " << value.rgb_hex6 << "\n"
+        << " - rgbQColor: " << value.rgb_QColor << "\n"
         << ")";
     return dbg.maybeSpace();
 }

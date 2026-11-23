@@ -507,24 +507,61 @@
  *
  * \title General to-do list with ideas or issues
  *
+ * NICETOHAVE We have \c {setAttribute(Qt::WA_Hover);} in the constructors of
+ * \l PerceptualColor::ColorPatch and \l PerceptualColor::SwatchBook. That
+ * allows the Breeze and Oxygen QStyle to draw a focus indicator on mouse
+ * hover. It would be nice to have this also for all other custom widgets
+ * (\l PerceptualColor::GradientSlider, \l PerceptualColor::ChromaHueDiagram,
+ * \l PerceptualColor::ChromaLightnessDiagram, \l PerceptualColor::ColorWheel,
+ * \l PerceptualColor::WheelColorPicker), though as we render the
+ * focus indicator ourself in these widgets, we would have to implement it
+ * manually ourselves in the paint event.
+ *
+ * NICETOHAVE The custom focus indicators that we have in some widgets
+ * (\l PerceptualColor::GradientSlider, \l PerceptualColor::ChromaHueDiagram,
+ * \l PerceptualColor::ChromaLightnessDiagram, \l PerceptualColor::ColorWheel,
+ * \l PerceptualColor::WheelColorPicker) should have the same width as the
+ * QStyle focus indicator. This might be possible with a little trick, using
+ * \c {
+ * QStyleOptionFrame frameStyleOption;
+ *  frameStyleOption.initFrom(this);
+ *  frameStyleOption.lineWidth = style()->pixelMetric( //
+ *      QStyle::PM_DefaultFrameWidth,
+ *      &frameStyleOption,
+ *      this);
+ * } which we use in \l PerceptualColor::ColorPatch and
+ * \l PerceptualColor::SwatchBook to draw the QStyle primitives for QLineEdit
+ * frames, and which might be useful here also.
+ *
+ * NICETOHAVE Go trough QStyle::StyleHint and search for hints that might be
+ * useful in some of our widgets. If so, use them in our rendering code.
+ *
+ * SHOULDHAVE When \l PerceptualColor::AbstractDiagram::handleOutlineThickness
+ * is changed to return 5, then \l PerceptualColor::ChromaHueDiagram suddenly
+ * extends the gray background circle beyond the color wheel. This indicates
+ * a logical bug somewhere in the code that calculates the dimensions.
+ *
  * SHOULDHAVE In the CI (as defined by our current configuration), we
  * get muss less warnings than when we run locally with
  * \c {-DADDITIONAL_WARNINGS=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=FALSE
  * -DCMAKE_CXX_COMPILER=clazy}.
  *
+ * SHOWSTOPPER Get rid of \l PerceptualColor::AbstractDiagram in favour of
+ * composition or a mixin or free functions. Otherwise,
+ * \l PerceptualColor::AbstractDiagram must become part of the public API,
+ * because \l PerceptualColor::ColorPatch inherits from it and
+ * \l PerceptualColor::ColorPatch is public API, which is broken as long as
+ * \l PerceptualColor::AbstractDiagram stays private.
+ *
  * SHOWSTOPPER Define the precision of this library. We allow
  * changing the number of decimals in the \l PerceptualColor::ColorDialog
- * though there is only a private API, not a public one.
+ * though this does not change the internal precision of dialog.
  * Document how exact the results of \l PerceptualColor::ColorDialog are.
  * If only 8 bit per channel, move to QRgb. Otherwise, either stay with
  * QColor, but deliver exact results. Or even move to
  * \l PerceptualColor::GenericColor.
  * The latter would allow to provide exact values also in color spaces
- * different from RGB, such as Oklch, Cielch etc. If we do that, probably
- * \l PerceptualColor::ColorDialogPrivate::decimals should become part
- * of the public API and \l PerceptualColor::ColorDialogPrivate::okdecimals
- * shall become a function that returns
- * \l PerceptualColor::ColorDialogPrivate::decimals + 2.
+ * different from RGB, such as Oklch, Cielch etc.
  * Also, \l PerceptualColor::SwatchBook is difficult to get right. Its
  * base color grid is based on Oklch, its and costum colors are
  * based on whatever the used has used originally to define the color,
@@ -532,19 +569,23 @@
  * its grid data to \l PerceptualColor::GenericColor to provide full
  * precision and avoid rounding errors, which can be big on some extreme
  * positions of the Oklab color space?
- *
- * SHOULDHAVE Support CSS colors using \l PerceptualColor::CssColor
- * by allowing copy (right-click on the \l PerceptualColor::ColorPatch,
- * however this will not work for keyboard-only usage because the context menu
- * key (Qt::Key_Menu and maybe Qt::Key_MenuKB and Qt::Key_MenuPB
- * but rather not Qt::Key_TopMenu)
- * cannot be used because this widget cannot get focus, or should that
- * change?) and paste (maybe even whereever in the
- * \l PerceptualColor::ColorDialog, even within
- * \l PerceptualColor::MultiSpinBox. And also incoming drag-and-drop
- * (outgoing drag-and-drop instead should use the standard clipboard format).
- * And maybe accept something that can be parsed also when Crtl-V or dragged
- * to a multispinbox if it can be interpreted as such a value.
+ * And: With which precison do we store for example custom colors in
+ * \l PerceptualColor::Settings or should we store them even as
+ * \l PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorRgb and
+ * \l PerceptualColor::ColorDialogPrivate::m_currentOpaqueColorAbs for full
+ * precision? But binary storage can break if we change the underlying struct
+ * in the futer. How else could it be serialized? As a three-channel-color plus
+ * alpha channel, each of these four values stored as double in an individual
+ * INI field? Attention: conversion to/from "long double" instead of "double"
+ * to avoid rounding errors on some extreme cases, then downlast to "double".
+ * A good serialization could be useful for putting colors into MIME data.
+ * This could allow for Drag&Drop between \l PerceptualColor::SwatchBook and
+ * \l PerceptualColor::CustomColorPatch without loss of presision, even between
+ * different instances of \l PerceptualColor::ColorDialog. But the
+ * serialization may not change in an incompatible way in the future!
+ * Also, this would allow for a roundtrip in
+ * \l PerceptualColor::CustomColorPatch by using \c {Ctrl+C} and later
+ * \c {Ctrl+V} without loosing precision (which is currently the case).
  *
  * NICETOHAVE Remove remaining usage of \c {ifndef MSVC_DLL}
  * which is used in unit tests to exclude some tests that would otherwise
@@ -706,11 +747,6 @@
  * on Wayland? And how does it work, because Wayland is very strict about
  * security?
  *
- * SHOULDHAVE ci-doc.sh and local-doc.sh contain a grep command that
- * filters warnings about "Cannot locate index file for dependency" and
- * "Failed to find … indexTitle". It would be better to resolve the issues
- * instead of filtering the warnings.
- *
  * SHOULDHAVE
  * Avoid default arguments like \c {void test(int i = 0)} in
  * public headers, as changes require re-compilation of the client application
@@ -739,9 +775,6 @@
  * https://doc.qt.io/qt-5/qml-qtquick-dialogs-colordialog.html (or its
  * Qt6 counterpart) we provide a source compatible alternative, like for
  * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
- * Support \l {https://mauikit.org/} {MauiKit}?
- * Apparently QWidget cannot be used from QML. (Though there is
- * https://www.kdab.com/declarative-widgets/ – how does that work?)
  *
  * NICETOHAVE Qt Creator and
  * Qt Designer support for the widgets. Quote from a blog from Viking
@@ -846,15 +879,35 @@
  *
  * SHOULDHAVE The classes \l PerceptualColor::GradientSlider
  * and \l PerceptualColor::ColorWheel could be subclasses of QAbstractSlider.
+ * Maybe \l PerceptualColor::GradientSlider could even be a subclass of
+ * QSlider, though this only add tickmarks, nothing else. Similarly,
+ * \l PerceptualColor::ColorWheel could be subclasses of QDial, which also
+ * adds only notches, nothing else.
  * This might integrate better with the user’s Qt code. On the other hand,
  * this would mean a lot of work in this library to implement the
  * complete interface of QAbstractSlider, and probably we would
  * also need multiple inheritance because this class also depends
  * on \l PerceptualColor::AbstractDiagram which is itself yet a subclass
  * of QWidget.
+ * On the other hand, this would allow to seperate into
+ * a public-API \l PerceptualColor::GradientSlider that supports widget
+ * styling, and a private-API child class specializing things like
+ * LCh-gradients and so on, similar to \l PerceptualColor::ColorPatch
+ * and \l PerceptualColor::CustomColorPatch.
  *
- * SHOULDHAVE \l PerceptualColor::ColorPatch::execDrag:
- * Provide more mime types, like Gimp/GEGL and CSS.
+ * SHOULDHAVE Implement a new chroma-first diagram (hue-lightness diagram)
+ * that preserves the correct scale (no distortion). The height remains
+ * constant, while the width varies depending on the selected chroma.
+ * Unlike standard diagrams that visualize a flat plane, this represents
+ * the outer surface of a cylinder cut through the color space.
+ * Since this non-linear boundary is unintuitive, add visual cues on the
+ * left and right edges to indicate that it is an artificial cutoff rather
+ * than a natural boundary. Potential UI approaches:
+ * Display a faded sliver of the wrap-around region at the edges.
+ * Provide horizontal scroll buttons anchored to the diagram borders, ensuring
+ * they stay sticked to the diagram even when the diagram width shrinks.
+ * Or use a \l PerceptualColor::ColorWheel to scroll through the diagram,
+ * but this seems less intuitive.
  *
  * NICETOHAVE
  * \l PerceptualColor::ChromaLightnessDiagramPrivate::nearestInGamutPixelPosition:
@@ -912,13 +965,6 @@
  * in \l PerceptualColor::CssColor and HSL is needed there.
  * Split into two different enums?
  *
- * SHOULDHAVE There are three similar functions like  \c {QDebug
- * operator<<(QDebug dbg, const PerceptualColor::Vec3d &value)}, one for each
- * Vec3l, Vec3f, Vec3ld, which are all specializatios of Vec3. We have the
- * same situation for Mat3. If technically possible, it would be better to
- * substitute them with a single function template that covers all possible
- * specialization of Vec3 respectively Mat3.
- *
  * SHOULDHAVE Make sure apidox actually generate up-to-date documentation
  * available online at api.kde.org based on our metainfo.yaml. (Is that even
  * possible if "release: false" and if this library is not part of Frameworks?)
@@ -932,6 +978,22 @@
  * Or we could use \c {https://api.kde.org/ecm/module/ECMGenerateHeaders.html}
  * {ECMGenerateHeaders} to generate automatically the CamelCase headers that
  * QDoc invents anway for C++ classes.
+ *
+ * NICETOHAVE \l PerceptualColor::ChromeLightnessDiagram should accept() only
+ * mouve events within the actual diagram area (gray background), but not
+ * outside, for example within the space reserved for focus indicator. It
+ * should neither gather focos when clicking there outside.
+ *
+ * NICETOHAVE \c scripts/ci-doc.sh calls
+ * internally \c scripts/update-screenshots.sh which in turn
+ * calls the \c build/utils/generatescreenshots binary. If the binary
+ * has a non-empty output on \c stdout or \c stderr, the CI system should
+ * consider the pipeline as failed. This is important to catch warnings like
+ * those about missing SVG support in \c generatescreenshots.
+ *
+ * SHOWSTOPPER Unit test that makes sure
+ * that \l PerceptualColor::AbsoluteColor::allConversions always
+ * produces all other \l PerceptualColor::ColorModel values.
  */
 
 /*!

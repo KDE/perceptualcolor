@@ -24,6 +24,7 @@
 # src/PerceptualColor
 PUBLIC_HEADERS="
     src/colordialog.h
+    src/colorpatch.h
     src/constpropagatinguniquepointer.h
     src/importexport.h
     src/multispinbox.h

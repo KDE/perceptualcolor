@@ -15,11 +15,17 @@ SPDX-License-Identifier: BSD-2-Clause OR MIT
         <file alias="lighttheme/eye-exclamation.svg">../icons/lighttheme/eye-exclamation.svg</file>
         <file alias="darktheme/eye-exclamation.svg">../icons/darktheme/eye-exclamation.svg</file>
 
+        <file alias="lighttheme/clipboard.svg">../icons/lighttheme/clipboard.svg</file>
+        <file alias="darktheme/clipboard.svg">../icons/darktheme/clipboard.svg</file>
+
         <file alias="lighttheme/color-picker.svg">../icons/lighttheme/color-picker.svg</file>
         <file alias="darktheme/color-picker.svg">../icons/darktheme/color-picker.svg</file>
 
         <file alias="lighttheme/color-swatch.svg">../icons/lighttheme/color-swatch.svg</file>
         <file alias="darktheme/color-swatch.svg">../icons/darktheme/color-swatch.svg</file>
+
+        <file alias="lighttheme/copy.svg">../icons/lighttheme/copy.svg</file>
+        <file alias="darktheme/copy.svg">../icons/darktheme/copy.svg</file>
 
         <file alias="lighttheme/info-circle.svg">../icons/lighttheme/info-circle.svg</file>
         <file alias="darktheme/info-circle.svg">../icons/darktheme/info-circle.svg</file>
