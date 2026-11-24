@@ -517,7 +517,7 @@
  * focus indicator ourself in these widgets, we would have to implement it
  * manually ourselves in the paint event.
  *
- * NICETOHAVE The custom focus indicators that we have in some widgets
+ * NICETOHAVE STYLING The custom focus indicators that we have in some widgets
  * (\l PerceptualColor::GradientSlider, \l PerceptualColor::ChromaHueDiagram,
  * \l PerceptualColor::ChromaLightnessDiagram, \l PerceptualColor::ColorWheel,
  * \l PerceptualColor::WheelColorPicker) should have the same width as the
@@ -532,9 +532,6 @@
  * } which we use in \l PerceptualColor::ColorPatch and
  * \l PerceptualColor::SwatchBook to draw the QStyle primitives for QLineEdit
  * frames, and which might be useful here also.
- *
- * NICETOHAVE Go trough QStyle::StyleHint and search for hints that might be
- * useful in some of our widgets. If so, use them in our rendering code.
  *
  * SHOULDHAVE When \l PerceptualColor::AbstractDiagram::handleOutlineThickness
  * is changed to return 5, then \l PerceptualColor::ChromaHueDiagram suddenly
@@ -552,6 +549,15 @@
  * because \l PerceptualColor::ColorPatch inherits from it and
  * \l PerceptualColor::ColorPatch is public API, which is broken as long as
  * \l PerceptualColor::AbstractDiagram stays private.
+ *
+ * SHOWSTOPPER \l PerceptualColor::Setting and \l PerceptualColor::Settings
+ * have support for enum. However, it is converted to the canonical name of
+ * the enum value. This is nice, because it makes the INI human-readable, but
+ * what if the value is invalid and there is no canonical name? Or if it is a
+ * flag and for the given combination does not exist a canonical name? The
+ * current implementation breaks in these cases. Additionally: Semi-automatic
+ * QDebug() support for all enums would be great and the current
+ * \l PerceptualColor::Setting code might help there.
  *
  * SHOWSTOPPER Define the precision of this library. We allow
  * changing the number of decimals in the \l PerceptualColor::ColorDialog
@@ -990,10 +996,6 @@
  * has a non-empty output on \c stdout or \c stderr, the CI system should
  * consider the pipeline as failed. This is important to catch warnings like
  * those about missing SVG support in \c generatescreenshots.
- *
- * SHOWSTOPPER Unit test that makes sure
- * that \l PerceptualColor::AbsoluteColor::allConversions always
- * produces all other \l PerceptualColor::ColorModel values.
  */
 
 /*!
