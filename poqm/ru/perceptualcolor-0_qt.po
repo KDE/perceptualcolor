@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: perceptualcolor-0_qt\n"
-"PO-Revision-Date: 2026-11-11 22:58+0200\n"
+"PO-Revision-Date: 2026-11-24 08:11+0200\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
@@ -232,7 +232,7 @@ msgstr "Выбор цвета"
 #: customcolorpatch.cpp:241
 msgctxt "PerceptualColor::CustomColorPatch|"
 msgid "&Paste"
-msgstr ""
+msgstr "&Вставить"
 
 #. @item Indicate the selected color in the swatch book. This symbol should be translated to whatever symbol is most appropriate for “selected” in the translation language. Example symbols: ✓ U+2713 CHECK MARK. ✗ U+2717 BALLOT X. ✘ U+2718 HEAVY BALLOT X. ○ U+25CB WHITE CIRCLE. ◯ U+25EF LARGE CIRCLE. Do not use emoji characters as they may render colorful on some systems, so they will ignore the automatically chosen color which is used get best contrast with the background. (Also U+FE0E VARIATION SELECTOR-15 does not prevent colorful rendering.)
 #: swatchbook.cpp:105
