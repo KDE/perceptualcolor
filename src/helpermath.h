@@ -4,9 +4,12 @@
 #ifndef PERCEPTUALCOLOR_HELPERMATH_H
 #define PERCEPTUALCOLOR_HELPERMATH_H
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
-#include <qglobal.h>
+#include <qminmax.h>
+#include <qnumeric.h>
+#include <qtypes.h>
 #include <type_traits>
 
 namespace PerceptualColor

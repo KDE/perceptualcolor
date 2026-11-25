@@ -5,23 +5,27 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimageparameters.h"
 
-#include "colorspaceinfo.h"
-#include "helper.h"
-#include "helperconstants.h"
-#include "helperimage.h"
-#include "helpermath.h"
-#include "polarpointf.h"
-#include <qbrush.h>
-#include <qmath.h>
+#include <atomic>
+#include <qcolor.h>
+#include <qimage.h>
+#include <qlist.h>
+#include <qminmax.h>
 #include <qnamespace.h>
-#include <qpainter.h>
-#include <qpainterpath.h>
-#include <qpen.h>
 #include <qpoint.h>
-#include <qrect.h>
+#include <qrgb.h>
+#include <qrunnable.h>
 #include <qsemaphore.h>
 #include <qsize.h>
 #include <qthreadpool.h>
+#include <qtypeinfo.h>
+#include <type_traits>
+#include <utility>
+
+#include "asyncimagerendercallback.h"
+#include "colorspaceinfo.h"
+#include "helper.h"
+#include "helperimage.h"
+#include "polarpointf.h"
 
 namespace PerceptualColor
 {

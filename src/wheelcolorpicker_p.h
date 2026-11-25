@@ -4,17 +4,16 @@
 #ifndef PERCEPTUALCOLOR_WHEELCOLORPICKER_P_H
 #define PERCEPTUALCOLOR_WHEELCOLORPICKER_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "wheelcolorpicker.h"
-
-#include "constpropagatingrawpointer.h"
-#include "lchvalues.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qsize.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
+#include <type_traits>
+
+#include "constpropagatingrawpointer.h"
+#include "lchvalues.h"
+
 class QWidget;
 
 namespace PerceptualColor
@@ -22,6 +21,7 @@ namespace PerceptualColor
 class ChromaLightnessDiagram;
 class ColorWheel;
 class WheelColorPicker;
+enum class LchSpace;
 
 /*!
  *

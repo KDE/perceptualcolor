@@ -4,19 +4,20 @@
 #ifndef PERCEPTUALCOLOR_MULTISPINBOX_P_H
 #define PERCEPTUALCOLOR_MULTISPINBOX_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "multispinbox.h"
-
-#include "constpropagatingrawpointer.h"
-#include "multispinboxsection.h"
 #include <qaccessiblewidget.h>
-#include <qglobal.h>
 #include <qlist.h>
 #include <qlocale.h>
 #include <qobject.h>
 #include <qpointer.h>
 #include <qstring.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
+#include <type_traits>
+
+#include "constpropagatingrawpointer.h"
+#include "multispinboxsection.h"
+
 class QDoubleValidator;
 
 namespace PerceptualColor

@@ -12,9 +12,12 @@
 #include <qsettings.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qstringview.h>
+#include <qswap.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <type_traits>
 
 namespace PerceptualColor
 {

@@ -6,9 +6,11 @@
 
 #include <algorithm>
 #include <qbytearray.h>
-#include <qglobal.h>
 #include <qlist.h>
+#include <qminmax.h>
 #include <qstring.h>
+#include <qswap.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

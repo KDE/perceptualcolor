@@ -7,21 +7,10 @@
 // Second, the private implementation.
 #include "swatchbook_p.h" // IWYU pragma: associated
 
-#include "absolutecolor.h"
-#include "abstractdiagram.h"
-#include "constpropagatingrawpointer.h"
-#include "constpropagatinguniquepointer.h"
-#include "genericcolor.h"
-#include "helper.h"
-#include "helperconversion.h"
-#include "helperimage.h"
-#include "helpermath.h"
-#include "initializetranslation.h"
-#include "perceptualcolornamespace.h"
 #include <algorithm>
 #include <optional>
 #include <qaction.h>
-#include <qapplication.h>
+#include <qbrush.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
@@ -33,9 +22,13 @@
 #include <qmargins.h>
 #include <qmenu.h>
 #include <qmetatype.h>
+#include <qminmax.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
+#include <qobjectdefs.h>
 #include <qpainter.h>
 #include <qpainterpath.h>
+#include <qpalette.h>
 #include <qpen.h>
 #include <qpoint.h>
 #include <qrect.h>
@@ -43,8 +36,22 @@
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+#include <qtpreprocessorsupport.h>
 #include <qtransform.h>
+#include <qtypeinfo.h>
 #include <qwidget.h>
+
+#include "absolutecolor.h"
+#include "abstractdiagram.h"
+#include "constpropagatingrawpointer.h"
+#include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
+#include "helper.h"
+#include "helperconversion.h"
+#include "helperimage.h"
+#include "helpermath.h"
+#include "initializetranslation.h"
+#include "perceptualcolornamespace.h"
 
 namespace PerceptualColor
 {

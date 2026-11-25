@@ -5,9 +5,11 @@
 #define PERCEPTUALCOLOR_VEC3_H
 
 #include <array>
+#include <qbytearray.h>
 #include <qdebug.h>
 #include <qmetatype.h>
 #include <stddef.h>
+#include <type_traits>
 
 namespace PerceptualColor
 {

@@ -4,14 +4,15 @@
 #ifndef PERCEPTUALCOLOR_ASYNCIMAGEPROVIDER_H
 #define PERCEPTUALCOLOR_ASYNCIMAGEPROVIDER_H
 
-#include "asyncimageproviderbase.h"
-#include "asyncimagerenderthread.h"
 #include <optional>
-#include <qglobal.h>
 #include <qimage.h>
 #include <qmetatype.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
 #include <qvariant.h>
+
+#include "asyncimageproviderbase.h"
+#include "asyncimagerenderthread.h"
 
 class QObject;
 

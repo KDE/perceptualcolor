@@ -6,9 +6,18 @@
 #include "completecolor.h"
 
 #include "absolutecolor.h"
+#include "genericcolor.h"
+#include "perceptualcolornamespace.h"
+#include "rgbcolor.h"
+#include <qdebug.h>
+#include <qhash.h>
+#include <qlogging.h>
+#include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+
+class QString;
 
 namespace PerceptualColor
 {

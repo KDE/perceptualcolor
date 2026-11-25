@@ -4,31 +4,32 @@
 #ifndef PERCEPTUALCOLOR_CHROMALIGHTNESSDIAGRAM_P_H
 #define PERCEPTUALCOLOR_CHROMALIGHTNESSDIAGRAM_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "chromalightnessdiagram.h"
+#include <cmath>
+#include <functional>
+#include <limits>
+#include <optional>
+#include <qobject.h>
+#include <qpointer.h>
+#include <qsize.h>
+#include <qtclasshelpermacros.h>
+#include <qtmetamacros.h>
+#include <type_traits>
 
 #include "asyncimageprovider.h"
 #include "chromalightnessimageparameters.h"
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "lchvalues.h"
-#include "perceptualcolornamespace.h"
-#include <cmath>
-#include <functional>
-#include <limits>
-#include <optional>
-#include <qglobal.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpointer.h>
-#include <qsize.h>
-#include <qtoolbutton.h>
+
 class QRect;
 class QPoint;
+class QGridLayout;
+class QToolButton;
 
 namespace PerceptualColor
 {
 class ChromaLightnessDiagram;
+enum class LchSpace;
 
 /*!
  *

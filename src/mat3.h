@@ -7,9 +7,11 @@
 #include "vec3.h"
 #include <array>
 #include <optional>
+#include <qbytearray.h>
 #include <qdebug.h>
 #include <qmetatype.h>
 #include <stddef.h>
+#include <type_traits>
 
 namespace PerceptualColor
 {

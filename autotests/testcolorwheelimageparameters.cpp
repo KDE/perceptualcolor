@@ -5,14 +5,17 @@
 // this forces the header to be self-contained.
 #include "colorwheelimageparameters.h"
 
-#include <qcolor.h>
-#include <qglobal.h>
+#include "asyncimagerendercallback.h"
+#include <qbenchmark.h>
 #include <qimage.h>
 #include <qobject.h>
 #include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypeinfo.h>
+#include <qvariant.h>
 #include <qwidget.h>
 
 class TestColorWheelSnippetClass : public QWidget

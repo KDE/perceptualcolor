@@ -5,7 +5,6 @@
 #define PERCEPTUALCOLOR_INITIALIZETRANSLATION_H
 
 #include <optional>
-
 #include <qcontainerfwd.h>
 
 class QCoreApplication;

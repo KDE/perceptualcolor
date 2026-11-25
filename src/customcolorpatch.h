@@ -4,21 +4,15 @@
 #ifndef PERCEPTUALCOLOR_CUSTOMCOLORPATCH_H
 #define PERCEPTUALCOLOR_CUSTOMCOLORPATCH_H
 
-#include "abstractdiagram.h"
+#include <qtclasshelpermacros.h>
+#include <qtmetamacros.h>
+
 #include "colorpatch.h"
 #include "completecolor.h"
 #include "constpropagatinguniquepointer.h"
 #include "internalimportexport.h"
-#include <qcolor.h>
-#include <qglobal.h>
-#include <qsize.h>
-class QDragEnterEvent;
-class QDropEvent;
-class QMouseEvent;
-class QPaintEvent;
-class QResizeEvent;
+
 class QWidget;
-#include <qtmetamacros.h>
 
 namespace PerceptualColor
 {

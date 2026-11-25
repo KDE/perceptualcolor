@@ -4,26 +4,15 @@
 #ifndef PERCEPTUALCOLOR_CUSTOMCOLORPATCH_P_H
 #define PERCEPTUALCOLOR_CUSTOMCOLORPATCH_P_H
 
-// Include the header of the public class of this private implementation.
-#include "csscolor.h"
+#include <optional>
+#include <qcontainerfwd.h>
+#include <qrgb.h>
+#include <qstring.h>
 
-#include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
-#include "helper.h"
-#include "rgbcolor.h"
-#include <qcolor.h>
-#include <qglobal.h>
-#include <qimage.h>
-#include <qnamespace.h>
-#include <qpixmap.h>
-#include <qpoint.h>
-class QMimeData;
-class QLabel;
 
 namespace PerceptualColor
 {
-
-class CssColor;
 
 /*!
  * \inmodule ModulePrivateApi

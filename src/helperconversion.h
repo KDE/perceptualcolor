@@ -4,14 +4,14 @@
 #ifndef PERCEPTUALCOLOR_HELPERCONVERSION_H
 #define PERCEPTUALCOLOR_HELPERCONVERSION_H
 
-#include "genericcolor.h"
-#include "mat3.h"
-#include "perceptualcolornamespace.h"
-#include <array>
+#include <optional>
 #include <qcolor.h>
-#include <qglobal.h>
-#include <qtmetamacros.h>
+#include <qminmax.h>
+#include <qtypes.h>
 #include <type_traits>
+
+#include "mat3.h"
+#include "vec3.h"
 
 namespace PerceptualColor
 {

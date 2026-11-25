@@ -4,19 +4,18 @@
 #ifndef PERCEPTUALCOLOR_COLORWHEEL_P_H
 #define PERCEPTUALCOLOR_COLORWHEEL_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "colorwheel.h"
+#include <qpoint.h>
+#include <qtclasshelpermacros.h>
+#include <qtypes.h>
 
 #include "colorwheelimageparameters.h"
 #include "constpropagatingrawpointer.h"
-#include "perceptualcolornamespace.h"
 #include "polarpointf.h"
-#include <qglobal.h>
-#include <qpoint.h>
 
 namespace PerceptualColor
 {
 class ColorWheel;
+enum class LchSpace;
 
 /*!
  *

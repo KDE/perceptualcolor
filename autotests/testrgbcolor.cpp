@@ -7,14 +7,15 @@
 
 #include "genericcolor.h"
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
 #include <type_traits>
 #include <utility>
 

@@ -4,9 +4,8 @@
 #ifndef PERCEPTUALCOLOR_HELPERCONSTANTS_H
 #define PERCEPTUALCOLOR_HELPERCONSTANTS_H
 
-#include <qglobal.h>
-#include <qstring.h>
-#include <qstringliteral.h>
+#include <qstringview.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

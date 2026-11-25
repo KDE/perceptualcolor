@@ -4,13 +4,13 @@
 #ifndef PERCEPTUALCOLOR_PORTALEYEDROPPER
 #define PERCEPTUALCOLOR_PORTALEYEDROPPER
 
+#include <optional>
+#include <qobject.h>
+#include <qtclasshelpermacros.h>
+#include <qtmetamacros.h>
+
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
-#include <optional>
-#include <qcontainerfwd.h>
-#include <qglobal.h>
-#include <qobject.h>
-#include <qtmetamacros.h>
 
 class QWidget;
 

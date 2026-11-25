@@ -1,0 +1,51 @@
+﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
+// SPDX-License-Identifier: BSD-2-Clause OR MIT
+
+// First included header is the public header of the class we are testing;
+// this forces the header to be self-contained.
+#include "sink.h"
+
+#include <qobject.h>
+#include <qtest.h>
+#include <qtmetamacros.h>
+
+namespace PerceptualColor
+{
+class TestSink : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit TestSink(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
+
+private Q_SLOTS:
+    void initTestCase()
+    {
+        // Called before the first test function is executed
+    }
+
+    void cleanupTestCase()
+    {
+        // Called after the last test function was executed
+    }
+
+    void init()
+    {
+        // Called before each test function is executed
+    }
+
+    void cleanup()
+    {
+        // Called after every test function
+    }
+};
+
+} // namespace PerceptualColor
+
+QTEST_MAIN(PerceptualColor::TestSink)
+
+// The following “include” is necessary because we do not use a header file:
+#include "sink.moc"

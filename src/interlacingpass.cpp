@@ -5,8 +5,9 @@
 #include "interlacingpass.h"
 
 #include "helpermath.h"
-#include <qglobal.h>
 #include <qmath.h>
+#include <qminmax.h>
+#include <qnumeric.h>
 #include <type_traits>
 
 namespace PerceptualColor

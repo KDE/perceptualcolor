@@ -9,9 +9,12 @@
 
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
+#include "colorpatch.h"
+#include "completecolor.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "customcolorpatch.h"
+#include "genericcolor.h"
 #include "gradientslider.h"
 #include "helper.h"
 #include "helperconstants.h"
@@ -36,7 +39,6 @@
 #include <qboxlayout.h>
 #include <qbytearray.h>
 #include <qchar.h>
-#include <qclipboard.h>
 #include <qcombobox.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
@@ -44,6 +46,7 @@
 #include <qdebug.h>
 #include <qdialogbuttonbox.h>
 #include <qevent.h>
+#include <qflags.h>
 #include <qformlayout.h>
 #include <qgridlayout.h>
 #include <qgroupbox.h>
@@ -53,10 +56,13 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
+#include <qlogging.h>
 #include <qloggingcategory.h>
-#include <qmenu.h>
+#include <qminmax.h>
+#include <qnumeric.h>
 #include <qobject.h>
 #include <qobjectdefs.h>
+#include <qoverload.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qregularexpression.h>
@@ -68,15 +74,17 @@
 #include <qstackedlayout.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <qstyle.h>
 #include <qstylehints.h>
+#include <qswap.h>
 #include <qtabwidget.h>
 #include <qtoolbutton.h>
+#include <qtypeinfo.h>
 #include <qvalidator.h>
 #include <qwidget.h>
+#include <string.h>
 #include <type_traits>
 #include <utility>
-
-class QShowEvent;
 
 namespace PerceptualColor
 {

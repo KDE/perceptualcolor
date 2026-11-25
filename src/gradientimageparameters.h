@@ -4,11 +4,13 @@
 #ifndef PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H
 #define PERCEPTUALCOLOR_GRADIENTIMAGEPARAMETERS_H
 
+#include <qbytearray.h>
+#include <qmetatype.h>
+#include <qtypes.h>
+#include <qvariant.h>
+
 #include "genericcolor.h"
 #include "perceptualcolornamespace.h"
-#include <qglobal.h>
-#include <qmetatype.h>
-#include <qvariant.h>
 
 namespace PerceptualColor
 {

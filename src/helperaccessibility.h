@@ -4,10 +4,12 @@
 #ifndef PERCEPTUALCOLOR_HELPERACCESSIBILITY_H
 #define PERCEPTUALCOLOR_HELPERACCESSIBILITY_H
 
-#include <qaccessible.h>
+#include <qaccessible_base.h>
 #include <qstring.h>
 #include <type_traits>
+
 class QObject;
+class QAccessibleInterface;
 
 namespace PerceptualColor
 {

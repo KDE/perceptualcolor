@@ -8,17 +8,19 @@
 #include "multispinboxsection_p.h" // IWYU pragma: keep
 
 #include <qdebug.h>
-#include <qglobal.h>
+#include <qlogging.h>
 #include <qobject.h>
 #include <qspinbox.h>
-#include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtypeinfo.h>
 #include <qvariant.h>
 #include <type_traits>
 #include <utility>
+
+class QString;
 
 namespace PerceptualColor
 {

@@ -8,16 +8,22 @@
 #include "setting.h"
 #include "settingbase.h"
 #include <qcolor.h>
-#include <qglobal.h>
+#include <qlist.h>
+#include <qlogging.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qsignalspy.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qstringview.h>
+#include <qswap.h>
 #include <qtest.h>
-#include <qtest_gui.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypeinfo.h>
+#include <utility>
 
 static void snippet01()
 {

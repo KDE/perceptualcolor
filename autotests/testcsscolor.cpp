@@ -7,23 +7,27 @@
 // Second, the private implementation.
 #include "csscolor_p.h" // IWYU pragma: keep
 
+#include "completecolor.h"
 #include "genericcolor.h"
 #include "perceptualcolornamespace.h"
+#include "rgbcolor.h"
 #include <absolutecolor.h>
 #include <numbers>
 #include <optional>
+#include <qbytearray.h>
 #include <qcontainerfwd.h>
-#include <qdebug.h>
 #include <qhash.h>
 #include <qlist.h>
 #include <qobject.h>
-#include <qrgb.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtmetamacros.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
+#include <utility>
 
 namespace PerceptualColor
 {

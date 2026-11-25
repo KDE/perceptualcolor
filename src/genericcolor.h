@@ -6,6 +6,7 @@
 
 #include "vec3.h"
 #include <array>
+#include <qbytearray.h>
 #include <qdebug.h>
 #include <qlist.h>
 #include <qmetatype.h>

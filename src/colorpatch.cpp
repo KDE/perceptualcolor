@@ -19,12 +19,8 @@
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include <algorithm>
-#include <qapplication.h>
-#include <qevent.h>
 #include <qfont.h>
-#include <qframe.h>
 #include <qimage.h>
-#include <qlabel.h>
 #include <qmath.h>
 #include <qminmax.h>
 #include <qnamespace.h>
@@ -38,6 +34,7 @@
 #include <qsizepolicy.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+
 class QWidget;
 
 namespace PerceptualColor

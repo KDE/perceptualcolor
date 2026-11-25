@@ -6,8 +6,9 @@
 
 #include <algorithm>
 #include <qbytearray.h>
-#include <qglobal.h>
 #include <qstring.h>
+#include <qtypes.h>
+
 namespace PerceptualColor
 {
 

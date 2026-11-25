@@ -6,14 +6,20 @@
 
 #include "helper.h"
 #include <qcolor.h>
+#include <qicon.h>
 #include <qimage.h>
+#include <qminmax.h>
+#include <qnumeric.h>
 #include <qpoint.h>
 #include <qrect.h>
 #include <qrgb.h>
 #include <qrunnable.h>
 #include <qsemaphore.h>
+#include <qswap.h>
 #include <qthreadpool.h>
+#include <qtypeinfo.h>
 #include <type_traits>
+#include <utility>
 
 namespace PerceptualColor
 {

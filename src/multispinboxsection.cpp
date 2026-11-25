@@ -9,8 +9,8 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "helpermath.h"
-#include <qglobal.h>
 #include <qlist.h>
+#include <qminmax.h>
 #include <qstringliteral.h>
 
 namespace PerceptualColor

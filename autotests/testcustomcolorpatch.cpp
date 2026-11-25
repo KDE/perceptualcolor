@@ -7,20 +7,27 @@
 // Second, the private implementation.
 #include "customcolorpatch_p.h" // IWYU pragma: keep
 
-#include "colordialog.h"
+#include "colorpatch.h"
+#include "completecolor.h"
 #include "constpropagatinguniquepointer.h"
+#include "genericcolor.h"
+#include "rgbcolor.h"
 #include "sink.h"
+#include <memory>
+#include <qbytearray.h>
+#include <qbytearrayview.h>
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qmimedata.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qsize.h>
+#include <qobjectdefs.h>
 #include <qstring.h>
+#include <qstringliteral.h>
+#include <qstringview.h>
 #include <qtest.h>
 #include <qtestcase.h>
-#include <qtestdata.h>
 #include <qtmetamacros.h>
+#include <qvariant.h>
 
 namespace PerceptualColor
 {

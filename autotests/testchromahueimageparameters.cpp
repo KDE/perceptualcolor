@@ -13,14 +13,17 @@
 #include <optional>
 #include <qbenchmark.h>
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qimage.h>
+#include <qminmax.h>
 #include <qobject.h>
 #include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
 #include <qvariant.h>
 
 namespace PerceptualColor

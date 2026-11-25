@@ -5,13 +5,10 @@
 // this forces the header to be self-contained.
 #include "asyncimagerendercallback.h"
 
-#include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtmetamacros.h>
-#include <qvariant.h>
-
-class QImage;
+#include <qtpreprocessorsupport.h>
 
 namespace PerceptualColor
 {

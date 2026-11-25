@@ -4,21 +4,22 @@
 #ifndef PERCEPTUALCOLOR_SWATCHBOOK_P_H
 #define PERCEPTUALCOLOR_SWATCHBOOK_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "swatchbook.h"
-
-#include "constpropagatingrawpointer.h"
-#include "helper.h"
+#include <iterator>
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qstyleoption.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 #include <utility>
+
+#include "constpropagatingrawpointer.h"
+#include "helper.h"
+
 class QPainter;
 
 namespace PerceptualColor

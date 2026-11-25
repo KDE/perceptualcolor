@@ -39,6 +39,7 @@
 #include "version.h" // IWYU pragma: keep
 #include "wheelcolorpicker.h" // IWYU pragma: keep
 #include <numbers> // IWYU pragma: keep
+#include <optional> // IWYU pragma: keep
 #include <qaction.h> // IWYU pragma: keep
 #include <qapplication.h> // IWYU pragma: keep
 #include <qcolor.h> // IWYU pragma: keep
@@ -62,11 +63,14 @@
 #include <qlineedit.h> // IWYU pragma: keep
 #include <qlist.h> // IWYU pragma: keep
 #include <qlocale.h> // IWYU pragma: keep
+#include <qlogging.h> // IWYU pragma: keep
 #include <qloggingcategory.h> // IWYU pragma: keep
 #include <qmath.h> // IWYU pragma: keep
 #include <qmetaobject.h> // IWYU pragma: keep
+#include <qminmax.h> // IWYU pragma: keep
 #include <qnamespace.h> // IWYU pragma: keep
 #include <qobject.h> // IWYU pragma: keep
+#include <qobjectdefs.h> // IWYU pragma: keep
 #include <qpixmap.h> // IWYU pragma: keep
 #include <qpluginloader.h> // IWYU pragma: keep
 #include <qpointer.h> // IWYU pragma: keep
@@ -84,10 +88,13 @@
 #include <qstringliteral.h> // IWYU pragma: keep
 #include <qstyle.h> // IWYU pragma: keep
 #include <qstylefactory.h> // IWYU pragma: keep
+#include <qswap.h> // IWYU pragma: keep
 #include <qthread.h> // IWYU pragma: keep
 #include <qtimer.h> // IWYU pragma: keep
 #include <qtmetamacros.h> // IWYU pragma: keep
+#include <qtpreprocessorsupport.h> // IWYU pragma: keep
 #include <qtranslator.h> // IWYU pragma: keep
+#include <qtypeinfo.h> // IWYU pragma: keep
 #include <type_traits> // IWYU pragma: keep
 #include <utility> // IWYU pragma: keep
 

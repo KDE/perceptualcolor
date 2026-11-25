@@ -4,14 +4,15 @@
 #ifndef PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H
 #define PERCEPTUALCOLOR_ABSTRACTDIAGRAM_H
 
-#include "constpropagatinguniquepointer.h"
-#include "internalimportexport.h"
-#include <qimage.h>
+#include <qcolor.h>
 #include <qsize.h>
 #include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
 #include <qtypes.h>
 #include <qwidget.h>
+
+#include "constpropagatinguniquepointer.h"
+#include "internalimportexport.h"
 
 namespace PerceptualColor
 {

@@ -6,12 +6,14 @@
 #include "vec3.h"
 
 #include <qdebug.h>
-#include <qglobal.h>
+#include <qlogging.h>
 #include <qobject.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+
+class QString;
 
 namespace PerceptualColor
 {

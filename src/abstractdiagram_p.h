@@ -4,9 +4,6 @@
 #ifndef PERCEPTUALCOLOR_ABSTRACTDIAGRAM_P_H
 #define PERCEPTUALCOLOR_ABSTRACTDIAGRAM_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "abstractdiagram.h"
-
 #include <qtclasshelpermacros.h>
 
 namespace PerceptualColor

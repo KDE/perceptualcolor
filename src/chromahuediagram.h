@@ -4,15 +4,14 @@
 #ifndef PERCEPTUALCOLOR_CHROMAHUEDIAGRAM_H
 #define PERCEPTUALCOLOR_CHROMAHUEDIAGRAM_H
 
+#include <qtclasshelpermacros.h>
+#include <qtmetamacros.h>
+
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "internalimportexport.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
-#include <qsize.h>
-#include <qtclasshelpermacros.h>
-#include <qtmetamacros.h>
+
 class QWidget;
 
 namespace PerceptualColor

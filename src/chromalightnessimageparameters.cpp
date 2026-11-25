@@ -5,14 +5,6 @@
 // First the interface, which forces the header to be self-contained.
 #include "chromalightnessimageparameters.h"
 
-#include "absolutecolor.h"
-#include "asyncimagerendercallback.h"
-#include "colorspaceinfo.h"
-#include "genericcolor.h"
-#include "helper.h"
-#include "helperimage.h"
-#include "helpermath.h"
-#include "lchvalues.h"
 #include <atomic>
 #include <functional>
 #include <qimage.h>
@@ -22,11 +14,20 @@
 #include <qrgb.h>
 #include <qrunnable.h>
 #include <qsemaphore.h>
-#include <qswap.h>
 #include <qthreadpool.h>
 #include <qtypeinfo.h>
 #include <type_traits>
 #include <utility>
+
+#include "absolutecolor.h"
+#include "asyncimagerendercallback.h"
+#include "colorspaceinfo.h"
+#include "genericcolor.h"
+#include "helper.h"
+#include "helperimage.h"
+#include "helpermath.h"
+#include "lchvalues.h"
+
 class QPoint;
 
 namespace PerceptualColor

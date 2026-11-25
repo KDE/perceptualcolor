@@ -4,13 +4,16 @@
 #ifndef PERCEPTUALCOLOR_COLORWHEELIMAGEPARAMETERS_H
 #define PERCEPTUALCOLOR_COLORWHEELIMAGEPARAMETERS_H
 
-#include "asyncimageprovider.h"
+#include <qbytearray.h>
+#include <qmetatype.h>
+#include <qtypes.h>
+#include <qvariant.h>
+
 #include "perceptualcolornamespace.h"
-#include <qglobal.h>
-#include <qimage.h>
 
 namespace PerceptualColor
 {
+class AsyncImageRenderCallback;
 
 /*!
  *

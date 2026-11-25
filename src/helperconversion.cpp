@@ -4,16 +4,7 @@
 // Own header
 #include "helperconversion.h"
 
-#include "helper.h"
 #include <qcolor.h>
-#include <qimage.h>
-#include <qpoint.h>
-#include <qrect.h>
-#include <qrgb.h>
-#include <qrunnable.h>
-#include <qsemaphore.h>
-#include <qthreadpool.h>
-#include <type_traits>
 
 namespace PerceptualColor
 {

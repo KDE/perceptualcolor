@@ -6,6 +6,7 @@
 #include "languagechangeeventfilter.h"
 
 #include <qcoreevent.h>
+#include <qtpreprocessorsupport.h>
 
 namespace PerceptualColor
 {

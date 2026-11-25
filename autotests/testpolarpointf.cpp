@@ -7,14 +7,17 @@
 
 #include <cmath>
 #include <qdebug.h>
-#include <qglobal.h>
+#include <qlogging.h>
 #include <qobject.h>
 #include <qpoint.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
 #include <qvariant.h>
+
+class QString;
 
 namespace PerceptualColor
 {

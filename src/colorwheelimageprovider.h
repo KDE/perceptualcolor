@@ -4,17 +4,23 @@
 #ifndef PERCEPTUALCOLOR_COLORWHEELIMAGEPROVIDER_H
 #define PERCEPTUALCOLOR_COLORWHEELIMAGEPROVIDER_H
 
+#include <qimage.h>
+#include <qmath.h>
+#include <qnamespace.h>
+#include <qoverload.h>
+#include <qpainter.h>
+#include <qpainterpath.h>
+#include <qpoint.h>
+#include <qtransform.h>
+#include <qtypes.h>
+
 #include "abstractdiagram.h"
 #include "asyncimageprovider.h"
 #include "colorwheelimageparameters.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
-#include <qimage.h>
-#include <qpainter.h>
-#include <qpainterpath.h>
 
 namespace PerceptualColor
 {
+enum class LchSpace;
 
 /*!
  * \inmodule ModulePrivateApi

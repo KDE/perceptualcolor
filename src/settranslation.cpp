@@ -10,9 +10,10 @@
 #include <optional>
 #include <qcoreapplication.h>
 #include <qdebug.h>
-#include <qglobal.h>
 #include <qlist.h>
+#include <qlogging.h>
 #include <qloggingcategory.h>
+#include <qstring.h>
 #include <qthread.h>
 
 namespace PerceptualColor

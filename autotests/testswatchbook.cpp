@@ -12,11 +12,11 @@
 #include <qboxlayout.h>
 #include <qbytearray.h>
 #include <qcolor.h>
-#include <qcolordialog.h>
-#include <qglobal.h>
 #include <qlist.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpoint.h>
 #include <qsize.h>
 #include <qstring.h>
@@ -29,7 +29,6 @@
 #include <qtestkeyboard.h>
 #include <qtmetamacros.h>
 #include <qwidget.h>
-#include <type_traits>
 #include <utility>
 
 namespace PerceptualColor

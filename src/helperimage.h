@@ -5,10 +5,13 @@
 #define PERCEPTUALCOLOR_HELPERIMAGE_H
 
 #include <functional>
-#include <qglobal.h>
+#include <qcolor.h>
 #include <qlist.h>
+#include <qpixmap.h>
 #include <qrgb.h>
 #include <qthread.h>
+#include <qtypes.h>
+
 class QImage;
 class QPoint;
 class QRect;

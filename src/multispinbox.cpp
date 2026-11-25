@@ -14,25 +14,33 @@
 #include "logging.h"
 #include "multispinboxsection.h"
 #include <math.h>
-#include <qaccessible.h>
+#include <qaccessible_base.h>
 #include <qaccessiblewidget.h>
 #include <qcoreevent.h>
 #include <qdebug.h>
 #include <qevent.h>
 #include <qfontmetrics.h>
-#include <qglobal.h>
 #include <qlineedit.h>
 #include <qlocale.h>
+#include <qlogging.h>
 #include <qloggingcategory.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpointer.h>
+#include <qsize.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+#include <qswap.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypeinfo.h>
 #include <qvalidator.h>
 #include <qwidget.h>
+#include <utility>
+
 class QAction;
 
 namespace PerceptualColor

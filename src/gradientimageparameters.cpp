@@ -10,11 +10,13 @@
 #include "helper.h"
 #include "lchvalues.h"
 #include <cmath>
-#include <qbrush.h>
 #include <qcolor.h>
 #include <qimage.h>
+#include <qminmax.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
 #include <qpainter.h>
+#include <qtypeinfo.h>
 
 namespace PerceptualColor
 {

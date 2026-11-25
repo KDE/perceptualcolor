@@ -4,18 +4,16 @@
 #ifndef PERCEPTUALCOLOR_COLORPATCH_P_H
 #define PERCEPTUALCOLOR_COLORPATCH_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "colorpatch.h"
-
-#include "constpropagatingrawpointer.h"
 #include <qcolor.h>
 #include <qimage.h>
+#include <qmargins.h>
 #include <qnamespace.h>
 #include <qpixmap.h>
-#include <qstyleoption.h>
+#include <qsize.h>
 #include <qtclasshelpermacros.h>
 #include <qtypes.h>
-class QLabel;
+
+#include "constpropagatingrawpointer.h"
 
 namespace PerceptualColor
 {

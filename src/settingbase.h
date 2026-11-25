@@ -8,6 +8,7 @@
 #include <qpointer.h>
 #include <qstring.h>
 #include <qtmetamacros.h>
+#include <type_traits>
 
 class QSettings;
 

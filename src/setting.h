@@ -4,15 +4,17 @@
 #ifndef PERCEPTUALCOLOR_SETTING_H
 #define PERCEPTUALCOLOR_SETTING_H
 
-#include "settingbase.h"
-#include "settings.h"
 #include <qbytearray.h>
-#include <qglobal.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
 #include <qstring.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 #include <qvariant.h>
+#include <type_traits>
+
+#include "settingbase.h"
+#include "settings.h"
 
 class QObject;
 

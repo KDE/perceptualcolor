@@ -4,10 +4,9 @@
 #ifndef PERCEPTUALCOLOR_LANGUAGECHANGEEVENTFILTER_H
 #define PERCEPTUALCOLOR_LANGUAGECHANGEEVENTFILTER_H
 
-#include <qglobal.h>
 #include <qobject.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
-class QEvent;
 
 namespace PerceptualColor
 {

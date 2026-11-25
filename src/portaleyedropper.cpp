@@ -7,20 +7,24 @@
 // Second, the private implementation.
 #include "portaleyedropper_p.h" // IWYU pragma: associated
 
+#include <qcompare.h>
 #include <qdbusargument.h>
 #include <qdbusconnection.h>
 #include <qdbusextratypes.h>
 #include <qdbusmessage.h>
 #include <qdbuspendingcall.h>
 #include <qdbuspendingreply.h>
-#include <qglobal.h>
 #include <qguiapplication.h>
 #include <qlist.h>
 #include <qmap.h>
+#include <qminmax.h>
 #include <qobjectdefs.h>
 #include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <qswap.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
 #include <qvariant.h>
 #include <qwidget.h>
 #include <utility>

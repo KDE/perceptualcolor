@@ -4,36 +4,39 @@
 #ifndef PERCEPTUALCOLOR_HELPER_H
 #define PERCEPTUALCOLOR_HELPER_H
 
-#include "completecolor.h"
-#include "helpermath.h"
-#include "logging.h"
-#include "perceptualcolornamespace.h"
-#include "rgbcolor.h"
+#include <qbytearray.h>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
-#include <qdebug.h>
-#include <qglobal.h>
+#include <qcoreevent.h>
 #include <qguiapplication.h>
 #include <qicon.h>
 #include <qimage.h>
 #include <qlist.h>
+#include <qlogging.h>
 #include <qloggingcategory.h>
 #include <qmetaobject.h>
 #include <qmetatype.h>
-#include <qmimedata.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qobject.h>
-#include <qpair.h>
 #include <qstring.h>
 #include <qstringliteral.h>
 #include <qstyleoption.h>
+#include <qswap.h>
 #include <qthread.h>
+#include <qtypes.h>
 #include <type_traits>
+#include <utility>
+
+#include "helpermath.h"
+#include "logging.h"
 
 class QApplication;
 class QWheelEvent;
 class QWidget;
+class QPainter;
+class QSize;
 
 namespace PerceptualColor
 {

@@ -5,21 +5,27 @@
 // this forces the header to be self-contained.
 #include "setting.h"
 
-#include "settingbase.h"
-#include "settings.h"
 #include <limits>
 #include <qdebug.h>
 #include <qfile.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpointer.h>
 #include <qsettings.h>
 #include <qsignalspy.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qstringview.h>
+#include <qswap.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtypeinfo.h>
 #include <qvariant.h>
+#include <type_traits>
+
+#include "settingbase.h"
+#include "settings.h"
 
 namespace PerceptualColor
 {

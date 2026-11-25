@@ -16,28 +16,34 @@
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qevent.h>
-#include <qglobal.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qlocale.h>
+#include <qlogging.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qoverload.h>
 #include <qscopedpointer.h>
 #include <qsignalspy.h>
 #include <qsize.h>
 #include <qspinbox.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qswap.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
 #include <qtestsupport_widgets.h>
 #include <qtmetamacros.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
 #include <qvalidator.h>
 #include <qvariant.h>
 #include <qwidget.h>
+#include <utility>
 
 // From Qt documentation:
 //     “Note: This function is not declared in any of Qt's header files. To

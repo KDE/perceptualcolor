@@ -10,7 +10,6 @@
 #include "constpropagatinguniquepointer.h"
 #include "genericcolor.h"
 #include "perceptualcolornamespace.h"
-#include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
@@ -21,6 +20,7 @@
 #include <qtestcase.h>
 #include <qtestkeyboard.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

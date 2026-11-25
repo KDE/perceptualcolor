@@ -4,21 +4,21 @@
 #ifndef PERCEPTUALCOLOR_GRADIENTSLIDER_P_H
 #define PERCEPTUALCOLOR_GRADIENTSLIDER_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "gradientslider.h"
+#include <qnamespace.h>
+#include <qtclasshelpermacros.h>
+#include <qtypes.h>
 
 #include "asyncimageprovider.h"
 #include "constpropagatingrawpointer.h"
 #include "genericcolor.h"
 #include "gradientimageparameters.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
-#include <qnamespace.h>
+
 class QPoint;
 
 namespace PerceptualColor
 {
 class GradientSlider;
+enum class LchSpace;
 
 /*!
  *

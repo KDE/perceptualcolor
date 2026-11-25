@@ -4,10 +4,9 @@
 #ifndef PERCEPTUALCOLOR_PERCEPTUALCOLORRUNTIMEVERSION_H
 #define PERCEPTUALCOLOR_PERCEPTUALCOLORRUNTIMEVERSION_H
 
-#include "importexport.h"
-
-#include <qglobal.h>
 #include <qversionnumber.h>
+
+#include "importexport.h"
 
 /*!
  * \headerfile perceptualcolorruntimeversion.h

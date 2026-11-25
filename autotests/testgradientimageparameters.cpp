@@ -7,12 +7,14 @@
 
 #include "asyncimagerenderthread.h"
 #include "genericcolor.h"
-#include <qglobal.h>
+#include <qnumeric.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
 #include <qvariant.h>
 #include <qwidget.h>
 

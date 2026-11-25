@@ -5,7 +5,6 @@
 // this forces the header to be self-contained.
 #include "helpermath.h"
 
-#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <qobject.h>
@@ -13,6 +12,7 @@
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
 
 static void snippet01()
 {

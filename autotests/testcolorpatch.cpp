@@ -7,17 +7,25 @@
 // Second, the private implementation.
 #include "colorpatch_p.h" // IWYU pragma: keep
 
-#include "constpropagatinguniquepointer.h"
+// Other headers:
+
 #include <qcolor.h>
-#include <qglobal.h>
+#include <qimage.h>
+#include <qlogging.h>
+#include <qmargins.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
+#include <qpixmap.h>
 #include <qsize.h>
-#include <qstring.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtmetamacros.h>
+
+#include "constpropagatinguniquepointer.h"
+
+class QString;
 
 static void snippet01()
 {

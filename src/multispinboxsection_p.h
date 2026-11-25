@@ -4,9 +4,6 @@
 #ifndef PERCEPTUALCOLOR_MULTISPINBOXSECTION_P_H
 #define PERCEPTUALCOLOR_MULTISPINBOXSECTION_P_H
 
-// Include the header of the public class of this private implementation.
-// #include "multispinboxsection.h"
-
 #include <qstring.h>
 
 namespace PerceptualColor

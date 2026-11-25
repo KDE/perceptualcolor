@@ -5,12 +5,13 @@
 // this forces the header to be self-contained.
 #include "helperimage.h"
 
+#include <functional>
 #include <qcolor.h>
-#include <qglobal.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qnamespace.h>
 #include <qobject.h>
+#include <qpixmap.h>
 #include <qpoint.h>
 #include <qrect.h>
 #include <qrgb.h>
@@ -18,6 +19,7 @@
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
 
 static void snippet01()
 {

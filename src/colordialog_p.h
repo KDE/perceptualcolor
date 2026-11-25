@@ -4,15 +4,6 @@
 #ifndef PERCEPTUALCOLOR_COLORDIALOG_P_H
 #define PERCEPTUALCOLOR_COLORDIALOG_P_H
 
-// Include the header of the public class of this private implementation.
-#include "colordialog.h"
-
-#include "constpropagatingrawpointer.h"
-#include "helper.h"
-#include "languagechangeeventfilter.h"
-#include "lchvalues.h"
-#include "perceptualcolornamespace.h"
-#include "rgbcolor.h"
 #include <optional>
 #include <qbytearray.h>
 #include <qcolor.h>
@@ -27,6 +18,15 @@
 #include <qtmetamacros.h>
 #include <qtypes.h>
 #include <type_traits>
+
+#include "colordialog.h"
+#include "constpropagatingrawpointer.h"
+#include "helper.h"
+#include "languagechangeeventfilter.h"
+#include "lchvalues.h"
+#include "perceptualcolornamespace.h"
+#include "rgbcolor.h"
+
 class QAction;
 class QComboBox;
 class QDialogButtonBox;

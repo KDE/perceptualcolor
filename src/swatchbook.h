@@ -4,19 +4,16 @@
 #ifndef PERCEPTUALCOLOR_SWATCHBOOK_H
 #define PERCEPTUALCOLOR_SWATCHBOOK_H
 
+#include <qcolor.h>
+#include <qnamespace.h>
+#include <qtclasshelpermacros.h>
+#include <qtmetamacros.h>
+
 #include "abstractdiagram.h"
 #include "constpropagatinguniquepointer.h"
 #include "helper.h"
 #include "internalimportexport.h"
-#include <qcolor.h>
-#include <qglobal.h>
-#include <qnamespace.h>
-#include <qsize.h>
-#include <qtmetamacros.h>
-class QEvent;
-class QKeyEvent;
-class QMouseEvent;
-class QPaintEvent;
+
 class QWidget;
 
 namespace PerceptualColor

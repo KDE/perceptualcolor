@@ -6,6 +6,7 @@
 
 #include "constpropagatinguniquepointer.h"
 #include "importexport.h"
+#include <qbytearray.h>
 #include <qdebug.h>
 #include <qmetatype.h>
 #include <qstring.h>

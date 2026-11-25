@@ -4,8 +4,6 @@
 // Own header
 #include "helpermath.h"
 
-#include <qmath.h>
-
 namespace PerceptualColor
 {
 

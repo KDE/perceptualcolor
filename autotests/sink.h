@@ -4,7 +4,7 @@
 #ifndef PERCEPTUALCOLOR_SINK_H
 #define PERCEPTUALCOLOR_SINK_H
 
-#include <atomic>
+#include <qtpreprocessorsupport.h>
 
 namespace PerceptualColor
 {

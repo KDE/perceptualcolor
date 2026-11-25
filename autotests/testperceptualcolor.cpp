@@ -3,10 +3,10 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor"
+#include "PerceptualColor" // IWYU pragma: keep
 
+#include <qobject.h>
 #include <qtest.h>
-#include <qtestcase.h>
 #include <qtmetamacros.h>
 
 namespace PerceptualColor

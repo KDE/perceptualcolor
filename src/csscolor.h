@@ -4,16 +4,11 @@
 #ifndef PERCEPTUALCOLOR_CSSCOLOR_H
 #define PERCEPTUALCOLOR_CSSCOLOR_H
 
-#include "completecolor.h"
-#include "genericcolor.h"
-#include "internalimportexport.h"
-#include "perceptualcolornamespace.h"
-#include <optional>
 #include <qcontainerfwd.h>
-#include <qhash.h>
-#include <qrgb.h>
 #include <qstring.h>
-#include <qtmetamacros.h>
+
+#include "completecolor.h"
+#include "internalimportexport.h"
 
 namespace PerceptualColor
 {

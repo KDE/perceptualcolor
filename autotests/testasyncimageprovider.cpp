@@ -5,15 +5,22 @@
 // this forces the header to be self-contained.
 #include "asyncimageprovider.h"
 
-#include "asyncimagerendercallback.h"
-#include <qglobal.h>
+// Other headers:
+
+#include <qbytearray.h>
 #include <qimage.h>
 #include <qmetatype.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
-#include <qvariant.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypeinfo.h>
+
+#include "asyncimagerendercallback.h"
+
+class QVariant;
 
 //! [How to create]
 // Provide a data type that contains

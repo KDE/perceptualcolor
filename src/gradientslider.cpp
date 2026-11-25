@@ -17,15 +17,24 @@
 #include <qevent.h>
 #include <qguiapplication.h>
 #include <qimage.h>
+#include <qminmax.h>
+#include <qnumeric.h>
+#include <qobjectdefs.h>
 #include <qpainter.h>
 #include <qpen.h>
+#include <qpixmap.h>
 #include <qpoint.h>
+#include <qsize.h>
 #include <qsizepolicy.h>
+#include <qtpreprocessorsupport.h>
 #include <qtransform.h>
+#include <qtypeinfo.h>
 #include <qwidget.h>
 
 namespace PerceptualColor
 {
+enum class LchSpace;
+
 /*!
  *
  *

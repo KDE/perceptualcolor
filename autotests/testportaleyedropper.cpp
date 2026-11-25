@@ -7,16 +7,15 @@
 // Second, the private implementation.
 #include "portaleyedropper_p.h" // IWYU pragma: keep
 
+#include "constpropagatinguniquepointer.h"
 #include <qcontainerfwd.h>
-#include <qglobal.h>
 #include <qmap.h>
 #include <qobject.h>
+#include <qstring.h>
 #include <qtest.h>
 #include <qtmetamacros.h>
-
-#ifdef PERCEPTUALCOLOR_STATIC
-#include <optional>
-#endif
+#include <qtpreprocessorsupport.h>
+#include <qvariant.h>
 
 namespace PerceptualColor
 {

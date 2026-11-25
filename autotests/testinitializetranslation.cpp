@@ -6,13 +6,16 @@
 #include "initializetranslation.h"
 
 #include "colordialog.h"
+#include <optional>
 #include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qlist.h>
 #include <qlocale.h>
+#include <qminmax.h>
 #include <qobject.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qswap.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>

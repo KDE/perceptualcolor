@@ -9,6 +9,7 @@
 
 #include "absolutecolor.h"
 #include "chromahuediagram.h"
+#include "completecolor.h"
 #include "constpropagatinguniquepointer.h"
 #include "customcolorpatch.h"
 #include "genericcolor.h"
@@ -20,6 +21,7 @@
 #include "rgbcolor.h"
 #include "settranslation.h"
 #include "wheelcolorpicker.h"
+#include <optional>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qbenchmark.h>
@@ -30,16 +32,18 @@
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qdebug.h>
-#include <qglobal.h>
+#include <qflags.h>
 #include <qhash.h>
 #include <qlineedit.h>
 #include <qlist.h>
 #include <qlocale.h>
+#include <qlogging.h>
 #include <qmetaobject.h>
+#include <qminmax.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
 #include <qobject.h>
 #include <qobjectdefs.h>
-#include <qpair.h>
 #include <qpointer.h>
 #include <qpushbutton.h>
 #include <qscopedpointer.h>
@@ -49,14 +53,20 @@
 #include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <qstringview.h>
+#include <qswap.h>
+#include <qsystemdetection.h>
 #include <qtabwidget.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtestdata.h>
 #include <qtestkeyboard.h>
 #include <qtmetamacros.h>
-#include <qtoolbutton.h> // IWYU pragma: keep
+#include <qtoolbutton.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypeinfo.h>
 #include <qwidget.h>
+#include <string.h>
 #include <type_traits>
 #include <utility>
 

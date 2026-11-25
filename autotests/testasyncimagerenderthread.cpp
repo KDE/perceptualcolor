@@ -6,11 +6,11 @@
 #include "asyncimagerenderthread.h"
 
 #include "asyncimagerendercallback.h"
-#include <qglobal.h>
 #include <qimage.h>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
 #include <qvariant.h>
 
 namespace PerceptualColor

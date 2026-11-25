@@ -7,11 +7,12 @@
 
 #include "colorspaceinfo.h"
 #include "genericcolor.h"
-#include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

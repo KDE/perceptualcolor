@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: Lukas Sommer <sommerluk@gmail.com>
 // SPDX-License-Identifier: BSD-2-Clause OR MIT
 
-#include <qglobal.h>
+#include <qtypes.h>
 
 static_assert(
     // Test if the compiler treats the source code actually as UTF-8.

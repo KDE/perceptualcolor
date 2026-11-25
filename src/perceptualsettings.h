@@ -7,11 +7,15 @@
 #include "internalimportexport.h"
 #include "setting.h"
 #include "settings.h"
+#include <qbytearray.h>
 #include <qcolor.h>
 #include <qlist.h>
 #include <qmetatype.h>
+#include <qminmax.h>
 #include <qstring.h>
+#include <qswap.h>
 #include <qtmetamacros.h>
+#include <utility>
 
 namespace PerceptualColor
 {

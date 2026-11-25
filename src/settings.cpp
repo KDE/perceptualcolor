@@ -5,10 +5,10 @@
 // First the interface, which forces the header to be self-contained.
 #include "settings.h"
 
-#include <qcontainerfwd.h>
 #include <qcoreapplication.h>
 #include <qfilesystemwatcher.h>
 #include <qlist.h>
+#include <qobjectdefs.h>
 
 namespace PerceptualColor
 {

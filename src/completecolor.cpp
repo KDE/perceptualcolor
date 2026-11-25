@@ -4,15 +4,11 @@
 // Own header
 #include "completecolor.h"
 
-// Other includes
 #include "absolutecolor.h"
-#include "helpermath.h"
-#include <cmath>
-#include <numbers>
+#include "perceptualcolornamespace.h"
 #include <qdebug.h>
-#include <qmath.h>
+#include <qswap.h>
 #include <qtypes.h>
-#include <type_traits>
 
 namespace PerceptualColor
 {

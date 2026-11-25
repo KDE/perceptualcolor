@@ -9,15 +9,17 @@
 #include <qchar.h>
 #include <qcoreapplication.h>
 #include <qdebug.h>
-#include <qglobal.h>
 #include <qhash.h>
+#include <qlogging.h>
 #include <qloggingcategory.h>
+#include <qobjectdefs.h>
 #include <qsettings.h>
 #include <qsharedpointer.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <qtypeinfo.h>
 #include <stdexcept>
-#include <type_traits>
+#include <string.h>
 #include <utility>
 
 namespace PerceptualColor

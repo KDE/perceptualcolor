@@ -4,11 +4,14 @@
 #ifndef PERCEPTUALCOLOR_COLORWHEEL_P_H
 #define PERCEPTUALCOLOR_COLORWHEEL_P_H
 
-// Include the header of the public class of this private implementation.
-#include "portaleyedropper.h"
+#include <optional>
+#include <qcontainerfwd.h>
+#include <qobject.h>
+#include <qtclasshelpermacros.h>
+#include <qtmetamacros.h>
+#include <sys/types.h>
 
 #include "constpropagatingrawpointer.h"
-#include <qdbusargument.h>
 
 namespace PerceptualColor
 {

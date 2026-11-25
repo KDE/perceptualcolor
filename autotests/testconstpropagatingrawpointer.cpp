@@ -5,12 +5,13 @@
 // this forces the header to be self-contained.
 #include "constpropagatingrawpointer.h"
 
-#include <qglobal.h>
 #include <qobject.h>
 #include <qrect.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+#include <qtypes.h>
 
 static void snippet01()
 {

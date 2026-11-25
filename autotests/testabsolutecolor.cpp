@@ -5,23 +5,36 @@
 // this forces the header to be self-contained.
 #include "absolutecolor.h"
 
+#include <cmath>
+#include <optional>
+#include <qbenchmark.h>
+#include <qbytearray.h>
+#include <qcompare.h>
+#include <qdebug.h>
+#include <qhash.h>
+#include <qiterator.h>
+#include <qmap.h>
+#include <qmetaobject.h>
+#include <qmetatype.h>
+#include <qobject.h>
+#include <qrgb.h>
+#include <qset.h>
+#include <qstring.h>
+#include <qstringliteral.h>
+#include <qswap.h>
+#include <qtest.h>
+#include <qtestcase.h>
+#include <qtestdata.h>
+#include <qtmetamacros.h>
+#include <qtypeinfo.h>
+#include <string.h>
+#include <utility>
+
 #include "genericcolor.h"
 #include "helpermath.h"
 #include "perceptualcolornamespace.h"
 #include "sink.h"
 #include "vec3.h"
-#include <algorithm>
-#include <cmath>
-#include <optional>
-#include <qbenchmark.h>
-#include <qhash.h>
-#include <qmetatype.h>
-#include <qobject.h>
-#include <qrgb.h>
-#include <qtest.h>
-#include <qtestcase.h>
-#include <qtestdata.h>
-#include <qtmetamacros.h>
 
 namespace PerceptualColor
 {

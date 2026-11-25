@@ -5,7 +5,11 @@
 // this forces the header to be self-contained.
 #include "initializelibraryresources.h"
 
-#include <qdiriterator.h>
+#include <qfile.h>
+#include <qlogging.h>
+#include <qobject.h>
+#include <qstring.h>
+#include <qstringliteral.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>

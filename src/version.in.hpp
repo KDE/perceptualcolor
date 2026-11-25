@@ -4,10 +4,7 @@
 #ifndef PERCEPTUALCOLOR_VERSION_H
 #define PERCEPTUALCOLOR_VERSION_H
 
-#include "importexport.h"
-
-#include <qglobal.h>
-#include <qversionnumber.h>
+#include <qtversionchecks.h>
 
 // This file provides version information for this library at compile
 // time and at run time.

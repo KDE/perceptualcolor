@@ -4,10 +4,15 @@
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
 #include "helperconversion.h"
-#include <qglobal.h>
+
+#include <qcolor.h>
+#include <qnamespace.h>
+#include <qnumeric.h>
 #include <qobject.h>
 #include <qtest.h>
+#include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

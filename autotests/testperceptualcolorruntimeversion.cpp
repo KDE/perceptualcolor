@@ -5,7 +5,7 @@
 // this forces the header to be self-contained.
 #include "perceptualcolorruntimeversion.h"
 
-#include <qglobal.h>
+#include <compare>
 #include <qobject.h>
 #include <qtest.h>
 #include <qtestcase.h>

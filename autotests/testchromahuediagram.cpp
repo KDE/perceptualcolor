@@ -13,7 +13,6 @@
 #include "polarpointf.h"
 #include <qcoreevent.h>
 #include <qevent.h>
-#include <qglobal.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
@@ -23,6 +22,8 @@
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
+#include <utility>
 
 static void snippet01()
 {

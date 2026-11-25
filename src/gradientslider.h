@@ -4,26 +4,24 @@
 #ifndef PERCEPTUALCOLOR_GRADIENTSLIDER_H
 #define PERCEPTUALCOLOR_GRADIENTSLIDER_H
 
-#include "abstractdiagram.h"
-#include "constpropagatinguniquepointer.h"
-#include "genericcolor.h"
-#include "internalimportexport.h"
-#include "perceptualcolornamespace.h"
-#include <qglobal.h>
+#include <qbytearray.h>
 #include <qmetatype.h>
 #include <qnamespace.h>
-#include <qsize.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
-class QKeyEvent;
-class QMouseEvent;
-class QPaintEvent;
-class QResizeEvent;
-class QWheelEvent;
+#include <qtypes.h>
+
+#include "abstractdiagram.h"
+#include "constpropagatinguniquepointer.h"
+#include "internalimportexport.h"
+
 class QWidget;
 
 namespace PerceptualColor
 {
 class GradientSliderPrivate;
+enum class LchSpace;
+struct GenericColor;
 
 /*!
  *

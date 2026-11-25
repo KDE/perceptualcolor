@@ -29,6 +29,7 @@
 #include <qmath.h>
 #include <qminmax.h>
 #include <qnamespace.h>
+#include <qobjectdefs.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>

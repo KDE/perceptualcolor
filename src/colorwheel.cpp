@@ -17,15 +17,19 @@
 #include "helperimage.h"
 #include "helpermath.h"
 #include "lchvalues.h"
+#include "perceptualcolornamespace.h"
 #include "polarpointf.h"
 #include <numbers>
 #include <qevent.h>
 #include <qimage.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
 #include <qpainter.h>
-#include <qpainterpath.h>
 #include <qpen.h>
+#include <qpixmap.h>
 #include <qpoint.h>
+#include <qsize.h>
+#include <qtpreprocessorsupport.h>
 #include <qwidget.h>
 
 namespace PerceptualColor

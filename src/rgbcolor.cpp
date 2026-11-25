@@ -6,9 +6,7 @@
 
 #include "csscolor.h"
 #include "helperconversion.h"
-#include <qchar.h>
-#include <qglobal.h>
-#include <qstringliteral.h>
+#include <qminmax.h>
 #include <type_traits>
 
 namespace PerceptualColor

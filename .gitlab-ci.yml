@@ -80,7 +80,7 @@ codecheck_iwyu:
     expire_in: 2 weeks
     when: always
     paths:
-      - artifact_iwyu.txt
+      - artifact_*
   stage: check2
   dependencies:
     - codecheck_quality

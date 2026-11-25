@@ -5,9 +5,18 @@
 // this forces the header to be self-contained.
 #include "colorwheelimageprovider.h"
 
+#include "abstractdiagram.h"
+#include "perceptualcolornamespace.h"
+#include <qimage.h>
+#include <qlogging.h>
+#include <qobject.h>
+#include <qpainter.h>
+#include <qpoint.h>
 #include <qtest.h>
-#include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
+
+class QString;
 
 namespace PerceptualColor
 {

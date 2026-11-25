@@ -8,15 +8,17 @@
 #include "setting.h"
 #include "settingbase.h"
 #include <qfile.h>
-#include <qglobal.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qsettings.h>
 #include <qsignalspy.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qstringview.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
 
 namespace PerceptualColor
 {

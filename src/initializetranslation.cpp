@@ -9,16 +9,20 @@
 #include "logging.h"
 #include <qcoreapplication.h>
 #include <qdebug.h>
-#include <qglobal.h>
 #include <qlist.h>
 #include <qlocale.h>
+#include <qlogging.h>
 #include <qloggingcategory.h>
+#include <qminmax.h>
 #include <qmutex.h>
 #include <qpointer.h>
 #include <qstring.h>
 #include <qstringliteral.h>
+#include <qswap.h>
 #include <qthread.h>
+#include <qtpreprocessorsupport.h>
 #include <qtranslator.h>
+#include <type_traits>
 
 namespace PerceptualColor
 {

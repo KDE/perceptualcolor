@@ -5,21 +5,19 @@
 // this forces the header to be self-contained.
 #include "version.h"
 
-#include <qglobal.h>
 #include <qobject.h>
 #include <qtest.h>
-#include <qtestcase.h>
 #include <qtmetamacros.h>
-#include <qversionnumber.h>
+#include <qtversionchecks.h>
 
 static void snippet01()
 {
 //! [Version Macro usage]
 // Either with macros:
 #if (PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= QT_VERSION_CHECK(1, 2, 3))
-    // Some code…
+// Some code…
 #else
-    // Some different code…
+// Some different code…
 #endif
 
     // Or with C++ “if constexpr”. Works only if both(!) code paths can

@@ -4,7 +4,7 @@
 #ifndef PERCEPTUALCOLOR_IMPORTEXPORT_H
 #define PERCEPTUALCOLOR_IMPORTEXPORT_H
 
-#include <qglobal.h>
+#include <qcompilerdetection.h>
 
 /*!
  * \headerfile importexport.h

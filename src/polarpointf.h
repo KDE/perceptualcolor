@@ -4,6 +4,7 @@
 #ifndef PERCEPTUALCOLOR_POLARPOINTF_H
 #define PERCEPTUALCOLOR_POLARPOINTF_H
 
+#include <qbytearray.h>
 #include <qdebug.h>
 #include <qmetatype.h>
 #include <qpoint.h>

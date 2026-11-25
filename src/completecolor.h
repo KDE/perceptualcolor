@@ -4,14 +4,19 @@
 #ifndef PERCEPTUALCOLOR_COMPLETECOLOR_H
 #define PERCEPTUALCOLOR_COMPLETECOLOR_H
 
-#include "perceptualcolornamespace.h"
-#include "rgbcolor.h"
+#include <qbytearray.h>
 #include <qdebug.h>
+#include <qhash.h>
 #include <qmetatype.h>
-#include <qpoint.h>
+#include <qtypes.h>
+#include <utility>
+
+#include "genericcolor.h"
+#include "rgbcolor.h"
 
 namespace PerceptualColor
 {
+enum class ColorModel;
 
 /*!
  * \inmodule ModulePrivateApi

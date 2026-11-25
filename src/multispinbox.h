@@ -4,24 +4,19 @@
 #ifndef PERCEPTUALCOLOR_MULTISPINBOX_H
 #define PERCEPTUALCOLOR_MULTISPINBOX_H
 
-#include "constpropagatinguniquepointer.h"
-#include "importexport.h"
-// Including multispinboxsection.h is necessary on Qt6,
-// otherwise moc will fail. (IWYU does not detect this dependency.)
-#include "multispinboxsection.h" // IWYU pragma: keep
 #include <qabstractspinbox.h>
-#include <qglobal.h>
 #include <qlineedit.h>
 #include <qlist.h>
-#include <qsize.h>
+#include <qtclasshelpermacros.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 #include <qvalidator.h>
 
+#include "constpropagatinguniquepointer.h"
+#include "importexport.h"
+#include "multispinboxsection.h"
+
 class QAction;
-class QActionEvent;
-class QEvent;
-class QFocusEvent;
-class QKeyEvent;
 class QString;
 class QWidget;
 

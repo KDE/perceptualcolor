@@ -5,7 +5,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "initializelibraryresources.h"
 
-#include <qglobal.h>
+#include <qtresource.h>
 
 // Helper function for PerceptualColor::initializeLibraryResources().
 //

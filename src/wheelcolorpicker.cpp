@@ -10,23 +10,28 @@
 #include "absolutecolor.h"
 #include "abstractdiagram.h"
 #include "chromalightnessdiagram.h"
-#include "chromalightnessdiagram_p.h" // IWYU pragma: keep
+#include "chromalightnessdiagram_p.h"
 #include "colorspaceinfo.h"
 #include "colorwheel.h"
-#include "colorwheel_p.h" // IWYU pragma: keep
+#include "colorwheel_p.h"
 #include "constpropagatingrawpointer.h"
 #include "constpropagatinguniquepointer.h"
 #include "helperconstants.h"
 #include "lchvalues.h"
+#include "perceptualcolornamespace.h"
 #include <math.h>
 #include <qapplication.h>
+#include <qcoreevent.h>
 #include <qmath.h>
 #include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpoint.h>
 #include <qpointer.h>
 #include <qrect.h>
-#include <utility>
-class QResizeEvent;
+#include <qswap.h>
+#include <qtypeinfo.h>
+#include <qtypes.h>
+
 class QWidget;
 
 namespace PerceptualColor

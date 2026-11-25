@@ -5,7 +5,6 @@
 #include "helper.h"
 
 #include "absolutecolor.h"
-#include "csscolor.h"
 #include "genericcolor.h"
 #include "initializelibraryresources.h"
 #include "perceptualcolornamespace.h"
@@ -15,20 +14,22 @@
 #include <qcolor.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qflags.h>
 #include <qkeysequence.h>
-#include <qlabel.h>
 #include <qlist.h>
+#include <qmargins.h>
+#include <qmath.h>
 #include <qpainter.h>
+#include <qpalette.h>
 #include <qpixmap.h>
 #include <qpoint.h>
-#include <qscopedpointer.h>
+#include <qrect.h>
 #include <qsize.h>
 #include <qstringliteral.h>
 #include <qstyle.h>
-#include <qstylehints.h>
 #include <qstyleoption.h>
+#include <qtypeinfo.h>
 #include <qwidget.h>
-#include <type_traits>
 #include <utility>
 
 namespace PerceptualColor

@@ -138,6 +138,7 @@ if(BUILD_TESTING)
     endfunction()
 
     add_unit_tests(
+        sink
         testabsolutecolor
         testabstractdiagram
         testasyncimageprovider

@@ -5,16 +5,19 @@
 // this forces the header to be self-contained.
 #include "helperconstants.h"
 
+#include <qanystringview.h>
 #include <qobject.h>
 #include <qscopedpointer.h>
 #include <qstring.h>
 #include <qstringbuilder.h>
 #include <qstringliteral.h>
+#include <qstringview.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtextdocument.h>
 #include <qtmetamacros.h>
 #include <qwidget.h>
+#include <utility>
 
 static bool snippet01()
 {

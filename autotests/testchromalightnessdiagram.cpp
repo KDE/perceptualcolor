@@ -13,12 +13,14 @@
 #include "helpermath.h"
 #include "perceptualcolornamespace.h"
 #include <cmath>
+#include <functional>
 #include <limits>
-#include <qglobal.h>
 #include <qlist.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpoint.h>
+#include <qpointer.h>
 #include <qrect.h>
 #include <qsignalspy.h>
 #include <qsize.h>
@@ -27,6 +29,8 @@
 #include <qtestkeyboard.h>
 #include <qtestmouse.h>
 #include <qtmetamacros.h>
+#include <qtoolbutton.h>
+#include <qtpreprocessorsupport.h>
 
 namespace PerceptualColor
 {

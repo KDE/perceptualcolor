@@ -7,19 +7,15 @@
 
 #include "helpermath.h"
 #include "perceptualcolornamespace.h"
-#include <qbrush.h>
 #include <qcolor.h>
-#include <qglobal.h>
-#include <qimage.h>
 #include <qnamespace.h>
+#include <qnumeric.h>
 #include <qobject.h>
-#include <qpainter.h>
 #include <qsize.h>
 #include <qtest.h>
 #include <qtestcase.h>
 #include <qtmetamacros.h>
-
-class QWidget;
+#include <qtypes.h>
 
 namespace PerceptualColor
 {

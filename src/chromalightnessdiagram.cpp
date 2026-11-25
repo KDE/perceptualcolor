@@ -18,7 +18,6 @@
 #include "initializetranslation.h"
 #include "lchvalues.h"
 #include "perceptualcolornamespace.h"
-#include <QtCore/qobjectdefs.h>
 #include <optional>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
@@ -34,6 +33,7 @@
 #include <qminmax.h>
 #include <qnamespace.h>
 #include <qnumeric.h>
+#include <qobjectdefs.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>

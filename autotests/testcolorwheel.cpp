@@ -12,7 +12,6 @@
 #include "perceptualcolornamespace.h"
 #include <qapplication.h>
 #include <qboxlayout.h>
-#include <qglobal.h>
 #include <qlineedit.h>
 #include <qnamespace.h>
 #include <qobject.h>
@@ -24,6 +23,7 @@
 #include <qtestkeyboard.h>
 #include <qtestmouse.h>
 #include <qtmetamacros.h>
+#include <qtypes.h>
 #include <qwidget.h>
 
 namespace PerceptualColor
